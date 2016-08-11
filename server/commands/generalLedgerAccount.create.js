@@ -1,11 +1,11 @@
 var async = require('asyncawait/async');
 var await = require('asyncawait/await');
-var DefineCommand = require('../utilities/command.define');
+var command = require('../services/command.define.js');
 var string = require('../utilities/string');
 var translate = require('../services/translateService');
-var repository = require('../data/repository.generalLedgerAccount');
+var repository = require('../data/repository.generalLedgerAccount.js');
 
-var command = new DefineCommand('command.generalLedgerAccount.create', {
+command.define('command.generalLedgerAccount.create', {
     validate: async(function (cmd) {
         var errors = [];
 
@@ -41,10 +41,9 @@ var command = new DefineCommand('command.generalLedgerAccount.create', {
             isActive: true
         };
 
-        entity = repository.create(entity);
+        entity = await(repository.create(entity));
 
         return {id: entity.id};
     })
 });
 
-module.exports = command;

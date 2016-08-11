@@ -1,18 +1,19 @@
 var redis = require('redis');
 var pub = redis.createClient();
 var eventEmitter = require('./eventEmitter');
-var guidService = require('./guidService');
+var guidService = require('./../utilities/guidService');
 var Promise = require('promise');
 
 function commandBus(name, command) {
-    return new Promise(function (resolve, reject) {
+    return new Promise(function (resolve) {
         command.commandId = guidService.newGuid();
 
-        eventEmitter.on(command.commandId, function (result) {
+        eventEmitter.once(command.commandId, function (result) {
             resolve(result);
         });
 
-        pub.publish(name, command);
+        var serializedCmd = JSON.stringify(command);
+        pub.publish(name, serializedCmd);
     });
 }
 

@@ -5,14 +5,14 @@ var router = express.Router();
 var validate = require('../command.validators/command.validator.subsidiaryLedgerAccount');
 var handle = require('../command.handlers/command.handler.subsidiaryLedgerAccount');
 var view = require('../viewModel.assemblers/view.subsidiaryLedgerAccount');
-var commandBus = require('../utilities/command.bus');
+var commandBus = require('../services/command.bus.js');
 
 router.route('/subsidiary-ledger-accounts/general-ledger-account/:parentId')
     .get(function (req, res) {
         var parentId = req.params.parentId;
 
         var kendoRequest = kendoQueryService.getKendoRequestData(req.query);
-        kendoRequest.distinct = true
+        kendoRequest.distinct = true;
         kendoRequest.include = [
             {model: models.generalLedgerAccount, where: {id: parentId}},
             {
@@ -37,8 +37,7 @@ router.route('/subsidiary-ledger-accounts/general-ledger-account/:parentId')
     })
     .post(function (req, res) {
         var cmd = req.body;
-        var parentId = req.params.parentId;
-        cmd.generalLedgerAccountId = parentId;
+        cmd.generalLedgerAccountId = req.params.parentId;
 
 
         /*validate.onCreate(cmd)
@@ -118,7 +117,7 @@ router.route('/subsidiary-ledger-accounts/:id')
                         errors: result.errors
                     });
             });
-    })
+    });
 
 router.route('/subsidiary-ledger-accounts/:id/activate')
     .put(function (req, res) {

@@ -15,7 +15,6 @@ passport.deserializeUser(function (id, done) {
 passport.use(
     new LocalStrategy(
         function (username, password, done) {
-            debugger;
             db.user.findById(1).then(function (user) {
                 if (user)
                     return done(null, user);

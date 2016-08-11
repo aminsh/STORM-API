@@ -5,7 +5,7 @@ var router = express.Router();
 var validate = require('../command.validators/command.validator.generalLedgerAccount');
 var handle = require('../command.handlers/command.handler.generalLedgerAccount');
 var view = require('../viewModel.assemblers/view.generalLedgerAccount');
-var commandBus = require('../utilities/command.bus');
+var commandBus = require('../services/command.bus.js');
 
 router.route('/general-ledger-accounts')
     .get(function (req, res) {
@@ -28,25 +28,10 @@ router.route('/general-ledger-accounts')
     .post(function (req, res) {
         var cmd = req.body;
 
-        commandBus('command.generalLedgerAccount.create', JSON.stringify(cmd))
+        commandBus('command.generalLedgerAccount.create', cmd)
             .then(function (result) {
                 res.json(result);
             });
-        /* validate.onCreate(cmd)
-         .then(function (result) {
-         if (result.isValid)
-         handle.create(cmd).then(function (returnValue) {
-         res.json({
-         isValid: true,
-         returnValue: returnValue
-         });
-         })
-         else
-         res.json({
-         isValid: false,
-         errors: result.errors
-         });
-         });*/
     });
 
 router.route('/general-ledger-accounts/:id')
@@ -73,7 +58,7 @@ router.route('/general-ledger-accounts/:id')
                             isValid: true,
                             cmd: cmd
                         });
-                    })
+                    });
                 else
                     res.json({
                         isValid: false,
