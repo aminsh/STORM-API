@@ -1,0 +1,16 @@
+{
+  "The code is required": "کد اجباری است",
+  "The code is duplicated": "کد تکراری است",
+  "The title is required": "عنوان اجباری است",
+  "The title should have at least 3 character": "عنوان باید حداقل 3 کاراکتر داشته باشد",
+  "The Current Account has Subsidiary ledger account": "حساب جاری دارای معین میباشد",
+  "The current period is closed , You are not allowed to create Journal": "دوره جاری بسته شده ، امکان ایجاد سند وجود ندارد",
+  "The current period is closed , You are not allowed to edit Journal": "دوره جاری بسته شده ، امکان ویرایش سند وجود ندارد",
+  "The current period is closed , You are not allowed to delete Journal": "دوره جاری بسته شده ، امکان حذف سند وجود ندارد",
+  "The current journal is fixed , You are not allowed to delete it": "سند ثبت قطعی شده ، امکان خذف وجود ندارد",
+  "The current journal is fixed , You are not allowed to edit it": "سند ثبت قطعی شده ، امکان خذف وجود ندارد",
+  "The journal with this TemporaryNumber already created": "سندی با شماره موقت وارد شده قبلا ایجاد شده",
+  "The temporaryDate is not in current period date range": "تاریخ در دوره جاری نیست",
+  "This journal is already fixed": "این سند قبلا ثبت قطعی شده",
+  "The Article is required": "شرح آرتیکل اجباری است"
+}
