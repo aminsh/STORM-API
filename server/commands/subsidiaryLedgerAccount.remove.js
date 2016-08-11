@@ -1,20 +1,15 @@
 var async = require('asyncawait/async');
 var await = require('asyncawait/await');
 var command = require('../services/command.define.js');
+var string = require('../utilities/string');
 var translate = require('../services/translateService');
-var repository = require('../data/repository.generalLedgerAccount.js');
+var repository = require('../data/repository.subsidiaryLedgerAccount.js');
 
-command.define('command.generalLedgerAccount.remove', {
+command.define('command.subsidiaryLedgerAccount.update', {
     validate: async(function (cmd) {
         var errors = [];
 
-        var gla = await(repository.findById(cmd.id));
-
-        if (gla.subsidiaryLedgerAccounts.asEnumerable().any())
-            errors
-                .push(translate('The Current Account has Subsidiary ledger account'));
-
-        //check for journal line
+        // check is used on journal line
 
         return {
             isValid: !errors.asEnumerable().any(),
@@ -25,5 +20,4 @@ command.define('command.generalLedgerAccount.remove', {
         await(repository.remove(cmd.id));
     })
 });
-
 
