@@ -26,4 +26,40 @@ command.define('command.generalLedgerAccount.remove', {
     })
 });
 
+command.define('command.generalLedgerAccount.activate', {
+    validate: async(function (cmd) {
+        var errors = [];
+
+        return {
+            isValid: !errors.asEnumerable().any(),
+            errors: errors
+        };
+    }),
+    handle: async(function (cmd) {
+        var entity = await(repository.findById(cmd.id));
+
+        entity.isActive = true;
+
+        await(repository.update(entity));
+    })
+});
+
+command.define('command.generalLedgerAccount.deactivate', {
+    validate: async(function (cmd) {
+        var errors = [];
+
+        return {
+            isValid: !errors.asEnumerable().any(),
+            errors: errors
+        };
+    }),
+    handle: async(function (cmd) {
+        var entity = await(repository.findById(cmd.id));
+
+        entity.isActive = false;
+
+        await(repository.update(entity));
+    })
+});
+
 
