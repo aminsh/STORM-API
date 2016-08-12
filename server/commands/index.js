@@ -1,4 +1,8 @@
 var fs = require("fs");
+var async = require('asyncawait/async');
+var await = require('asyncawait/await');
+var sub = require('./command.subscriber');
+var eventEmitter = require('./eventEmitter');
 var commands = require('../services/command.define').commands;
 
 fs
@@ -16,6 +20,32 @@ module.exports.registerAll = function (branchId) {
             ? cmd.defaultName
             : "{0}/{1}".format(branchId, cmd.defaultName);
 
-        cmd.register();
+        sub.subscribe(cmd.commandName);
     });
+
+
+    function register() {
+        sub.on('message', async(function (channel, message) {
+            var message = JSON.parse(message);
+            var cmd = message.command;
+
+            var command = commands.asEnumerable().single(function (c) {
+                return c.commandName == message.commandName;
+            });
+
+            var validationResult = await(command.actions.validate(cmd));
+
+            if (!validationResult.isValid)
+                return eventEmitter.emit(command.commandId, validationResult);
+
+            var returnValue = await(command.actions.handle(cmd));
+
+            return eventEmitter.emit(command.commandId, {
+                isValid: true,
+                returnValue: returnValue
+            });
+        }));
+    }
+
+    register();
 };

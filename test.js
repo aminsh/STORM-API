@@ -1,4 +1,4 @@
-require('./server/utilities/string.prototypes.js');
-require('./server/utilities/array.prototypes.js');
+var _ = require('lodash');
 
-require('./server/commands');
+var x = _.extend({id: 1}, {t: ''});
+debugger;

@@ -1,10 +1,10 @@
 var models = require('../models');
+var _ = require('lodash');
 var express = require('express');
 var kendoQueryService = require('../services/kendoQueryService');
 var router = express.Router();
-var validate = require('../command.validators/command.validator.detailAccount');
-var handle = require('../command.handlers/command.handler.detailAccount');
 var view = require('../viewModel.assemblers/view.detailAccount');
+var commandBus = require('../services/command.bus');
 
 router.route('/detail-accounts')
     .get(function (req, res) {
@@ -25,22 +25,14 @@ router.route('/detail-accounts')
 
     })
     .post(function (req, res) {
-        var cmd = req.body;
-
-        validate.onCreate(cmd)
+        var message = {
+            name: 'command.detailAccount.create',
+            branchId: req.cookies.branchId,
+            command: req.body
+        }
+        commandBus.send(message)
             .then(function (result) {
-                if (result.isValid)
-                    handle.create(cmd).then(function (returnValue) {
-                        res.json({
-                            isValid: true,
-                            returnValue: returnValue
-                        });
-                    })
-                else
-                    res.json({
-                        isValid: false,
-                        errors: result.errors
-                    });
+                res.json(result);
             });
     });
 
@@ -56,47 +48,56 @@ router.route('/detail-accounts/:id')
     })
     .put(function (req, res) {
 
-        var id = req.params.id;
-        var cmd = req.body;
-        cmd.id = id;
+        var message = {
+            name: 'command.detailAccount.update',
+            branchId: req.cookies.branchId,
+            command: _.extend({id: req.params.id}, req.body)
+        };
 
-        validate.onUpdate(cmd)
+        commandBus.send(message)
             .then(function (result) {
-                if (result.isValid)
-                    handle.update(cmd).then(function () {
-                        res.json({
-                            isValid: true,
-                            cmd: cmd
-                        });
-                    })
-                else
-                    res.json({
-                        isValid: false,
-                        errors: errors,
-                        cmd: cmd
-                    });
+                res.json(result);
             });
     })
     .delete(function (req, res) {
-        var cmd = req.body;
-        cmd.id = req.params.id;
+        var message = {
+            name: 'command.detailAccount.remove',
+            branchId: req.cookies.branchId,
+            command: _.extend({id: req.params.id}, req.body)
+        };
 
-        validate.onDelete(cmd).then(function (result) {
-            if (result.isValid)
-                handle.remote(cmd).then(function (returnValue) {
-                    res.json({
-                        isValid: true,
-                        cmd: cmd,
-                        returnValue: returnValue
-                    });
-                });
-            else
-                res.json({
-                    isValid: false,
-                    cmd: cmd,
-                    errors: result.errors
-                });
-        });
+        commandBus.send(message)
+            .then(function (result) {
+                res.json(result);
+            });
+    });
+
+router.route('/detail-accounts/:id/activate')
+    .put(function (req, res) {
+        var message = {
+            name: 'command.detailAccount.remove',
+            branchId: req.cookies.branchId,
+            command: _.extend({id: req.params.id}, req.body)
+        };
+
+        commandBus.send(message)
+            .then(function (result) {
+                res.json(result);
+            });
+    });
+
+router.route('/detail-accounts/:id/deactivate')
+    .put(function (req, res) {
+        var message = {
+            name: 'command.detailAccount.remove',
+            branchId: req.cookies.branchId,
+            command: _.extend({id: req.params.id}, req.body)
+        };
+
+        commandBus.send(message)
+            .then(function (result) {
+                res.json(result);
+            });
     });
 
 

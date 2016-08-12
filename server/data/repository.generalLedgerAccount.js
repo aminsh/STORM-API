@@ -2,7 +2,7 @@ var db = require('../models');
 var async = require('asyncawait/async');
 var await = require('asyncawait/await');
 
-var generalLedgerAccountRepository = {
+var Repository = {
     findById: function (id) {
         return models.generalLedgerAccount.findOne(
             {
@@ -32,4 +32,4 @@ var generalLedgerAccountRepository = {
     })
 };
 
-module.exports = generalLedgerAccountRepository;
+module.exports = Repository;
