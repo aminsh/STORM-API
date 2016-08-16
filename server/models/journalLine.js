@@ -19,7 +19,7 @@ module.exports = function (sequelize, DataTypes) {
                     JournalLine.belongsTo(models.journal);
                     JournalLine.belongsTo(models.subsidiaryLedgerAccount);
                     JournalLine.belongsTo(models.detailAccount);
-                    JournalLine.hasMany(models.dimension);
+                    JournalLine.belongsToMany(models.dimension, {as: 'dimensions', through: 'JournalLineDimension'});
                 }
             }
         });

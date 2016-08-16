@@ -1,10 +1,12 @@
 var db = require('../models');
+var async = require('asyncawait/async');
+var await = require('asyncawait/await');
 
 var journalRepository = {
     findByTemporaryNumber: function (number, periodId) {
         return db.journal.findone({
             where: {
-                temporaryNumber: number,
+                temporaryNumber: number
             },
             include: [
                 {model: 'period', where: {id: periodId}}
@@ -27,9 +29,10 @@ var journalRepository = {
     update: function (entity) {
         return entity.save();
     },
-    remove: function (entity) {
+    remove: async(function (id) {
+        var entity = await(db.journal.findById(id));
         return entity.destroy();
-    }
+    })
 };
 
 module.exports = journalRepository;

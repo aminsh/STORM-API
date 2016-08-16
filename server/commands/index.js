@@ -1,8 +1,8 @@
 var fs = require("fs");
 var async = require('asyncawait/async');
 var await = require('asyncawait/await');
-var sub = require('./command.subscriber');
-var eventEmitter = require('./eventEmitter');
+var sub = require('../services/command.subscriber');
+var eventEmitter = require('../services/eventEmitter');
 var commands = require('../services/command.define').commands;
 
 fs
