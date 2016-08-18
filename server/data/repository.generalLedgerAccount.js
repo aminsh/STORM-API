@@ -4,10 +4,10 @@ var await = require('asyncawait/await');
 
 var Repository = {
     findById: function (id) {
-        return models.generalLedgerAccount.findOne(
+        return db.generalLedgerAccount.findOne(
             {
                 where: {id: id},
-                include: models.subsidiaryLedgerAccount
+                include: db.subsidiaryLedgerAccount
             });
     },
     findByCode: function (code, notEqualId) {

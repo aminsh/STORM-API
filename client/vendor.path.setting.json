@@ -1,0 +1,20 @@
+{
+  "angular": "./bower_components/angular/index",
+  "angular-animate": "./bower_components/angular-animate/index",
+  "angular-bootstrap": "./bower_components/angular-bootstrap/index",
+  "angular-resource": "./bower_components/angular-resource/index",
+  "angular-route": "./bower_components/angular-route/index",
+  "angular-sanitize": "./bower_components/angular-sanitize/index",
+  "angular-translate": "./bower_components/angular-translate/angular-translate",
+  "angular-translate-loader-url": "./bower_components/angular-translate-loader-url/angular-translate-loader-url",
+  "angular-messages": "./bower_components/angular-messages/index",
+  "jquery": "./bower_components/jquery/dist/jquery",
+  "js-helper": "./bower_components/js-helper/dist/jshelper.bundle",
+  "linqjs": "./bower_components/linqjs/linq.js",
+  "toastr": "./bower_components/toastr/toastr",
+  "JalaliDate": "./lib/jalaliDate",
+  "kendo": "./lib/kendo.all.2015.2.624.hasPersian",
+  "kendo.culture": "./lib/kendo.culture.fa.IR",
+  "kendo.messages": "./lib/kendo.messages.fa-IR",
+  "ngMockE2E": "../node_modules/ng-mock-e2e"
+}

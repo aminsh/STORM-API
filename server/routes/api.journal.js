@@ -2,8 +2,6 @@ var db = require('../models');
 var express = require('express');
 var kendoQueryService = require('../services/kendoQueryService');
 var router = express.Router();
-var validate = require('../command.validators/command.validator.journal');
-var handle = require('../command.handlers/command.handler.journal');
 var view = require('../viewModel.assemblers/view.journal');
 
 

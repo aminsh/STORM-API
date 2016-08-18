@@ -2,8 +2,6 @@ var models = require('../models');
 var express = require('express');
 var kendoQueryService = require('../services/kendoQueryService');
 var router = express.Router();
-var validate = require('../command.validators/command.validator.dimension');
-var handle = require('../command.handlers/command.handler.dimension');
 var view = require('../viewModel.assemblers/view.dimension');
 
 router.route('/dimensions/category/:categoryId')

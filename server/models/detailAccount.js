@@ -11,7 +11,7 @@ module.exports = function (sequelize, DataTypes) {
         },
         isActive: {
             type: DataTypes.BOOLEAN
-        },
+        }
 
     });
 

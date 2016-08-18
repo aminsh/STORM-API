@@ -30,17 +30,17 @@ module.exports.registerAll = function (branchId) {
             var cmd = message.command;
 
             var command = commands.asEnumerable().single(function (c) {
-                return c.commandName == message.commandName;
+                return c.commandName == channel;
             });
 
             var validationResult = await(command.actions.validate(cmd));
 
             if (!validationResult.isValid)
-                return eventEmitter.emit(command.commandId, validationResult);
+                return eventEmitter.emit(message.commandId, validationResult);
 
             var returnValue = await(command.actions.handle(cmd));
 
-            return eventEmitter.emit(command.commandId, {
+            return eventEmitter.emit(message.commandId, {
                 isValid: true,
                 returnValue: returnValue
             });

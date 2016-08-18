@@ -1,0 +1,87 @@
+<dev-tag-content title="{{'Edit Journal'|translate}}">
+    <form name="form">
+
+        <div class="col-xs-12">
+            <dev-tag-button
+                    ng-click="save(form)"
+                    icon="glyphicon glyphicon-floppy-disk"
+                    ng-disabled="isSaving"
+                    is-waiting="isSaving"
+                    style-type="success"
+                    title="{{'Save' | translate}}"></dev-tag-button>
+
+            <dev-tag-button
+                    ng-click="bookkeep()"
+                    style-type="default"
+                    title="{{'Bookkeep' | translate}}"></dev-tag-button>
+        </div>
+
+        <div class="col-xs-2">
+            <div class="row">
+                <div class="form-group">
+                    <label class="label-control">{{'Temporary number' | translate}}</label>
+                    <dev-tag-numeric
+                            ng-model="journal.temporaryNumber"
+                            style="width: 100%"
+                            name="temporaryNumber"
+                            required></dev-tag-numeric>
+
+                    <p ng-if="form.temporaryNumber.$invalid && !form.temporaryNumber.$pristine">
+                        <span class="label label-danger">Is Required</span>
+                    </p>
+                </div>
+                <div class="form-group">
+                    <label class="label-control">{{'Temporary date' | translate}}</label>
+                    <dev-tag-datepicker
+                            ng-model="journal.temporaryDate"
+                            name="temporaryDate"
+                            required></dev-tag-datepicker>
+
+                    <p ng-if="form.temporaryDate.$invalid && !form.temporaryDate.$pristine">
+                        <span class="label label-danger">Is Required</span>
+                    </p>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xs-4"></div>
+
+        <div class="col-xs-4">
+            <ul class="list-group">
+                <li class="list-group-item list-group-item-info">{{'Number'|translate}} : {{journal.number}}</li>
+                <li class="list-group-item list-group-item-info">{{'Date'|translate}} : {{journal.date}}</li>
+                <li class="list-group-item list-group-item-info">{{'Status'|translate}} : {{journal.journalStatus}}</li>
+            </ul>
+        </div>
+
+        <div class="col-xs-12">
+            <div class="row">
+                <div class="form-group col-xs-6">
+                    <label class="label-control">{{'Description' | translate}}</label>
+                    <textarea type="text" class="form-control" ng-model="journal.description"
+                              name="description"></textarea>
+                </div>
+            </div>
+        </div>
+    </form>
+
+</dev-tag-content>
+
+<dev-tag-sub-content title="{{'journal lines'|translate}}" class="col-xs-12">
+    <dev-tag-button
+            ng-click="createJournalLine()"
+            icon="glyphicon glyphicon-plus"
+            style-type="primary"
+            title="{{'New Journal line' | translate}}"></dev-tag-button>
+
+    <dev-tag-grid option="gridOption"></dev-tag-grid>
+
+    <ul class="list-group" ng-if="gridOption.current">
+        <li class="list-group-item">{{'Article'|translate}} : {{gridOption.current.description}}</li>
+        <li class="list-group-item" ng-repeat="dimension in gridOption.current.dimensions">
+            {{dimension.categoryDisplay}} : {{dimension.display}}
+        </li>
+    </ul>
+
+</dev-tag-sub-content>

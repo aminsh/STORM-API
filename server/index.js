@@ -1,14 +1,9 @@
 require('./utilities/string.prototypes.js');
 require('./utilities/array.prototypes.js');
 
-var express = require('express');
-var app = express();
-
-var env = process.env.NODE_ENV || 'development';
-var config = require('./config/config')[env];
-
-require('./config/express')(app, config);
-require('./config/routes')(app);
+var config = require('./config/config');
+var app = require('./config/express').app;
+require('./config/routes');
 require('./config/translation');
 require('./config/auth');
 

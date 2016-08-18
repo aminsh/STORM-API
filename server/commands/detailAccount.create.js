@@ -7,10 +7,12 @@ var repository = require('../data/repository.detailAccount.js');
 
 command.define('command.detailAccount.create', {
     validate: async(function (cmd) {
+        var errors = [];
+
         if (string.isNullOrEmpty(cmd.code))
             errors.push(translate('The code is required'));
         else {
-            var gla = await(repository.findById(cmd.id));
+            var gla = await(repository.findByCode(cmd.code));
 
             if (gla)
                 errors.push(translate('The code is duplicated'));
@@ -27,7 +29,6 @@ command.define('command.detailAccount.create', {
             isValid: !errors.asEnumerable().any(),
             errors: errors
         };
-
     }),
     handle: async(function (cmd) {
         var entity = {

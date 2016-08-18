@@ -29,7 +29,8 @@ router.route('/detail-accounts')
             name: 'command.detailAccount.create',
             branchId: req.cookies.branchId,
             command: req.body
-        }
+        };
+
         commandBus.send(message)
             .then(function (result) {
                 res.json(result);
