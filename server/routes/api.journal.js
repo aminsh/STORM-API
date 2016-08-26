@@ -5,7 +5,7 @@ var router = express.Router();
 var view = require('../viewModel.assemblers/view.journal');
 
 
-router.route('/journal')
+router.route('/journals')
     .get(function (req, res) {
         var options = kendoQueryService.getKendoRequestData(req.query);
         options.distinct = true;

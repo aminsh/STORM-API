@@ -26,7 +26,7 @@ app.engine('html', require('ejs').renderFile);
 app.use('/client', express.static(config.rootPath + '/client'));
 app.use('/content', express.static(config.rootPath + '/client/content'));
 app.use('/partials', express.static(config.rootPath + '/client/partials'));
-app.use('/uploads', express.static(config.rootPath + '/uploads'));
+app.use('/uploads', express.static(config.rootPath + '/stub.server/uploads'));
 
 app.use(multer({dest: './uploads/;'}));
 

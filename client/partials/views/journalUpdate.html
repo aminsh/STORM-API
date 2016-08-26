@@ -1,4 +1,10 @@
 <dev-tag-content title="{{'Edit Journal'|translate}}">
+    <dev-tag-alert
+            show="journal.journalStatus == 'Temporary'"
+            type="warning"
+            text="{{'This journal is temporary' | translate}}">
+    </dev-tag-alert>
+
     <form name="form">
 
         <div class="col-xs-12">
@@ -11,9 +17,23 @@
                     title="{{'Save' | translate}}"></dev-tag-button>
 
             <dev-tag-button
-                    ng-click="bookkeep()"
+                    ng-click="bookkeeping()"
                     style-type="default"
-                    title="{{'Bookkeep' | translate}}"></dev-tag-button>
+                    title="{{'Record Bookkeeping' | translate}}"></dev-tag-button>
+
+            <dev-tag-button
+                    ng-click="attachImage()"
+                    icon="glyphicon glyphicon-open"
+                    style-type="default"
+                    title="{{'Upload image' | translate}}"></dev-tag-button>
+
+            <dev-tag-button
+                    ng-if="journal.attachment"
+                    href="{{journal.attachment}}"
+                    target="_blank"
+                    icon="glyphicon glyphicon-paperclip"
+                    style-type="primary"
+                    title="{{'Show attachment image' | translate}}"></dev-tag-button>
         </div>
 
         <div class="col-xs-2">
@@ -51,7 +71,9 @@
             <ul class="list-group">
                 <li class="list-group-item list-group-item-info">{{'Number'|translate}} : {{journal.number}}</li>
                 <li class="list-group-item list-group-item-info">{{'Date'|translate}} : {{journal.date}}</li>
-                <li class="list-group-item list-group-item-info">{{'Status'|translate}} : {{journal.journalStatus}}</li>
+                <li class="list-group-item list-group-item-info">{{'Status'|translate}} :
+                    {{journal.journalStatusDisplay}}
+                </li>
             </ul>
         </div>
 
@@ -68,7 +90,8 @@
 
 </dev-tag-content>
 
-<dev-tag-sub-content title="{{'journal lines'|translate}}" class="col-xs-12">
+<dev-tag-content title="{{'journal lines'|translate}}" class="col-xs-12">
+
     <dev-tag-button
             ng-click="createJournalLine()"
             icon="glyphicon glyphicon-plus"
@@ -84,4 +107,4 @@
         </li>
     </ul>
 
-</dev-tag-sub-content>
+</dev-tag-content>

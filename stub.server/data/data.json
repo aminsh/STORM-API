@@ -52,22 +52,22 @@
       "code": "10010",
       "title": "بانک و صندوق یک",
       "isBank": true,
-      "detailAccountAssignmentStatus": 1,
+      "detailAccountAssignmentStatus": "Required",
       "dimensionAssignmentStatus": [
         {
           "id": "c8751991-5d69-4664-9c68-aa08f564826a",
           "title": "سطح یک",
-          "status": 1
+          "status": "Required"
         },
         {
           "id": "b1a61c5b-9c0c-423d-9b0d-147e77720de8",
           "title": "سطح 2",
-          "status": 1
+          "status": "Required"
         },
         {
           "id": "7be28bfb-98b9-4317-9b44-29126ff04182",
           "title": "سطح 3",
-          "status": 1
+          "status": "Required"
         }
       ],
       "description": "تست",
@@ -79,7 +79,7 @@
       "code": "20010",
       "title": "بانک و صندوق دو",
       "isBank": false,
-      "detailAccountAssignmentStatus": 1,
+      "detailAccountAssignmentStatus": "Required",
       "dimensionAssignmentStatus": [],
       "description": "تست",
       "isActive": "true"
@@ -156,8 +156,9 @@
       "temporaryNumber": 1,
       "temporaryDate": "1395/01/01",
       "description": "",
-      "journalStatus": 1,
+      "journalStatus": "Temporary",
       "journalStatusDisplay": "موقت",
+      "attachment": "uploads/;/592267486a97412b88a9d0e82c61dda8.pdf",
       "sumDebtor": 23500000,
       "sumCreditor": 23500000
     },
@@ -166,7 +167,7 @@
       "temporaryNumber": 2,
       "temporaryDate": "1395/01/20",
       "description": "",
-      "journalStatus": 1,
+      "journalStatus": "Temporary",
       "journalStatusDisplay": "موقت",
       "sumDebtor": 23500000,
       "sumCreditor": 23500000
@@ -176,7 +177,7 @@
       "temporaryNumber": 3,
       "temporaryDate": "1395/02/15",
       "description": "",
-      "journalStatus": 1,
+      "journalStatus": "Temporary",
       "journalStatusDisplay": "موقت",
       "sumDebtor": 41500000,
       "sumCreditor": 41500000
@@ -186,7 +187,7 @@
       "temporaryNumber": 4,
       "temporaryDate": "1395/02/25",
       "description": "",
-      "journalStatus": 1,
+      "journalStatus": "Temporary",
       "journalStatusDisplay": "موقت",
       "sumDebtor": 26000000,
       "sumCreditor": 26000000
@@ -196,7 +197,7 @@
       "temporaryNumber": 5,
       "temporaryDate": "1395/01/01",
       "description": "",
-      "journalStatus": 1,
+      "journalStatus": "Temporary",
       "journalStatusDisplay": "موقت",
       "sumDebtor": 56450000,
       "sumCreditor": 56450000
@@ -206,7 +207,7 @@
       "tempororyNumber": 6,
       "temporaryDate": "1395/01/01",
       "description": "",
-      "journalStatus": 1,
+      "journalStatus": "Temporary",
       "journalStatusDisplay": "موقت",
       "sumDebtor": 34570000,
       "sumCreditor": 34570000
@@ -216,7 +217,7 @@
       "temporaryNumber": 7,
       "temporaryDate": "1395/01/01",
       "description": "",
-      "journalStatus": 1,
+      "journalStatus": "Temporary",
       "journalStatusDisplay": "موقت",
       "sumDebtor": 72450000,
       "sumCreditor": 72450000

@@ -38,6 +38,9 @@ import './modals/generalLedgerAccountUpdate';
 import './modals/dimensionCreate';
 import './modals/dimensionUpdate';
 import './modals/journalCreate';
+import './modals/journalLineCreateOrUpdate';
+import './modals/journalBookkeeping';
+import './modals/journalAttachImage';
 
 import './localData/constants';
 
@@ -47,6 +50,8 @@ import './directives/subContent';
 import './directives/blockUi';
 import './directives/customValidator';
 import './directives/validationSummary';
+import './directives/focusMe';
+import './directives/uploader';
 
 //filter
 import './filters/amount';

@@ -9,7 +9,7 @@ app.get('/', function (req, res) {
 });
 
 app.post('/upload', function (req, res) {
-    res.send({fileName: req.files.file.path});
+    res.send({fileName: req.files.userfile.name});
 });
 
 var generalLedgerAccountApi = require('../routes/generalLedgerAccountApi');
@@ -20,10 +20,10 @@ var dimensionApi = require('../routes/dimensionApi');
 var journalApi = require('../routes/journalApi');
 var journalLineApi = require('../routes/journalLineApi');
 
-app.use('/api', generalLedgerAccountApi(app, express));
-app.use('/api', subsidiaryLedgerAccountApi(app, express));
-app.use('/api', detailAccountApi(app, express));
-app.use('/api', dimensionCategoryApi(app, express));
-app.use('/api', dimensionApi(app, express));
-app.use('/api', journalApi(app, express));
-app.use('/api', journalLineApi(app, express));
+app.use('/api', generalLedgerAccountApi);
+app.use('/api', subsidiaryLedgerAccountApi);
+app.use('/api', detailAccountApi);
+app.use('/api', dimensionCategoryApi);
+app.use('/api', dimensionApi);
+app.use('/api', journalApi);
+app.use('/api', journalLineApi);

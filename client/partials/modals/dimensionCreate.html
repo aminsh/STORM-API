@@ -39,8 +39,11 @@
     </form>
 </div>
 <div class="modal-footer">
-    <a ng-click="save(form)" class="btn btn-success">
-        <i class="glyphicon glyphicon-floppy-disk"></i>
-        {{'Save' | translate}}
-    </a>
+    <dev-tag-button
+            ng-click="save(form)"
+            icon="glyphicon glyphicon-floppy-disk"
+            ng-disabled="isSaving"
+            is-waiting="isSaving"
+            style-type="success"
+            title="{{'Save' | translate}}"></dev-tag-button>
 </div>

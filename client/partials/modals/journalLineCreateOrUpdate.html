@@ -1,21 +1,18 @@
-<dev-tag-content title="{{editMode == 'create'?'Journal line create':'Journal line edit'|translate}}">
-    <form name="form" novalidate>
-        <div class="col-xs-12">
-            <dev-tag-button
-                    ng-click="saveAndNew(form)"
-                    icon="glyphicon glyphicon-floppy-disk"
-                    is-waiting="isSaving"
-                    ng-disabled="isSaving"
-                    style-type="success"
-                    title="{{'Save and new' | translate}}"></dev-tag-button>
+<div class="modal-header">
+    <button type="button" ng-click="close()" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+    <h3 class="modal-title">
+        {{editMode == 'create'?'Journal line create':'Journal line edit'|translate}}
+    </h3>
+</div>
+<div class="modal-body k-rtl row">
 
-            <dev-tag-button
-                    ng-click="saveAndReturn(form)"
-                    icon="glyphicon glyphicon-floppy-disk"
-                    is-waiting="isSaving"
-                    ng-disabled="isSaving"
-                    style-type="success"
-                    title="{{'Save and return' | translate}}"></dev-tag-button>
+    <dev-tag-validation-summary errors="errors"></dev-tag-validation-summary>
+
+    <form name="form">
+        <div class="col-xs-12">
+
         </div>
 
 
@@ -27,6 +24,7 @@
                     <dev-tag-combo-box
                             name="generalLedgerAccountId"
                             id="generalLedgerAccountId"
+                            focus-me="generalLedgerAccountShouldBeFocus"
                             k-placeholder="'{{'Select ...'|translate}}'"
                             k-data-value-field="'id'"
                             k-data-text-field="'title'"
@@ -214,4 +212,21 @@
             </div>
         </div>
     </form>
-</dev-tag-content>
+</div>
+<div class="modal-footer">
+    <dev-tag-button
+            ng-click="saveAndNew(form)"
+            icon="glyphicon glyphicon-floppy-disk"
+            is-waiting="isSaving"
+            ng-disabled="isSaving"
+            style-type="success"
+            title="{{'Save and new' | translate}}"></dev-tag-button>
+
+    <dev-tag-button
+            ng-click="saveAndReturn(form)"
+            icon="glyphicon glyphicon-floppy-disk"
+            is-waiting="isSaving"
+            ng-disabled="isSaving"
+            style-type="success"
+            title="{{'Save and return' | translate}}"></dev-tag-button>
+</div>

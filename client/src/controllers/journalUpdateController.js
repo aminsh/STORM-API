@@ -1,7 +1,11 @@
 import accModule from '../acc.module';
 
 function journalUpdateController($scope, logger, confirm, translate, navigate, $routeParams,
-                                 journalApi, journalLineApi) {
+                                 journalApi, journalLineApi,
+                                 journalLineCreateControllerModalService,
+                                 journalLineUpdateControllerModalService,
+                                 journalBookkeepingService,
+                                 journalAttachImageService) {
 
     let id = $routeParams.id;
     $scope.errors = [];
@@ -15,12 +19,16 @@ function journalUpdateController($scope, logger, confirm, translate, navigate, $
 
     $scope.canShowNumberAndDate = false;
 
-    journalApi.getById(id)
-        .then((result)=> {
-            $scope.journal = result;
+    function fetch() {
+        journalApi.getById(id)
+            .then((result)=> {
+                $scope.journal = result;
 
-            $scope.canShowNumberAndDate = result.journalStatus != 'Temporary'
-        });
+                $scope.canShowNumberAndDate = result.journalStatus != 'Temporary'
+            });
+    }
+
+    fetch();
 
     $scope.gridOption = {
         columns: [
@@ -59,7 +67,12 @@ function journalUpdateController($scope, logger, confirm, translate, navigate, $
             {
                 title: translate('Edit'),
                 action: function (current) {
-                    navigate('journalLineUpdate', {id: current.id});
+                    journalLineUpdateControllerModalService
+                        .show({
+                            journalId: id,
+                            id: current.id
+                        })
+                        .then(()=> gridOption.refresh());
                 }
             },
             {
@@ -105,7 +118,28 @@ function journalUpdateController($scope, logger, confirm, translate, navigate, $
             .finally(()=> $scope.isSaving = false);
     };
 
-    $scope.createJournalLine = ()=> navigate('journalLineCreate', {journalId: id});
+    $scope.createJournalLine = ()=> {
+        journalLineCreateControllerModalService
+            .show({journalId: id})
+            .then(()=> $scope.gridOption.refresh())
+    };
+
+    $scope.bookkeeping = ()=> {
+        journalBookkeepingService.show({id: id})
+            .then(()=> {
+                logger.success();
+                fetch();
+            });
+    };
+
+    $scope.attachImage = ()=> {
+        journalAttachImageService.show({id: id})
+            .then(()=> {
+                logger.success();
+                fetch();
+            });
+    }
+
 
 }
 

@@ -1,6 +1,7 @@
 require('./utility/string.prototypes');
 require('./utility/array.prototypes');
 
+var config = require('./config/config');
 var app = require('./config/express').app;
 require('./config/routes');
 

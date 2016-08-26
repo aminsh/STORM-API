@@ -16,5 +16,5 @@
   "kendo": "./lib/kendo.all.2015.2.624.hasPersian",
   "kendo.culture": "./lib/kendo.culture.fa.IR",
   "kendo.messages": "./lib/kendo.messages.fa-IR",
-  "ngMockE2E": "../node_modules/ng-mock-e2e"
+  "jquery.filedrop": "./lib/jquery.filedrop"
 }
