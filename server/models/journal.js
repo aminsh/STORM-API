@@ -24,6 +24,9 @@ module.exports = function (sequelize, DataTypes) {
             journalType: {
                 type: DataTypes.ENUM,
                 values: enums.JournalType().getKeys()
+            },
+            attachmentFileName: {
+                type: DataTypes.STRING
             }
         },
         {

@@ -82,3 +82,21 @@ command.define('command.journal.fix', {
     })
 });
 
+command.define('command.journal.attachImage', {
+    validate: async(function (cmd, current) {
+        var errors = [];
+
+        return {
+            isValid: !errors.asEnumerable().any(),
+            errors: errors
+        };
+    }),
+    handle: async(function (cmd, current) {
+        var entity = await(repository.findById(cmd.id));
+
+        entity.attachmentFileName = cmd.fileName;
+
+        await(repository.update(entity));
+    })
+});
+

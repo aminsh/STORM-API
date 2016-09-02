@@ -51,7 +51,7 @@ command.define('command.journal.create', {
     })
 });
 
-command.define('command.journal.create', {
+command.define('command.journal.update', {
     validate: async(function (cmd, current) {
         var errors = [];
 

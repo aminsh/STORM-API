@@ -6,13 +6,11 @@ var journalLineRepository = {
     findById: function (id) {
         return db.journalLine.findById(id);
     },
-    create: async(function (entity, dimensions) {
-        entity = await(db.journalLine.create(entity));
-        return entity.setDimensions(dimensions);
+    create: async(function (entity) {
+        return db.journalLine.create(entity);
     }),
-    update: async(function (entity, dimensions) {
-        await(entity.save());
-        return entity.setDimensions(dimensions);
+    update: async(function (entity) {
+        return entity.save();
     }),
     remove: function (entity) {
         return entity.destroy();

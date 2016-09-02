@@ -13,6 +13,7 @@ var environment = {
         },
         port: process.env.PORT || 1000,
         clientUrl: 'http://dev-storm:1024',
+        messageQueue: 'none'
     },
     production: {
         rootPath: rootPath,
@@ -24,9 +25,10 @@ var environment = {
             dialect: "postgres"
         },
         port: process.env.PORT || 80,
-        clientUrl: ''
+        clientUrl: '',
+        messageQueue: 'none'
     }
-}
+};
 
 var env = process.env.NODE_ENV || 'development';
 

@@ -2,20 +2,29 @@ import accModule from '../acc.module';
 
 function subsidiaryLedgerAccountUpdateController($scope, logger, navigate, constants,
                                                  $routeParams, formService,
-                                                 subsidiaryLedgerAccountApi) {
+                                                 subsidiaryLedgerAccountApi,
+                                                 dimensionCategoryApi) {
     let id = $routeParams.id;
 
     $scope.errors = [];
     $scope.assignmentStatus = new constants.enums.AssignmentStatus().data
+    $scope.dimensionCategories = [];
 
     $scope.subsidiaryLedgerAccount = {
         code: '',
         title: '',
         detailAccountAssignmentStatus: null,
         isBankAccount: false,
-        dimensionAssignmentStatus: [],
+        dimension1AssignmentStatus: null,
+        dimension2AssignmentStatus: null,
+        dimension3AssignmentStatus: null,
         isActive: true
     };
+
+    dimensionCategoryApi.getAll()
+        .then((result)=> {
+            $scope.dimensionCategories = result.data;
+        });
 
     subsidiaryLedgerAccountApi.getById(id)
         .then((result)=>

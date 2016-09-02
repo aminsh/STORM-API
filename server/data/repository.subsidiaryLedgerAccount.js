@@ -3,99 +3,44 @@ var async = require('asyncawait/async');
 var await = require('asyncawait/await');
 
 var subsidiaryLedgerAccountRepository = {
-    findById: function (id, generalLedgerAccountId) {
+    findById: function (id) {
         return db.subsidiaryLedgerAccount.findOne({
             where: {
                 id: id
             },
             include: [{
-                model: models.subsidiaryLedgerAccountDimensionAssignmentStatus,
-                include: {model: models.dimensionCategory}
-            }, {
-                model: models.generalLedgerAccount,
-                where: {id: generalLedgerAccountId}
+                model: db.generalLedgerAccount
             }]
         });
     },
-    findByCode: function (code, notEqualId) {
+    findByCode: function (code, generalLedgerAccountId, notEqualId) {
         var option = {
             where: {
-                code: cmd.code
+                code: code
             },
             include: [{
-                model: models.generalLedgerAccount,
-                where: {id: cmd.generalLedgerAccountId}
+                model: db.generalLedgerAccount,
+                where: {id: generalLedgerAccountId}
             }]
         };
 
         if (notEqualId)
             option.where.id = {
-                $ne: cmd.id
+                $ne: notEqualId
             };
 
-        return models.subsidiaryLedgerAccount.findOne(option)
+        return db.subsidiaryLedgerAccount.findOne(option)
     },
     create: function (entity) {
-        return db.subsidiaryLedgerAccount.create(entity, {
-            include: [{
-                model: models.subsidiaryLedgerAccountDimensionAssignmentStatus
-            }]
-        });
+        return db.subsidiaryLedgerAccount.create(entity);
     },
-    update: function (entity, dimensionStatus) {
-        var t = await(models.sequelize.transaction());
-
-        try {
-
-            entity.subsidiaryLedgerAccountDimensionAssignmentStatuses
-                .forEach(function (d) {
-                    d.destroy({transaction: t});
-                });
-
-            dimensionStatus.forEach(function (das) {
-                await(models.subsidiaryLedgerAccountDimensionAssignmentStatus
-                    .create({
-                        subsidiaryLedgerAccountId: sla.id,
-                        dimensionCategoryId: das.dimensionCategoryId,
-                        assignmentStatus: das.assignmentStatus
-                    }, {transaction: t}));
-
-            });
-
-            await(entity.save({transaction: t}));
-
-            t.commit();
-        }
-        catch (err) {
-            t.rollback();
-            throw new Error(err);
-        }
+    update: function (entity) {
+        return entity.save();
     },
     remove: async(function (id) {
-        var t = await(db.sequelize.transaction());
+        var entity = await(db.subsidiaryLedgerAccount.findById(id));
 
-        try {
-            var entity = await(db.subsidiaryLedgerAccount.findOne(
-                {
-                    where: {id: id},
-                    include: [{model: models.subsidiaryLedgerAccountDimensionAssignmentStatus}]
-                }
-            ));
-
-            entity.subsidiaryLedgerAccountDimensionAssignmentStatuses
-                .forEach(function (d) {
-                    d.destroy({transaction: t});
-                });
-
-            await(entity.destroy({transaction: t}));
-
-            t.commit();
-        }
-        catch (err) {
-            t.rollback();
-
-            throw new Error(err);
-        }
+        return entity.destroy();
     })
 };
 

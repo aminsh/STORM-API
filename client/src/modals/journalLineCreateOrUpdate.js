@@ -1,7 +1,7 @@
 import accModule from '../acc.module';
 
 function journalLineCreateOrUpdateController($scope, $modalInstance, $timeout, formService, $q,
-                                             journalLineApi, logger, constants, data) {
+                                             journalLineApi, dimensionCategoryApi, logger, constants, data) {
 
     let journalId = data.journalId;
     let id = data.id;
@@ -10,15 +10,44 @@ function journalLineCreateOrUpdateController($scope, $modalInstance, $timeout, f
     $scope.generalLedgerAccountShouldBeFocus = true;
 
     $scope.errors = [];
+    $scope.dimensionCategories = [];
     $scope.journalLine = {
         generalLedgerAccountId: null,
         subsidiaryLedgerAccountId: null,
         detailAccountId: null,
-        dimensions: [],
+        dimension1Id: null,
+        dimension2Id: null,
+        dimension3Id: null,
         description: '',
         amount: null,
         balanceType: ''
     };
+
+    $scope.detailAccountDataSource = {
+        type: "json",
+        serverFiltering: true,
+        transport: {
+            read: {
+                url: constants.urls.detailAccount.all()
+            }
+        },
+        schema: {
+            data: 'data'
+        }
+    };
+
+    $scope.dimension1DataSource = null;
+    $scope.dimension2DataSource = null;
+    $scope.dimension3DataSource = null;
+
+    dimensionCategoryApi.getAll()
+        .then((cats)=> {
+            $scope.dimensionCategories = cats;
+
+            $scope.dimension1DataSource = dimensionDataSourceFactory(cats[0].id);
+            $scope.dimension2DataSource = dimensionDataSourceFactory(cats[1].id);
+            $scope.dimension3DataSource = dimensionDataSourceFactory(cats[2].id);
+        });
 
     if (editMode == 'update')
         journalLineApi.getById(id)
@@ -121,7 +150,7 @@ function journalLineCreateOrUpdateController($scope, $modalInstance, $timeout, f
         $timeout(execute, 0);
 
         return deferred.promise;
-    }
+    };
 
     $scope.saveAndNew = (form)=> {
         save(form)
@@ -131,7 +160,7 @@ function journalLineCreateOrUpdateController($scope, $modalInstance, $timeout, f
     $scope.saveAndReturn = (form)=> {
         save(form)
             .then((result)=> $modalInstance.close(result));
-    }
+    };
 
     $scope.generalLedgerAccountDataSource = {
         type: "json",
@@ -144,17 +173,32 @@ function journalLineCreateOrUpdateController($scope, $modalInstance, $timeout, f
         schema: {
             data: 'data'
         }
-    }
+    };
 
     $scope.generalLedgerAccountOnChange = ()=> {
         $scope.journalLine.subsidiaryLedgerAccountId = null;
 
-        $scope.journalLine.dimensions = [];
         $scope.journalLine.detailAccount = {
             canShow: false,
             isRequired: false
-        }
-    }
+        };
+        $scope.journalLine.dimension1 = {
+            canShow: false,
+            isRequired: false
+        };
+        $scope.journalLine.dimension2 = {
+            canShow: false,
+            isRequired: false
+        };
+        $scope.journalLine.dimension3 = {
+            canShow: false,
+            isRequired: false
+        };
+        $scope.journalLine.detailAccount = {
+            canShow: false,
+            isRequired: false
+        };
+    };
 
     $scope.subsidiaryLedgerAccountDataSource = {
         type: "json",
@@ -176,38 +220,50 @@ function journalLineCreateOrUpdateController($scope, $modalInstance, $timeout, f
         schema: {
             data: 'data'
         }
-    }
+    };
 
     $scope.subsidiaryLedgerAccountSelect = (e)=> {
         let item = e.sender.dataItem();
 
         if (!item) {
-            $scope.journalLine.dimensions = [];
             $scope.journalLine.detailAccount = {
                 canShow: false,
                 isRequired: false
-            }
+            };
+            $scope.journalLine.dimension1 = {
+                canShow: false,
+                isRequired: false
+            };
+            $scope.journalLine.dimension2 = {
+                canShow: false,
+                isRequired: false
+            };
+            $scope.journalLine.dimension3 = {
+                canShow: false,
+                isRequired: false
+            };
 
             return;
         }
 
-        $scope.journalLine.dimensions = Array.from(item.dimensionAssignmentStatus)
-            .asEnumerable()
-            .select(dimensionStatus=> {
-                return {
-                    id: getDimensionId(dimensionStatus.id),
-                    canShow: ['Required', 'NotRequired'].asEnumerable().contains(dimensionStatus.status),
-                    isRequired: dimensionStatus.status == 'Required',
-                    categoryId: dimensionStatus.id,
-                    categoryTitle: dimensionStatus.title,
-                    dataSource: dimensionDataSource(dimensionStatus.id)
-                }
-            })
-            .toArray();
-
         $scope.journalLine.detailAccount = {
             canShow: ['Required', 'NotRequired'].asEnumerable().contains(item.detailAccountAssignmentStatus),
             isRequired: item.detailAccountAssignmentStatus == 'Required'
+        };
+
+        $scope.journalLine.dimension1 = {
+            canShow: ['Required', 'NotRequired'].asEnumerable().contains(item.dimension1AssignmentStatus),
+            isRequired: item.dimension1AssignmentStatus == 'Required'
+        };
+
+        $scope.journalLine.dimension2 = {
+            canShow: ['Required', 'NotRequired'].asEnumerable().contains(item.dimension2AssignmentStatus),
+            isRequired: item.dimension2AssignmentStatus == 'Required'
+        };
+
+        $scope.journalLine.dimension3 = {
+            canShow: ['Required', 'NotRequired'].asEnumerable().contains(item.dimension3AssignmentStatus),
+            isRequired: item.dimension3AssignmentStatus == 'Required'
         };
     };
 
@@ -226,7 +282,7 @@ function journalLineCreateOrUpdateController($scope, $modalInstance, $timeout, f
         }
     };
 
-    let dimensionDataSource = (categoryId)=> {
+    let dimensionDataSourceFactory = (categoryId)=> {
         return {
             type: "json",
             serverFiltering: true,
@@ -239,25 +295,12 @@ function journalLineCreateOrUpdateController($scope, $modalInstance, $timeout, f
                 data: 'data'
             }
         }
-    }
+    };
 
     $scope.changeAmountBalance = ()=>
         $scope.journalLine.balanceType = $scope.journalLine.balanceType == 'debtor'
             ? 'creditor'
             : 'debtor';
-
-
-    let getDimensionId = (categoryId)=> {
-        let dimensions = $scope.journalLine.dimensions;
-
-        if (dimensions == null)
-            return null;
-
-        if (!dimensions.asEnumerable().any(d=> d.categoryId == categoryId))
-            return null;
-
-        return dimensions.asEnumerable().single(d=> d.categoryId == categoryId).id;
-    }
 
     $scope.close = ()=> $modalInstance.dismiss();
 }

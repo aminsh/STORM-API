@@ -1,7 +1,7 @@
 var fs = require("fs");
 var async = require('asyncawait/async');
 var await = require('asyncawait/await');
-var sub = require('../services/command.subscriber');
+var subscriber = require('../services/command.subscriber');
 var eventEmitter = require('../services/eventEmitter');
 var commands = require('../services/command.define').commands;
 
@@ -20,32 +20,28 @@ module.exports.registerAll = function (branchId) {
             ? cmd.defaultName
             : "{0}/{1}".format(branchId, cmd.defaultName);
 
-        sub.subscribe(cmd.commandName);
+        subscriber.subscribe(cmd.commandName);
     });
 
 
-    function register() {
-        sub.on('message', async(function (channel, message) {
-            var message = JSON.parse(message);
-            var cmd = message.command;
+    subscriber.on('message', async(function (message) {
+        var message = JSON.parse(message);
+        var cmd = message.command;
 
-            var command = commands.asEnumerable().single(function (c) {
-                return c.commandName == channel;
-            });
+        var command = commands.asEnumerable().single(function (c) {
+            return c.commandName == message.name;
+        });
 
-            var validationResult = await(command.actions.validate(cmd));
+        var validationResult = await(command.actions.validate(cmd));
 
-            if (!validationResult.isValid)
-                return eventEmitter.emit(message.commandId, validationResult);
+        if (!validationResult.isValid)
+            return eventEmitter.emit(message.commandId, validationResult);
 
-            var returnValue = await(command.actions.handle(cmd));
+        var returnValue = await(command.actions.handle(cmd));
 
-            return eventEmitter.emit(message.commandId, {
-                isValid: true,
-                returnValue: returnValue
-            });
-        }));
-    }
-
-    register();
+        return eventEmitter.emit(message.commandId, {
+            isValid: true,
+            returnValue: returnValue
+        });
+    }));
 };

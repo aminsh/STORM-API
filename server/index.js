@@ -7,10 +7,6 @@ require('./config/routes');
 require('./config/translation');
 require('./config/auth');
 
-var sub = require('./services/command.subscriber.js');
-sub.on('subscribe', function () {
-    console.log('subscribe is waiting ...')
-});
 require('./commands').registerAll();
 
 var models = require('./models/index');

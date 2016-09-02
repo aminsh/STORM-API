@@ -1,105 +1,17 @@
-var models = require('../models');
-var _ = require('lodash');
 var express = require('express');
-var kendoQueryService = require('../services/kendoQueryService');
-var router = express.Router();
-var view = require('../viewModel.assemblers/view.detailAccount');
-var commandBus = require('../services/command.bus');
+var detailAccountRouteHandlers = require('../route.handlers/detailAccount');
 
 router.route('/detail-accounts')
-    .get(function (req, res) {
-
-        var kendoRequest = kendoQueryService.getKendoRequestData(req.query);
-
-        models.detailAccount
-            .findAndCountAll(kendoRequest)
-            .then(function (result) {
-                var kendoResult = kendoQueryService.toKendoResultData(result);
-
-                kendoResult.data = kendoResult.data.asEnumerable()
-                    .select(view)
-                    .toArray();
-
-                res.json(kendoResult);
-            });
-
-    })
-    .post(function (req, res) {
-        var message = {
-            name: 'command.detailAccount.create',
-            branchId: req.cookies.branchId,
-            command: req.body
-        };
-
-        commandBus.send(message)
-            .then(function (result) {
-                res.json(result);
-            });
-    });
+    .get(detailAccountRouteHandlers.getAll)
+    .post(detailAccountRouteHandlers.create);
 
 router.route('/detail-accounts/:id')
-    .get(function (req, res) {
-        var id = req.params.id;
+    .get(detailAccountRouteHandlers.getById)
+    .put(detailAccountRouteHandlers.update)
+    .delete(detailAccountRouteHandlers.remove);
 
-        models.detailAccount
-            .findById(id)
-            .then(function (gla) {
-                res.json(view(gla));
-            });
-    })
-    .put(function (req, res) {
-
-        var message = {
-            name: 'command.detailAccount.update',
-            branchId: req.cookies.branchId,
-            command: _.extend({id: req.params.id}, req.body)
-        };
-
-        commandBus.send(message)
-            .then(function (result) {
-                res.json(result);
-            });
-    })
-    .delete(function (req, res) {
-        var message = {
-            name: 'command.detailAccount.remove',
-            branchId: req.cookies.branchId,
-            command: _.extend({id: req.params.id}, req.body)
-        };
-
-        commandBus.send(message)
-            .then(function (result) {
-                res.json(result);
-            });
-    });
-
-router.route('/detail-accounts/:id/activate')
-    .put(function (req, res) {
-        var message = {
-            name: 'command.detailAccount.remove',
-            branchId: req.cookies.branchId,
-            command: _.extend({id: req.params.id}, req.body)
-        };
-
-        commandBus.send(message)
-            .then(function (result) {
-                res.json(result);
-            });
-    });
-
-router.route('/detail-accounts/:id/deactivate')
-    .put(function (req, res) {
-        var message = {
-            name: 'command.detailAccount.remove',
-            branchId: req.cookies.branchId,
-            command: _.extend({id: req.params.id}, req.body)
-        };
-
-        commandBus.send(message)
-            .then(function (result) {
-                res.json(result);
-            });
-    });
+router.route('/detail-accounts/:id/activate').put(detailAccountRouteHandlers.activate);
+router.route('/detail-accounts/:id/deactivate').put(detailAccountRouteHandlers.deactivate);
 
 
 module.exports = router;

@@ -22,22 +22,20 @@ command.define('command.journalLine.create', {
         };
     }),
     handle: async(function (cmd) {
-        var dimensions = cmd.dimension.asEnumerable()
-            .select(async(function (d) {
-                return await(dimensionRepository.findById(d.id));
-            }))
-            .toArray();
-
         var entity = {
             journalId: cmd.journalId,
+            generalLedgerAccountId: cmd.generalLedgerAccountId,
             subsidiaryLedgerAccountId: cmd.subsidiaryLedgerAccountId,
             detailAccountId: cmd.detailAccountId,
+            dimension1Id: cmd.dimension1Id,
+            dimension2Id: cmd.dimension2Id,
+            dimension3Id: cmd.dimension3Id,
             description: cmd.description,
             debtor: cmd.balanceType == 'debtor' ? cmd.amount : 0,
             creditor: cmd.balanceType == 'creditor' ? cmd.amount : 0
         };
 
-        await(repository.create(entity, dimensions));
+        await(repository.create(entity));
     })
 });
 
@@ -59,19 +57,16 @@ command.define('command.journalLine.update', {
     handle: async(function (cmd) {
         var entity = await(repository.findById(cmd.id));
 
-        var dimensions = cmd.dimension.asEnumerable()
-            .select(async(function (d) {
-                return await(dimensionRepository.findById(d.id));
-            }))
-            .toArray();
-
         entity.subsidiaryLedgerAccountId = cmd.subsidiaryLedgerAccountId;
         entity.detailAccountId = cmd.detailAccountId;
+        entity.dimension1Id = cmd.dimension1Id;
+        entity.dimension2Id = cmd.dimension2Id;
+        entity.dimension3Id = cmd.dimension3Id;
         entity.description = cmd.description;
         entity.debtor = cmd.balanceType == 'debtor' ? cmd.amount : 0;
         entity.creditor = cmd.balanceType == 'creditor' ? cmd.amount : 0;
 
-        await(repository.update(entity, dimensions));
+        await(repository.update(entity));
     })
 });
 

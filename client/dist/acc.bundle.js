@@ -1924,13 +1924,15 @@
                 title: '',
                 detailAccountAssignmentStatus: null,
                 isBankAccount: false,
-                dimensionAssignmentStatus: []
+                dimension1AssignmentStatus: null,
+                dimension2AssignmentStatus: null,
+                dimension3AssignmentStatus: null
             };
 
-            dimensionCategoryApi.getAll().then(function (cats) {
-                $scope.subsidiaryLedgerAccount.dimensionAssignmentStatus = cats.data.asEnumerable().select(function (cat) {
-                    return {id: cat.id, title: cat.title, status: null};
-                }).toArray();
+            $scope.dimensionCategories = [];
+
+            dimensionCategoryApi.getAll().then(function (result) {
+                $scope.dimensionCategories = result.data;
             });
 
             $scope.isSaving = false;
@@ -1968,20 +1970,27 @@
             return obj && obj.__esModule ? obj : {default: obj};
         }
 
-        function subsidiaryLedgerAccountUpdateController($scope, logger, navigate, constants, $routeParams, formService, subsidiaryLedgerAccountApi) {
+        function subsidiaryLedgerAccountUpdateController($scope, logger, navigate, constants, $routeParams, formService, subsidiaryLedgerAccountApi, dimensionCategoryApi) {
             var id = $routeParams.id;
 
             $scope.errors = [];
             $scope.assignmentStatus = new constants.enums.AssignmentStatus().data;
+            $scope.dimensionCategories = [];
 
             $scope.subsidiaryLedgerAccount = {
                 code: '',
                 title: '',
                 detailAccountAssignmentStatus: null,
                 isBankAccount: false,
-                dimensionAssignmentStatus: [],
+                dimension1AssignmentStatus: null,
+                dimension2AssignmentStatus: null,
+                dimension3AssignmentStatus: null,
                 isActive: true
             };
+
+            dimensionCategoryApi.getAll().then(function (result) {
+                $scope.dimensionCategories = result.data;
+            });
 
             subsidiaryLedgerAccountApi.getById(id).then(function (result) {
                 return $scope.subsidiaryLedgerAccount = result;
@@ -2923,6 +2932,10 @@
                     return errors = err;
                 });
             };
+
+            $scope.close = function () {
+                return $modalInstance.dismiss();
+            };
         }
 
         function journalAttachImageService(modalBase) {
@@ -3052,7 +3065,7 @@
             return obj && obj.__esModule ? obj : {default: obj};
         }
 
-        function journalLineCreateOrUpdateController($scope, $modalInstance, $timeout, formService, $q, journalLineApi, logger, constants, data) {
+        function journalLineCreateOrUpdateController($scope, $modalInstance, $timeout, formService, $q, journalLineApi, dimensionCategoryApi, logger, constants, data) {
 
             var journalId = data.journalId;
             var id = data.id;
@@ -3061,15 +3074,43 @@
             $scope.generalLedgerAccountShouldBeFocus = true;
 
             $scope.errors = [];
+            $scope.dimensionCategories = [];
             $scope.journalLine = {
                 generalLedgerAccountId: null,
                 subsidiaryLedgerAccountId: null,
                 detailAccountId: null,
-                dimensions: [],
+                dimension1Id: null,
+                dimension2Id: null,
+                dimension3Id: null,
                 description: '',
                 amount: null,
                 balanceType: ''
             };
+
+            $scope.detailAccountDataSource = {
+                type: "json",
+                serverFiltering: true,
+                transport: {
+                    read: {
+                        url: constants.urls.detailAccount.all()
+                    }
+                },
+                schema: {
+                    data: 'data'
+                }
+            };
+
+            $scope.dimension1DataSource = null;
+            $scope.dimension2DataSource = null;
+            $scope.dimension3DataSource = null;
+
+            dimensionCategoryApi.getAll().then(function (cats) {
+                $scope.dimensionCategories = cats;
+
+                $scope.dimension1DataSource = dimensionDataSourceFactory(cats[0].id);
+                $scope.dimension2DataSource = dimensionDataSourceFactory(cats[1].id);
+                $scope.dimension3DataSource = dimensionDataSourceFactory(cats[2].id);
+            });
 
             if (editMode == 'update') journalLineApi.getById(id).then(function (result) {
                 result.amount = 0;
@@ -3078,7 +3119,7 @@
                 if (result.creditor > 0) {
                     result.amount = result.creditor;
                     result.balanceType = 'creditor';
-        }
+                }
 
                 if (result.debtor > 0) {
                     result.amount = result.debtor;
@@ -3147,7 +3188,7 @@
                     }).finally(function () {
                         $scope.isSaving = false;
                         deferred.resolve();
-            });
+                    });
 
                     if (editMode == 'update') journalLineApi.update(id, cmd).then(function () {
                         deferred.resolve();
@@ -3187,13 +3228,28 @@
                 },
                 schema: {
                     data: 'data'
-        }
+                }
             };
 
             $scope.generalLedgerAccountOnChange = function () {
                 $scope.journalLine.subsidiaryLedgerAccountId = null;
 
-                $scope.journalLine.dimensions = [];
+                $scope.journalLine.detailAccount = {
+                    canShow: false,
+                    isRequired: false
+                };
+                $scope.journalLine.dimension1 = {
+                    canShow: false,
+                    isRequired: false
+                };
+                $scope.journalLine.dimension2 = {
+                    canShow: false,
+                    isRequired: false
+                };
+                $scope.journalLine.dimension3 = {
+                    canShow: false,
+                    isRequired: false
+                };
                 $scope.journalLine.detailAccount = {
                     canShow: false,
                     isRequired: false
@@ -3212,7 +3268,7 @@
 
                             return constants.urls.subsidiaryLedgerAccount.allByGeneralLedgerAccount(generalLegerAccountId);
                         }
-            }
+                    }
                 },
                 schema: {
                     data: 'data'
@@ -3223,8 +3279,19 @@
                 var item = e.sender.dataItem();
 
                 if (!item) {
-                    $scope.journalLine.dimensions = [];
                     $scope.journalLine.detailAccount = {
+                        canShow: false,
+                        isRequired: false
+                    };
+                    $scope.journalLine.dimension1 = {
+                        canShow: false,
+                        isRequired: false
+                    };
+                    $scope.journalLine.dimension2 = {
+                        canShow: false,
+                        isRequired: false
+                    };
+                    $scope.journalLine.dimension3 = {
                         canShow: false,
                         isRequired: false
                     };
@@ -3232,20 +3299,24 @@
                     return;
                 }
 
-                $scope.journalLine.dimensions = Array.from(item.dimensionAssignmentStatus).asEnumerable().select(function (dimensionStatus) {
-            return {
-                id: getDimensionId(dimensionStatus.id),
-                canShow: ['Required', 'NotRequired'].asEnumerable().contains(dimensionStatus.status),
-                isRequired: dimensionStatus.status == 'Required',
-                categoryId: dimensionStatus.id,
-                categoryTitle: dimensionStatus.title,
-                dataSource: dimensionDataSource(dimensionStatus.id)
-            };
-                }).toArray();
-
                 $scope.journalLine.detailAccount = {
                     canShow: ['Required', 'NotRequired'].asEnumerable().contains(item.detailAccountAssignmentStatus),
                     isRequired: item.detailAccountAssignmentStatus == 'Required'
+                };
+
+                $scope.journalLine.dimension1 = {
+                    canShow: ['Required', 'NotRequired'].asEnumerable().contains(item.dimension1AssignmentStatus),
+                    isRequired: item.dimension1AssignmentStatus == 'Required'
+                };
+
+                $scope.journalLine.dimension2 = {
+                    canShow: ['Required', 'NotRequired'].asEnumerable().contains(item.dimension2AssignmentStatus),
+                    isRequired: item.dimension2AssignmentStatus == 'Required'
+                };
+
+                $scope.journalLine.dimension3 = {
+                    canShow: ['Required', 'NotRequired'].asEnumerable().contains(item.dimension3AssignmentStatus),
+                    isRequired: item.dimension3AssignmentStatus == 'Required'
                 };
             };
 
@@ -3266,7 +3337,7 @@
         }
             };
 
-            var dimensionDataSource = function dimensionDataSource(categoryId) {
+            var dimensionDataSourceFactory = function dimensionDataSourceFactory(categoryId) {
                 return {
                     type: "json",
                     serverFiltering: true,
@@ -3283,20 +3354,6 @@
 
             $scope.changeAmountBalance = function () {
                 return $scope.journalLine.balanceType = $scope.journalLine.balanceType == 'debtor' ? 'creditor' : 'debtor';
-            };
-
-            var getDimensionId = function getDimensionId(categoryId) {
-                var dimensions = $scope.journalLine.dimensions;
-
-                if (dimensions == null) return null;
-
-                if (!dimensions.asEnumerable().any(function (d) {
-                        return d.categoryId == categoryId;
-                    })) return null;
-
-                return dimensions.asEnumerable().single(function (d) {
-                    return d.categoryId == categoryId;
-                }).id;
             };
 
             $scope.close = function () {

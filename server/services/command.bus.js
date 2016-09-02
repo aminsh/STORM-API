@@ -1,5 +1,4 @@
-var redis = require('redis');
-var pub = redis.createClient();
+var publisher = require('./command.publisher');
 var eventEmitter = require('./eventEmitter');
 var guidService = require('./../utilities/guidService');
 var Promise = require('promise');
@@ -18,7 +17,7 @@ function commandBus(message) {
             ? message.name
             : '{0}/{1}'.format(message.name, message.branchId);
 
-        pub.publish(name, serializedMessage);
+        publisher.publish(name, serializedMessage);
     });
 }
 

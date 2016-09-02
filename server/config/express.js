@@ -12,6 +12,7 @@ var MemoryStore = require('session-memory-store')(session);
 var config = require('./config');
 var app = express();
 
+app.use(favicon(config.rootPath + '/client/content/images/favicon.ico'));
 app.use(cors());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
@@ -30,7 +31,7 @@ app.set('views', config.rootPath + '/server/views');
 app.engine('html', require('ejs').renderFile);
 app.use('/client', express.static(config.rootPath + '/client'));
 app.use('/content', express.static(config.rootPath + '/client/content'));
-app.use('/uploads', express.static(config.rootPath + '/uploads'));
+app.use('/uploads', express.static(config.rootPath + '/server/uploads'));
 
 app.use(multer({dest: './uploads/;'}));
 

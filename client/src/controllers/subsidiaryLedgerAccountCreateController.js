@@ -15,17 +15,16 @@ function subsidiaryLedgerAccountCreateController($scope, logger, navigate, $rout
         title: '',
         detailAccountAssignmentStatus: null,
         isBankAccount: false,
-        dimensionAssignmentStatus: []
+        dimension1AssignmentStatus: null,
+        dimension2AssignmentStatus: null,
+        dimension3AssignmentStatus: null,
     };
 
+    $scope.dimensionCategories = [];
+
     dimensionCategoryApi.getAll()
-        .then((cats)=> {
-            $scope.subsidiaryLedgerAccount.dimensionAssignmentStatus =
-                cats.data.asEnumerable()
-                    .select(cat => {
-                        return {id: cat.id, title: cat.title, status: null}
-                    })
-                    .toArray();
+        .then((result)=> {
+            $scope.dimensionCategories = result.data;
         });
 
     $scope.isSaving = false;

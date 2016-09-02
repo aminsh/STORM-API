@@ -9,6 +9,7 @@ var cors = require('cors');
 var app = express();
 var config = require('./config');
 
+app.use(favicon(config.rootPath + '/client/content/images/favicon.ico'));
 app.use(cors());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());

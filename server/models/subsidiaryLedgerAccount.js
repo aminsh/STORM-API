@@ -18,15 +18,25 @@ module.exports = function (sequelize, DataTypes) {
             type: DataTypes.ENUM,
             values: enums.AssignmentStatus().getKeys(),
         },
+        dimension1AssignmentStatus: {
+            type: DataTypes.ENUM,
+            values: enums.AssignmentStatus().getKeys(),
+        },
+        dimension2AssignmentStatus: {
+            type: DataTypes.ENUM,
+            values: enums.AssignmentStatus().getKeys(),
+        },
+        dimension3AssignmentStatus: {
+            type: DataTypes.ENUM,
+            values: enums.AssignmentStatus().getKeys(),
+        },
         isActive: {
             type: DataTypes.BOOLEAN
         },
     }, {
         classMethods: {
             associate: function (models) {
-                SubsidiaryLedgerAccount.belongsTo(models.generalLedgerAccount)
-                SubsidiaryLedgerAccount.hasMany(
-                    models.subsidiaryLedgerAccountDimensionAssignmentStatus);
+                SubsidiaryLedgerAccount.belongsTo(models.generalLedgerAccount);
             }
         }
     });

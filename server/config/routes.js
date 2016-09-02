@@ -48,15 +48,15 @@ var subsidiaryLedgerAccountApi = require('{0}/api.subsidiaryLedgerAccount'.forma
 var detailAccountApi = require('{0}/api.detailAccount'.format(basePath));
 var dimensionCategoryApi = require('{0}/api.dimensionCategory'.format(basePath));
 var dimensionApi = require('{0}/api.dimension'.format(basePath));
-/*var journalApi = require('{0}/journalApi'.format(basePath));
- var journalLineApi = require('{0}/journalLineApi'.format(basePath));*/
+var journalApi = require('{0}/api.journal'.format(basePath));
+var journalLineApi = require('{0}/api.journalLine'.format(basePath));
 
 app.use('/api', generalLedgerAccountApi);
 app.use('/api', subsidiaryLedgerAccountApi);
 app.use('/api', detailAccountApi);
 app.use('/api', dimensionCategoryApi);
 app.use('/api', dimensionApi);
-/*app.use('/api',journalApi);
- app.use('/api',journalLineApi);*/
+app.use('/api', journalApi);
+app.use('/api', journalLineApi);
 
 
