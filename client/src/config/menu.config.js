@@ -39,5 +39,17 @@ accModule.config(menuItemsProvider => {
                     icon: ''
                 }
             ]
+        })
+        .add({
+            title: 'خزانه داری',
+            url: '',
+            icon: '',
+            children: [
+                {
+                    title: 'دسته چک ها',
+                    url: '#/cheque-categories',
+                    icon: ''
+                }
+            ]
         });
 });

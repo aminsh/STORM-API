@@ -36,6 +36,21 @@ module.exports = function (sequelize, DataTypes) {
                     Journal.belongsTo(models.fiscalPeriod, {as: 'period'});
                     Journal.hasMany(models.journalLine, {onDelete: ' CASCADE'});
                 }
+            },
+            instanceMethods: {
+                getLineSummary: function (models) {
+                    return models.journalLine.find({
+                        where: {
+                            journalId: this.id
+                        },
+                        attributes: [
+                            [models.sequelize.fn('SUM', models.sequelize.col('debtor')), 'sumDebtor'],
+                            [models.sequelize.fn('SUM', models.sequelize.col('creditor')), 'sumCreditor'],
+                        ],
+                        group: ['journalId'],
+                        order: ['journalId']
+                    })
+                }
             }
         });
 

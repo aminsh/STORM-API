@@ -6,7 +6,8 @@ var passport = require('passport');
 var multer = require('multer');
 var favicon = require('serve-favicon');
 var cors = require('cors');
-var onUserConnectedMiddleware = require('./onUserConnectedMiddleware');
+
+var onUserConnectedMiddleware = require('./../middlewares/middleware.onUserConnected');
 
 var MemoryStore = require('session-memory-store')(session);
 var config = require('./config');
@@ -35,6 +36,6 @@ app.use('/uploads', express.static(config.rootPath + '/server/uploads'));
 
 app.use(multer({dest: './uploads/;'}));
 
-//app.use(onUserConnectedMiddleware);
+app.use(onUserConnectedMiddleware);
 
 module.exports.app = app;

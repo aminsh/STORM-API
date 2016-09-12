@@ -9,9 +9,15 @@ function getAll(req, res) {
         ? kendoRequest.where.dimensionCategoryId = req.params.categoryId
         : kendoRequest.where = {dimensionCategoryId: req.params.categoryId};
 
-    db.dimension.findAll(kendoRequest)
+    db.dimension.findAndCountAll(kendoRequest)
         .then(function (result) {
-            res.json(view(result));
+            var kendoResult = kendoQueryService.toKendoResultData(result);
+
+            kendoResult.data = kendoResult.data.asEnumerable()
+                .select(view)
+                .toArray();
+
+            res.json(kendoResult);
         });
 }
 

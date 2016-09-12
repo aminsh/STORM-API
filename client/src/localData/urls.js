@@ -19,11 +19,26 @@ let dimension = {
     allByCategory: (categoryId)=> '{0}/dimensions/category/{1}'.format(rootUrl(), categoryId)
 }
 
+let period = {
+    all: ()=> '{0}/periods'.format(rootUrl())
+};
+
+let chequeCategory = {
+    all: ()=> '{0}/cheque-categories'.format(rootUrl())
+};
+
+let bank = {
+    all: ()=> '{0}/banks'.format(rootUrl())
+};
+
 let apiUrls = {
     generalLedgerAccount: generalLedgerAccount,
     subsidiaryLedgerAccount: subsidiaryLedgerAccount,
     detailAccount: detailAccount,
-    dimension: dimension
+    dimension: dimension,
+    period: period,
+    chequeCategory: chequeCategory,
+    bank: bank
 };
 
 export default apiUrls;

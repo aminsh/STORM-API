@@ -14,5 +14,18 @@ db.sequelize.sync().then(function () {
 function run() {
     var users = await(db.user.findAll());
 
+    var options = {limit: 100};
+    options.distinct = true;
+    options.include = [
+        {
+            model: db.journalLine
+        },
+        {model: db.user, as: 'createdBy'}
+    ];
+
+    db.journal.findAndCountAll(options)
+        .then(function (result) {
+            debugger;
+        });
     debugger;
 }

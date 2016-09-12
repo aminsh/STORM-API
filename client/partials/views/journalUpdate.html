@@ -101,7 +101,7 @@
     <dev-tag-grid option="gridOption"></dev-tag-grid>
 
     <ul class="list-group" ng-if="gridOption.current">
-        <li class="list-group-item">{{'Article'|translate}} : {{gridOption.current.description}}</li>
+        <li class="list-group-item">{{'Article'|translate}} : {{gridOption.current.article}}</li>
         <li class="list-group-item" ng-repeat="dimension in gridOption.current.dimensions">
             {{dimension.categoryDisplay}} : {{dimension.display}}
         </li>

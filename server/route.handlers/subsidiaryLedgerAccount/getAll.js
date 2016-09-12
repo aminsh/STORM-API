@@ -10,16 +10,17 @@ function getAll(req, res) {
         {model: db.generalLedgerAccount, where: {id: parentId}}
     ];
 
-    var subsidiaryLedgerAccounts = await(db.subsidiaryLedgerAccount
-        .findAndCountAll(kendoRequest));
+    db.subsidiaryLedgerAccount
+        .findAndCountAll(kendoRequest)
+        .then(function (result) {
+            var kendoResult = kendoQueryService.toKendoResultData(result);
 
-    var kendoResult = kendoQueryService.toKendoResultData(subsidiaryLedgerAccounts);
+            kendoResult.data = kendoResult.data.asEnumerable()
+                .select(view)
+                .toArray();
 
-    kendoResult.data = kendoResult.data.asEnumerable()
-        .select(view)
-        .toArray();
-
-    res.json(kendoResult);
+            res.json(kendoResult);
+        });
 }
 
 module.exports = getAll;

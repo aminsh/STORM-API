@@ -10,6 +10,10 @@ function getAll(req, res) {
         {model: db.user, as: 'createdBy'}
     ];
 
+    (options.where)
+        ? options.where.periodId = req.cookies['current-period']
+        : options.where = {periodId: req.cookies['current-period']};
+
     db.journal.findAndCountAll(options)
         .then(function (result) {
             var kendoResult = kendoQueryService.toKendoResultData(result);

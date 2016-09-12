@@ -38,28 +38,29 @@ function journalUpdateController($scope, logger, confirm, translate, navigate, $
                 title: translate('General ledger account'),
                 type: 'generalLedgerAccount',
                 template: '${data.generalLedgerAccountCode}',
-                width: '100px'
+                width: '70px'
             },
             {
                 name: 'subsidiaryLedgerAccountId',
                 title: translate('Subsidiary ledger account'),
                 type: 'subsidiaryLedgerAccount',
                 template: '${data.subsidiaryLedgerAccountCode}',
-                width: '100px'
+                width: '70px'
             },
             {
                 name: 'detailAccountId',
                 title: translate('Detail account'),
                 type: 'detailAccount',
                 template: '${data.detailAccountCode}',
-                width: '150px'
+                width: '100px'
             },
+            {name: 'article', title: translate('Article'), width: '300px', type: 'number'},
             {
-                name: 'debtor', title: translate('Debtor'), width: '120px', type: 'number', format: '{0:#,##}',
+                name: 'debtor', title: translate('Debtor'), width: '100px', type: 'number', format: '{0:#,##}',
                 aggregates: ['sum'], footerTemplate: "{0}: #= kendo.toString(sum,'n0') #".format(translate('Sum'))
             },
             {
-                name: 'creditor', title: translate('Creditor'), width: '120px', type: 'number', format: '{0:#,##}',
+                name: 'creditor', title: translate('Creditor'), width: '100px', type: 'number', format: '{0:#,##}',
                 aggregates: ['sum'], footerTemplate: "{0}: #= kendo.toString(sum,'n0') #".format(translate('Sum'))
             }
         ],
@@ -72,7 +73,7 @@ function journalUpdateController($scope, logger, confirm, translate, navigate, $
                             journalId: id,
                             id: current.id
                         })
-                        .then(()=> gridOption.refresh());
+                        .then(()=> $scope.gridOption.refresh());
                 }
             },
             {
@@ -92,7 +93,7 @@ function journalUpdateController($scope, logger, confirm, translate, navigate, $
                         })
 
                 }
-            },
+            }
         ],
         current: null,
         selectable: true,

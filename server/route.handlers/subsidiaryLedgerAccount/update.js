@@ -6,7 +6,7 @@ var repository = require('../../data/repository.subsidiaryLedgerAccount');
 
 function update(req, res) {
     var errors = [];
-    var cmd = req, body;
+    var cmd = req.body;
 
     if (string.isNullOrEmpty(cmd.title))
         errors.push(translate('The code is required'));

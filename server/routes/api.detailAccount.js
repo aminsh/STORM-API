@@ -1,4 +1,5 @@
 var express = require('express');
+var router = express.Router();
 var detailAccountRouteHandlers = require('../route.handlers/detailAccount');
 
 router.route('/detail-accounts')

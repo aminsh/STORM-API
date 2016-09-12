@@ -47,6 +47,15 @@ accModule.config(function (gridFilterCellTypeProvider) {
         modelType: 'number'
     }
 
+    let chequeCategoryStatus = {
+        cell: gridFilterCellTypeProvider.control.dropdown({
+            text: 'display',
+            value: 'key',
+            data: constants.enums.ChequeCategoryStatus()
+        }),
+        modelType: 'number'
+    }
+
     let generalLedgerAccount = {
         cell: gridFilterCellTypeProvider.control.combo({
             text: 'title',
@@ -67,12 +76,22 @@ accModule.config(function (gridFilterCellTypeProvider) {
 
     let detailAccount = {
         cell: gridFilterCellTypeProvider.control.combo({
-            text: 'title',
+            text: 'display',
             value: 'id',
-            utl: constants.urls.detailAccount.all()
+            url: constants.urls.detailAccount.all()
         }),
         modelType: 'string'
-    }
+    };
+
+    let bank = {
+        cell: gridFilterCellTypeProvider.control.combo({
+            text: 'title',
+            value: 'id',
+            url: constants.urls.bank.all()
+        }),
+        modelType: 'number'
+
+    };
 
     gridFilterCellTypeProvider.set({
         postingType: postingType,
@@ -80,8 +99,10 @@ accModule.config(function (gridFilterCellTypeProvider) {
         activeType: activeType,
         journalType: journalType,
         journalStatus: journalStatus,
+        chequeCategoryStatus: chequeCategoryStatus,
         generalLedgerAccount: generalLedgerAccount,
         subsidiaryLedgerAccount: subsidiaryLedgerAccount,
-        detailAccount: detailAccount
+        detailAccount: detailAccount,
+        bank: bank
     });
 });

@@ -43,7 +43,10 @@ function update(req, res) {
 
     var entity = await(repository.findById(cmd.id));
 
-
     await(repository.update(entity));
+
+    return res.json({
+        isValid: true
+    });
 }
 module.exports = async(update);

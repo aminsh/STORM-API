@@ -1,10 +1,9 @@
 var express = require('express');
-var models = require('../models');
 var passport = require('passport');
 var app = require('./express').app;
 
 
-var clientTranslation = require('./translate.client.fa.json')
+var clientTranslation = require('./translate.client.fa.json');
 
 function checkAuth(req, res, next) {
     if (req.isAuthenticated() || req.originalUrl == '/login')
@@ -50,6 +49,9 @@ var dimensionCategoryApi = require('{0}/api.dimensionCategory'.format(basePath))
 var dimensionApi = require('{0}/api.dimension'.format(basePath));
 var journalApi = require('{0}/api.journal'.format(basePath));
 var journalLineApi = require('{0}/api.journalLine'.format(basePath));
+var chequeCategoryApi = require('{0}/api.chequeCategory'.format(basePath));
+var bankApi = require('{0}/api.bank'.format(basePath));
+var chequeApi = require('{0}/api.cheque'.format(basePath));
 
 app.use('/api', generalLedgerAccountApi);
 app.use('/api', subsidiaryLedgerAccountApi);
@@ -58,5 +60,8 @@ app.use('/api', dimensionCategoryApi);
 app.use('/api', dimensionApi);
 app.use('/api', journalApi);
 app.use('/api', journalLineApi);
+app.use('/api', chequeCategoryApi);
+app.use('/api', bankApi);
+app.use('/api', chequeApi);
 
 

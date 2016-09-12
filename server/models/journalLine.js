@@ -20,9 +20,9 @@ module.exports = function (sequelize, DataTypes) {
                     JournalLine.belongsTo(models.generalLedgerAccount);
                     JournalLine.belongsTo(models.subsidiaryLedgerAccount);
                     JournalLine.belongsTo(models.detailAccount);
-                    JournalLine.belongsTo(models.dimension, {as: 'dimensions1'});
-                    JournalLine.belongsTo(models.dimension, {as: 'dimensions2'});
-                    JournalLine.belongsTo(models.dimension, {as: 'dimensions3'});
+                    JournalLine.belongsTo(models.dimension, {as: 'dimension1'});
+                    JournalLine.belongsTo(models.dimension, {as: 'dimension2'});
+                    JournalLine.belongsTo(models.dimension, {as: 'dimension3'});
                 }
             }
         });

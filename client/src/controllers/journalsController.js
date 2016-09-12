@@ -15,8 +15,14 @@ function journalsController($scope, translate, journalApi, navigate, logger,
                 type: 'journalStatus',
                 template: '${data.journalStatusDisplay}'
             },
-            {name: 'sumDebtor', title: translate('sum debtor'), type: 'number', format: '{0:#,##}'},
-            {name: 'sumCreditor', title: translate('sum creditor'), type: 'number', format: '{0:#,##}'},
+            {name: 'sumDebtor', title: translate('sum debtor'), type: 'number', format: '{0:#,##}', filterable: false},
+            {
+                name: 'sumCreditor',
+                title: translate('sum creditor'),
+                type: 'number',
+                format: '{0:#,##}',
+                filterable: false
+            },
         ],
         commands: [
             {

@@ -21,6 +21,7 @@ import './controllers/journalsController';
 import './controllers/journalUpdateController';
 import './controllers/journalLineCreateOrUpdateController';
 import './controllers/journalLineUpdateController';
+import './controllers/chequeCategoriesController';
 
 
 // load apis
@@ -31,6 +32,8 @@ import './apis/dimensionCategoryApi';
 import './apis/dimensionApi';
 import './apis/journalApi';
 import './apis/journalLineApi';
+import './apis/chequeCategoryApi';
+import './apis/bankApi';
 
 // load modals
 import './modals/generalLedgerAccountCreate';
@@ -41,6 +44,8 @@ import './modals/journalCreate';
 import './modals/journalLineCreateOrUpdate';
 import './modals/journalBookkeeping';
 import './modals/journalAttachImage';
+import './modals/chequeCategroyCreate';
+import './modals/chequeCategroyUpdate';
 
 import './localData/constants';
 

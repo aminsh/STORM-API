@@ -1,3 +1,20 @@
 <dev-tag-content title="{{'Home'|translate}}">
-  <dev-tag-uploader></dev-tag-uploader>
+  <div class="form-group col-xs-4">
+    <label class="label-control">{{'Select Period' | translate}}</label>
+
+    <dev-tag-combo-box
+            id="generalLedgerAccountId"
+            k-placeholder="'{{'Select ...'|translate}}'"
+            k-data-value-field="'id'"
+            k-data-text-field="'display'"
+            k-data-source="periodDataSource"
+            k-value-primitive="true"
+            k-filter="'contains'"
+            k-auto-bind="false"
+            k-min-length="3"
+            k-on-change="periodOnChange(kendoEvent)"
+
+            style="width: 100%"></dev-tag-combo-box>
+  </div>
+  </div>
 </dev-tag-content>

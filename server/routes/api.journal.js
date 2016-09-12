@@ -6,7 +6,7 @@ router.route('/journals')
     .get(journalRouteHandlers.getAll)
     .post(journalRouteHandlers.create);
 
-router.route('/journal/:id')
+router.route('/journals/:id')
     .get(journalRouteHandlers.getById)
     .put(journalRouteHandlers.update)
     .delete(journalRouteHandlers.remove);

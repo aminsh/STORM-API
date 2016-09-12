@@ -18,7 +18,7 @@ function journalLineCreateOrUpdateController($scope, $modalInstance, $timeout, f
         dimension1Id: null,
         dimension2Id: null,
         dimension3Id: null,
-        description: '',
+        article: '',
         amount: null,
         balanceType: ''
     };
@@ -41,7 +41,8 @@ function journalLineCreateOrUpdateController($scope, $modalInstance, $timeout, f
     $scope.dimension3DataSource = null;
 
     dimensionCategoryApi.getAll()
-        .then((cats)=> {
+        .then((result)=> {
+            let cats = result.data;
             $scope.dimensionCategories = cats;
 
             $scope.dimension1DataSource = dimensionDataSourceFactory(cats[0].id);
@@ -98,29 +99,8 @@ function journalLineCreateOrUpdateController($scope, $modalInstance, $timeout, f
 
             $scope.isSaving = true;
 
-            let journalLine = $scope.journalLine;
-
-            let cmd = {
-                generalLedgerAccountId: journalLine.generalLedgerAccountId,
-                subsidiaryLedgerAccountId: journalLine.subsidiaryLedgerAccountId,
-                detailAccountId: journalLine.detailAccountId,
-                description: journalLine.description,
-                amount: journalLine.amount,
-                balanceType: journalLine.balanceType
-            };
-
-            cmd.dimensions = $scope.journalLine.dimensions
-                .asEnumerable()
-                .select(d=> {
-                    return {
-                        categoryId: d.categoryId,
-                        id: d.id
-                    }
-                })
-                .toArray();
-
             if (editMode == 'create')
-                journalLineApi.create(journalId, cmd)
+                journalLineApi.create(journalId, $scope.journalLine)
                     .then((result)=> {
                         deferred.resolve(result);
                         logger.success();
@@ -135,7 +115,7 @@ function journalLineCreateOrUpdateController($scope, $modalInstance, $timeout, f
                     });
 
             if (editMode == 'update')
-                journalLineApi.update(id, cmd)
+                journalLineApi.update(id, $scope.journalLine)
                     .then(()=> {
                         deferred.resolve();
                         logger.success();

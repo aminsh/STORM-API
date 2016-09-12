@@ -39,5 +39,9 @@ function update(req, res) {
     entity.description = cmd.description;
 
     await(repository.update(entity));
+
+    return res.json({
+        isValid: true
+    });
 }
 module.exports = async(update);

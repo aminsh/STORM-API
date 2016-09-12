@@ -5,6 +5,7 @@ function getById(req, res) {
     db.journal.findOne({
         where: {id: req.params.id},
         include: [
+            {model: db.journalLine},
             {model: db.user, as: 'createdBy'}
         ]
     }).then(function (result) {

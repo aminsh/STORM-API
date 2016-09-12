@@ -36,13 +36,20 @@ enums.JournalStatus = () => {
         {key: 'BookKeeped', display: 'ثبت دفترداری'},
         {key: 'Fixed', display: 'ثبت قطعی'}
     ]);
-}
+};
 
 enums.Active = () => {
     return new Enum([
         {key: true, name: 'showActiveItems', display: 'نمایش فعال ها'},
         {key: false, name: 'showInactiveItems', display: 'نمایش غیر فعال ها'}
     ]);
-}
+};
+
+enums.ChequeCategoryStatus = ()=> {
+    return new Enum([
+        {key: 'Open', display: 'باز'},
+        {key: 'Closed', display: 'بسته'}
+    ]);
+};
 
 export default enums;

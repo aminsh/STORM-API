@@ -1,0 +1,59 @@
+{
+  "categories": [
+    {
+      "id": 1,
+      "bank": "بانک ملی",
+      "detailAccountId": "039d3342-b080-4e38-9f9e-41b331205062",
+      "detailAccountDisplay": "1000 تفصیل یک",
+      "firstPageNumber": 1200,
+      "lastPageNumber": 1249,
+      "totalPages": 50,
+      "status": "Open",
+      "statusDisplay": "باز"
+    },
+    {
+      "id": 2,
+      "bank": "بانک ملی",
+      "detailAccountId": "039d3342-b080-4e38-9f9e-41b331205062",
+      "detailAccountDisplay": "1000 تفصیل یک",
+      "firstPageNumber": 1150,
+      "lastPageNumber": 1169,
+      "totalPages": 20,
+      "status": "Open",
+      "statusDisplay": "باز"
+    },
+    {
+      "id": 3,
+      "bank": "بانک ملی",
+      "detailAccountId": "039d3342-b080-4e38-9f9e-41b331205062",
+      "detailAccountDisplay": "1000 تفصیل یک",
+      "firstPageNumber": 4000,
+      "lastPageNumber": 4009,
+      "totalPages": 10,
+      "status": "Open",
+      "statusDisplay": "باز"
+    }
+  ],
+  "banks": [
+    {
+      "id": 1,
+      "title": "ملی"
+    },
+    {
+      "id": 2,
+      "title": "ملت"
+    },
+    {
+      "id": 3,
+      "title": "تجارت"
+    },
+    {
+      "id": 4,
+      "title": "سامان"
+    },
+    {
+      "id": 5,
+      "title": "صنعت و معدن"
+    }
+  ]
+}
