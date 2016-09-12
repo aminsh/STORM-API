@@ -6,4 +6,11 @@
             icon="glyphicon glyphicon-plus"></dev-tag-button>
 
     <dev-tag-grid option="gridOption"></dev-tag-grid>
+
+    <div ng-if="canShowCheques" style="margin-top: 50px">
+        <dev-tag-grid
+                option="chequeGridOption"
+        ></dev-tag-grid>
+    </div>
+
 </dev-tag-content>

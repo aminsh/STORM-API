@@ -31,6 +31,10 @@ let bank = {
     all: ()=> '{0}/banks'.format(rootUrl())
 };
 
+let cheque = {
+    all: (categoryId)=> '{0}/cheques/category/{1}'.format(rootUrl(), categoryId)
+};
+
 let apiUrls = {
     generalLedgerAccount: generalLedgerAccount,
     subsidiaryLedgerAccount: subsidiaryLedgerAccount,
@@ -38,7 +42,8 @@ let apiUrls = {
     dimension: dimension,
     period: period,
     chequeCategory: chequeCategory,
-    bank: bank
+    bank: bank,
+    cheque: cheque
 };
 
 export default apiUrls;

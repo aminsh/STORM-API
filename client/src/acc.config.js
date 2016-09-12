@@ -34,6 +34,7 @@ import './apis/journalApi';
 import './apis/journalLineApi';
 import './apis/chequeCategoryApi';
 import './apis/bankApi';
+import './apis/chequeApi';
 
 // load modals
 import './modals/generalLedgerAccountCreate';

@@ -6,7 +6,7 @@
       "journalLineId": 1,
       "number": 100,
       "date": "1395/01/01",
-      "descriprion": "بابت هزینه تنخواه خرید وسایل",
+      "description": "بابت هزینه تنخواه خرید وسایل",
       "amount": 250000
     },
     {
@@ -15,7 +15,7 @@
       "journalLineId": 1,
       "number": 100,
       "date": "1395/01/01",
-      "descriprion": "بابت هزینه تنخواه خرید وسایل",
+      "description": "بابت هزینه تنخواه خرید وسایل",
       "amount": 250000
     },
     {
@@ -24,7 +24,7 @@
       "journalLineId": 1,
       "number": 100,
       "date": "1395/01/01",
-      "descriprion": "بابت هزینه تنخواه خرید وسایل",
+      "description": "بابت هزینه تنخواه خرید وسایل",
       "amount": 250000
     },
     {
@@ -42,7 +42,7 @@
       "journalLineId": 1,
       "number": 100,
       "date": "1395/01/01",
-      "descriprion": "بابت هزینه تنخواه خرید وسایل",
+      "description": "بابت هزینه تنخواه خرید وسایل",
       "amount": 250000
     },
     {
@@ -51,7 +51,7 @@
       "journalLineId": 1,
       "number": 100,
       "date": "1395/01/01",
-      "descriprion": "بابت هزینه تنخواه خرید وسایل",
+      "description": "بابت هزینه تنخواه خرید وسایل",
       "amount": 250000
     }
   ]

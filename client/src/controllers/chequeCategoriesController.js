@@ -1,6 +1,6 @@
 import accModule from '../acc.module';
 
-function chequeCategoriesController($scope, logger, chequeCategoryApi, confirm, constants, translate, navigate,
+function chequeCategoriesController($scope, logger, chequeCategoryApi, confirm, constants, translate, $timeout,
                                     chequeCategoryCreateModalService,
                                     chequeCategoryUpdateModalService) {
     $scope.gridOption = {
@@ -53,8 +53,36 @@ function chequeCategoriesController($scope, logger, chequeCategoryApi, confirm, 
                 }
             }
         ],
-        readUrl: constants.urls.chequeCategory.all()
+        readUrl: constants.urls.chequeCategory.all(),
+        current: null,
+        selectable: true
     };
+
+    $scope.chequeGridOption = {
+        columns: [
+            {name: 'number', title: translate('Number'), width: '10%', type: 'number'},
+            {name: 'date', title: translate('Date'), type: 'date', width: '10%'},
+            {name: 'description', title: translate('Description'), type: 'string', width: '30%'},
+            {name: 'amount', title: translate('Amount'), type: 'number', width: '10%', format: '{0:#,##}'}
+        ],
+        commands: [],
+        filterable: false
+    };
+    $scope.canShowCheques = false;
+
+    $scope.$watch('gridOption.current', (newValue)=> {
+        if (!newValue)
+            return $scope.canShowCheques = false;
+
+        $scope.canShowCheques = false;
+
+        $timeout(()=> {
+            $scope.chequeGridOption.readUrl = constants.urls.cheque.all(newValue.id);
+
+            $scope.canShowCheques = true;
+        }, 500);
+
+    });
 
     $scope.create = ()=> {
         chequeCategoryCreateModalService.show()

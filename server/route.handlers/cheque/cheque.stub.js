@@ -1,14 +1,18 @@
 var cheques = require('../../data.stub/cheque.json').cheques;
 
 module.exports.getAll = function (req, res) {
-    res.json({data: cheques});
+    res.json({
+        data: cheques.asEnumerable().where(function (c) {
+            return c.chequeCategoryId == req.params.categoryId;
+        }).toArray()
+    });
 };
 
-module.exports.getById(function (req, res) {
+module.exports.getById = function (req, res) {
     res.json(cheques.asEnumerable().first(function (c) {
         return c.id == req.params.id;
     }));
-});
+};
 
 module.exports.create = function (req, res) {
     console.log(req.body);
