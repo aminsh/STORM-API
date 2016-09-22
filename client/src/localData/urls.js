@@ -1,30 +1,31 @@
-let rootUrl = ()=> '/api'
+let rootUrl = ()=> '/api';
 
 let generalLedgerAccount = {
     all: ()=> '{0}/general-ledger-accounts'.format(rootUrl())
-}
+};
 
 let subsidiaryLedgerAccount = {
     all: ()=> '{0}/subsidiary-ledger-accounts'.format(rootUrl()),
     allByGeneralLedgerAccount: (generalLedgerAccountId)=>
         '{0}/subsidiary-ledger-accounts/general-ledger-account/{1}'
             .format(rootUrl(), generalLedgerAccountId)
-}
+};
 
 let detailAccount = {
     all: ()=> '{0}/detail-accounts'.format(rootUrl())
-}
+};
 
 let dimension = {
     allByCategory: (categoryId)=> '{0}/dimensions/category/{1}'.format(rootUrl(), categoryId)
-}
+};
 
 let period = {
     all: ()=> '{0}/periods'.format(rootUrl())
 };
 
 let chequeCategory = {
-    all: ()=> '{0}/cheque-categories'.format(rootUrl())
+    all: ()=> '{0}/cheque-categories'.format(rootUrl()),
+    allOpens: (detailAccountId)=> '{0}/cheque-categories/detail-account/{1}'.format(rootUrl(), detailAccountId)
 };
 
 let bank = {
@@ -32,7 +33,8 @@ let bank = {
 };
 
 let cheque = {
-    all: (categoryId)=> '{0}/cheques/category/{1}'.format(rootUrl(), categoryId)
+    all: (categoryId)=> '{0}/cheques/category/{1}'.format(rootUrl(), categoryId),
+    allwrites: (categoryId)=> '{0}/cheques/category/{1}/writes'.format(rootUrl(), categoryId)
 };
 
 let apiUrls = {

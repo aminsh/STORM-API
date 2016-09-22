@@ -1,23 +1,16 @@
-var db = require('../../models');
-var kendoQueryService = require('../../services/kendoQueryService');
+var knexService = require('../../services/knexService');
+var kendoQueryResolve = require('../../services/kendoQueryResolve');
 var view = require('../../viewModel.assemblers/view.dimension');
 
 function getAll(req, res) {
-    var kendoRequest = kendoQueryService.getKendoRequestData(req.query);
+    var query = knexService.select().from(function () {
+        this.select(knexService.raw("*,code || ' ' || title as display"))
+            .from('dimensions').as('baseDimensions').where('dimensionCategoryId', req.params.categoryId);
+    }).as('baseDimensions');
 
-    (kendoRequest.where)
-        ? kendoRequest.where.dimensionCategoryId = req.params.categoryId
-        : kendoRequest.where = {dimensionCategoryId: req.params.categoryId};
-
-    db.dimension.findAndCountAll(kendoRequest)
+    kendoQueryResolve(query, req.query, view)
         .then(function (result) {
-            var kendoResult = kendoQueryService.toKendoResultData(result);
-
-            kendoResult.data = kendoResult.data.asEnumerable()
-                .select(view)
-                .toArray();
-
-            res.json(kendoResult);
+            res.json(result);
         });
 }
 

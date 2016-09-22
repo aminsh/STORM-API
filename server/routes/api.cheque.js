@@ -3,12 +3,10 @@ var router = express.Router();
 var chequeRouteHandler = require('../route.handlers/cheque');
 
 router.route('/cheques/category/:categoryId')
-    .get(chequeRouteHandler.getAll)
-    .post(chequeRouteHandler.create);
+    .get(chequeRouteHandler.getAll);
 
-router.route('/cheques/:id')
-    .get(chequeRouteHandler.getById)
-    .put(chequeRouteHandler.update)
-    .delete(chequeRouteHandler.remove);
+router.route('/cheques/category/:categoryId/whites').get(chequeRouteHandler.getWhites);
+router.route('/cheques/:id').get(chequeRouteHandler.getById);
+router.route('cheques/:id/write').put(chequeRouteHandler.write);
 
 module.exports = router;

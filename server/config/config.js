@@ -5,11 +5,12 @@ var environment = {
     development: {
         rootPath: rootPath,
         db: {
-            username: "sa",
+            username: "postgres",
             password: "P@ssw0rd",
-            database: "db_accounting_node",
-            host: "127.0.0.1",
-            dialect: "mssql"
+            database: "dbAccounting",
+            host: "localhost",
+            dialect: "postgres",
+            client: 'pg'
         },
         port: process.env.PORT || 1000,
         clientUrl: 'http://dev-storm:1024',

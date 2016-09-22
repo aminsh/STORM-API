@@ -4,7 +4,8 @@ function KendoGridFilterSequelizeConverter() {
 
     this.resolveFilter = function (filter) {
         if (!filter || !filter.logic || !filter.filters)
-            throw 'Invalid filter format';
+        //throw 'Invalid filter format';
+            return null;
 
         if (filter.filters.length == 0)
             return null;

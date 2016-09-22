@@ -6,7 +6,7 @@ var app = require('./express').app;
 var clientTranslation = require('./translate.client.fa.json');
 
 function checkAuth(req, res, next) {
-    if (req.isAuthenticated() || req.originalUrl == '/login')
+    if (req.isAuthenticated() || req.originalUrl == '/login' || req.originalUrl.startsWith('/register'))
         return next();
 
     if (req.xhr)
@@ -31,8 +31,11 @@ app.post('/login', passport.authenticate('local', {
 }));
 
 app.get('/login', function (req, res) {
-    res.render('login.ejs');
+    res.render('login.ejs', {
+        error: req.flash('error')
+    });
 });
+
 
 /*app.get('/auth/provider/callback',
  passport.authenticate('devstorm-auth', {
@@ -41,6 +44,8 @@ app.get('/login', function (req, res) {
  }));*/
 
 var basePath = '../routes';
+
+app.use('/register', require('{0}/api.registerUser'.format(basePath)));
 
 var generalLedgerAccountApi = require('{0}/api.generalLedgerAccount'.format(basePath));
 var subsidiaryLedgerAccountApi = require('{0}/api.subsidiaryLedgerAccount'.format(basePath));
@@ -52,6 +57,7 @@ var journalLineApi = require('{0}/api.journalLine'.format(basePath));
 var chequeCategoryApi = require('{0}/api.chequeCategory'.format(basePath));
 var bankApi = require('{0}/api.bank'.format(basePath));
 var chequeApi = require('{0}/api.cheque'.format(basePath));
+
 
 app.use('/api', generalLedgerAccountApi);
 app.use('/api', subsidiaryLedgerAccountApi);

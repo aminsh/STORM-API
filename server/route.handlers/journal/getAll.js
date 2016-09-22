@@ -1,28 +1,19 @@
-var db = require('../../models');
-var kendoQueryService = require('../../services/kendoQueryService');
+var knexService = require('../../services/knexService');
+var kendoQueryResolve = require('../../services/kendoQueryResolve');
 var view = require('../../viewModel.assemblers/view.journal');
 
 function getAll(req, res) {
-    var options = kendoQueryService.getKendoRequestData(req.query);
-    options.distinct = true;
-    options.include = [
-        {model: db.journalLine},
-        {model: db.user, as: 'createdBy'}
-    ];
+    var query = knexService.select().from(function () {
+        var selectExp = 'journals.*, SUM(debtor) as "sumDebtor", SUM(creditor) as "sumCreditor"'
+        this.select(knexService.raw(selectExp)).from('journals')
+            .leftJoin('journalLines', 'journals.id', 'journalLines.journalId')
+            .groupBy('journals.id')
+            .as('baseJournals');
+    }).as('baseJournals');
 
-    (options.where)
-        ? options.where.periodId = req.cookies['current-period']
-        : options.where = {periodId: req.cookies['current-period']};
-
-    db.journal.findAndCountAll(options)
+    kendoQueryResolve(query, req.query, view)
         .then(function (result) {
-            var kendoResult = kendoQueryService.toKendoResultData(result);
-
-            kendoResult.data = kendoResult.data.asEnumerable()
-                .select(view)
-                .toArray();
-
-            res.json(kendoResult);
+            res.json(result);
         });
 }
 

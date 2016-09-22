@@ -1,10 +1,12 @@
-var db = require('../../models');
+var knexService = require('../../services/knexService');
+var kendoQueryResolve = require('../../services/kendoQueryResolve');
 var view = require('../../viewModel.assemblers/view.dimension');
 
 function getById(req, res) {
-    db.dimension.findById(req.params.id)
+    knexService.select().from('dimensions').where('id', req.params.id)
         .then(function (result) {
-            res.json(view(result));
+            var entity = result[0];
+            res.json(view(entity));
         });
 }
 

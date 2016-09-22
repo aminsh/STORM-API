@@ -54,7 +54,7 @@ function journalUpdateController($scope, logger, confirm, translate, navigate, $
                 template: '${data.detailAccountCode}',
                 width: '100px'
             },
-            {name: 'article', title: translate('Article'), width: '300px', type: 'number'},
+            {name: 'article', title: translate('Article'), width: '300px', type: 'string'},
             {
                 name: 'debtor', title: translate('Debtor'), width: '100px', type: 'number', format: '{0:#,##}',
                 aggregates: ['sum'], footerTemplate: "{0}: #= kendo.toString(sum,'n0') #".format(translate('Sum'))

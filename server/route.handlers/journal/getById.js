@@ -1,16 +1,13 @@
-var db = require('../../models');
+var knexService = require('../../services/knexService');
+var kendoQueryResolve = require('../../services/kendoQueryResolve');
 var view = require('../../viewModel.assemblers/view.journal');
 
 function getById(req, res) {
-    db.journal.findOne({
-        where: {id: req.params.id},
-        include: [
-            {model: db.journalLine},
-            {model: db.user, as: 'createdBy'}
-        ]
-    }).then(function (result) {
-        res.json(view(result));
-    })
+    knexService.select().from('journals').where('id', req.params.id)
+        .then(function (result) {
+            var entity = result[0];
+            res.json(view(entity));
+        });
 }
 
 module.exports = getById;

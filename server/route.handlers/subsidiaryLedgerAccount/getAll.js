@@ -1,25 +1,16 @@
-var db = require('../../models');
-var kendoQueryService = require('../../services/kendoQueryService');
+var knexService = require('../../services/knexService');
+var kendoQueryResolve = require('../../services/kendoQueryResolve');
 var view = require('../../viewModel.assemblers/view.subsidiaryLedgerAccount');
 
 function getAll(req, res) {
-    var parentId = req.params.parentId;
+    var query = knexService.select().from(function () {
+        this.select(knexService.raw("*,code || ' ' || title as display")).from('subsidiaryLedgerAccounts')
+            .where('generalLedgerAccountId', req.params.parentId).as('baseSubsidiaryLedgerAccounts');
+    }).as('baseSubsidiaryLedgerAccounts');
 
-    var kendoRequest = kendoQueryService.getKendoRequestData(req.query);
-    kendoRequest.include = [
-        {model: db.generalLedgerAccount, where: {id: parentId}}
-    ];
-
-    db.subsidiaryLedgerAccount
-        .findAndCountAll(kendoRequest)
+    kendoQueryResolve(query, req.query, view)
         .then(function (result) {
-            var kendoResult = kendoQueryService.toKendoResultData(result);
-
-            kendoResult.data = kendoResult.data.asEnumerable()
-                .select(view)
-                .toArray();
-
-            res.json(kendoResult);
+            res.json(result);
         });
 }
 

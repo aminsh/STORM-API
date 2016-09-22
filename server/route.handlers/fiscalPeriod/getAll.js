@@ -1,17 +1,15 @@
-var db = require('../../models');
-var kendoQueryService = require('../../services/kendoQueryService');
+var knexService = require('../../services/knexService');
+var kendoQueryResolve = require('../../services/kendoQueryResolve');
 var view = require('../../viewModel.assemblers/view.fiscalPeriod');
 
 function getAll(req, res) {
-    var kendoRequest = kendoQueryService.getKendoRequestData(req.query);
+    var query = knexService.select().from(function () {
+        this.select(knexService.raw("minDate || ' ' || maxDate as display")).from('fiscalPeriods');
+    });
 
-    (kendoRequest.where)
-        ? kendoRequest.where.dimensionCategoryId = req.params.categoryId
-        : kendoRequest.where = {dimensionCategoryId: req.params.categoryId};
-
-    db.period.findAll(kendoRequest)
+    kendoQueryResolve(query, req.query, view)
         .then(function (result) {
-            res.json(view(result));
+            res.json(result);
         });
 }
 

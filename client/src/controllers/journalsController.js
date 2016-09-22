@@ -5,9 +5,9 @@ function journalsController($scope, translate, journalApi, navigate, logger,
 
     $scope.gridOption = {
         columns: [
-            {name: 'number', title: translate('Number'), width: '120px', type: 'string'},
+            {name: 'number', title: translate('Number'), width: '120px', type: 'number'},
             {name: 'date', title: translate('Date'), type: 'date'},
-            {name: 'temporaryNumber', title: translate('Temporary number'), width: '120px', type: 'string'},
+            {name: 'temporaryNumber', title: translate('Temporary number'), width: '120px', type: 'number'},
             {name: 'temporaryDate', title: translate('Temporary date'), type: 'date'},
             {
                 name: 'journalStatus',

@@ -16,13 +16,8 @@ function journalView(entity) {
             ? enums.JournalType().getDisplay(entity.journalType)
             : '',
         attachmentFileName: entity.attachmentFileName,
-        sumDebtor: entity.journalLines.asEnumerable()
-            .sum(function (line) {
-                return line.debtor;
-            }),
-        sumCreditor: entity.journalLines.asEnumerable().sum(function (line) {
-            return line.creditor;
-        })
+        sumDebtor: entity.sumDebtor,
+        sumCreditor: entity.sumCreditor
     };
 
     return viewModel;

@@ -1,23 +1,17 @@
-var db = require('../../models');
-var kendoQueryService = require('../../services/kendoQueryService');
 var view = require('../../viewModel.assemblers/view.detailAccount');
+var knexService = require('../../services/knexService');
+var kendoQueryResolve = require('../../services/kendoQueryResolve');
 
 function getAll(req, res) {
+    var query = knexService.select().from(function () {
+        this.select(knexService.raw("*,code || ' ' || title as display"))
+            .from('detailAccounts').as('baseDetailAccounts');
+    }).as('baseDetailAccounts');
 
-    var kendoRequest = kendoQueryService.getKendoRequestData(req.query);
-
-    db.detailAccount
-        .findAndCountAll(kendoRequest)
+    kendoQueryResolve(query, req.query, view)
         .then(function (result) {
-            var kendoResult = kendoQueryService.toKendoResultData(result);
-
-            kendoResult.data = kendoResult.data.asEnumerable()
-                .select(view)
-                .toArray();
-
-            res.json(kendoResult);
+            res.json(result)
         });
-
 }
 
 module.exports = getAll;

@@ -5,7 +5,7 @@ function chequeCategoriesController($scope, logger, chequeCategoryApi, confirm, 
                                     chequeCategoryUpdateModalService) {
     $scope.gridOption = {
         columns: [
-            {name: 'bank', title: translate('Bank'), width: '10%', type: 'bank'},
+            {name: 'bankId', title: translate('Bank'), width: '10%', type: 'bank', template: '${data.bank}'},
             {name: 'totalPages', title: translate('Total pages'), type: 'number', width: '10%'},
             {name: 'firstPageNumber', title: translate('First page number'), type: 'number', width: '10%'},
             {name: 'lastPageNumber', title: translate('Last page number'), type: 'number', width: '10%'},
@@ -13,7 +13,7 @@ function chequeCategoriesController($scope, logger, chequeCategoryApi, confirm, 
                 name: 'detailAccountId',
                 title: translate('Detail account'),
                 type: 'detailAccount',
-                template: '${data.detailAccountDisplay}'
+                template: '${data.detailAccount}'
             },
             {
                 name: 'status',
@@ -66,7 +66,7 @@ function chequeCategoriesController($scope, logger, chequeCategoryApi, confirm, 
             {name: 'amount', title: translate('Amount'), type: 'number', width: '10%', format: '{0:#,##}'}
         ],
         commands: [],
-        filterable: false
+        //filterable: false
     };
     $scope.canShowCheques = false;
 

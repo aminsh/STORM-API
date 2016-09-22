@@ -6,6 +6,7 @@ var passport = require('passport');
 var multer = require('multer');
 var favicon = require('serve-favicon');
 var cors = require('cors');
+var flash = require('connect-flash');
 
 var onUserConnectedMiddleware = require('./../middlewares/middleware.onUserConnected');
 
@@ -27,6 +28,7 @@ app.use(session({
 }));
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(flash());
 
 app.set('views', config.rootPath + '/server/views');
 app.engine('html', require('ejs').renderFile);

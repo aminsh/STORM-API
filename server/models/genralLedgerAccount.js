@@ -1,3 +1,4 @@
+
 module.exports = function (sequelize, DataTypes) {
     var GeneralLedgerAccount = sequelize.define('generalLedgerAccount', {
         code: {

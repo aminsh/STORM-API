@@ -60,6 +60,10 @@ accModule.config($routeProvider => {
             controller: 'chequeCategoriesController',
             templateUrl: 'partials/views/chequeCategories.html'
         })
+        .when('/banks', {
+            controller: 'banksController',
+            templateUrl: 'partials/views/banks.html'
+        })
         .otherwise('/not-found');
 });
 

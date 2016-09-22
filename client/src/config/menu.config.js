@@ -49,6 +49,11 @@ accModule.config(menuItemsProvider => {
                     title: 'دسته چک ها',
                     url: '#/cheque-categories',
                     icon: ''
+                },
+                {
+                    title: 'بانک ها',
+                    url: '#/banks',
+                    icon: ''
                 }
             ]
         });

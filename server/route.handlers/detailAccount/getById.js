@@ -1,12 +1,12 @@
-var db = require('../../models');
+var knexService = require('../../services/knexService');
+var kendoQueryResolve = require('../../services/kendoQueryResolve');
 var view = require('../../viewModel.assemblers/view.detailAccount');
 
 function getById(req, res) {
-    var id = req.params.id;
-
-    db.detailAccount.findById(id)
-        .then(function (gla) {
-            res.json(view(gla));
+    knexService.select().from('detailAccounts')
+        .where('id', req.params.id)
+        .then(function (result) {
+            res.json(view(result[0]));
         });
 }
 

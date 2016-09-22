@@ -22,6 +22,7 @@ import './controllers/journalUpdateController';
 import './controllers/journalLineCreateOrUpdateController';
 import './controllers/journalLineUpdateController';
 import './controllers/chequeCategoriesController';
+import './controllers/banksController';
 
 
 // load apis

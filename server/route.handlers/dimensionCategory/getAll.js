@@ -1,20 +1,13 @@
-var db = require('../../models');
-var kendoQueryService = require('../../services/kendoQueryService');
+var knexService = require('../../services/knexService');
+var kendoQueryResolve = require('../../services/kendoQueryResolve');
 var view = require('../../viewModel.assemblers/view.dimensionCategory');
 
 function getAll(req, res) {
-    var kendoRequest = kendoQueryService.getKendoRequestData(req.query);
+    var query = knexService.select().from('dimensionCategories');
 
-    db.dimensionCategory
-        .findAndCountAll(kendoRequest)
+    kendoQueryResolve(query, req.query, view)
         .then(function (result) {
-            var kendoResult = kendoQueryService.toKendoResultData(result);
-
-            kendoResult.data = kendoResult.data.asEnumerable()
-                .select(view)
-                .toArray();
-
-            res.json(kendoResult);
+            res.json(result);
         });
 }
 
