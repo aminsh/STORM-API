@@ -46,14 +46,7 @@ accModule.config($routeProvider => {
             controller: 'journalUpdateController',
             templateUrl: 'partials/views/journalUpdate.html'
         })
-        .when('/journal-line/:journalId/create', {
-            controller: 'journalLineCreateController',
-            templateUrl: 'partials/views/journalLineCreateOrUpdate.html'
-        })
-        .when('/journal-line/:id/edit', {
-            controller: 'journalLineUpdateController',
-            templateUrl: 'partials/views/journalLineCreateOrUpdate.html'
-        }).when('/not-found', {
+        .when('/not-found', {
             templateUrl: 'partials/views/notFound.html'
         })
         .when('/cheque-categories', {

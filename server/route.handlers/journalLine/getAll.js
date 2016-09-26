@@ -9,7 +9,8 @@ function getAll(req, res) {
         var selectExp = '"journalLines".*,';
         selectExp += '"generalLedgerAccounts".code as "generalLedgerAccountCode",';
         selectExp += '"subsidiaryLedgerAccounts".code as "subsidiaryLedgerAccountCode",';
-        selectExp += '"detailAccounts".code as "detailAccountCode"';
+        selectExp += '"detailAccounts".code as "detailAccountCode",';
+        selectExp += '"detailAccounts".code || \' \' || "detailAccounts".title as "detailAccountDisplay"';
 
         this.select(knexService.raw(selectExp)).from('journalLines')
             .leftJoin('generalLedgerAccounts', 'journalLines.generalLedgerAccountId', 'generalLedgerAccounts.id')

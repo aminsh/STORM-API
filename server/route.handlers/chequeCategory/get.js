@@ -1,6 +1,7 @@
 var knexService = require('../../services/knexService');
 var kendoQueryResolve = require('../../services/kendoQueryResolve');
 var view = require('../../viewModel.assemblers/view.chequeCategory');
+var translateService = require('../../services/translateService');
 
 function getAll(req, res) {
 
@@ -20,11 +21,16 @@ function getAll(req, res) {
 }
 
 function getOpens(req, res) {
-    var query = knexService.select().from('chequeCategories')
-        .where('isClosed', false)
-        .andWhere('detailAccountId', req.params.detailAccountId);
 
-    kendoQueryResolve(query, req.query, view)
+    var selectExp = ' "id","totalPages", "firstPageNumber", "lastPageNumber", ';
+    selectExp += '(SELECT "count"(*) from cheques where "chequeCategoryId" = "baseChequeCategories".id ' +
+        'AND "status"=\'White\') as "totalWhiteCheques"';
+
+    knexService.select(knexService.raw(selectExp))
+        .from(knexService.raw('"chequeCategories" as "baseChequeCategories"'))
+        .where('isClosed', false)
+        .andWhere('detailAccountId', req.params.detailAccountId)
+        .as("baseChequeCategories")
         .then(function (result) {
             res.json(result);
         });

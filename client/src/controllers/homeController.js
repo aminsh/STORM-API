@@ -1,6 +1,15 @@
 import accModule from '../acc.module';
 
-function homeController($scope, $timeout, $route, $rootScope, periodApi, constants) {
+function homeController($scope, $timeout, $route, $rootScope, constants, logger, $cookies) {
+    $scope.current = {
+        fiscalPeriod: parseInt($cookies.get('current-period'))
+    };
+
+    $scope.fiscalPeriodDataBound = (e)=> {
+        let item = e.sender.dataItem();
+        $rootScope.$emit('currentPeriodChanged', item.display);
+    };
+
     $scope.periodDataSource = {
         type: "json",
         serverFiltering: true,
@@ -16,7 +25,8 @@ function homeController($scope, $timeout, $route, $rootScope, periodApi, constan
 
     $scope.periodOnChange = (e)=> {
         let item = e.sender.dataItem();
-
+        $cookies.put('current-period', item.id);
+        $rootScope.$emit('currentPeriodChanged', item.display);
     };
 }
 

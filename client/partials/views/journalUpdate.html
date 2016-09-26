@@ -98,6 +98,13 @@
             style-type="primary"
             title="{{'New Journal line' | translate}}"></dev-tag-button>
 
+    <dev-tag-button
+            ng-click="writeCheque()"
+            icon="glyphicon glyphicon-credit-card"
+            style-type="default"
+            title="{{'Write cheque' | translate}}"
+            ng-disabled="gridOption.current && gridOption.current.creditor == 0"></dev-tag-button>
+
     <dev-tag-grid option="gridOption"></dev-tag-grid>
 
     <ul class="list-group" ng-if="gridOption.current">

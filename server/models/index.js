@@ -4,7 +4,9 @@ var fs = require("fs");
 var path = require("path");
 var Sequelize = require("sequelize");
 var config = require('../config/config').db;
-var sequelize = new Sequelize(config.database, config.username, config.password, config);
+var sequelize = (config.url)
+    ? new Sequelize(config.url)
+    : new Sequelize(config.database, config.username, config.password, config);
 var db = {};
 
 fs

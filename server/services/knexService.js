@@ -6,7 +6,8 @@ var knex = require('knex')({
         host: dbConfig.host,
         user: dbConfig.username,
         password: dbConfig.password,
-        database: dbConfig.database
+        database: dbConfig.database,
+        ssl: dbConfig.ssl
     },
     debug: true
 });

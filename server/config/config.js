@@ -13,7 +13,6 @@ var environment = {
             client: 'pg'
         },
         port: process.env.PORT || 1000,
-        clientUrl: 'http://dev-storm:1024',
         messageQueue: 'none'
     },
     production: {
@@ -23,9 +22,17 @@ var environment = {
             password: "G0CXzLu0uLzP3jTUNLUODI2bTo",
             database: "d4cd8gk58c0i7d",
             host: "ec2-54-235-246-220.compute-1.amazonaws.com",
-            dialect: "postgres"
+            dialect: "postgres",
+            //native: true,
+            ssl: true,
+            dialectOptions: {
+                require: true,
+                ssl: true
+            },
+            client: 'pg'
+            //url: 'postgres://jkfhhrhedmzpnt:G0CXzLu0uLzP3jTUNLUODI2bTo@ec2-54-235-246-220.compute-1.amazonaws.com:5432/d4cd8gk58c0i7d?ssl=true'
         },
-        port: process.env.PORT || 80,
+        port: process.env.PORT || 1001,
         clientUrl: '',
         messageQueue: 'none'
     }

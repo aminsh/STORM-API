@@ -3,6 +3,7 @@ var enums = require('../constants/enums');
 function subsidiaryLedgerAccountAssembler(entity) {
     var viewModel = {
         id: entity.id,
+        generalLedgerAccountId: entity.generalLedgerAccountId,
         code: entity.code,
         title: entity.title,
         display: '{0} {1}'.format(entity.code, entity.title),

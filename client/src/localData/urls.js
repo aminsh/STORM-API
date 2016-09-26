@@ -20,12 +20,12 @@ let dimension = {
 };
 
 let period = {
-    all: ()=> '{0}/periods'.format(rootUrl())
+    all: ()=> '{0}/fiscal-periods'.format(rootUrl())
 };
 
 let chequeCategory = {
     all: ()=> '{0}/cheque-categories'.format(rootUrl()),
-    allOpens: (detailAccountId)=> '{0}/cheque-categories/detail-account/{1}'.format(rootUrl(), detailAccountId)
+    allOpens: (detailAccountId)=> '{0}/cheque-categories/detail-account/{1}/opens'.format(rootUrl(), detailAccountId)
 };
 
 let bank = {
@@ -34,7 +34,7 @@ let bank = {
 
 let cheque = {
     all: (categoryId)=> '{0}/cheques/category/{1}'.format(rootUrl(), categoryId),
-    allwrites: (categoryId)=> '{0}/cheques/category/{1}/writes'.format(rootUrl(), categoryId)
+    allwhites: (categoryId)=> '{0}/cheques/category/{1}/whites'.format(rootUrl(), categoryId)
 };
 
 let apiUrls = {

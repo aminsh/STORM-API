@@ -9,6 +9,7 @@ function journalLineView(entity) {
         subsidiaryLedgerAccountCode: entity.subsidiaryLedgerAccountCode,
         detailAccountId: entity.detailAccountId,
         detailAccountCode: entity.detailAccountCode,
+        detailAccountDisplay: entity.detailAccountDisplay,
         dimension1Id: entity.dimension1Id,
         dimension2Id: entity.dimension2Id,
         dimension3Id: entity.dimension3Id,

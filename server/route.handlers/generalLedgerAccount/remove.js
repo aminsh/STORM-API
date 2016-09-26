@@ -8,7 +8,7 @@ function remove(req, res) {
     var errors = [];
     var cmd = req.body;
 
-    var gla = await(repository.findById(cmd.id));
+    var gla = await(repository.findById(req.params.id));
 
     if (gla.subsidiaryLedgerAccounts.asEnumerable().any())
         errors
@@ -22,7 +22,7 @@ function remove(req, res) {
             errors: errors
         });
 
-    await(repository.remove(cmd.id));
+    await(repository.remove(req.params.id));
 
     return res.json({
         isValid: true

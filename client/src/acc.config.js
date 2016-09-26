@@ -19,8 +19,6 @@ import './controllers/detailAccountUpdateController';
 import './controllers/dimensionsController';
 import './controllers/journalsController';
 import './controllers/journalUpdateController';
-import './controllers/journalLineCreateOrUpdateController';
-import './controllers/journalLineUpdateController';
 import './controllers/chequeCategoriesController';
 import './controllers/banksController';
 
@@ -48,6 +46,7 @@ import './modals/journalBookkeeping';
 import './modals/journalAttachImage';
 import './modals/chequeCategroyCreate';
 import './modals/chequeCategroyUpdate';
+import './modals/writeChequeOnJournalLineEntry';
 
 import './localData/constants';
 
@@ -59,6 +58,16 @@ import './directives/customValidator';
 import './directives/validationSummary';
 import './directives/focusMe';
 import './directives/uploader';
+import './directives/button';
+import './directives/combobox';
+import './directives/content';
+import './directives/datepicker';
+import './directives/dropdownlist';
+import './directives/grid';
+import './directives/layout';
+import './directives/numeric';
+import './directives/textEditor';
+import './directives/checkbox';
 
 //filter
 import './filters/amount';
@@ -66,6 +75,14 @@ import './filters/amount';
 //service
 import './services/formService';
 import './services/translateStorageService';
+import './services/apiPromise';
+import './services/confirm';
+import './services/gridFilterCellTypeProvider';
+import './services/logger';
+import './services/menuItemsProvider';
+import './services/modalBase';
+import './services/routeNavigatorService';
+import './services/translate';
 
 accModule.init();
 

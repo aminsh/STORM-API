@@ -4,6 +4,7 @@
 
     <dev-tag-combo-box
             id="generalLedgerAccountId"
+            ng-model="current.fiscalPeriod"
             k-placeholder="'{{'Select ...'|translate}}'"
             k-data-value-field="'id'"
             k-data-text-field="'display'"
@@ -13,6 +14,7 @@
             k-auto-bind="false"
             k-min-length="3"
             k-on-change="periodOnChange(kendoEvent)"
+            k-data-bound="fiscalPeriodDataBound"
 
             style="width: 100%"></dev-tag-combo-box>
   </div>

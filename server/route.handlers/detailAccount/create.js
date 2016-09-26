@@ -24,7 +24,7 @@ function create(req, res) {
             errors.push(translate('The title should have at least 3 character'));
     }
 
-    if (errors.errors.asEnumerable().any())
+    if (errors.asEnumerable().any())
         return res.json({
             isValid: !errors.asEnumerable().any(),
             errors: errors

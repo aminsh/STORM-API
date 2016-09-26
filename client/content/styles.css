@@ -8,6 +8,10 @@ h1 {
     font-family: "BKoodakBold", "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
+.sweet-alert {
+    font-family: "BKoodakBold", "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
 a {
     font-family: "BKoodakBold", "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
     text-decoration: none;
@@ -1618,6 +1622,10 @@ h1.head-current {
     top: 130px;
     padding: 6px 0 0 0;
     text-align: center;
+}
+
+.k-animation-container {
+    overflow-y: scroll;
 }
 
 

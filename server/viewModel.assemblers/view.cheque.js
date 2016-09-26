@@ -5,7 +5,7 @@ function chequeAssembler(entity) {
         id: entity.id,
         number: entity.number,
         date: entity.date,
-        description: entity.descriprion,
+        description: entity.description,
         amount: entity.amount,
         status: entity.status,
         statusDisplay: enums.ChequeStatus().getDisplay(entity.status)

@@ -25,5 +25,8 @@
   "The journal with this TemporaryNumber already created": "سندی با شماره موقت وارد شده قبلا ایجاد شده",
   "The temporaryDate is not in current period date range": "تاریخ در دوره جاری نیست",
   "This journal is already fixed": "این سند قبلا ثبت قطعی شده",
-  "The Article is required": "شرح آرتیکل اجباری است"
+  "The Article is required": "شرح آرتیکل اجباری است",
+  "Pages": "برگی",
+  "From": "از",
+  "To": "تا"
 }

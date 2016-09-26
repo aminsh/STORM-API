@@ -3,6 +3,7 @@ var enums = require('../constants/enums');
 function chequeCategoryAssembler(entity) {
     var viewModel = {
         id: entity.id,
+        display: entity.display,
         bankId: entity.bankId,
         bank: entity.bank,
         detailAccountId: entity.detailAccountId,

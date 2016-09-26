@@ -5,6 +5,7 @@ var path = require('path'),
     uglify = require('gulp-uglify'),
     browserify = require('browserify'),
     babelify = require('babelify'),
+    uglifyify = require('uglifyify'),
     exorcist = require('exorcist'),
     distPath = './dist',
     templateCache = require('gulp-angular-templatecache');
@@ -37,10 +38,30 @@ gulp.task('build-acc', function () {
         .transform("babelify", {
             presets: ["es2015", "react"]
         })
+        //.transform("uglifyify")
         .bundle()
         .pipe(exorcist(path.join(distPath, 'acc.bundle.js.map')))
         .pipe(fs.createWriteStream(path.join(distPath, 'acc.bundle.js'), 'utf8'));
 });
 
-gulp.task('default', ['build-acc']);
+gulp.task('build-vendor', function () {
+    var b = browserify(
+        {
+            debug: true
+        });
+
+    var vendorPathSetting = require('./vendor.path.setting');
+    _.keys(vendorPathSetting).forEach(function (key) {
+        console.log(key);
+        b.require(vendorPathSetting[key], {expose: key});
+    });
+
+    return b
+        .transform('uglifyify')
+        .bundle()
+        .pipe(exorcist(path.join(distPath, 'vendor.bundle.min.js.map')))
+        .pipe(fs.createWriteStream(path.join(distPath, 'vendor.bundle.min.js'), 'utf8'));
+});
+
+gulp.task('default', ['build-acc', 'build-template']);
 

@@ -71,7 +71,7 @@ function resolveSort(query, sort) {
     if (!sort) return;
 
     sort.forEach(function (s) {
-        query.orderBy(knex.raw(s.field), s.dir);
+        query.orderBy(s.field, s.dir);
     });
 }
 

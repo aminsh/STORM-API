@@ -3,9 +3,12 @@ var kendoQueryResolve = require('../../services/kendoQueryResolve');
 var view = require('../../viewModel.assemblers/view.cheque');
 
 function getAll(req, res) {
-
-    var query = knexService.select().from('cheques')
-        .where('chequeCategoryId', req.params.categoryId);
+    var query = knexService.select().from(function () {
+        this.select().from('cheques')
+            .where('chequeCategoryId', req.params.categoryId)
+            .orderBy('number')
+            .as('baseCheques');
+    }).as('baseCheques');
 
     kendoQueryResolve(query, req.query, view)
         .then(function (result) {
@@ -14,8 +17,8 @@ function getAll(req, res) {
 }
 
 function getWhites(req, res) {
-    var query = knexService.select().from('cheques')
-        .where('chequeCategoryId', req.params.categroyId)
+    var query = knexService.select('*').from('cheques')
+        .where('chequeCategoryId', req.params.categoryId)
         .andWhere('status', 'White');
 
     kendoQueryResolve(query, req.query, view)

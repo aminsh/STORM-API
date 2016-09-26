@@ -1,11 +1,12 @@
 import accModule from '../acc.module';
 
-function journalUpdateController($scope, logger, confirm, translate, navigate, $routeParams,
-                                 journalApi, journalLineApi,
+function journalUpdateController($scope, logger, confirm, translate, navigate, $routeParams, $rootScope,
+                                 journalApi, journalLineApi, subsidiaryLedgerAccountApi,
                                  journalLineCreateControllerModalService,
                                  journalLineUpdateControllerModalService,
                                  journalBookkeepingService,
-                                 journalAttachImageService) {
+                                 journalAttachImageService,
+                                 writeChequeOnJournalLineEntryService) {
 
     let id = $routeParams.id;
     $scope.errors = [];
@@ -139,6 +140,35 @@ function journalUpdateController($scope, logger, confirm, translate, navigate, $
                 logger.success();
                 fetch();
             });
+    }
+
+    $scope.writeCheque = ()=> {
+        $rootScope.blockUi.block();
+
+        let current = $scope.gridOption.current;
+        subsidiaryLedgerAccountApi.getById(current.subsidiaryLedgerAccountId)
+            .then((result)=> {
+                $rootScope.blockUi.unBlock();
+
+                if (result.isBankAccount) {
+                    writeChequeOnJournalLineEntryService.show({
+                        journalLineId: current.id,
+                        detailAccountId: current.detailAccountId,
+                        detailAccountDisplay: current.detailAccountDisplay,
+                        amount: current.creditor,
+                        description: current.article,
+                        date: $scope.journal.date
+                    }).then(()=> {
+                        $scope.gridOption.refresh();
+                        logger.success();
+                    });
+                }
+                else {
+                    logger.error(translate('The current subsidiaryLedgerAccount is not bank account'));
+                }
+            });
+
+
     }
 
 

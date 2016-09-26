@@ -19,8 +19,8 @@ app.use(checkAuth);
 
 app.get('/', function (req, res) {
     res.render('index.ejs', {
-        clientUrl: 'http://dev-storm:1024',
-        clientTranslation: clientTranslation
+        clientTranslation: clientTranslation,
+        currentUser: req.user.name
     });
 });
 
@@ -34,6 +34,11 @@ app.get('/login', function (req, res) {
     res.render('login.ejs', {
         error: req.flash('error')
     });
+});
+
+app.get('/logout', function (req, res) {
+    req.logout();
+    res.redirect('/');
 });
 
 
@@ -57,6 +62,7 @@ var journalLineApi = require('{0}/api.journalLine'.format(basePath));
 var chequeCategoryApi = require('{0}/api.chequeCategory'.format(basePath));
 var bankApi = require('{0}/api.bank'.format(basePath));
 var chequeApi = require('{0}/api.cheque'.format(basePath));
+var fiscalPeriod = require('{0}/api.fiscalPeriod'.format(basePath));
 
 
 app.use('/api', generalLedgerAccountApi);
@@ -69,5 +75,6 @@ app.use('/api', journalLineApi);
 app.use('/api', chequeCategoryApi);
 app.use('/api', bankApi);
 app.use('/api', chequeApi);
+app.use('/api', fiscalPeriod);
 
 

@@ -6,11 +6,12 @@ import 'angular-sanitize';
 import 'angular-translate';
 import 'angular-resource';
 import 'angular-messages';
+import 'angular-cookies';
 import 'kendo';
 import 'kendo.messages';
+import 'angular-cookies';
 
 let accModule = angular.module('acc.module', [
-    'core.module',
     'ngAnimate',
     'ngRoute',
     'ngResource',
@@ -18,7 +19,8 @@ let accModule = angular.module('acc.module', [
     'ui.bootstrap',
     'pascalprecht.translate',
     'kendo.directives',
-    'ngMessages'
+    'ngMessages',
+    'ngCookies'
 ]);
 
 accModule.init = () => {

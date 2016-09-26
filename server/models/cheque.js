@@ -22,6 +22,7 @@ module.exports = function (sequelize, DataTypes) {
         classMethods: {
             associate: function (models) {
                 Cheque.belongsTo(models.chequeCategory);
+                Cheque.belongsTo(models.journalLine);
             }
         }
     });

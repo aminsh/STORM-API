@@ -7,6 +7,6 @@ router.route('/cheques/category/:categoryId')
 
 router.route('/cheques/category/:categoryId/whites').get(chequeRouteHandler.getWhites);
 router.route('/cheques/:id').get(chequeRouteHandler.getById);
-router.route('cheques/:id/write').put(chequeRouteHandler.write);
+router.route('/cheques/:id/write').put(chequeRouteHandler.write);
 
 module.exports = router;

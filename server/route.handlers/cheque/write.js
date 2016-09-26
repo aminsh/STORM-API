@@ -8,7 +8,7 @@ function write(req, res) {
     var errors = [];
     var cmd = req.body;
 
-    if (errors.errors.asEnumerable().any())
+    if (errors.asEnumerable().any())
         return res.json({
             isValid: !errors.asEnumerable().any(),
             errors: errors
@@ -16,9 +16,9 @@ function write(req, res) {
 
     var entity = await(repository.findById(req.params.id));
 
-    entity.data = cmd.date;
+    entity.date = cmd.date;
     entity.amount = cmd.amount;
-    entity.descriprion = cmd.description;
+    entity.description = cmd.description;
     entity.status = 'Used';
     entity.journalLineId = cmd.journalLineId;
 
