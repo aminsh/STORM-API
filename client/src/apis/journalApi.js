@@ -19,6 +19,7 @@ function journalApi(apiPromise) {
         remove: function (id) {
             return apiPromise.delete('{0}/journals/{1}'.format(urlPrefix, id));
         },
+        copy: (id)=> apiPromise.post('{0}/journals/{1}/copy'.format(urlPrefix, id)),
         bookkeeping: (id, data)=> apiPromise.put('{0}/journals/{1}/bookkeeping'.format(urlPrefix, id), data),
         attachImage: (id, data)=> apiPromise.put('{0}/journals/{1}/attach-image'.format(urlPrefix, id), data)
     };

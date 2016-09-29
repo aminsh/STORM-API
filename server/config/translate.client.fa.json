@@ -127,6 +127,8 @@
   "Attachment ?": "ضمائم ؟",
   "Rows": "سطر",
   "Show journal detail": "نمایش جزئیات سند",
-  "This journal already bookkeeped": "این سند قبلا ثبت دفترداری شده"
+  "This journal already bookkeeped": "این سند قبلا ثبت دفترداری شده",
+  "Copy journal": "کپی سند",
+  "Do you want to edit created journal ?": "آیا میخواهید سند ایجاد شده را ویرایش کنید ؟"
 
 }

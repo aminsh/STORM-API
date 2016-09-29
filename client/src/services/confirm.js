@@ -3,13 +3,13 @@ import accModule from '../acc.module';
 
 function confirm(translate, $q) {
 
-    return (message, title)=> {
+    return (message, title, type)=> {
         let deferred = $q.defer();
 
         swal({
             title: title,
             text: message,
-            type: "warning",
+            type: type || "warning",
             showCancelButton: true,
             cancelButtonText: translate('No'),
             confirmButtonText: translate('Yes')

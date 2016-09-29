@@ -22,7 +22,7 @@ import './controllers/journalUpdateController';
 import './controllers/chequeCategoriesController';
 import './controllers/banksController';
 import './controllers/journalManagementController';
-
+import './controllers/journalCopy';
 
 // load apis
 import './apis/generalLedgerAccountApi';

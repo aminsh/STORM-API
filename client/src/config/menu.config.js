@@ -37,6 +37,11 @@ accModule.config(menuItemsProvider => {
                     title: 'مدیریت اسناد',
                     url: '#/journal-management',
                     icon: ''
+                },
+                {
+                    title: 'کپی سند',
+                    url: '#/journal/copy',
+                    icon: 'glyphicon glyphicon-copy'
                 }
             ]
         })

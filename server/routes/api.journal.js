@@ -15,8 +15,12 @@ router.route('/journals/summary/grouped-by-month').get(journalRouteHandlers.getG
 
 router.route('/journals/month/:month').get(journalRouteHandlers.getJournalsByMonth);
 
+router.route('/journals/period/:periodId').get(journalRouteHandlers.getAllByPeriod);
+
 router.route('/journals/:id/bookkeeping').put(journalRouteHandlers.bookkeeping);
 router.route('/journals/:id/fix').put(journalRouteHandlers.fix);
 router.route('/journals/:id/attach-image').put(journalRouteHandlers.attachImage);
+
+router.route('/journals/:id/copy').post(journalRouteHandlers.copy);
 
 module.exports = router;

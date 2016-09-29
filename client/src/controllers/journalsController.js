@@ -45,9 +45,7 @@ function journalsController($scope, translate, journalApi, navigate, logger,
                     id: result.id
                 });
             });
-    }
-
-
+    };
 }
 
 accModule.controller('journalsController', journalsController);

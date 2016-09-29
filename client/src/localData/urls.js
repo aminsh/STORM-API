@@ -39,7 +39,8 @@ let cheque = {
 
 let journal = {
     getGroupedByMouth: ()=> '{0}/journals/summary/grouped-by-month'.format(rootUrl()),
-    getByMonth: (month)=> '{0}/journals/month/{1}'.format(rootUrl(), month)
+    getByMonth: (month)=> '{0}/journals/month/{1}'.format(rootUrl(), month),
+    getAllByPeriod: (periodId)=> '{0}/journals/period/{1}'.format(rootUrl(), periodId)
 }
 
 let apiUrls = {

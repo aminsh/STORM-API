@@ -14,17 +14,29 @@ var journalRepository = {
         });
     },
     findById: function (id) {
-        return db.journal.findById(id);
-    },
-    maxTemporaryNumber: function (periodId) {
-        return db.journal.max('temporaryNumber', {
+        return db.journal.findOne({
+            where: {
+                id: id
+            },
             include: [
-                {model: 'period', where: {id: periodId}}
+                {model: db.journalLine}
             ]
         });
     },
+    maxTemporaryNumber: function (periodId) {
+        return db.journal.max('temporaryNumber', {
+            where: {
+                periodId: periodId
+            }
+        });
+    },
     create: function (entity) {
-        return db.journal.create(entity);
+        var option = {};
+
+        if (entity.journalLines && entity.journalLines.length > 0)
+            option.include = [db.journalLine];
+
+        return db.journal.create(entity, option);
     },
     update: function (entity) {
         return entity.save();

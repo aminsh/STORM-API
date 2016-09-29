@@ -73,6 +73,22 @@ function getJournalsByMonth(req, res) {
         });
 }
 
+function getAllByPeriod(req, res) {
+    var currentFiscalPeriod = req.params.periodId;
+    var query = knexService.select().from(function () {
+        this.select().from('journals')
+            .where('periodId', currentFiscalPeriod)
+            .orderBy('temporaryNumber', 'desc')
+            .as('baseJournals');
+    }).as('baseJournals');
+
+    kendoQueryResolve(query, req.query, view)
+        .then(function (result) {
+            res.json(result);
+        });
+}
+
 module.exports.getAll = getAll;
+module.exports.getAllByPeriod = getAllByPeriod;
 module.exports.getGroupedByMouth = getGroupedByMouth;
 module.exports.getJournalsByMonth = getJournalsByMonth;

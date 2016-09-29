@@ -42,6 +42,10 @@ accModule.config($routeProvider => {
             controller: 'journalsController',
             templateUrl: 'partials/views/journals.html'
         })
+        .when('/journal/copy', {
+            controller: 'journalCopyController',
+            templateUrl: 'partials/views/journalCopy.html'
+        })
         .when('/journal/:id/edit', {
             controller: 'journalUpdateController',
             templateUrl: 'partials/views/journalUpdate.html'
