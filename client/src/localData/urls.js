@@ -41,6 +41,10 @@ let journal = {
     getGroupedByMouth: ()=> '{0}/journals/summary/grouped-by-month'.format(rootUrl()),
     getByMonth: (month)=> '{0}/journals/month/{1}'.format(rootUrl(), month),
     getAllByPeriod: (periodId)=> '{0}/journals/period/{1}'.format(rootUrl(), periodId)
+};
+
+let journalTemplate = {
+    getAll: ()=> '{0}/journal-templates'.format(rootUrl())
 }
 
 let apiUrls = {
@@ -52,7 +56,8 @@ let apiUrls = {
     chequeCategory: chequeCategory,
     bank: bank,
     cheque: cheque,
-    journal: journal
+    journal: journal,
+    journalTemplate: journalTemplate
 };
 
 export default apiUrls;

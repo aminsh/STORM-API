@@ -42,6 +42,10 @@ accModule.config(menuItemsProvider => {
                     title: 'کپی سند',
                     url: '#/journal/copy',
                     icon: 'glyphicon glyphicon-copy'
+                },
+                {
+                    title: 'سند استاندارد',
+                    url: '#/journal-templates'
                 }
             ]
         })

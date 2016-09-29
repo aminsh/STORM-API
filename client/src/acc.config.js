@@ -23,6 +23,7 @@ import './controllers/chequeCategoriesController';
 import './controllers/banksController';
 import './controllers/journalManagementController';
 import './controllers/journalCopy';
+import './controllers/journalTemplatesController';
 
 // load apis
 import './apis/generalLedgerAccountApi';
@@ -35,6 +36,7 @@ import './apis/journalLineApi';
 import './apis/chequeCategoryApi';
 import './apis/bankApi';
 import './apis/chequeApi';
+import './apis/journalTemplateApi';
 
 // load modals
 import './modals/generalLedgerAccountCreate';
@@ -85,6 +87,7 @@ import './services/menuItemsProvider';
 import './services/modalBase';
 import './services/routeNavigatorService';
 import './services/translate';
+import './services/prompt';
 
 accModule.init();
 

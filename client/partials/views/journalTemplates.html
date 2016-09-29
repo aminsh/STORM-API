@@ -1,0 +1,45 @@
+<dev-tag-content title="{{'Journal Template'|translate}}">
+    <tabset active="active">
+        <tab index="0" heading="{{'Create journal by journal template'|translate}}">
+
+            <div style="padding: 20px;"></div>
+            <dev-tag-grid option="gridOption"></dev-tag-grid>
+        </tab>
+
+        <tab index="1">
+            <tab-heading>
+                <i class="glyphicon glyphicon-copy"></i> {{'Copy to journal template'|translate}}
+            </tab-heading>
+
+            <div style="padding: 20px">
+                <div class="row">
+                    <div class="col-xs-6 col-sm-4">
+                        <div class="form-group">
+                            <label class="label-control">{{'Select Period' | translate}}</label>
+                            <dev-tag-combo-box
+                                    name="fiscalPeriod"
+                                    k-placeholder="'{{'Select ...'|translate}}'"
+                                    k-data-value-field="'id'"
+                                    k-data-text-field="'display'"
+                                    k-data-source="periodDataSource"
+                                    k-value-primitive="true"
+                                    k-filter="'contains'"
+                                    k-auto-bind="false"
+                                    k-min-length="3"
+                                    k-on-change="periodOnChange(kendoEvent)"
+                                    style="width: 100%"></dev-tag-combo-box>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-xs-12 col-sm-12">
+                        <div style="margin-top: 50px" ng-if="canShowJournalGrid">
+                            <dev-tag-grid option="journalGridOption"></dev-tag-grid>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </tab>
+    </tabset>
+</dev-tag-content>

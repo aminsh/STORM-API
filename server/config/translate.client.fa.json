@@ -9,6 +9,8 @@
   "Remove": "حذف",
   "Are you sure ?": "آیا مطمئن هستید ؟",
   "Please wait ...": "لطفا صبر کنید ...",
+  "Type something": "یه چیزی تایپ کنید",
+  "You should type something": "شما باید یه چیزی تایپ کنید",
   "Done successfully": "عملیات با موفقیت انجام شد",
   "Successful": "موفقیت آمیز",
   "This field is required": "این فیلد اجباری است",
@@ -18,8 +20,8 @@
   "OK": "باشه",
   "Yes": "بله",
   "No": "نه",
-  "Confirm": "بله",
-  "Cancel": "نه",
+  "Confirm": "تایید",
+  "Cancel": "انصراف",
   "Error": "خطا",
   "Warning": "هشدار",
   "Info": "اطلاعات",
@@ -129,6 +131,10 @@
   "Show journal detail": "نمایش جزئیات سند",
   "This journal already bookkeeped": "این سند قبلا ثبت دفترداری شده",
   "Copy journal": "کپی سند",
-  "Do you want to edit created journal ?": "آیا میخواهید سند ایجاد شده را ویرایش کنید ؟"
+  "Do you want to edit created journal ?": "آیا میخواهید سند ایجاد شده را ویرایش کنید ؟",
+  "Copy to journal template": "کپی به سند استاندارد",
+  "Enter Title of journal template": "عنوان سند استاندارد را وارد کنید",
+  "Journal Template": "سند استاندارد",
+  "Create journal by journal template": "ایجاد سند از روی سند استاندارد"
 
 }

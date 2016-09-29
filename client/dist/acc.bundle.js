@@ -68,6 +68,8 @@
 
         require('./controllers/journalCopy');
 
+        require('./controllers/journalTemplatesController');
+
         require('./apis/generalLedgerAccountApi');
 
         require('./apis/subsidiaryLedgerAccountApi');
@@ -87,6 +89,8 @@
         require('./apis/bankApi');
 
         require('./apis/chequeApi');
+
+        require('./apis/journalTemplateApi');
 
         require('./modals/generalLedgerAccountCreate');
 
@@ -170,15 +174,11 @@
 
         require('./services/translate');
 
+        require('./services/prompt');
+
         function _interopRequireDefault(obj) {
             return obj && obj.__esModule ? obj : {default: obj};
         }
-
-//service
-
-
-//directives
-        _acc2.default.init();
 
 //filter
 
@@ -186,13 +186,19 @@
 // load modals
 
 
-// load apis
-
-
 //load controllers
 
 
 // load config
+        _acc2.default.init();
+
+//service
+
+
+//directives
+
+
+// load apis
 
     }, {
         "./acc.module": 2,
@@ -205,68 +211,71 @@
         "./apis/generalLedgerAccountApi": 9,
         "./apis/journalApi": 10,
         "./apis/journalLineApi": 11,
-        "./apis/subsidiaryLedgerAccountApi": 12,
-        "./config/gridFilterCellTypeConfig": 13,
-        "./config/menu.config.js": 14,
-        "./config/route.config": 15,
-        "./config/translate.config": 16,
-        "./controllers/banksController": 17,
-        "./controllers/chequeCategoriesController": 18,
-        "./controllers/detailAccountCreateController": 19,
-        "./controllers/detailAccountUpdateController": 20,
-        "./controllers/detailAccountsController": 21,
-        "./controllers/dimensionsController": 22,
-        "./controllers/generalLedgerAccountsController": 23,
-        "./controllers/homeController": 24,
-        "./controllers/journalCopy": 25,
-        "./controllers/journalManagementController": 26,
-        "./controllers/journalUpdateController": 27,
-        "./controllers/journalsController": 28,
-        "./controllers/shellController": 29,
-        "./controllers/subsidiaryLedgerAccountCreateController": 30,
-        "./controllers/subsidiaryLedgerAccountUpdateController": 31,
-        "./controllers/subsidiaryLedgerAccountsController": 32,
-        "./directives/alert": 33,
-        "./directives/blockUi": 34,
-        "./directives/button": 35,
-        "./directives/checkbox": 36,
-        "./directives/combobox": 37,
-        "./directives/content": 38,
-        "./directives/customValidator": 39,
-        "./directives/datepicker": 40,
-        "./directives/dropdownlist": 41,
-        "./directives/focusMe": 42,
-        "./directives/grid": 43,
-        "./directives/layout": 44,
-        "./directives/numeric": 45,
-        "./directives/subContent": 46,
-        "./directives/textEditor": 47,
-        "./directives/uploader": 48,
-        "./directives/validationSummary": 49,
-        "./filters/amount": 50,
-        "./localData/constants": 52,
-        "./modals/chequeCategroyCreate": 56,
-        "./modals/chequeCategroyUpdate": 57,
-        "./modals/dimensionCreate": 58,
-        "./modals/dimensionUpdate": 59,
-        "./modals/generalLedgerAccountCreate": 60,
-        "./modals/generalLedgerAccountUpdate": 61,
-        "./modals/journalAttachImage": 62,
-        "./modals/journalBookkeeping": 63,
-        "./modals/journalCreate": 64,
-        "./modals/journalLineCreateOrUpdate": 65,
-        "./modals/showJournalDetail": 66,
-        "./modals/writeChequeOnJournalLineEntry": 67,
-        "./services/apiPromise": 68,
-        "./services/confirm": 69,
-        "./services/formService": 70,
-        "./services/gridFilterCellTypeProvider": 71,
-        "./services/logger": 72,
-        "./services/menuItemsProvider": 73,
-        "./services/modalBase": 74,
-        "./services/routeNavigatorService": 75,
-        "./services/translate": 76,
-        "./services/translateStorageService": 77
+        "./apis/journalTemplateApi": 12,
+        "./apis/subsidiaryLedgerAccountApi": 13,
+        "./config/gridFilterCellTypeConfig": 14,
+        "./config/menu.config.js": 15,
+        "./config/route.config": 16,
+        "./config/translate.config": 17,
+        "./controllers/banksController": 18,
+        "./controllers/chequeCategoriesController": 19,
+        "./controllers/detailAccountCreateController": 20,
+        "./controllers/detailAccountUpdateController": 21,
+        "./controllers/detailAccountsController": 22,
+        "./controllers/dimensionsController": 23,
+        "./controllers/generalLedgerAccountsController": 24,
+        "./controllers/homeController": 25,
+        "./controllers/journalCopy": 26,
+        "./controllers/journalManagementController": 27,
+        "./controllers/journalTemplatesController": 28,
+        "./controllers/journalUpdateController": 29,
+        "./controllers/journalsController": 30,
+        "./controllers/shellController": 31,
+        "./controllers/subsidiaryLedgerAccountCreateController": 32,
+        "./controllers/subsidiaryLedgerAccountUpdateController": 33,
+        "./controllers/subsidiaryLedgerAccountsController": 34,
+        "./directives/alert": 35,
+        "./directives/blockUi": 36,
+        "./directives/button": 37,
+        "./directives/checkbox": 38,
+        "./directives/combobox": 39,
+        "./directives/content": 40,
+        "./directives/customValidator": 41,
+        "./directives/datepicker": 42,
+        "./directives/dropdownlist": 43,
+        "./directives/focusMe": 44,
+        "./directives/grid": 45,
+        "./directives/layout": 46,
+        "./directives/numeric": 47,
+        "./directives/subContent": 48,
+        "./directives/textEditor": 49,
+        "./directives/uploader": 50,
+        "./directives/validationSummary": 51,
+        "./filters/amount": 52,
+        "./localData/constants": 54,
+        "./modals/chequeCategroyCreate": 58,
+        "./modals/chequeCategroyUpdate": 59,
+        "./modals/dimensionCreate": 60,
+        "./modals/dimensionUpdate": 61,
+        "./modals/generalLedgerAccountCreate": 62,
+        "./modals/generalLedgerAccountUpdate": 63,
+        "./modals/journalAttachImage": 64,
+        "./modals/journalBookkeeping": 65,
+        "./modals/journalCreate": 66,
+        "./modals/journalLineCreateOrUpdate": 67,
+        "./modals/showJournalDetail": 68,
+        "./modals/writeChequeOnJournalLineEntry": 69,
+        "./services/apiPromise": 70,
+        "./services/confirm": 71,
+        "./services/formService": 72,
+        "./services/gridFilterCellTypeProvider": 73,
+        "./services/logger": 74,
+        "./services/menuItemsProvider": 75,
+        "./services/modalBase": 76,
+        "./services/prompt": 77,
+        "./services/routeNavigatorService": 78,
+        "./services/translate": 79,
+        "./services/translateStorageService": 80
     }],
     2: [function (require, module, exports) {
         'use strict';
@@ -694,6 +703,36 @@
             return obj && obj.__esModule ? obj : {default: obj};
         }
 
+        function journalTemplateApi(apiPromise) {
+            var urlPrefix = '/api';
+
+            return {
+                create: function create(journalId, data) {
+                    return apiPromise.post('{0}/journal-templates/journal/{1}'.format(urlPrefix, journalId), data);
+                },
+                journalCreate: function journalCreate(id) {
+                    return apiPromise.post('{0}/journal-templates/{1}/journal/create'.format(urlPrefix, id));
+                },
+                remove: function remove(id) {
+                    return apiPromise.delete('{0}/journal-templates/{1}'.format(urlPrefix, id));
+        }
+            };
+        }
+
+        _acc2.default.factory('journalTemplateApi', journalTemplateApi);
+
+    }, {"../acc.module": 2}],
+    13: [function (require, module, exports) {
+        'use strict';
+
+        var _acc = require('../acc.module');
+
+        var _acc2 = _interopRequireDefault(_acc);
+
+        function _interopRequireDefault(obj) {
+            return obj && obj.__esModule ? obj : {default: obj};
+        }
+
         function subsidiaryLedgerAccountApi(apiPromise) {
             var urlPrefix = '/api';
 
@@ -734,7 +773,7 @@
         _acc2.default.factory('subsidiaryLedgerAccountApi', subsidiaryLedgerAccountApi);
 
     }, {"../acc.module": 2}],
-    13: [function (require, module, exports) {
+    14: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -855,8 +894,8 @@
             });
         });
 
-    }, {"../acc.module": 2, "../localData/constants": 52}],
-    14: [function (require, module, exports) {
+    }, {"../acc.module": 2, "../localData/constants": 54}],
+    15: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -900,6 +939,9 @@
                     title: 'کپی سند',
                     url: '#/journal/copy',
                     icon: 'glyphicon glyphicon-copy'
+                }, {
+                    title: 'سند استاندارد',
+                    url: '#/journal-templates'
                 }]
             }).add({
                 title: 'خزانه داری',
@@ -918,7 +960,7 @@
         });
 
     }, {"../acc.module": 2}],
-    15: [function (require, module, exports) {
+    16: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -963,6 +1005,9 @@
             }).when('/journal/copy', {
                 controller: 'journalCopyController',
                 templateUrl: 'partials/views/journalCopy.html'
+            }).when('/journal-templates', {
+                controller: 'journalTemplatesController',
+                templateUrl: 'partials/views/journalTemplates.html'
             }).when('/journal/:id/edit', {
                 controller: 'journalUpdateController',
                 templateUrl: 'partials/views/journalUpdate.html'
@@ -985,7 +1030,7 @@
         });
 
     }, {"../acc.module": 2}],
-    16: [function (require, module, exports) {
+    17: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -1016,8 +1061,8 @@
             $translateProvider.useSanitizeValueStrategy('escapeParameters');
         });
 
-    }, {"../acc.module": 2, "../localData/config": 51, "angular-translate-loader-url": "angular-translate-loader-url"}],
-    17: [function (require, module, exports) {
+    }, {"../acc.module": 2, "../localData/config": 53, "angular-translate-loader-url": "angular-translate-loader-url"}],
+    18: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -1099,7 +1144,7 @@
         _acc2.default.controller('banksController', banksController);
 
     }, {"../acc.module": 2}],
-    18: [function (require, module, exports) {
+    19: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -1207,7 +1252,7 @@
         _acc2.default.controller('chequeCategoriesController', chequeCategoriesController);
 
     }, {"../acc.module": 2}],
-    19: [function (require, module, exports) {
+    20: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -1250,7 +1295,7 @@
         _acc2.default.controller('detailAccountCreateController', detailAccountCreateController);
 
     }, {"../acc.module": 2}],
-    20: [function (require, module, exports) {
+    21: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -1318,7 +1363,7 @@
         _acc2.default.controller('detailAccountUpdateController', detailAccountUpdateController);
 
     }, {"../acc.module": 2}],
-    21: [function (require, module, exports) {
+    22: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -1366,7 +1411,7 @@
         _acc2.default.controller('detailAccountsController', detailAccountsController);
 
     }, {"../acc.module": 2}],
-    22: [function (require, module, exports) {
+    23: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -1511,7 +1556,7 @@
         _acc2.default.controller('dimensionsController', dimensionsController);
 
     }, {"../acc.module": 2}],
-    23: [function (require, module, exports) {
+    24: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -1589,7 +1634,7 @@
         _acc2.default.controller('generalLedgerAccountsController', generalLedgerAccountsController);
 
     }, {"../acc.module": 2}],
-    24: [function (require, module, exports) {
+    25: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -1633,7 +1678,7 @@
         _acc2.default.controller('homeController', homeController);
 
     }, {"../acc.module": 2}],
-    25: [function (require, module, exports) {
+    26: [function (require, module, exports) {
         "use strict";
 
         var _acc = require("../acc.module");
@@ -1715,7 +1760,7 @@
         _acc2.default.controller('journalCopyController', journalCopyController);
 
     }, {"../acc.module": 2}],
-    26: [function (require, module, exports) {
+    27: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -1811,7 +1856,98 @@
         _acc2.default.controller('journalManagementController', journalManagementController);
 
     }, {"../acc.module": 2}],
-    27: [function (require, module, exports) {
+    28: [function (require, module, exports) {
+        'use strict';
+
+        var _acc = require('../acc.module');
+
+        var _acc2 = _interopRequireDefault(_acc);
+
+        function _interopRequireDefault(obj) {
+            return obj && obj.__esModule ? obj : {default: obj};
+        }
+
+        function journalTemplatesController($scope, translate, confirm, navigate, journalTemplateApi, constants, prompt, logger, $timeout) {
+            $scope.errors = [];
+            $scope.canShowJournalGrid = false;
+
+            $scope.periodDataSource = {
+                type: "json",
+                serverFiltering: true,
+                transport: {
+                    read: {
+                        url: constants.urls.period.all()
+                    }
+                },
+                schema: {
+                    data: 'data'
+        }
+            };
+
+            $scope.periodOnChange = function (e) {
+                var item = e.sender.dataItem();
+
+                $scope.canShowJournalGrid = false;
+                $scope.journalGridOption.readUrl = constants.urls.journal.getAllByPeriod(item.id);
+
+                $timeout(function () {
+                    return $scope.canShowJournalGrid = true;
+                }, 0);
+            };
+
+            $scope.gridOption = {
+                columns: [{
+                    name: 'title', title: translate('Title'), width: '70%', type: 'string',
+                    template: '<span title="${data.title}">${data.title}</span>'
+                }],
+                commands: [{
+                    title: translate('New Journal'),
+                    action: function action(current) {
+                        confirm(translate('Are you sure ?'), translate('New Journal')).then(function () {
+                            journalTemplateApi.journalCreate(current.id).then(function (result) {
+                                confirm(translate('Do you want to edit created journal ?'), translate('Successful'), 'success').then(function () {
+                                    navigate('journalUpdate', {id: result.id});
+                                });
+                            }).catch(function (errors) {
+                                return $scope.errors = errors;
+                            });
+                        });
+                    }
+                }],
+                readUrl: constants.urls.journalTemplate.getAll()
+            };
+
+            $scope.journalGridOption = {
+                columns: [{
+                    name: 'temporaryNumber',
+                    title: translate('Temporary number'),
+                    width: '10%',
+                    type: 'number'
+                }, {name: 'temporaryDate', title: translate('Temporary date'), type: 'date', width: '20%'}, {
+                    name: 'description', title: translate('Description'), type: 'string', width: '50%',
+                    template: '<span title="${data.description}">${data.description}</span>'
+                }],
+                commands: [{
+                    title: translate('Copy to journal template'),
+                    action: function action(current) {
+                        prompt({
+                            title: translate('Copy to journal template'),
+                            text: translate('Enter Title of journal template')
+                        }).then(function (inputValue) {
+                            journalTemplateApi.create(current.id, {title: inputValue}).then(function () {
+                                logger.success();
+                                $scope.gridOption.refresh();
+                            });
+                });
+            }
+                }]
+            };
+        }
+
+        _acc2.default.controller('journalTemplatesController', journalTemplatesController);
+
+    }, {"../acc.module": 2}],
+    29: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -1879,7 +2015,7 @@
                             journalId: id,
                             id: current.id
                         }).then(function () {
-                            return $scope.gridOption.refresh();
+                    return $scope.gridOption.refresh();
                 });
                     }
                 }, {
@@ -1968,7 +2104,7 @@
         _acc2.default.controller('journalUpdateController', journalUpdateController);
 
     }, {"../acc.module": 2}],
-    28: [function (require, module, exports) {
+    30: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -2014,7 +2150,7 @@
                     action: function action(current) {
                         navigate('journalUpdate', {
                             id: current.id
-                        });
+                });
                     }
                 }],
                 readUrl: journalApi.url.getAll
@@ -2033,7 +2169,7 @@
         _acc2.default.controller('journalsController', journalsController);
 
     }, {"../acc.module": 2}],
-    29: [function (require, module, exports) {
+    31: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -2071,7 +2207,7 @@
         _acc2.default.controller('shellController', shellController);
 
     }, {"../acc.module": 2}],
-    30: [function (require, module, exports) {
+    32: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -2129,7 +2265,7 @@
         _acc2.default.controller('subsidiaryLedgerAccountCreateController', subsidiaryLedgerAccountCreateController);
 
     }, {"../acc.module": 2}],
-    31: [function (require, module, exports) {
+    33: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -2223,7 +2359,7 @@
         _acc2.default.controller('subsidiaryLedgerAccountUpdateController', subsidiaryLedgerAccountUpdateController);
 
     }, {"../acc.module": 2}],
-    32: [function (require, module, exports) {
+    34: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -2268,7 +2404,7 @@
                             }).catch(function (errors) {
                                 return $scope.errors = errors;
                             });
-                        });
+                });
                     }
                 }],
                 readUrl: subsidiaryLedgerAccountApi.url.getAll(generalLedgerAccountId)
@@ -2284,7 +2420,7 @@
         _acc2.default.controller('subsidiaryLedgerAccountsController', subsidiaryLedgerAccountsController);
 
     }, {"../acc.module": 2}],
-    33: [function (require, module, exports) {
+    35: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -2319,7 +2455,7 @@
         _acc2.default.directive('devTagAlert', alertTag);
 
     }, {"../acc.module": 2}],
-    34: [function (require, module, exports) {
+    36: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -2343,7 +2479,7 @@
         _acc2.default.directive('devTagBlockUi', blockUi);
 
     }, {"../acc.module": 2}],
-    35: [function (require, module, exports) {
+    37: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -2373,7 +2509,7 @@
         _acc2.default.directive('devTagButton', button);
 
     }, {"../acc.module": 2}],
-    36: [function (require, module, exports) {
+    38: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -2405,7 +2541,7 @@
         _acc2.default.directive('devTagCheckBox', checkBox);
 
     }, {"../acc.module": 2}],
-    37: [function (require, module, exports) {
+    39: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -2429,7 +2565,7 @@
         _acc2.default.directive('devTagComboBox', combobox);
 
     }, {"../acc.module": 2}],
-    38: [function (require, module, exports) {
+    40: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -2455,7 +2591,7 @@
         _acc2.default.directive('devTagContent', content);
 
     }, {"../acc.module": 2}],
-    39: [function (require, module, exports) {
+    41: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -2486,7 +2622,7 @@
         _acc2.default.directive('notZero', customValidator);
 
     }, {"../acc.module": 2}],
-    40: [function (require, module, exports) {
+    42: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -2510,7 +2646,7 @@
         _acc2.default.directive('devTagDatepicker', datepicker);
 
     }, {"../acc.module": 2}],
-    41: [function (require, module, exports) {
+    43: [function (require, module, exports) {
         'use strict';
 
         var _jquery = require('jquery');
@@ -2564,7 +2700,7 @@
         _acc2.default.directive('devTagDropdownlist', dropdownlist);
 
     }, {"../acc.module": 2, "jquery": "jquery"}],
-    42: [function (require, module, exports) {
+    44: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -2596,7 +2732,7 @@
         });
 
     }, {"../acc.module": 2}],
-    43: [function (require, module, exports) {
+    45: [function (require, module, exports) {
         'use strict';
 
         var _jquery = require('jquery');
@@ -2838,7 +2974,7 @@
         _acc2.default.directive('devTagGrid', grid);
 
     }, {"../acc.module": 2, "jquery": "jquery"}],
-    44: [function (require, module, exports) {
+    46: [function (require, module, exports) {
         'use strict';
 
         var _jquery = require('jquery');
@@ -2984,7 +3120,7 @@
         _acc2.default.directive('devTagHeader', header).directive('devTagTogglemenu', togglemenu);
 
     }, {"../acc.module": 2, "jquery": "jquery"}],
-    45: [function (require, module, exports) {
+    47: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -3006,7 +3142,7 @@
         _acc2.default.directive('devTagNumeric', numeric);
 
     }, {"../acc.module": 2}],
-    46: [function (require, module, exports) {
+    48: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -3033,7 +3169,7 @@
         _acc2.default.directive('devTagSubContent', subContent);
 
     }, {"../acc.module": 2}],
-    47: [function (require, module, exports) {
+    49: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -3057,7 +3193,7 @@
         _acc2.default.directive('devTagEditor', textEditor);
 
     }, {"../acc.module": 2}],
-    48: [function (require, module, exports) {
+    50: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -3148,7 +3284,7 @@
         _acc2.default.directive('devTagUploader', uploader);
 
     }, {"../acc.module": 2, "jquery": "jquery", "jquery.filedrop": "jquery.filedrop"}],
-    49: [function (require, module, exports) {
+    51: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -3173,7 +3309,7 @@
         _acc2.default.directive('devTagValidationSummary', validationSummary);
 
     }, {"../acc.module": 2}],
-    50: [function (require, module, exports) {
+    52: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -3195,7 +3331,7 @@
         _acc2.default.filter('amount', amount);
 
     }, {"../acc.module": 2}],
-    51: [function (require, module, exports) {
+    53: [function (require, module, exports) {
         'use strict';
 
         Object.defineProperty(exports, "__esModule", {
@@ -3219,7 +3355,7 @@
         exports.default = config;
 
     }, {}],
-    52: [function (require, module, exports) {
+    54: [function (require, module, exports) {
         'use strict';
 
         Object.defineProperty(exports, "__esModule", {
@@ -3256,8 +3392,8 @@
 
         exports.default = constants;
 
-    }, {"../acc.module": 2, "./config": 51, "./enums": 54, "./urls": 55}],
-    53: [function (require, module, exports) {
+    }, {"../acc.module": 2, "./config": 53, "./enums": 56, "./urls": 57}],
+    55: [function (require, module, exports) {
         "use strict";
 
         Object.defineProperty(exports, "__esModule", {
@@ -3326,7 +3462,7 @@
         exports.default = Enum;
 
     }, {}],
-    54: [function (require, module, exports) {
+    56: [function (require, module, exports) {
         'use strict';
 
         Object.defineProperty(exports, "__esModule", {
@@ -3389,8 +3525,8 @@
 
         exports.default = enums;
 
-    }, {"./enumType": 53}],
-    55: [function (require, module, exports) {
+    }, {"./enumType": 55}],
+    57: [function (require, module, exports) {
         'use strict';
 
         Object.defineProperty(exports, "__esModule", {
@@ -3469,6 +3605,12 @@
             }
         };
 
+        var journalTemplate = {
+            getAll: function getAll() {
+                return '{0}/journal-templates'.format(rootUrl());
+            }
+        };
+
         var apiUrls = {
             generalLedgerAccount: generalLedgerAccount,
             subsidiaryLedgerAccount: subsidiaryLedgerAccount,
@@ -3478,13 +3620,14 @@
             chequeCategory: chequeCategory,
             bank: bank,
             cheque: cheque,
-            journal: journal
+            journal: journal,
+            journalTemplate: journalTemplate
         };
 
         exports.default = apiUrls;
 
     }, {}],
-    56: [function (require, module, exports) {
+    58: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -3571,7 +3714,7 @@
         _acc2.default.controller('chequeCategoryCreateModalController', chequeCategoryCreateModalController).factory('chequeCategoryCreateModalService', chequeCategoryCreateModalService);
 
     }, {"../acc.module": 2}],
-    57: [function (require, module, exports) {
+    59: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -3663,7 +3806,7 @@
         _acc2.default.controller('chequeCategoryUpdateModalController', chequeCategoryUpdateModalController).factory('chequeCategoryUpdateModalService', chequeCategoryUpdateModalService);
 
     }, {"../acc.module": 2}],
-    58: [function (require, module, exports) {
+    60: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -3714,8 +3857,8 @@
 
         _acc2.default.controller('dimensionCreateModalController', dimensionCreateModalController).factory('dimensionCreateModalService', dimensionCreateModalService);
 
-    }, {"../acc.module": 2, "../localData/config": 51}],
-    59: [function (require, module, exports) {
+    }, {"../acc.module": 2, "../localData/config": 53}],
+    61: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -3772,7 +3915,7 @@
         _acc2.default.controller('dimensionUpdateModalController', dimensionUpdateModalController).factory('dimensionUpdateModalService', dimensionUpdateModalService);
 
     }, {"../acc.module": 2}],
-    60: [function (require, module, exports) {
+    62: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -3836,8 +3979,8 @@
 
         _acc2.default.controller('generalLedgerAccountCreateModalController', generalLedgerAccountCreateModalController).factory('generalLedgerAccountCreateModalService', generalLedgerAccountCreateModalService);
 
-    }, {"../acc.module": 2, "../localData/constants": 52}],
-    61: [function (require, module, exports) {
+    }, {"../acc.module": 2, "../localData/constants": 54}],
+    63: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -3932,8 +4075,8 @@
 
         _acc2.default.controller('generalLedgerAccountUpdateModalController', generalLedgerAccountUpdateModalController).factory('generalLedgerAccountUpdateModalService', generalLedgerAccountUpdateModalService);
 
-    }, {"../acc.module": 2, "../localData/config": 51, "../localData/constants": 52}],
-    62: [function (require, module, exports) {
+    }, {"../acc.module": 2, "../localData/config": 53, "../localData/constants": 54}],
+    64: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -3972,7 +4115,7 @@
         _acc2.default.controller('journalAttachImageController', journalAttachImageController).factory('journalAttachImageService', journalAttachImageService);
 
     }, {"../acc.module": 2}],
-    63: [function (require, module, exports) {
+    65: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -4024,7 +4167,7 @@
         _acc2.default.controller('journalBookkeepingController', journalBookkeepingController).factory('journalBookkeepingService', journalBookkeepingService);
 
     }, {"../acc.module": 2}],
-    64: [function (require, module, exports) {
+    66: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -4078,7 +4221,7 @@
         _acc2.default.controller('journalCreateModalController', journalCreateModalController).factory('journalCreateModalControllerService', journalCreateModalControllerService);
 
     }, {"../acc.module": 2}],
-    65: [function (require, module, exports) {
+    67: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -4380,7 +4523,7 @@
         _acc2.default.controller('journalLineUpdateController', journalLineCreateOrUpdateController).factory('journalLineUpdateControllerModalService', journalLineCreateOrUpdateControllerModalService);
 
     }, {"../acc.module": 2}],
-    66: [function (require, module, exports) {
+    68: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -4455,7 +4598,7 @@
         _acc2.default.controller('showJournalDetailController', showJournalDetailController).factory('showJournalDetailModalService', showJournalDetailModalService);
 
     }, {"../acc.module": 2}],
-    67: [function (require, module, exports) {
+    69: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -4539,7 +4682,7 @@
         _acc2.default.controller('writeChequeOnJournalLineEntryController', writeChequeOnJournalLineEntryController).factory('writeChequeOnJournalLineEntryService', writeChequeOnJournalLineEntryService);
 
     }, {"../acc.module": 2}],
-    68: [function (require, module, exports) {
+    70: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -4597,7 +4740,7 @@
         _acc2.default.factory('apiPromise', apiPromise);
 
     }, {"../acc.module": 2}],
-    69: [function (require, module, exports) {
+    71: [function (require, module, exports) {
         'use strict';
 
         var _sweetalert = require('sweetalert');
@@ -4635,7 +4778,7 @@
         _acc2.default.factory('confirm', confirm);
 
     }, {"../acc.module": 2, "sweetalert": "sweetalert"}],
-    70: [function (require, module, exports) {
+    72: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -4674,7 +4817,7 @@
         _acc2.default.service('formService', formService);
 
     }, {"../acc.module": 2}],
-    71: [function (require, module, exports) {
+    73: [function (require, module, exports) {
         "use strict";
 
         var _acc = require("../acc.module");
@@ -4778,7 +4921,7 @@
         _acc2.default.provider('gridFilterCellType', gridFilterCellTypeProvider);
 
     }, {"../acc.module": 2}],
-    72: [function (require, module, exports) {
+    74: [function (require, module, exports) {
         'use strict';
 
         var _sweetalert = require('sweetalert');
@@ -4837,7 +4980,7 @@
         _acc2.default.factory('logger', logger);
 
     }, {"../acc.module": 2, "sweetalert": "sweetalert"}],
-    73: [function (require, module, exports) {
+    75: [function (require, module, exports) {
         'use strict';
 
         var _createClass = function () {
@@ -4883,7 +5026,7 @@
                 key: '$get',
                 value: function $get() {
                     return this.menuItems;
-                }
+        }
             }, {
                 key: 'add',
                 value: function add(item) {
@@ -4899,7 +5042,7 @@
         _acc2.default.provider('menuItems', menuItemsProvider);
 
     }, {"../acc.module": 2}],
-    74: [function (require, module, exports) {
+    76: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -4926,7 +5069,7 @@
                         data: function data() {
                             return option.data;
                         }
-            }
+                    }
                 });
 
                 var deferred = $q.defer();
@@ -4951,7 +5094,53 @@
         _acc2.default.factory('modalBase', modalBase);
 
     }, {"../acc.module": 2}],
-    75: [function (require, module, exports) {
+    77: [function (require, module, exports) {
+        'use strict';
+
+        var _acc = require('../acc.module');
+
+        var _acc2 = _interopRequireDefault(_acc);
+
+        var _sweetalert = require('sweetalert');
+
+        var _sweetalert2 = _interopRequireDefault(_sweetalert);
+
+        function _interopRequireDefault(obj) {
+            return obj && obj.__esModule ? obj : {default: obj};
+        }
+
+        function prompt(translate, $q) {
+            return function (option) {
+                var deferred = $q.defer();
+
+                (0, _sweetalert2.default)({
+                    title: option.title,
+                    text: option.text,
+                    type: 'input',
+                    showCancelButton: true,
+                    closeOnConfirm: false,
+                    cancelButtonText: translate('Cancel'),
+                    confirmButtonText: translate('Confirm'),
+                    showLoaderOnConfirm: true,
+                    animation: "slide-from-top",
+                    inputPlaceholder: translate("Type something")
+                }, function (inputValue) {
+                    if (!inputValue) {
+                        _sweetalert2.default.showInputError(translate('You should type something'));
+                        return false;
+            }
+
+                    deferred.resolve(inputValue);
+                });
+
+                return deferred.promise;
+            };
+        }
+
+        _acc2.default.factory('prompt', prompt);
+
+    }, {"../acc.module": 2, "sweetalert": "sweetalert"}],
+    78: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -4992,7 +5181,7 @@
         _acc2.default.factory('navigate', routeNavigatorService);
 
     }, {"../acc.module": 2}],
-    76: [function (require, module, exports) {
+    79: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -5012,7 +5201,7 @@
         _acc2.default.factory('translate', translate);
 
     }, {"../acc.module": 2}],
-    77: [function (require, module, exports) {
+    80: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
