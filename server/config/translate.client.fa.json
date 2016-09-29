@@ -2,6 +2,7 @@
   "menu": "منو",
   "Current info": "اطلاعات جاری",
   "Change password": "تغییر رمز عبور",
+  "Show": "نمایش",
   "Sign out": "خروج",
   "New": "جدید",
   "Edit": "ویرایش",
@@ -114,5 +115,18 @@
   "To": "تا",
   "White cheques": "چک سفید",
   "The current subsidiaryLedgerAccount is not bank account": "معین جاری حساب بانکی نیست",
-  "For current detailAccount open cheque category is not defined": "برای تفصیل جاری دسته چک بازی تعریف نشده است"
+  "For current detailAccount open cheque category is not defined": "برای تفصیل جاری دسته چک بازی تعریف نشده است",
+  "Journal management": "مدیریت اسناد",
+  "Month": "ماه",
+  "Count": "تعداد",
+  "From number": "از شماره",
+  "To number": "تا شماره",
+  "From date": "از تاریخ",
+  "To date": "تا تاریخ",
+  "Fixed ?": "قطعی ؟",
+  "Attachment ?": "ضمائم ؟",
+  "Rows": "سطر",
+  "Show journal detail": "نمایش جزئیات سند",
+  "This journal already bookkeeped": "این سند قبلا ثبت دفترداری شده"
+
 }

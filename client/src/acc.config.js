@@ -21,6 +21,7 @@ import './controllers/journalsController';
 import './controllers/journalUpdateController';
 import './controllers/chequeCategoriesController';
 import './controllers/banksController';
+import './controllers/journalManagementController';
 
 
 // load apis
@@ -47,6 +48,7 @@ import './modals/journalAttachImage';
 import './modals/chequeCategroyCreate';
 import './modals/chequeCategroyUpdate';
 import './modals/writeChequeOnJournalLineEntry';
+import './modals/showJournalDetail';
 
 import './localData/constants';
 

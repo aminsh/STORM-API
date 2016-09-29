@@ -34,8 +34,8 @@ accModule.config(menuItemsProvider => {
                     icon: ''
                 },
                 {
-                    title: 'سند حسابداری جدید',
-                    url: '#/journal-new',
+                    title: 'مدیریت اسناد',
+                    url: '#/journal-management',
                     icon: ''
                 }
             ]

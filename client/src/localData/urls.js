@@ -37,6 +37,11 @@ let cheque = {
     allwhites: (categoryId)=> '{0}/cheques/category/{1}/whites'.format(rootUrl(), categoryId)
 };
 
+let journal = {
+    getGroupedByMouth: ()=> '{0}/journals/summary/grouped-by-month'.format(rootUrl()),
+    getByMonth: (month)=> '{0}/journals/month/{1}'.format(rootUrl(), month)
+}
+
 let apiUrls = {
     generalLedgerAccount: generalLedgerAccount,
     subsidiaryLedgerAccount: subsidiaryLedgerAccount,
@@ -45,7 +50,8 @@ let apiUrls = {
     period: period,
     chequeCategory: chequeCategory,
     bank: bank,
-    cheque: cheque
+    cheque: cheque,
+    journal: journal
 };
 
 export default apiUrls;

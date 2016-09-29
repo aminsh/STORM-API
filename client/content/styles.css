@@ -1628,5 +1628,10 @@ h1.head-current {
     overflow-y: scroll;
 }
 
+.k-grid td {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
 
 

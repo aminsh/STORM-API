@@ -17,17 +17,10 @@ function gridFilterCellTypeProvider() {
             operator: "eq",
             modelType: "string",
             template: function (args) {
-                args.element.kendoDatePicker({
-                    change: function () {
-                        var date = this.value();
-                        console.log(date);
-                        //date.jalalidate[1] = date.jalalidate[1] + 1;
-                        console.log(date.toDateString());
-                        debugger;
-                    }
-                })
+                args.element.kendoDatePicker()
             }
-        }
+        },
+        boolean: {}
     }
 
     function combo(option) {

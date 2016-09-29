@@ -203,7 +203,12 @@ function grid(gridFilterCellType, $compile) {
                         serverSorting: true
                     }),
                     filterable: filterable,
-                    pageable: {refresh: true},
+                    pageable: option.pageable == undefined
+                        ? {
+                        refresh: true,
+                        pageSizes: true,
+                        buttonCount: 5
+                    } : option.pageable,
                     sortable: true,
                     columns: cols,
                     selectable: option.selectable,

@@ -9,6 +9,7 @@ var cors = require('cors');
 var flash = require('connect-flash');
 
 var onUserConnectedMiddleware = require('./../middlewares/middleware.onUserConnected');
+var onExceptionErrorMiddleware = require('./../middlewares/middleware.onExceptionError');
 
 var MemoryStore = require('session-memory-store')(session);
 var config = require('./config');
@@ -39,5 +40,6 @@ app.use('/uploads', express.static(config.rootPath + '/server/uploads'));
 app.use(multer({dest: './uploads/;'}));
 
 app.use(onUserConnectedMiddleware);
+app.use(onExceptionErrorMiddleware);
 
 module.exports.app = app;

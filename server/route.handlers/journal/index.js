@@ -1,4 +1,6 @@
-module.exports.getAll = require('./getAll');
+module.exports.getAll = require('./getAll').getAll;
+module.exports.getGroupedByMouth = require('./getAll').getGroupedByMouth;
+module.exports.getJournalsByMonth = require('./getAll').getJournalsByMonth;
 module.exports.getById = require('./getById');
 
 module.exports.create = require('./create');

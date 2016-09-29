@@ -46,6 +46,10 @@ accModule.config($routeProvider => {
             controller: 'journalUpdateController',
             templateUrl: 'partials/views/journalUpdate.html'
         })
+        .when('/journal-management', {
+            controller: 'journalManagementController',
+            templateUrl: 'partials/views/journalManagement.html'
+        })
         .when('/not-found', {
             templateUrl: 'partials/views/notFound.html'
         })
