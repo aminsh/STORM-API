@@ -2,7 +2,7 @@ var dbConfig = require('../config/config').db;
 
 var knex = require('knex')({
     client: dbConfig.client,
-    connection: {
+    connection: dbConfig.url || {
         host: dbConfig.host,
         user: dbConfig.username,
         password: dbConfig.password,
