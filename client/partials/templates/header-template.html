@@ -1,0 +1,79 @@
+﻿<header>
+    <div class="row">
+        <div class="col-lg-4 col-md-6 col-sm-6 col-xs-6">
+            <div id="menu-toggle" class="button-click-menu" ng-click="toggle()">
+                <span class="glyphicon glyphicon-menu-hamburger web-font" aria-hidden="true"></span>
+                <span class="title text-menu">{{'menu'|translate}}</span>
+            </div>
+
+            <div class=" header-logo hidden-sm hidden-xs">
+
+                <img src="client\content\images\logo.png">
+            </div>
+        </div>
+        <div class="col-lg-4 hidden-xs hidden-sm hidden-md" style="padding-top: 20px;
+    color: white;
+    font-size: larger;
+">
+            <span style="margin-left: 3px">{{'Period'|translate}}</span><span>{{current.period}}</span>
+            |
+            <span style="margin-left: 3px">{{'Mode'|translate}}</span><span>{{current.mode}}</span>
+        </div>
+        <div class="col-lg-4 col-md-6 col-sm-6 col-xs-6">
+            <ul class="pull-right-nav">
+                <li>
+                    <div class="dropdown" dropdown>
+                        <a dropdown-toggle data-toggle="dropdown" href="#"><span data-toggle="tooltip"
+                                                                                 data-placement="right" title="سال جاری"
+                                                                                 class="glyphicon glyphicon-th-large web-font "
+                                                                                 aria-hidden="true"></span> </a>
+                        <div class="dropdown-menu glyphicon" dropdown-menu>
+                            <h1 class="head-current">{{'Current info'|translate}}</h1>
+                            <div class="notify-arrow notify-arrow-blue"></div>
+                            <ul class="list-info">
+                                <li style="font-family: BKoodakBold">{{current.period}}</li>
+                                <li style="font-family: BKoodakBold">{{current.mode}}</li>
+                            </ul>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="dropdown" dropdown>
+                        <a dropdown-toggle data-toggle="dropdown" href="#"><span
+                                class="glyphicon glyphicon-bell web-font" aria-hidden="true"><span
+                                class="notification"></span></span></a>
+                        <div class="dropdown-menu glyphicon" dropdown-menu>
+                            <h1 style="background-color:#A9D86E">چه خبر؟</h1>
+                            <div class="notify-arrow notify-arrow-green"></div>
+                            <ul class="list-info">
+
+                                <li>‍‍‍‍‍‍‍‍<span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>بیامها
+                                </li>
+
+                                <li>خبر</li>
+                                <li>خبر</li>
+                            </ul>
+                            /div>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="dropdown" dropdown>
+                        <a dropdown-toggle data-toggle="dropdown" href="#">
+                            <span class="glyphicon glyphicon-user web-font" aria-hidden="true"></span>
+                        </a>
+                        <div class="dropdown-menu glyphicon" dropdown-menu>
+                            <h1>{{currentUser}}</h1>
+                            <a href="#" class="change-pass">{{'Change password'|translate}}</a>
+                            <a class="log-out" href="/logout">
+                                <i class="glyphicon glyphicon-log-out"></i>
+                                {{'Sign out'| translate}}
+                            </a>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+    </div>
+</header>

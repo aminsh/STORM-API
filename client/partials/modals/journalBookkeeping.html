@@ -1,0 +1,45 @@
+<div class="modal-header">
+    <button type="button" ng-click="close()" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+    <h3 class="modal-title">{{'Record Bookkeeping'| translate}}</h3>
+</div>
+<div class="modal-body k-rtl">
+
+    <dev-tag-validation-summary errors="errors"></dev-tag-validation-summary>
+
+    <form name="form">
+        <div class="form-group" ng-class="{'has-error': form.code.$invalid && !form.code.$pristine }">
+            <label class="label-control">{{'Number' | translate}}</label>
+            <dev-tag-numeric
+                    ng-model="bookkeeping.number"
+                    style="width: 100%"
+                    name="number"
+                    required></dev-tag-numeric>
+
+            <div ng-messages="form.number.$error" ng-if="form.number.$dirty">
+                <span ng-message="required" class="label label-danger">{{'This field is required'|translate}}</span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="label-control">{{'Date' | translate}}</label>
+            <dev-tag-datepicker
+                    ng-model="bookkeeping.date"
+                    name="date"
+                    required></dev-tag-datepicker>
+
+            <div ng-messages="form.date.$error" ng-if="form.date.$dirty">
+                <span ng-message="required" class="label label-danger">{{'This field is required'|translate}}</span>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="modal-footer">
+    <dev-tag-button
+            ng-click="save(form)"
+            icon="glyphicon glyphicon-floppy-disk"
+            ng-disabled="isSaving"
+            is-waiting="isSaving"
+            style-type="success"
+            title="{{'Save' | translate}}"></dev-tag-button>
+</div>

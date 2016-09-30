@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width"/>
+    <meta http-equiv="Content-Type" content="text/html" charset="utf-8"/>
+
+    <title></title>
+
+    <link href="client/content/bootstrap/bootstrap.min.css" rel="stylesheet"/>
+    <link href="client/content/bootstrap/bootstrap-rtl.min.css" rel="stylesheet"/>
+    <link href="client/content/kendo/kendo.common.min.css" rel="stylesheet"/>
+    <link href="client/content/kendo/kendo.bootstrap.min.css" rel="stylesheet"/>
+    <link href="client/content/kendo/kendo.rtl.min.css" rel="stylesheet"/>
+    <link href="client/content/sweetalert.css" rel="stylesheet"/>
+
+    <link href="client/content/fonts.min.css" rel="stylesheet"/>
+    <link href="client/content/styles.css" rel="stylesheet"/>
+</head>
+<body class="k-rtl">
+<div data-ng-controller="shellController">
+
+    <dev-tag-block-ui></dev-tag-block-ui>
+
+    <dev-tag-header toggle="toggle()"></dev-tag-header>
+    <dev-tag-togglemenu menuitems="menuItems" toggleobservable="isToggleMenuOpen">
+        <div ng-view class="shuffle-animation">
+
+
+            <div class="waiting-overley">
+                <div class="waiting-block">
+                    <div class="waiting-block-spinner">
+                        <div class="rect1"></div>
+                        <div class="rect2"></div>
+                        <div class="rect3"></div>
+                        <div class="rect4"></div>
+                        <div class="rect5"></div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </dev-tag-togglemenu>
+</div>
+</body>
+</html>
+
+<script src="client/dist/vendor.bundle.min.js"></script>
+
+<script>
+    require('js-helper');
+    window.jQuery = require('jquery');
+    require('JalaliDate');
+
+    localStorage.setItem('translate', '<%- JSON.stringify(clientTranslation) %>');
+    localStorage.setItem('currentUser', '<%- currentUser %>');
+</script>
+
+<script src="client/dist/acc.bundle.js"></script>
+<script src="client/dist/acc.template.bundle.js"></script>

@@ -1,0 +1,15 @@
+<dev-tag-content title="{{'New Detail account'|translate}}">
+    <form name="form">
+        <dev-tag-button
+                ng-click="save(form)"
+                icon="glyphicon glyphicon-floppy-disk"
+                is-waiting="isSaving"
+                ng-disabled="isSaving"
+                style-type="success"
+                title="{{'Save' | translate}}"></dev-tag-button>
+
+        <div ng-include="'partials/views/detailAccount-entry-template.html'"></div>
+    </form>
+</dev-tag-content>
+
+

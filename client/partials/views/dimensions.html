@@ -1,0 +1,80 @@
+<dev-tag-content title="{{'Dimensions' | translate}}">
+
+    <dev-tag-button
+            ng-click="createCategory()"
+            icon="glyphicon glyphicon-floppy-plus"
+            style-type="primary"
+            title="{{'New Dimension category' | translate}}"></dev-tag-button>
+
+    <ul class="list-group">
+        <li class="list-group-item {{currentCategory == cat ? 'active' : ''}}"
+            ng-repeat="cat in categories"
+            ng-click="select(cat)">
+
+            <dev-tag-validation-summary errors="cat.errors"></dev-tag-validation-summary>
+
+            <div class="row">
+                <form name="form">
+                    <div class="col-xs-12 col-md-8">
+                    <span ng-if="cat.editMode == 'read'">
+                        {{cat.title}}
+                    </span>
+                    <span ng-if="cat.editMode == 'new'|| cat.editMode == 'edit'">
+                        <input
+                                type="text"
+                                class="form-control"
+                                ng-model="cat.title"
+                                name="title"
+                                required/>
+
+                        <div ng-messages="form.title.$error" ng-if="form.title.$dirty">
+                            <span ng-message="required" class="label label-danger">{{'This field is required'|translate}}</span>
+                        </div>
+                    </span>
+                    </div>
+                    <div class="col-xs-6 col-md-4">
+                        <dev-tag-button
+                                ng-click="startToEditingCategoryTitle(cat)"
+                                icon="glyphicon glyphicon-pencil"
+                                style-type="default btn-sm"
+                                title="{{'Edit' | translate}}"
+                                ng-if="cat.editMode == 'read'">
+                        </dev-tag-button>
+
+                    <span ng-if="cat.editMode == 'edit' || cat.editMode == 'new'">
+
+                        <dev-tag-button
+                                ng-click="save(form)"
+                                icon="glyphicon glyphicon-floppy-disk"
+                                is-waiting="cat.isSaving"
+                                ng-disabled="cat.isSaving"
+                                style-type="success btn-sm"
+                                title="{{'Save' | translate}}">
+                        </dev-tag-button>
+
+                        <dev-tag-button
+                                ng-click="cancelEditingCategoryTitle(cat)"
+                                icon="glyphicon glyphicon-remove-circle"
+                                style-type="default btn-sm"
+                                title="{{'Cancel' | translate}}">
+                        </dev-tag-button>
+                    </span>
+                    </div>
+                </form>
+
+            </div>
+            <div ng-if="currentCategory == cat" style="padding: 10px;">
+
+                <dev-tag-button
+                        ng-click="createDimension(cat)"
+                        icon="glyphicon glyphicon-plus"
+                        style-type="default btn-sm"
+                        title="{{'New Dimension' | translate}}">
+                </dev-tag-button>
+
+                <dev-tag-grid option="cat.gridOption"></dev-tag-grid>
+            </div>
+        </li>
+    </ul>
+
+</dev-tag-content>

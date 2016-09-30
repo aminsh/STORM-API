@@ -1,0 +1,83 @@
+<dev-tag-sub-content title="{{'Status on journal' | translate}}"
+                     style="width: 50%">
+    <div class="row">
+        <div class="form-group">
+            <label class="label-control">{{'Detail account' | translate}}</label>
+
+            <dev-tag-dropdownlist
+                    ng-model="subsidiaryLedgerAccount.detailAccountAssignmentStatus"
+                    k-option-label="{{'Select ...'|translate}}"
+                    k-data-value-field="key"
+                    k-data-text-field="display"
+                    k-data-source="assignmentStatus"
+                    name="detailAccountAssignmentStatus"
+                    required></dev-tag-dropdownlist>
+
+            <div ng-messages="form.detailAccountAssignmentStatus.$error"
+                 ng-if="form.detailAccountAssignmentStatus.$dirty">
+                <span ng-message="required" class="label label-danger">{{'This field is required'|translate}}</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="form-group">
+            <label class="label-control">{{dimensionCategories[0].title}}</label>
+
+            <dev-tag-dropdownlist
+                    ng-model="subsidiaryLedgerAccount.dimension1AssignmentStatus"
+                    k-option-label="{{'Select ...'|translate}}"
+                    k-data-value-field="key"
+                    k-data-text-field="display"
+                    k-data-source="assignmentStatus"
+                    name="dimension1AssignmentStatus"
+                    required></dev-tag-dropdownlist>
+
+            <div ng-messages="form.dimension1AssignmentStatus.$error"
+                 ng-if="form.dimension1AssignmentStatus.$dirty">
+                <span ng-message="required" class="label label-danger">{{'This field is required'|translate}}</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- dimension 2-->
+    <div class="row">
+        <div class="form-group">
+            <label class="label-control">{{dimensionCategories[1].title}}</label>
+
+            <dev-tag-dropdownlist
+                    ng-model="subsidiaryLedgerAccount.dimension2AssignmentStatus"
+                    k-option-label="{{'Select ...'|translate}}"
+                    k-data-value-field="key"
+                    k-data-text-field="display"
+                    k-data-source="assignmentStatus"
+                    name="dimension2AssignmentStatus"
+                    required></dev-tag-dropdownlist>
+
+            <div ng-messages="form.dimension2AssignmentStatus.$error"
+                 ng-if="form.dimension2AssignmentStatus.$dirty">
+                <span ng-message="required" class="label label-danger">{{'This field is required'|translate}}</span>
+            </div>
+        </div>
+    </div>
+    <!-- dimension2 -->
+    <div class="row">
+        <div class="form-group">
+            <label class="label-control">{{dimensionCategories[2].title}}</label>
+
+            <dev-tag-dropdownlist
+                    ng-model="subsidiaryLedgerAccount.dimension3AssignmentStatus"
+                    k-option-label="{{'Select ...'|translate}}"
+                    k-data-value-field="key"
+                    k-data-text-field="display"
+                    k-data-source="assignmentStatus"
+                    name="dimension3AssignmentStatus"
+                    required></dev-tag-dropdownlist>
+
+            <div ng-messages="form.dimension3AssignmentStatus.$error"
+                 ng-if="form.dimension3AssignmentStatus.$dirty">
+                <span ng-message="required" class="label label-danger">{{'This field is required'|translate}}</span>
+            </div>
+        </div>
+    </div>
+</dev-tag-sub-content>

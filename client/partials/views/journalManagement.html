@@ -1,0 +1,23 @@
+<dev-tag-content title="{{'Journal management'| translate}}">
+    <div style="width: 70%;">
+        <dev-tag-grid option="gridOption"></dev-tag-grid>
+    </div>
+
+    <div ng-if="canShowJournals" style="margin-top: 50px">
+        <dev-tag-button
+                ng-click="showJournal(journalGridOption.current)"
+                icon="glyphicon glyphicon-eye-open"
+                ng-disabled="journalGridOption.current == undefined"
+                style-type="default"
+                title="{{'Show journal detail' | translate}}"></dev-tag-button>
+
+        <dev-tag-button
+                ng-click="bookkeeping(journalGridOption.current)"
+                ng-disabled="journalGridOption.current == undefined"
+                style-type="default"
+                title="{{'Bookkeep' | translate}}"></dev-tag-button>
+
+        <dev-tag-grid option="journalGridOption"></dev-tag-grid>
+        ]
+    </div>
+</dev-tag-content>
