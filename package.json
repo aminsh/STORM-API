@@ -1,0 +1,22 @@
+{
+  "name": "accounting",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aminsh/accounting.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/aminsh/accounting/issues"
+  },
+  "homepage": "https://github.com/aminsh/accounting#readme",
+  "dependencies": {
+    "express": "^4.14.0"
+  }
+}
