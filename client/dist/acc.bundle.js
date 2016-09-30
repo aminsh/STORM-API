@@ -1647,7 +1647,8 @@
 
         function homeController($scope, $timeout, $route, $rootScope, constants, logger, $cookies) {
             $scope.current = {
-                fiscalPeriod: parseInt($cookies.get('current-period'))
+                fiscalPeriod: parseInt($cookies.get('current-period')),
+                mode: $cookies.get('current-mode')
             };
 
             $scope.fiscalPeriodDataBound = function (e) {
@@ -1672,6 +1673,16 @@
                 var item = e.sender.dataItem();
                 $cookies.put('current-period', item.id);
                 $rootScope.$emit('currentPeriodChanged', item.display);
+            };
+
+            $scope.modesDataSource = constants.enums.AccMode().data;
+            $rootScope.$emit('currentModeChanged', constants.enums.AccMode().getDisplay($scope.current.mode));
+
+            $scope.modeOnChanged = function () {
+                $cookies.put('current-mode', $scope.current.mode);
+
+                var modeDisplay = constants.enums.AccMode().getDisplay($scope.current.mode);
+                $rootScope.$emit('currentModeChanged', modeDisplay);
             };
         }
 
@@ -1907,7 +1918,7 @@
                             journalTemplateApi.journalCreate(current.id).then(function (result) {
                                 confirm(translate('Do you want to edit created journal ?'), translate('Successful'), 'success').then(function () {
                                     navigate('journalUpdate', {id: result.id});
-                                });
+                        });
                             }).catch(function (errors) {
                                 return $scope.errors = errors;
                             });
@@ -1931,7 +1942,7 @@
                     title: translate('Copy to journal template'),
                     action: function action(current) {
                         prompt({
-                            title: translate('Copy to journal template'),
+                    title: translate('Copy to journal template'),
                             text: translate('Enter Title of journal template')
                         }).then(function (inputValue) {
                             journalTemplateApi.create(current.id, {title: inputValue}).then(function () {
@@ -2997,12 +3008,17 @@
                 scope: {},
                 link: function link(scope, element, attrs) {
                     scope.currentUser = localStorage.getItem('currentUser');
-                    scope.currentPeriod = {
-                        display: ''
+                    scope.current = {
+                        period: '',
+                        mode: ''
             };
 
                     $rootScope.$on('currentPeriodChanged', function (e, currentPeriodDisplay) {
-                        scope.currentPeriod.display = currentPeriodDisplay;
+                        scope.current.period = currentPeriodDisplay;
+                    });
+
+                    $rootScope.$on('currentModeChanged', function (e, currentMode) {
+                        scope.current.mode = currentMode;
                     });
 
                     (0, _jquery2.default)(element).find('.dropdown');
@@ -3432,12 +3448,19 @@
             }
 
             _createClass(Enum, [{
+                key: "getDisplay",
+                value: function getDisplay(key) {
+                    return this.data.asEnumerable().single(function (e) {
+                        return e.key == key;
+                    }).display;
+        }
+            }, {
                 key: "getKey",
                 value: function getKey(name) {
                     return this.data.asEnumerable().single(function (e) {
                         return e.name == name;
                     }).key;
-        }
+                }
             }, {
                 key: "getKeys",
                 value: function getKeys() {
@@ -3521,6 +3544,10 @@
 
         enums.ChequeCategoryStatus = function () {
             return new _enumType2.default([{key: 'Open', display: 'باز'}, {key: 'Closed', display: 'بسته'}]);
+        };
+
+        enums.AccMode = function () {
+            return new _enumType2.default([{key: 'Create', display: 'تنظیم'}, {key: 'Audit', display: 'رسیدگی'}]);
         };
 
         exports.default = enums;

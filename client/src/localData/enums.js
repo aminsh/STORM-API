@@ -52,4 +52,11 @@ enums.ChequeCategoryStatus = ()=> {
     ]);
 };
 
+enums.AccMode = () => {
+    return new Enum([
+        {key: 'Create', display: 'تنظیم'},
+        {key: 'Audit', display: 'رسیدگی'}
+    ]);
+};
+
 export default enums;

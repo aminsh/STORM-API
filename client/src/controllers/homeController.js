@@ -2,7 +2,8 @@ import accModule from '../acc.module';
 
 function homeController($scope, $timeout, $route, $rootScope, constants, logger, $cookies) {
     $scope.current = {
-        fiscalPeriod: parseInt($cookies.get('current-period'))
+        fiscalPeriod: parseInt($cookies.get('current-period')),
+        mode: $cookies.get('current-mode')
     };
 
     $scope.fiscalPeriodDataBound = (e)=> {
@@ -27,6 +28,17 @@ function homeController($scope, $timeout, $route, $rootScope, constants, logger,
         let item = e.sender.dataItem();
         $cookies.put('current-period', item.id);
         $rootScope.$emit('currentPeriodChanged', item.display);
+    };
+
+    $scope.modesDataSource = constants.enums.AccMode().data;
+    $rootScope.$emit('currentModeChanged',
+        constants.enums.AccMode().getDisplay($scope.current.mode));
+
+    $scope.modeOnChanged = ()=> {
+        $cookies.put('current-mode', $scope.current.mode);
+
+        let modeDisplay = constants.enums.AccMode().getDisplay($scope.current.mode);
+        $rootScope.$emit('currentModeChanged', modeDisplay);
     };
 }
 

@@ -9,12 +9,17 @@ function header($rootScope) {
         scope: {},
         link: function (scope, element, attrs) {
             scope.currentUser = localStorage.getItem('currentUser');
-            scope.currentPeriod = {
-                display: ''
+            scope.current = {
+                period: '',
+                mode: ''
             };
 
             $rootScope.$on('currentPeriodChanged', (e, currentPeriodDisplay)=> {
-                scope.currentPeriod.display = currentPeriodDisplay;
+                scope.current.period = currentPeriodDisplay;
+            });
+
+            $rootScope.$on('currentModeChanged', (e, currentMode)=> {
+                scope.current.mode = currentMode;
             });
 
             $(element).find('.dropdown')

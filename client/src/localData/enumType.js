@@ -4,6 +4,12 @@ class Enum {
         this.data = enums;
     }
 
+    getDisplay(key) {
+        return this.data.asEnumerable()
+            .single(e=>e.key == key)
+            .display;
+    }
+
     getKey(name) {
         return this.data.asEnumerable()
             .single(e=>e.name == name)

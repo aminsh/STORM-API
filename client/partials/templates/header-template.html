@@ -15,7 +15,9 @@
     color: white;
     font-size: larger;
 ">
-            <span>{{'Current info'|translate}}</span>
+            <span style="margin-left: 3px">{{'Period'|translate}}</span><span>{{current.period}}</span>
+            |
+            <span style="margin-left: 3px">{{'Mode'|translate}}</span><span>{{current.mode}}</span>
         </div>
         <div class="col-lg-4 col-md-6 col-sm-6 col-xs-6">
             <ul class="pull-right-nav">
@@ -29,7 +31,8 @@
                             <h1 class="head-current">{{'Current info'|translate}}</h1>
                             <div class="notify-arrow notify-arrow-blue"></div>
                             <ul class="list-info">
-                                <li style="font-family: BKoodakBold">{{currentPeriod.display}}</li>
+                                <li style="font-family: BKoodakBold">{{current.period}}</li>
+                                <li style="font-family: BKoodakBold">{{current.mode}}</li>
                             </ul>
                         </div>
                     </div>

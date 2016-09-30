@@ -12,6 +12,9 @@ var onUserConnected = async(function (req, res, next) {
         res.cookie('current-period', maxId);
     }
 
+    if (!req.cookies['current-mode'])
+        res.cookie('current-mode', 'Create');
+
     next();
 });
 
