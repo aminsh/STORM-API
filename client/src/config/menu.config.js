@@ -65,5 +65,17 @@ accModule.config(menuItemsProvider => {
                     icon: ''
                 }
             ]
+        })
+        .add({
+            title: 'گزارشات',
+            url: '',
+            icon: '',
+            children: [
+                {
+                    title: 'مرور حساب',
+                    url: '#/account-review',
+                    icon: ''
+                }
+            ]
         });
 });

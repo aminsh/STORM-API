@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import accModule from '../acc.module';
 
-function grid(gridFilterCellType, $compile) {
+function grid(gridFilterCellType, $compile, translate) {
     return {
         restrict: 'E',
         transclude: true,
@@ -15,7 +15,12 @@ function grid(gridFilterCellType, $compile) {
             detailOption: '='
         },
         link: function (scope, element, attrs) {
+            let extra = scope.option.extra || null;
 
+            scope.$on('{0}/execute-advanced-search'.format(scope.option.name), (e, data)=> {
+                extra = {filter: data};
+                grid.dataSource.read();
+            });
 
             var grid = {};
 
@@ -123,13 +128,16 @@ function grid(gridFilterCellType, $compile) {
                             template: col.template,
                             aggregates: col.aggregates,
                             footerTemplate: col.footerTemplate,
-                            filterable: getFilterable(col.type)
+                            filterable: col.filterable == undefined ? getFilterable(col.type) : col.filterable
                         }
                     }).toArray();
 
                 var model = {fields: {}};
                 option.columns.forEach(function (col) {
-                    model.fields[col.name] = {type: gridFilterCellType[col.type].modelType};
+                    model.fields[col.name] = {
+                        type: gridFilterCellType[col.type].modelType,
+
+                    };
                 });
 
                 var commands = option.commands.asEnumerable().select(function (cmd) {
@@ -161,11 +169,11 @@ function grid(gridFilterCellType, $compile) {
                     operators: {
                         string: {contains: 'Contains'},
                         number: {
-                            eq: 'Equal to',
-                            gte: "Greater than or equal to",
-                            gt: "Greater than",
-                            lte: "Less than or equal to",
-                            lt: "Less than"
+                            eq: translate('Equal to'),
+                            gte: translate("Greater than or equal to"),
+                            gt: translate("Greater than"),
+                            lte: translate("Less than or equal to"),
+                            lt: translate("Less than")
                         },
                         date: {
                             gt: "After",
@@ -186,11 +194,14 @@ function grid(gridFilterCellType, $compile) {
                                 type: 'GET'
                             },
                             parameterMap: function (options) {
+                                if (extra)
+                                    options.extra = extra;
+
                                 return options;
                             }
                         },
                         schema: {
-                            data: "data",
+                            data: option.dataMapper ? option.dataMapper : 'data',
                             total: "total",
                             model: model,
                             aggregates: "aggregates"
@@ -210,6 +221,7 @@ function grid(gridFilterCellType, $compile) {
                         buttonCount: 5
                     } : option.pageable,
                     sortable: true,
+                    allowCopy: true,
                     columns: cols,
                     selectable: option.selectable,
                     editable: option.editable,

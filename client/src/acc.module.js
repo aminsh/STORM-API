@@ -8,6 +8,7 @@ import 'angular-resource';
 import 'angular-messages';
 import 'angular-cookies';
 import 'kendo';
+import 'kendo.culture';
 import 'kendo.messages';
 import 'angular-cookies';
 

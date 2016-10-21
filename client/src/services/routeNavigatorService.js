@@ -9,7 +9,7 @@ function routeNavigatorService($route, $location) {
             .first((r)=> r.controller == '{0}Controller'.format(name));
     }
 
-    let navigate = (name, parameters)=> {
+    let navigate = (name, parameters, queryString)=> {
         let route = getRoute(name);
         let path = route.originalPath;
 
@@ -20,6 +20,9 @@ function routeNavigatorService($route, $location) {
 
             path = path.replace(new RegExp(':{0}'.format(key.name)), parameterValue);
         });
+
+        if (queryString)
+            $location.search(queryString);
 
         $location.path(path);
 

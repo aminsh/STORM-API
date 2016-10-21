@@ -4,7 +4,8 @@ var enums = {};
 enums.AccountPostingType = function () {
     return new Enum([
         {key: 'balanceSheet', display: 'تراز نامه ای'},
-        {key: 'benefitAndLoss', display: 'سود و زیانی'}
+        {key: 'benefitAndLoss', display: 'سود و زیانی'},
+        {key: 'entezami', display: 'انتظامی'}
     ]);
 };
 
@@ -26,7 +27,10 @@ enums.AssignmentStatus = function () {
 enums.JournalType = function () {
     return new Enum([
         {key: 'Opening', display: 'افتتاحیه'},
-        {key: 'Closing', display: 'اختتامیه'}
+        {key: 'Closing', display: 'اختتامیه'},
+        {key: 'FixedAsset', display: 'اموال'},
+        {key: 'Payroll', display: 'حقوق'},
+        {key: 'Special', display: 'ویژه'}
     ]);
 };
 

@@ -34,7 +34,8 @@ let bank = {
 
 let cheque = {
     all: (categoryId)=> '{0}/cheques/category/{1}'.format(rootUrl(), categoryId),
-    allwhites: (categoryId)=> '{0}/cheques/category/{1}/whites'.format(rootUrl(), categoryId)
+    allwhites: (categoryId)=> '{0}/cheques/category/{1}/whites'.format(rootUrl(), categoryId),
+    allUseds: ()=> '{0}/cheques/useds'.format(rootUrl())
 };
 
 let journal = {
@@ -45,7 +46,16 @@ let journal = {
 
 let journalTemplate = {
     getAll: ()=> '{0}/journal-templates'.format(rootUrl())
-}
+};
+
+let accountReview = {
+    getAllGeneralLedgerAccount: ()=> `${rootUrl()}/account-review/general-ledger-account`,
+    getAllSubsidiaryLedgerAccount: ()=> `${rootUrl()}/account-review/subsidiary-ledger-account`,
+    getAllDetailAccount: ()=> `${rootUrl()}/account-review/detail-account`,
+    getAllDimension1: ()=> `${rootUrl()}/account-review/dimension-1`,
+    getAllDimension2: ()=> `${rootUrl()}/account-review/dimension-2`,
+    getAllDimension3: ()=> `${rootUrl()}/account-review/dimension-3`,
+};
 
 let apiUrls = {
     generalLedgerAccount: generalLedgerAccount,
@@ -57,7 +67,8 @@ let apiUrls = {
     bank: bank,
     cheque: cheque,
     journal: journal,
-    journalTemplate: journalTemplate
+    journalTemplate: journalTemplate,
+    accountReview: accountReview
 };
 
 export default apiUrls;

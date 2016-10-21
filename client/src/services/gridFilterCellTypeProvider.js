@@ -1,4 +1,5 @@
 import accModule from '../acc.module';
+import $ from 'jquery';
 
 function gridFilterCellTypeProvider() {
     var type = {
@@ -13,12 +14,9 @@ function gridFilterCellTypeProvider() {
             modelType: "number"
         },
         date: {
-            showOperator: true,
-            operator: "eq",
-            modelType: "string",
-            template: function (args) {
-                args.element.kendoDatePicker()
-            }
+            showOperators: false,
+            operator: "contains",
+            modelType: "string"
         },
         boolean: {}
     }

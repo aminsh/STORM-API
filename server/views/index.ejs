@@ -49,7 +49,7 @@
 
 <script>
     require('js-helper');
-    window.jQuery = require('jquery');
+    window.jQuery = window.$ = require('jquery');
     require('JalaliDate');
 
     localStorage.setItem('translate', '<%- JSON.stringify(clientTranslation) %>');

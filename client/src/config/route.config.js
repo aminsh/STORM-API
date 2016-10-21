@@ -69,6 +69,14 @@ accModule.config($routeProvider => {
             controller: 'banksController',
             templateUrl: 'partials/views/banks.html'
         })
+        .when('/account-review', {
+            controller: 'accountReviewController',
+            templateUrl: 'partials/views/accountReview.html'
+        })
+        .when('/account-review/turnover/:name', {
+            controller: 'accountReviewTurnoverController',
+            templateUrl: 'partials/views/accountReviewTurnover.html'
+        })
         .otherwise('/not-found');
 });
 

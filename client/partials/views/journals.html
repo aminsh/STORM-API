@@ -5,5 +5,19 @@
             style-type="primary"
             icon="glyphicon glyphicon-plus"></dev-tag-button>
 
+    <dev-tag-button
+            ng-click="advancedSearch()"
+            title="{{'Advanced search'| translate}}"
+            style-type="default"
+            icon="glyphicon glyphicon-search"></dev-tag-button>
+
     <dev-tag-grid option="gridOption"></dev-tag-grid>
 </dev-tag-content>
+
+<script type="text/x-kendo-template" id="myTemplate">
+    #if(data.isInComplete){#
+    <i title="#: data.journalStatusDisplay #" class="glyphicon glyphicon-exclamation-sign" style="color: red"></i>
+    #}else if(data.journalStatus == 'BookKeeped'){#
+    <i title="#: data.journalStatusDisplay #" class="glyphicon glyphicon-lock" style="color: blue"></i>
+    #}#
+</script>

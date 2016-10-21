@@ -24,6 +24,8 @@ import './controllers/banksController';
 import './controllers/journalManagementController';
 import './controllers/journalCopy';
 import './controllers/journalTemplatesController';
+import './controllers/accountReviewController';
+import './controllers/accountReviewTurnoverController';
 
 // load apis
 import './apis/generalLedgerAccountApi';
@@ -51,6 +53,7 @@ import './modals/chequeCategroyCreate';
 import './modals/chequeCategroyUpdate';
 import './modals/writeChequeOnJournalLineEntry';
 import './modals/showJournalDetail';
+import './modals/journalAdvnacedSearch';
 
 import './localData/constants';
 
@@ -72,6 +75,7 @@ import './directives/layout';
 import './directives/numeric';
 import './directives/textEditor';
 import './directives/checkbox';
+import './directives/ngKendoGrid';
 
 //filter
 import './filters/amount';

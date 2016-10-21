@@ -1,3 +1,4 @@
+var enums = require('../constants/enums');
 
 module.exports = function (sequelize, DataTypes) {
     var GeneralLedgerAccount = sequelize.define('generalLedgerAccount', {
@@ -12,11 +13,11 @@ module.exports = function (sequelize, DataTypes) {
         },
         balanceType: {
             type: DataTypes.ENUM,
-            values: ['debit', 'credit']
+            values: enums.AccountBalanceType().getKeys()
         },
         postingType: {
             type: DataTypes.ENUM,
-            values: ['balanceSheet', 'benefitAndLoss'],
+            values: enums.AccountPostingType().getKeys()
         },
         isActive: {
             type: DataTypes.BOOLEAN

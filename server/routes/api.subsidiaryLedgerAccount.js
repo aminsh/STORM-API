@@ -2,8 +2,10 @@ var express = require('express');
 var router = express.Router();
 var subsidiaryLedgerAccountRouteHandlers = require('../route.handlers/subsidiaryLedgerAccount');
 
+router.route('/subsidiary-ledger-accounts').get(subsidiaryLedgerAccountRouteHandlers.getAll);
+
 router.route('/subsidiary-ledger-accounts/general-ledger-account/:parentId')
-    .get(subsidiaryLedgerAccountRouteHandlers.getAll)
+    .get(subsidiaryLedgerAccountRouteHandlers.getAllByGeneralLedgerAccount)
     .post(subsidiaryLedgerAccountRouteHandlers.create);
 
 router.route('/subsidiary-ledger-accounts/:id')
