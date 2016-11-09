@@ -14,8 +14,6 @@ import './controllers/subsidiaryLedgerAccountsController';
 import './controllers/subsidiaryLedgerAccountCreateController';
 import './controllers/subsidiaryLedgerAccountUpdateController';
 import './controllers/detailAccountsController';
-import './controllers/detailAccountCreateController';
-import './controllers/detailAccountUpdateController';
 import './controllers/dimensionsController';
 import './controllers/journalsController';
 import './controllers/journalUpdateController';
@@ -54,6 +52,8 @@ import './modals/chequeCategroyUpdate';
 import './modals/writeChequeOnJournalLineEntry';
 import './modals/showJournalDetail';
 import './modals/journalAdvnacedSearch';
+import './modals/detailAccountCreate';
+import './modals/detailAccountUpdate';
 
 import './localData/constants';
 
@@ -76,6 +76,7 @@ import './directives/numeric';
 import './directives/textEditor';
 import './directives/checkbox';
 import './directives/ngKendoGrid';
+import './directives/journalSearchParameters';
 
 //filter
 import './filters/amount';

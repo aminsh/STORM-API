@@ -93,7 +93,7 @@
             <dev-tag-button
                     ng-repeat="category in dimensionCategories"
                     ng-click="executeTurnover('dimension'+($index+1))"
-                    title="{{category.title}}"
+                    title="{{'Total turnover dimension'|translate}} {{category.title}}"
                     style-type="default btn-lg btn-block"></dev-tag-button>
         </div>
         <div class="col-md-1"></div>
@@ -115,24 +115,24 @@
             </div>
 
             <dev-tag-button
-                    ng-click="executeTurnover('detailAccount', 'tiny')"
+                    ng-click="detailAccountExecuteTurnovers('tiny')"
                     ng-disabled="parameters.detailAccount == null"
                     title="{{'Tiny turnover journals'| translate}}"
                     style-type="primary btn-lg btn-block"></dev-tag-button>
             <dev-tag-button
-                    ng-click="executeTurnover('detaliAccount', 'generalLedgerAccount')()"
+                    ng-click="detailAccountExecuteTurnovers('generalLedgerAccount')()"
                     ng-disabled="parameters.detailAccount == null"
                     title="{{'Detail account'| translate}}/{{'General ledger account'|translate}}"
                     style-type="default btn-lg btn-block"></dev-tag-button>
             <dev-tag-button
-                    ng-click="executeTurnover('detaliAccount', 'subsidiaryLedgerAccount')()"
+                    ng-click="detailAccountExecuteTurnovers('subsidiaryLedgerAccount')()"
                     ng-disabled="parameters.detailAccount == null"
                     title="{{'Detail account'| translate}}/{{'Subsidiary ledger account'|translate}}"
                     style-type="default btn-lg btn-block"></dev-tag-button>
             <dev-tag-button
                     ng-repeat="category in dimensionCategories"
                     ng-disabled="parameters.detailAccount == null"
-                    ng-click="executeTurnover('detaliAccount', category)"
+                    ng-click="detailAccountExecuteTurnovers('detailAccount', category)"
                     title="{{'Detail account'| translate}}/{{category.title}}"
                     style-type="default btn-lg btn-block"></dev-tag-button>
         </div>
@@ -160,30 +160,132 @@
                 </div>
 
                 <dev-tag-button
-                        ng-click="executeTurnover('dimension1', 'tiny')"
+                        ng-click="dimensionExecuteTurnovers('dimension1', 'tiny', 0)"
                         ng-disabled="parameters.dimension1 == null"
                         title="{{'Tiny turnover journals'| translate}}"
                         style-type="primary btn-lg btn-block"></dev-tag-button>
                 <dev-tag-button
-                        ng-click="executeTurnover('dimension1', 'generalLedgerAccount')"
+                        ng-click="dimensionExecuteTurnovers('dimension1', 'generalLedgerAccount',0)"
                         ng-disabled="parameters.dimension1 == null"
                         title="{{dimensionCategories[0].title}}/{{'General ledger account'|translate}}"
                         style-type="default btn-lg btn-block"></dev-tag-button>
                 <dev-tag-button
-                        ng-click="executeTurnover('dimension1', 'subsidiaryLedgerAccount')"
+                        ng-click="dimensionExecuteTurnovers('dimension1', 'subsidiaryLedgerAccount',0)"
                         ng-disabled="parameters.dimension1 == null"
                         title="{{dimensionCategories[0].title}}/{{'Subsidiary ledger account'|translate}}"
                         style-type="default btn-lg btn-block"></dev-tag-button>
                 <dev-tag-button
-                        ng-click="executeTurnover('dimension1', 'detailAccount')"
+                        ng-click="dimensionExecuteTurnovers('dimension1', 'detailAccount',0)"
                         ng-disabled="parameters.dimension1 == null"
                         title="{{dimensionCategories[0].title}}/{{'Detail account'|translate}}"
                         style-type="default btn-lg btn-block"></dev-tag-button>
                 <dev-tag-button
                         ng-repeat="category in dimensionCategories | filter: {id: '!' + dimensionCategories[0].id}"
                         ng-disabled="parameters.dimension1 == null"
-                        ng-click="executeTurnover('dimension1', category)"
+                        ng-click="dimensionExecuteTurnovers('dimension1','dimension'+ dimensionCategories.indexOf(category)+1, dimensionCategories.indexOf(category))"
                         title="{{dimensionCategories[0].title}}/{{category.title}}"
+                        style-type="default btn-lg btn-block"></dev-tag-button>
+            </form>
+        </div>
+        <div class="col-md-2">
+            <form name="dimension2Form">
+                <div style="margin-bottom: 10px">
+                    <label class="label-control">{{dimensionCategories[1].title}}</label>
+                    <dev-tag-combo-box
+                            name="dimension2"
+                            k-placeholder="'{{'Select ...'|translate}}'"
+                            k-data-value-field="'id'"
+                            k-data-text-field="'display'"
+                            k-data-source="dimension2DataSource"
+                            k-filter="'contains'"
+                            k-value-primitive="false"
+                            k-auto-bind="false"
+                            k-min-length="3"
+                            k-ng-model="parameters.dimension2"
+                            required
+                            style="width: 100%"></dev-tag-combo-box>
+                    <div ng-messages="form.dimension2.$error"
+                         ng-if="form.dimension2.$dirty">
+                        <span ng-message="required" class="label label-danger">{{'Select'|translate}}</span>
+                    </div>
+                </div>
+
+                <dev-tag-button
+                        ng-click="dimensionExecuteTurnovers('dimension2', 'tiny', 0)"
+                        ng-disabled="parameters.dimension2 == null"
+                        title="{{'Tiny turnover journals'| translate}}"
+                        style-type="primary btn-lg btn-block"></dev-tag-button>
+                <dev-tag-button
+                        ng-click="dimensionExecuteTurnovers('dimension2', 'generalLedgerAccount',0)"
+                        ng-disabled="parameters.dimension2 == null"
+                        title="{{dimensionCategories[1].title}}/{{'General ledger account'|translate}}"
+                        style-type="default btn-lg btn-block"></dev-tag-button>
+                <dev-tag-button
+                        ng-click="dimensionExecuteTurnovers('dimension2', 'subsidiaryLedgerAccount',0)"
+                        ng-disabled="parameters.dimension2 == null"
+                        title="{{dimensionCategories[1].title}}/{{'Subsidiary ledger account'|translate}}"
+                        style-type="default btn-lg btn-block"></dev-tag-button>
+                <dev-tag-button
+                        ng-click="dimensionExecuteTurnovers('dimension2', 'detailAccount',0)"
+                        ng-disabled="parameters.dimension2 == null"
+                        title="{{dimensionCategories[1].title}}/{{'Detail account'|translate}}"
+                        style-type="default btn-lg btn-block"></dev-tag-button>
+                <dev-tag-button
+                        ng-repeat="category in dimensionCategories | filter: {id: '!' + dimensionCategories[1].id}"
+                        ng-disabled="parameters.dimension2 == null"
+                        ng-click="dimensionExecuteTurnovers('dimension2','dimension'+ dimensionCategories.indexOf(category)+1, dimensionCategories.indexOf(category))"
+                        title="{{dimensionCategories[1].title}}/{{category.title}}"
+                        style-type="default btn-lg btn-block"></dev-tag-button>
+            </form>
+        </div>
+        <div class="col-md-2">
+            <form name="dimension3Form">
+                <div style="margin-bottom: 10px">
+                    <label class="label-control">{{dimensionCategories[2].title}}</label>
+                    <dev-tag-combo-box
+                            name="dimension3"
+                            k-placeholder="'{{'Select ...'|translate}}'"
+                            k-data-value-field="'id'"
+                            k-data-text-field="'display'"
+                            k-data-source="dimension3DataSource"
+                            k-filter="'contains'"
+                            k-value-primitive="false"
+                            k-auto-bind="false"
+                            k-min-length="3"
+                            k-ng-model="parameters.dimension3"
+                            required
+                            style="width: 100%"></dev-tag-combo-box>
+                    <div ng-messages="form.dimension3.$error"
+                         ng-if="form.dimension3.$dirty">
+                        <span ng-message="required" class="label label-danger">{{'Select'|translate}}</span>
+                    </div>
+                </div>
+
+                <dev-tag-button
+                        ng-click="dimensionExecuteTurnovers('dimension3', 'tiny', 0)"
+                        ng-disabled="parameters.dimension3 == null"
+                        title="{{'Tiny turnover journals'| translate}}"
+                        style-type="primary btn-lg btn-block"></dev-tag-button>
+                <dev-tag-button
+                        ng-click="dimensionExecuteTurnovers('dimension3', 'generalLedgerAccount',0)"
+                        ng-disabled="parameters.dimension3 == null"
+                        title="{{dimensionCategories[2].title}}/{{'General ledger account'|translate}}"
+                        style-type="default btn-lg btn-block"></dev-tag-button>
+                <dev-tag-button
+                        ng-click="dimensionExecuteTurnovers('dimension3', 'subsidiaryLedgerAccount',0)"
+                        ng-disabled="parameters.dimension3 == null"
+                        title="{{dimensionCategories[2].title}}/{{'Subsidiary ledger account'|translate}}"
+                        style-type="default btn-lg btn-block"></dev-tag-button>
+                <dev-tag-button
+                        ng-click="dimensionExecuteTurnovers('dimension3', 'detailAccount',0)"
+                        ng-disabled="parameters.dimension3 == null"
+                        title="{{dimensionCategories[2].title}}/{{'Detail account'|translate}}"
+                        style-type="default btn-lg btn-block"></dev-tag-button>
+                <dev-tag-button
+                        ng-repeat="category in dimensionCategories | filter: {id: '!' + dimensionCategories[2].id}"
+                        ng-disabled="parameters.dimension3 == null"
+                        ng-click="dimensionExecuteTurnovers('dimension3','dimension'+ dimensionCategories.indexOf(category)+1, dimensionCategories.indexOf(category))"
+                        title="{{dimensionCategories[2].title}}/{{category.title}}"
                         style-type="default btn-lg btn-block"></dev-tag-button>
             </form>
         </div>

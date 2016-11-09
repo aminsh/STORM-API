@@ -51,7 +51,7 @@ function showJournalDetailController($scope, translate, $modalInstance, journalA
             }
         ],
         commands: [],
-
+        gridSize: '300px',
         readUrl: journalLineApi.url.getAll(id)
     };
 

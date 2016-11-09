@@ -8,8 +8,8 @@ function generalLedgerAccountView(entity) {
         display: entity.display,
         postingType: entity.postingType,
         balanceType: entity.balanceType,
-        postingTypeDisplay: enums.AccountPostingType().getDisplay(entity.postingType),
-        balanceTypeDisplay: enums.AccountBalanceType().getDisplay(entity.balanceType),
+        postingTypeDisplay: entity.postingType ? enums.AccountPostingType().getDisplay(entity.postingType) : '',
+        balanceTypeDisplay: entity.balanceType ? enums.AccountBalanceType().getDisplay(entity.balanceType) : '',
         description: entity.description,
         isActive: entity.isActive
     };

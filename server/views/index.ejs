@@ -51,6 +51,7 @@
     require('js-helper');
     window.jQuery = window.$ = require('jquery');
     require('JalaliDate');
+    window.JSZip = require('jszip');
 
     localStorage.setItem('translate', '<%- JSON.stringify(clientTranslation) %>');
     localStorage.setItem('currentUser', '<%- currentUser %>');

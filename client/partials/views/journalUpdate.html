@@ -1,117 +1,260 @@
-<dev-tag-content title="{{'Edit Journal'|translate}}">
-    <dev-tag-alert
-            show="journal.journalStatus == 'Temporary'"
-            type="warning"
-            text="{{'This journal is temporary' | translate}}">
-    </dev-tag-alert>
+<dev-tag-content title="{{title}}">
+    <div class="row">
+        <form name="form">
 
-    <form name="form">
+            <div class="col-md-12">
+                <dev-tag-button
+                        ng-click="save(form)"
+                        icon="glyphicon glyphicon-floppy-disk"
+                        ng-disabled="isSaving"
+                        is-waiting="isSaving"
+                        style-type="success"
+                        title="{{'Save' | translate}}"></dev-tag-button>
 
-        <div class="col-xs-12">
+                <dev-tag-button
+                        ng-click="bookkeeping()"
+                        style-type="default"
+                        title="{{'Record Bookkeeping' | translate}}"></dev-tag-button>
+
+                <dev-tag-button
+                        ng-click="attachImage()"
+                        icon="glyphicon glyphicon-open"
+                        style-type="default"
+                        title="{{'Upload image' | translate}}"></dev-tag-button>
+
+                <dev-tag-button
+                        ng-if="journal.attachment"
+                        href="{{journal.attachment}}"
+                        target="_blank"
+                        icon="glyphicon glyphicon-paperclip"
+                        style-type="primary"
+                        title="{{'Show attachment image' | translate}}"></dev-tag-button>
+            </div>
+
+            <div class="col-md-7">
+                <div class="row" style="margin-top: 20px">
+                    <div class="col-md-2" style="text-align: left;margin-top: 7px">
+                        <label class="label-control">{{'Temporary number' | translate}}</label>
+                    </div>
+                    <div class="col-md-3">
+                        <dev-tag-numeric
+                                ng-model="journal.temporaryNumber"
+                                style="width: 100%"
+                                name="temporaryNumber"
+                                required></dev-tag-numeric>
+
+                        <p ng-if="form.temporaryNumber.$invalid && !form.temporaryNumber.$pristine">
+                            <span class="label label-danger">Is Required</span>
+                        </p>
+                    </div>
+                    <div class="col-md-2" style="text-align: left;margin-top: 7px">
+                        <label class="label-control">{{'Temporary date' | translate}}</label>
+                    </div>
+                    <div class="col-md-3">
+                        <dev-tag-datepicker
+                                ng-model="journal.temporaryDate"
+                                name="temporaryDate"
+                                required></dev-tag-datepicker>
+
+                        <p ng-if="form.temporaryDate.$invalid && !form.temporaryDate.$pristine">
+                            <span class="label label-danger">Is Required</span>
+                        </p>
+                    </div>
+                </div>
+                <div class="row" style="margin-top: 10px">
+                    <div class="col-md-2" style="text-align: left;margin-top: 7px">
+                        <label class="label-control">{{'Number' | translate}}</label>
+                    </div>
+                    <div class="col-md-3">
+                        <dev-tag-numeric
+                                ng-model="journal.number"
+                                style="width: 100%"
+                                name="number"
+                                required
+                                ng-disabled="true"></dev-tag-numeric>
+
+                        <p ng-if="form.number.$invalid && !form.number.$pristine">
+                            <span class="label label-danger">Is Required</span>
+                        </p>
+                    </div>
+                    <div class="col-md-2" style="text-align: left;margin-top: 7px">
+                        <label class="label-control">{{'Date' | translate}}</label>
+                    </div>
+                    <div class="col-md-3">
+                        <dev-tag-datepicker
+                                ng-model="journal.date"
+                                name="date"
+                                required
+                                ng-disabled="true"></dev-tag-datepicker>
+
+                        <p ng-if="form.date.$invalid && !form.date.$pristine">
+                            <span class="label label-danger">Is Required</span>
+                        </p>
+                    </div>
+                </div>
+
+                <div class="row" style="margin-top: 10px">
+                    <div class="col-md-2" style="text-align: left;margin-top: 7px">
+                        <label class="label-control">{{'Tag' | translate}}</label>
+                    </div>
+                    <div class="col-md-10">
+
+                        <select kendo-multi-select k-options="tagsOptions"
+                                k-filter="'contains'"
+                                k-ng-model="journal.tagIds">
+
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-5">
+                <div class="row" style="margin-top: 20px">
+                    <div class="col-md-3" style="text-align: left;margin-top: 7px">
+                        <label class="label-control">{{'Journal type' | translate}}</label>
+                    </div>
+                    <div class="col-md-5">
+                        <dev-tag-dropdownlist
+                                name="journalType"
+                                k-option-label="{{'Select ...'|translate}}"
+                                k-data-value-field="key"
+                                k-data-text-field="display"
+                                k-data-source="journalTypeData"
+                                ng-model="journal.journalType"
+                                required></dev-tag-dropdownlist>
+                    </div>
+                </div>
+
+                <div class="row" style="margin-top: 10px">
+                    <div class="col-md-3" style="text-align: left;margin-top: 7px">
+                        <label class="label-control">{{'Description' | translate}}</label>
+                    </div>
+                    <div class="col-md-8">
+                        <textarea type="text" class="form-control" ng-model="journal.description"
+                                  name="description" style="width: 100%;height: 90px"></textarea>
+                    </div>
+                </div>
+
+            </div>
+        </form>
+    </div>
+
+
+    <hr>
+
+    <div class="row">
+        <div class="col-md-12">
             <dev-tag-button
-                    ng-click="save(form)"
-                    icon="glyphicon glyphicon-floppy-disk"
-                    ng-disabled="isSaving"
-                    is-waiting="isSaving"
-                    style-type="success"
-                    title="{{'Save' | translate}}"></dev-tag-button>
-
-            <dev-tag-button
-                    ng-click="bookkeeping()"
-                    style-type="default"
-                    title="{{'Record Bookkeeping' | translate}}"></dev-tag-button>
-
-            <dev-tag-button
-                    ng-click="attachImage()"
-                    icon="glyphicon glyphicon-open"
-                    style-type="default"
-                    title="{{'Upload image' | translate}}"></dev-tag-button>
-
-            <dev-tag-button
-                    ng-if="journal.attachment"
-                    href="{{journal.attachment}}"
-                    target="_blank"
-                    icon="glyphicon glyphicon-paperclip"
+                    ng-click="createJournalLine()"
+                    icon="glyphicon glyphicon-plus"
                     style-type="primary"
-                    title="{{'Show attachment image' | translate}}"></dev-tag-button>
+                    title="{{'New Journal line' | translate}}"></dev-tag-button>
+
+            <dev-tag-button
+                    ng-click="writeCheque()"
+                    icon="glyphicon glyphicon-credit-card"
+                    style-type="default"
+                    title="{{'Write cheque' | translate}}"
+                    ng-disabled="!journalLineCurrent || (journalLineCurrent && journalLineCurrent.creditor == 0)"></dev-tag-button>
+
+            <dev-tag-grid option="gridOption" on-current-changed="journalLineCurrentChanged(current)">
+                <dev-tag-grid-detail>
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="row">
+                                        <div class="col-md-1">
+                                            <label class="label-control">
+                                                ${kendo.translate('General ledger account')}
+                                            </label>
+                                        </div>
+                                        <div class="col-md-8" style="overflow: hidden">
+                                            ${data.generalLedgerAccountDisplay}
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-1">
+                                            <label class="label-control">${kendo.translate('Subsidiary ledger
+                                                account')}</label>
+                                        </div>
+                                        <div class="col-md-8" style="overflow: hidden">
+                                            ${data.subsidiaryLedgerAccountDisplay}
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-1">
+                                            <label class="label-control">${kendo.translate('Detail account')}</label>
+                                        </div>
+                                        <div class="col-md-8" style="overflow: hidden"
+                                             title="${data.detailAccountDisplay}">
+                                            ${data.detailAccountDisplay}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="row">
+                                        <div class="col-md-1">
+                                            <label class="label-control">${kendo.dimensionCategories[0].title}</label>
+                                        </div>
+                                        <div class="col-md-8" title="${data.dimension1Display}">
+                                            ${data.dimension1Display}
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-1">
+                                            <label class="label-control">${kendo.dimensionCategories[1].title}</label>
+                                        </div>
+                                        <div class="col-md-8" title="${data.dimension2Display}">
+                                            ${data.dimension2Display}
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-1">
+                                            <label class="label-control">${kendo.dimensionCategories[2].title}</label>
+                                        </div>
+                                        <div class="col-md-8" title="${data.dimension3Display}">
+                                            ${data.dimension3Display}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="row">
+                                        <div class="col-md-1">
+                                            <label class="label-control">${kendo.translate('Cheque number
+                                                (abrv)')}</label>
+                                        </div>
+                                        <div class="col-md-8" title="${data.chequeNumber}">
+                                            ${data.chequeNumber}
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-1">
+                                            <label class="label-control">${kendo.translate('Cheque date
+                                                (abrv)')}</label>
+                                        </div>
+                                        <div class="col-md-8" title="${data.chequeDate}">
+                                            ${data.chequeDate}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </dev-tag-grid-detail>
+            </dev-tag-grid>
         </div>
 
-        <div class="col-xs-2">
-            <div class="row">
-                <div class="form-group">
-                    <label class="label-control">{{'Temporary number' | translate}}</label>
-                    <dev-tag-numeric
-                            ng-model="journal.temporaryNumber"
-                            style="width: 100%"
-                            name="temporaryNumber"
-                            required></dev-tag-numeric>
 
-                    <p ng-if="form.temporaryNumber.$invalid && !form.temporaryNumber.$pristine">
-                        <span class="label label-danger">Is Required</span>
-                    </p>
-                </div>
-                <div class="form-group">
-                    <label class="label-control">{{'Temporary date' | translate}}</label>
-                    <dev-tag-datepicker
-                            ng-model="journal.temporaryDate"
-                            name="temporaryDate"
-                            required></dev-tag-datepicker>
-
-                    <p ng-if="form.temporaryDate.$invalid && !form.temporaryDate.$pristine">
-                        <span class="label label-danger">Is Required</span>
-                    </p>
-
-                </div>
-            </div>
-        </div>
-
-        <div class="col-xs-4"></div>
-
-        <div class="col-xs-4">
-            <ul class="list-group">
-                <li class="list-group-item list-group-item-info">{{'Number'|translate}} : {{journal.number}}</li>
-                <li class="list-group-item list-group-item-info">{{'Date'|translate}} : {{journal.date}}</li>
-                <li class="list-group-item list-group-item-info">{{'Status'|translate}} :
-                    {{journal.journalStatusDisplay}}
-                </li>
-            </ul>
-        </div>
-
-        <div class="col-xs-12">
-            <div class="row">
-                <div class="form-group col-xs-6">
-                    <label class="label-control">{{'Description' | translate}}</label>
-                    <textarea type="text" class="form-control" ng-model="journal.description"
-                              name="description"></textarea>
-                </div>
-            </div>
-        </div>
-    </form>
+    </div>
 
 </dev-tag-content>
 
-<dev-tag-content title="{{'journal lines'|translate}}" class="col-xs-12">
 
-    <dev-tag-button
-            ng-click="createJournalLine()"
-            icon="glyphicon glyphicon-plus"
-            style-type="primary"
-            title="{{'New Journal line' | translate}}"></dev-tag-button>
 
-    <dev-tag-button
-            ng-click="writeCheque()"
-            icon="glyphicon glyphicon-credit-card"
-            style-type="default"
-            title="{{'Write cheque' | translate}}"
-            ng-disabled="gridOption.current && gridOption.current.creditor == 0"></dev-tag-button>
-
-    <dev-tag-grid option="gridOption"></dev-tag-grid>
-
-    <ul class="list-group" ng-if="gridOption.current">
-        <li class="list-group-item">{{'Article'|translate}} : {{gridOption.current.article}}</li>
-        <li class="list-group-item" ng-repeat="dimension in gridOption.current.dimensions">
-            {{dimension.categoryDisplay}} : {{dimension.display}}
-        </li>
-    </ul>
-
-</dev-tag-content>

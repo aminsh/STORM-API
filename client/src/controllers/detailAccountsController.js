@@ -1,11 +1,22 @@
 import accModule from '../acc.module';
 
 function detailAccountsController($scope, logger, translate, confirm, navigate,
-                                  detailAccountApi) {
+                                  detailAccountApi,
+                                  detailAccountCreateModalService,
+                                  detailAccountUpdateModalService) {
     "use strict";
 
     $scope.gridOption = {
         columns: [
+            {
+                name: 'isActive',
+                title: translate('Is active ?'),
+                type: 'activeType',
+                width: '150px',
+                template: '<i class="glyphicon glyphicon-${data.isActive ? "ok-circle" : "remove-circle"}"' +
+                'style="font-size: 20px;color:${data.isActive ? "green" : "red"}">' +
+                '</i>'
+            },
             {name: 'code', title: translate('Code'), width: '120px', type: 'string'},
             {name: 'title', title: translate('Title'), type: 'string'}
         ],
@@ -14,7 +25,8 @@ function detailAccountsController($scope, logger, translate, confirm, navigate,
                 title: translate('Edit'),
                 name: 'edit detail account',
                 action: function (current) {
-                    navigate('detailAccountUpdate', {id: current.id});
+                    detailAccountUpdateModalService.show({id: current.id})
+                        .then(()=> $scope.gridOption.refresh());
                 }
             },
             {
@@ -38,6 +50,9 @@ function detailAccountsController($scope, logger, translate, confirm, navigate,
         ],
         readUrl: detailAccountApi.url.getAll
     };
+
+    $scope.create = ()=> detailAccountCreateModalService.show()
+        .then(()=> $scope.gridOption.refresh());
 }
 
 accModule.controller('detailAccountsController', detailAccountsController);

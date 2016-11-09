@@ -50,10 +50,6 @@
 
         require('./controllers/detailAccountsController');
 
-        require('./controllers/detailAccountCreateController');
-
-        require('./controllers/detailAccountUpdateController');
-
         require('./controllers/dimensionsController');
 
         require('./controllers/journalsController');
@@ -122,6 +118,10 @@
 
         require('./modals/journalAdvnacedSearch');
 
+        require('./modals/detailAccountCreate');
+
+        require('./modals/detailAccountUpdate');
+
         require('./localData/constants');
 
         require('./directives/alert');
@@ -160,6 +160,8 @@
 
         require('./directives/ngKendoGrid');
 
+        require('./directives/journalSearchParameters');
+
         require('./filters/amount');
 
         require('./services/formService');
@@ -191,6 +193,12 @@
 //filter
 
 
+// load apis
+        _acc2.default.init();
+
+//service
+
+
 //directives
 
 
@@ -201,12 +209,6 @@
 
 
 // load config
-        _acc2.default.init();
-
-//service
-
-
-// load apis
 
     }, {
         "./acc.module": 2,
@@ -229,65 +231,66 @@
         "./controllers/accountReviewTurnoverController": 19,
         "./controllers/banksController": 20,
         "./controllers/chequeCategoriesController": 21,
-        "./controllers/detailAccountCreateController": 22,
-        "./controllers/detailAccountUpdateController": 23,
-        "./controllers/detailAccountsController": 24,
-        "./controllers/dimensionsController": 25,
-        "./controllers/generalLedgerAccountsController": 26,
-        "./controllers/homeController": 27,
-        "./controllers/journalCopy": 28,
-        "./controllers/journalManagementController": 29,
-        "./controllers/journalTemplatesController": 30,
-        "./controllers/journalUpdateController": 31,
-        "./controllers/journalsController": 32,
-        "./controllers/shellController": 33,
-        "./controllers/subsidiaryLedgerAccountCreateController": 34,
-        "./controllers/subsidiaryLedgerAccountUpdateController": 35,
-        "./controllers/subsidiaryLedgerAccountsController": 36,
-        "./directives/alert": 37,
-        "./directives/blockUi": 38,
-        "./directives/button": 39,
-        "./directives/checkbox": 40,
-        "./directives/combobox": 41,
-        "./directives/content": 42,
-        "./directives/customValidator": 43,
-        "./directives/datepicker": 44,
-        "./directives/dropdownlist": 45,
-        "./directives/focusMe": 46,
-        "./directives/grid": 47,
-        "./directives/layout": 48,
-        "./directives/ngKendoGrid": 49,
-        "./directives/numeric": 50,
-        "./directives/subContent": 51,
-        "./directives/textEditor": 52,
-        "./directives/uploader": 53,
-        "./directives/validationSummary": 54,
-        "./filters/amount": 55,
-        "./localData/constants": 57,
-        "./modals/chequeCategroyCreate": 61,
-        "./modals/chequeCategroyUpdate": 62,
-        "./modals/dimensionCreate": 63,
-        "./modals/dimensionUpdate": 64,
-        "./modals/generalLedgerAccountCreate": 65,
-        "./modals/generalLedgerAccountUpdate": 66,
-        "./modals/journalAdvnacedSearch": 67,
-        "./modals/journalAttachImage": 68,
-        "./modals/journalBookkeeping": 69,
-        "./modals/journalCreate": 70,
-        "./modals/journalLineCreateOrUpdate": 71,
-        "./modals/showJournalDetail": 72,
-        "./modals/writeChequeOnJournalLineEntry": 73,
-        "./services/apiPromise": 74,
-        "./services/confirm": 75,
-        "./services/formService": 76,
-        "./services/gridFilterCellTypeProvider": 77,
-        "./services/logger": 78,
-        "./services/menuItemsProvider": 79,
-        "./services/modalBase": 80,
-        "./services/prompt": 81,
-        "./services/routeNavigatorService": 82,
-        "./services/translate": 83,
-        "./services/translateStorageService": 84
+        "./controllers/detailAccountsController": 22,
+        "./controllers/dimensionsController": 23,
+        "./controllers/generalLedgerAccountsController": 24,
+        "./controllers/homeController": 25,
+        "./controllers/journalCopy": 26,
+        "./controllers/journalManagementController": 27,
+        "./controllers/journalTemplatesController": 28,
+        "./controllers/journalUpdateController": 29,
+        "./controllers/journalsController": 30,
+        "./controllers/shellController": 31,
+        "./controllers/subsidiaryLedgerAccountCreateController": 32,
+        "./controllers/subsidiaryLedgerAccountUpdateController": 33,
+        "./controllers/subsidiaryLedgerAccountsController": 34,
+        "./directives/alert": 35,
+        "./directives/blockUi": 36,
+        "./directives/button": 37,
+        "./directives/checkbox": 38,
+        "./directives/combobox": 39,
+        "./directives/content": 40,
+        "./directives/customValidator": 41,
+        "./directives/datepicker": 42,
+        "./directives/dropdownlist": 43,
+        "./directives/focusMe": 44,
+        "./directives/grid": 45,
+        "./directives/journalSearchParameters": 46,
+        "./directives/layout": 47,
+        "./directives/ngKendoGrid": 48,
+        "./directives/numeric": 49,
+        "./directives/subContent": 50,
+        "./directives/textEditor": 51,
+        "./directives/uploader": 52,
+        "./directives/validationSummary": 53,
+        "./filters/amount": 54,
+        "./localData/constants": 56,
+        "./modals/chequeCategroyCreate": 60,
+        "./modals/chequeCategroyUpdate": 61,
+        "./modals/detailAccountCreate": 62,
+        "./modals/detailAccountUpdate": 63,
+        "./modals/dimensionCreate": 64,
+        "./modals/dimensionUpdate": 65,
+        "./modals/generalLedgerAccountCreate": 66,
+        "./modals/generalLedgerAccountUpdate": 67,
+        "./modals/journalAdvnacedSearch": 68,
+        "./modals/journalAttachImage": 69,
+        "./modals/journalBookkeeping": 70,
+        "./modals/journalCreate": 71,
+        "./modals/journalLineCreateOrUpdate": 72,
+        "./modals/showJournalDetail": 73,
+        "./modals/writeChequeOnJournalLineEntry": 74,
+        "./services/apiPromise": 75,
+        "./services/confirm": 76,
+        "./services/formService": 77,
+        "./services/gridFilterCellTypeProvider": 78,
+        "./services/logger": 79,
+        "./services/menuItemsProvider": 80,
+        "./services/modalBase": 81,
+        "./services/prompt": 82,
+        "./services/routeNavigatorService": 83,
+        "./services/translate": 84,
+        "./services/translateStorageService": 85
     }],
     2: [function (require, module, exports) {
         'use strict';
@@ -322,11 +325,13 @@
 
         require('kendo.messages');
 
+        require('ngDraggable');
+
         function _interopRequireDefault(obj) {
             return obj && obj.__esModule ? obj : {default: obj};
         }
 
-        var accModule = _angular2.default.module('acc.module', ['ngAnimate', 'ngRoute', 'ngResource', 'ngSanitize', 'ui.bootstrap', 'pascalprecht.translate', 'kendo.directives', 'ngMessages', 'ngCookies']);
+        var accModule = _angular2.default.module('acc.module', ['ngAnimate', 'ngRoute', 'ngResource', 'ngSanitize', 'ui.bootstrap', 'pascalprecht.translate', 'kendo.directives', 'ngMessages', 'ngCookies', 'ngDraggable']);
 
         accModule.init = function () {
             _angular2.default.element(document).ready(function () {
@@ -348,7 +353,8 @@
         "angular-translate": "angular-translate",
         "kendo": "kendo",
         "kendo.culture": "kendo.culture",
-        "kendo.messages": "kendo.messages"
+        "kendo.messages": "kendo.messages",
+        "ngDraggable": "ngDraggable"
     }],
     3: [function (require, module, exports) {
         'use strict';
@@ -500,7 +506,7 @@
             return obj && obj.__esModule ? obj : {default: obj};
         }
 
-        function dimensionApi(apiPromise) {
+        function dimensionApi(apiPromise, $q, $timeout) {
             var urlPrefix = '/api';
 
             return {
@@ -547,7 +553,7 @@
             return obj && obj.__esModule ? obj : {default: obj};
         }
 
-        function dimensionCategoryApi(apiPromise) {
+        function dimensionCategoryApi(apiPromise, $q, $timeout) {
             var urlPrefix = '/api';
 
             return {
@@ -556,6 +562,19 @@
                 },
                 getAll: function getAll() {
                     return apiPromise.get('{0}/dimension-categories'.format(urlPrefix));
+                },
+                getAllLookup: function getAllLookup() {
+                    var deferred = $q.defer();
+                    var dimensionCategories = JSON.parse(localStorage.getItem('dimensionCategories'));
+
+                    if (dimensionCategories) $timeout(function () {
+                        return deferred.resolve(dimensionCategories);
+                    }, 0); else apiPromise.get('{0}/dimension-categories'.format(urlPrefix)).then(function (result) {
+                        localStorage.setItem('dimensionCategories', JSON.stringify(result));
+                        deferred.resolve(result);
+                    });
+
+                    return deferred.promise;
                 },
                 getById: function getById(id) {
                     return apiPromise.get('{0}/dimension-categories/{1}'.format(urlPrefix, id));
@@ -909,7 +928,7 @@
             });
         });
 
-    }, {"../acc.module": 2, "../localData/constants": 57}],
+    }, {"../acc.module": 2, "../localData/constants": 56}],
     15: [function (require, module, exports) {
         'use strict';
 
@@ -1091,7 +1110,7 @@
             $translateProvider.useSanitizeValueStrategy('escapeParameters');
         });
 
-    }, {"../acc.module": 2, "../localData/config": 56, "angular-translate-loader-url": "angular-translate-loader-url"}],
+    }, {"../acc.module": 2, "../localData/config": 55, "angular-translate-loader-url": "angular-translate-loader-url"}],
     18: [function (require, module, exports) {
         'use strict';
 
@@ -1104,7 +1123,6 @@
         }
 
         function accountReviewController($scope, navigate, dimensionCategoryApi, constants, formService) {
-            var _this = this;
 
             $scope.parameters = localStorage.getItem('account-review-state') ? JSON.parse(localStorage.getItem('account-review-state')) : {
                 minDate: '',
@@ -1144,7 +1162,6 @@
                 $scope.dimension1DataSource = dimensionDataSourceFactory(cats[0].id);
                 $scope.dimension2DataSource = dimensionDataSourceFactory(cats[1].id);
                 $scope.dimension3DataSource = dimensionDataSourceFactory(cats[2].id);
-                $scope.dimension4DataSource = dimensionDataSourceFactory(cats[3].id);
             });
 
             function dimensionDataSourceFactory(categoryId) {
@@ -1168,26 +1185,29 @@
                 localStorage.setItem('account-review-state', state);
             }
 
-            function getParameters(action) {
-                var params = angular.extend({}, $scope.parameters);
-                if (!params.minDate) delete params.minDate;
-                if (!params.maxDate) delete params.maxDate;
-                if (!params.minNumber) delete params.minNumber;
-                if (!params.maxNumber) delete params.maxNumber;
+            function getParameters() {
+                var parameters = $scope.parameters,
+                    params = {};
 
-                action.apply(params);
+                if (parameters.minNumber) {
+                    params.minNumber = parameters.minNumber;
+                    params.maxNumber = parameters.maxNumber;
+                }
+
+                if (parameters.minDate) {
+                    params.minDate = parameters.minDate;
+                    params.maxDate = parameters.maxDate;
+                }
+
+                params.notShowZeroRemainder = parameters.notShowZeroRemainder;
+                params.isNotPeriodIncluded = parameters.isNotPeriodIncluded;
 
                 return params;
             }
 
             $scope.executeTurnover = function (reportName) {
                 saveState();
-                var params = getParameters(function () {
-                    delete _this.detailAccount;
-                    delete _this.dimension1;
-                    delete _this.dimension2;
-                    delete _this.dimension3;
-        });
+                var params = getParameters();
 
                 navigate('accountReviewTurnover', {name: reportName}, params);
             };
@@ -1195,28 +1215,20 @@
             $scope.detailAccountExecuteTurnovers = function (reportName) {
                 saveState();
 
-                var params = getParameters(function () {
-                    delete _this.dimension1;
-                    delete _this.dimension2;
-                    delete _this.dimension3;
-                });
+                var params = getParameters();
+                params.detailAccountId = $scope.parameters.detailAccount.id;
+                params.detailAccountDisplay = $scope.parameters.detailAccount.display;
 
                 navigate('accountReviewTurnover', {name: reportName}, params);
             };
 
-            $scope.dimensionExecuteTurnovers = function (dimensionName, reportName) {
+            $scope.dimensionExecuteTurnovers = function (dimensionName, reportName, index) {
                 saveState();
 
-                var params = getParameters(function () {
-                    var self = _this;
-                    delete self.detailAccount;
-
-                    ['dimension1', 'dimension2', 'dimension3'].asEnumerable().where(function (d) {
-                        return d != dimensionName;
-                    }).toArray().forEach(function (d) {
-                        return delete self[d];
-                    });
-                });
+                var params = getParameters();
+                params[dimensionName + 'Id'] = $scope.parameters[dimensionName].id;
+                params[dimensionName + 'Display'] = $scope.parameters[dimensionName].display;
+                params[dimensionName + 'Caption'] = $scope.dimensionCategories[index].title;
 
                 navigate('accountReviewTurnover', {name: reportName}, params);
             };
@@ -1236,15 +1248,175 @@
             return obj && obj.__esModule ? obj : {default: obj};
         }
 
-        function accountReviewTurnoverController($scope, navigate, $routeParams, $location, accountReviewTurnoverGridOptionService) {
+        function accountReviewTurnoverController($scope, navigate, $routeParams, $location, translate, dimensionCategoryApi, accountReviewTurnoverGridOptionService, showJournalDetailModalService) {
             var titles = {
                 generalLedgerAccount: 'Total turnover general ledger account',
                 subsidiaryLedgerAccount: 'Total turnover subsidiary ledger account',
-                detailAccount: 'Total turnover detail account'
+                detailAccount: 'Total turnover detail account',
+                dimension: 'Total turnover',
+                tiny: 'Tiny turnover journals'
             };
-            $scope.title = titles[$routeParams.name];
+
+            var reportName = $scope.reportName = $routeParams.name;
+            var parameters = $location.search();
+            var dimensionCategories = [];
+            var commands = [{
+                order: 0,
+                key: 'tiny',
+                display: translate('Tiny turnover journals')
+            }, {
+                order: 1,
+                key: 'generalLedgerAccount',
+                display: translate('General ledger account')
+            }, {
+                order: 2,
+                key: 'subsidiaryLedgerAccount',
+                display: translate('Subsidiary ledger account')
+            }, {
+                order: 3,
+                key: 'detailAccount',
+                display: translate('Detail account')
+            }];
+
+            $scope.commands = [];
+
+            $scope.title = translate(titles[$routeParams.name]);
+
+            if (reportName != 'tiny') dimensionCategoryApi.getAllLookup().then(function (result) {
+                dimensionCategories = result.data;
+
+                $scope.title = $routeParams.name.includes('dimension') ? translate(titles.dimension) + ' ' + dimensionCategories[parseInt('dimension1'.replace('dimension', '')) - 1].title : translate(titles[$routeParams.name]);
+
+                $scope.commands = dimensionCategories.asEnumerable().select(function (c) {
+                    var order = 3;
+
+                    return {
+                        order: ++order,
+                        key: 'dimension' + (dimensionCategories.indexOf(c) + 1),
+                        display: c.title
+            };
+                }).concat(commands).where(function (a) {
+                    return a.key != $routeParams.name;
+                }).orderBy(function (a) {
+                    return a.order;
+                }).toArray();
+            });
+
+            $scope.titleParameters = getTitleParameters();
+
             $scope.gridOption = accountReviewTurnoverGridOptionService[$routeParams.name];
-            $scope.gridOption.extra = {filter: $location.search()};
+            $scope.gridOption.extra = {filter: getParameters()};
+            $scope.current = false;
+
+            $scope.execute = function (key) {
+                var params = angular.extend({}, parameters);
+                delete params[key + 'Id'];
+                delete params[key + 'Display'];
+
+                params[reportName + 'Id'] = $scope.current[reportName + 'Id'];
+                params[reportName + 'Display'] = $scope.current[reportName + 'Code'] + ' ' + $scope.current[reportName + 'Title'];
+
+                navigate('accountReviewTurnover', {name: key}, params);
+            };
+
+            $scope.onCurrentChanged = function (current) {
+                if (!current) $scope.current = false;
+
+                $scope.current = current;
+
+                if (!$scope.$$phase) $scope.$apply();
+            };
+
+            $scope.showJournal = function () {
+                showJournalDetailModalService.show({
+                    id: $scope.current.id
+                });
+            };
+
+            function getTitleParameters() {
+                var titleParameters = [];
+
+                if (parameters.generalLedgerAccountId) titleParameters.push({
+                    name: translate('General ledger account'),
+                    value: parameters.generalLedgerAccountDisplay
+                });
+
+                if (parameters.subsidiaryLedgerAccountId) titleParameters.push({
+                    name: translate('Subsidiary ledger account'),
+                    value: parameters.subsidiaryLedgerAccountDisplay
+                });
+
+                if (parameters.detailAccountId) titleParameters.push({
+                    name: translate('Detail account'),
+                    value: parameters.detailAccountDisplay
+                });
+
+                if (parameters.dimension1Id) titleParameters.push({
+                    name: parameters.dimension1Caption,
+                    value: parameters.dimension1Display
+                });
+
+                if (parameters.dimension2Id) titleParameters.push({
+                    name: parameters.dimension2Caption,
+                    value: parameters.dimension2Display
+                });
+
+                if (parameters.dimension3Id) titleParameters.push({
+                    name: parameters.dimension3Caption,
+                    value: parameters.dimension3Display
+                });
+
+                if (parameters.minNumber) titleParameters.push({
+                    name: translate('Number'),
+                    value: '[' + parameters.minNumber + ',' + parameters.maxNumber + ']'
+                });
+
+                if (parameters.minDate) titleParameters.push({
+                    name: translate('Date'),
+                    value: '[' + parameters.minDate + ',' + parameters.maxDate + ']'
+                });
+
+                if (eval(parameters.notShowZeroRemainder)) titleParameters.push({
+                    name: translate('Not show zero remiander')
+                });
+
+                if (eval(parameters.isNotPeriodIncluded)) titleParameters.push({
+                    name: translate('Is not period included')
+                });
+
+                return titleParameters;
+            }
+
+            function getParameters() {
+                var params = {};
+
+                if (parameters.generalLedgerAccountId) params.generalLedgerAccountId = parameters.generalLedgerAccountId;
+
+                if (parameters.subsidiaryLedgerAccountId) params.subsidiaryLedgerAccountId = parameters.subsidiaryLedgerAccountId;
+
+                if (parameters.detailAccountId) params.detailAccountId = parameters.detailAccountId;
+
+                if (parameters.dimension1Id) params.dimension1Id = parameters.dimension1Id;
+
+                if (parameters.dimension2Id) params.dimension2Id = parameters.dimension2Id;
+
+                if (parameters.dimension3Id) params.dimension3Id = parameters.dimension3Id;
+
+                if (parameters.minNumber) {
+                    params.minNumber = parameters.minNumber;
+                    params.maxNumber = parameters.maxNumber;
+                }
+
+                if (parameters.minDate) {
+                    params.minDate = parameters.minDate;
+                    params.maxDate = parameters.maxDate;
+                }
+
+                params.notShowZeroRemainder = parameters.notShowZeroRemainder;
+                params.isNotPeriodInclude = parameters.isNotPeriodInclude;
+
+                return params;
+            }
         }
 
         function accountReviewTurnoverGridOptionService(translate, constants) {
@@ -1255,33 +1427,33 @@
                 title: translate('Before remainder'),
                 type: 'number',
                 width: '15%',
-                format: '{0:#,##}',
+                format: '{0:#,##;(#,##)}',
                 aggregates: ['sum'],
-                footerTemplate: "{0}: #= kendo.toString(sum,'n0') #".format(translate('Sum'))
+                footerTemplate: "${kendo.toAmount(sum)}"
             }, {
                 name: 'sumDebtor',
                 title: translate('Debtor'),
                 type: 'number',
                 width: '15%',
-                format: '{0:#,##}',
+                format: '{0:#,##;(#,##)}',
                 aggregates: ['sum'],
-                footerTemplate: "{0}: #= kendo.toString(sum,'n0') #".format(translate('Sum'))
+                footerTemplate: "${kendo.toAmount(sum)}"
             }, {
                 name: 'sumCreditor',
                 title: translate('Creditor'),
                 type: 'number',
                 width: '15%',
-                format: '{0:#,##}',
+                format: '{0:#,##;(#,##)}',
                 aggregates: ['sum'],
-                footerTemplate: "{0}: #= kendo.toString(sum,'n0') #".format(translate('Sum'))
+                footerTemplate: "${kendo.toAmount(sum)}"
             }, {
                 name: 'sumRemainder',
                 title: translate('Remainder'),
                 type: 'number',
                 width: '15%',
-                format: '{0:#,##}',
+                format: '{0:#,##;(#,##)}',
                 aggregates: ['sum'],
-                footerTemplate: "{0}: #= kendo.toString(sum,'n0') #".format(translate('Sum'))
+                footerTemplate: "${kendo.toAmount(sum)}"
             }];
 
             options.generalLedgerAccount = {
@@ -1297,18 +1469,19 @@
                     width: '40%'
                 }].concat(amountColumns),
                 commands: [],
-                readUrl: constants.urls.accountReview.getAllGeneralLedgerAccount()
+                readUrl: constants.urls.accountReview.getAllGeneralLedgerAccount(),
+                selectable: true
             };
 
             options.subsidiaryLedgerAccount = {
                 columns: [{
-                    name: 'generalLedgerAccountCode',
-                    title: translate('General ledger account'),
+                    name: 'subsidiaryLedgerAccountCode',
+                    title: translate('Subsidiary ledger account'),
                     type: 'string',
                     width: '100px'
                 }, {
-                    name: 'subsidiaryLedgerAccountCode',
-                    title: translate('Subsidiary ledger account'),
+                    name: 'generalLedgerAccountCode',
+                    title: translate('General ledger account'),
                     type: 'string',
                     width: '100px'
                 }, {
@@ -1318,7 +1491,8 @@
                     width: '40%'
                 }].concat(amountColumns),
                 commands: [],
-                readUrl: constants.urls.accountReview.getAllSubsidiaryLedgerAccount()
+                readUrl: constants.urls.accountReview.getAllSubsidiaryLedgerAccount(),
+                selectable: true
             };
 
             options.detailAccount = {
@@ -1334,13 +1508,14 @@
                     width: '40%'
                 }].concat(amountColumns),
                 commands: [],
-                readUrl: constants.urls.accountReview.getAllDetailAccount()
+                readUrl: constants.urls.accountReview.getAllDetailAccount(),
+                selectable: true
             };
 
             options.dimension1 = {
                 columns: [{
                     name: 'dimension1Code',
-                    title: translate('Detail account'),
+                    headerTemplate: kendo.template('${kendo.dimensionCategories[0].title}'),
                     type: 'string',
                     width: '100px'
                 }, {
@@ -1350,13 +1525,14 @@
                     width: '40%'
                 }].concat(amountColumns),
                 commands: [],
-                readUrl: constants.urls.accountReview.getAllDimension1()
+                readUrl: constants.urls.accountReview.getAllDimension1(),
+                selectable: true
             };
 
             options.dimension2 = {
                 columns: [{
                     name: 'dimension2Code',
-                    title: translate('Detail account'),
+                    headerTemplate: kendo.template('${kendo.dimensionCategories[1].title}'),
                     type: 'string',
                     width: '100px'
                 }, {
@@ -1366,13 +1542,14 @@
                     width: '40%'
                 }].concat(amountColumns),
                 commands: [],
-                readUrl: constants.urls.accountReview.getAllDimension2()
+                readUrl: constants.urls.accountReview.getAllDimension2(),
+                selectable: true
             };
 
             options.dimension3 = {
                 columns: [{
                     name: 'dimension3Code',
-                    title: translate('Detail account'),
+                    headerTemplate: kendo.template('${kendo.dimensionCategories[2].title}'),
                     type: 'string',
                     width: '100px'
                 }, {
@@ -1382,7 +1559,74 @@
                     width: '40%'
                 }].concat(amountColumns),
                 commands: [],
-                readUrl: constants.urls.accountReview.getAllDimension3()
+                readUrl: constants.urls.accountReview.getAllDimension3(),
+                selectable: true
+            };
+
+            options.tiny = {
+                columns: [{
+                    name: 'number',
+                    title: translate('Number'),
+                    type: 'number',
+                    width: '50px'
+                }, {
+                    name: 'date',
+                    title: translate('Date'),
+                    type: 'string',
+                    width: '100px'
+                }, {
+                    name: 'dimension3Code',
+                    headerTemplate: kendo.template('${kendo.dimensionCategories[2].title}'),
+                    type: 'string',
+                    width: '70px'
+                }, {
+                    name: 'dimension2Code',
+                    headerTemplate: kendo.template('${kendo.dimensionCategories[1].title}'),
+                    type: 'string',
+                    width: '70px'
+                }, {
+                    name: 'dimension1Code',
+                    headerTemplate: kendo.template('${kendo.dimensionCategories[0].title}'),
+                    type: 'string',
+                    width: '70px'
+                }, {
+                    name: 'detailAccountCode',
+                    title: translate('Detail account'),
+                    type: 'string',
+                    width: '70px'
+                }, {
+                    name: 'subsidiaryLedgerAccountCode',
+                    title: translate('Subsidiary ledger account'),
+                    type: 'string',
+                    width: '50px'
+                }, {
+                    name: 'generalLedgerAccountCode',
+                    title: translate('General ledger account'),
+                    type: 'string',
+                    width: '50px'
+                }, {
+                    name: 'sumDebtor',
+                    title: translate('Debtor'),
+                    type: 'number',
+                    width: '15%',
+                    format: '{0:#,##}',
+                    aggregates: ['sum'],
+                    footerTemplate: "#= kendo.toString(sum,'n0') #"
+                }, {
+                    name: 'sumCreditor',
+                    title: translate('Creditor'),
+                    type: 'number',
+                    width: '15%',
+                    format: '{0:#,##}',
+                    aggregates: ['sum'],
+                    footerTemplate: "#= kendo.toString(sum,'n0') #"
+                }, {
+                    name: 'article', title: translate('Article'), type: 'string', width: '10%',
+                    template: '<span title="${data.article}">${data.article}</span>'
+                }],
+                commands: [],
+                readUrl: constants.urls.accountReview.getAllTiny(),
+                selectable: true
             };
 
             return options;
@@ -1459,7 +1703,7 @@
                                 logger.success();
                                 $scope.$apply();
                             });
-                        });
+                });
                     }
                 }],
                 editable: "inline"
@@ -1518,22 +1762,22 @@
                     title: translate('Edit'),
                     action: function action(current) {
                         chequeCategoryUpdateModalService.show({id: current.id}).then(function () {
-                    logger.success();
+                            logger.success();
                             $scope.gridOption.refresh();
-                });
+                        });
                     }
                 }, {
                     title: translate('Remove'),
                     action: function action(current) {
                         confirm(translate('Remove Cheque category'), translate('Are you sure ?')).then(function () {
                             chequeCategoryApi.remove(current.id).then(function () {
-                                logger.success();
+                        logger.success();
                                 $scope.gridOption.refresh();
-                            }).catch(function (errors) {
+                    }).catch(function (errors) {
                                 return $scope.errors = errors;
-                            }).finally(function () {
+                    }).finally(function () {
                                 return $scope.isSaving = false;
-                            });
+                    });
                         });
                     }
                 }],
@@ -1592,122 +1836,17 @@
             return obj && obj.__esModule ? obj : {default: obj};
         }
 
-        function detailAccountCreateController($scope, logger, navigate, formService, detailAccountApi) {
-
-            $scope.errors = [];
-
-            $scope.detailAccount = {
-                code: '',
-                title: '',
-                description: ''
-            };
-
-            $scope.isSaving = false;
-
-            $scope.save = function (form) {
-                if (form.$invalid) return formService.setDirty(form);
-
-                $scope.errors.asEnumerable().removeAll();
-                $scope.isSaving = true;
-
-                detailAccountApi.create($scope.detailAccount).then(function () {
-                    logger.success();
-                    navigate('detailAccounts');
-                }).catch(function (errors) {
-                    return $scope.errors = errors;
-                }).finally(function () {
-                    return $scope.isSaving = false;
-                });
-            };
-        };
-
-        _acc2.default.controller('detailAccountCreateController', detailAccountCreateController);
-
-    }, {"../acc.module": 2}],
-    23: [function (require, module, exports) {
-        'use strict';
-
-        var _acc = require('../acc.module');
-
-        var _acc2 = _interopRequireDefault(_acc);
-
-        function _interopRequireDefault(obj) {
-            return obj && obj.__esModule ? obj : {default: obj};
-        }
-
-        function detailAccountUpdateController($scope, logger, navigate, $routeParams, detailAccountApi) {
-
-            var id = $routeParams.id;
-
-            $scope.errors = [];
-
-            $scope.detailAccount = {
-                code: '',
-                title: '',
-                description: ''
-            };
-
-            $scope.isSaving = false;
-
-            detailAccountApi.getById(id).then(function (result) {
-                return $scope.detailAccount = result;
-            });
-
-            $scope.isSaving = false;
-
-            $scope.save = function (form) {
-                if (form.$invalid) return;
-                $scope.errors.asEnumerable().removeAll();
-                $scope.isSaving = true;
-
-                detailAccountApi.create($scope.detailAccount).then(function () {
-                    logger.success();
-                    navigate('detailAccounts');
-                }).catch(function (errors) {
-                    return $scope.errors = errors;
-                }).finally(function () {
-                    return $scope.isSaving = false;
-                });
-            };
-
-            $scope.activate = function () {
-                detailAccountApi.activate(id).then(function () {
-                    $scope.detailAccount.isActive = true;
-                    logger.success();
-                }).catch(function (errors) {
-                    return $scope.errors = errors;
-                });
-            };
-
-            $scope.deactivate = function () {
-                detailAccountApi.deactivate(id).then(function () {
-                    $scope.detailAccount.isActive = false;
-                    logger.success();
-                }).catch(function (errors) {
-                    return $scope.errors = errors;
-                });
-            };
-        };
-
-        _acc2.default.controller('detailAccountUpdateController', detailAccountUpdateController);
-
-    }, {"../acc.module": 2}],
-    24: [function (require, module, exports) {
-        'use strict';
-
-        var _acc = require('../acc.module');
-
-        var _acc2 = _interopRequireDefault(_acc);
-
-        function _interopRequireDefault(obj) {
-            return obj && obj.__esModule ? obj : {default: obj};
-        }
-
-        function detailAccountsController($scope, logger, translate, confirm, navigate, detailAccountApi) {
+        function detailAccountsController($scope, logger, translate, confirm, navigate, detailAccountApi, detailAccountCreateModalService, detailAccountUpdateModalService) {
             "use strict";
 
             $scope.gridOption = {
-                columns: [{name: 'code', title: translate('Code'), width: '120px', type: 'string'}, {
+                columns: [{
+                    name: 'isActive',
+                    title: translate('Is active ?'),
+                    type: 'activeType',
+                    width: '150px',
+                    template: '<i class="glyphicon glyphicon-${data.isActive ? "ok-circle" : "remove-circle"}"' + 'style="font-size: 20px;color:${data.isActive ? "green" : "red"}">' + '</i>'
+                }, {name: 'code', title: translate('Code'), width: '120px', type: 'string'}, {
                     name: 'title',
                     title: translate('Title'),
                     type: 'string'
@@ -1716,7 +1855,9 @@
                     title: translate('Edit'),
                     name: 'edit detail account',
                     action: function action(current) {
-                        navigate('detailAccountUpdate', {id: current.id});
+                        detailAccountUpdateModalService.show({id: current.id}).then(function () {
+                            return $scope.gridOption.refresh();
+                        });
                     }
                 }, {
                     title: translate('Remove'),
@@ -1735,15 +1876,21 @@
                 }],
                 readUrl: detailAccountApi.url.getAll
             };
+
+            $scope.create = function () {
+                return detailAccountCreateModalService.show().then(function () {
+                    return $scope.gridOption.refresh();
+                });
+            };
         }
 
         _acc2.default.controller('detailAccountsController', detailAccountsController);
 
     }, {"../acc.module": 2}],
-    25: [function (require, module, exports) {
-        'use strict';
+    23: [function (require, module, exports) {
+        "use strict";
 
-        var _acc = require('../acc.module');
+        var _acc = require("../acc.module");
 
         var _acc2 = _interopRequireDefault(_acc);
 
@@ -1751,77 +1898,70 @@
             return obj && obj.__esModule ? obj : {default: obj};
         }
 
-        function dimensionsController($scope, logger, translate, confirm, dimensionCategoryApi, dimensionApi, dimensionCreateModalService, dimensionUpdateModalService) {
+        function dimensionsController($scope, logger, translate, confirm, constants, $timeout, dimensionCategoryApi, dimensionApi, dimensionCreateModalService, dimensionUpdateModalService) {
             "use strict";
 
-            $scope.categories = [];
-            $scope.currentCategory = {};
+            $scope.errors = [];
 
-            dimensionCategoryApi.getAll().then(function (result) {
-                var cats = result.data;
+            $scope.gridDateSource = {
+                transport: {
+                    read: {
+                        url: constants.urls.dimensionCategory.all(),
+                        dataType: "json",
+                        contentType: 'application/json; charset=utf-8',
+                        type: 'GET'
+                    },
+                    update: {
+                        url: function url(model) {
+                            return "/api/dimension-categories/" + model.id;
+                        },
+                        dataType: 'json',
+                        type: "PUT"
+                    },
+                    parameterMap: function parameterMap(options, method) {
+                        if (method == 'read') $scope.onCurrentChanged(null);
+                        return options;
+            }
+                },
+                pageSize: 20,
+                schema: {
+                    data: 'data',
+                    total: 'total',
+                    model: {
+                        id: 'id',
+                        fields: {
+                            title: {validation: {required: true}}
+                        }
 
-                $scope.categories = cats.asEnumerable().select(function (cat) {
-                    return angular.extend({}, cat, {
-                        gridOption: gridOptionFactory(cat),
-                        editMode: 'read',
-                        canShowDimensions: false,
-                        errors: []
-                    });
-                }).toArray();
-            });
-
-            $scope.createCategory = function () {
-                $scope.categories.push({
-                    id: null,
-                    title: '',
-                    editMode: 'new',
-                    canShowDimensions: false,
-                    isSaving: false,
-                    errors: []
-                });
+            }
+                },
+                serverPaging: true,
+                serverFiltering: true,
+                serverSorting: true
             };
 
-            $scope.saveCategory = function (cat) {
-                var cmd = {title: cat.title};
-
-                if (cat.editMode == 'new') {
-                    dimensionCategoryApi.create(cmd).then(function (result) {
-                        cat.id = result.id;
-                cat.editMode = 'read';
-                        cat.gridOption = gridOptionFactory(cat);
-
-                        logger.success();
-                    }).catch(function (errors) {
-                        return cat.errors = errors;
-                    }).finally(function () {
-                        return cat.isSaving = false;
-                    });
-                } else if (cat.editMode == 'edit') {
-                    dimensionCategoryApi.update(cat.id, cmd).then(function () {
-                        cat.editMode = 'read';
-                        logger.success();
-                    }).catch(function (errors) {
-                        return cat.errors = errors;
-                    }).finally(function () {
-                        return cat.isSaving = false;
-                    });
-                }
+            $scope.gridOption = {
+                columns: [{name: 'title', title: translate('Title'), type: 'string'}],
+                commands: ['edit'],
+                editable: "inline",
+                selectable: true,
+                filterable: false,
+                gridSize: '200px'
             };
 
-            $scope.startToEditingCategoryTitle = function (cat) {
-                cat.originalData = {
-                    title: cat.title
-                };
-                cat.editMode = 'edit';
-            };
+            $scope.current = false;
+            $scope.gridDimensions = false;
 
-            $scope.cancelEditingCategoryTitle = function (cat) {
-                cat.title = cat.originalData.title;
-                cat.editMode = 'read';
-            };
+            $scope.onCurrentChanged = function (current) {
+                $scope.current = current == null ? false : current;
 
-            $scope.changeShowDimensionStatus = function (cat) {
-                cat.canShowDimensions = !cat.canShowDimensions;
+                $scope.gridDimensions = false;
+
+                if (!$scope.$$phase) $scope.$apply();
+
+                if (current != null) $timeout(function () {
+                    return $scope.gridDimensions = gridOptionFactory(current);
+                }, 0);
             };
 
             $scope.createDimension = function (cat) {
@@ -1829,10 +1969,6 @@
                     cat.gridOption.refresh();
                     logger.success();
                 });
-            };
-
-            $scope.select = function (cat) {
-                return $scope.currentCategory = cat;
             };
 
             function gridOptionFactory(cat) {
@@ -1846,24 +1982,22 @@
                     title: translate('Edit'),
                     action: function action(current) {
                         dimensionUpdateModalService.show({id: current.id}).then(function () {
-                            getLocalCategoryById(current.categoryId).gridOption.refresh();
+                            $scope.gridDimensions.refresh();
                             logger.success();
                 });
-            }
+                    }
                 }, {
                     title: translate('Remove'),
                     action: function action(current) {
                         confirm(translate('Remove Dimension'), translate('Are you sure ?')).then(function () {
                             dimensionApi.remove(current.id).then(function () {
-                                getLocalCategoryById(current.categoryId).gridOption.refresh();
+                                $scope.gridDimensions.refresh();
                                 logger.success();
                             }).catch(function (err) {
-                                err.errors.forEach(function (message) {
-                                    logger.error(message);
+                                return $scope.errors = err;
+                    });
                         });
-                            });
-                        });
-            }
+                    }
                 }];
 
                 return {
@@ -1872,20 +2006,12 @@
                     readUrl: dimensionApi.url.getAll(cat.id)
                 };
             }
-
-            function getLocalCategoryById(id) {
-                var cat = $scope.categories.asEnumerable().first(function (c) {
-                    return c.id == id;
-                });
-
-                return cat;
-            }
         }
 
         _acc2.default.controller('dimensionsController', dimensionsController);
 
     }, {"../acc.module": 2}],
-    26: [function (require, module, exports) {
+    24: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -1963,7 +2089,7 @@
         _acc2.default.controller('generalLedgerAccountsController', generalLedgerAccountsController);
 
     }, {"../acc.module": 2}],
-    27: [function (require, module, exports) {
+    25: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -1995,7 +2121,7 @@
                 },
                 schema: {
                     data: 'data'
-        }
+                }
             };
 
             $scope.periodOnChange = function (e) {
@@ -2017,35 +2143,12 @@
             $scope.search = function () {
                 journalAdvancedSearchModalService.show();
             };
-
-            $scope.gridOptions = {
-                dataSource: [{FirstName: 'amin', LastName: 'sheikhi', City: 'Tehran'}],
-                sortable: true,
-                pageable: {
-                    refresh: true,
-                    pageSizes: true,
-                    buttonCount: 5
-                },
-                columns: [{
-                    field: "FirstName",
-                    title: "First Name",
-                    width: "120px",
-                    template: '<h1' + 'popover="Included journal description and article" ' + 'popover-trigger="mouseenter" ' + 'popover-placement="left"' + '>{{dataItem.LastName}}</h1>'
-                }, {
-                    field: "LastName",
-                    title: "Last Name",
-                    width: "120px"
-                }, {
-                    field: "City",
-                    width: "120px"
-                }]
-            };
         }
 
         _acc2.default.controller('homeController', homeController);
 
     }, {"../acc.module": 2}],
-    28: [function (require, module, exports) {
+    26: [function (require, module, exports) {
         "use strict";
 
         var _acc = require("../acc.module");
@@ -2127,7 +2230,7 @@
         _acc2.default.controller('journalCopyController', journalCopyController);
 
     }, {"../acc.module": 2}],
-    29: [function (require, module, exports) {
+    27: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -2158,7 +2261,8 @@
                 current: null,
                 selectable: true,
                 filterable: false,
-                pageable: false
+                pageable: false,
+                gridSize: '300px'
             };
 
             $scope.canShowJournals = false;
@@ -2223,7 +2327,7 @@
         _acc2.default.controller('journalManagementController', journalManagementController);
 
     }, {"../acc.module": 2}],
-    30: [function (require, module, exports) {
+    28: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -2314,28 +2418,45 @@
         _acc2.default.controller('journalTemplatesController', journalTemplatesController);
 
     }, {"../acc.module": 2}],
-    31: [function (require, module, exports) {
+    29: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
 
         var _acc2 = _interopRequireDefault(_acc);
 
+        var _jquery = require('jquery');
+
+        var _jquery2 = _interopRequireDefault(_jquery);
+
         function _interopRequireDefault(obj) {
             return obj && obj.__esModule ? obj : {default: obj};
         }
 
-        function journalUpdateController($scope, logger, confirm, translate, navigate, $routeParams, $rootScope, journalApi, journalLineApi, subsidiaryLedgerAccountApi, journalLineCreateControllerModalService, journalLineUpdateControllerModalService, journalBookkeepingService, journalAttachImageService, writeChequeOnJournalLineEntryService) {
+        function journalUpdateController($scope, logger, confirm, translate, navigate, $routeParams, $rootScope, constants, journalApi, journalLineApi, subsidiaryLedgerAccountApi, dimensionCategoryApi, journalLineCreateControllerModalService, journalLineUpdateControllerModalService, journalBookkeepingService, journalAttachImageService, writeChequeOnJournalLineEntryService) {
 
             var id = $routeParams.id;
+
+            $scope.title = translate('Edit Journal');
+
             $scope.errors = [];
+
+            $scope.journalStatueForTitle = {
+                icon: '',
+                color: '',
+                title: ''
+            };
+
             $scope.journal = {
                 temporaryNumber: null,
                 temporaryDate: null,
                 number: null,
                 date: null,
-                description: ''
+                description: '',
+                tagIds: []
             };
+
+            $scope.journalTypeData = constants.enums.JournalType().data;
 
             $scope.canShowNumberAndDate = false;
 
@@ -2344,18 +2465,38 @@
                     $scope.journal = result;
 
                     $scope.canShowNumberAndDate = result.journalStatus != 'Temporary';
+
+                    var status = $scope.journalStatueForTitle;
+
+                    if ($scope.journal.isInComplete) {
+                        status.icon = 'exclamation-sign';
+                        status.color = 'red';
+                        status.title = translate('InComplete journal');
+            }
+
+                    if ($scope.journal.journalStatus == 'BookKeeped') {
+                        status.icon = 'ok-circle';
+                        status.color = 'green';
+                        status.title = $scope.journal.journalStatusDisplay;
+                    }
+
+                    if ($scope.journal.journalStatus == 'Fixed') {
+                        status.icon = 'lock';
+                        status.color = 'blue';
+                        status.title = $scope.journal.journalStatusDisplay;
+                    }
                 });
             }
 
             fetch();
 
             $scope.gridOption = {
-                columns: [{name: 'row', title: translate('Row'), width: '60px', type: 'number'}, {
-                    name: 'generalLedgerAccountId',
-                    title: translate('General ledger account'),
-                    type: 'generalLedgerAccount',
-                    template: '${data.generalLedgerAccountCode}',
-                    width: '70px'
+                columns: [{name: 'row', title: '#', width: '50px', type: 'number'}, {
+                    name: 'detailAccountId',
+                    title: translate('Detail account'),
+                    type: 'detailAccount',
+                    template: '${data.detailAccountCode}',
+                    width: '100px'
                 }, {
                     name: 'subsidiaryLedgerAccountId',
                     title: translate('Subsidiary ledger account'),
@@ -2363,17 +2504,20 @@
                     template: '${data.subsidiaryLedgerAccountCode}',
                     width: '70px'
                 }, {
-                    name: 'detailAccountId',
-                    title: translate('Detail account'),
-                    type: 'detailAccount',
-                    template: '${data.detailAccountCode}',
-                    width: '100px'
-                }, {name: 'article', title: translate('Article'), width: '300px', type: 'string'}, {
-                    name: 'debtor', title: translate('Debtor'), width: '100px', type: 'number', format: '{0:#,##}',
-                    aggregates: ['sum'], footerTemplate: "{0}: #= kendo.toString(sum,'n0') #".format(translate('Sum'))
+                    name: 'generalLedgerAccountId',
+                    title: translate('General ledger account'),
+                    type: 'generalLedgerAccount',
+                    template: '${data.generalLedgerAccountCode}',
+                    width: '70px'
                 }, {
-                    name: 'creditor', title: translate('Creditor'), width: '100px', type: 'number', format: '{0:#,##}',
-                    aggregates: ['sum'], footerTemplate: "{0}: #= kendo.toString(sum,'n0') #".format(translate('Sum'))
+                    name: 'article', title: translate('Article'), type: 'string', width: '20%',
+                    template: '<span title="${data.article}">${data.article}</span>'
+                }, {
+                    name: 'debtor', title: translate('Debtor'), width: '120px', type: 'number', format: '{0:#,##}',
+                    aggregates: ['sum'], footerTemplate: "#= kendo.toString(sum,'n0') #"
+                }, {
+                    name: 'creditor', title: translate('Creditor'), width: '120px', type: 'number', format: '{0:#,##}',
+                    aggregates: ['sum'], footerTemplate: "#= kendo.toString(sum,'n0') #"
                 }],
                 commands: [{
                     title: translate('Edit'),
@@ -2401,7 +2545,8 @@
                 current: null,
                 selectable: true,
                 filterable: false,
-                readUrl: journalLineApi.url.getAll(id)
+                readUrl: journalLineApi.url.getAll(id),
+                gridSize: '400px'
             };
 
             $scope.isSaving = false;
@@ -2466,12 +2611,45 @@
                     }
                 });
             };
+            $scope.journalLineCurrent = false;
+            $scope.journalLineCurrentChanged = function (current) {
+                $scope.journalLineCurrent = current;
+
+                if (!$scope.$$phase) $scope.$apply();
+            };
+
+            $scope.dimensionCategories = {};
+
+            dimensionCategoryApi.getAllLookup().then(function (result) {
+                var cats = result.data;
+                $scope.dimensionCategories = cats;
+            });
+
+            $scope.tagsOptions = {
+                placeholder: translate('Select ...'),
+                dataTextField: "title",
+                dataValueField: "id",
+                valuePrimitive: true,
+                autoBind: false,
+                dataSource: {
+                    type: "json",
+                    serverFiltering: true,
+                    transport: {
+                        read: {
+                            url: constants.urls.tag.getAll()
+                        }
+                    },
+                    schema: {
+                        data: 'data'
+                    }
+        }
+            };
         }
 
         _acc2.default.controller('journalUpdateController', journalUpdateController);
 
-    }, {"../acc.module": 2}],
-    32: [function (require, module, exports) {
+    }, {"../acc.module": 2, "jquery": "jquery"}],
+    30: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -2482,7 +2660,9 @@
             return obj && obj.__esModule ? obj : {default: obj};
         }
 
-        function journalsController($scope, translate, journalApi, navigate, logger, journalCreateModalControllerService, journalAdvancedSearchModalService) {
+        function journalsController($scope, translate, journalApi, navigate, logger, journalCreateModalControllerService, journalAdvancedSearchModalService, journalsExtraFilterResolve) {
+
+            $scope.searchParameters = false;
 
             $scope.gridOption = {
                 name: 'journals',
@@ -2496,24 +2676,33 @@
                 }, {
                     name: 'temporaryNumber',
                     title: translate('Temporary number'),
-                    width: '120px',
+                    width: '100px',
                     type: 'number'
-                }, {name: 'temporaryDate', title: translate('Temporary date'), type: 'date'}, {
-                    name: 'number',
-                    title: translate('Number'),
-                    width: '120px',
-                    type: 'number'
-                }, {name: 'date', title: translate('Date'), type: 'date'}, {
+                }, {
+                    name: 'temporaryDate',
+                    title: translate('Temporary date'),
+                    type: 'date',
+                    width: '100px'
+                }, {name: 'number', title: translate('Number'), width: '100px', type: 'number'}, {
+                    name: 'date',
+                    title: translate('Date'),
+                    type: 'date',
+                    width: '100px'
+                }, {
                     name: 'description', title: translate('Description'), type: 'string', width: '30%',
                     template: '<span title="${data.description}">${data.description}</span>'
-                }],
+                }, {name: 'createdBy', title: translate('User'), width: '100px', type: 'string'}
+                    /*{name: 'sumDebtor', title: translate('sum debtor'), type: 'number', format: '{0:#,##}'},
+                     {
+                     name: 'sumCreditor',
+                     title: translate('sum creditor'),
+                     type: 'number',
+                     format: '{0:#,##}'
+                     },*/
+                ],
                 commands: [{
                     title: translate('Edit'),
                     action: function action(current) {
-                        debugger;
-
-                        var options = $scope.gridOption.grid.getOptions();
-
                         navigate('journalUpdate', {
                             id: current.id
                 });
@@ -2545,6 +2734,12 @@
                     }).toArray();
 
                     return data;
+                },
+                resolveExtraFilter: journalsExtraFilterResolve,
+                setExtraFilter: function setExtraFilter(extra) {
+                    $scope.searchParameters = extra;
+
+                    if (!$scope.$$phase) $scope.$apply();
         }
             };
 
@@ -2559,15 +2754,66 @@
 
             $scope.advancedSearch = function () {
                 journalAdvancedSearchModalService.show().then(function (result) {
+                    $scope.searchParameters = result;
+
                     $scope.$broadcast('{0}/execute-advanced-search'.format($scope.gridOption.name), result.resolve(result.data));
                 });
             };
+
+            $scope.removeParameters = function () {
+                $scope.searchParameters = false;
+                $scope.$broadcast('{0}/execute-advanced-search'.format($scope.gridOption.name), null);
+            };
+
+            $scope.$on('$routeChangeStart', function (next, current) {
+                $scope.gridOption.saveState($scope.searchParameters);
+            });
         }
 
-        _acc2.default.controller('journalsController', journalsController);
+        _acc2.default.controller('journalsController', journalsController).factory('journalsExtraFilterResolve', function () {
+            return function (filterData) {
+                if (!filterData) return null;
+
+                var instance = angular.extend({}, filterData);
+
+                instance.generalLedgerAccounts = filterData.generalLedgerAccounts.asEnumerable().select(function (g) {
+                    return g.id;
+                }).toArray();
+
+                instance.subsidiaryLedgerAccounts = filterData.subsidiaryLedgerAccounts.asEnumerable().select(function (s) {
+                    return s.id;
+                }).toArray();
+
+                instance.detailAccounts = filterData.detailAccounts.asEnumerable().select(function (d) {
+                    return d.id;
+                }).toArray();
+
+                instance.dimension1s = filterData.dimension2s.asEnumerable().select(function (d) {
+                    return d.id;
+                }).toArray();
+
+                instance.dimension2s = filterData.dimension2s.asEnumerable().select(function (d) {
+                    return d.id;
+                }).toArray();
+
+                instance.dimension3s = filterData.dimension3s.asEnumerable().select(function (d) {
+                    return d.id;
+                }).toArray();
+
+                instance.dimension4s = filterData.dimension4s.asEnumerable().select(function (d) {
+                    return d.id;
+                }).toArray();
+
+                instance.chequeNumbers = filterData.chequeNumbers.asEnumerable().select(function (c) {
+                    return c.id;
+                }).toArray();
+
+                return instance;
+            };
+        });
 
     }, {"../acc.module": 2}],
-    33: [function (require, module, exports) {
+    31: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -2605,7 +2851,7 @@
         _acc2.default.controller('shellController', shellController);
 
     }, {"../acc.module": 2}],
-    34: [function (require, module, exports) {
+    32: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -2663,7 +2909,7 @@
         _acc2.default.controller('subsidiaryLedgerAccountCreateController', subsidiaryLedgerAccountCreateController);
 
     }, {"../acc.module": 2}],
-    35: [function (require, module, exports) {
+    33: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -2757,7 +3003,7 @@
         _acc2.default.controller('subsidiaryLedgerAccountUpdateController', subsidiaryLedgerAccountUpdateController);
 
     }, {"../acc.module": 2}],
-    36: [function (require, module, exports) {
+    34: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -2818,7 +3064,7 @@
         _acc2.default.controller('subsidiaryLedgerAccountsController', subsidiaryLedgerAccountsController);
 
     }, {"../acc.module": 2}],
-    37: [function (require, module, exports) {
+    35: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -2853,7 +3099,7 @@
         _acc2.default.directive('devTagAlert', alertTag);
 
     }, {"../acc.module": 2}],
-    38: [function (require, module, exports) {
+    36: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -2877,7 +3123,7 @@
         _acc2.default.directive('devTagBlockUi', blockUi);
 
     }, {"../acc.module": 2}],
-    39: [function (require, module, exports) {
+    37: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -2907,7 +3153,7 @@
         _acc2.default.directive('devTagButton', button);
 
     }, {"../acc.module": 2}],
-    40: [function (require, module, exports) {
+    38: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -2939,7 +3185,7 @@
         _acc2.default.directive('devTagCheckBox', checkBox);
 
     }, {"../acc.module": 2}],
-    41: [function (require, module, exports) {
+    39: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -2963,7 +3209,7 @@
         _acc2.default.directive('devTagComboBox', combobox);
 
     }, {"../acc.module": 2}],
-    42: [function (require, module, exports) {
+    40: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -2989,7 +3235,7 @@
         _acc2.default.directive('devTagContent', content);
 
     }, {"../acc.module": 2}],
-    43: [function (require, module, exports) {
+    41: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -3020,7 +3266,7 @@
         _acc2.default.directive('notZero', customValidator);
 
     }, {"../acc.module": 2}],
-    44: [function (require, module, exports) {
+    42: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -3044,7 +3290,7 @@
         _acc2.default.directive('devTagDatepicker', datepicker);
 
     }, {"../acc.module": 2}],
-    45: [function (require, module, exports) {
+    43: [function (require, module, exports) {
         'use strict';
 
         var _jquery = require('jquery');
@@ -3098,7 +3344,7 @@
         _acc2.default.directive('devTagDropdownlist', dropdownlist);
 
     }, {"../acc.module": 2, "jquery": "jquery"}],
-    46: [function (require, module, exports) {
+    44: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -3130,7 +3376,7 @@
         });
 
     }, {"../acc.module": 2}],
-    47: [function (require, module, exports) {
+    45: [function (require, module, exports) {
         'use strict';
 
         var _jquery = require('jquery');
@@ -3145,6 +3391,22 @@
             return obj && obj.__esModule ? obj : {default: obj};
         }
 
+        var translate = JSON.parse(localStorage.translate);
+        var dimensionCategories = JSON.parse(localStorage.dimensionCategories).data;
+
+        kendo.translate = function (key) {
+            var value = translate[key];
+
+            if (!value) return key;
+            return value;
+        };
+
+        kendo.toAmount = function (amount) {
+            return kendo.toString(amount, '#,##0;(#,##0)');
+        };
+
+        kendo.dimensionCategories = dimensionCategories;
+
         function grid(gridFilterCellType, $compile, translate) {
             return {
                 restrict: 'E',
@@ -3154,7 +3416,10 @@
                     kOption: '=',
                     kDatasource: '=',
                     option: '=',
-                    detailOption: '='
+                    detailOption: '=',
+                    onCurrentChanged: '&'
+                },
+                controller: function controller() {
                 },
                 link: function link(scope, element, attrs) {
                     var extra = scope.option.extra || null;
@@ -3170,6 +3435,11 @@
                         grid = (0, _jquery2.default)(element).kendoGrid(scope.kOption).data("kendoGrid");
                     } else {
                         var option = createKendoGridOption(scope, scope.option);
+
+                        var detailTemplate = (0, _jquery2.default)(element).find('.detail-template');
+                        if (detailTemplate.lenght != 0) {
+                            option.detailTemplate = detailTemplate.html();
+                        }
 
                         if (scope.detailOption) {
                             var detailOption = createKendoGridOption(scope, scope.detailOption);
@@ -3211,6 +3481,7 @@
                         }
 
                         var grid = (0, _jquery2.default)(element).kendoGrid(option).data("kendoGrid");
+                        (0, _jquery2.default)(element).find('.k-grid-content').css('height', scope.option.gridSize || '500px');
 
                         if (option.commandTemplate) option.commandTemplate.commands.forEach(function (cmd) {
                             (0, _jquery2.default)(element).on("click", cmd.selector, function (e) {
@@ -3222,11 +3493,50 @@
                     }
 
                     if (scope.option) {
+                        var setState = function setState() {
+                            var name = scope.option.name;
+
+                            if (!name || name == '') return grid.dataSource.read();
+
+                            var gridState = JSON.parse(localStorage.getItem(name + '-grid-state'));
+
+                            if (!gridState) return grid.dataSource.read();
+                            ;
+
+                            var state = gridState.options;
+
+                            state.columns = state.columns.asEnumerable().where(function (c) {
+                                return !c.hasOwnProperty('command');
+                            }).concat([{command: scope.option.commands.asEnumerable().select(commandFactory).toArray()}]).toArray();
+
+                            grid.setOptions(state);
+
+                            extra = scope.option.resolveExtraFilter ? {filter: scope.option.resolveExtraFilter(gridState.extra.data)} : null;
+                            scope.option.setExtraFilter(gridState.extra);
+
+                            grid.dataSource.read();
+                        };
+
                         scope.option.grid = grid;
 
                         scope.option.refresh = function () {
                             grid.dataSource.read();
                         };
+
+                        scope.option.saveState = function (extra) {
+                            var name = scope.option.name;
+
+                            if (!name || name == '') return;
+
+                            var gridState = {
+                                options: grid.getOptions(),
+                                extra: extra
+                            };
+
+                            localStorage.setItem(name + '-grid-state', JSON.stringify(gridState));
+                        };
+
+                        setState();
                     }
 
                     function createKendoGridOption(scope, option) {
@@ -3260,6 +3570,7 @@
                                 format: col.format,
                                 template: col.template,
                                 aggregates: col.aggregates,
+                                headerTemplate: col.headerTemplate,
                                 footerTemplate: col.footerTemplate,
                                 filterable: col.filterable == undefined ? getFilterable(col.type) : col.filterable
                             };
@@ -3271,24 +3582,9 @@
                                 type: gridFilterCellType[col.type].modelType
 
                             };
-                });
+                        });
 
-                        var commands = option.commands.asEnumerable().select(function (cmd) {
-                            if (typeof cmd == "string") return cmd;
-
-                            return {
-                                text: cmd.title,
-                                imageClass: cmd.imageClass,
-                                click: function click(e) {
-                                    e.preventDefault();
-
-                                    var dataItem = this.dataItem((0, _jquery2.default)(e.currentTarget).closest("tr"));
-                                    cmd.action(dataItem);
-
-                                    scope.$apply();
-                                }
-                            };
-                        }).toArray();
+                        var commands = option.commands.asEnumerable().select(commandFactory).toArray();
 
                         if (option.commandTemplate) cols.push({template: kendo.template((0, _jquery2.default)(option.commandTemplate.template).html())});
 
@@ -3310,7 +3606,7 @@
                                     lt: "Before",
                                     eq: "Equal"
                                 }
-                            }
+                    }
                         } : false;
 
                         var kendGridOption = {
@@ -3325,8 +3621,10 @@
                                     parameterMap: function parameterMap(options) {
                                         if (extra) options.extra = extra;
 
+                                        scope.onCurrentChanged({current: false});
+
                                         return options;
-                            }
+                                    }
                                 },
                                 schema: {
                                     data: option.dataMapper ? option.dataMapper : 'data',
@@ -3341,12 +3639,28 @@
                                 serverFiltering: true,
                                 serverSorting: true
                             }),
+                            autoBind: false,
                             filterable: filterable,
                             pageable: option.pageable == undefined ? {
                                 refresh: true,
                                 pageSizes: true,
                                 buttonCount: 5
                             } : option.pageable,
+                            toolbar: ["excel", "pdf"],
+                            excel: {
+                                filterable: true,
+                                fileName: option.name + '.xlsx',
+                                allPages: true
+                            },
+                            pdf: {
+                                allPages: true,
+                                fileName: option.name + '.pdf',
+                                avoidLinks: true,
+                                paperSize: "A4",
+                                margin: {top: "2cm", left: "1cm", right: "1cm", bottom: "1cm"},
+                                landscape: true,
+                                repeatHeaders: true
+                            },
                             sortable: true,
                             allowCopy: true,
                             columns: cols,
@@ -3357,6 +3671,8 @@
                                 var current = this.dataItem(this.select());
 
                                 option.current = current;
+
+                                scope.onCurrentChanged({current: current});
 
                                 scope.$apply();
                     }
@@ -3377,14 +3693,85 @@
 
                         return filterable;
                     }
+
+                    function commandHandler(cmd) {
+                        return function (e) {
+                            e.preventDefault();
+
+                            var dataItem = this.dataItem((0, _jquery2.default)(e.currentTarget).closest("tr"));
+                            cmd.action(dataItem);
+
+                            scope.$apply();
+                        };
+                    }
+
+                    function commandFactory(cmd) {
+                        if (typeof cmd == "string") return cmd;
+
+                        return {
+                            text: cmd.title,
+                            imageClass: cmd.imageClass,
+                            click: commandHandler(cmd)
+                        };
+                    }
         }
             };
         }
 
-        _acc2.default.directive('devTagGrid', grid);
+        function detail() {
+            return {
+                restrict: 'E',
+                template: '<div ng-transclude class="detail-template"></div>',
+                transclude: true,
+                scope: {},
+                replace: true,
+                require: '^devTagGrid',
+                link: function link(scope, element, attrs) {
+                }
+            };
+        }
+
+        _acc2.default.directive('devTagGrid', grid).directive('devTagGridDetail', detail);
 
     }, {"../acc.module": 2, "jquery": "jquery"}],
-    48: [function (require, module, exports) {
+    46: [function (require, module, exports) {
+        'use strict';
+
+        var _acc = require('../acc.module');
+
+        var _acc2 = _interopRequireDefault(_acc);
+
+        function _interopRequireDefault(obj) {
+            return obj && obj.__esModule ? obj : {default: obj};
+        }
+
+        function journalSearchParameters(dimensionCategoryApi) {
+            return {
+                restrict: 'E',
+                templateUrl: 'partials/templates/journal-search-parameters.html',
+                scope: {
+                    searchParameters: '=',
+                    removeParameters: '&'
+                },
+                link: function link(scope, element, attrs) {
+                    scope.dimensionCategorie = [];
+
+                    dimensionCategoryApi.getAllLookup().then(function (result) {
+                        return scope.dimensionCategories = result.data;
+                    });
+
+                    scope.remove = function (e) {
+                        e.preventDefault();
+                        scope.removeParameters();
+            };
+        }
+            };
+        }
+
+        _acc2.default.directive('devTagJournalSearchParameters', journalSearchParameters);
+
+    }, {"../acc.module": 2}],
+    47: [function (require, module, exports) {
         'use strict';
 
         var _jquery = require('jquery');
@@ -3535,7 +3922,7 @@
         _acc2.default.directive('devTagHeader', header).directive('devTagTogglemenu', togglemenu);
 
     }, {"../acc.module": 2, "jquery": "jquery"}],
-    49: [function (require, module, exports) {
+    48: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -3578,7 +3965,7 @@
         _acc2.default.directive('devTagNgKendoGrid', NgKendoGrid);
 
     }, {"../acc.module": 2}],
-    50: [function (require, module, exports) {
+    49: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -3600,7 +3987,7 @@
         _acc2.default.directive('devTagNumeric', numeric);
 
     }, {"../acc.module": 2}],
-    51: [function (require, module, exports) {
+    50: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -3627,7 +4014,7 @@
         _acc2.default.directive('devTagSubContent', subContent);
 
     }, {"../acc.module": 2}],
-    52: [function (require, module, exports) {
+    51: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -3651,7 +4038,7 @@
         _acc2.default.directive('devTagEditor', textEditor);
 
     }, {"../acc.module": 2}],
-    53: [function (require, module, exports) {
+    52: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -3742,7 +4129,7 @@
         _acc2.default.directive('devTagUploader', uploader);
 
     }, {"../acc.module": 2, "jquery": "jquery", "jquery.filedrop": "jquery.filedrop"}],
-    54: [function (require, module, exports) {
+    53: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -3767,7 +4154,7 @@
         _acc2.default.directive('devTagValidationSummary', validationSummary);
 
     }, {"../acc.module": 2}],
-    55: [function (require, module, exports) {
+    54: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -3789,7 +4176,7 @@
         _acc2.default.filter('amount', amount);
 
     }, {"../acc.module": 2}],
-    56: [function (require, module, exports) {
+    55: [function (require, module, exports) {
         'use strict';
 
         Object.defineProperty(exports, "__esModule", {
@@ -3813,7 +4200,7 @@
         exports.default = config;
 
     }, {}],
-    57: [function (require, module, exports) {
+    56: [function (require, module, exports) {
         'use strict';
 
         Object.defineProperty(exports, "__esModule", {
@@ -3850,8 +4237,8 @@
 
         exports.default = constants;
 
-    }, {"../acc.module": 2, "./config": 56, "./enums": 59, "./urls": 60}],
-    58: [function (require, module, exports) {
+    }, {"../acc.module": 2, "./config": 55, "./enums": 58, "./urls": 59}],
+    57: [function (require, module, exports) {
         "use strict";
 
         Object.defineProperty(exports, "__esModule", {
@@ -3927,7 +4314,7 @@
         exports.default = Enum;
 
     }, {}],
-    59: [function (require, module, exports) {
+    58: [function (require, module, exports) {
         'use strict';
 
         Object.defineProperty(exports, "__esModule", {
@@ -3997,8 +4384,8 @@
 
         exports.default = enums;
 
-    }, {"./enumType": 58}],
-    60: [function (require, module, exports) {
+    }, {"./enumType": 57}],
+    59: [function (require, module, exports) {
         'use strict';
 
         Object.defineProperty(exports, "__esModule", {
@@ -4026,6 +4413,12 @@
         var detailAccount = {
             all: function all() {
                 return '{0}/detail-accounts'.format(rootUrl());
+            }
+        };
+
+        var dimensionCategory = {
+            all: function all() {
+                return rootUrl() + '/dimension-categories';
             }
         };
 
@@ -4104,6 +4497,15 @@
             },
             getAllDimension3: function getAllDimension3() {
                 return rootUrl() + '/account-review/dimension-3';
+            },
+            getAllTiny: function getAllTiny() {
+                return rootUrl() + '/account-review/tiny';
+            }
+        };
+
+        var tag = {
+            getAll: function getAll() {
+                return rootUrl() + '/tags';
             }
         };
 
@@ -4111,6 +4513,7 @@
             generalLedgerAccount: generalLedgerAccount,
             subsidiaryLedgerAccount: subsidiaryLedgerAccount,
             detailAccount: detailAccount,
+            dimensionCategory: dimensionCategory,
             dimension: dimension,
             period: period,
             chequeCategory: chequeCategory,
@@ -4118,13 +4521,14 @@
             cheque: cheque,
             journal: journal,
             journalTemplate: journalTemplate,
-            accountReview: accountReview
+            accountReview: accountReview,
+            tag: tag
         };
 
         exports.default = apiUrls;
 
     }, {}],
-    61: [function (require, module, exports) {
+    60: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -4211,7 +4615,7 @@
         _acc2.default.controller('chequeCategoryCreateModalController', chequeCategoryCreateModalController).factory('chequeCategoryCreateModalService', chequeCategoryCreateModalService);
 
     }, {"../acc.module": 2}],
-    62: [function (require, module, exports) {
+    61: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -4303,7 +4707,139 @@
         _acc2.default.controller('chequeCategoryUpdateModalController', chequeCategoryUpdateModalController).factory('chequeCategoryUpdateModalService', chequeCategoryUpdateModalService);
 
     }, {"../acc.module": 2}],
+    62: [function (require, module, exports) {
+        'use strict';
+
+        var _acc = require('../acc.module');
+
+        var _acc2 = _interopRequireDefault(_acc);
+
+        function _interopRequireDefault(obj) {
+            return obj && obj.__esModule ? obj : {default: obj};
+        }
+
+        function detailAccountCreateModalController($scope, $modalInstance, formService, detailAccountApi, logger) {
+            "use strict";
+
+            $scope.errors = [];
+            $scope.detailAccount = {
+                title: '',
+                code: '',
+                description: ''
+            };
+
+            $scope.isSaving = false;
+
+            $scope.save = function (form) {
+                if (form.$invalid) return formService.setDirty(form);
+
+                $scope.errors.asEnumerable().removeAll();
+                $scope.isSaving = true;
+
+                detailAccountApi.create($scope.detailAccount).then(function (result) {
+                    logger.success();
+                    $modalInstance.close(result);
+                }).catch(function (errors) {
+                    return $scope.errors = errors;
+                }).finally(function () {
+                    return $scope.isSaving = false;
+                });
+            };
+
+            $scope.close = function () {
+                return $modalInstance.dismiss();
+            };
+        }
+
+        function detailAccountCreateModalService(modalBase) {
+            return modalBase({
+                controller: detailAccountCreateModalController,
+                templateUrl: 'partials/modals/detailAccountCreate.html'
+            });
+        }
+
+        _acc2.default.controller('detailAccountCreateModalController', detailAccountCreateModalController).factory('detailAccountCreateModalService', detailAccountCreateModalService);
+
+    }, {"../acc.module": 2}],
     63: [function (require, module, exports) {
+        'use strict';
+
+        var _acc = require('../acc.module');
+
+        var _acc2 = _interopRequireDefault(_acc);
+
+        function _interopRequireDefault(obj) {
+            return obj && obj.__esModule ? obj : {default: obj};
+        }
+
+        function detailAccountUpdateModalController($scope, $modalInstance, data, formService, detailAccountApi, logger) {
+            "use strict";
+
+            var id = data.id;
+
+            $scope.errors = [];
+            $scope.detailAccount = {
+                title: '',
+                code: '',
+                description: ''
+            };
+
+            detailAccountApi.getById(id).then(function (result) {
+                return $scope.detailAccount = result;
+            });
+
+            $scope.isSaving = false;
+
+            $scope.save = function (form) {
+                if (form.$invalid) return formService.setDirty(form);
+
+                $scope.errors.asEnumerable().removeAll();
+                $scope.isSaving = true;
+
+                detailAccountApi.update(data.id, $scope.detailAccount).then(function (result) {
+                    logger.success();
+                    $modalInstance.close(result);
+                }).catch(function (errors) {
+                    return $scope.errors = errors;
+                }).finally(function () {
+                    return $scope.isSaving = false;
+                });
+            };
+
+            $scope.close = function () {
+                return $modalInstance.dismiss();
+            };
+
+            $scope.activate = function () {
+                detailAccountApi.activate(id).then(function () {
+                    $scope.detailAccount.isActive = true;
+                    logger.success();
+                }).catch(function (errors) {
+                    return $scope.errors = errors;
+                });
+            };
+
+            $scope.deactivate = function () {
+                detailAccountApi.deactivate(id).then(function () {
+                    $scope.detailAccount.isActive = false;
+                    logger.success();
+                }).catch(function (errors) {
+                    return $scope.errors = errors;
+                });
+            };
+        }
+
+        function detailAccountUpdateModalService(modalBase) {
+            return modalBase({
+                controller: detailAccountUpdateModalController,
+                templateUrl: 'partials/modals/detailAccountUpdate.html'
+            });
+        }
+
+        _acc2.default.controller('detailAccountUpdateModalController', detailAccountUpdateModalController).factory('detailAccountUpdateModalService', detailAccountUpdateModalService);
+
+    }, {"../acc.module": 2}],
+    64: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -4354,8 +4890,8 @@
 
         _acc2.default.controller('dimensionCreateModalController', dimensionCreateModalController).factory('dimensionCreateModalService', dimensionCreateModalService);
 
-    }, {"../acc.module": 2, "../localData/config": 56}],
-    64: [function (require, module, exports) {
+    }, {"../acc.module": 2, "../localData/config": 55}],
+    65: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -4412,7 +4948,7 @@
         _acc2.default.controller('dimensionUpdateModalController', dimensionUpdateModalController).factory('dimensionUpdateModalService', dimensionUpdateModalService);
 
     }, {"../acc.module": 2}],
-    65: [function (require, module, exports) {
+    66: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -4476,8 +5012,8 @@
 
         _acc2.default.controller('generalLedgerAccountCreateModalController', generalLedgerAccountCreateModalController).factory('generalLedgerAccountCreateModalService', generalLedgerAccountCreateModalService);
 
-    }, {"../acc.module": 2, "../localData/constants": 57}],
-    66: [function (require, module, exports) {
+    }, {"../acc.module": 2, "../localData/constants": 56}],
+    67: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -4572,8 +5108,8 @@
 
         _acc2.default.controller('generalLedgerAccountUpdateModalController', generalLedgerAccountUpdateModalController).factory('generalLedgerAccountUpdateModalService', generalLedgerAccountUpdateModalService);
 
-    }, {"../acc.module": 2, "../localData/config": 56, "../localData/constants": 57}],
-    67: [function (require, module, exports) {
+    }, {"../acc.module": 2, "../localData/config": 55, "../localData/constants": 56}],
+    68: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -4604,7 +5140,7 @@
                 chequeDescription: '',
                 amount: {
                     value: null,
-                    operator: 'eq'
+                    operator: null
                 },
                 isNotPeriodIncluded: false
             };
@@ -4687,7 +5223,7 @@
                     transport: {
                         read: {
                             url: constants.urls.detailAccount.all()
-                        }
+                }
                     },
                     schema: {
                         data: 'data'
@@ -4702,7 +5238,6 @@
                 $scope.dimension1Options = dimensionOptionFactory(cats[0].id);
                 $scope.dimension2Options = dimensionOptionFactory(cats[1].id);
                 $scope.dimension3Options = dimensionOptionFactory(cats[2].id);
-                $scope.dimension4Options = dimensionOptionFactory(cats[3].id);
             });
 
             function dimensionOptionFactory(categoryId) {
@@ -4710,7 +5245,7 @@
                     placeholder: translate('Select ...'),
                     dataTextField: "display",
                     dataValueField: "id",
-                    valuePrimitive: true,
+                    valuePrimitive: false,
                     autoBind: false,
                     dataSource: {
                         type: "json",
@@ -4718,18 +5253,18 @@
                         transport: {
                             read: {
                                 url: constants.urls.dimension.allByCategory(categoryId)
-                            }
+                    }
                         },
                         schema: {
                             data: 'data'
                         }
-                    }
+            }
                 };
             }
 
             $scope.chequeOptions = {
                 placeholder: translate('Select ...'),
-                dataTextField: "num",
+                dataTextField: "number",
                 dataValueField: "id",
                 valuePrimitive: true,
                 autoBind: false,
@@ -4797,7 +5332,7 @@
         _acc2.default.controller('journalAdvancedSearchModalController', journalAdvancedSearchModalController).factory('journalAdvancedSearchModalService', journalAdvancedSearchModalService);
 
     }, {"../acc.module": 2}],
-    68: [function (require, module, exports) {
+    69: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -4836,7 +5371,7 @@
         _acc2.default.controller('journalAttachImageController', journalAttachImageController).factory('journalAttachImageService', journalAttachImageService);
 
     }, {"../acc.module": 2}],
-    69: [function (require, module, exports) {
+    70: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -4888,7 +5423,7 @@
         _acc2.default.controller('journalBookkeepingController', journalBookkeepingController).factory('journalBookkeepingService', journalBookkeepingService);
 
     }, {"../acc.module": 2}],
-    70: [function (require, module, exports) {
+    71: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -4942,7 +5477,7 @@
         _acc2.default.controller('journalCreateModalController', journalCreateModalController).factory('journalCreateModalControllerService', journalCreateModalControllerService);
 
     }, {"../acc.module": 2}],
-    71: [function (require, module, exports) {
+    72: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -5244,7 +5779,7 @@
         _acc2.default.controller('journalLineUpdateController', journalLineCreateOrUpdateController).factory('journalLineUpdateControllerModalService', journalLineCreateOrUpdateControllerModalService);
 
     }, {"../acc.module": 2}],
-    72: [function (require, module, exports) {
+    73: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -5299,7 +5834,7 @@
                     aggregates: ['sum'], footerTemplate: "{0}: #= kendo.toString(sum,'n0') #".format(translate('Sum'))
                 }],
                 commands: [],
-
+                gridSize: '300px',
                 readUrl: journalLineApi.url.getAll(id)
             };
 
@@ -5319,7 +5854,7 @@
         _acc2.default.controller('showJournalDetailController', showJournalDetailController).factory('showJournalDetailModalService', showJournalDetailModalService);
 
     }, {"../acc.module": 2}],
-    73: [function (require, module, exports) {
+    74: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -5403,7 +5938,7 @@
         _acc2.default.controller('writeChequeOnJournalLineEntryController', writeChequeOnJournalLineEntryController).factory('writeChequeOnJournalLineEntryService', writeChequeOnJournalLineEntryService);
 
     }, {"../acc.module": 2}],
-    74: [function (require, module, exports) {
+    75: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -5461,7 +5996,7 @@
         _acc2.default.factory('apiPromise', apiPromise);
 
     }, {"../acc.module": 2}],
-    75: [function (require, module, exports) {
+    76: [function (require, module, exports) {
         'use strict';
 
         var _sweetalert = require('sweetalert');
@@ -5499,7 +6034,7 @@
         _acc2.default.factory('confirm', confirm);
 
     }, {"../acc.module": 2, "sweetalert": "sweetalert"}],
-    76: [function (require, module, exports) {
+    77: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -5538,7 +6073,7 @@
         _acc2.default.service('formService', formService);
 
     }, {"../acc.module": 2}],
-    77: [function (require, module, exports) {
+    78: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -5643,7 +6178,7 @@
         _acc2.default.provider('gridFilterCellType', gridFilterCellTypeProvider);
 
     }, {"../acc.module": 2, "jquery": "jquery"}],
-    78: [function (require, module, exports) {
+    79: [function (require, module, exports) {
         'use strict';
 
         var _sweetalert = require('sweetalert');
@@ -5702,7 +6237,7 @@
         _acc2.default.factory('logger', logger);
 
     }, {"../acc.module": 2, "sweetalert": "sweetalert"}],
-    79: [function (require, module, exports) {
+    80: [function (require, module, exports) {
         'use strict';
 
         var _createClass = function () {
@@ -5764,7 +6299,7 @@
         _acc2.default.provider('menuItems', menuItemsProvider);
 
     }, {"../acc.module": 2}],
-    80: [function (require, module, exports) {
+    81: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -5816,7 +6351,7 @@
         _acc2.default.factory('modalBase', modalBase);
 
     }, {"../acc.module": 2}],
-    81: [function (require, module, exports) {
+    82: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -5862,7 +6397,7 @@
         _acc2.default.factory('prompt', prompt);
 
     }, {"../acc.module": 2, "sweetalert": "sweetalert"}],
-    82: [function (require, module, exports) {
+    83: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -5905,7 +6440,7 @@
         _acc2.default.factory('navigate', routeNavigatorService);
 
     }, {"../acc.module": 2}],
-    83: [function (require, module, exports) {
+    84: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');
@@ -5925,7 +6460,7 @@
         _acc2.default.factory('translate', translate);
 
     }, {"../acc.module": 2}],
-    84: [function (require, module, exports) {
+    85: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');

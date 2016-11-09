@@ -1,0 +1,76 @@
+<div class="modal-header">
+    <button type="button" ng-click="close()" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+    <h3 class="modal-title">{{'Edit Detail account'| translate}}</h3>
+</div>
+<div class="modal-body k-rtl">
+
+    <dev-tag-validation-summary errors="errors"></dev-tag-validation-summary>
+
+    <form name="form">
+        <dev-tag-validation-summary errors="errors"></dev-tag-validation-summary>
+        <div class="form-group">
+            <label class="label-control">{{'Code' | translate}}</label>
+            <input
+                    type="text"
+                    class="form-control"
+                    ng-model="detailAccount.code"
+                    name="code"
+                    required/>
+
+            <div ng-messages="form.code.$error" ng-if="form.code.$dirty">
+                <span ng-message="required" class="label label-danger">{{'This field is required'|translate}}</span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="label-control">{{'Title' | translate}}</label>
+            <input type="text"
+                   class="form-control"
+                   ng-model="detailAccount.title"
+                   name="title"
+                   required/>
+
+            <div ng-messages="form.title.$error" ng-if="form.title.$dirty">
+                <span ng-message="required" class="label label-danger">{{'This field is required'|translate}}</span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="label-control">{{'Description' | translate}}</label>
+            <textarea class="form-control" ng-model="detailAccount.description"
+                      name="description"></textarea>
+        </div>
+
+    </form>
+</div>
+<div class="modal-footer">
+    <dev-tag-button
+            ng-click="save(form)"
+            icon="glyphicon glyphicon-floppy-disk"
+            ng-disabled="isSaving"
+            is-waiting="isSaving"
+            style-type="success"
+            title="{{'Save' | translate}}"></dev-tag-button>
+
+    <span style="float: right">
+    <dev-tag-button
+            ng-click="activate()"
+            ng-if="!detailAccount.isActive"
+            icon="glyphicon glyphicon glyphicon-ok"
+            ng-disabled="isActivating"
+            is-waiting="isActivating"
+            style-type="primary"
+            title="{{'Activate' | translate}}"></dev-tag-button>
+
+    <dev-tag-button
+            ng-click="deactivate()"
+            ng-if="detailAccount.isActive"
+            icon="glyphicon glyphicon glyphicon-ok"
+            ng-disabled="isDeactivating"
+            is-waiting="isDeactivating"
+            style-type="primary"
+            title="{{'Deactivate' | translate}}"></dev-tag-button>
+</span>
+</div>

@@ -1,39 +1,39 @@
 import accModule from '../acc.module';
 
-function detailAccountUpdateController($scope, logger, navigate, $routeParams,
-                                       detailAccountApi) {
+function detailAccountUpdateModalController($scope, $modalInstance, data, formService, detailAccountApi, logger) {
+    "use strict";
 
-    let id = $routeParams.id;
+    let id = data.id;
 
     $scope.errors = [];
-
     $scope.detailAccount = {
-        code: '',
         title: '',
+        code: '',
         description: ''
     };
 
-    $scope.isSaving = false;
-
     detailAccountApi.getById(id)
-        .then(result => $scope.detailAccount = result);
+        .then((result)=> $scope.detailAccount = result);
 
     $scope.isSaving = false;
 
-    $scope.save = (form)=> {
+    $scope.save = function (form) {
         if (form.$invalid)
-            return;
+            return formService.setDirty(form);
+
         $scope.errors.asEnumerable().removeAll();
         $scope.isSaving = true;
 
-        detailAccountApi.create($scope.detailAccount)
-            .then(()=> {
+        detailAccountApi.update(data.id, $scope.detailAccount)
+            .then((result) => {
                 logger.success();
-                navigate('detailAccounts');
+                $modalInstance.close(result);
             })
             .catch((errors)=> $scope.errors = errors)
             .finally(()=> $scope.isSaving = false);
     };
+
+    $scope.close = ()=> $modalInstance.dismiss();
 
     $scope.activate = ()=> {
         detailAccountApi.activate(id)
@@ -42,7 +42,7 @@ function detailAccountUpdateController($scope, logger, navigate, $routeParams,
                 logger.success();
             })
             .catch((errors)=> $scope.errors = errors);
-    }
+    };
 
     $scope.deactivate = ()=> {
         detailAccountApi.deactivate(id)
@@ -51,8 +51,16 @@ function detailAccountUpdateController($scope, logger, navigate, $routeParams,
                 logger.success();
             })
             .catch((errors)=> $scope.errors = errors);
-    }
+    };
+}
 
-};
+function detailAccountUpdateModalService(modalBase) {
+    return modalBase({
+        controller: detailAccountUpdateModalController,
+        templateUrl: 'partials/modals/detailAccountUpdate.html'
+    });
+}
 
-accModule.controller('detailAccountUpdateController', detailAccountUpdateController);
+accModule
+    .controller('detailAccountUpdateModalController', detailAccountUpdateModalController)
+    .factory('detailAccountUpdateModalService', detailAccountUpdateModalService);

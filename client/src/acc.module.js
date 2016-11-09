@@ -11,6 +11,7 @@ import 'kendo';
 import 'kendo.culture';
 import 'kendo.messages';
 import 'angular-cookies';
+import 'ngDraggable';
 
 let accModule = angular.module('acc.module', [
     'ngAnimate',
@@ -21,7 +22,8 @@ let accModule = angular.module('acc.module', [
     'pascalprecht.translate',
     'kendo.directives',
     'ngMessages',
-    'ngCookies'
+    'ngCookies',
+    'ngDraggable'
 ]);
 
 accModule.init = () => {

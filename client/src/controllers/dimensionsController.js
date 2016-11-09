@@ -1,78 +1,72 @@
 import accModule from '../acc.module';
 
-function dimensionsController($scope, logger, translate, confirm,
+function dimensionsController($scope, logger, translate, confirm, constants, $timeout,
                               dimensionCategoryApi, dimensionApi,
                               dimensionCreateModalService,
                               dimensionUpdateModalService) {
     "use strict";
-    $scope.categories = [];
-    $scope.currentCategory = {};
+    $scope.errors = [];
 
-    dimensionCategoryApi.getAll()
-        .then((result)=> {
-            let cats = result.data;
+    $scope.gridDateSource = {
+        transport: {
+            read: {
+                url: constants.urls.dimensionCategory.all(),
+                dataType: "json",
+                contentType: 'application/json; charset=utf-8',
+                type: 'GET'
+            },
+            update: {
+                url: (model)=> `/api/dimension-categories/${model.id}`,
+                dataType: 'json',
+                type: "PUT"
+            },
+            parameterMap: (options, method)=> {
+                if (method == 'read')
+                    $scope.onCurrentChanged(null);
+                return options;
+            }
+        },
+        pageSize: 20,
+        schema: {
+            data: 'data',
+            total: 'total',
+            model: {
+                id: 'id',
+                fields: {
+                    title: {validation: {required: true}}
+                },
 
-            $scope.categories = cats.asEnumerable().select(cat =>
-                angular.extend({}, cat, {
-                    gridOption: gridOptionFactory(cat),
-                    editMode: 'read',
-                    canShowDimensions: false,
-                    errors: []
-                })
-            ).toArray();
-        });
+            }
+        },
+        serverPaging: true,
+        serverFiltering: true,
+        serverSorting: true,
+    };
 
-    $scope.createCategory = ()=> {
-        $scope.categories.push({
-            id: null,
-            title: '',
-            editMode: 'new',
-            canShowDimensions: false,
-            isSaving: false,
-            errors: []
-        });
-    }
+    $scope.gridOption = {
+        columns: [
+            {name: 'title', title: translate('Title'), type: 'string'}
+        ],
+        commands: ['edit'],
+        editable: "inline",
+        selectable: true,
+        filterable: false,
+        gridSize: '200px'
+    };
 
-    $scope.saveCategory = (cat)=> {
-        let cmd = {title: cat.title};
+    $scope.current = false;
+    $scope.gridDimensions = false;
 
-        if (cat.editMode == 'new') {
-            dimensionCategoryApi.create(cmd)
-                .then((result)=> {
-                    cat.id = result.id;
-                    cat.editMode = 'read';
-                    cat.gridOption = gridOptionFactory(cat);
+    $scope.onCurrentChanged = (current)=> {
+        $scope.current = current == null ? false : current;
 
-                    logger.success();
-                })
-                .catch((errors)=> cat.errors = errors)
-                .finally(()=> cat.isSaving = false);
-        }
-        else if (cat.editMode == 'edit') {
-            dimensionCategoryApi.update(cat.id, cmd)
-                .then(()=> {
-                    cat.editMode = 'read';
-                    logger.success();
-                })
-                .catch((errors)=> cat.errors = errors)
-                .finally(()=> cat.isSaving = false);
-        }
-    }
+        $scope.gridDimensions = false;
 
-    $scope.startToEditingCategoryTitle = (cat)=> {
-        cat.originalData = {
-            title: cat.title
-        };
-        cat.editMode = 'edit';
-    }
+        if (!$scope.$$phase)
+            $scope.$apply();
 
-    $scope.cancelEditingCategoryTitle = (cat)=> {
-        cat.title = cat.originalData.title;
-        cat.editMode = 'read';
-    }
-
-    $scope.changeShowDimensionStatus = (cat) => {
-        cat.canShowDimensions = !cat.canShowDimensions;
+        if (current != null)
+            $timeout(()=> $scope.gridDimensions = gridOptionFactory(current), 0);
     };
 
     $scope.createDimension = (cat)=> {
@@ -82,8 +76,6 @@ function dimensionsController($scope, logger, translate, confirm,
                 logger.success();
             });
     };
-
-    $scope.select = (cat)=> $scope.currentCategory = cat;
 
     function gridOptionFactory(cat) {
         let columns = [
@@ -97,8 +89,7 @@ function dimensionsController($scope, logger, translate, confirm,
                 action: function (current) {
                     dimensionUpdateModalService.show({id: current.id})
                         .then(()=> {
-                            getLocalCategoryById(current.categoryId)
-                                .gridOption.refresh();
+                            $scope.gridDimensions.refresh();
                             logger.success();
                         });
                 }
@@ -109,18 +100,13 @@ function dimensionsController($scope, logger, translate, confirm,
                     confirm(
                         translate('Remove Dimension'),
                         translate('Are you sure ?'))
-                        .then(function () {
+                        .then(()=> {
                             dimensionApi.remove(current.id)
                                 .then(function () {
-                                    getLocalCategoryById(current.categoryId)
-                                        .gridOption.refresh();
+                                    $scope.gridDimensions.refresh();
                                     logger.success();
                                 })
-                                .catch(function (err) {
-                                    err.errors.forEach(function (message) {
-                                        logger.error(message);
-                                    });
-                                });
+                                .catch((err)=> $scope.errors = err);
                         })
 
                 }
@@ -132,13 +118,6 @@ function dimensionsController($scope, logger, translate, confirm,
             commands: commands,
             readUrl: dimensionApi.url.getAll(cat.id)
         }
-    }
-
-    function getLocalCategoryById(id) {
-        let cat = $scope.categories.asEnumerable()
-            .first((c)=> c.id == id);
-
-        return cat;
     }
 
 }

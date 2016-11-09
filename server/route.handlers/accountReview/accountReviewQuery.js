@@ -11,15 +11,32 @@ function accountReviewQuery(options) {
     var filter = options.filter;
     var dateFieldName = options.dateFieldName;
     var numberFieldName = options.numberFieldName;
-    var groupByField = options.groupByField;
+    var tinyGroupByFields = [
+        'id',
+        'date',
+        'number',
+        'description',
+        'periodId',
+        'journalStatus',
+        'journalType',
+        'generalLedgerAccountId',
+        'subsidiaryLedgerAccountId',
+        'detailAccountId',
+        'dimension1Id',
+        'dimension2Id',
+        'dimension3Id',
+        'article'];
 
-    this.select(
-        groupByField,
+    var groupByField = options.groupByField == 'tiny'
+        ? tinyGroupByFields
+        : options.groupByField;
+
+    this.select([
         knexService.raw('SUM("beforeRemainder") as "sumBeforeRemainder"'),
         knexService.raw('SUM("debtor") as "sumDebtor"'),
         knexService.raw('SUM("creditor") as "sumCreditor"'),
         knexService.raw('SUM("beforeRemainder") + SUM("debtor") - SUM("creditor") as "sumRemainder"')
-    ).from(filterJournals)
+    ].concat(groupByField)).from(filterJournals)
         .groupBy(groupByField)
         .orderBy(groupByField)
         .as('groupJournals');
@@ -78,6 +95,13 @@ function accountReviewQuery(options) {
     }
 
     function _getAmountFields() {
+        if (options.groupByField == 'tiny')
+            return {
+                beforeRemainder: knexService.raw('0 as "beforeRemainder"'),
+                creditor: 'creditor',
+                debtor: 'debtor',
+            };
+
         var beforeRemainder = 'CASE WHEN "date" < \'{0}\' '.format(fromMainDate) +
             'THEN "debtor" -  "creditor" ' +
             'ELSE 0 END as "beforeRemainder"';
@@ -104,8 +128,8 @@ function accountReviewQuery(options) {
         if (filter.subsidiaryLedgerAccountId)
             query.andWhere('subsidiaryLedgerAccountId', filter.subsidiaryLedgerAccountId);
 
-        if (filter.detailAccount)
-            query.andWhere('detailAccountId', filter.detailAccount);
+        if (filter.detailAccountId)
+            query.andWhere('detailAccountId', filter.detailAccountId);
 
         if (filter.dimension1Id)
             query.andWhere('dimension1Id', filter.dimension1Id);

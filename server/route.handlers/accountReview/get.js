@@ -16,7 +16,7 @@ function generalLedgerAccount(req, res) {
         fromMainDate: dateRange.fromMainDate,
         filter: filter,
         dateFieldName: 'temporaryDate',
-        numberFieldName: 'temporaryDate',
+        numberFieldName: 'temporaryNumber',
         groupByField: 'generalLedgerAccountId'
     };
 
@@ -65,7 +65,7 @@ function subsidiaryLedgerAccount(req, res) {
         fromMainDate: dateRange.fromMainDate,
         filter: filter,
         dateFieldName: 'temporaryDate',
-        numberFieldName: 'temporaryDate',
+        numberFieldName: 'temporaryNumber',
         groupByField: 'subsidiaryLedgerAccountId'
     };
 
@@ -118,7 +118,7 @@ function detailAccount(req, res) {
         fromMainDate: dateRange.fromMainDate,
         filter: filter,
         dateFieldName: 'temporaryDate',
-        numberFieldName: 'temporaryDate',
+        numberFieldName: 'temporaryNumber',
         groupByField: 'detailAccountId'
     };
 
@@ -169,7 +169,7 @@ function dimension1(req, res) {
         fromMainDate: dateRange.fromMainDate,
         filter: filter,
         dateFieldName: 'temporaryDate',
-        numberFieldName: 'temporaryDate',
+        numberFieldName: 'temporaryNumber',
         groupByField: 'dimension1Id'
     };
 
@@ -220,7 +220,7 @@ function dimension2(req, res) {
         fromMainDate: dateRange.fromMainDate,
         filter: filter,
         dateFieldName: 'temporaryDate',
-        numberFieldName: 'temporaryDate',
+        numberFieldName: 'temporaryNumber',
         groupByField: 'dimension2Id'
     };
 
@@ -271,7 +271,7 @@ function dimension3(req, res) {
         fromMainDate: dateRange.fromMainDate,
         filter: filter,
         dateFieldName: 'temporaryDate',
-        numberFieldName: 'temporaryDate',
+        numberFieldName: 'temporaryNumber',
         groupByField: 'dimension3Id'
     };
 
@@ -312,6 +312,95 @@ function dimension3(req, res) {
     res.json(result);
 }
 
+function tiny(req, res) {
+    var filter = (req.query.extra) ? req.query.extra.filter : undefined;
+    var dateRange = await(getDateRange(req.cookies['current-period'], filter));
+    var options = {
+        fromDate: dateRange.fromMainDate,
+        toDate: dateRange.toDate,
+        fromMainDate: dateRange.fromMainDate,
+        filter: filter,
+        dateFieldName: 'temporaryDate',
+        numberFieldName: 'temporaryNumber',
+        groupByField: 'tiny'
+    };
+
+    var query = knexService.select().from(function () {
+        this.select(
+            'groupJournals.id',
+            'date',
+            'number',
+            'article',
+            'periodId',
+            'journalStatus',
+            'journalType',
+            'sumBeforeRemainder', 'sumDebtor', 'sumCreditor', 'sumRemainder',
+            'groupJournals.generalLedgerAccountId',
+            knexService.raw('"generalLedgerAccounts"."code" as "generalLedgerAccountCode"'),
+            knexService.raw('"generalLedgerAccounts"."title" as "generalLedgerAccountTitle"'),
+            'subsidiaryLedgerAccountId',
+            knexService.raw('"subsidiaryLedgerAccounts"."code" as "subsidiaryLedgerAccountCode"'),
+            knexService.raw('"subsidiaryLedgerAccounts"."title" as "subsidiaryLedgerAccountTitle"'),
+            knexService.raw('"generalLedgerAccounts"."code" as "generalLedgerAccountCode"'),
+            'detailAccountId',
+            knexService.raw('"detailAccounts"."code" as "detailAccountCode"'),
+            knexService.raw('"detailAccounts"."title" as "detailAccountTitle"'),
+            'dimension1Id',
+            knexService.raw('"dimension1s"."code" as "dimension1Code"'),
+            knexService.raw('"dimension1s"."title" as "dimension1Title"'),
+            'dimension2Id',
+            knexService.raw('"dimension2s"."code" as "dimension2Code"'),
+            knexService.raw('"dimension2s"."title" as "dimension2Title"'),
+            'dimension3Id',
+            knexService.raw('"dimension3s"."code" as "dimension3Code"'),
+            knexService.raw('"dimension3s"."title" as "dimension3Title"')
+            )
+            .from(function () {
+                accountReviewQuery.call(this, options);
+            })
+            .leftJoin('generalLedgerAccounts', 'generalLedgerAccounts.id', 'groupJournals.generalLedgerAccountId')
+            .leftJoin('subsidiaryLedgerAccounts', 'subsidiaryLedgerAccounts.id', 'groupJournals.subsidiaryLedgerAccountId')
+            .leftJoin('detailAccounts', 'detailAccounts.id', 'groupJournals.detailAccountId')
+            .leftJoin(knexService.raw('"dimensions" as "dimension1s"'), 'dimension1s.id', 'groupJournals.dimension1Id')
+            .leftJoin(knexService.raw('"dimensions" as "dimension2s"'), 'dimension2s.id', 'groupJournals.dimension2Id')
+            .leftJoin(knexService.raw('"dimensions" as "dimension3s"'), 'dimension3s.id', 'groupJournals.dimension3Id')
+            .orderBy('number')
+            .as('final')
+    });
+
+    var view = function (item) {
+        return {
+            id: item.id,
+            number: item.number,
+            date: item.date,
+            article: item.article,
+            subsidiaryLedgerAccountId: item.subsidiaryLedgerAccountId,
+            subsidiaryLedgerAccountCode: item.subsidiaryLedgerAccountCode,
+            subsidiaryLedgerAccountTitle: item.subsidiaryLedgerAccountTitle,
+            generalLedgerAccountCode: item.generalLedgerAccountCode,
+            detailAccountCode: item.detailAccountCode,
+            detailAccountTitle: item.detailAccountTitle,
+            dimension1Code: item.dimension1Code,
+            dimension1Title: item.dimension1Title,
+            dimension2Code: item.dimension2Code,
+            dimension2Title: item.dimension2Title,
+            dimension3Code: item.dimension3Code,
+            dimension3Title: item.dimension3Title,
+            sumBeforeRemainder: item.sumBeforeRemainder,
+            sumDebtor: item.sumDebtor,
+            sumCreditor: item.sumCreditor,
+            sumRemainder: item.sumRemainder
+        };
+    };
+
+    var aggregatesQuery = query.clone();
+
+    var result = await(kendoQueryResolve(query, req.query, view));
+
+    result.aggregates = await(getaggregates(aggregatesQuery));
+
+    res.json(result);
+}
 
 module.exports.generalLedgerAccount = async(generalLedgerAccount);
 module.exports.subsidiaryLedgerAccount = async(subsidiaryLedgerAccount);
@@ -319,3 +408,4 @@ module.exports.detailAccount = async(detailAccount);
 module.exports.dimension1 = async(dimension1);
 module.exports.dimension2 = async(dimension2);
 module.exports.dimension3 = async(dimension3);
+module.exports.tiny = async(tiny);

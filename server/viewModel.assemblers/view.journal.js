@@ -16,6 +16,7 @@ function journalView(entity) {
         journalTypeDisplay: entity.journalType
             ? enums.JournalType().getDisplay(entity.journalType)
             : '',
+        tagIds: entity.tagIds,
         attachmentFileName: entity.attachmentFileName,
         createdBy: entity.createdBy,
         sumDebtor: entity.sumDebtor,

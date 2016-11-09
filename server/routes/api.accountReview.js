@@ -8,6 +8,7 @@ router.route('/account-review/detail-account').get(accountReviewHandler.detailAc
 router.route('/account-review/dimension-1').get(accountReviewHandler.dimension1);
 router.route('/account-review/dimension-2').get(accountReviewHandler.dimension2);
 router.route('/account-review/dimension-3').get(accountReviewHandler.dimension3);
+router.route('/account-review/tiny').get(accountReviewHandler.tiny);
 
 module.exports = router;
 

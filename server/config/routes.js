@@ -65,6 +65,7 @@ var chequeApi = require('{0}/api.cheque'.format(basePath));
 var fiscalPeriod = require('{0}/api.fiscalPeriod'.format(basePath));
 var journalTemplateApi = require('{0}/api.journalTemplate'.format(basePath));
 var accoutReviewApi = require('{0}/api.accountReview'.format(basePath));
+var tagApi = require('{0}/api.tag'.format(basePath));
 
 
 app.use('/api', generalLedgerAccountApi);
@@ -80,5 +81,6 @@ app.use('/api', chequeApi);
 app.use('/api', fiscalPeriod);
 app.use('/api', journalTemplateApi);
 app.use('/api', accoutReviewApi);
+app.use('/api', tagApi);
 
 

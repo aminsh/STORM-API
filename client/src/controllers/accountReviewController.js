@@ -43,7 +43,6 @@ function accountReviewController($scope, navigate, dimensionCategoryApi, constan
             $scope.dimension1DataSource = dimensionDataSourceFactory(cats[0].id);
             $scope.dimension2DataSource = dimensionDataSourceFactory(cats[1].id);
             $scope.dimension3DataSource = dimensionDataSourceFactory(cats[2].id);
-            $scope.dimension4DataSource = dimensionDataSourceFactory(cats[3].id);
         });
 
     function dimensionDataSourceFactory(categoryId) {
@@ -67,26 +66,29 @@ function accountReviewController($scope, navigate, dimensionCategoryApi, constan
         localStorage.setItem('account-review-state', state);
     }
 
-    function getParameters(action) {
-        let params = angular.extend({}, $scope.parameters);
-        if (!params.minDate) delete params.minDate;
-        if (!params.maxDate) delete params.maxDate;
-        if (!params.minNumber) delete params.minNumber;
-        if (!params.maxNumber) delete params.maxNumber;
+    function getParameters() {
+        let parameters = $scope.parameters,
+            params = {};
 
-        action.apply(params);
+        if (parameters.minNumber) {
+            params.minNumber = parameters.minNumber;
+            params.maxNumber = parameters.maxNumber;
+        }
+
+        if (parameters.minDate) {
+            params.minDate = parameters.minDate;
+            params.maxDate = parameters.maxDate;
+        }
+
+        params.notShowZeroRemainder = parameters.notShowZeroRemainder;
+        params.isNotPeriodIncluded = parameters.isNotPeriodIncluded;
 
         return params;
     }
 
     $scope.executeTurnover = (reportName)=> {
         saveState();
-        let params = getParameters(()=> {
-            delete this.detailAccount;
-            delete this.dimension1;
-            delete this.dimension2;
-            delete this.dimension3;
-        });
+        let params = getParameters();
 
         navigate('accountReviewTurnover', {name: reportName}, params);
     };
@@ -94,27 +96,20 @@ function accountReviewController($scope, navigate, dimensionCategoryApi, constan
     $scope.detailAccountExecuteTurnovers = (reportName)=> {
         saveState();
 
-        let params = getParameters(()=> {
-            delete this.dimension1;
-            delete this.dimension2;
-            delete this.dimension3;
-        });
+        let params = getParameters();
+        params.detailAccountId = $scope.parameters.detailAccount.id;
+        params.detailAccountDisplay = $scope.parameters.detailAccount.display;
 
         navigate('accountReviewTurnover', {name: reportName}, params);
     };
 
-    $scope.dimensionExecuteTurnovers = (dimensionName, reportName)=> {
+    $scope.dimensionExecuteTurnovers = (dimensionName, reportName, index)=> {
         saveState();
 
-        let params = getParameters(()=> {
-            let self = this;
-            delete self.detailAccount;
-
-            ['dimension1', 'dimension2', 'dimension3']
-                .asEnumerable().where(d=> d != dimensionName)
-                .toArray()
-                .forEach(d=> delete self[d]);
-        });
+        let params = getParameters();
+        params[`${dimensionName}Id`] = $scope.parameters[dimensionName].id;
+        params[`${dimensionName}Display`] = $scope.parameters[dimensionName].display;
+        params[`${dimensionName}Caption`] = $scope.dimensionCategories[index].title;
 
         navigate('accountReviewTurnover', {name: reportName}, params);
     };

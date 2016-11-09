@@ -21,7 +21,7 @@ function journalAdvancedSearchModalController($scope, $modalInstance, translate,
         chequeDescription: '',
         amount: {
             value: null,
-            operator: 'eq',
+            operator: null,
         },
         isNotPeriodIncluded: false
     };
@@ -118,7 +118,6 @@ function journalAdvancedSearchModalController($scope, $modalInstance, translate,
             $scope.dimension1Options = dimensionOptionFactory(cats[0].id);
             $scope.dimension2Options = dimensionOptionFactory(cats[1].id);
             $scope.dimension3Options = dimensionOptionFactory(cats[2].id);
-            $scope.dimension4Options = dimensionOptionFactory(cats[3].id);
         });
 
     function dimensionOptionFactory(categoryId) {
@@ -126,7 +125,7 @@ function journalAdvancedSearchModalController($scope, $modalInstance, translate,
             placeholder: translate('Select ...'),
             dataTextField: "display",
             dataValueField: "id",
-            valuePrimitive: true,
+            valuePrimitive: false,
             autoBind: false,
             dataSource: {
                 type: "json",
@@ -145,7 +144,7 @@ function journalAdvancedSearchModalController($scope, $modalInstance, translate,
 
     $scope.chequeOptions = {
         placeholder: translate('Select ...'),
-        dataTextField: "num",
+        dataTextField: "number",
         dataValueField: "id",
         valuePrimitive: true,
         autoBind: false,
