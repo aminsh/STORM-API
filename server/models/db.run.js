@@ -6,7 +6,7 @@ var async = require('asyncawait/async');
 var await = require('asyncawait/await');
 var knexService = require('../services/knexService');
 
-db.sequelize.sync(/*{force: true}*/).then(function () {
+db.sequelize.sync({force: true}).then(function () {
     console.log('sequelize sync ...');
 
     async(run)();

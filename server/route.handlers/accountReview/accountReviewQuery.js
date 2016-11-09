@@ -49,6 +49,7 @@ function accountReviewQuery(options) {
             knexService.raw('"journals"."{0}" as "date"'.format(dateFieldName)),
             'journals.description',
             'journals.periodId',
+            'journals.isInComplete',
             'journals.journalStatus',
             'journals.journalType',
             'journalLines.generalLedgerAccountId',
@@ -75,6 +76,7 @@ function accountReviewQuery(options) {
             'number',
             'description',
             'periodId',
+            'isInComplete',
             'journalStatus',
             'journalType',
             'generalLedgerAccountId',
@@ -119,6 +121,8 @@ function accountReviewQuery(options) {
     }
 
     function _executeFilter(query) {
+        query.andWhere('isInComplete', false);
+
         if (filter.minNumber && filter.maxNumber)
             query.andWhereBetween('number', [filter.minNumber, filter.maxNumber]);
 

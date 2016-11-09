@@ -42,7 +42,8 @@ function create(req, res) {
         journalStatus: 'Temporary',
         temporaryNumber: (await(repository.maxTemporaryNumber(current.periodId)) || 0) + 1,
         temporaryDate: cmd.temporaryDate || persianDateSerivce.current(),
-        description: cmd.description
+        description: cmd.description,
+        isInComplete: false
     };
 
     entity = await(repository.create(entity));

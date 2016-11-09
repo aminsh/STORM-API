@@ -44,7 +44,26 @@ var journalRepository = {
     remove: async(function (id) {
         var entity = await(db.journal.findById(id));
         return entity.destroy();
-    })
+    }),
+    checkIsComplete: function (id) {
+        var entity = await(db.journal.find({
+            where: {id: id},
+            include: [db.journalLine]
+        }));
+
+        if (entity.journalLines.length() == 0) {
+            entity.isInComplete = false;
+            return entity.save();
+        }
+
+        var sumDebtor = entity.journalLines.asEnumerable().sum('debtor');
+        var sumCreditor = entity.journalLines.asEnumerable().sum('creditor');
+
+        if (sumDebtor != sumCreditor) {
+            entity.isInComplete = false;
+            return entity.save();
+        }
+    }
 };
 
 module.exports = journalRepository;

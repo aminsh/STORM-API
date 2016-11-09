@@ -18,7 +18,9 @@ passport.use(
         function (username, password, done) {
             db.user.findOne({
                 where: {
-                    username: username,
+                    username: {
+                        $iLike: username
+                    },
                     password: md5(password)
                 }
             }).then(function (user) {

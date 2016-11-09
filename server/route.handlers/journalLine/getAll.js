@@ -29,6 +29,7 @@ function baseJournalLines() {
         'journalLines.article',
         'journalLines.debtor',
         'journalLines.creditor',
+        'journalLines.generalLedgerAccountId',
         'journalLines.subsidiaryLedgerAccountId',
         knexService.raw('"generalLedgerAccounts"."code" as "generalLedgerAccountCode"'),
         knexService.raw('"generalLedgerAccounts"."code" || \' \' || "generalLedgerAccounts"."title" as "generalLedgerAccountDisplay"'),
