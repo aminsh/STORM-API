@@ -7,7 +7,7 @@ var environment = {
         db: {
             username: "postgres",
             password: "P@ssw0rd",
-            database: "dbAccounting2",
+            database: "dbAccounting",
             host: "localhost",
             dialect: "postgres",
             client: 'pg'

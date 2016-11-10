@@ -186,15 +186,11 @@
 
         require('./services/prompt');
 
+        require('./services/showReport');
+
         function _interopRequireDefault(obj) {
             return obj && obj.__esModule ? obj : {default: obj};
         }
-
-//filter
-
-
-// load apis
-        _acc2.default.init();
 
 //service
 
@@ -209,6 +205,12 @@
 
 
 // load config
+        _acc2.default.init();
+
+//filter
+
+
+// load apis
 
     }, {
         "./acc.module": 2,
@@ -289,8 +291,9 @@
         "./services/modalBase": 81,
         "./services/prompt": 82,
         "./services/routeNavigatorService": 83,
-        "./services/translate": 84,
-        "./services/translateStorageService": 85
+        "./services/showReport": 84,
+        "./services/translate": 85,
+        "./services/translateStorageService": 86
     }],
     2: [function (require, module, exports) {
         'use strict';
@@ -1658,7 +1661,7 @@
                     update: {
                         url: function url(model) {
                             return '/api/banks/{0}'.format(model.id);
-                        },
+                },
                         dataType: 'json',
                         type: "PUT"
                     },
@@ -1670,7 +1673,7 @@
                     destroy: {
                         url: function url(model) {
                             return '/api/banks/{0}'.format(model.id);
-                        },
+                },
                         dataType: 'json',
                         type: "DELETE"
                     }
@@ -1871,7 +1874,7 @@
                     }).finally(function () {
                                 return $scope.isSaving = false;
                     });
-                        });
+                });
                     }
                 }],
                 readUrl: detailAccountApi.url.getAll
@@ -1914,14 +1917,14 @@
                     update: {
                         url: function url(model) {
                             return "/api/dimension-categories/" + model.id;
-                        },
+                },
                         dataType: 'json',
                         type: "PUT"
                     },
                     parameterMap: function parameterMap(options, method) {
                         if (method == 'read') $scope.onCurrentChanged(null);
                         return options;
-            }
+                    }
                 },
                 pageSize: 20,
                 schema: {
@@ -1997,7 +2000,7 @@
                                 return $scope.errors = err;
                     });
                         });
-                    }
+            }
                 }];
 
                 return {
@@ -2433,7 +2436,7 @@
             return obj && obj.__esModule ? obj : {default: obj};
         }
 
-        function journalUpdateController($scope, logger, confirm, translate, navigate, $routeParams, $rootScope, constants, journalApi, journalLineApi, subsidiaryLedgerAccountApi, dimensionCategoryApi, journalLineCreateControllerModalService, journalLineUpdateControllerModalService, journalBookkeepingService, journalAttachImageService, writeChequeOnJournalLineEntryService) {
+        function journalUpdateController($scope, logger, confirm, translate, navigate, $routeParams, $rootScope, constants, journalApi, journalLineApi, subsidiaryLedgerAccountApi, dimensionCategoryApi, journalLineCreateControllerModalService, journalLineUpdateControllerModalService, journalBookkeepingService, journalAttachImageService, writeChequeOnJournalLineEntryService, showReport) {
 
             var id = $routeParams.id;
 
@@ -2484,7 +2487,7 @@
                         status.icon = 'lock';
                         status.color = 'blue';
                         status.title = $scope.journal.journalStatusDisplay;
-                    }
+            }
                 });
             }
 
@@ -2585,6 +2588,10 @@
                     logger.success();
                     fetch();
                 });
+            };
+
+            $scope.print = function () {
+                return showReport('/report/pdf/journal/' + id);
             };
 
             $scope.writeCheque = function () {
@@ -6451,6 +6458,26 @@
             return obj && obj.__esModule ? obj : {default: obj};
         }
 
+        function showReport() {
+            return function (url) {
+                window.open(url, '_blank');
+            };
+        }
+
+        _acc2.default.factory('showReport', showReport);
+
+    }, {"../acc.module": 2}],
+    85: [function (require, module, exports) {
+        'use strict';
+
+        var _acc = require('../acc.module');
+
+        var _acc2 = _interopRequireDefault(_acc);
+
+        function _interopRequireDefault(obj) {
+            return obj && obj.__esModule ? obj : {default: obj};
+        }
+
         function translate($filter) {
             return function (key) {
                 return $filter('translate')(key);
@@ -6460,7 +6487,7 @@
         _acc2.default.factory('translate', translate);
 
     }, {"../acc.module": 2}],
-    85: [function (require, module, exports) {
+    86: [function (require, module, exports) {
         'use strict';
 
         var _acc = require('../acc.module');

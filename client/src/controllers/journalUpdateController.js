@@ -7,7 +7,8 @@ function journalUpdateController($scope, logger, confirm, translate, navigate, $
                                  journalLineUpdateControllerModalService,
                                  journalBookkeepingService,
                                  journalAttachImageService,
-                                 writeChequeOnJournalLineEntryService) {
+                                 writeChequeOnJournalLineEntryService,
+                                 showReport) {
 
     let id = $routeParams.id;
 
@@ -178,7 +179,9 @@ function journalUpdateController($scope, logger, confirm, translate, navigate, $
                 logger.success();
                 fetch();
             });
-    }
+    };
+
+    $scope.print = ()=> showReport(`/report/pdf/journal/${id}`);
 
     $scope.writeCheque = ()=> {
         $rootScope.blockUi.block();

@@ -171,5 +171,7 @@
   "Total turnover general ledger account": "گردش حسابهای کل",
   "Total turnover subsidiary ledger account": "گردش حسابهای معین",
   "Total turnover detail account": "گردش حسابهای تفصیل",
-  "Total turnover dimension": "گردش سطح"
+  "Total turnover dimension": "گردش سطح",
+  "Account title": "عنوان حساب",
+  "Rial": "ریال"
 }

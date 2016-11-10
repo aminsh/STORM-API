@@ -93,6 +93,7 @@ import './services/modalBase';
 import './services/routeNavigatorService';
 import './services/translate';
 import './services/prompt';
+import './services/showReport';
 
 accModule.init();
 

@@ -29,6 +29,12 @@
                         icon="glyphicon glyphicon-paperclip"
                         style-type="primary"
                         title="{{'Show attachment image' | translate}}"></dev-tag-button>
+
+                <dev-tag-button
+                        ng-click="print()"
+                        title="{{'Print' | translate}}"
+                        icon="glyphicon glyphicon-print"
+                        style-type="default"></dev-tag-button>
             </div>
 
             <div class="col-md-7">
@@ -175,8 +181,9 @@
 
                                     <div class="row">
                                         <div class="col-md-1">
-                                            <label class="label-control">${kendo.translate('Subsidiary ledger
-                                                account')}</label>
+                                            <label class="label-control">
+                                                ${kendo.translate('Subsidiary ledger account')}
+                                            </label>
                                         </div>
                                         <div class="col-md-8" style="overflow: hidden">
                                             ${data.subsidiaryLedgerAccountDisplay}
@@ -226,8 +233,9 @@
                                 <div class="col-md-3">
                                     <div class="row">
                                         <div class="col-md-1">
-                                            <label class="label-control">${kendo.translate('Cheque number
-                                                (abrv)')}</label>
+                                            <label class="label-control">
+                                                ${kendo.translate('Cheque number (abrv)')}
+                                            </label>
                                         </div>
                                         <div class="col-md-8" title="${data.chequeNumber}">
                                             ${data.chequeNumber}
@@ -236,8 +244,9 @@
 
                                     <div class="row">
                                         <div class="col-md-1">
-                                            <label class="label-control">${kendo.translate('Cheque date
-                                                (abrv)')}</label>
+                                            <label class="label-control">
+                                                ${kendo.translate('Cheque date (abrv)')}
+                                            </label>
                                         </div>
                                         <div class="col-md-8" title="${data.chequeDate}">
                                             ${data.chequeDate}
