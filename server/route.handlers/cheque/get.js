@@ -27,6 +27,16 @@ function getWhites(req, res) {
         });
 }
 
+function getUseds(req, res) {
+    var query = knexService.select('*').from('cheques')
+        .andWhere('status', 'Used');
+
+    kendoQueryResolve(query, req.query, view)
+        .then(function (result) {
+            res.json(result);
+        });
+}
+
 function getById(req, res) {
     knexService.select().from('cheques').where('id', req.params.id)
         .then(function (result) {
@@ -37,4 +47,5 @@ function getById(req, res) {
 
 module.exports.getAll = getAll;
 module.exports.getWhites = getWhites;
+module.exports.getUseds = getUseds;
 module.exports.getById = getById;

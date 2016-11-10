@@ -12,6 +12,10 @@ h1 {
     font-family: "BKoodakBold", "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
+.popover {
+    font-family: "BKoodakBold", "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
 a {
     font-family: "BKoodakBold", "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
     text-decoration: none;
@@ -1624,8 +1628,8 @@ h1.head-current {
     text-align: center;
 }
 
-.k-animation-container {
-    overflow-y: scroll;
+.k-list-container {
+    overflow-y: auto;
 }
 
 .k-grid td {

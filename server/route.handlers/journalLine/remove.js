@@ -1,6 +1,7 @@
 var async = require('asyncawait/async');
 var await = require('asyncawait/await');
 var repository = require('../../data/repository.journalLine');
+var journalRepository = require('../../data/repository.journal');
 var translate = require('../../services/translateService');
 
 function remove(req, res) {
@@ -14,6 +15,7 @@ function remove(req, res) {
         });
 
     await(repository.remove(req.params.id));
+    await(journalRepository.checkIsComplete(cmd.journalId));
 
     return res.json({
         isValid: true

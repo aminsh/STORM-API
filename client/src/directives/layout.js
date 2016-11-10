@@ -15,11 +15,11 @@ function header($rootScope) {
             };
 
             $rootScope.$on('currentPeriodChanged', (e, currentPeriodDisplay)=> {
-                scope.current.period = currentPeriodDisplay;
+                scope.current.period = currentPeriodDisplay
             });
 
             $rootScope.$on('currentModeChanged', (e, currentMode)=> {
-                scope.current.mode = currentMode;
+                scope.current.mode = currentMode
             });
 
             $(element).find('.dropdown')

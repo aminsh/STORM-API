@@ -36,7 +36,7 @@ function resolveFilter(query, filter) {
 
     filter.filters.forEach(function (f) {
         if (f.logic)
-            return resolveFilter(query, filter);
+            return resolveFilter(query, f);
 
         switch (f.operator) {
             case 'eq':

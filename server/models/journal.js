@@ -21,6 +21,9 @@ module.exports = function (sequelize, DataTypes) {
                 type: DataTypes.ENUM,
                 values: enums.JournalStatus().getKeys()
             },
+            isInComplete: {
+                type: DataTypes.BOOLEAN
+            },
             journalType: {
                 type: DataTypes.ENUM,
                 values: enums.JournalType().getKeys()
@@ -35,6 +38,7 @@ module.exports = function (sequelize, DataTypes) {
                     Journal.belongsTo(models.user, {as: 'createdBy'});
                     Journal.belongsTo(models.fiscalPeriod, {as: 'period'});
                     Journal.hasMany(models.journalLine, {onDelete: ' CASCADE'});
+                    Journal.belongsToMany(models.tag, {through: 'journalTags'});
                 }
             },
             instanceMethods: {

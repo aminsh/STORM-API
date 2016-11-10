@@ -1,22 +1,37 @@
 import accModule from '../acc.module';
+import $ from 'jquery';
 
-function journalUpdateController($scope, logger, confirm, translate, navigate, $routeParams, $rootScope,
-                                 journalApi, journalLineApi, subsidiaryLedgerAccountApi,
+function journalUpdateController($scope, logger, confirm, translate, navigate, $routeParams, $rootScope, constants,
+                                 journalApi, journalLineApi, subsidiaryLedgerAccountApi, dimensionCategoryApi,
                                  journalLineCreateControllerModalService,
                                  journalLineUpdateControllerModalService,
                                  journalBookkeepingService,
                                  journalAttachImageService,
-                                 writeChequeOnJournalLineEntryService) {
+                                 writeChequeOnJournalLineEntryService,
+                                 showReport) {
 
     let id = $routeParams.id;
+
+    $scope.title = translate('Edit Journal');
+
     $scope.errors = [];
+
+    $scope.journalStatueForTitle = {
+        icon: '',
+        color: '',
+        title: '',
+    };
+
     $scope.journal = {
         temporaryNumber: null,
         temporaryDate: null,
         number: null,
         date: null,
-        description: ''
+        description: '',
+        tagIds: []
     };
+
+    $scope.journalTypeData = constants.enums.JournalType().data;
 
     $scope.canShowNumberAndDate = false;
 
@@ -25,7 +40,27 @@ function journalUpdateController($scope, logger, confirm, translate, navigate, $
             .then((result)=> {
                 $scope.journal = result;
 
-                $scope.canShowNumberAndDate = result.journalStatus != 'Temporary'
+                $scope.canShowNumberAndDate = result.journalStatus != 'Temporary';
+
+                let status = $scope.journalStatueForTitle;
+
+                if ($scope.journal.isInComplete) {
+                    status.icon = 'exclamation-sign';
+                    status.color = 'red';
+                    status.title = translate('InComplete journal');
+                }
+
+                if ($scope.journal.journalStatus == 'BookKeeped') {
+                    status.icon = 'ok-circle';
+                    status.color = 'green';
+                    status.title = $scope.journal.journalStatusDisplay;
+                }
+
+                if ($scope.journal.journalStatus == 'Fixed') {
+                    status.icon = 'lock';
+                    status.color = 'blue';
+                    status.title = $scope.journal.journalStatusDisplay;
+                }
             });
     }
 
@@ -33,13 +68,13 @@ function journalUpdateController($scope, logger, confirm, translate, navigate, $
 
     $scope.gridOption = {
         columns: [
-            {name: 'row', title: translate('Row'), width: '60px', type: 'number'},
+            {name: 'row', title: '#', width: '50px', type: 'number'},
             {
-                name: 'generalLedgerAccountId',
-                title: translate('General ledger account'),
-                type: 'generalLedgerAccount',
-                template: '${data.generalLedgerAccountCode}',
-                width: '70px'
+                name: 'detailAccountId',
+                title: translate('Detail account'),
+                type: 'detailAccount',
+                template: '${data.detailAccountCode}',
+                width: '100px'
             },
             {
                 name: 'subsidiaryLedgerAccountId',
@@ -49,20 +84,23 @@ function journalUpdateController($scope, logger, confirm, translate, navigate, $
                 width: '70px'
             },
             {
-                name: 'detailAccountId',
-                title: translate('Detail account'),
-                type: 'detailAccount',
-                template: '${data.detailAccountCode}',
-                width: '100px'
-            },
-            {name: 'article', title: translate('Article'), width: '300px', type: 'string'},
-            {
-                name: 'debtor', title: translate('Debtor'), width: '100px', type: 'number', format: '{0:#,##}',
-                aggregates: ['sum'], footerTemplate: "{0}: #= kendo.toString(sum,'n0') #".format(translate('Sum'))
+                name: 'generalLedgerAccountId',
+                title: translate('General ledger account'),
+                type: 'generalLedgerAccount',
+                template: '${data.generalLedgerAccountCode}',
+                width: '70px'
             },
             {
-                name: 'creditor', title: translate('Creditor'), width: '100px', type: 'number', format: '{0:#,##}',
-                aggregates: ['sum'], footerTemplate: "{0}: #= kendo.toString(sum,'n0') #".format(translate('Sum'))
+                name: 'article', title: translate('Article'), type: 'string', width: '20%',
+                template: '<span title="${data.article}">${data.article}</span>'
+            },
+            {
+                name: 'debtor', title: translate('Debtor'), width: '120px', type: 'number', format: '{0:#,##}',
+                aggregates: ['sum'], footerTemplate: "#= kendo.toString(sum,'n0') #"
+            },
+            {
+                name: 'creditor', title: translate('Creditor'), width: '120px', type: 'number', format: '{0:#,##}',
+                aggregates: ['sum'], footerTemplate: "#= kendo.toString(sum,'n0') #"
             }
         ],
         commands: [
@@ -99,7 +137,8 @@ function journalUpdateController($scope, logger, confirm, translate, navigate, $
         current: null,
         selectable: true,
         filterable: false,
-        readUrl: journalLineApi.url.getAll(id)
+        readUrl: journalLineApi.url.getAll(id),
+        gridSize: '400px'
     };
 
     $scope.isSaving = false;
@@ -140,7 +179,9 @@ function journalUpdateController($scope, logger, confirm, translate, navigate, $
                 logger.success();
                 fetch();
             });
-    }
+    };
+
+    $scope.print = ()=> showReport(`/report/pdf/journal/${id}`);
 
     $scope.writeCheque = ()=> {
         $rootScope.blockUi.block();
@@ -169,8 +210,42 @@ function journalUpdateController($scope, logger, confirm, translate, navigate, $
             });
 
 
-    }
+    };
+    $scope.journalLineCurrent = false;
+    $scope.journalLineCurrentChanged = (current)=> {
+        $scope.journalLineCurrent = current;
 
+        if (!$scope.$$phase)
+            $scope.$apply();
+    };
+
+    $scope.dimensionCategories = {};
+
+    dimensionCategoryApi.getAllLookup()
+        .then((result)=> {
+            let cats = result.data;
+            $scope.dimensionCategories = cats;
+        });
+
+    $scope.tagsOptions = {
+        placeholder: translate('Select ...'),
+        dataTextField: "title",
+        dataValueField: "id",
+        valuePrimitive: true,
+        autoBind: false,
+        dataSource: {
+            type: "json",
+            serverFiltering: true,
+            transport: {
+                read: {
+                    url: constants.urls.tag.getAll()
+                }
+            },
+            schema: {
+                data: 'data'
+            }
+        }
+    };
 
 }
 

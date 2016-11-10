@@ -15,27 +15,27 @@ function showJournalDetailController($scope, translate, $modalInstance, journalA
 
     $scope.gridOption = {
         columns: [
-            {name: 'row', title: translate('Row'), width: '60px', type: 'number'},
+            {name: 'row', title: '#', width: '60px', type: 'number', filterable: false},
             {
                 name: 'generalLedgerAccountId',
                 title: translate('General ledger account'),
                 type: 'generalLedgerAccount',
                 template: '${data.generalLedgerAccountCode}',
-                width: '70px'
+                width: '100px'
             },
             {
                 name: 'subsidiaryLedgerAccountId',
                 title: translate('Subsidiary ledger account'),
                 type: 'subsidiaryLedgerAccount',
                 template: '${data.subsidiaryLedgerAccountCode}',
-                width: '70px'
+                width: '100px'
             },
             {
                 name: 'detailAccountId',
                 title: translate('Detail account'),
                 type: 'detailAccount',
                 template: '${data.detailAccountCode}',
-                width: '100px'
+                width: '120px'
             },
             {
                 name: 'article', title: translate('Article'), width: '200px', type: 'string',
@@ -51,7 +51,7 @@ function showJournalDetailController($scope, translate, $modalInstance, journalA
             }
         ],
         commands: [],
-
+        gridSize: '300px',
         readUrl: journalLineApi.url.getAll(id)
     };
 

@@ -8,19 +8,19 @@ function detailAccountCreateModalController($scope, $modalInstance, formService,
         title: '',
         code: '',
         description: ''
-    }
+    };
 
     $scope.isSaving = false;
 
     $scope.save = function (form) {
         if (form.$invalid)
-            return;
+            return formService.setDirty(form);
 
         $scope.errors.asEnumerable().removeAll();
         $scope.isSaving = true;
 
         detailAccountApi.create($scope.detailAccount)
-            .then(function (result) {
+            .then((result) => {
                 logger.success();
                 $modalInstance.close(result);
             })

@@ -1,6 +1,6 @@
 import accModule from '../acc.module';
 
-function dimensionCategoryApi(apiPromise) {
+function dimensionCategoryApi(apiPromise, $q, $timeout) {
     var urlPrefix = '/api';
 
     return {
@@ -9,6 +9,20 @@ function dimensionCategoryApi(apiPromise) {
         },
         getAll: function () {
             return apiPromise.get('{0}/dimension-categories'.format(urlPrefix));
+        },
+        getAllLookup: ()=> {
+            let deferred = $q.defer();
+            let dimensionCategories = JSON.parse(localStorage.getItem('dimensionCategories'));
+
+            if (dimensionCategories)
+                $timeout(()=> deferred.resolve(dimensionCategories), 0);
+            else apiPromise.get('{0}/dimension-categories'.format(urlPrefix))
+                .then((result)=> {
+                    localStorage.setItem('dimensionCategories', JSON.stringify(result));
+                    deferred.resolve(result)
+                });
+
+            return deferred.promise;
         },
         getById: function (id) {
             return apiPromise.get('{0}/dimension-categories/{1}'.format(urlPrefix, id));

@@ -1,6 +1,10 @@
 var express = require('express');
 var passport = require('passport');
 var app = require('./express').app;
+var async = require('asyncawait/async');
+var await = require('asyncawait/await');
+var knexService = require('../services/knexService');
+var view = require('../viewModel.assemblers/view.dimensionCategory');
 
 
 var clientTranslation = require('./translate.client.fa.json');
@@ -18,9 +22,13 @@ function checkAuth(req, res, next) {
 app.use(checkAuth);
 
 app.get('/', function (req, res) {
+    var dimensionCategories = await(knexService.select().from('dimensionCategories'));
+    var mappedDimensionCategories = {data: dimensionCategories.asEnumerable().select(view).toArray()};
+
     res.render('index.ejs', {
         clientTranslation: clientTranslation,
-        currentUser: req.user.name
+        currentUser: req.user.name,
+        dimensionCategories: mappedDimensionCategories
     });
 });
 
@@ -64,6 +72,8 @@ var bankApi = require('{0}/api.bank'.format(basePath));
 var chequeApi = require('{0}/api.cheque'.format(basePath));
 var fiscalPeriod = require('{0}/api.fiscalPeriod'.format(basePath));
 var journalTemplateApi = require('{0}/api.journalTemplate'.format(basePath));
+var accoutReviewApi = require('{0}/api.accountReview'.format(basePath));
+var tagApi = require('{0}/api.tag'.format(basePath));
 
 
 app.use('/api', generalLedgerAccountApi);
@@ -78,5 +88,9 @@ app.use('/api', bankApi);
 app.use('/api', chequeApi);
 app.use('/api', fiscalPeriod);
 app.use('/api', journalTemplateApi);
+app.use('/api', accoutReviewApi);
+app.use('/api', tagApi);
+
+app.use('/report', require('{0}/report.journal'.format(basePath)));
 
 

@@ -6,7 +6,8 @@ function subsidiaryLedgerAccountAssembler(entity) {
         generalLedgerAccountId: entity.generalLedgerAccountId,
         code: entity.code,
         title: entity.title,
-        display: '{0} {1}'.format(entity.code, entity.title),
+        display: entity.display,
+        account: entity.account,
         isBankAccount: entity.isBankAccount,
         detailAccountAssignmentStatus: entity.detailAccountAssignmentStatus,
         detailAccountAssignmentStatusDisplay: enums.AssignmentStatus()

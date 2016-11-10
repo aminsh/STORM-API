@@ -1,4 +1,5 @@
-module.exports.getAll = require('./getAll');
+module.exports.getAll = require('./getAll').getAll;
+module.exports.getAllByGeneralLedgerAccount = require('./getAll').getAllByGeneralLedgerAccount;
 module.exports.getById = require('./getById');
 
 module.exports.create = require('./create');

@@ -15,6 +15,10 @@ let detailAccount = {
     all: ()=> '{0}/detail-accounts'.format(rootUrl())
 };
 
+let dimensionCategory = {
+    all: ()=> `${rootUrl()}/dimension-categories`
+};
+
 let dimension = {
     allByCategory: (categoryId)=> '{0}/dimensions/category/{1}'.format(rootUrl(), categoryId)
 };
@@ -34,7 +38,8 @@ let bank = {
 
 let cheque = {
     all: (categoryId)=> '{0}/cheques/category/{1}'.format(rootUrl(), categoryId),
-    allwhites: (categoryId)=> '{0}/cheques/category/{1}/whites'.format(rootUrl(), categoryId)
+    allwhites: (categoryId)=> '{0}/cheques/category/{1}/whites'.format(rootUrl(), categoryId),
+    allUseds: ()=> '{0}/cheques/useds'.format(rootUrl())
 };
 
 let journal = {
@@ -45,19 +50,36 @@ let journal = {
 
 let journalTemplate = {
     getAll: ()=> '{0}/journal-templates'.format(rootUrl())
-}
+};
+
+let accountReview = {
+    getAllGeneralLedgerAccount: ()=> `${rootUrl()}/account-review/general-ledger-account`,
+    getAllSubsidiaryLedgerAccount: ()=> `${rootUrl()}/account-review/subsidiary-ledger-account`,
+    getAllDetailAccount: ()=> `${rootUrl()}/account-review/detail-account`,
+    getAllDimension1: ()=> `${rootUrl()}/account-review/dimension-1`,
+    getAllDimension2: ()=> `${rootUrl()}/account-review/dimension-2`,
+    getAllDimension3: ()=> `${rootUrl()}/account-review/dimension-3`,
+    getAllTiny: ()=> `${rootUrl()}/account-review/tiny`
+};
+
+let tag = {
+    getAll: ()=> `${rootUrl()}/tags`
+};
 
 let apiUrls = {
     generalLedgerAccount: generalLedgerAccount,
     subsidiaryLedgerAccount: subsidiaryLedgerAccount,
     detailAccount: detailAccount,
+    dimensionCategory: dimensionCategory,
     dimension: dimension,
     period: period,
     chequeCategory: chequeCategory,
     bank: bank,
     cheque: cheque,
     journal: journal,
-    journalTemplate: journalTemplate
+    journalTemplate: journalTemplate,
+    accountReview: accountReview,
+    tag: tag
 };
 
 export default apiUrls;

@@ -14,8 +14,6 @@ import './controllers/subsidiaryLedgerAccountsController';
 import './controllers/subsidiaryLedgerAccountCreateController';
 import './controllers/subsidiaryLedgerAccountUpdateController';
 import './controllers/detailAccountsController';
-import './controllers/detailAccountCreateController';
-import './controllers/detailAccountUpdateController';
 import './controllers/dimensionsController';
 import './controllers/journalsController';
 import './controllers/journalUpdateController';
@@ -24,6 +22,8 @@ import './controllers/banksController';
 import './controllers/journalManagementController';
 import './controllers/journalCopy';
 import './controllers/journalTemplatesController';
+import './controllers/accountReviewController';
+import './controllers/accountReviewTurnoverController';
 
 // load apis
 import './apis/generalLedgerAccountApi';
@@ -51,6 +51,9 @@ import './modals/chequeCategroyCreate';
 import './modals/chequeCategroyUpdate';
 import './modals/writeChequeOnJournalLineEntry';
 import './modals/showJournalDetail';
+import './modals/journalAdvnacedSearch';
+import './modals/detailAccountCreate';
+import './modals/detailAccountUpdate';
 
 import './localData/constants';
 
@@ -72,6 +75,8 @@ import './directives/layout';
 import './directives/numeric';
 import './directives/textEditor';
 import './directives/checkbox';
+import './directives/ngKendoGrid';
+import './directives/journalSearchParameters';
 
 //filter
 import './filters/amount';
@@ -88,6 +93,7 @@ import './services/modalBase';
 import './services/routeNavigatorService';
 import './services/translate';
 import './services/prompt';
+import './services/showReport';
 
 accModule.init();
 

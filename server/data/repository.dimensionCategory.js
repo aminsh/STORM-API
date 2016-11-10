@@ -4,7 +4,7 @@ var await = require('asyncawait/await');
 
 var generalLedgerAccountRepository = {
     findById: function (id) {
-        return models.dimensionCategory.findById(id);
+        return db.dimensionCategory.findById(id);
     },
     create: function (entity) {
         return db.dimensionCategory.create(entity);

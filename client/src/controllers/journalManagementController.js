@@ -17,7 +17,8 @@ function journalManagementController($scope, logger, confirm, constants, transla
         current: null,
         selectable: true,
         filterable: false,
-        pageable: false
+        pageable: false,
+        gridSize: '300px'
     };
 
     $scope.canShowJournals = false;

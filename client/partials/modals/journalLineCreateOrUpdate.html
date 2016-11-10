@@ -11,23 +11,19 @@
     <dev-tag-validation-summary errors="errors"></dev-tag-validation-summary>
 
     <form name="form">
-        <div class="col-xs-12">
-
-        </div>
-
-
-        <div class="col-xs-12">
-            <div class="row">
-                <div class="form-group col-xs-4">
+        <div class="col-md-11">
+            <div class="row" style="margin-top: 10px">
+                <div class="col-md-2" style="text-align: left">
                     <label class="label-control">{{'General ledger account' | translate}}</label>
-
+                </div>
+                <div class="col-md-4">
                     <dev-tag-combo-box
                             name="generalLedgerAccountId"
                             id="generalLedgerAccountId"
                             focus-me="generalLedgerAccountShouldBeFocus"
                             k-placeholder="'{{'Select ...'|translate}}'"
                             k-data-value-field="'id'"
-                            k-data-text-field="'title'"
+                            k-data-text-field="'display'"
                             k-data-source="generalLedgerAccountDataSource"
                             k-value-primitive="true"
                             k-filter="'contains'"
@@ -44,9 +40,10 @@
                               class="label label-danger">{{'This field is required'|translate}}</span>
                     </div>
                 </div>
-                <div class="form-group col-xs-4">
+                <div class="col-md-1">
                     <label class="label-control">{{'Subsidiary ledger account' | translate}}</label>
-
+                </div>
+                <div class="col-md-5">
                     <dev-tag-combo-box
                             name="subsidiaryLedgerAccountId"
                             ng-model="journalLine.subsidiaryLedgerAccountId"
@@ -54,7 +51,7 @@
                             k-value-primitive="true"
                             k-placeholder="'{{'Select ...'|translate}}'"
                             k-data-value-field="'id'"
-                            k-data-text-field="'title'"
+                            k-data-text-field="'display'"
                             k-cascade-from="'generalLedgerAccountId'"
                             k-cascade-from-field="'generalLedgerAccountId'"
                             k-data-source="subsidiaryLedgerAccountDataSource"
@@ -85,7 +82,7 @@
                            k-on-change="subsidiaryLedgerAccountSelect(kendoEvent)"
                            k-data-bound="subsidiaryLedgerAccountDataBound"
                            required
-                           style="width: 100%">
+                           style="width: 100%;display:none">
 
                     <div ng-messages="form.subsidiaryLedgerAccountId.$error"
                          ng-if="form.subsidiaryLedgerAccountId.$dirty">
@@ -94,14 +91,14 @@
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div class="col-xs-12">
-            <div class="row">
-                <div class="form-group col-xs-9"
-                     ng-if="journalLine.detailAccount.canShow">
+            <div class="row"
+                 style="margin-top: 10px"
+                 ng-if="journalLine.detailAccount.canShow">
+                <div class="col-md-2" style="text-align: left">
                     <label class="label-control">{{'Detail account' | translate}}</label>
-
+                </div>
+                <div class="col-md-10">
                     <dev-tag-combo-box
                             name="detailAccountId"
                             k-placeholder="'{{'Select ...'|translate}}'"
@@ -121,14 +118,12 @@
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div class="col-xs-12">
-            <div class="row">
-                <div class="form-group col-xs-9"
-                     ng-if="journalLine.dimension1.canShow">
+            <div class="row" style="margin-top: 10px" ng-if="journalLine.dimension1.canShow">
+                <div class="col-md-2" style="text-align: left">
                     <label class="label-control">{{dimensionCategories[0].title}}</label>
-
+                </div>
+                <div class="col-md-10">
                     <dev-tag-combo-box
                             name="dimension1Id"
                             k-placeholder="'{{'Select ...'|translate}}'"
@@ -148,14 +143,12 @@
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div class="col-xs-12">
-            <div class="row">
-                <div class="form-group col-xs-9"
-                     ng-if="journalLine.dimension2.canShow">
+            <div class="row" style="margin-top: 10px" ng-if="journalLine.dimension2.canShow">
+                <div class="col-md-2" style="text-align: left">
                     <label class="label-control">{{dimensionCategories[1].title}}</label>
-
+                </div>
+                <div class="col-md-10">
                     <dev-tag-combo-box
                             name="dimension2Id"
                             k-placeholder="'{{'Select ...'|translate}}'"
@@ -175,14 +168,12 @@
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div class="col-xs-12">
-            <div class="row">
-                <div class="form-group col-xs-9"
-                     ng-if="journalLine.dimension3.canShow">
+            <div class="row" style="margin-top: 10px" ng-if="journalLine.dimension3.canShow">
+                <div class="col-md-2" style="text-align: left">
                     <label class="label-control">{{dimensionCategories[2].title}}</label>
-
+                </div>
+                <div class="col-md-10">
                     <dev-tag-combo-box
                             name="dimension3Id"
                             k-placeholder="'{{'Select ...'|translate}}'"
@@ -202,24 +193,19 @@
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div class="col-xs-12">
-            <div class="row">
-                <div class="form-group col-xs-6">
+            <div class="row" style="margin-top: 10px">
+                <div class="col-md-2" style="text-align: left">
                     <label class="label-control">{{'Article' | translate}}</label>
-                    <textarea type="text" class="form-control" ng-model="journalLine.description"
-                              name="description"></textarea>
+                </div>
+                <div class="col-md-10">
+                    <textarea class="form-control" ng-model="journalLine.article"
+                              name="article"></textarea>
                 </div>
             </div>
-        </div>
 
-        <div class="col-xs-12">
-            <div class="row">
-
-
-                <div class="col-xs-2">
-
+            <div class="row" style="margin-top: 10px">
+                <div class="col-md-2" style="text-align: left">
                     <div class="btn-group-vertical">
                         <button
                                 ng-click="changeAmountBalance()"
@@ -235,33 +221,29 @@
                         </button>
                     </div>
                 </div>
-
-                <div class="form-group col-xs-4">
-                    <label ng-if="journalLine.balanceType == 'debtor'" class="label-control">{{'Debtor' |
-                        translate}}</label>
-                    <label ng-if="journalLine.balanceType == 'creditor'" class="label-control">{{'Creditor' |
-                        translate}}</label>
-                    <label ng-if="journalLine.balanceType == ''" class="label-control">{{'Choose debtor or creditor' |
-                        translate}}</label>
+                <div class="col-md-5">
                     <dev-tag-numeric
                             ng-model="journalLine.amount"
-                            ng-disabled="journalLine.balanceType == ''"
-                            style="width: 100%"
+                            style="width: 100%;margin-top: 19px;"
                             name="amount"
                             required
-                            not-zero></dev-tag-numeric>
+                            not-zero
+                            popover="{{'Choose debtor or creditor'|translate}}"
+                            popover-trigger="focus" class="form-control"
+                            popover-placement="left"
+                            popover-enable="journalLine.balanceType == ''"></dev-tag-numeric>
 
                     <div ng-messages="form.amount.$error" ng-if="form.amount.$dirty">
                         <span ng-message="required"
                               class="label label-danger">{{'This field is required'|translate}}</span>
                         <span ng-message="notZero" class="label label-danger">{{'This field should have a value not equal to zero'|translate}}</span>
                     </div>
-
-                    <h3 class="pull-left">
+                </div>
+                <div class="col-md-5">
+                    <h3>
                         <span class="label label-default">{{journalLine.amount|amount}}</span>
                     </h3>
                 </div>
-
             </div>
         </div>
     </form>

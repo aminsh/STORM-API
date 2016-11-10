@@ -3,6 +3,7 @@ var await = require('asyncawait/await');
 var string = require('../../utilities/string');
 var translate = require('../../services/translateService');
 var repository = require('../../data/repository.journalLine');
+var journalRepository = require('../../data/repository.journal');
 var fiscalPeriodRepository = require('../../data/repository.fiscalPeriod');
 var persianDateSerivce = require('../../services/persianDateService');
 
@@ -38,6 +39,7 @@ function create(req, res) {
     };
 
     entity = await(repository.create(entity));
+    await(journalRepository.checkIsComplete(cmd.journalId));
 
     return res.json({
         isValid: true,

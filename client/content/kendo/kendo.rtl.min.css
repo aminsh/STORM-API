@@ -1,10 +1,26 @@
-/*
-* Kendo UI v2015.3.930 (http://www.telerik.com/kendo-ui)
-* Copyright 2015 Telerik AD. All rights reserved.
-*
-* Kendo UI commercial licenses may be obtained at
-* http://www.telerik.com/purchase/license-agreement/kendo-ui-complete
-* If you do not own a commercial license, this file shall be governed by the trial license terms.
+/** 
+ * Kendo UI v2016.2.607 (http://www.telerik.com/kendo-ui)                                                                                                                                               
+ * Copyright 2016 Telerik AD. All rights reserved.                                                                                                                                                      
+ *                                                                                                                                                                                                      
+ * Kendo UI commercial licenses may be obtained at                                                                                                                                                      
+ * http://www.telerik.com/purchase/license-agreement/kendo-ui-complete                                                                                                                                  
+ * If you do not own a commercial license, this file shall be governed by the trial license terms.                                                                                                      
+                                                                                                                                                                                                       
+                                                                                                                                                                                                       
+                                                                                                                                                                                                       
+                                                                                                                                                                                                       
+                                                                                                                                                                                                       
+                                                                                                                                                                                                       
+                                                                                                                                                                                                       
+                                                                                                                                                                                                       
+                                                                                                                                                                                                       
+                                                                                                                                                                                                       
+                                                                                                                                                                                                       
+                                                                                                                                                                                                       
+                                                                                                                                                                                                       
+                                                                                                                                                                                                       
+                                                                                                                                                                                                       
+
 */
 .k-rtl {
     direction: rtl
@@ -20,7 +36,7 @@
     margin-left: .2rem
 }
 
-.k-rtl .k-dropdown-wrap, .k-rtl .k-picker-wrap, .k-rtl .k-numeric-wrap {
+.k-rtl .k-dropdown-wrap, .k-rtl .k-numeric-wrap, .k-rtl .k-picker-wrap {
     padding-right: 0;
     padding-left: 1.9em
 }
@@ -34,13 +50,13 @@
     padding-left: 3.8em
 }
 
-.k-rtl span.k-picker-wrap .k-select, .k-rtl .k-numeric-wrap .k-select, .k-rtl .k-dropdown-wrap .k-select {
+.k-rtl .k-dropdown-wrap .k-select, .k-rtl .k-numeric-wrap .k-select, .k-rtl span.k-picker-wrap .k-select {
     right: auto;
     left: 0;
     border-width: 0 1px 0 0
 }
 
-.k-rtl .k-dropdown-wrap .k-input, .k-rtl .k-picker-wrap .k-input, .k-rtl .k-numeric-wrap .k-input {
+.k-rtl .k-dropdown-wrap .k-input, .k-rtl .k-numeric-wrap .k-input, .k-rtl .k-picker-wrap .k-input {
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
     border-top-right-radius: 4px;
@@ -129,7 +145,7 @@
     float: left
 }
 
-.k-rtl .k-toolbar-wrap, .k-rtl .k-tile {
+.k-rtl .k-tile, .k-rtl .k-toolbar-wrap {
     float: right
 }
 
@@ -138,7 +154,7 @@
     margin: 4px 4px 0 10px
 }
 
-.k-rtl .k-imagebrowser .k-state-hover .k-i-arrow-e, .k-rtl .k-imagebrowser .k-button:hover .k-i-arrow-e {
+.k-rtl .k-imagebrowser .k-button:hover .k-i-arrow-e, .k-rtl .k-imagebrowser .k-state-hover .k-i-arrow-e {
     background-position: -16px -48px
 }
 
@@ -146,12 +162,12 @@
     float: right
 }
 
-.k-rtl div.k-grid-header, .k-rtl div.k-grid-footer {
+.k-rtl div.k-grid-footer, .k-rtl div.k-grid-header {
     padding-right: 0;
     padding-left: 17px
 }
 
-.k-rtl .k-grid-header-wrap, .k-rtl .k-grid-footer-wrap {
+.k-rtl .k-grid-footer-wrap, .k-rtl .k-grid-header-wrap {
     border-width: 0
 }
 
@@ -164,7 +180,7 @@
     padding-right: .6em
 }
 
-.k-rtl .k-grid-header .k-header:first-child, .k-rtl .k-filter-row th:first-child, .k-rtl .k-grid tbody td:first-child, .k-rtl .k-grid tfoot td:first-child {
+.k-rtl .k-filter-row th:first-child, .k-rtl .k-grid tbody td:first-child, .k-rtl .k-grid tfoot td:first-child, .k-rtl .k-grid-header .k-header:first-child {
     border-left-width: 1px
 }
 
@@ -190,12 +206,12 @@
     border-right-width: 1px
 }
 
-.k-rtl .k-grid-header-locked, .k-rtl .k-grid-content-locked {
+.k-rtl .k-grid-content-locked, .k-rtl .k-grid-header-locked {
     border-width: 0
 }
 
 .k-rtl .k-grid-header .k-with-icon .k-link {
-    margin-right: -0.6em;
+    margin-right: -.6em;
     margin-left: 1.3em
 }
 
@@ -219,7 +235,7 @@
     left: 2.5em
 }
 
-.k-rtl .k-edit-label, .k-rtl .k-edit-form-container .editor-label {
+.k-rtl .k-edit-form-container .editor-label, .k-rtl .k-edit-label {
     float: right;
     clear: both;
     margin-left: 0;
@@ -234,7 +250,7 @@
     margin-left: 2%
 }
 
-.k-rtl .k-edit-field > input[type="checkbox"]:first-child, .k-rtl .k-edit-field > input[type="radio"]:first-child, .k-rtl .k-edit-field > label:first-child > input[type="checkbox"], .k-rtl .k-edit-field > .k-button:first-child {
+.k-rtl .k-edit-field > .k-button:first-child, .k-rtl .k-edit-field > input[type=checkbox]:first-child, .k-rtl .k-edit-field > input[type=radio]:first-child, .k-rtl .k-edit-field > label:first-child > input[type=checkbox] {
     margin-right: 0
 }
 
@@ -243,15 +259,15 @@
 }
 
 .k-rtl .k-dirty {
-    border-color: #f00 #f00 transparent transparent;
-    margin: -0.45em -0.6em 0 0
+    border-color: red red transparent transparent;
+    margin: -.45em -.6em 0 0
 }
 
 .k-rtl .k-pager-info, .k-rtl .k-pager-wrap .k-pager-refresh {
     float: left
 }
 
-.k-rtl .k-pager-wrap > .k-link, .k-rtl .k-pager-wrap .k-pager-numbers, .k-rtl .k-pager-numbers li, .k-rtl .k-pager-input {
+.k-rtl .k-pager-input, .k-rtl .k-pager-numbers li, .k-rtl .k-pager-wrap .k-pager-numbers, .k-rtl .k-pager-wrap > .k-link {
     float: right
 }
 
@@ -300,7 +316,7 @@
     border-bottom-right-radius: 4px
 }
 
-.k-rtl .k-gantt-rows, .k-rtl .k-gantt-columns, .k-rtl .k-gantt-dependencies {
+.k-rtl .k-gantt-columns, .k-rtl .k-gantt-dependencies, .k-rtl .k-gantt-rows {
     left: auto;
     right: 0
 }
@@ -414,7 +430,7 @@
     left: 4px
 }
 
-.k-rtl .k-panelbar-expand, .k-rtl .k-panelbar-collapse {
+.k-rtl .k-panelbar-collapse, .k-rtl .k-panelbar-expand {
     right: auto;
     left: 2px
 }
@@ -442,7 +458,7 @@
     float: right
 }
 
-.k-rtl .k-scheduler-toolbar > ul > li, .k-rtl .k-scheduler-footer > ul > li {
+.k-rtl .k-scheduler-footer > ul > li, .k-rtl .k-scheduler-toolbar > ul > li {
     border-width: 1px 0 1px 1px
 }
 
@@ -455,7 +471,7 @@
     margin-left: .6em
 }
 
-.k-rtl .k-scheduler-toolbar .k-i-calendar, .k-rtl .k-scheduler-footer .k-icon {
+.k-rtl .k-scheduler-footer .k-icon, .k-rtl .k-scheduler-toolbar .k-i-calendar {
     margin-right: 0;
     margin-left: 6px
 }
@@ -469,12 +485,12 @@
     text-align: left
 }
 
-.k-rtl .k-scheduler-table td, .k-rtl .k-scheduler-header th {
+.k-rtl .k-scheduler-header th, .k-rtl .k-scheduler-table td {
     border-left-width: 0;
     border-right-width: 1px
 }
 
-.k-rtl .k-scheduler-table td:first-child, .k-rtl .k-scheduler-header th:first-child {
+.k-rtl .k-scheduler-header th:first-child, .k-rtl .k-scheduler-table td:first-child {
     border-right-width: 0
 }
 
@@ -530,7 +546,7 @@
     margin-right: 4px
 }
 
-.k-rtl .k-event .k-event-top-actions, .k-rtl .k-event .k-event-bottom-actions {
+.k-rtl .k-event .k-event-bottom-actions, .k-rtl .k-event .k-event-top-actions {
     left: auto;
     right: 0
 }
@@ -580,7 +596,7 @@
     margin-left: 0
 }
 
-.k-rtl .k-scheduler-agendaview .k-scheduler-table th, .k-rtl .k-scheduler-agendaview .k-scheduler-table td {
+.k-rtl .k-scheduler-agendaview .k-scheduler-table td, .k-rtl .k-scheduler-agendaview .k-scheduler-table th {
     text-align: right
 }
 
@@ -637,7 +653,7 @@
     left: 0
 }
 
-.k-rtl .k-slider-horizontal .k-slider-track, .k-rtl .k-slider-horizontal .k-slider-selection {
+.k-rtl .k-slider-horizontal .k-slider-selection, .k-rtl .k-slider-horizontal .k-slider-track {
     left: auto;
     right: 0
 }
@@ -651,7 +667,7 @@
     background-position: 0 -16px
 }
 
-.k-rtl .k-slider .k-state-hover .k-i-arrow-w, .k-rtl .k-slider .k-button:hover .k-i-arrow-w, .k-rtl .k-slider .k-textbox:hover .k-i-arrow-w, .k-rtl .k-slider .k-button:active .k-i-arrow-w {
+.k-rtl .k-slider .k-button:active .k-i-arrow-w, .k-rtl .k-slider .k-button:hover .k-i-arrow-w, .k-rtl .k-slider .k-state-hover .k-i-arrow-w, .k-rtl .k-slider .k-textbox:hover .k-i-arrow-w {
     background-position: -16px -16px
 }
 
@@ -659,16 +675,16 @@
     background-position: 0 -48px
 }
 
-.k-rtl .k-slider .k-state-hover .k-i-arrow-e, .k-rtl .k-slider .k-button:hover .k-i-arrow-e, .k-rtl .k-slider .k-button:active .k-i-arrow-e, .k-rtl .k-slider .k-button:active .k-i-arrow-e {
+.k-rtl .k-slider .k-button:active .k-i-arrow-e, .k-rtl .k-slider .k-button:hover .k-i-arrow-e, .k-rtl .k-slider .k-state-hover .k-i-arrow-e {
     background-position: -16px -48px
 }
 
-.k-rtl .k-tabstrip-items .k-item, .k-rtl .k-panelbar .k-tabstrip-items .k-item {
+.k-rtl .k-panelbar .k-tabstrip-items .k-item, .k-rtl .k-tabstrip-items .k-item {
     margin-left: -1px;
     margin-right: 0
 }
 
-.k-rtl .k-tabstrip-items .k-item .k-image, .k-rtl .k-tabstrip-items .k-item .k-sprite, .k-rtl .k-panelbar .k-tabstrip-items .k-item .k-image, .k-rtl .k-panelbar .k-tabstrip-items .k-item .k-sprite {
+.k-rtl .k-panelbar .k-tabstrip-items .k-item .k-image, .k-rtl .k-panelbar .k-tabstrip-items .k-item .k-sprite, .k-rtl .k-tabstrip-items .k-item .k-image, .k-rtl .k-tabstrip-items .k-item .k-sprite {
     margin: -3px -6px 0 3px
 }
 
@@ -708,12 +724,12 @@
     padding: 0 16px 0 0
 }
 
-.k-rtl .k-treeview .k-plus, .k-rtl .k-treeview .k-minus, .k-rtl .k-treeview .k-plus-disabled, .k-rtl .k-treeview .k-minus-disabled {
+.k-rtl .k-treeview .k-minus, .k-rtl .k-treeview .k-minus-disabled, .k-rtl .k-treeview .k-plus, .k-rtl .k-treeview .k-plus-disabled {
     margin-left: 0;
     margin-right: -16px
 }
 
-.k-rtl .k-treeview .k-sprite, .k-rtl .k-treeview .k-image {
+.k-rtl .k-treeview .k-image, .k-rtl .k-treeview .k-sprite {
     margin-right: 0;
     margin-left: 3px
 }
@@ -757,3 +773,5 @@
     right: auto;
     left: .5em
 }
+
+/*# sourceMappingURL=kendo.rtl.min.css.map */

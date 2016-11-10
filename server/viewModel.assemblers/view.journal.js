@@ -4,6 +4,7 @@ function journalView(entity) {
 
     var viewModel = {
         id: entity.id,
+        isInComplete: entity.isInComplete,
         temporaryNumber: entity.temporaryNumber,
         temporaryDate: entity.temporaryDate,
         number: entity.number,
@@ -15,7 +16,9 @@ function journalView(entity) {
         journalTypeDisplay: entity.journalType
             ? enums.JournalType().getDisplay(entity.journalType)
             : '',
+        tagIds: entity.tagIds,
         attachmentFileName: entity.attachmentFileName,
+        createdBy: entity.createdBy,
         sumDebtor: entity.sumDebtor,
         sumCreditor: entity.sumCreditor
     };

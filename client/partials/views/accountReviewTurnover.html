@@ -1,0 +1,44 @@
+<div class="panel panel-primary" style="border:0;">
+    <div class="panel-heading">
+        <h3 class="panel-title">
+            {{title}}
+
+            <span ng-repeat="p in titleParameters">
+                -
+                <span ng-if="$index == 0">(</span>
+
+                <span>{{p.name}}</span>
+                <span ng-if="p.value">
+                    <i class="glyphicon glyphicon-arrow-left"></i>
+                    {{p.value}}
+                </span>
+
+                <span ng-if="$index == titleParameters.length -1">)</span>
+            </span>
+        </h3>
+    </div>
+    <div class="panel-body content-panel-body">
+        <dev-tag-button
+                ng-repeat="a in commands"
+                ng-click="execute(a.key)"
+                title="{{a.display}}"
+                ng-disabled="!current"
+                style-type="default"></dev-tag-button>
+
+        <dev-tag-button
+                ng-if="reportName == 'tiny'"
+                ng-click="showJournal()"
+                title="{{'Show journal detail' | translate}}"
+                ng-disabled="!current"
+                style-type="default"></dev-tag-button>
+
+        <dev-tag-button
+                title="{{'Print' | translate}}"
+                icon="glyphicon glyphicon-print"
+                style-type="default"></dev-tag-button>
+
+        <dev-tag-grid
+                option="gridOption"
+                on-current-changed="onCurrentChanged(current)"></dev-tag-grid>
+    </div>
+</div>

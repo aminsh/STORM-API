@@ -49,11 +49,13 @@
 
 <script>
     require('js-helper');
-    window.jQuery = require('jquery');
+    window.jQuery = window.$ = require('jquery');
     require('JalaliDate');
+    window.JSZip = require('jszip');
 
     localStorage.setItem('translate', '<%- JSON.stringify(clientTranslation) %>');
     localStorage.setItem('currentUser', '<%- currentUser %>');
+    localStorage.setItem('dimensionCategories', '<%- JSON.stringify(dimensionCategories) %>');
 </script>
 
 <script src="client/dist/acc.bundle.js"></script>

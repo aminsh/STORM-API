@@ -9,6 +9,9 @@ module.exports = function (sequelize, DataTypes) {
         lastPageNumber: {
             type: DataTypes.STRING
         },
+        receivedOn: {
+            type: DataTypes.STRING
+        },
         isClosed: {
             type: DataTypes.BOOLEAN
         }

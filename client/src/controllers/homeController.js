@@ -1,6 +1,7 @@
 import accModule from '../acc.module';
 
-function homeController($scope, $timeout, $route, $rootScope, constants, logger, $cookies) {
+function homeController($scope, $timeout, $route, $rootScope, constants, logger, $cookies,
+                        journalAdvancedSearchModalService) {
     $scope.current = {
         fiscalPeriod: parseInt($cookies.get('current-period')),
         mode: $cookies.get('current-mode')
@@ -39,6 +40,10 @@ function homeController($scope, $timeout, $route, $rootScope, constants, logger,
 
         let modeDisplay = constants.enums.AccMode().getDisplay($scope.current.mode);
         $rootScope.$emit('currentModeChanged', modeDisplay);
+    };
+
+    $scope.search = ()=> {
+        journalAdvancedSearchModalService.show();
     };
 }
 
