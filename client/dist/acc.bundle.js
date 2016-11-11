@@ -1473,7 +1473,7 @@
                 }].concat(amountColumns),
                 commands: [],
                 readUrl: constants.urls.accountReview.getAllGeneralLedgerAccount(),
-                selectable: true
+                selectable: 'multiple cell'
             };
 
             options.subsidiaryLedgerAccount = {
@@ -2716,6 +2716,7 @@
                     }
                 }],
                 readUrl: journalApi.url.getAll,
+                selectable: 'multiple cell',
                 dataMapper: function dataMapper(result) {
                     var data = result.data.asEnumerable().select(function (d) {
 
