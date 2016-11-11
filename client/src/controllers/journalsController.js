@@ -47,6 +47,7 @@ function journalsController($scope, translate, journalApi, navigate, logger,
             }
         ],
         readUrl: journalApi.url.getAll,
+        selectable: 'multiple cell',
         dataMapper: (result) => {
             let data = result.data.asEnumerable().select(d=> {
 

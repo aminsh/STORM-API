@@ -1,6 +1,7 @@
 var path = require('path');
 var rootPath = path.normalize(__dirname + '/../../');
 
+
 var environment = {
     development: {
         rootPath: rootPath,
@@ -13,7 +14,7 @@ var environment = {
             client: 'pg'
         },
         port: process.env.PORT || 1000,
-        messageQueue: 'none'
+        reportPath: path.normalize('{0}/server/report.templates'.format(rootPath)),
     },
     production: {
         rootPath: rootPath,
@@ -32,8 +33,7 @@ var environment = {
             //url: 'postgres://jkfhhrhedmzpnt:G0CXzLu0uLzP3jTUNLUODI2bTo@ec2-54-235-246-220.compute-1.amazonaws.com:5432/d4cd8gk58c0i7d'
         },
         port: process.env.PORT || 1001,
-        clientUrl: '',
-        messageQueue: 'none'
+        reportPath: path.normalize('{0}/server/report.templates'.format(rootPath))
     }
 };
 

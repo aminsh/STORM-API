@@ -1,0 +1,17 @@
+{
+  "format": "A4",
+  "orientation": "portrait",
+  "header": {
+    "height": "45mm",
+    "contents": {}
+  },
+  "footer": {
+    "height": "28mm",
+    "contents": {
+      "default": ""
+    }
+  },
+  "httpHeaders": {
+    "Content-Type": "application/pdf"
+  }
+}

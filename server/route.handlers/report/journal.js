@@ -1,32 +1,35 @@
 var knexService = require('../../services/knexService');
 var async = require('asyncawait/async');
 var await = require('asyncawait/await');
-var ejs = require('ejs');
-var fs = require("fs");
-var pdf = require('html-pdf');
+
 var translate = require('../../services/translateService');
+var config = require('../../config/config');
+var path = require('path');
+
+var pdfService = require('../../services/pdfService');
 
 function html(req, res) {
     var id = req.params.id;
 
     var data = await(query(id));
+    data.root = "file:///{0}".format(config.rootPath);
 
     res.render('report.journal.ejs', data);
 }
 
-function pdfRender(req, res) {
+/*function pdfRender(req, res) {
     var id = req.params.id;
 
     var data = await(query(id));
 
-    var template = fs.readFileSync('../server/views/report.journal.ejs', 'utf8');
+ data.root = "file:///{0}".format(config.rootPath);
 
-    var html = ejs.render(template, data);
+ //var template = fs.readFileSync('../server/views/report.journal.ejs', 'utf8');
+
+ var html = ejs.renderFile(path.normalize('{0}/server/views/report.journal.ejs'.format(config.rootPath)), data);
+ ejs.render()
 
     var options = {
-        /*"height": "10.5in",        // allowed units: mm, cm, in, px
-         "width": "8in",*/
-
         "format": "A4",        // allowed units: A3, A4, A5, Legal, Letter, Tabloid
         "orientation": "portrait",
 
@@ -59,6 +62,13 @@ function pdfRender(req, res) {
     });
 
 
+ }*/
+
+function journal(req, res) {
+    var id = req.params.id;
+    var result = await(query(id));
+
+    pdfService('report.journal.ejs', result, {reportTitle: translate('Report title')}, req, res);
 }
 
 var query = async(function (id) {
@@ -117,4 +127,4 @@ var query = async(function (id) {
 });
 
 module.exports.html = async(html);
-module.exports.pdf = async(pdfRender);
+module.exports.pdf = async(journal);
