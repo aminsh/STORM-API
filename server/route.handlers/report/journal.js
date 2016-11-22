@@ -1,74 +1,36 @@
 var knexService = require('../../services/knexService');
 var async = require('asyncawait/async');
 var await = require('asyncawait/await');
-
-var translate = require('../../services/translateService');
-var config = require('../../config/config');
+var fs = require("fs");
 var path = require('path');
 
-var pdfService = require('../../services/pdfService');
-
-function html(req, res) {
-    var id = req.params.id;
-
-    var data = await(query(id));
-    data.root = "file:///{0}".format(config.rootPath);
-
-    res.render('report.journal.ejs', data);
-}
-
-/*function pdfRender(req, res) {
-    var id = req.params.id;
-
-    var data = await(query(id));
-
- data.root = "file:///{0}".format(config.rootPath);
-
- //var template = fs.readFileSync('../server/views/report.journal.ejs', 'utf8');
-
- var html = ejs.renderFile(path.normalize('{0}/server/views/report.journal.ejs'.format(config.rootPath)), data);
- ejs.render()
-
-    var options = {
-        "format": "A4",        // allowed units: A3, A4, A5, Legal, Letter, Tabloid
-        "orientation": "portrait",
-
-        "header": {
-            "height": "45mm",
-            "contents": '<div style="text-align: center;">' +
-            '<h1>{0}</h1>'.format(translate('Report organization title')) +
-            '<h2>{0}</h2>'.format(translate('Report department title')) +
-            '<h3>{0}</h3>'.format(translate('Report title')) +
-            '</div>'
-        },
-
-        "footer": {
-            "height": "28mm",
-            "contents": {
-                first: 'Cover page',
-                2: 'Second page', // Any page number is working. 1-based index
-                default: '<span style="color: #444;">{{page}}</span>/<span>{{pages}}</span>', // fallback value
-                last: 'Last Page'
-            }
-        },
-
-
-    };
-
-    res.setHeader('Content-Type', 'application/pdf');
-
-    pdf.create(html, options).toStream(function (err, stream) {
-        stream.pipe(res);
-    });
-
-
- }*/
+var fonts = fs.readdirSync(__dirname + '/../../../client/fonts')
+    .filter(function (fileName) {
+        return path.extname(fileName) == '.ttf';
+    }).asEnumerable().select(function (fileName) {
+        return {
+            fileName: fileName,
+            name: path.basename(fileName, '.ttf')
+        }
+    }).toArray();
 
 function journal(req, res) {
     var id = req.params.id;
-    var result = await(query(id));
 
-    pdfService('report.journal.ejs', result, {reportTitle: translate('Report title')}, req, res);
+    var data = await(query(id));
+
+    res.render('report.journal.ejs', {
+        reportData: data,
+        fonts: fonts
+    });
+}
+
+function json(req, res) {
+    var id = req.params.id;
+
+    var data = await(query(id));
+
+    res.json(data);
 }
 
 var query = async(function (id) {
@@ -116,15 +78,16 @@ var query = async(function (id) {
         .orderBy('journalLines.row')
         .where('journalId', id));
 
-    journal.journalLines = journalLines;
-
-    var dimension1Title = await(knexService.select().from('dimensionCategories').orderBy('id').limit(1))[0].title;
+    var dimensionCategories = await(knexService.select().from('dimensionCategories').orderBy('id'));
 
     return {
         journal: journal,
-        dimension1Title: dimension1Title
+        journalLines: journalLines,
+        dimension1Title: dimensionCategories[0].title,
+        dimension2Title: dimensionCategories[1].title,
+        dimension3Title: dimensionCategories[2].title
     }
 });
 
-module.exports.html = async(html);
-module.exports.pdf = async(journal);
+module.exports.journal = async(journal);
+module.exports.json = async(json);

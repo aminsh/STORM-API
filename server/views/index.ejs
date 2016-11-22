@@ -7,15 +7,15 @@
 
     <title></title>
 
-    <link href="client/content/bootstrap/bootstrap.min.css" rel="stylesheet"/>
-    <link href="client/content/bootstrap/bootstrap-rtl.min.css" rel="stylesheet"/>
-    <link href="client/content/kendo/kendo.common.min.css" rel="stylesheet"/>
-    <link href="client/content/kendo/kendo.bootstrap.min.css" rel="stylesheet"/>
-    <link href="client/content/kendo/kendo.rtl.min.css" rel="stylesheet"/>
-    <link href="client/content/sweetalert.css" rel="stylesheet"/>
+    <link href="client/content/bootstrap/bootstrap.min.css?v=<%- version.css %>" rel="stylesheet"/>
+    <link href="client/content/bootstrap/bootstrap-rtl.min.css?v=<%- version.css %>" rel="stylesheet"/>
+    <link href="client/content/kendo/kendo.common.min.css?v=<%- version.css %>" rel="stylesheet"/>
+    <link href="client/content/kendo/kendo.bootstrap.min.css?v=<%- version.css %>" rel="stylesheet"/>
+    <link href="client/content/kendo/kendo.rtl.min.css?v=<%- version.css %>" rel="stylesheet"/>
+    <link href="client/content/sweetalert.css?v=<%- version.css %>" rel="stylesheet"/>
 
-    <link href="client/content/fonts.min.css" rel="stylesheet"/>
-    <link href="client/content/styles.css" rel="stylesheet"/>
+    <link href="client/content/fonts.min.css?v=<%- version.css %>" rel="stylesheet"/>
+    <link href="client/content/styles.css?v=<%- version.css %>" rel="stylesheet"/>
 </head>
 <body class="k-rtl">
 <div data-ng-controller="shellController">
@@ -45,7 +45,7 @@
 </body>
 </html>
 
-<script src="client/dist/vendor.bundle.min.js"></script>
+<script src="client/dist/vendor.bundle.min.js?v=<%- version.vendor %>"></script>
 
 <script>
     require('js-helper');
@@ -58,5 +58,5 @@
     localStorage.setItem('dimensionCategories', '<%- JSON.stringify(dimensionCategories) %>');
 </script>
 
-<script src="client/dist/acc.bundle.js"></script>
-<script src="client/dist/acc.template.bundle.js"></script>
+<script src="client/dist/acc.bundle.js?v=<%- version.acc %>"></script>
+<script src="client/dist/acc.template.bundle.js?v=<%- version.template %>"></script>

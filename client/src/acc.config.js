@@ -5,6 +5,7 @@ import  './config/route.config';
 import  './config/menu.config.js';
 import  './config/translate.config';
 import './config/gridFilterCellTypeConfig';
+import './config/authConfig';
 
 //load controllers
 import './controllers/shellController';

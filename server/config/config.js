@@ -15,6 +15,12 @@ var environment = {
         },
         port: process.env.PORT || 1000,
         reportPath: path.normalize('{0}/server/report.templates'.format(rootPath)),
+        version: {
+            vendor: '1.0.0',
+            acc: '1.0.0',
+            css: '1.0.0',
+            template: '1.0.0'
+        }
     },
     production: {
         rootPath: rootPath,
@@ -33,7 +39,13 @@ var environment = {
             //url: 'postgres://jkfhhrhedmzpnt:G0CXzLu0uLzP3jTUNLUODI2bTo@ec2-54-235-246-220.compute-1.amazonaws.com:5432/d4cd8gk58c0i7d'
         },
         port: process.env.PORT || 1001,
-        reportPath: path.normalize('{0}/server/report.templates'.format(rootPath))
+        reportPath: path.normalize('{0}/server/report.templates'.format(rootPath)),
+        version: {
+            vendor: '1.0.0',
+            acc: '1.0.0',
+            css: '1.0.0',
+            template: '1.0.0'
+        }
     }
 };
 

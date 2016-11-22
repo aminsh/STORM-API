@@ -54,6 +54,10 @@ accModule.config($routeProvider => {
             controller: 'journalUpdateController',
             templateUrl: 'partials/views/journalUpdate.html'
         })
+        .when('/journal/:id/print', {
+            controller: 'journalPrintController',
+            templateUrl: 'partials/views/journalPrint.html'
+        })
         .when('/journal-management', {
             controller: 'journalManagementController',
             templateUrl: 'partials/views/journalManagement.html'

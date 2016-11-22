@@ -7,6 +7,7 @@ var multer = require('multer');
 var favicon = require('serve-favicon');
 var cors = require('cors');
 var flash = require('connect-flash');
+var persianDateService = require('../services/persianDateService');
 
 var onUserConnectedMiddleware = require('./../middlewares/middleware.onUserConnected');
 var onExceptionErrorMiddleware = require('./../middlewares/middleware.onExceptionError');
@@ -30,6 +31,16 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
+
+app.use(function (req, res, next) {
+    res.locals = {
+        isAuthenticated: req.isAuthenticated(),
+        user: req.isAuthenticated() ? req.user : null,
+        today: persianDateService.current()
+    };
+
+    next();
+});
 
 app.set('views', config.rootPath + '/server/views');
 app.engine('html', require('ejs').renderFile);
