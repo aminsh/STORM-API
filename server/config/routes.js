@@ -5,6 +5,7 @@ var async = require('asyncawait/async');
 var await = require('asyncawait/await');
 var knexService = require('../services/knexService');
 var view = require('../viewModel.assemblers/view.dimensionCategory');
+var config = require('./config');
 
 
 var clientTranslation = require('./translate.client.fa.json');
@@ -28,7 +29,8 @@ app.get('/', function (req, res) {
     res.render('index.ejs', {
         clientTranslation: clientTranslation,
         currentUser: req.user.name,
-        dimensionCategories: mappedDimensionCategories
+        dimensionCategories: mappedDimensionCategories,
+        version: config.version
     });
 });
 
@@ -92,5 +94,6 @@ app.use('/api', accoutReviewApi);
 app.use('/api', tagApi);
 
 app.use('/report', require('{0}/report.journal'.format(basePath)));
+app.use('/report', require('{0}/report.designer'.format(basePath)));
 
 
