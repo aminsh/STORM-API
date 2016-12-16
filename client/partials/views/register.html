@@ -1,0 +1,125 @@
+<dev-tag-content title="{{'Register'|translate}}" width="300px">
+    <form name="form" ng-submit="model.register(form)" novalidate>
+        <div class="form-group has-feedback"
+             ng-class="{ 'has-error' : form.name.$invalid && form.name.$dirty }">
+            <label class="label-control">{{'Name'|translate}}</label>
+            <input
+                    type="text"
+                    class="form-control input-lg"
+                    name="name"
+                    ng-model="model.user.name"
+                    required
+                    minlength="3"
+            />
+
+            <span class="glyphicon glyphicon-user form-control-feedback" aria-hidden="true"></span>
+
+            <div ng-messages="form.name.$error" ng-if="form.name.$dirty">
+                <label
+                        ng-message="required"
+                        class="help-block">{{'This field is required'|translate}}
+                </label>
+                <label
+                        ng-message="minlength"
+                        class="help-block">{{'This field should be at least 3 character'|translate}}
+                </label>
+            </div>
+        </div>
+
+        <div class="form-group has-feedback"
+             ng-class="{ 'has-error' : form.email.$invalid && form.email.$dirty }">
+            <label class="label-control">{{'Email'|translate}}</label>
+            <input
+                    type="email"
+                    class="form-control input-lg"
+                    name="email"
+                    ng-model="model.user.email"
+                    required
+                    ng-pattern="/^[a-z]+[a-z0-9._]+@[a-z]+\.[a-z.]{2,5}$/"
+                    unique-email
+            />
+
+            <span class="glyphicon glyphicon-envelope form-control-feedback" aria-hidden="true"></span>
+
+            <div ng-messages="form.email.$error" ng-if="form.email.$dirty">
+                <label
+                        ng-message="required"
+                        class="help-block">{{'This field is required'|translate}}
+                </label>
+                <label
+                        ng-message="pattern"
+                        class="help-block">{{'Email format is not correct'|translate}}
+                </label>
+                <label
+                        ng-message="unique"
+                        class="help-block">{{'The username is duplicated'|translate}}
+                </label>
+            </div>
+        </div>
+
+        <div class="form-group has-feedback"
+             ng-class="{ 'has-error' : form.password.$invalid && form.password.$dirty }">
+            <label class="label-control">{{ 'Password' | translate}}</label>
+            <input
+                    type="password"
+                    class="form-control input-lg"
+                    name="password"
+                    ng-model="model.user.password"
+                    required
+                    minlength="6"/>
+
+            <span class="glyphicon glyphicon-lock form-control-feedback" aria-hidden="true"></span>
+
+            <div ng-messages="form.password.$error" ng-if="form.password.$dirty">
+                <label
+                        ng-message="required"
+                        class="help-block">{{'This field is required'|translate}}
+                </label>
+                <label
+                        ng-message="minlength"
+                        class="help-block">{{'This field should be at least 6 character'|translate}}
+                </label>
+            </div>
+        </div>
+
+        <div class="form-group has-feedback"
+             ng-class="{ 'has-error' : form.confirmPassword.$invalid && form.confirmPassword.$dirty }">
+            <label class="label-control">{{ 'Confirm password' | translate }}</label>
+            <input
+                    type="password"
+                    class="form-control input-lg"
+                    name="confirmPassword"
+                    ng-model="model.user.confirmPassword"
+                    required
+                    minlength="6"
+                    match-password="model.user.password"/>
+
+            <span class="glyphicon glyphicon-lock form-control-feedback" aria-hidden="true"></span>
+
+            <div ng-messages="form.confirmPassword.$error" ng-if="form.confirmPassword.$dirty">
+                <label
+                        ng-message="required"
+                        class="help-block">{{'This field is required'|translate}}
+                </label>
+                <label
+                        ng-message="minlength"
+                        class="help-block">{{'This field should be at least 6 character'|translate}}
+                </label>
+                <label
+                        ng-message="match"
+                        class="help-block">{{'Password and Confirm password do not match'|translate}}
+                </label>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-success btn-lg btn-block">
+            <i class="glyphicon glyphicon-plus"></i>
+            {{ 'Register' | translate }}
+        </button>
+        <br/>
+        <a href="/login" class="btn btn-primary">
+            <i class="glyphicon glyphicon-log-in"></i>
+            {{ 'Entry' | translate }}
+        </a>
+    </form>
+</dev-tag-content>

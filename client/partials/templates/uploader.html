@@ -1,0 +1,23 @@
+<div>
+    <div class="place_drag place_drag_webfont">
+        <div class="hover_upload_list"></div>
+        <div class="place_drag_text1 title"
+             style="font-weight: 700">
+            <h3 ng-if="state=='none'"
+                style="margin-top: 0;font-size: 15px">{{'Drag your file here'|translate}}</h3>
+            <h3 style="margin-top: 0;font-size: 15px"
+                ng-if="state=='dragging'">{{'Drop here'|translate}}</h3>
+        </div>
+    </div>
+
+    <div ng-if="state == 'uploading'"
+         class="dev-overlay dev-overlay-partial dev-overlay-opacity-6">
+        <div class="waiting-block">
+            <span class="spinner">
+            <div class="bounce1 spinner-border-radius-100"></div>
+            <div class="bounce2 spinner-border-radius-100"></div>
+            <div class="bounce3 spinner-border-radius-100"></div>
+        </span>
+        </div>
+    </div>
+</div>

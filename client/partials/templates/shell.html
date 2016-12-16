@@ -1,0 +1,73 @@
+<div class="shell-container">
+
+    <nav class="navbar navbar-default"
+         style="background-color: #ffffff;border-radius: 0;">
+        <div class="container-fluid" style="padding-right: 0">
+            <div class="navbar-header navbar-right">
+                <a href="/" class="navbar-brand"
+                   style="padding: 0;margin-right: 0px;">
+
+                    <img src="\client\content\images\logo.png" style="height:100%;">
+                </a>
+            </div>
+
+            <div ng-if="!isAuth"
+                 class="navbar-header navbar-left"
+                 style="padding-top: 8px">
+                <a href="/login" class="btn btn-primary">
+                    <i class="glyphicon glyphicon-log-in"></i>
+                    {{'Login'|translate}}
+                </a>
+                <a href="/register" class="btn btn-success">
+                    <i class="glyphicon glyphicon-plus"></i>
+                    {{'Register'|translate}}
+                </a>
+            </div>
+            <div ng-if="isAuth"
+                 class="navbar-header navbar-left"
+                 style="padding-top: 8px">
+                <a ng-click="logout()"
+                   class="btn btn-default"
+                   style="vertical-align: super;margin-left: 10px;">
+                    <i class="glyphicon glyphicon-log-out"></i>
+                    {{'Exit'|translate}}
+                </a>
+                <span style="font-size: 15px;vertical-align: super">{{currentUser}}</span>
+                <i class="glyphicon glyphicon-user" style="font-size: 20px"></i>
+
+
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-2"
+                 ng-if="isAuth && currentBranch">
+                <div class="panel panel-default"
+                     ng-if="currentBranch"
+                style="width: 170px;height: 170px;text-align: center;vertical-align: middle">
+                    <div class="panel-body">
+                        <img ng-src="{{currentBranch.logo}}" alt="..."
+                             style="width: 100px;height: 100px;margin: 0 5% 0 5%;">
+                        <h4 style="margin-top: 14px;text-align: center">{{currentBranch.name}}</h4>
+                    </div>
+                </div>
+            </div>
+            <div ng-view
+                 class="shuffle-animation"
+                 ng-class="{
+                 'col-md-10': (isAuth && currentBranch),
+                 'col-md-12': (isAuth && !currentBranch),
+                 'col-md-12': !(isAuth || currentBranch)}">
+
+            </div>
+           <!-- <div class="col-md-2"
+                 ng-if="isAuth && currentBranch">
+                <a class="btn btn-primary btn-lg btn-block">Test Left side</a>
+            </div>-->
+        </div>
+    </div>
+
+
+</div>

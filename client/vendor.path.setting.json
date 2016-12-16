@@ -1,0 +1,15 @@
+{
+  "angular": "./bower_components/angular/index",
+  "angular-animate": "./bower_components/angular-animate/index",
+  "angular-sanitize": "./bower_components/angular-sanitize/index",
+  "angular-bootstrap": "./bower_components/angular-bootstrap/index",
+  "angular-route": "./bower_components/angular-route/index",
+  "angular-translate": "./bower_components/angular-translate/angular-translate",
+  "angular-messages": "./bower_components/angular-messages/index",
+  "angular-cookies": "./bower_components/angular-cookies/angular-cookies",
+  "jquery": "./bower_components/jquery/dist/jquery",
+  "sweetalert": "./bower_components/bootstrap-sweetalert/dist/sweetalert.min",
+  "linqjs": "./bower_components/linqjs/linq.js",
+  "js-helper": "./lib/jshelper.bundle",
+  "jquery.filedrop": "./lib/jquery.filedrop"
+}
