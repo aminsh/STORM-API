@@ -17,7 +17,7 @@ export default function ($routeProvider, $locationProvider, settingsProvider) {
                 requireAuth: false
             }
         })
-        .when('/login', {
+        .when('/login/:isAuth?', {
             controller: 'loginController',
             controllerAs: 'model',
             templateUrl: 'partials/views/login.html',
@@ -49,7 +49,7 @@ export default function ($routeProvider, $locationProvider, settingsProvider) {
                 requireAuth: true
             }
         })
-        .when('/branch/choose', {
+        .when('/branch/choose/:isAuth?', {
             controller: 'branchChooseController',
             controllerAs: 'model',
             templateUrl: 'partials/views/branchChoose.html',

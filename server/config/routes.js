@@ -4,26 +4,22 @@ var express = require('express'),
     async = require('asyncawait/async'),
     await = require('asyncawait/await'),
     knexService = require('../services/knexService'),
-    config = require('./');
+    config = require('./'),
+    shouldNextRoute = require('../services/shouldNextRoute'),
+    authRoute = require('../services/authRoute'),
+    branchRoute = require('../services/branchRoute');
 
 
 var clientTranslation = require('./translate.fa.json');
 app.use(async(function (req, res, next) {
-    if (req.originalUrl.startsWith('/uploads'))
-        return next();
+    if (shouldNextRoute(req, res, next))
+        return;
 
-    if (req.originalUrl.startsWith('/auth')) {
-        var returnUrl = req.query.returnUrl;
+    if (authRoute(req, res, next))
+        return;
 
-        if (req.isAuthenticated())
-            res.redirect(returnUrl);
-
-        res.cookie('return-url', returnUrl);
-        return res.redirect('/login');
-    }
-
-    if (req.xhr)
-        return next();
+    if (branchRoute(req, res, next))
+        return;
 
     return res.render('index.ejs', {
         clientTranslation: clientTranslation,

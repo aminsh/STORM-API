@@ -1,6 +1,7 @@
-export default function loginController($scope,userApi, formService, navigate,$window, $location) {
+export default function loginController($scope, userApi, formService, navigate, $window, $location, $routeParams) {
     "use strict";
 
+    this.isAuth = $routeParams.isAuth;
     this.errors = [];
 
     this.loginModel = {
@@ -18,14 +19,18 @@ export default function loginController($scope,userApi, formService, navigate,$w
 
         userApi.login(this.loginModel)
             .then(result=> {
-                if (!result.returnUrl) {
-                    $scope.$emit('user-login', {currentUser: result.currentUser});
+                $scope.$emit('user-login', {currentUser: result.currentUser});
+
+                if (!(result.returnUrl || this.isAuth)) {
                     return this.returnUrl
                         ? $location.url(this.returnUrl)
                         : navigate('home');
                 }
 
-                $window.location.href = result.returnUrl;
+                if (result.returnUrl)
+                    $window.location.href = result.returnUrl;
+
+                navigate('branchChoose', {isAuth: 'auth'});
             })
             .catch(errors=> {
                 debugger;

@@ -16,7 +16,7 @@ export default function navigate($route, $location) {
             if (parameterValue == '' && key.optional == true)
                 throw new Error('[{0}] parameter is not optional'.format(key.name));
 
-            path = path.replace(new RegExp(':{0}'.format(key.name)), parameterValue);
+            path = path.replace(`:${key.name}${key.optional ? '?' : ''}`, parameterValue);
         });
 
         if (queryString)
