@@ -2,6 +2,7 @@
 
 let ignorableUrls = [
     '/uploads',
+    '/client',
     'logo'
 ];
 
