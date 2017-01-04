@@ -35,7 +35,8 @@ var environment = {
                 ssl: true
             },
             client: 'pg',
-            //url: 'postgres://jkfhhrhedmzpnt:G0CXzLu0uLzP3jTUNLUODI2bTo@ec2-54-235-246-220.compute-1.amazonaws.com:5432/d4cd8gk58c0i7d'
+            //url: 'postgres://lgxdmvmmirytbb:2df3fc723567867100f43052bcef0746d079ee75a765567be0fec2d511139541@ec2-174-129-37-15.compute-1.amazonaws.com:5432/d37aunppf7pl08'
+            url: process.env.DATABASE_URL
         },
         port: process.env.PORT || 1001,
         reportPath: path.normalize('{0}/server/report.templates'.format(rootPath)),

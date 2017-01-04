@@ -45,7 +45,7 @@ function authenticate(req, res, next) {
         if (!user)return res.send({isValid: false, errors: ['Username or password in incorrect']});
         req.logIn(user, function (err) {
             var token = req.cookies['branch-id'] && req.cookies['return-url']
-                ? require('../queries/query.token').authToken(user.id, req.cookies['branch-id'])
+                ? require('../queries/query.token').authToken(user, req.cookies['branch-id'])
                 : null;
 
             if (err) return next(err);

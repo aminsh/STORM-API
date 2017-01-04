@@ -4,7 +4,8 @@ var express = require('express'),
     db = require('../models'),
     knexService = require('../services/knexService'),
     async = require('asyncawait/async'),
-    await = require('asyncawait/await');
+    await = require('asyncawait/await'),
+    config = require('../config');
 
 router.route('/').post(function (req, res) {
     var errors = [],
@@ -98,6 +99,21 @@ router.route('/members/change-state/:memberId').put(async(function (req, res) {
     await(member.save());
 
     res.json({isValid: true});
+}));
+
+router.route('/:id/logo').get(async((req, res)=> {
+    var branch = await(knexService
+        .select('logo')
+        .from('branches').where('id', req.params.id))[0],
+        logo = '/uploads/;/{0}'.format(branch.logo),
+        options = {
+            root: config.rootPath,
+            headers: {
+                'Content-Type': 'image/png'
+            }
+        };
+
+    res.sendFile(logo, options);
 }));
 
 module.exports = router;

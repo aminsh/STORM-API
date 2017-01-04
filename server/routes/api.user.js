@@ -1,3 +1,5 @@
+"use strict";
+
 var express = require('express'),
     router = express.Router(),
     authenticate = require('../config/auth').authenticate,
@@ -58,5 +60,19 @@ router.route('/by-email/:email')
             res.json(result[0])
         });
     });
+
+router.route('/return-url').get((req, res)=> {
+    let branchId = req.cookies['branch-id'];
+
+    let token = branchId && req.cookies['return-url']
+        ? require('../queries/query.token').authToken(req.user, branchId)
+        : null;
+
+    let returnUrl = token
+        ? '{0}/?token={1}'.format(req.cookies['return-url'], token)
+        : null;
+
+    res.json(returnUrl);
+});
 
 module.exports = router;

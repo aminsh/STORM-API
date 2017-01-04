@@ -21,7 +21,7 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(session({
     store: new MemoryStore(),
-    name: 'JSESSION',
+    name: 'ADMIN-SESSION',
     secret: 'keyboard cat',
     resave: false,
     saveUninitialized: false

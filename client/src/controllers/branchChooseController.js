@@ -1,6 +1,7 @@
-export default function branchChooseController($scope,branchApi, $cookies, navigate) {
+export default function branchChooseController($scope, branchApi, userApi, $cookies, navigate, $routeParams, $window) {
     "use strict";
 
+    this.isAuth = $routeParams.isAuth;
     this.branches = [];
     this.selectedBranch = {};
 
@@ -10,6 +11,13 @@ export default function branchChooseController($scope,branchApi, $cookies, navig
         this.selectedBranch = branch;
         $cookies.put('branch-id', branch.id);
         $scope.$emit('branch-changed', branch);
+
+        if (this.isAuth)
+            return userApi.getAuthReturnUrl()
+                .then(returnUrl=> {
+                    debugger;
+                    $window.location.href = returnUrl});
+
         navigate('home');
     };
 }
