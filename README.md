@@ -20,3 +20,17 @@
 9- go to admin directory again and run app by command "npm start"
 
 10- go to http://localhost:1000
+
+Please dont use farsi charactors in the source . instead you could write farsi on "admin/server/config/translate.fa.json" file and use copy of the key in the source.
+
+Example :
+
+        view : 
+
+        {{ 'Hello world!'| translte }}
+
+        controller : 
+
+        angularModule.controller('homeController', ($scope, translate) => {
+              $scope.tilte = translate('Home');
+        });
