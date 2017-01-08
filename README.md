@@ -29,8 +29,14 @@
  and use copy of the key in the source.
  
  Example : 
-            view : {{ 'Hello world!'| translte }}
-            controller : angularModule.controller('homeController', ($scope, translate) => {
+            
+            view : 
+            
+            {{ 'Hello world!'| translte }}
+            
+            controller : 
+            
+            angularModule.controller('homeController', ($scope, translate) => {
                   $scope.tilte = translate('Home');
             });
 
