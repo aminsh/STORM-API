@@ -5,47 +5,45 @@
     <meta name="viewport" content="width=device-width"/>
     <meta http-equiv="Content-Type" content="text/html" charset="utf-8"/>
 
-    <title></title>
+    <title>Acc-Storm</title>
 
-    <link href="client/content/bootstrap/bootstrap.min.css?v=<%- version.css %>" rel="stylesheet"/>
-    <link href="client/content/bootstrap/bootstrap-rtl.min.css?v=<%- version.css %>" rel="stylesheet"/>
-    <link href="client/content/kendo/kendo.common.min.css?v=<%- version.css %>" rel="stylesheet"/>
-    <link href="client/content/kendo/kendo.bootstrap.min.css?v=<%- version.css %>" rel="stylesheet"/>
-    <link href="client/content/kendo/kendo.rtl.min.css?v=<%- version.css %>" rel="stylesheet"/>
-    <link href="client/content/sweetalert.css?v=<%- version.css %>" rel="stylesheet"/>
+    <link href="/client/content/bootstrap/bootstrap.min.css?v=<%- version.css %>" rel="stylesheet"/>
+    <link href="/client/content/bootstrap/bootstrap-rtl.min.css?v=<%- version.css %>" rel="stylesheet"/>
+    <link href="/client/content/kendo/kendo.common.min.css?v=<%- version.css %>" rel="stylesheet"/>
+    <link href="/client/content/kendo/kendo.bootstrap.min.css?v=<%- version.css %>" rel="stylesheet"/>
+    <link href="/client/content/kendo/kendo.rtl.min.css?v=<%- version.css %>" rel="stylesheet"/>
+    <link href="/client/bower_components/bootstrap-sweetalert/dist/sweetalert.css?v=<%- version.css %>" rel="stylesheet"/>
 
-    <link href="client/content/fonts.min.css?v=<%- version.css %>" rel="stylesheet"/>
-    <link href="client/content/styles.css?v=<%- version.css %>" rel="stylesheet"/>
+    <link href="/client/content/stimulsoft/stimulsoft.viewer.office2013.whiteblue.css" rel="stylesheet">
+    <link href="/client/content/stimulsoft/stimulsoft.designer.office2013.whiteblue.css" rel="stylesheet">
+
+    <link href="/client/content/fonts.min.css?v=<%- version.css %>" rel="stylesheet"/>
+    <link href="/client/content/storm-fonts.css?v=<%- version.css %>" rel="stylesheet"/>
+    <link href="/client/content/styles.css?v=<%- version.css %>" rel="stylesheet"/>
 </head>
 <body class="k-rtl">
-<div data-ng-controller="shellController">
-
-    <dev-tag-block-ui></dev-tag-block-ui>
-
-    <dev-tag-header toggle="toggle()"></dev-tag-header>
-    <dev-tag-togglemenu menuitems="menuItems" toggleobservable="isToggleMenuOpen">
-        <div ng-view class="shuffle-animation">
 
 
-            <div class="waiting-overley">
-                <div class="waiting-block">
-                    <div class="waiting-block-spinner">
-                        <div class="rect1"></div>
-                        <div class="rect2"></div>
-                        <div class="rect3"></div>
-                        <div class="rect4"></div>
-                        <div class="rect5"></div>
-                    </div>
-                </div>
-
+<shell>
+    <div class="waiting-overley">
+        <div class="waiting-block">
+            <div class="waiting-block-spinner">
+                <div class="rect1"></div>
+                <div class="rect2"></div>
+                <div class="rect3"></div>
+                <div class="rect4"></div>
+                <div class="rect5"></div>
             </div>
         </div>
-    </dev-tag-togglemenu>
-</div>
+
+    </div>
+</shell>
+
 </body>
 </html>
 
-<script src="client/dist/vendor.bundle.min.js?v=<%- version.vendor %>"></script>
+<script src="/client/dist/vendor.bundle.min.js?v=<%- version.vendor %>"></script>
+<script src="/client/dist/stimulsoft.all.min.js"></script>
 
 <script>
     require('js-helper');
@@ -58,5 +56,5 @@
     localStorage.setItem('dimensionCategories', '<%- JSON.stringify(dimensionCategories) %>');
 </script>
 
-<script src="client/dist/acc.bundle.js?v=<%- version.acc %>"></script>
-<script src="client/dist/acc.template.bundle.js?v=<%- version.template %>"></script>
+<script src="/client/dist/acc.bundle.js?v=<%- version.acc %>"></script>
+<script src="/client/dist/acc.template.bundle.js?v=<%- version.template %>"></script>

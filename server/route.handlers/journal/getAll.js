@@ -47,7 +47,7 @@ function getAll(req, res) {
 
     function groupedJournals() {
         this.select(
-            'journals.id',
+            'id',
             'temporaryNumber',
             'temporaryDate',
             'number',
@@ -57,16 +57,16 @@ function getAll(req, res) {
             'createdById',
             'journalStatus',
             'journalType',
-            'isInComplete',
-            knexService.raw('SUM("debtor") as "sumDebtor"'),
-            knexService.raw('SUM("creditor") as "sumCreditor"'),
-            knexService.raw('"users"."name" as "createdBy"')
-        ).from('journals')
-            .leftJoin('journalLines', 'journals.id', 'journalLines.journalId')
+            'isInComplete'
+            //knexService.raw('SUM("debtor") as "sumDebtor"'),
+            //knexService.raw('SUM("creditor") as "sumCreditor"'),
+            //knexService.raw('"users"."name" as "createdBy"')
+        ).from(baseJournals)
+            /*.leftJoin('journalLines', 'journals.id', 'journalLines.journalId')
             .leftJoin('users', 'journals.createdById', 'users.id')
-            .whereExists(knexService.select('*').from(baseJournals).whereRaw('"journals"."id" = "baseJournals"."id"'))
+            .whereExists(knexService.select('*').from(baseJournals).whereRaw('"journals"."id" = "baseJournals"."id"'))*/
             .groupBy(
-                'journals.id',
+                'id',
                 'temporaryNumber',
                 'temporaryDate',
                 'number',
@@ -74,7 +74,6 @@ function getAll(req, res) {
                 'description',
                 'periodId',
                 'createdById',
-                'users.name',
                 'journalStatus',
                 'journalType',
                 'isInComplete')

@@ -2,9 +2,44 @@ var async = require('asyncawait/async');
 var await = require('asyncawait/await');
 var string = require('../../utilities/string');
 var translate = require('../../services/translateService');
-var repository = require('../../data/repository.bank');
+//var repository = require('../../data/repository.bank');
 
-function create(req, res) {
+module.exports = {
+    route: 'banks',
+    type: 'get',
+    handler: ()=> {}
+};
+function create(req, res, bankRepository){
+    var errors = [];
+    var cmd = req.body;
+    var repository = bankRepository;
+
+    if (string.isNullOrEmpty(cmd.title))
+        errors.push(translate('The title is required'));
+    else {
+        if (cmd.title.length < 3)
+            errors.push(translate('The title should have at least 3 character'));
+    }
+
+    if (errors.asEnumerable().any())
+        return res.json({
+            isValid: !errors.asEnumerable().any(),
+            errors: errors
+        });
+
+    var entity = {
+        title: cmd.title
+    };
+
+    var entity = await(repository.create(entity));
+
+    return res.json({
+        isValid: true,
+        returnValue: {id: entity.id}
+    });
+}
+
+/*function create(req, res) {
     var errors = [];
     var cmd = req.body;
 
@@ -31,7 +66,7 @@ function create(req, res) {
         isValid: true,
         returnValue: {id: entity.id}
     });
-}
+}*/
 
 function update(req, res) {
     var errors = [];
@@ -77,6 +112,6 @@ function remove(req, res) {
     });
 }
 
-module.exports.create = async(create);
+module.exports.create = create;
 module.exports.update = async(update);
 module.exports.remove = async(remove);

@@ -1,15 +1,18 @@
-module.exports = function (sequelize, DataTypes) {
-    var Tag = sequelize.define('tag', {
-        title: {
-            type: DataTypes.STRING
-        }
-    }, {
-        classMethods: {
-            associate: function (models) {
-                Tag.belongsToMany(models.journal, {through: 'journalTags'});
-            }
-        }
-    });
+"use strict";
 
-    return Tag;
+let ModelBase = require('../utilities/modelBase'),
+    Journal require('./journal');
+
+class Tag extends ModelBase {
+    get title() {
+        return 'STRING';
+    }
+
+    get journals() {
+        return [Journal, {
+            through: 'journalTags'
+        }];
+    }
 }
+
+module.exports = Tag;

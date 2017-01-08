@@ -1,16 +1,17 @@
-module.exports = function (sequelize, DataTypes) {
-    var FiscalPeriod = sequelize.define('fiscalPeriod', {
-        minDate: {
-            type: DataTypes.STRING
-        },
-        maxDate: {
-            type: DataTypes.STRING
-        },
-        isClosed: {
-            type: DataTypes.BOOLEAN
-        },
+"use strict";
 
-    });
+let ModelBase = require('../utilities/modelBase');
 
-    return FiscalPeriod;
-};
+class FiscalPeriod extends ModelBase {
+    get minDate() {
+        return 'STRING';
+    }
+    get maxDate() {
+        return 'STRING';
+    }
+    get isClosed() {
+        return 'BOOLEAN';
+    }
+}
+
+module.exports = FiscalPeriod;

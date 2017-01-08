@@ -1,19 +1,22 @@
-module.exports = function (sequelize, DataTypes) {
-    var DetailAccount = sequelize.define('detailAccount', {
-        code: {
-            type: DataTypes.STRING
-        },
-        title: {
-            type: DataTypes.STRING
-        },
-        description: {
-            type: DataTypes.STRING
-        },
-        isActive: {
-            type: DataTypes.BOOLEAN
-        }
+"use strict";
 
-    });
+let ModelBase = require('../utilities/bookshelf.ModelBase');
 
-    return DetailAccount;
-};
+class DetailAccount extends ModelBase {
+    get code() {
+        return 'STRING';
+    }
+
+    get title() {
+        return 'STRING';
+    }
+
+    get description() {
+        return 'STRING';
+    }
+    get isActive() {
+        return 'BOOLEAN';
+    }
+}
+
+module.exports = DetailAccount;

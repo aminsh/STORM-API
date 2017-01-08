@@ -1,15 +1,15 @@
-module.exports = function (sequelize, DataTypes) {
-    var User = sequelize.define('user', {
-        name: {
-            type: DataTypes.STRING
-        },
-        username: {
-            type: DataTypes.STRING
-        },
-        password: {
-            type: DataTypes.STRING
-        }
-    });
+"use strict";
 
-    return User;
-};
+let ModelBase = require('../utilities/modelBase');
+
+class User {
+  get id(){
+    return {type: 'STRING', primaryKey: true}
+  }
+
+  get name(){
+    return 'STRING';
+  }
+}
+
+module.exports = User;

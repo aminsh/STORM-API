@@ -1,45 +1,54 @@
-var enums = require('../constants/enums');
+"use strict";
 
-module.exports = function (sequelize, DataTypes) {
-    var SubsidiaryLedgerAccount = sequelize.define('subsidiaryLedgerAccount', {
-        code: {
-            type: DataTypes.STRING
-        },
-        title: {
-            type: DataTypes.STRING
-        },
-        description: {
-            type: DataTypes.STRING
-        },
-        isBankAccount: {
-            type: DataTypes.BOOLEAN
-        },
-        detailAccountAssignmentStatus: {
-            type: DataTypes.ENUM,
-            values: enums.AssignmentStatus().getKeys(),
-        },
-        dimension1AssignmentStatus: {
-            type: DataTypes.ENUM,
-            values: enums.AssignmentStatus().getKeys(),
-        },
-        dimension2AssignmentStatus: {
-            type: DataTypes.ENUM,
-            values: enums.AssignmentStatus().getKeys(),
-        },
-        dimension3AssignmentStatus: {
-            type: DataTypes.ENUM,
-            values: enums.AssignmentStatus().getKeys(),
-        },
-        isActive: {
-            type: DataTypes.BOOLEAN
-        },
-    }, {
-        classMethods: {
-            associate: function (models) {
-                SubsidiaryLedgerAccount.belongsTo(models.generalLedgerAccount);
-            }
-        }
-    });
+let ModelBase = require('../utilities/modelBase'),
+    GeneralLedgerAccount = require('./generalLedgerAccount');
 
-    return SubsidiaryLedgerAccount;
-};
+class SubsidiaryLedgerAccount extends ModelBase {
+    get code() {
+        return 'STRING';
+    }
+
+    get title() {
+        return 'STRING';
+    }
+
+    get description() {
+        return 'STRING';
+    },
+    get isBankAccount() {
+        return 'BOOLEAN';
+    }
+
+    get detailAccountAssignmentStatus() {
+        return {
+            type: 'ENUM',
+            values: enums.AssignmentStatus().getKeys()
+        };
+    }
+    get dimension1AssignmentStatus() {
+        return {
+            type: 'ENUM',
+            values: enums.AssignmentStatus().getKeys()
+        };
+    }
+
+    get dimension2AssignmentStatus() {
+        return {
+            type: 'ENUM',
+            values: enums.AssignmentStatus().getKeys()
+        };
+    }
+
+    get dimension3AssignmentStatus() {
+        return {
+            type: 'ENUM',
+            values: enums.AssignmentStatus().getKeys()
+        };
+    }
+
+    get isActive() {
+        return 'BOOLEAN';
+    }
+}
+
+module.exports = SubsidiaryLedgerAccount;

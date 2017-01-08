@@ -9,7 +9,7 @@ function getAll(req, res) {
             id: e.id,
             title: e.title
         };
-    }
+    };
 
     kendoQueryResolve(query, req.query, viewAssembler)
         .then(function (result) {

@@ -1,3 +1,4 @@
+/*
 var express = require('express');
 var router = express.Router();
 var translates = require('../config/translate.fa.json');
@@ -40,3 +41,4 @@ router.route('/reports').get(function (req, res) {
 
 module.exports = router;
 
+*/

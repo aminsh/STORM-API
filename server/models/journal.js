@@ -1,62 +1,68 @@
-var enums = require('../constants/enums');
+"use strict";
 
-module.exports = function (sequelize, DataTypes) {
-    var Journal = sequelize.define('journal', {
-            temporaryNumber: {
-                type: DataTypes.INTEGER
-            },
-            temporaryDate: {
-                type: DataTypes.STRING
-            },
-            number: {
-                type: DataTypes.INTEGER
-            },
-            date: {
-                type: DataTypes.STRING
-            },
-            description: {
-                type: DataTypes.STRING
-            },
-            journalStatus: {
-                type: DataTypes.ENUM,
-                values: enums.JournalStatus().getKeys()
-            },
-            isInComplete: {
-                type: DataTypes.BOOLEAN
-            },
-            journalType: {
-                type: DataTypes.ENUM,
-                values: enums.JournalType().getKeys()
-            },
-            attachmentFileName: {
-                type: DataTypes.STRING
-            }
-        },
-        {
-            classMethods: {
-                associate: function (models) {
-                    Journal.belongsTo(models.user, {as: 'createdBy'});
-                    Journal.belongsTo(models.fiscalPeriod, {as: 'period'});
-                    Journal.hasMany(models.journalLine, {onDelete: ' CASCADE'});
-                    Journal.belongsToMany(models.tag, {through: 'journalTags'});
-                }
-            },
-            instanceMethods: {
-                getLineSummary: function (models) {
-                    return models.journalLine.find({
-                        where: {
-                            journalId: this.id
-                        },
-                        attributes: [
-                            [models.sequelize.fn('SUM', models.sequelize.col('debtor')), 'sumDebtor'],
-                            [models.sequelize.fn('SUM', models.sequelize.col('creditor')), 'sumCreditor'],
-                        ],
-                        group: ['journalId'],
-                        order: ['journalId']
-                    })
-                }
-            }
-        });
+let ModelBase = require('../utilities/modelBase'),
+    User = require('./user'),
+    FiscalPeriod = require('./fiscalPeriod'),
+    JournalLine = require('./journalLine'),
+    Tag = require('./tag'),
+    enums = require('../constants/enums');
 
-    return Journal;
-};
+class Journal extends ModelBase {
+    get temporaryNumber() {
+        return 'INTEGER';
+    }
+
+    get temporaryDate() {
+        return 'STRING';
+    }
+
+    get number() {
+        return 'INTEGER';
+    }
+
+    get date() {
+        return 'STRING';
+    }
+
+    get description() {
+        return 'STRING';
+    }
+
+    get journalStatus() {
+        return {
+            type: 'ENUM',
+            values: enums.JournalStatus().getKeys()
+        };
+    }
+
+    get isInComplete() {
+        return 'BOOLEAN';
+    }
+
+    get journalreturn {
+        return {
+            type: 'ENUM',
+            values: enums.JournalType().getKeys()
+        };
+    }
+
+    get attachmentFileName() {
+        return 'STRING';
+    }
+
+    get createdBy() {
+        return FiscalPeriod;
+    }
+
+    get journalLines() {
+        return [JournalLine, {
+            onDelete: 'CASCADE'
+        }];
+    }
+
+    get tags() {
+        return [Tag, {
+            through: 'JournalTags'
+        }]
+    }
+}

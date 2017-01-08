@@ -1,15 +1,17 @@
-module.exports = function (sequelize, DataTypes) {
-    var DimensionCategory = sequelize.define('dimensionCategory', {
-        title: {
-            type: DataTypes.STRING
-        }
-    }, {
-        classMethods: {
-            associate: function (models) {
-                DimensionCategory.hasMany(models.dimension)
-            }
-        }
-    });
+"use strict";
 
-    return DimensionCategory;
-};
+let ModelBase = require('../utilities/modelBase'),
+    Dimension = require('./dimension');
+
+class DimensionCategory extends ModelBase {
+
+    get title() {
+        return 'STRING';
+    }
+
+    get dimensions() {
+        return [Dimension];
+    }
+}
+
+module.exports = DimensionCategory;

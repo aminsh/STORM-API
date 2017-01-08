@@ -1,13 +1,20 @@
-var async = require('asyncawait/async');
-var await = require('asyncawait/await');
-var db = require('../models/index');
+"use strict";
+
+let async = require('asyncawait/async'),
+    await = require('asyncawait/await');
+
 
 var onUserConnected = async(function (req, res, next) {
-    if (!req.cookies['current-period']) {
-        var maxId = await(db.fiscalPeriod.max('id'));
+    if (!req.isAuthenticated())
+        return next();
 
-        if (!maxId)
-            throw new Error('max fiscal period on user connected middleware is undefined');
+    let knexService = req.ioc.resolve('knexService'),
+        db = req.ioc.resolve('db'),
+        currentPeriod = req.cookies['current-period'];
+
+    if (currentPeriod == null || currentPeriod == 0) {
+        let maxId = await(knexService('fiscalPeriods').max('id'))[0].max;
+        maxId = maxId || 0;
 
         res.cookie('current-period', maxId);
     }

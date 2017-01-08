@@ -1,31 +1,42 @@
-var enums = require('../constants/enums');
+"use strict";
 
-module.exports = function (sequelize, DataTypes) {
-    var Cheque = sequelize.define('cheque', {
-        number: {
-            type: DataTypes.INTEGER
-        },
-        date: {
-            type: DataTypes.STRING
-        },
-        description: {
-            type: DataTypes.STRING
-        },
-        amount: {
-            type: DataTypes.DOUBLE
-        },
-        status: {
-            type: DataTypes.ENUM,
+let ModelBase = require('../utilities/bookshelf.ModelBase'),
+    ChequeCategory = require('./chequeCategory'),
+    JournalLine = require('./JournalLine'),
+    enums = require('../constants/enums');
+
+class Cheque extends ModelBase {
+
+    get number() {
+        return 'INTEGER';
+    }
+
+    get date() {
+        return 'STRING';
+    }
+
+    get description() {
+        return 'STRING';
+    }
+
+    get amount() {
+        return 'DOUBLE';
+    }
+
+    get status() {
+        return {
+            type: 'ENUM',
             values: enums.ChequeStatus().getKeys()
         }
-    }, {
-        classMethods: {
-            associate: function (models) {
-                Cheque.belongsTo(models.chequeCategory);
-                Cheque.belongsTo(models.journalLine);
-            }
-        }
-    });
+    }
 
-    return Cheque;
-};
+    get journalLine() {
+        return JournalLine;
+    }
+
+    get category() {
+        return ChequeCategory;
+    }
+}
+
+module.exports = Cheque;

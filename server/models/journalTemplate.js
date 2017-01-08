@@ -1,12 +1,14 @@
-module.exports = function (sequelize, DataTypes) {
-    var JournalTemplate = sequelize.define('journalTemplate', {
-        title: {
-            type: DataTypes.STRING
-        },
-        data: {
-            type: DataTypes.TEXT
-        }
-    });
+"use strict";
 
-    return JournalTemplate;
-};
+let ModelBase = require('../utilities/modelBase');
+
+class JournalTemplate extends ModelBase {
+    get title() {
+        return 'STRING';
+    }
+    get data() {
+        return 'TEXT';
+    }
+}
+
+module.exports = JournalTemplate;

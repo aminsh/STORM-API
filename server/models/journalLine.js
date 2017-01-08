@@ -1,31 +1,40 @@
-module.exports = function (sequelize, DataTypes) {
-    var JournalLine = sequelize.define('journalLine', {
-            row: {
-                type: DataTypes.INTEGER
-            },
-            debtor: {
-                type: DataTypes.DOUBLE
-            },
-            creditor: {
-                type: DataTypes.DOUBLE
-            },
-            article: {
-                type: DataTypes.STRING
-            }
-        },
-        {
-            classMethods: {
-                associate: function (models) {
-                    JournalLine.belongsTo(models.journal);
-                    JournalLine.belongsTo(models.generalLedgerAccount);
-                    JournalLine.belongsTo(models.subsidiaryLedgerAccount);
-                    JournalLine.belongsTo(models.detailAccount);
-                    JournalLine.belongsTo(models.dimension, {as: 'dimension1'});
-                    JournalLine.belongsTo(models.dimension, {as: 'dimension2'});
-                    JournalLine.belongsTo(models.dimension, {as: 'dimension3'});
-                }
-            }
-        });
+"use strict";
 
-    return JournalLine;
-};
+let ModelBase = require('../utilities/modelBase'),
+    Journal require('./journal'),
+    GeneralLedgerAccount = require('./generalLedgerAccount'),
+    SubsidiaryLedgerAccount = require('./subsidiaryLedgerAccount'),
+    DetailAccount = require('./detailAccount'),
+    Dimension = require('./dimension');
+
+
+class JournalLine extends ModelBase {
+    get row() {
+        return 'INTEGER';
+    }
+
+    get debtor() {
+        return 'DOUBLE';
+    }
+
+    get creditor() {
+        return 'DOUBLE'
+    }
+    get article() {
+        return 'STRING'
+    }
+
+    get dimension1() {
+        return Dimension;
+    }
+
+    get dimension2() {
+        return Dimension;
+    }
+
+    get dimension3() {
+        return Dimension
+    };
+}
+
+module.exports = JournalLine;

@@ -1,8 +1,15 @@
 var knexService = require('../../services/knexService');
+var persianDateService = require('../../services/persianDateService');
 var async = require('asyncawait/async');
 var await = require('asyncawait/await');
 var fs = require("fs");
 var path = require('path');
+var Stimulsoft = require('stimulsoft-reports-js');
+var number = require('../../utilities/number');
+var config = require('../../config/config');
+var jsdom = require("jsdom");
+var pdf = require('html-pdf');
+var pdfOptions = require('../../config/pdf.config');
 
 var fonts = fs.readdirSync(__dirname + '/../../../client/fonts')
     .filter(function (fileName) {
@@ -23,6 +30,90 @@ function journal(req, res) {
         reportData: data,
         fonts: fonts
     });
+
+    /*fonts.forEach(function (f) {
+       Stimulsoft.Base.StiFontCollection.addOpentypeFontFile(__dirname + '/../../../client/fonts/'+ f.fileName);
+    });
+
+    Stimulsoft.Report.Dictionary.StiFunctions.addFunction(
+        "devFunction",
+        "digitToWord",
+        "digitToWord", "", "",
+        String, "", [Number], ["Amount"], [""],
+        number.digitToWord);
+
+    var report = new Stimulsoft.Report.StiReport();
+
+    var today = new Stimulsoft.Report.Dictionary.StiVariable();
+    today.name = 'today';
+    today.alias = 'Today';
+    today.category = "general";
+    today.value = persianDateService.current();
+
+    report.dictionary.variables.add(today);
+
+    var user = new Stimulsoft.Report.Dictionary.StiVariable();
+    user.name = 'user';
+    user.alias = 'User';
+    user.category = "general";
+    user.value = req.user.name;
+
+    report.dictionary.variables.add(user);
+
+    report.regData("data", "data", {journal: data});
+    report.loadFile(__dirname + '/../../../client/reportFiles/journal.mrt');
+    report.render();
+
+    var settings = new Stimulsoft.Report.Export.StiHtmlExportSettings();
+    var service = new Stimulsoft.Report.Export.StiHtmlExportService();
+    var textWriter = new Stimulsoft.System.IO.TextWriter();
+    var htmlTextWriter = new Stimulsoft.Report.Export.StiHtmlTextWriter(textWriter);
+    service.exportTo(report, htmlTextWriter, settings);
+    var resultHtml = textWriter.getStringBuilder().toString();
+    resultHtml = resultHtml.replaceAll('DEMO', '');
+
+    var staticRootPath = "file:///{0}".format(config.rootPath);
+    var fontCssTag = '<link href="{0}/client/content/fonts.min.css" rel="stylesheet"/>'.format(staticRootPath);
+
+    jsdom.env(
+        resultHtml,
+        ["http://code.jquery.com/jquery.js"],
+        function (err, window) {
+            var $ = window.$;
+            window.$("head").append(fontCssTag);
+            var html = $('html').html();
+            html = '<html>{0}</html>'.format(html);
+
+            pdf.create(html, pdfOptions).toStream(function (err, stream) {
+                if (err) {
+                    res.send('Occurs error on creating pdf ...');
+                    return console.log(err);
+                }
+
+                stream.pipe(res);
+            });
+        }
+    );*/
+
+
+    //res.send(resultHtml);
+
+    /*var settings = new Stimulsoft.Report.Export.StiPdfExportSettings();
+    var service = new Stimulsoft.Report.Export.StiPdfExportService();
+    var stream = new Stimulsoft.System.IO.MemoryStream();
+    service.exportTo(report,stream, settings);
+
+    var exported = stream.toArray();
+    var buffer = new Buffer(exported, 'utf-8');
+    fs.writeFileSync('./journal.pdf', buffer);
+
+    res.setHeader('content-type', 'application/pdf');
+    fs.createReadStream('./journal.pdf').pipe(res);*/
+
+   /* res.render('report.journal.ejs', {
+        reportData: data,
+        fonts: fonts
+    });*/
 }
 
 function json(req, res) {

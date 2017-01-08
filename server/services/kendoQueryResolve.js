@@ -1,4 +1,3 @@
-var knex = require('./knexService');
 var async = require('asyncawait/async');
 var await = require('asyncawait/await');
 
@@ -75,4 +74,4 @@ function resolveSort(query, sort) {
     });
 }
 
-module.exports = async(kendoQueryResolve);
+module.exports = ()=> async(kendoQueryResolve);

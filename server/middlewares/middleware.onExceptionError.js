@@ -1,5 +1,5 @@
 var fs = require('fs');
-var config = require('../config/config');
+var config = require('../config');
 
 function exceptionHandler(err, req, res, next) {
     debugger;

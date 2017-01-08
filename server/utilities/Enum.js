@@ -1,16 +1,16 @@
 function Enum(enums) {
     this.data = enums;
 
-    this.getDisplay = function (key) {
+    this.getDisplay = function(key) {
         return this.data.asEnumerable()
-            .single(function (e) {
+            .single(function(e) {
                 return e.key == key;
             }).display;
     }
 
-    this.getKeys = function () {
+    this.getKeys = function() {
         return this.data.asEnumerable()
-            .select(function (e) {
+            .select(function(e) {
                 return e.key;
             })
             .toArray();

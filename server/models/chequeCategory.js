@@ -1,31 +1,42 @@
-module.exports = function (sequelize, DataTypes) {
-    var ChequeCategory = sequelize.define('chequeCategory', {
-        totalPages: {
-            type: DataTypes.INTEGER
-        },
-        firstPageNumber: {
-            type: DataTypes.STRING
-        },
-        lastPageNumber: {
-            type: DataTypes.STRING
-        },
-        receivedOn: {
-            type: DataTypes.STRING
-        },
-        isClosed: {
-            type: DataTypes.BOOLEAN
-        }
+"use strict";
 
-    }, {
-        classMethods: {
-            associate: function (models) {
-                ChequeCategory.hasMany(models.cheque);
-                ChequeCategory.belongsTo(models.bank);
-                ChequeCategory.belongsTo(models.detailAccount);
-            }
-        }
-    });
+let ModelBase = require('../utilities/bookshelf.ModelBase'),
+    Cheque = require('./cheque'),
+    Bank = require('./bank'),
+    DetailAccount = require('./detailAccount');
 
-    return ChequeCategory;
-};
+class ChequeCategory extends ModelBase {
 
+    // simple types
+    get totalPages() {
+        return 'INTEGER'
+    }
+    
+    get firstPageNumber() {
+        return 'INTEGER'
+    }
+    get lastPageNumber() {
+        return 'INTEGER'
+    }
+    get receivedOn() {
+        return 'STRING';
+    }
+    get isClosed() {
+        return 'BOOLEAN'
+    }
+
+    // associations
+    get cheques() {
+        return [Cheque];
+    }
+
+    get detailAccount() {
+        return DetailAccount;
+    }
+
+    get bank() {
+        return Bank;
+    }
+}
+
+module.exports = ChequeCategory;
