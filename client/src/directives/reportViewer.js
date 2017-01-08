@@ -1,67 +1,6 @@
-var Enumerable = require('linqjs');
-Array.prototype.asEnumerable = function () {
-    var enumerable = Enumerable.from(this);
-    enumerable.remove = remove.bind(this);
-    enumerable.removeAll = removeAll.bind(this);
-    return enumerable;
-};
+import accModule from '../acc.module';
 
-function remove(item) {
-    var i = this.indexOf(item);
-    this.splice(i, 1);
-}
-
-function removeAll() {
-    var self = this;
-
-    while (self.length != 0) {
-        self.shift();
-    }
-
-    return this;
-}
-
-window.isArray = function (obj) {
-    return Object.prototype.toString.call(obj) === '[object Array]';
-};
-
-
-window.Guid = (function () {
-    return {
-        newGuid: function () {
-            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-                var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
-                return v.toString(16);
-            });
-        },
-        isEmpty: function () {
-            return false;
-        }
-    }
-})();
-String.prototype.format = String.prototype.f = function () {
-    var s = this,
-        i = arguments.length;
-
-    while (i--) {
-        s = s.replace(new RegExp('\\{' + i + '\\}', 'gm'), arguments[i]);
-    }
-    return s;
-};
-window.getKeys = function (obj) {
-    var keys = [];
-    for (key in obj) {
-        keys.push(key);
-    }
-
-    return keys;
-};
-
-window.isNumeric = function (input) {
-    return (input - 0) == input && (input + '').replace(/^\s+|\s+$/g, "").length > 0;
-};
-
-window.digitToWord = function (str) {
+let digitToWord = function (str) {
     var delimiter, digit, i, iThree, numbers, part, parts, result, resultThree, three;
     if (!isFinite(str)) {
         return '';
@@ -117,3 +56,62 @@ window.digitToWord = function (str) {
         return numbers.zero;
     }
 };
+
+Stimulsoft.Base.Localization.StiLocalization.setLocalizationFile('/client/content/fa.xml', true);
+
+Stimulsoft.Report.Dictionary.StiFunctions.addFunction(
+    "devFunction",
+    "digitToWord",
+    "digitToWord", "", "",
+    String, "", [Number], ["Amount"], [""],
+    digitToWord);
+
+function reportViewer() {
+    return {
+        restrict: 'E',
+        template: '<div id="contentViewer" style="direction: ltr"></div>',
+        scope: {
+            reportData: '=',
+            reportFileName: '@',
+            reportDataSourceName: '@'
+        },
+        link: function (scope, element, attrs) {
+            let options = new Stimulsoft.Viewer.StiViewerOptions();
+
+            options.toolbar.fontFamily = "BKoodakBold";
+            options.toolbar.showDesignButton = true;
+            options.toolbar.printDestination = Stimulsoft.Viewer.StiPrintDestination.Pdf;
+            options.appearance.htmlRenderMode = Stimulsoft.Report.Export.StiHtmlExportMode.Table;
+
+            let report = new Stimulsoft.Report.StiReport();
+            let viewer = new Stimulsoft.Viewer.StiViewer(options, "StiViewer", false);
+
+            report.loadFile(`/client/reportFiles/${scope.reportFileName}`);
+            viewer.renderHtml("contentViewer");
+
+            let today = new Stimulsoft.Report.Dictionary.StiVariable();
+            today.name = 'today';
+            today.alias = 'Today';
+            today.category = "general";
+            today.value = '1395/01/01';
+
+            report.dictionary.variables.add(today);
+
+            let user = new Stimulsoft.Report.Dictionary.StiVariable();
+            user.name = 'user';
+            user.alias = 'User';
+            user.category = "general";
+            user.value = localStorage.getItem('currentUser');
+
+            report.dictionary.variables.add(user);
+
+            let data = {};
+            data[scope.reportDataSourceName] = scope.reportData;
+
+            report.regData("data", "data", data);
+            viewer.report = report;
+        }
+    };
+}
+
+accModule.directive('devTagReportViewer', reportViewer);

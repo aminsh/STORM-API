@@ -1,6 +1,13 @@
 import accModule from '../acc.module';
 
-accModule.config($routeProvider => {
+accModule.config(($routeProvider, $locationProvider) => {
+
+    $locationProvider.html5Mode({
+        enabled: true,
+        requireBase: false
+    });
+
+    $locationProvider.hashPrefix('!');
     $routeProvider
         .when('/', {
             controller: 'homeController',
@@ -80,6 +87,10 @@ accModule.config($routeProvider => {
         .when('/account-review/turnover/:name', {
             controller: 'accountReviewTurnoverController',
             templateUrl: 'partials/views/accountReviewTurnover.html'
+        })
+        .when('/fiscal-period/new', {
+            controller: 'createFiscalPeriodController',
+            templateUrl: 'partials/views/createFiscalPeriod.html'
         })
         .otherwise('/not-found');
 });

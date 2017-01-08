@@ -1,26 +1,14 @@
 import $ from 'jquery';
 import accModule from '../acc.module';
 
-function header($rootScope) {
+function header() {
     return {
         restrict: 'E',
         templateUrl: 'partials/templates/header-template.html',
         replace: true,
-        scope: {},
+        scope: false,
         link: function (scope, element, attrs) {
             scope.currentUser = localStorage.getItem('currentUser');
-            scope.current = {
-                period: '',
-                mode: ''
-            };
-
-            $rootScope.$on('currentPeriodChanged', (e, currentPeriodDisplay)=> {
-                scope.current.period = currentPeriodDisplay
-            });
-
-            $rootScope.$on('currentModeChanged', (e, currentMode)=> {
-                scope.current.mode = currentMode
-            });
 
             $(element).find('.dropdown')
             $('input').click(function () {

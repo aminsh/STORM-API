@@ -9,7 +9,7 @@ function chequeCategoryCreateModalController($scope, $modalInstance, formService
         detailAccountId: null,
         totalPages: null,
         firstPageNumber: null
-    }
+    };
 
     $scope.isSaving = false;
 

@@ -10,6 +10,7 @@ function journalApi(apiPromise) {
         getById: function (id) {
             return apiPromise.get('{0}/journals/{1}'.format(urlPrefix, id));
         },
+        getJournalReportJson: id => apiPromise.get(`/report/json/journal/${id}`),
         create: function (data) {
             return apiPromise.post('{0}/journals'.format(urlPrefix), data);
         },

@@ -1,15 +1,17 @@
 import accModule from '../acc.module';
 
-function homeController($scope, $timeout, $route, $rootScope, constants, logger, $cookies,
-                        journalAdvancedSearchModalService) {
-    $scope.current = {
-        fiscalPeriod: parseInt($cookies.get('current-period')),
-        mode: $cookies.get('current-mode')
-    };
+function homeController($scope, $rootScope, constants, currentService, navigate) {
+
+    debugger;
+
+    $scope.current = currentService.get();
+
+    if (!$scope.current.fiscalPeriod)
+        return navigate('createFiscalPeriod');
 
     $scope.fiscalPeriodDataBound = (e)=> {
         let item = e.sender.dataItem();
-        $rootScope.$emit('currentPeriodChanged', item.display);
+        $scope.$emit('fiscal-period-changed', item);
     };
 
     $scope.periodDataSource = {
@@ -27,24 +29,18 @@ function homeController($scope, $timeout, $route, $rootScope, constants, logger,
 
     $scope.periodOnChange = (e)=> {
         let item = e.sender.dataItem();
-        $cookies.put('current-period', item.id);
-        $rootScope.$emit('currentPeriodChanged', item.display);
+        $scope.$emit('fiscal-period-changed', item);
     };
 
     $scope.modesDataSource = constants.enums.AccMode().data;
-    $rootScope.$emit('currentModeChanged',
-        constants.enums.AccMode().getDisplay($scope.current.mode));
 
     $scope.modeOnChanged = ()=> {
-        $cookies.put('current-mode', $scope.current.mode);
-
-        let modeDisplay = constants.enums.AccMode().getDisplay($scope.current.mode);
-        $rootScope.$emit('currentModeChanged', modeDisplay);
+        $scope.$emit('mode-changed', {
+            key: $scope.current.mode,
+            display: constants.enums.AccMode().getDisplay($scope.current.mode)
+        });
     };
 
-    $scope.search = ()=> {
-        journalAdvancedSearchModalService.show();
-    };
 }
 
 accModule

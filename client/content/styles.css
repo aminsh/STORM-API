@@ -1637,5 +1637,16 @@ h1.head-current {
     text-overflow: ellipsis;
 }
 
+.form-block{
+    background-color: transparent;
+    background-position: 48% 0;
+    display: block;
+    position: absolute;
+    top: 20%;
+    right: 34%;
+    width: 30%;
+    margin: 0 auto;
+}
+
 
 

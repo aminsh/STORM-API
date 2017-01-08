@@ -8,7 +8,10 @@ var path = require('path'),
     uglifyify = require('uglifyify'),
     exorcist = require('exorcist'),
     distPath = './dist',
-    templateCache = require('gulp-angular-templatecache');
+    templateCache = require('gulp-angular-templatecache'),
+    minify = require('gulp-minify'),
+    concat = require('gulp-concat'),
+    css_bundle = require('gulp-bundle-assets');
 
 gulp.task('build-template', function () {
     return gulp.src('partials/**/*.html')
@@ -38,7 +41,14 @@ gulp.task('build-acc', function () {
         .transform("babelify", {
             presets: ["es2015", "react"]
         })
-        //.transform("uglifyify")
+        .transform({
+            global: true,
+            mangle: false,
+            comments: true,
+            compress: {
+                angular: true
+            }
+        }, 'uglifyify')
         .bundle()
         .pipe(exorcist(path.join(distPath, 'acc.bundle.js.map')))
         .pipe(fs.createWriteStream(path.join(distPath, 'acc.bundle.js'), 'utf8'));
@@ -61,6 +71,19 @@ gulp.task('build-vendor', function () {
         .bundle()
         .pipe(exorcist(path.join(distPath, 'vendor.bundle.min.js.map')))
         .pipe(fs.createWriteStream(path.join(distPath, 'vendor.bundle.min.js'), 'utf8'));
+});
+
+gulp.task('compress-stimulsoft', function () {
+    gulp.src(['./lib/stimulsoft.reports.js', './lib/stimulsoft.viewer.js', './lib/stimulsoft.designer.js'])
+        .pipe(concat('stimulsoft.all.min.js'))
+        .pipe(minify())
+        .pipe(gulp.dest('dist'))
+});
+
+gulp.task('css-bundle', function () {
+    gulp.src('./bundle.config.js')
+        .pipe(css_bundle())
+        .pipe(gulp.dest('dist'))
 });
 
 gulp.task('default', ['build-acc', 'build-template']);

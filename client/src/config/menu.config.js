@@ -11,15 +11,15 @@ accModule.config(menuItemsProvider => {
             children: [
                 {
                     title: 'حسابهای کل و معین',
-                    url: '#/general-ledger-accounts'
+                    url: '/general-ledger-accounts'
                 },
                 {
                     title: 'حساب تفصیل',
-                    url: '#/detail-accounts'
+                    url: '/detail-accounts'
                 },
                 {
                     title: 'سطوح',
-                    url: '#/dimensions'
+                    url: '/dimensions'
                 }
             ]
         })
@@ -30,22 +30,22 @@ accModule.config(menuItemsProvider => {
             children: [
                 {
                     title: 'لیست اسناد حسابداری',
-                    url: '#/journals',
+                    url: '/journals',
                     icon: ''
                 },
                 {
                     title: 'مدیریت اسناد',
-                    url: '#/journal-management',
+                    url: '/journal-management',
                     icon: ''
                 },
                 {
                     title: 'کپی سند',
-                    url: '#/journal/copy',
+                    url: '/journal/copy',
                     icon: 'glyphicon glyphicon-copy'
                 },
                 {
                     title: 'سند استاندارد',
-                    url: '#/journal-templates'
+                    url: '/journal-templates'
                 }
             ]
         })
@@ -56,12 +56,12 @@ accModule.config(menuItemsProvider => {
             children: [
                 {
                     title: 'دسته چک ها',
-                    url: '#/cheque-categories',
+                    url: '/cheque-categories',
                     icon: ''
                 },
                 {
                     title: 'بانک ها',
-                    url: '#/banks',
+                    url: '/banks',
                     icon: ''
                 }
             ]
@@ -73,7 +73,7 @@ accModule.config(menuItemsProvider => {
             children: [
                 {
                     title: 'مرور حساب',
-                    url: '#/account-review',
+                    url: '/account-review',
                     icon: ''
                 }
             ]

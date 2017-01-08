@@ -8,7 +8,6 @@ import './config/gridFilterCellTypeConfig';
 import './config/authConfig';
 
 //load controllers
-import './controllers/shellController';
 import './controllers/homeController';
 import './controllers/generalLedgerAccountsController';
 import './controllers/subsidiaryLedgerAccountsController';
@@ -25,6 +24,8 @@ import './controllers/journalCopy';
 import './controllers/journalTemplatesController';
 import './controllers/accountReviewController';
 import './controllers/accountReviewTurnoverController';
+import './controllers/journalPrintController';
+import createFiscalPeriodController from  './controllers/createFiscalPeriodController';
 
 // load apis
 import './apis/generalLedgerAccountApi';
@@ -38,6 +39,7 @@ import './apis/chequeCategoryApi';
 import './apis/bankApi';
 import './apis/chequeApi';
 import './apis/journalTemplateApi';
+import FiscalPeriodApi from './apis/fiscalPeriodApi';
 
 // load modals
 import './modals/generalLedgerAccountCreate';
@@ -78,6 +80,9 @@ import './directives/textEditor';
 import './directives/checkbox';
 import './directives/ngKendoGrid';
 import './directives/journalSearchParameters';
+import './directives/reportViewer';
+import shell from './directives/shell';
+import {contentCover, contentCoverForm} from './directives/contentCover';
 
 //filter
 import './filters/amount';
@@ -95,6 +100,15 @@ import './services/routeNavigatorService';
 import './services/translate';
 import './services/prompt';
 import './services/showReport';
+import  currentService from './services/currentService';
+
+accModule
+    .directive(shell.name, shell)
+    .directive('devTagContentCover', contentCover)
+    .directive('devTagContentCoverFrom', contentCoverForm)
+    .service(currentService.name, currentService)
+    .service('fiscalPeriodApi', FiscalPeriodApi)
+    .controller(createFiscalPeriodController.name, createFiscalPeriodController);
 
 accModule.init();
 

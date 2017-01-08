@@ -181,7 +181,7 @@ function journalUpdateController($scope, logger, confirm, translate, navigate, $
             });
     };
 
-    $scope.print = ()=> showReport(`/report/journal/${id}`);
+    $scope.print = ()=> navigate('journalPrint', {id: id});//showReport(`/report/journal/${id}`);
 
     $scope.writeCheque = ()=> {
         $rootScope.blockUi.block();

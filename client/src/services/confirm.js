@@ -1,4 +1,4 @@
-import swal from 'sweetalert';
+import swal from 'bootstrap-sweetalert';
 import accModule from '../acc.module';
 
 function confirm(translate, $q) {

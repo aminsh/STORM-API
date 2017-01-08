@@ -8,6 +8,7 @@ function content() {
         scope: {},
         link: function (scope, element, attrs) {
             scope.title = attrs.title;
+            scope.panelType = attrs.panelType || 'primary';
         }
     };
 }
