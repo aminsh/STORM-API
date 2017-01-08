@@ -17,7 +17,9 @@
       - "gulp " : bundles both js and html files
       - "gulp build-vendor" to bundles external libraries (just after add new library)
       
- 8- go to admin directory again and run app by command "npm start"
+ 8- Add a database name : "admin"
+      
+ 9- go to admin directory again and run app by command "npm start"
  
- 9- go to http://localhost:2000
+ 10- go to http://localhost:2000
 
