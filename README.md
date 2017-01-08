@@ -12,10 +12,10 @@
 
 7- go to client directory use gulp command for bundling client files
 
-  - "gulp build-acc" : bundles js files (after js soure has been changed)
-  - "gulp build-template" : bundles html files (after html source has been changed)
-  - "gulp " : bundles both js and html files
-  - "gulp build-vendor" to bundles external libraries (just after add new library)
+    - "gulp build-acc" : bundles js files (after js soure has been changed)
+    - "gulp build-template" : bundles html files (after html source has been changed)
+    - "gulp " : bundles both js and html files
+    - "gulp build-vendor" to bundles external libraries (just after add new library)
   
 9- go to admin directory again and run app by command "npm start"
 
