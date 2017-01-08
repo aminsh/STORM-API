@@ -7,13 +7,16 @@ var multer = require('multer');
 var favicon = require('serve-favicon');
 var cors = require('cors');
 var flash = require('connect-flash');
+var compression = require('compression');
 var persianDateService = require('../services/persianDateService');
 
+var iocMiddleware = require('./../middlewares/middleware.ioc');
 var onUserConnectedMiddleware = require('./../middlewares/middleware.onUserConnected');
 var onExceptionErrorMiddleware = require('./../middlewares/middleware.onExceptionError');
+var authenticationMiddleware = require('../middlewares/middleware.authentication');
 
 var MemoryStore = require('session-memory-store')(session);
-var config = require('./config');
+var config = require('./');
 var app = express();
 
 app.use(favicon(config.rootPath + '/client/content/images/favicon.ico'));
@@ -23,7 +26,7 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(session({
     store: new MemoryStore(),
-    name: 'JSESSION',
+    name: 'ACC-SESSION',
     secret: 'keyboard cat',
     resave: false,
     saveUninitialized: false
@@ -42,6 +45,7 @@ app.use(function (req, res, next) {
     next();
 });
 
+app.use(compression());
 app.set('views', config.rootPath + '/server/views');
 app.engine('html', require('ejs').renderFile);
 app.use('/client', express.static(config.rootPath + '/client'));
@@ -50,7 +54,9 @@ app.use('/uploads', express.static(config.rootPath + '/server/uploads'));
 
 app.use(multer({dest: './uploads/;'}));
 
+app.use(iocMiddleware);
 app.use(onUserConnectedMiddleware);
 app.use(onExceptionErrorMiddleware);
+app.use(authenticationMiddleware);
 
 module.exports.app = app;
