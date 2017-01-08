@@ -1,31 +1,49 @@
-var db = require('../models');
-var async = require('asyncawait/async');
-var await = require('asyncawait/await');
+"use strict";
 
-var Repository = {
-    findById: function (id) {
-        return db.detailAccount.findById(id);
-    },
-    findByCode: function (code, notEqualId) {
-        var option = {where: {code: code}};
+let async = require('asyncawait/async'),
+    await = require('asyncawait/await');
+
+class DetailAccountRepository {
+    constructor(knexService) {
+        this.knexService = knexService;
+        this.create = async(this.create);
+    }
+
+    findById(id) {
+        return this.knexService.table('detailAccounts')
+            .where('id', id)
+            .first();
+    }
+
+    findByCode(code, notEqualId) {
+        let query = this.knexService.table('detailAccounts')
+            .where('code', code);
+
         if (notEqualId)
-            option.where.id = {
-                $ne: notEqualId
-            };
+            query.andWhere('id', '$ne', notEqualId);
 
-        return db.detailAccount.findOne(option);
-    },
-    create: function (entity) {
-        return db.detailAccount.create(entity);
-    },
-    update: function (entity) {
-        return entity.save();
-    },
-    remove: async(function (id) {
-        var entity = await(db.detailAccount.findById(id));
+        return query.first();
+    }
 
-        await(entity.destroy());
-    })
-};
+    create(entity) {
+        entity.id = await(this.knexService('detailAccounts')
+            .returning('id')
+            .insert(entity));
 
-module.exports = Repository;
+        return entity;
+    }
+
+    update(entity) {
+        return this.knexService('detailAccounts')
+            .where('id', entity.id)
+            .update(entity);
+    }
+
+    remove(id) {
+        return this.knexService('detailAccounts')
+            .where('id', id)
+            .del();
+    }
+}
+
+module.exports = DetailAccountRepository;

@@ -1,38 +1,51 @@
-var db = require('../models');
-var async = require('asyncawait/async');
-var await = require('asyncawait/await');
+"use strict";
 
-var Repository = {
-    findById: function (id) {
-        return models.dimension.findById(id);
-    },
-    findByCode: function (code, dimensionCategoryId, notEqualId) {
-        var option = {
-            where: {
-                code: code
-            },
-            include: [{
-                model: db.dimensionCategory, where: {id: dimensionCategoryId}
-            }]
-        };
+let async = require('asyncawait/async'),
+    await = require('asyncawait/await');
+
+class DimensionRepository {
+    constructor(knexService) {
+        this.knexService = knexService;
+        this.create = async(this.create);
+    }
+
+    findById(id) {
+        return this.knexService.table('dimensions')
+            .where('id', id)
+            .first();
+    }
+
+    findByCode(code, dimensionCategoryId, notEqualId) {
+        let query = this.knexService.table('dimensions')
+            .where('code', code)
+            .andWhere('dimensionCategoryId', dimensionCategoryId);
 
         if (notEqualId)
-            option.where.id = {$ne: notEqualId}
+            query.andWhere('id', '$ne', notEqualId);
 
-        return db.dimension.findOne(option);
-    },
-    create: function (entity) {
-        return db.dimension.create(entity);
-    },
-    update: function (entity) {
-        return entity.save();
-    },
-    remove: async(function (id) {
-        var entity = await(db.dimension.findById(id));
+        return query.first();
+    }
 
-        await(entity.destroy());
-    })
-};
+    create(entity) {
+        entity.id = await(this.knexService('dimensions')
+            .returning('id')
+            .insert(entity));
 
-module.exports = Repository;
+        return entity;
+    }
+
+    update(entity) {
+        return this.knexService('dimensions')
+            .where('id', id)
+            .update(entity);
+    }
+
+    remove(id) {
+        return this.knexService('dimensions')
+            .where('id', id)
+            .del();
+    }
+}
+
+module.exports = DimensionRepository;
 

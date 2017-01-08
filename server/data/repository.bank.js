@@ -1,23 +1,42 @@
-var db = require('../models');
-var async = require('asyncawait/async');
-var await = require('asyncawait/await');
+"use strict";
 
-var Repository = {
-    findById: function (id) {
-        return db.bank.findById(id);
-    },
-    create: function (entity) {
-        return db.bank.create(entity);
-    },
-    update: function (entity) {
-        return entity.save();
-    },
-    remove: async(function (id) {
-        var entity = await(db.bank.findById(id));
+let async = require('asyncawait/async'),
+    await = require('asyncawait/await');
 
-        await(entity.destroy());
-    })
-};
+class BankRepository {
+    constructor(knexService) {
+        this.knexService = knexService;
+        this.create = async(this.create);
+    }
 
-module.exports = Repository;
+    findById(id) {
+        return this.knexService
+            .table('banks')
+            .where('id', id)
+            .first();
+    }
 
+    create(entity) {
+        let id = await(this.knexService('banks')
+            .returning('id')
+            .insert(entity));
+
+        entity.id = id;
+        return entity;
+    }
+
+    update(entity) {
+        return this.knexService('banks')
+            .where('id', entity.id)
+            .update(entity);
+    }
+
+    remove(id) {
+        return this.knexService('banks')
+            .where('id', id)
+            .del();
+    }
+}
+
+
+module.exports = BankRepository;

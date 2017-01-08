@@ -1,20 +1,34 @@
-var db = require('../models');
-var async = require('asyncawait/async');
-var await = require('asyncawait/await');
+"use strict";
 
-var Repository = {
-    findById: function (id) {
-        return db.journalTemplate.findById(id);
-    },
-    create: function (entity) {
-        return db.journalTemplate.create(entity);
-    },
-    remove: async(function (id) {
-        var entity = await(db.journalTemplate.findById(id));
+let async = require('asyncawait/async'),
+    await = require('asyncawait/await');
 
-        await(entity.destroy());
-    })
-};
+class JournalTemplateRepository {
+    constructor(knexService) {
+        this.knexService = knexService;
+        this.create = async(this.create);
+    }
 
-module.exports = Repository;
+    findById(id) {
+        return this.knexService.table('journalTemplates')
+            .where('id', id)
+            .first();
+    }
+
+    create(entity) {
+        entity.id = await(this.knexService('journalTemplates')
+            .returning('id')
+            .insert(entity));
+
+        return entity;
+    }
+
+    remove(id) {
+        return this.knexService('journalTemplates')
+            .where('id', id)
+            .del();
+    }
+}
+
+module.exports = JournalTemplateRepository;
 

@@ -1,25 +1,55 @@
-var db = require('../models');
-var async = require('asyncawait/async');
-var await = require('asyncawait/await');
+"use strict";
 
-var Repository = {
-    findById: function (id) {
-        return db.chequeCategory.findById(id);
-    },
-    create: async(function (entity, cheques) {
-        var entity = await(db.chequeCategory.create(entity, {include: [db.cheque]}));
-        return entity;
-    }),
-    update: function (entity) {
-        return entity.save();
-    },
-    remove: async(function (id) {
-        var entity = await(db.bank.findById(id));
+let async = require('asyncawait/async'),
+    await = require('asyncawait/await');
 
-        await(entity.destroy());
-    })
-};
+class ChequeCategoryRepository {
+    constructor(knexService) {
+        this.knexService = knexServicel
+    }
 
-module.exports = Repository;
+    findById(id) {
+        return this.knexService.table('chequeCategories')
+            .where('id', id)
+            .first();
+    }
+
+    create(entity) {
+        knexService.transaction((trx) => {
+            try {
+                let id = await(knexService('chequeCategories')
+                    .transaction(trx)
+                    .returning('id')
+                    .insert(entity));
+
+                entity.cheques.forEach(c => c.chequeCategoryId = id);
+
+                await(this.knexService('cheques')
+                    .transaction(trx)
+                    .insert(entity.cheques));
+
+                trx.commit();
+            }
+            catch (e) {
+                trx.rollback();
+            }
+        });
+    }
+
+    update(entity) {
+        return this.knexService('chequeCategories')
+            .where('id', entity.id)
+            .update(entity);
+    }
+
+    remove(id) {
+        return this.knexService('chequeCategories')
+            .where('id', id)
+            .del();
+    }
+}
+
+
+module.exports = ChequeCategoryRepository;
 
 

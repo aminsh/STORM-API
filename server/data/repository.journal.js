@@ -1,69 +1,69 @@
-var db = require('../models');
-var async = require('asyncawait/async');
-var await = require('asyncawait/await');
+"use strict";
 
-var journalRepository = {
-    findByTemporaryNumber: function (number, periodId) {
-        return db.journal.findone({
-            where: {
-                temporaryNumber: number
-            },
-            include: [
-                {model: 'period', where: {id: periodId}}
-            ]
-        });
-    },
-    findById: function (id) {
-        return db.journal.findOne({
-            where: {
-                id: id
-            },
-            include: [
-                {model: db.journalLine}
-            ]
-        });
-    },
-    maxTemporaryNumber: function (periodId) {
-        return db.journal.max('temporaryNumber', {
-            where: {
-                periodId: periodId
-            }
-        });
-    },
-    create: function (entity) {
-        var option = {};
+let async = require('asyncawait/async'),
+    await = require('asyncawait/await');
 
-        if (entity.journalLines && entity.journalLines.length > 0)
-            option.include = [db.journalLine];
-
-        return db.journal.create(entity, option);
-    },
-    update: function (entity) {
-        return entity.save();
-    },
-    remove: async(function (id) {
-        var entity = await(db.journal.findById(id));
-        return entity.destroy();
-    }),
-    checkIsComplete: function (id) {
-        var entity = await(db.journal.find({
-            where: {id: id},
-            include: [db.journalLine]
-        }));
-
-        if (entity.journalLines.length() == 0) {
-            entity.isInComplete = false;
-            return entity.save();
-        }
-
-        var sumDebtor = entity.journalLines.asEnumerable().sum('debtor');
-        var sumCreditor = entity.journalLines.asEnumerable().sum('creditor');
-
-        if (sumDebtor != sumCreditor) {
-            entity.isInComplete = false;
-            return entity.save();
-        }
+class JournalRepository {
+    constructor(knexService) {
+        this.knexService = knexService;
+        this.create = async(this.create);
+        this.checkIsComplete = async(this.checkIsComplete);
     }
-};
 
-module.exports = journalRepository;
+    findByTemporaryNumber(number, periodId) {
+        return this.knexService.table('journals')
+            .where('period', periodId)
+            .andWhere('temporaryNumber', temporaryNumber)
+            .first();
+    }
+
+    findById(id) {
+        return this.knexService.table('journals')
+            .where('id', id)
+            .first();
+    }
+
+    maxTemporaryNumber(periodId) {
+        return this.knexService.table('journals')
+            .where('periodId', periodId)
+            .max();
+    }
+
+    create(entity) {
+        entity.id = await(this.knexService('journals')
+            .returning('id')
+            .insert(entity));
+
+        return entity;
+    }
+
+    update(entity) {
+        return this.knexService('journals')
+            .where('id', entity.id)
+            .update(entity);
+    }
+
+    remove(id) {
+        return this.knexService('journals')
+            .where('id', id)
+            .del();
+    }
+
+    checkIsComplete(id) {
+        let exp = this.knexService
+            .row('sum("debtor") - sum("creditor") as "remainder"'),
+            isInComplete = false,
+            remainder = await(this.knexService.table('journalLines')
+                .select(exp)
+                .where('journalId', id)
+                .first()).remainder;
+
+        isInComplete = remainder != 0;
+
+        return this.knexService('journals')
+            .where('id', id)
+            .update({ isInComplete });
+    }
+}
+
+module.exports = JournalRepository;

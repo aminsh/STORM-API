@@ -3,25 +3,25 @@
 let async = require('asyncawait/async'),
     await = require('asyncawait/await');
 
-class FiscalPeriodRepository {
+class UserRepository {
     constructor(knexService) {
         this.knexService = knexService;
         this.create = async(this.create);
     }
 
     findById(id) {
-        return this.knexService.table('fiscalPeriods')
+        return this.knexService.table('users')
             .where('id', id)
             .first();
     }
 
     create(entity) {
-        entity.id = await(this.knexService('fiscalPeriods')
+        entity.id = this.knexService('users')
             .returning('id')
-            .insert(entity));
+            .insert(entity);
 
         return entity;
     }
 }
 
-module.exports = FiscalPeriodRepository;
+module.exports = UserRepository;

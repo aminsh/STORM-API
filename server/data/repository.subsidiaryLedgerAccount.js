@@ -1,48 +1,51 @@
-var db = require('../models');
-var async = require('asyncawait/async');
-var await = require('asyncawait/await');
+"use strict";
 
-var subsidiaryLedgerAccountRepository = {
-    findById: function (id) {
-        return db.subsidiaryLedgerAccount.findOne({
-            where: {
-                id: id
-            },
-            include: [{
-                model: db.generalLedgerAccount
-            }]
-        });
-    },
-    findByCode: function (code, generalLedgerAccountId, notEqualId) {
-        var option = {
-            where: {
-                code: code
-            },
-            include: [{
-                model: db.generalLedgerAccount,
-                where: {id: generalLedgerAccountId}
-            }]
-        };
+let async = require('asyncawait/async'),
+    await = require('asyncawait/await');
+
+class SubsidiaryLedgerAccountRepository {
+    constructor(knexService) {
+        this.knexService = knexService;
+        this.create = async(this.create);
+    }
+
+    findById(id) {
+        return this.knexService.table('subsidiaryLedgerAccounts')
+            .where('id', id)
+            .first();
+    }
+
+    findByCode(code, generalLedgerAccountId, notEqualId) {
+        let query = this.knexService.table('subsidiaryLedgerAccounts')
+            .where('code', code)
+            .andWhere('generalLedgerAccountId', generalLedgerAccountId);
 
         if (notEqualId)
-            option.where.id = {
-                $ne: notEqualId
-            };
+            query.andWhere('id', '$ne', notEqualId);
 
-        return db.subsidiaryLedgerAccount.findOne(option)
-    },
-    create: function (entity) {
-        return db.subsidiaryLedgerAccount.create(entity);
-    },
-    update: function (entity) {
-        return entity.save();
-    },
-    remove: async(function (id) {
-        var entity = await(db.subsidiaryLedgerAccount.findById(id));
+        return query.first();
+    }
 
-        return entity.destroy();
-    })
-};
+    create(entity) {
+        entity.id = await(this.knexService('subsidiaryLedgerAccounts')
+            .returning('id')
+            .insert(entity));
 
-module.exports = subsidiaryLedgerAccountRepository;
+        return entity;
+    }
+
+    update(entity) {
+        return this.knexService('subsidiaryLedgerAccounts')
+            .where('id', id)
+            .update(entity);
+    }
+
+    remove(id) {
+        return this.knexService('subsidiaryLedgerAccounts')
+            .where('id', id)
+            .del();
+    }
+}
+
+module.exports = SubsidiaryLedgerAccountRepository;
 

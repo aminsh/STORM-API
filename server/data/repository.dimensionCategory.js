@@ -1,22 +1,24 @@
-var db = require('../models');
-var async = require('asyncawait/async');
-var await = require('asyncawait/await');
+"use strict";
 
-var generalLedgerAccountRepository = {
-    findById: function (id) {
-        return db.dimensionCategory.findById(id);
-    },
-    create: function (entity) {
-        return db.dimensionCategory.create(entity);
-    },
-    update: function (entity) {
-        return entity.save();
-    },
-    remove: async(function (id) {
-        var entity = await(db.dimensionCategory.findById(id));
+let async = require('asyncawait/async'),
+    await = require('asyncawait/await');
 
-        await(entity.destroy());
-    })
-};
+class DimensionCategoryRepository {
+    constructor(knexService) {
+        this.knexService = knexService;
+    }
 
-module.exports = generalLedgerAccountRepository;
+    findById(id) {
+        return this.knexService.table('dimensionCategories')
+            .where('id', id)
+            .first();
+    }
+
+    update(entity) {
+        return this.knexService('dimensionCategories')
+            .where('id', entity.id)
+            .update(entity);
+    }
+}
+
+module.exports = DimensionCategoryRepository;
