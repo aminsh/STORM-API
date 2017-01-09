@@ -32,7 +32,7 @@
             
             view : 
             
-            {{ 'Hello world!'| translte }}
+            {{ 'Hello world!'| translate }}
             
             controller : 
             
