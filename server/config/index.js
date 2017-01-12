@@ -5,5 +5,8 @@ var path = require('path'),
 
 config.rootPath = rootPath;
 
+if(config.db.connection.filename)
+    config.db.connection.filename = config.db.connection.filename.format(rootPath);
+
 module.exports = config;
 

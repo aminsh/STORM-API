@@ -28,6 +28,7 @@
     "express-session": "^1.11.1",
     "get-parameter-names": "^0.3.0",
     "gulp-bundle-assets": "^2.27.1",
+    "gulp-util": "^3.0.8",
     "html-pdf": "^2.1.0",
     "jsdom": "^9.8.3",
     "jszip": "^2.6.0",
@@ -67,6 +68,7 @@
     "gulp-concat": "^2.6.1",
     "gulp-minify": "0.0.14",
     "gulp-uglify": "^1.5.3",
-    "uglifyify": "^3.0.2"
+    "uglifyify": "^3.0.2",
+    "yargs": "^6.6.0"
   }
 }

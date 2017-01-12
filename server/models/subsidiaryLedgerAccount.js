@@ -14,7 +14,7 @@ class SubsidiaryLedgerAccount extends ModelBase {
 
     get description() {
         return 'STRING';
-    },
+    }
     get isBankAccount() {
         return 'BOOLEAN';
     }

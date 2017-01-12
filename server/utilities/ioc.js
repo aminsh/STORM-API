@@ -6,7 +6,7 @@ function ioc(req, res) {
 
     self.container = {};
 
-    self.register = (key, factory)=> self.container[key] = factory;
+    self.register = (key, factory) => self.container[key] = factory;
 
     self.resolve = async.result(key => {
         var item = self.container[key];
@@ -17,7 +17,7 @@ function ioc(req, res) {
                 return new item();
             else {
                 var deps = args.asEnumerable()
-                    .select(a=> self.resolve(a)).toArray();
+                    .select(a => self.resolve(a)).toArray();
                 return new (Function.prototype.bind.apply(item, deps))//item.apply({}, deps);
             }
         }

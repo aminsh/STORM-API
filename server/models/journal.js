@@ -39,7 +39,7 @@ class Journal extends ModelBase {
         return 'BOOLEAN';
     }
 
-    get journalreturn {
+    get journalType() {
         return {
             type: 'ENUM',
             values: enums.JournalType().getKeys()

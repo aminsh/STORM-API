@@ -1,23 +1,16 @@
+"use strict";
+
+const knex = require('knex');
+
 module.exports = function(branchId, branchConfig, memoryService) {
+    let context = memoryService.get(`context.${branchId}`);
+    if (context) return context;
 
-    var knex = memoryService.get('db.read.{0}'.format(branchId));
-    if (knex) return knex;
+    const dbConfig = branchConfig.db;
+    
+    context = knex(dbConfig);
 
+    memoryService.set(`context.${branchId}`, context);
 
-    var dbConfig = branchConfig.db;
-    /*
-      eco => economic
-      pro => professional
-    */
-    let knex = null;
-
-    if (branchConfig.type == 'eco')
-        knex = require('knex.implemented.by.sqllite')(dbConfig);
-
-    if (branchConfig.type == 'pro')
-        knex = require('knex.implemented.by.pg')(dbConfig);
-
-    memoryService.set('db.read.{0}'.format(branchId), knex);
-
-    return knex;
+    return context;
 };

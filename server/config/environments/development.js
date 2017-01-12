@@ -1,6 +1,23 @@
 module.exports = {
     rootPath: null,
     port: process.env.PORT || 1000,
+    db: {
+        client: 'pg',
+        connection: {
+            host: 'localhost',
+            user: 'postgres',
+            password: 'P@ssw0rd',
+            database: 'dbAccFRK',
+            ssl: false
+        },
+        debug: false
+    },
+    /*db: {
+        client: 'sqlite3',
+        connection: {
+            filename: '{0}/database/sqlitefiles/db.sqlite'
+        }
+    },*/
     version: {
         vendor: '1.0.0',
         acc: '1.0.0',

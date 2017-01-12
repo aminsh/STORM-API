@@ -7,8 +7,8 @@ var config = require('../config'),
 router.route({
     method: 'GET',
     path: '/',
-    handler: (req, res, knexService)=> {
-        var dimensionCategories = await(knexService.select().from('dimensionCategories'));
+    handler: (req, res, knex)=> {
+        var dimensionCategories = await(knex.select().from('dimensionCategories'));
         var mappedDimensionCategories = {data: dimensionCategories.asEnumerable().select(view).toArray()};
 
         res.render('index.ejs', {
