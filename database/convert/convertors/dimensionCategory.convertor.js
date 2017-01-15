@@ -19,7 +19,7 @@ class DimensionCategoryConvertor {
         _util.idGenerator(data.dimensionCategories);
     }
 
-    static get categoryNames() {
+    get categoryNames() {
         return [
             'تفصیل 2',
             'تفصیل 3',
