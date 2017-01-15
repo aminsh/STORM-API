@@ -9,7 +9,7 @@ module.exports.action = async((user, req)=> {
     var ioc = req.ioc,
         userRepository = ioc.resolve('userRepository');
 
-    let isUserExists = await(userRepository.getById(user.id));
+    let isUserExists = await(userRepository.findById(user.id));
     if(isUserExists)
         return;
 
