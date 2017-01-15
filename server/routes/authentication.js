@@ -1,9 +1,7 @@
 "use strict";
 
 var passport = require('passport'),
-    url = require('url'),
     config = require('../config'),
-    cryptoServivce = require('../services/cryptoService'),
     router = require('../services/routeService').Router();
 
 router.route({
