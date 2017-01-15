@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node . NODE_ENV=development"
+    "start": "node . NODE_ENV=staging",
+    "dev": "node . NODE_ENV=development"
   },
   "author": "amin sheikhi",
   "license": "ISC",
@@ -55,7 +56,8 @@
     "sqlite3": "^3.1.8",
     "stimulsoft-reports-js": "^2016.2.2-1",
     "tedious": "^1.14.0",
-    "to-pascal-case": "^1.0.0"
+    "to-pascal-case": "^1.0.0",
+    "yargs": "^6.6.0"
   },
   "devDependencies": {
     "babel-preset-es2015": "^6.9.0",

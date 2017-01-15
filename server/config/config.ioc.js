@@ -14,9 +14,9 @@ function register(ioc, req, res) {
         return config;
     });
     ioc.register('knex', require('../services/knex'));
-    ioc.register('bookshelfService', require('../services/bookshelfService'));
     ioc.register('kendoQueryResolve', require('../services/kendoQueryResolve'));
     ioc.register('eventEmitter', require('../services/eventEmitter'));
+    ioc.register('authenticationService', require('../services/authenticationService'));
 
     // config repository
     fileSystemService.getDirectoryFiles('/data')

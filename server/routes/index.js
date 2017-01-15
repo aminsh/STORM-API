@@ -7,13 +7,15 @@ var config = require('../config'),
 router.route({
     method: 'GET',
     path: '/',
-    handler: (req, res, knex)=> {
+    handler: (req, res, knex, memoryService)=> {
         var dimensionCategories = await(knex.select().from('dimensionCategories'));
         var mappedDimensionCategories = {data: dimensionCategories.asEnumerable().select(view).toArray()};
 
         res.render('index.ejs', {
             clientTranslation: clientTranslation,
             currentUser: req.user.name,
+            currentBranch: memoryService.get('branches')
+                .asEnumerable().single(b=> b.id == req.cookies['branch-id']),
             dimensionCategories: mappedDimensionCategories,
             version: config.version
         });

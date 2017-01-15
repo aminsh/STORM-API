@@ -8,12 +8,12 @@ var onUserConnected = async(function (req, res, next) {
     if (!req.isAuthenticated())
         return next();
 
-    let knexService = req.ioc.resolve('knexService'),
+    let kenx = req.ioc.resolve('knex'),
         db = req.ioc.resolve('db'),
         currentPeriod = req.cookies['current-period'];
 
     if (currentPeriod == null || currentPeriod == 0) {
-        let maxId = await(knexService('fiscalPeriods').max('id'))[0].max;
+        let maxId = await(kenx('fiscalPeriods').max('id'))[0].max;
         maxId = maxId || 0;
 
         res.cookie('current-period', maxId);

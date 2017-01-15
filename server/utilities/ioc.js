@@ -18,7 +18,10 @@ function ioc(req, res) {
             else {
                 var deps = args.asEnumerable()
                     .select(a => self.resolve(a)).toArray();
-                return new (Function.prototype.bind.apply(item, deps))//item.apply({}, deps);
+
+                return (item.prototype)
+                    ? new (Function.prototype.bind.apply(item, [null].concat(deps)))
+                    : item.apply({}, deps);
             }
         }
 
