@@ -6,8 +6,12 @@ const Base = require('./base'),
 class User extends Base {
     constructor(model) {
         super();
-        
-        this.id = Guid.newGuid();
+
+
+        this.id = model.USid == 'Public'
+            ? 'aaa2a686-1cb7-45ab-9660-5e8736ca821f'
+            : Guid.newGuid();
+
         this.name = model.USname;
         this.oldUsername = model.USid;
     }

@@ -26,7 +26,7 @@ class UserConvertor {
     get publicUser() {
         return {
             USname: 'کاربر عمومی',
-            oldUsername: 'Public',
+            USid: 'Public'
         }
     }
 }
