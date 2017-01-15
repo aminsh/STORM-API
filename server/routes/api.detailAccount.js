@@ -1,21 +1,3 @@
-/*var express = require('express');
-var router = express.Router();
-var detailAccountRouteHandlers = require('../route.handlers/detailAccount');
-
-router.route('/detail-accounts')
-    .get(detailAccountRouteHandlers.getAll)
-    .post(detailAccountRouteHandlers.create);
-
-router.route('/detail-accounts/:id')
-    .get(detailAccountRouteHandlers.getById)
-    .put(detailAccountRouteHandlers.update)
-    .delete(detailAccountRouteHandlers.remove);
-
-router.route('/detail-accounts/:id/activate').put(detailAccountRouteHandlers.activate);
-router.route('/detail-accounts/:id/deactivate').put(detailAccountRouteHandlers.deactivate);
-
-
-module.exports = router;*/
 
 var router = require('../services/routeService').Router(),
     view = require('../viewModel.assemblers/view.detailAccount');
@@ -23,9 +5,9 @@ var router = require('../services/routeService').Router(),
 router.route({
     method: 'GET',
     path: '/detail-accounts',
-    handler: (req, res, knexService, kendoQueryResolve)=> {
-        var query = knexService.select().from(function () {
-            this.select(knexService.raw("*,code || ' ' || title as display"))
+    handler: (req, res, knex, kendoQueryResolve)=> {
+        var query = knex.select().from(function () {
+            this.select(knex.raw("*,code || ' ' || title as display"))
                 .from('detailAccounts').as('baseDetailAccounts');
         }).as('baseDetailAccounts');
 
@@ -84,8 +66,8 @@ router.route({
 router.route({
     method: 'GET',
     path: '/detail-accounts/:id',
-    handler: (req, res, knexService)=> {
-        knexService.select().from('detailAccounts')
+    handler: (req, res, knex)=> {
+        knex.select().from('detailAccounts')
             .where('id', req.params.id)
             .then(function (result) {
                 res.json(view(result[0]));

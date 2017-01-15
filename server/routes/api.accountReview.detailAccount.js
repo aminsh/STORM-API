@@ -3,7 +3,7 @@ var router = require('../services/routeService').Router();
 router.route({
     method: 'GET',
     path: '/account-review/detail-account',
-    handler: (req, res, knexService, accountReviewQuery, kendoQueryResolve)=> {
+    handler: (req, res, knex, accountReviewQuery, kendoQueryResolve)=> {
         var filter = (req.query.extra) ? req.query.extra.filter : undefined;
 
         var dateRange = await(accountReviewQuery.getDateRange(req.cookies['current-period'], filter));
@@ -17,10 +17,10 @@ router.route({
             groupByField: 'detailAccountId'
         };
 
-        var query = knexService.select().from(function () {
+        var query = knex.select().from(function () {
             this.select('detailAccountId', 'sumBeforeRemainder', 'sumDebtor', 'sumCreditor', 'sumRemainder',
-                knexService.raw('"detailAccounts"."code" as "detailAccountCode"'),
-                knexService.raw('"detailAccounts"."title" as "detailAccountTitle"')
+                knex.raw('"detailAccounts"."code" as "detailAccountCode"'),
+                knex.raw('"detailAccounts"."title" as "detailAccountTitle"')
                 )
                 .from(function () {
                     accountReviewQuery.accountReviewQuery.call(this, options);

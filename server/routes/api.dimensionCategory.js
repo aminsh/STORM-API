@@ -1,17 +1,3 @@
-/*var express = require('express');
- var router = express.Router();
- var dimensionCategoryRouteHandlers = require('../route.handlers/dimensionCategory');
-
- router.route('/dimension-categories')
- .get(dimensionCategoryRouteHandlers.getAll)
- .post(dimensionCategoryRouteHandlers.create);
-
- router.route('/dimension-categories/:id')
- .get(dimensionCategoryRouteHandlers.getById)
- .put(dimensionCategoryRouteHandlers.update)
- .delete(dimensionCategoryRouteHandlers.remove);
-
- module.exports = router;*/
 
 var router = require('../services/routeService').Router(),
     view = require('../viewModel.assemblers/view.dimensionCategory');
@@ -19,8 +5,8 @@ var router = require('../services/routeService').Router(),
 router.route({
     method: 'GET',
     path: '/dimension-categories',
-    handler: (req, res, knexService, kendoQueryResolve)=> {
-        var query = knexService.select().from('dimensionCategories');
+    handler: (req, res, knex, kendoQueryResolve)=> {
+        var query = knex.select().from('dimensionCategories');
 
         kendoQueryResolve(query, req.query, view)
             .then(function (result) {
@@ -63,8 +49,8 @@ router.route({
 router.route({
     method: 'GET',
     path: '/dimension-categories/:id',
-    handler: (req, res, knexService)=> {
-        knexService.select().from('dimensionCategories').where('id', req.params.id)
+    handler: (req, res, knex)=> {
+        knex.select().from('dimensionCategories').where('id', req.params.id)
             .then((result)=> {
                 res.json(view(result[0]))
             });

@@ -1,25 +1,11 @@
-/*var express = require('express');
-var router = express.Router();
-var chequeRouteHandler = require('../route.handlers/cheque');
-
-router.route('/cheques/category/:categoryId')
-    .get(chequeRouteHandler.getAll);
-
-router.route('/cheques/category/:categoryId/whites').get(chequeRouteHandler.getWhites);
-router.route('/cheques/used').get(chequeRouteHandler.getUseds);
-
-router.route('/cheques/:id').get(chequeRouteHandler.getById);
-router.route('/cheques/:id/write').put(chequeRouteHandler.write);
-
-module.exports = router;*/
 
 var router = require('../services/routeService').Router();
 
 router.route({
     method: 'GET',
     path: '/cheques/category/:categoryId',
-    handler: (req, res, knexService, kendoQueryResolve)=> {
-        var query = knexService.select().from(function () {
+    handler: (req, res, knex, kendoQueryResolve)=> {
+        var query = knex.select().from(function () {
             this.select().from('cheques')
                 .where('chequeCategoryId', req.params.categoryId)
                 .orderBy('number')
@@ -36,8 +22,8 @@ router.route({
 router.route({
     method: 'GET',
     path: '/cheques/category/:categoryId/whites',
-    handler: (req, res, knexService, kendoQueryResolve)=> {
-        var query = knexService.select('*').from('cheques')
+    handler: (req, res, knex, kendoQueryResolve)=> {
+        var query = knex.select('*').from('cheques')
             .where('chequeCategoryId', req.params.categoryId)
             .andWhere('status', 'White');
 
@@ -51,8 +37,8 @@ router.route({
 router.route({
     method: 'GET',
     path: '/cheques/used',
-    handler: (req, res, knexService,kendoQueryResolve)=> {
-        var query = knexService.select('*').from('cheques')
+    handler: (req, res, knex,kendoQueryResolve)=> {
+        var query = knex.select('*').from('cheques')
             .andWhere('status', 'Used');
 
         kendoQueryResolve(query, req.query, view)
@@ -65,8 +51,8 @@ router.route({
 router.route({
     method: 'GET',
     path: '/cheques/:id',
-    handler: (req, res, knexService)=> {
-        knexService.select().from('cheques').where('id', req.params.id)
+    handler: (req, res, knex)=> {
+        knex.select().from('cheques').where('id', req.params.id)
             .then(function (result) {
                 var entity = result[0];
                 res.json(view(entity));

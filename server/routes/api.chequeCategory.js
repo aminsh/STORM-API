@@ -1,31 +1,14 @@
-/*var express = require('express');
-var router = express.Router();
-var chequeCategoryRouteHandler = require('../route.handlers/chequeCategory');
-
-router.route('/cheque-categories')
-    .get(chequeCategoryRouteHandler.getAll)
-    .post(chequeCategoryRouteHandler.create);
-
-router.route('/cheque-categories/detail-account/:detailAccountId/opens')
-    .get(chequeCategoryRouteHandler.getOpens);
-
-router.route('/cheque-categories/:id')
-    .get(chequeCategoryRouteHandler.getById)
-    .put(chequeCategoryRouteHandler.update)
-    .delete(chequeCategoryRouteHandler.remove);
-
-module.exports = router;*/
 
 var router = require('../services/routeService').Router();
 
 router.route({
     method: 'GET',
     path: '/cheque-categories',
-    handler: (req, res, knexService, kendoQueryResolve)=> {
-        var query = knexService.select().from(function () {
+    handler: (req, res, knex, kendoQueryResolve)=> {
+        var query = knex.select().from(function () {
             var selectExp = '"chequeCategories".*, "detailAccounts".code || \' \' || "detailAccounts".title as "detailAccount","banks".title as "bank"';
 
-            this.select(knexService.raw(selectExp)).from('chequeCategories')
+            this.select(knex.raw(selectExp)).from('chequeCategories')
                 .leftJoin('detailAccounts', 'chequeCategories.detailAccountId', 'detailAccounts.id')
                 .leftJoin('banks', 'chequeCategories.bankId', 'banks.id')
                 .as('baseChequeCategories');
@@ -82,13 +65,13 @@ router.route({
 router.route({
     method: 'GET',
     path: '/cheque-categories/detail-account/:detailAccountId/opens',
-    handler: (req, res, knexService)=> {
+    handler: (req, res, knex)=> {
         var selectExp = ' "id","totalPages", "firstPageNumber", "lastPageNumber", ';
         selectExp += '(SELECT "count"(*) from cheques where "chequeCategoryId" = "baseChequeCategories".id ' +
             'AND "status"=\'White\') as "totalWhiteCheques"';
 
-        knexService.select(knexService.raw(selectExp))
-            .from(knexService.raw('"chequeCategories" as "baseChequeCategories"'))
+        knex.select(knex.raw(selectExp))
+            .from(knex.raw('"chequeCategories" as "baseChequeCategories"'))
             .where('isClosed', false)
             .andWhere('detailAccountId', req.params.detailAccountId)
             .as("baseChequeCategories")
@@ -101,8 +84,8 @@ router.route({
 router.route({
     method: 'GET',
     path: '/cheque-categories/:id',
-    handler: (req, res, knexService)=> {
-        knexService.select().from('chequeCategories').where('id', req.params.id)
+    handler: (req, res, knex)=> {
+        knex.select().from('chequeCategories').where('id', req.params.id)
             .then(function (result) {
                 var entity = result[0];
                 res.json(view(entity));

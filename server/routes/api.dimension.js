@@ -1,20 +1,3 @@
-/*var express = require('express');
-var router = express.Router();
-var dimensionRouteHandlers = require('../route.handlers/dimension');
-
-router.route('/dimensions/category/:categoryId')
-    .get(dimensionRouteHandlers.getAll)
-    .post(dimensionRouteHandlers.create);
-
-router.route('/dimensions/:id')
-    .get(dimensionRouteHandlers.getById)
-    .put(dimensionRouteHandlers.update)
-    .delete(dimensionRouteHandlers.remove);
-
-router.route('/dimensions/:id/activate').put(dimensionRouteHandlers.activate);
-router.route('/dimensions/:id/deactivate').put(dimensionRouteHandlers.deactivate);
-
-module.exports = router;*/
 
 var router = require('../services/routeService').Router(),
     view = require('../viewModel.assemblers/view.dimension');
@@ -22,9 +5,9 @@ var router = require('../services/routeService').Router(),
 router.route({
     method: 'GET',
     path: '/dimensions/category/:categoryId',
-    handler: (req, res, knexService, kendoQueryResolve)=> {
-        var query = knexService.select().from(function () {
-            this.select(knexService.raw("*,code || ' ' || title as display"))
+    handler: (req, res, knex, kendoQueryResolve)=> {
+        var query = knex.select().from(function () {
+            this.select(knex.raw("*,code || ' ' || title as display"))
                 .from('dimensions').as('baseDimensions').where('dimensionCategoryId', req.params.categoryId);
         }).as('baseDimensions');
 
@@ -81,8 +64,8 @@ router.route({
 router.route({
     method: 'GET',
     path: '/dimensions/:id',
-    handler: (req, res, knexService)=> {
-        knexService.select().from('dimensions').where('id', req.params.id)
+    handler: (req, res, knex)=> {
+        knex.select().from('dimensions').where('id', req.params.id)
             .then(function (result) {
                 var entity = result[0];
                 res.json(view(entity));

@@ -1,22 +1,3 @@
-/*var express = require('express');
-var router = express.Router();
-var subsidiaryLedgerAccountRouteHandlers = require('../route.handlers/subsidiaryLedgerAccount');
-
-router.route('/subsidiary-ledger-accounts').get(subsidiaryLedgerAccountRouteHandlers.getAll);
-
-router.route('/subsidiary-ledger-accounts/general-ledger-account/:parentId')
-    .get(subsidiaryLedgerAccountRouteHandlers.getAllByGeneralLedgerAccount)
-    .post(subsidiaryLedgerAccountRouteHandlers.create);
-
-router.route('/subsidiary-ledger-accounts/:id')
-    .get(subsidiaryLedgerAccountRouteHandlers.getById)
-    .put(subsidiaryLedgerAccountRouteHandlers.update)
-    .delete(subsidiaryLedgerAccountRouteHandlers.remove);
-
-router.route('/subsidiary-ledger-accounts/:id/activate').put(subsidiaryLedgerAccountRouteHandlers.activate);
-router.route('/subsidiary-ledger-accounts/:id/deactivate').put(subsidiaryLedgerAccountRouteHandlers.deactivate);
-
-module.exports = router;*/
 
 var router = require('../services/routeService').Router(),
     view = require('../viewModel.assemblers/view.subsidiaryLedgerAccount');
@@ -24,12 +5,12 @@ var router = require('../services/routeService').Router(),
 router.route({
     method: 'GET',
     path: '/subsidiary-ledger-accounts',
-    handler: (req, res, knexService, kendoQueryResolve)=> {
-        var query = knexService.select().from(function () {
+    handler: (req, res, knex, kendoQueryResolve)=> {
+        var query = knex.select().from(function () {
             var selectExp = '"subsidiaryLedgerAccounts".*,' +
                 '"subsidiaryLedgerAccounts".code || \' \' || "subsidiaryLedgerAccounts".title as "display",' +
                 '"generalLedgerAccounts".code || \'-\' || "subsidiaryLedgerAccounts".code || \' \' || "subsidiaryLedgerAccounts".title as "account"'
-            this.select(knexService.raw(selectExp))
+            this.select(knex.raw(selectExp))
                 .from('subsidiaryLedgerAccounts')
                 .leftJoin('generalLedgerAccounts', 'generalLedgerAccounts.id', 'subsidiaryLedgerAccounts.generalLedgerAccountId')
                 .as('baseSubsidiaryLedgerAccounts');
@@ -45,11 +26,11 @@ router.route({
 router.route({
     method: 'GET',
     path: '/subsidiary-ledger-accounts/general-ledger-account/:parentId',
-    handler: (req, res, knexService, kendoQueryResolve)=> {
-        var query = knexService.select().from(function () {
+    handler: (req, res, knex, kendoQueryResolve)=> {
+        var query = knex.select().from(function () {
             var selectExp = '"subsidiaryLedgerAccounts".*,' +
                 '"subsidiaryLedgerAccounts".code || \' \' || "subsidiaryLedgerAccounts".title as "display"'
-            this.select(knexService.raw(selectExp))
+            this.select(knex.raw(selectExp))
                 .from('subsidiaryLedgerAccounts')
                 .leftJoin('generalLedgerAccounts', 'generalLedgerAccounts.id', 'subsidiaryLedgerAccounts.generalLedgerAccountId')
                 .where('generalLedgerAccountId', req.params.parentId)
@@ -66,8 +47,8 @@ router.route({
 router.route({
     method: 'GET',
     path: '/subsidiary-ledger-accounts/:id',
-    handler: (req, res, knexService)=> {
-        knexService.select().from('subsidiaryLedgerAccounts')
+    handler: (req, res, knex)=> {
+        knex.select().from('subsidiaryLedgerAccounts')
             .where('id', req.params.id)
             .then(function (result) {
                 var entity = result[0];

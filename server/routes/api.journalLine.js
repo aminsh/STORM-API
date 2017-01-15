@@ -1,17 +1,3 @@
-/*var express = require('express');
-var router = express.Router();
-var journalLineRouteHandler = require('../route.handlers/journalLine');
-
-router.route('/journal-lines/journal/:journalId')
-    .get(journalLineRouteHandler.getAll)
-    .post(journalLineRouteHandler.create);
-
-router.route('/journal-lines/:id')
-    .get(journalLineRouteHandler.getById)
-    .put(journalLineRouteHandler.update)
-    .delete(journalLineRouteHandler.remove);
-
-module.exports = router;*/
 
 var router = require('../services/routeService').Router(),
     view = require('../viewModel.assemblers/view.journalLine');
@@ -19,15 +5,15 @@ var router = require('../services/routeService').Router(),
 router.route({
     method: 'GET',
     path: '/journal-lines/journal/:journalId',
-    handler: (req, res, knexService, kendoQueryResolve)=> {
-        var query = knexService.select().from(function () {
-            baseJournalLines.apply(this, knexService);
+    handler: (req, res, knex, kendoQueryResolve)=> {
+        var query = knex.select().from(function () {
+            baseJournalLines.apply(this, knex);
         }).where('journalId', req.params.journalId);
 
         var result = await(kendoQueryResolve(query, req.query, view));
 
-        var aggregates = await(knexService
-            .select(knexService.raw('SUM("debtor") as "sumDebtor", SUM("creditor") as "sumCreditor"'))
+        var aggregates = await(knex
+            .select(knex.raw('SUM("debtor") as "sumDebtor", SUM("creditor") as "sumCreditor"'))
             .from('journalLines').where('journalId', req.params.journalId))[0];
 
         result.aggregates = {
@@ -42,8 +28,8 @@ router.route({
 router.route({
     method: 'GET',
     path: '/journal-lines/:id',
-    handler: (req, res, knexService)=> {
-        knexService.select().from('journalLines').where('id', req.params.id)
+    handler: (req, res, knex)=> {
+        knex.select().from('journalLines').where('id', req.params.id)
             .then(function (result) {
                 var entity = result[0];
                 res.json(view(entity));
@@ -157,7 +143,7 @@ router.route({
 
 module.exports = router.routes;
 
-function baseJournalLines(knexService) {
+function baseJournalLines(knex) {
     this.select(
         'journalLines.id',
         'journalLines.journalId',
@@ -167,31 +153,31 @@ function baseJournalLines(knexService) {
         'journalLines.creditor',
         'journalLines.generalLedgerAccountId',
         'journalLines.subsidiaryLedgerAccountId',
-        knexService.raw('"generalLedgerAccounts"."code" as "generalLedgerAccountCode"'),
-        knexService.raw('"generalLedgerAccounts"."code" || \' \' || "generalLedgerAccounts"."title" as "generalLedgerAccountDisplay"'),
+        knex.raw('"generalLedgerAccounts"."code" as "generalLedgerAccountCode"'),
+        knex.raw('"generalLedgerAccounts"."code" || \' \' || "generalLedgerAccounts"."title" as "generalLedgerAccountDisplay"'),
         'journalLines.subsidiaryLedgerAccountId',
-        knexService.raw('"subsidiaryLedgerAccounts"."code" as "subsidiaryLedgerAccountCode"'),
-        knexService.raw('"subsidiaryLedgerAccounts".code || \' \' || "subsidiaryLedgerAccounts".title as "subsidiaryLedgerAccountDisplay"'),
+        knex.raw('"subsidiaryLedgerAccounts"."code" as "subsidiaryLedgerAccountCode"'),
+        knex.raw('"subsidiaryLedgerAccounts".code || \' \' || "subsidiaryLedgerAccounts".title as "subsidiaryLedgerAccountDisplay"'),
         'journalLines.detailAccountId',
-        knexService.raw('"detailAccounts"."code" as "detailAccountCode"'),
-        knexService.raw('"detailAccounts"."code" || \' \' || "detailAccounts"."title" as "detailAccountDisplay"'),
+        knex.raw('"detailAccounts"."code" as "detailAccountCode"'),
+        knex.raw('"detailAccounts"."code" || \' \' || "detailAccounts"."title" as "detailAccountDisplay"'),
         'journalLines.dimension1Id',
-        knexService.raw('"dimension1s"."code" || \' \' || "dimension1s"."title" as "dimension1Display"'),
+        knex.raw('"dimension1s"."code" || \' \' || "dimension1s"."title" as "dimension1Display"'),
         'journalLines.dimension2Id',
-        knexService.raw('"dimension2s"."code" || \' \' || "dimension2s"."title" as "dimension2Display"'),
+        knex.raw('"dimension2s"."code" || \' \' || "dimension2s"."title" as "dimension2Display"'),
         'journalLines.dimension3Id',
-        knexService.raw('"dimension3s"."code" || \' \' || "dimension3s"."title" as "dimension3Display"'),
-        knexService.raw('"cheques"."id" as "chequeId"'),
-        knexService.raw('"cheques"."number" as "chequeNumber"'),
-        knexService.raw('"cheques"."date" as "chequeDate"'),
-        knexService.raw('"cheques"."description" as "chequeDescription"')
+        knex.raw('"dimension3s"."code" || \' \' || "dimension3s"."title" as "dimension3Display"'),
+        knex.raw('"cheques"."id" as "chequeId"'),
+        knex.raw('"cheques"."number" as "chequeNumber"'),
+        knex.raw('"cheques"."date" as "chequeDate"'),
+        knex.raw('"cheques"."description" as "chequeDescription"')
     ).from('journalLines')
         .leftJoin('generalLedgerAccounts', 'journalLines.generalLedgerAccountId', 'generalLedgerAccounts.id')
         .leftJoin('subsidiaryLedgerAccounts', 'journalLines.subsidiaryLedgerAccountId', 'subsidiaryLedgerAccounts.id')
         .leftJoin('detailAccounts', 'journalLines.detailAccountId', 'detailAccounts.id')
-        .leftJoin(knexService.raw('"dimensions" as "dimension1s"'), 'journalLines.dimension1Id', 'dimension1s.id')
-        .leftJoin(knexService.raw('"dimensions" as "dimension2s"'), 'journalLines.dimension2Id', 'dimension2s.id')
-        .leftJoin(knexService.raw('"dimensions" as "dimension3s"'), 'journalLines.dimension3Id', 'dimension3s.id')
+        .leftJoin(knex.raw('"dimensions" as "dimension1s"'), 'journalLines.dimension1Id', 'dimension1s.id')
+        .leftJoin(knex.raw('"dimensions" as "dimension2s"'), 'journalLines.dimension2Id', 'dimension2s.id')
+        .leftJoin(knex.raw('"dimensions" as "dimension3s"'), 'journalLines.dimension3Id', 'dimension3s.id')
         .leftJoin('cheques', 'journalLines.id', 'cheques.journalLineId')
         .orderBy('journalLines.row')
         .as('baseJournalLines');

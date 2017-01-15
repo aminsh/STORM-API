@@ -1,21 +1,3 @@
-/*var express = require('express');
-var router = express.Router();
-var generalLedgerAccountRouteHandlers = require('../route.handlers/generalLedgerAccount');
-
-router.route('/general-ledger-accounts')
-    .get(generalLedgerAccountRouteHandlers.getAll)
-    .post(generalLedgerAccountRouteHandlers.create);
-
-router.route('/general-ledger-accounts/:id')
-    .get(generalLedgerAccountRouteHandlers.getById)
-    .put(generalLedgerAccountRouteHandlers.update)
-    .delete(generalLedgerAccountRouteHandlers.remove);
-
-router.route('/general-ledger-accounts/:id/activate').put(generalLedgerAccountRouteHandlers.activate);
-router.route('/general-ledger-accounts/:id/deactivate').put(generalLedgerAccountRouteHandlers.deactivate);
-
-
-module.exports = router;*/
 
 var router = require('../services/routeService').Router(),
     view = require('../viewModel.assemblers/view.generalLedgerAccount');
@@ -23,9 +5,9 @@ var router = require('../services/routeService').Router(),
 router.route({
     method: 'GET',
     path: '/general-ledger-accounts',
-    handler: (req, res,knexService,kendoQueryResolve)=> {
-        var query = knexService.select().from(function () {
-            this.select(knexService.raw("*,code || ' ' || title as display"))
+    handler: (req, res,knex,kendoQueryResolve)=> {
+        var query = knex.select().from(function () {
+            this.select(knex.raw("*,code || ' ' || title as display"))
                 .from('generalLedgerAccounts').as('baseGeneralLedgerAccounts');
         }).as('baseGeneralLedgerAccounts');
 
@@ -86,8 +68,8 @@ router.route({
 router.route({
     method: 'GET',
     path: '/general-ledger-accounts/:id',
-    handler: (req, res, knexService)=> {
-        knexService.select().from('generalLedgerAccounts').where('id', req.params.id)
+    handler: (req, res, knex)=> {
+        knex.select().from('generalLedgerAccounts').where('id', req.params.id)
             .then(function (result) {
                 var entity = result[0];
                 res.json(view(entity));

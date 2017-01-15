@@ -3,7 +3,7 @@ var router = require('../services/routeService').Router();
 router.route({
     method: 'GET',
     path: '/account-review/general-ledger-account',
-    handler: (req, res, knexService, accountReviewQuery, kendoQueryResolve)=> {
+    handler: (req, res, knex, accountReviewQuery, kendoQueryResolve)=> {
         var filter = (req.query.extra) ? req.query.extra.filter : undefined;
 
         var dateRange = await(accountReviewQuery.getDateRange(req.cookies['current-period'], filter));
@@ -17,10 +17,10 @@ router.route({
             groupByField: 'generalLedgerAccountId'
         };
 
-        var query = knexService.select().from(function () {
+        var query = knex.select().from(function () {
             this.select('generalLedgerAccountId', 'sumBeforeRemainder', 'sumDebtor', 'sumCreditor', 'sumRemainder',
-                knexService.raw('"generalLedgerAccounts"."code" as "generalLedgerAccountCode"'),
-                knexService.raw('"generalLedgerAccounts"."title" as "generalLedgerAccountTitle"'))
+                knex.raw('"generalLedgerAccounts"."code" as "generalLedgerAccountCode"'),
+                knex.raw('"generalLedgerAccounts"."title" as "generalLedgerAccountTitle"'))
                 .from(function () {
                     accountReviewQuery.accountReviewQuery.call(this, options);
                 })

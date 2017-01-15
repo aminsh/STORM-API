@@ -1,28 +1,10 @@
-/*
-var express = require('express');
-var router = express.Router();
-var bankRouteHandler = require('../route.handlers/bank');
-var routeHandler = require('../utilities/routeHandler');
-
-router.route('/banks')
-    .get((req, res)=> routeHandler(req, bankRouteHandler.getAll))
-    .post(bankRouteHandler.create);
-
-router.route('/banks/:id')
-    .get((req, res)=> routeHandler(req, bankRouteHandler.getById))
-    .put(bankRouteHandler.update)
-    .delete(bankRouteHandler.remove);
-
-module.exports = router;
-*/
-
 var router = require('../services/routeService').Router();
 
 router.route({
     method: 'GET',
     path: '/banks',
-    handler: (req, res, knexService, kendoQueryResolve)=> {
-        var query = knexService.select().from('banks');
+    handler: (req, res, knex, kendoQueryResolve)=> {
+        var query = knex.select().from('banks');
 
         var view = function (entity) {
             return {
@@ -75,8 +57,8 @@ router.route({
 router.route({
     method: 'GET',
     path: '/banks/:id',
-    handler: (req, res, knexService)=> {
-        knexService.select().from('banks').where('id', req.params.id)
+    handler: (req, res, knex)=> {
+        knex.select().from('banks').where('id', req.params.id)
             .then(function (result) {
                 var entity = result[0];
                 res.json({

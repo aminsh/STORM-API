@@ -1,29 +1,3 @@
-/*var express = require('express');
-var router = express.Router();
-var journalRouteHandlers = require('../route.handlers/journal');
-
-router.route('/journals')
-    .get(journalRouteHandlers.getAll)
-    .post(journalRouteHandlers.create);
-
-router.route('/journals/:id')
-    .get(journalRouteHandlers.getById)
-    .put(journalRouteHandlers.update)
-    .delete(journalRouteHandlers.remove);
-
-router.route('/journals/summary/grouped-by-month').get(journalRouteHandlers.getGroupedByMouth);
-
-router.route('/journals/month/:month').get(journalRouteHandlers.getJournalsByMonth);
-
-router.route('/journals/period/:periodId').get(journalRouteHandlers.getAllByPeriod);
-
-router.route('/journals/:id/bookkeeping').put(journalRouteHandlers.bookkeeping);
-router.route('/journals/:id/fix').put(journalRouteHandlers.fix);
-router.route('/journals/:id/attach-image').put(journalRouteHandlers.attachImage);
-
-router.route('/journals/:id/copy').post(journalRouteHandlers.copy);
-
-module.exports = router;*/
 
 var router = require('../services/routeService').Router(),
     view = require('../viewModel.assemblers/view.journal'),
@@ -32,11 +6,11 @@ var router = require('../services/routeService').Router(),
 router.route({
     method: 'GET',
     path: '/journals',
-    handler: (req, res, knexService, kendoQueryResolve)=> {
+    handler: (req, res, knex, kendoQueryResolve)=> {
         var currentFiscalPeriod = req.cookies['current-period'];
         var extra = (req.query.extra) ? req.query.extra.filter : undefined;
 
-        var query = knexService.select().from(groupedJournals).as('baseJournals');
+        var query = knex.select().from(groupedJournals).as('baseJournals');
 
         function baseJournals() {
             var q = this.select(
@@ -60,10 +34,10 @@ router.route({
                 'journalLines.article',
                 'journalLines.debtor',
                 'journalLines.creditor',
-                knexService.raw('"cheques"."id" as "chequeId"'),
-                knexService.raw('"cheques"."date" as "chequeDate"'),
-                knexService.raw('"cheques"."description" as "chequeDescription"'),
-                knexService.raw('"users"."name" as "createdBy"')
+                knex.raw('"cheques"."id" as "chequeId"'),
+                knex.raw('"cheques"."date" as "chequeDate"'),
+                knex.raw('"cheques"."description" as "chequeDescription"'),
+                knex.raw('"users"."name" as "createdBy"')
             ).from('journals')
                 .leftJoin('journalLines', 'journals.id', 'journalLines.journalId')
                 .leftJoin('cheques', 'journalLines.id', 'cheques.journalLineId')
@@ -87,13 +61,13 @@ router.route({
                 'journalStatus',
                 'journalType',
                 'isInComplete'
-                //knexService.raw('SUM("debtor") as "sumDebtor"'),
-                //knexService.raw('SUM("creditor") as "sumCreditor"'),
-                //knexService.raw('"users"."name" as "createdBy"')
+                //knex.raw('SUM("debtor") as "sumDebtor"'),
+                //knex.raw('SUM("creditor") as "sumCreditor"'),
+                //knex.raw('"users"."name" as "createdBy"')
             ).from(baseJournals)
                 /*.leftJoin('journalLines', 'journals.id', 'journalLines.journalId')
                  .leftJoin('users', 'journals.createdById', 'users.id')
-                 .whereExists(knexService.select('*').from(baseJournals).whereRaw('"journals"."id" = "baseJournals"."id"'))*/
+                 .whereExists(knex.select('*').from(baseJournals).whereRaw('"journals"."id" = "baseJournals"."id"'))*/
                 .groupBy(
                     'id',
                     'temporaryNumber',
@@ -126,7 +100,7 @@ router.route({
 
             if (filter.title && filter.title !== '') {
                 var value = '%{0}%'.format(filter.title);
-                query.andWhereRaw(knexService.raw('("journals"."description" LIKE ? OR "journalLines"."article" LIKE ?)',
+                query.andWhereRaw(knex.raw('("journals"."description" LIKE ? OR "journalLines"."article" LIKE ?)',
                     [value, value]));
             }
 
@@ -178,10 +152,10 @@ router.route({
 router.route({
     method: 'GET',
     path: '/journals/:id',
-    handler: (req, res, knexService)=> {
-        var result = await(knexService.select().from('journals').where('id', req.params.id))[0];
+    handler: (req, res, knex)=> {
+        var result = await(knex.select().from('journals').where('id', req.params.id))[0];
 
-        var tagIds = await(knexService.select('tagId')
+        var tagIds = await(knex.select('tagId')
             .from('journalTags')
             .where('journalId', req.params.id))
             .asEnumerable().select(function (t) {
@@ -199,7 +173,7 @@ router.route({
 router.route({
     method: 'GET',
     path: '/journals/summary/grouped-by-month',
-    handler: (req, res, knexService)=> {
+    handler: (req, res, knex)=> {
         var currentFiscalPeriod = req.cookies['current-period'];
 
         var selectExp = '"month",' +
@@ -209,8 +183,8 @@ router.route({
             '"min"("temporaryDate") as "minDate",' +
             '"max"("temporaryDate") as "maxDate"';
 
-        knexService.select(knexService.raw(selectExp)).from(function () {
-                this.select(knexService.raw('*,cast(substring("temporaryDate" from 6 for 2) as INTEGER) as "month"'))
+        knex.select(knex.raw(selectExp)).from(function () {
+                this.select(knex.raw('*,cast(substring("temporaryDate" from 6 for 2) as INTEGER) as "month"'))
                     .from('journals')
                     .where('periodId', currentFiscalPeriod)
                     .as('baseJournals');
@@ -232,7 +206,7 @@ router.route({
 router.route({
     method: 'GET',
     path: '/journals/month/:month',
-    handler: (req, res, knexService, kendoQueryResolve)=> {
+    handler: (req, res, knex, kendoQueryResolve)=> {
         var currentFiscalPeriod = req.cookies['current-period'];
         var selectExp = '"id","temporaryNumber","temporaryDate","number","date","description",' +
             'CASE WHEN "journalStatus"=\'Fixed\' THEN TRUE ELSE FALSE END as "isFixed",' +
@@ -240,9 +214,9 @@ router.route({
             '(select "sum"("debtor") from "journalLines" WHERE "journalId" = journals."id") as "sumAmount",' +
             '(select "count"(*) from "journalLines" WHERE "journalId" = journals."id") as "countOfRows"';
 
-        var query = knexService.select().from(function () {
-            this.select(knexService.raw(selectExp)).from('journals')
-                .where(knexService.raw('cast(substring("temporaryDate" from 6 for 2) as INTEGER)'), req.params.month)
+        var query = knex.select().from(function () {
+            this.select(knex.raw(selectExp)).from('journals')
+                .where(knex.raw('cast(substring("temporaryDate" from 6 for 2) as INTEGER)'), req.params.month)
                 .andWhere('periodId', currentFiscalPeriod)
                 .orderBy('temporaryNumber')
                 .as('baseJournals');
@@ -260,9 +234,9 @@ router.route({
 router.route({
     method: 'GET',
     path: '/journals/period/:periodId',
-    handler: (req, res, knexService, kendoQueryResolve)=> {
+    handler: (req, res, knex, kendoQueryResolve)=> {
         var currentFiscalPeriod = req.params.periodId;
-        var query = knexService.select().from(function () {
+        var query = knex.select().from(function () {
             this.select().from('journals')
                 .where('periodId', currentFiscalPeriod)
                 .orderBy('temporaryNumber', 'desc')

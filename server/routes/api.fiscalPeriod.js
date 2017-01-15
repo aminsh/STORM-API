@@ -9,9 +9,9 @@ var router = require('../services/routeService').Router(),
 router.route({
     method: 'GET',
     path: '/fiscal-periods',
-    handler: (req, res, knexService, kendoQueryResolve)=> {
-        var query = knexService.select().from(function () {
-            this.select(knexService.raw('*,\'{0} \' || "minDate" || \' {1} \' || "maxDate" as "display"'
+    handler: (req, res, knex, kendoQueryResolve)=> {
+        var query = knex.select().from(function () {
+            this.select(knex.raw('*,\'{0} \' || "minDate" || \' {1} \' || "maxDate" as "display"'
                 .format(translateService('From'), translateService('To'))))
                 .from('fiscalPeriods')
                 .as('baseFiscalPeriod');
@@ -27,9 +27,9 @@ router.route({
 router.route({
     method: 'GET',
     path: '/fiscal-periods/current',
-    handler: (req, res, knexService)=> {
-        knexService.select().from(function () {
-                this.select(knexService.raw('*,\'{0} \' || "minDate" || \' {1} \' || "maxDate" as "display"'
+    handler: (req, res, knex)=> {
+        knex.select().from(function () {
+                this.select(knex.raw('*,\'{0} \' || "minDate" || \' {1} \' || "maxDate" as "display"'
                     .format(translateService('From'), translateService('To'))))
                     .from('fiscalPeriods')
                     .as('baseFiscalPeriod')
