@@ -4,19 +4,19 @@ let async = require('asyncawait/async'),
     await = require('asyncawait/await');
 
 class GeneralLedgerAccountRepository {
-    constructor(knexService) {
-        this.knexService = knexService;
+    constructor(knex) {
+        this.knex = knex;
         this.create = async(this.create);
     }
 
     findById(id) {
-        return this.knexService.table('generalLedgerAccounts')
+        return this.knex.table('generalLedgerAccounts')
             .where('id', id)
             .first();
     }
 
     findByCode(code, notEqualId) {
-        let query = this.knexService.table('generalLedgerAccounts')
+        let query = this.knex.table('generalLedgerAccounts')
             .where('code', code);
 
         if (notEqualId)
@@ -26,7 +26,7 @@ class GeneralLedgerAccountRepository {
     }
 
     create(entity) {
-        entity.id = await(this.knexService('generalLedgerAccounts')
+        entity.id = await(this.knex('generalLedgerAccounts')
             .returning('id')
             .insert(entity));
 
@@ -34,13 +34,13 @@ class GeneralLedgerAccountRepository {
     }
 
     update(entity) {
-        return this.knexService('generalLedgerAccounts')
+        return this.knex('generalLedgerAccounts')
             .where('id', entity.id)
             .update(entity);
     }
 
     remove(id) {
-        return this.knexService('generalLedgerAccounts')
+        return this.knex('generalLedgerAccounts')
             .where('id', id)
             .del();
     }

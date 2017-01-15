@@ -4,19 +4,19 @@ let async = require('asyncawait/async'),
     await = require('asyncawait/await');
 
 class DetailAccountRepository {
-    constructor(knexService) {
-        this.knexService = knexService;
+    constructor(knex) {
+        this.knex = knex;
         this.create = async(this.create);
     }
 
     findById(id) {
-        return this.knexService.table('detailAccounts')
+        return this.knex.table('detailAccounts')
             .where('id', id)
             .first();
     }
 
     findByCode(code, notEqualId) {
-        let query = this.knexService.table('detailAccounts')
+        let query = this.knex.table('detailAccounts')
             .where('code', code);
 
         if (notEqualId)
@@ -26,7 +26,7 @@ class DetailAccountRepository {
     }
 
     create(entity) {
-        entity.id = await(this.knexService('detailAccounts')
+        entity.id = await(this.knex('detailAccounts')
             .returning('id')
             .insert(entity));
 
@@ -34,13 +34,13 @@ class DetailAccountRepository {
     }
 
     update(entity) {
-        return this.knexService('detailAccounts')
+        return this.knex('detailAccounts')
             .where('id', entity.id)
             .update(entity);
     }
 
     remove(id) {
-        return this.knexService('detailAccounts')
+        return this.knex('detailAccounts')
             .where('id', id)
             .del();
     }

@@ -4,18 +4,18 @@ let async = require('asyncawait/async'),
     await = require('asyncawait/await');
 
 class ChequeRepository {
-    constructor(knexService) {
-        this.knexService = knexService;
+    constructor(knex) {
+        this.knex = knex;
     }
 
     findById(id) {
-        return this.knexService.table('cheques')
+        return this.knex.table('cheques')
             .where('id', id)
             .first();
     }
 
     update(entity) {
-        return this.knexService('cheques')
+        return this.knex('cheques')
             .where('id', entity.id)
             .update(entity);
     }

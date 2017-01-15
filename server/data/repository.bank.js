@@ -1,23 +1,23 @@
 "use strict";
 
-let async = require('asyncawait/async'),
+const async = require('asyncawait/async'),
     await = require('asyncawait/await');
 
 class BankRepository {
-    constructor(knexService) {
-        this.knexService = knexService;
+    constructor(knex) {
+        this.knex = knex;
         this.create = async(this.create);
     }
 
     findById(id) {
-        return this.knexService
+        return this.knex
             .table('banks')
             .where('id', id)
             .first();
     }
 
     create(entity) {
-        let id = await(this.knexService('banks')
+        let id = await(this.knex('banks')
             .returning('id')
             .insert(entity));
 
@@ -26,13 +26,13 @@ class BankRepository {
     }
 
     update(entity) {
-        return this.knexService('banks')
+        return this.knex('banks')
             .where('id', entity.id)
             .update(entity);
     }
 
     remove(id) {
-        return this.knexService('banks')
+        return this.knex('banks')
             .where('id', id)
             .del();
     }

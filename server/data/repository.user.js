@@ -4,19 +4,19 @@ let async = require('asyncawait/async'),
     await = require('asyncawait/await');
 
 class UserRepository {
-    constructor(knexService) {
-        this.knexService = knexService;
+    constructor(knex) {
+        this.knex = knex;
         this.create = async(this.create);
     }
 
     findById(id) {
-        return this.knexService.table('users')
+        return this.knex.table('users')
             .where('id', id)
             .first();
     }
 
     create(entity) {
-        entity.id = this.knexService('users')
+        entity.id = this.knex('users')
             .returning('id')
             .insert(entity);
 

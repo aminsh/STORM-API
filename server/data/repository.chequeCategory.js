@@ -4,27 +4,27 @@ let async = require('asyncawait/async'),
     await = require('asyncawait/await');
 
 class ChequeCategoryRepository {
-    constructor(knexService) {
-        this.knexService = knexServicel
+    constructor(knex) {
+        this.knex = knexl
     }
 
     findById(id) {
-        return this.knexService.table('chequeCategories')
+        return this.knex.table('chequeCategories')
             .where('id', id)
             .first();
     }
 
     create(entity) {
-        knexService.transaction((trx) => {
+        knex.transaction((trx) => {
             try {
-                let id = await(knexService('chequeCategories')
+                let id = await(knex('chequeCategories')
                     .transaction(trx)
                     .returning('id')
                     .insert(entity));
 
                 entity.cheques.forEach(c => c.chequeCategoryId = id);
 
-                await(this.knexService('cheques')
+                await(this.knex('cheques')
                     .transaction(trx)
                     .insert(entity.cheques));
 
@@ -37,13 +37,13 @@ class ChequeCategoryRepository {
     }
 
     update(entity) {
-        return this.knexService('chequeCategories')
+        return this.knex('chequeCategories')
             .where('id', entity.id)
             .update(entity);
     }
 
     remove(id) {
-        return this.knexService('chequeCategories')
+        return this.knex('chequeCategories')
             .where('id', id)
             .del();
     }

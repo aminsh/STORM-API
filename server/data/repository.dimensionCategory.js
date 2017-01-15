@@ -4,18 +4,18 @@ let async = require('asyncawait/async'),
     await = require('asyncawait/await');
 
 class DimensionCategoryRepository {
-    constructor(knexService) {
-        this.knexService = knexService;
+    constructor(knex) {
+        this.knex = knex;
     }
 
     findById(id) {
-        return this.knexService.table('dimensionCategories')
+        return this.knex.table('dimensionCategories')
             .where('id', id)
             .first();
     }
 
     update(entity) {
-        return this.knexService('dimensionCategories')
+        return this.knex('dimensionCategories')
             .where('id', entity.id)
             .update(entity);
     }

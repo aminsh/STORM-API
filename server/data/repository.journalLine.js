@@ -4,19 +4,19 @@ let async = require('asyncawait/async'),
     await = require('asyncawait/await');
 
 class JournalLineRepository {
-    constructor(knexService) {
-        this.knexService = knexService;
+    constructor(knex) {
+        this.knex = knex;
         this.create = async(this.create);
     }
 
     findById(id) {
-        return this.knexService.table('journalLines')
+        return this.knex.table('journalLines')
             .where('id', id)
             .first();
     }
 
     create(entity) {
-        entity.id = await(this.knexService('journalLines')
+        entity.id = await(this.knex('journalLines')
             .returning('id')
             .insert(entity));
 
@@ -24,13 +24,13 @@ class JournalLineRepository {
     }
 
     update(entity) {
-        return this.knexService('journalLines')
+        return this.knex('journalLines')
             .where('id', id)
             .update(entity);
     }
 
     remove(id) {
-        return this.knexService('journalLines')
+        return this.knex('journalLines')
             .where('id', id)
             .del();
     }
