@@ -9,8 +9,8 @@ var express = require('express'),
     authRoute = require('../services/authRoute'),
     branchRoute = require('../services/branchRoute');
 
-
 var clientTranslation = require('./translate.fa.json');
+
 app.use(async(function (req, res, next) {
     if (shouldNextRoute(req, res, next))
         return;
@@ -24,18 +24,13 @@ app.use(async(function (req, res, next) {
     return res.render('index.ejs', {
         clientTranslation: clientTranslation,
         currentUser: req.isAuthenticated() ? req.user.name : '',
-        currentBranch: req.cookies['branch-id'] ? require('../queries/query.branch').getById(req.cookies['branch-id']) : false,
+        currentBranch: req.cookies['branch-id']
+            ? require('../queries/query.branch').getById(req.cookies['branch-id'])
+            : false,
         env: process.env.NODE_ENV,
         version: config.version
     });
 }));
-
-
-/*app.get('/auth/provider/callback',
- passport.authenticate('devstorm-auth', {
- successRedirect: '/',
- failureRedirect: '/login'
- }));*/
 
 var basePath = '../routes';
 
