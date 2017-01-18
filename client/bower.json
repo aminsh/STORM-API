@@ -13,19 +13,11 @@
     "tests"
   ],
   "dependencies": {
-    "angular": "~1.4.6",
-    "angular-animate": "~1.4.6",
-    "angular-resource": "~1.4.6",
-    "angular-route": "~1.4.6",
-    "angular-sanitize": "~1.4.6",
-    "angular-translate": "~2.8.0",
-    "angular-bootstrap": "~0.13.4",
-    "bootstrap-rtl": "~3.3.4",
-    "angular-translate-loader-url": "~2.8.1",
-    "angular-messages": "^1.5.7",
-    "angular-cookies": "^1.5.8",
-    "linqjs": "^3.0.5",
-    "jquery": "2.2.4"
-
+    "angular": "^1.6.1",
+    "angular-bootstrap": "^2.4.0",
+    "angular-translate": "^2.13.1",
+    "angular-ui-router": "ui-router#^0.3.2",
+    "angular-permission": "^5.1.0",
+    "oclazyload": "^1.0.9"
   }
 }
