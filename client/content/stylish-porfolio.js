@@ -182,7 +182,7 @@ export default StyleSheet.create({
         "width": "100%",
         "height": 400,
         "color": "#fff",
-        "background": "url(/client/content/images/callout.jpg) no-repeat center center scroll",
+        "background": "url(/client/content/images/acconting-main.jpg) no-repeat center center scroll",
         "WebkitBackgroundSize": "cover",
         "MozBackgroundSize": "cover",
         "backgroundSize": "cover",
