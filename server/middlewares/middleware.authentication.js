@@ -1,11 +1,12 @@
-var config = require('../config'),
-    routeHandler = require('../utilities/routeHandler'),
-    indexRouter = require('../routes')
-        .asEnumerable()
-        .single(r => r.method.toLowerCase() == 'get' && r.path == '/');
+"use strict";
 
-module.exports = (req, res, next) => {
+const config = require('../config'),
+    async = require('asyncawait/async'),
+    await = require('asyncawait/await'),
+    routeHandler = require('../utilities/routeHandler');
+
+module.exports = async((req, res, next) => {
     const authenticationService = req.ioc.resolve('authenticationService');
 
     authenticationService.middleware();
-};
+});

@@ -1,30 +1,34 @@
-var redis = require('redis'),
+"use strict";
+
+const redis = require('redis'),
     config = require('../config'),
-    client = redis.createClient(config.redis),
+    dbClient = redis.createClient(config.redis),
+    publisher = redis.createClient(config.redis),
+    subscriber = redis.createClient(config.redis),
     Promise = require('promise');
 
 module.exports = {
     get(key) {
         return new Promise((resolve, reject) => {
-            client.get(key, (err, reply) => {
+            dbClient.get(key, (err, reply) => {
                 if (err) return reject(err);
                 resolve(JSON.parse(reply));
             });
         });
     },
     set(key, value) {
-        client.set(key, JSON.stringify(value));
+        dbClient.set(key, JSON.stringify(value));
     },
 
     publish(channel, data) {
-        client.publish(channel, JSON.stringify(data));
+        publisher.publish(channel, JSON.stringify(data));
     },
 
     subscribe(channel) {
-        client.subscribe(channel);
+        subscriber.subscribe(channel);
     },
 
     on(event, handler) {
-        client.on(event, handler);
+        subscriber.on(event, handler);
     }
 };

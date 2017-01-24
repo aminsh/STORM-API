@@ -9,8 +9,8 @@ function kendoQueryResolve(query, request, mapper) {
     resolveLimitAndOffset(query, request.skip, request.take);
     resolveSort(query, request.sort);
 
-    var data = await(query);
-    var viewData = data.asEnumerable().select(mapper).toArray();
+    var viewData = await(query.map(mapper));
+    //var viewData = data.asEnumerable().select(mapper).toArray();
 
     return {
         data: viewData,

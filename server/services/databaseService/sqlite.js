@@ -1,5 +1,5 @@
 const fs = require('fs'),
-    config = require('../config'),
+    config = require('../../config'),
     Promise = require('promise');
 
 module.exports = {
@@ -22,4 +22,4 @@ module.exports = {
                 }
         });
     }
-}
+};

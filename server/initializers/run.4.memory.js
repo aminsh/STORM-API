@@ -6,16 +6,16 @@ var memoryService = require('../services/memoryService'),
     async = require('asyncawait/async'),
     await = require('asyncawait/await');
 
-module.exports = ()=> {
+module.exports = async(()=> {
     memoryService.set('users', []);
 
     let branches = await(redisClient.get('branches'));
     memoryService.set('branches', branches);
 
-    let dbConfigs = await(redisClient.get('accDbConfigs'))
+    let dbConfigs = (await(redisClient.get('accDbConfigs')) || [])
         .asEnumerable()
         .select(e => cryptoService.decrypt(e))
         .toArray();
 
     memoryService.set('dbConfigs', dbConfigs);
-};
+});

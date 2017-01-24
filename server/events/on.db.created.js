@@ -1,4 +1,6 @@
-var cryptoService = require('../services/cryptoService'),
+"use strict";
+
+const cryptoService = require('../services/cryptoService'),
     memoryService = require('../services/memoryService'),
     redisClient = require('../services/redisClientService'),
     async = require('asyncawait/async'),

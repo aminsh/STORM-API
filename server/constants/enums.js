@@ -1,5 +1,7 @@
-﻿var Enum = require('../utilities/Enum');
-var enums = {};
+﻿"use strict";
+
+const Enum = require('../utilities/Enum'),
+    enums = {};
 
 enums.AccountPostingType = function () {
     return new Enum([
@@ -40,7 +42,7 @@ enums.JournalStatus = function () {
         {key: 'BookKeeped', display: 'ثبت دفترداری'},
         {key: 'Fixed', display: 'ثبت قطعی'}
     ]);
-}
+};
 
 enums.ChequeStatus = function () {
     return new Enum([
