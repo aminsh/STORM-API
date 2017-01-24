@@ -2,7 +2,7 @@
 
 const filter = require('./query.journal.filter');
 
-module.exports = function(extra, currentFiscalPeriodId) {
+module.exports = function(extra, currentFiscalPeriodId, knex) {
     var q = this.select(
         'journals.id',
         'journals.temporaryNumber',
