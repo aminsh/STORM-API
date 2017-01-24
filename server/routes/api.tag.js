@@ -1,24 +1,16 @@
+"use strict";
 
-var router = require('../services/routeService').Router();
+const async = require('asyncawait/async'),
+    await = require('asyncawait/await'),
+    router = require('express').Router(),
+    TagRepository = require('../data/repository.tag'),
+    TagQuery = require('../queries/query.tag');
 
-router.route({
-    method: 'GET',
-    path: '/tags',
-    handler: (req,res, knex, kendoQueryResolve)=> {
-        var query = knex.select().from('tags');
 
-        var view = function (t) {
-            return {
-                id: t.id,
-                title: t.title
-            };
-        };
+router.route('/tags').get(async((req, res) => {
+    let tagQuery = new TagQuery(req.knex),
+        result = await(tagQuery.getAll(req.query));
+    res.json(result);
+}));
 
-        kendoQueryResolve(query, req.query, view)
-            .then(function (result) {
-                res.json(result);
-            });
-    }
-});
-
-module.exports = router.routes;
+module.exports = router;

@@ -1,32 +1,24 @@
+"use strict";
 
-var router = require('../services/routeService').Router(),
-    view = require('../viewModel.assemblers/view.dimension');
+const async = require('asyncawait/async'),
+    await = require('asyncawait/await'),
+    router = require('express').Router(),
+    DimensionRepository = require('../data/repository.dimension'),
+    DimensionQuery = require('../queries/query.dimension');
 
-router.route({
-    method: 'GET',
-    path: '/dimensions/category/:categoryId',
-    handler: (req, res, knex, kendoQueryResolve)=> {
-        var query = knex.select().from(function () {
-            this.select(knex.raw("*,code || ' ' || title as display"))
-                .from('dimensions').as('baseDimensions').where('dimensionCategoryId', req.params.categoryId);
-        }).as('baseDimensions');
-
-        kendoQueryResolve(query, req.query, view)
-            .then(function (result) {
-                res.json(result);
-            });
-    }
-});
-
-router.route({
-    method: 'POST',
-    path: '/dimensions/category/:categoryId',
-    handler: (req, res, dimensionRepository)=> {
-        var errors = [];
-        var cmd = req.body;
+router.route('/category/:categoryId')
+    .get(async((req, res) => {
+        let dimensionQuery = new DimensionQuery(req.knex),
+            result = dimensionQuery.getAll(req.params.categroyId, req.query);
+        res.json(result);
+    }))
+    .post(async((req, res) => {
+        let dimensionRepository = new DimensionRepository(req.knex),
+            errors = [],
+            cmd = req.body;
 
         if (!string.isNullOrEmpty(cmd.code)) {
-            var dimension = await(repository.findByCode(cmd.code, cmd.dimensionCategoryId));
+            let dimension = await(dimensionRepository.findByCode(cmd.code, cmd.dimensionCategoryId));
 
             if (dimension)
                 errors.push(translate('The code is duplicated'));
@@ -45,43 +37,34 @@ router.route({
                 errors: errors
             });
 
-        var entity = await(dimensionRepository.create({
+        let entity = await(dimensionRepository.create({
             code: cmd.code,
             title: cmd.title,
             description: cmd.description,
             isActive: true
         }));
 
-        entity = await(dimensionRepository.create(entity));
+        entity = await(repository.create(entity));
 
         return res.json({
             isValid: true,
-            returnValue: {id: entity.id}
+            returnValue: { id: entity.id }
         });
-    }
-});
+    }));
 
-router.route({
-    method: 'GET',
-    path: '/dimensions/:id',
-    handler: (req, res, knex)=> {
-        knex.select().from('dimensions').where('id', req.params.id)
-            .then(function (result) {
-                var entity = result[0];
-                res.json(view(entity));
-            });
-    }
-});
-
-router.route({
-    method: 'PUT',
-    path: '/dimensions/:id',
-    handler: (req, res, dimensionRepository)=> {
-        var errors = [];
-        var cmd = req.body;
+router.route('/:id')
+    .get(async((req, res) => {
+        let dimensionQuery = new DimensionQuery(req.knex),
+            result = await(dimensionQuery.getById(req.params.id));
+        res.json(result);
+    }))
+    .put(async((req, res) => {
+        let dimensionRepository = new DimensionRepository(req.knex),
+            errors = [],
+            cmd = req.body;
 
         if (!string.isNullOrEmpty(cmd.code)) {
-            var dimension = await(repository.findByCode(cmd.code, cmd.dimensionCategoryId, cmd.id));
+            var dimension = await(dimensionRepository.findByCode(cmd.code, cmd.dimensionCategoryId, cmd.id));
 
             if (dimension)
                 errors.push(translate('The code is duplicated'));
@@ -108,54 +91,34 @@ router.route({
 
         await(dimensionRepository.update(entity));
 
-        return res.json({
-            isValid: true
-        });
-    }
-});
-
-router.route({
-    method: 'DELETE',
-    path: '/dimensions/:id',
-    handler: (req, res, dimensionRepository)=> {
+        return res.json({ isValid: true });
+    }))
+    .delete(async((req, res) => {
+        let dimensionRepository = new DimensionRepository(req.knex);
         await(dimensionRepository.remove(req.params.id));
 
-        return res.json({
-            isValid: true
-        });
-    }
-});
+        return res.json({ isValid: true });
+    }));
 
-router.route({
-    method: 'PUT',
-    path: '/dimensions/:id/activate',
-    handler: (req, res, dimensionRepository)=> {
-        var entity = await(dimensionRepository.findById(req.params.id));
+router.route('/:id/activate').put(async((req, res) => {
+    let dimensionRepository = new DimensionRepository(req.knex),
+        entity = await(dimensionRepository.findById(req.params.id));
 
-        entity.isActive = true;
+    entity.isActive = true;
 
-        await(dimensionRepository.update(entity));
+    await(dimensionRepository.update(entity));
 
-        return res.json({
-            isValid: true
-        });
-    }
-});
+    return res.json({ isValid: true });
+}));
+router.route('/:id/deactivate').put(async((req, res) => {
+    let dimensionRepository = new DimensionRepository(req.knex),
+        entity = await(dimensionRepository.findById(req.params.id));
 
-router.route({
-    method: 'PUT',
-    path: '/dimensions/:id/deactivate',
-    handler: (req, res, dimensionRepository)=> {
-        var entity = await(dimensionRepository.findById(req.params.id));
+    entity.isActive = false;
 
-        entity.isActive = false;
+    await(dimensionRepository.update(entity));
 
-        await(dimensionRepository.update(entity));
+    return res.json({ isValid: true });
+}));
 
-        return res.json({
-            isValid: true
-        });
-    }
-});
-
-module.exports = router.routes;
+module.exports = router;

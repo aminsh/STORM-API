@@ -1,40 +1,27 @@
+"use strict";
 
-var router = require('../services/routeService').Router(),
-    persianDateService = require('../services/persianDateService');
+const async = require('asyncawait/async'),
+    await = require('asyncawait/await'),
+    router = require('express').Router(),
+    journalRepository = require('../data/repository.journal'),
+    JournalTemplateRepository = require('../data/repository.journalTemplate'),
+    JournalTemplateQuery = require('../queries/query.journalTemplate');
 
-router.route({
-    method: 'GET',
-    path: '/journal-templates',
-    handler: (req, res, knex, kendoQueryResolve)=> {
-        var query = knex.select().from('journalTemplates');
+router.route('/').get(async((req, res) => {
+    let journalTemplateQuery = new JournalTemplateQuery(req.knex),
+        result = journalTemplateQuery.getAll(req.query);
+    res.json(result);
+}));
 
-        var viewAssembler = function (e) {
-            return {
-                id: e.id,
-                title: e.title
-            };
-        };
-
-        kendoQueryResolve(query, req.query, viewAssembler)
-            .then(function (result) {
-                res.json(result);
-            });
-    }
-});
-
-router.route({
-    method: 'POST',
-    path: '/journal-templates/journal/:journalId',
-    handler: (req, res, journalRepository, journalTemplateRepository)=> {
-        var journalId = req.params.journalId;
-        var cmd = req.body;
-
-        var journal = await(journalRepository.findById(journalId));
-
-        var data = {
+router.route('/journal/:journalId').post(async((req, res) => {
+    let journalTemplateRepository = new JournalTemplateRepository(req.knex),
+        journalId = req.params.journalId,
+        cmd = req.body,
+        journal = await(journalRepository.findById(journalId)),
+        data = {
             description: journal.description,
-            journalLines: journal.journalLines.asEnumerable().select(function (line) {
-                return {
+            journalLines: journal.journalLines.asEnumerable()
+                .select(line => ({
                     article: line.article,
                     generalLedgerAccountId: line.generalLedgerAccountId,
                     subsidiaryLedgerAccountId: line.subsidiaryLedgerAccountId,
@@ -44,62 +31,49 @@ router.route({
                     dimension3Id: line.dimension3Id,
                     debtor: line.debtor,
                     creditor: line.creditor
-                };
-            }).toArray()
+                })).toArray()
         };
 
-        var entity = {
-            title: cmd.title,
-            data: JSON.stringify(data)
-        };
+    let entity = {
+        title: cmd.title,
+        data: JSON.stringify(data)
+    };
 
-        entity = await(journalTemplateRepository.create(entity));
+    entity = await(journalTemplateRepository.create(entity));
 
-        res.json({
-            isValid: true,
-            returnValue: entity.id
-        });
-    }
-});
+    res.json({
+        isValid: true,
+        returnValue: entity.id
+    });
+}));
 
-router.route({
-    method: 'POST',
-    path: '/journal-templates/:id/journal/create',
-    handler: (req, res, journalRepository, journalTemplateRepository)=> {
-        var id = req.params.id;
-        var periodId = req.cookies['current-period'];
+router.route('/:id/journal/create').post(async((req, res) => {
+    let journalRepository = new JournalRepository(req.knex),
+        journalTemplateRepository = new JournalTemplateRepository(req.knex),
+        id = req.params.id,
+        periodId = req.cookies['current-period'],
+        template = await(journalTemplateRepository.findById(id)),
+        newJournal = JSON.parse(template.data);
 
-        var template = await(journalTemplateRepository.findById(id));
+    newJournal.periodId = periodId;
+    newJournal.createdById = req.user.id;
+    newJournal.journalStatus = 'Temporary';
+    newJournal.temporaryNumber = (await(journalRepository.maxTemporaryNumber(periodId)) || 0) + 1;
+    newJournal.temporaryDate = persianDateSerivce.current();
 
-        var newJournal = JSON.parse(template.data);
+    newJournal = await(journalRepository.create(newJournal));
 
-        newJournal.periodId = periodId;
-        newJournal.createdById = req.user.id;
-        newJournal.journalStatus = 'Temporary';
-        newJournal.temporaryNumber = (await(journalRepository.maxTemporaryNumber(periodId)) || 0) + 1;
-        newJournal.temporaryDate = persianDateService.current();
+    res.json({
+        isValid: true,
+        returnValue: { id: newJournal.id }
+    });
+}));
 
-        newJournal = await(journalRepository.create(newJournal));
+router.route('/journal-templates/:id').delete(async((req, res) => {
+    let journalTemplateRepository = new JournalTemplateRepository(req.knex);
+    await(JournalTemplateRepository.remove(req.params.id));
+    res.json({ isValid: true });
 
-        res.json({
-            isValid: true,
-            returnValue: {id: newJournal.id}
-        });
-    }
-});
+}));
 
-router.route({
-    method: 'DELETE',
-    path: '/journal-templates/:id',
-    handler: (req, res, journalTemplateRepository)=> {
-        var id = req.params.id;
-
-        await(journalTemplateRepository.remove(id));
-
-        res.json({
-            isValid: true
-        });
-    }
-});
-
-module.exports = router.routes;
+module.exports = router;

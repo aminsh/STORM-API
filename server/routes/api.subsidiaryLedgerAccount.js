@@ -1,68 +1,28 @@
+"use strict";
 
-var router = require('../services/routeService').Router(),
-    view = require('../viewModel.assemblers/view.subsidiaryLedgerAccount');
+const async = require('asyncawait/async'),
+    await = require('asyncawait/await'),
+    router = require('express').Router(),
+    journalRepository = require('../data/repository.journal'),
+    SubsidiaryLedgerAccountRepository = require('../data/repository.subsidiaryLedgerAccount'),
+    SubsidiaryLedgerAccountQuery = require('../queries/query.subsidiaryLedgerAccount');
 
-router.route({
-    method: 'GET',
-    path: '/subsidiary-ledger-accounts',
-    handler: (req, res, knex, kendoQueryResolve)=> {
-        var query = knex.select().from(function () {
-            var selectExp = '"subsidiaryLedgerAccounts".*,' +
-                '"subsidiaryLedgerAccounts".code || \' \' || "subsidiaryLedgerAccounts".title as "display",' +
-                '"generalLedgerAccounts".code || \'-\' || "subsidiaryLedgerAccounts".code || \' \' || "subsidiaryLedgerAccounts".title as "account"'
-            this.select(knex.raw(selectExp))
-                .from('subsidiaryLedgerAccounts')
-                .leftJoin('generalLedgerAccounts', 'generalLedgerAccounts.id', 'subsidiaryLedgerAccounts.generalLedgerAccountId')
-                .as('baseSubsidiaryLedgerAccounts');
-        }).as('baseSubsidiaryLedgerAccounts');
+router.route('/subsidiary-ledger-accounts').get(async((req, res) => {
+    let subsidiaryLedgerAccountQuery = new SubsidiaryLedgerAccountQuery(req.knex),
+        result = await(subsidiaryLedgerAccountQuery.getAll(req.query));
+    res.json(result);
+}));
 
-        kendoQueryResolve(query, req.query, view)
-            .then(function (result) {
-                res.json(result);
-            });
-    }
-});
-
-router.route({
-    method: 'GET',
-    path: '/subsidiary-ledger-accounts/general-ledger-account/:parentId',
-    handler: (req, res, knex, kendoQueryResolve)=> {
-        var query = knex.select().from(function () {
-            var selectExp = '"subsidiaryLedgerAccounts".*,' +
-                '"subsidiaryLedgerAccounts".code || \' \' || "subsidiaryLedgerAccounts".title as "display"'
-            this.select(knex.raw(selectExp))
-                .from('subsidiaryLedgerAccounts')
-                .leftJoin('generalLedgerAccounts', 'generalLedgerAccounts.id', 'subsidiaryLedgerAccounts.generalLedgerAccountId')
-                .where('generalLedgerAccountId', req.params.parentId)
-                .as('baseSubsidiaryLedgerAccounts');
-        }).as('baseSubsidiaryLedgerAccounts');
-
-        kendoQueryResolve(query, req.query, view)
-            .then(function (result) {
-                res.json(result);
-            });
-    }
-});
-
-router.route({
-    method: 'GET',
-    path: '/subsidiary-ledger-accounts/:id',
-    handler: (req, res, knex)=> {
-        knex.select().from('subsidiaryLedgerAccounts')
-            .where('id', req.params.id)
-            .then(function (result) {
-                var entity = result[0];
-                res.json(view(entity));
-            });
-    }
-});
-
-router.route({
-    method: 'POST',
-    path: '/subsidiary-ledger-accounts/general-ledger-account/:parentId',
-    handler: (req, res, subsidiaryLedgerAccountRepository)=> {
-        var errors = [];
-        var cmd = req.body;
+router.route('/subsidiary-ledger-accounts/general-ledger-account/:parentId')
+    .get(async((req, res) => {
+        let subsidiaryLedgerAccountQuery = new SubsidiaryLedgerAccountQuery(req.knex),
+            result = await(subsidiaryLedgerAccountQuery.getAllByGeneralLedgerAccount(req.params.parentId, req.query));
+        res.json(result);
+    }))
+    .post(async((req, res) => {
+        let subsidiaryLedgerAccountRepository = new SubsidiaryLedgerAccountRepository(req.knex),
+            errors = [],
+            cmd = req.body;
 
         if (string.isNullOrEmpty(cmd.title))
             errors.push(translate('The code is required'));
@@ -72,7 +32,7 @@ router.route({
         }
 
         if (!string.isNullOrEmpty(cmd.code)) {
-            var sla = await(subsidiaryLedgerAccountRepository.findByCode(cmd.code, cmd.generalLedgerAccountId, cmd.id));
+            var sla = await(repository.findByCode(cmd.code, cmd.generalLedgerAccountId, cmd.id));
 
             if (sla)
                 errors.push(translate('The code is duplicated'));
@@ -84,7 +44,7 @@ router.route({
                 errors: errors
             });
 
-        var entity = await(subsidiaryLedgerAccountRepository.findById(cmd.id));
+        let entity = await(subsidiaryLedgerAccountRepository.findById(cmd.id));
 
         entity.code = cmd.code;
         entity.title = cmd.title;
@@ -96,18 +56,19 @@ router.route({
 
         await(subsidiaryLedgerAccountRepository.update(entity));
 
-        return res.json({
-            isValid: true
-        });
-    }
-});
+        return res.json({ isValid: true });
+    }));
 
-router.route({
-    method: 'PUT',
-    path: '/subsidiary-ledger-accounts/:id',
-    handler: (req, res, subsidiaryLedgerAccountRepository)=> {
-        var errors = [];
-        var cmd = req.body;
+router.route('/:id')
+    .get(async((req, res) => {
+        let subsidiaryLedgerAccountQuery = new SubsidiaryLedgerAccountQuery(req.knex),
+            result = await(subsidiaryLedgerAccountQuery.getById(req.params.id));
+        res.json(result);
+    }))
+    .put(async((req, res) => {
+        let subsidiaryLedgerAccountRepository = new SubsidiaryLedgerAccountRepository(req.knex),
+            errors = [],
+            cmd = req.body;
 
         if (string.isNullOrEmpty(cmd.title))
             errors.push(translate('The code is required'));
@@ -117,7 +78,7 @@ router.route({
         }
 
         if (!string.isNullOrEmpty(cmd.code)) {
-            var sla = await(subsidiaryLedgerAccountRepository.findByCode(cmd.code, cmd.generalLedgerAccountId, cmd.id));
+            var sla = await(repository.findByCode(cmd.code, cmd.generalLedgerAccountId, cmd.id));
 
             if (sla)
                 errors.push(translate('The code is duplicated'));
@@ -129,7 +90,7 @@ router.route({
                 errors: errors
             });
 
-        var entity = await(subsidiaryLedgerAccountRepository.findById(cmd.id));
+        let entity = await(subsidiaryLedgerAccountRepository.findById(cmd.id));
 
         entity.code = cmd.code;
         entity.title = cmd.title;
@@ -141,58 +102,41 @@ router.route({
 
         await(subsidiaryLedgerAccountRepository.update(entity));
 
-        return res.json({
-            isValid: true
-        });
-    }
-});
+        return res.json({ isValid: true });
+    }))
+    .delete(async((req, res) => {
+        let subsidiaryLedgerAccountRepository = new SubsidiaryLedgerAccountRepository(req.knex),
+            errors = [],
+            cmd = req.body;
 
-router.route({
-    method: 'DELETE',
-    path: '/subsidiary-ledger-accounts/:id',
-    handler: (req, res, subsidiaryLedgerAccountRepository)=> {
         // check has journalLine data
 
         await(subsidiaryLedgerAccountRepository.remove(req.params.id));
 
-        return res.json({
-            isValid: true
-        });
-    }
-});
+        return res.json({ isValid: true });
+    }));
 
-router.route({
-    method: 'PUT',
-    path: '/subsidiary-ledger-accounts/:id/activate',
-    handler: (req, res, subsidiaryLedgerAccountRepository)=> {
-        var entity = await(subsidiaryLedgerAccountRepository.findById(req.params.id));
+router.route('/:id/activate').put(async((req, res) => {
+    let subsidiaryLedgerAccountRepository = new SubsidiaryLedgerAccountRepository(req.knex),
+        errors = [],
+        entity = await(subsidiaryLedgerAccountRepository.findById(req.params.id));
 
-        entity.isActive = true;
+    entity.isActive = true;
 
-        await(subsidiaryLedgerAccountRepository.update(entity));
+    await(subsidiaryLedgerAccountRepository.update(entity));
 
-        return res.json({
-            isValid: true
-        });
-    }
-});
+    return res.json({ isValid: true });
+}));
+router.route('/:id/deactivate').put(async((req, res) => {
+     let subsidiaryLedgerAccountRepository = new SubsidiaryLedgerAccountRepository(req.knex),
+        errors = [],
+        entity = await(subsidiaryLedgerAccountRepository.findById(req.params.id));
 
-router.route({
-    method: 'PUT',
-    path: '/subsidiary-ledger-accounts/:id/deactivate',
-    handler: (req, res, subsidiaryLedgerAccountRepository)=> {
-        var entity = await(subsidiaryLedgerAccountRepository.findById(req.params.id));
+    entity.isActive = false;
 
-        entity.isActive = false;
+    await(subsidiaryLedgerAccountRepository.update(entity));
 
-        await(subsidiaryLedgerAccountRepository.update(entity));
+    return res.json({ isValid: true });
+}));
 
-        return res.json({
-            isValid: true
-        });
-
-    }
-});
-
-module.exports = router.routes;
-
+module.exports = router;

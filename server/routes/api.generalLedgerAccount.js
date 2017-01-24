@@ -1,29 +1,21 @@
+"use strict";
 
-var router = require('../services/routeService').Router(),
-    view = require('../viewModel.assemblers/view.generalLedgerAccount');
+const async = require('asyncawait/async'),
+    await = require('asyncawait/await'),
+    router = require('express').Router(),
+    GeneralLedgerAccountRepository = require('../data/repository.generalLedgerAccount'),
+    GeneralLedgerAccountQuery = require('../queries/query.generalLedgerAccount');
 
-router.route({
-    method: 'GET',
-    path: '/general-ledger-accounts',
-    handler: (req, res,knex,kendoQueryResolve)=> {
-        var query = knex.select().from(function () {
-            this.select(knex.raw("*,code || ' ' || title as display"))
-                .from('generalLedgerAccounts').as('baseGeneralLedgerAccounts');
-        }).as('baseGeneralLedgerAccounts');
-
-        kendoQueryResolve(query, req.query, view)
-            .then(function (result) {
-                res.json(result);
-            });
-    }
-});
-
-router.route({
-    method: 'POST',
-    path: '/general-ledger-accounts',
-    handler: (req, res, generalLedgerAccountRepository)=> {
-        var errors = [];
-        var cmd = req.body;
+router.route('/')
+    .get(async((req, res) => {
+        let generalLedgerAccountQuery = new GeneralLedgerAccountQuery(req.knex),
+            result = await(generalLedgerAccountQuery.getAll(req.query));
+        res.json(result);
+    }))
+    .post(async((req, res) => {
+        let generalLedgerAccountRepository = new GeneralLedgerAccountRepository(req.knex),
+            errors = [],
+            cmd = req.body;
 
         if (string.isNullOrEmpty(cmd.code))
             errors.push(translate('The code is required'));
@@ -47,7 +39,7 @@ router.route({
                 errors: errors
             });
 
-        var entity = {
+        let entity = {
             code: cmd.code,
             title: cmd.title,
             postingType: cmd.postingType,
@@ -60,34 +52,25 @@ router.route({
 
         return res.json({
             isValid: true,
-            returnValue: {id: entity.id}
+            returnValue: { id: entity.id }
         });
-    }
-});
+    }));
 
-router.route({
-    method: 'GET',
-    path: '/general-ledger-accounts/:id',
-    handler: (req, res, knex)=> {
-        knex.select().from('generalLedgerAccounts').where('id', req.params.id)
-            .then(function (result) {
-                var entity = result[0];
-                res.json(view(entity));
-            });
-    }
-});
-
-router.route({
-    method: 'PUT',
-    path: '/general-ledger-accounts/:id',
-    handler: (req, res, genralLedgerAccountRepository)=> {
-        var errors = [];
-        var cmd = req.body;
+router.route('/:id')
+    .get(async((req, res) => {
+        let generalLedgerAccountQuery = new GeneralLedgerAccountQuery(req.knex),
+            result = await(generalLedgerAccountQuery.getById(req.params.id));
+        res.json(result);
+    }))
+    .put(async((req, res) => {
+        let generalLedgerAccountRepository = new GeneralLedgerAccountRepository(req.knex),
+            errors = [],
+            cmd = req.body;
 
         if (string.isNullOrEmpty(cmd.code))
             errors.push(translate('The code is required'));
         else {
-            var gla = await(genralLedgerAccountRepository.findByCode(cmd.code, cmd.id));
+            var gla = await(repository.findByCode(cmd.code, cmd.id));
 
             if (gla)
                 errors.push(translate('The code is duplicated'));
@@ -105,7 +88,7 @@ router.route({
             errors: errors
         });
 
-        var generalLedgerAccount = await(repository.findById(cmd.id));
+        let generalLedgerAccount = await(generalLedgerAccountRepository.findById(cmd.id));
 
         generalLedgerAccount.title = cmd.title;
         generalLedgerAccount.code = cmd.code;
@@ -113,20 +96,15 @@ router.route({
         generalLedgerAccount.balanceType = cmd.balanceType;
         generalLedgerAccount.description = cmd.description;
 
-        await(genralLedgerAccountRepository.update(generalLedgerAccount));
+        await(generalLedgerAccountRepository.update(generalLedgerAccount));
 
-        return res.json({
-            isValid: true
-        });
-    }
-});
-
-router.route({
-    method: 'DELETE',
-    path: '/general-ledger-accounts/:id',
-    handler: (req, res, generalLedgerAccountRepository)=> {
-        var errors = [];
-        var gla = await(generalLedgerAccountRepository.findById(req.params.id));
+        return res.json({ isValid: true });
+    }))
+    .delete(async((req, res) => {
+        let generalLedgerAccountRepository = new GeneralLedgerAccountRepository(req.knex),
+            errors = [],
+            cmd = req.body,
+            gla = await(generalLedgerAccountRepository.findById(req.params.id));
 
         if (gla.subsidiaryLedgerAccounts.asEnumerable().any())
             errors
@@ -142,42 +120,30 @@ router.route({
 
         await(generalLedgerAccountRepository.remove(req.params.id));
 
-        return res.json({
-            isValid: true
-        });
-    }
-});
+        return res.json({ isValid: true });
+    }));
 
-router.route({
-    method: 'PUT',
-    path: '/general-ledger-accounts/:id/activate',
-    handler: (req, res, generalLedgerAccountRepository)=> {
-        var entity = await(generalLedgerAccountRepository.findById(req.params.id));
+router.route('/:id/activate').put(async((req, res) => {
+    let generalLedgerAccountRepository = new GeneralLedgerAccountRepository(req.knex),
+        entity = await(repository.findById(req.params.id));
 
-        entity.isActive = true;
+    entity.isActive = true;
 
-        await(generalLedgerAccountRepository.update(entity));
+    await(generalLedgerAccountRepository.update(entity));
 
-        return res.json({
-            isValid: true
-        });
-    }
-});
+    return res.json({ isValid: true });
+}));
 
-router.route({
-    method: 'PUT',
-    path: '/general-ledger-accounts/:id/deactivate',
-    handler: (req, res, generalLedgerAccountRepository)=> {
-        var entity = await(generalLedgerAccountRepository.findById(req.params.id));
+router.route('/:id/deactivate').put(async((req, res) => {
+    let generalLedgerAccountRepository = new GeneralLedgerAccountRepository(req.knex),
+        entity = await(repository.findById(req.params.id));
 
-        entity.isActive = false;
+    entity.isActive = false;
 
-        await(generalLedgerAccountRepository.update(entity));
+    await(generalLedgerAccountRepository.update(entity));
 
-        return res.json({
-            isValid: true
-        });
-    }
-});
+    return res.json({ isValid: true });
+}));
 
-module.exports = router.routes;
+
+module.exports = router;

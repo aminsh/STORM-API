@@ -1,50 +1,23 @@
+"use strict";
 
-var router = require('../services/routeService').Router(),
-    view = require('../viewModel.assemblers/view.journalLine');
+const async = require('asyncawait/async'),
+    await = require('asyncawait/await'),
+    router = require('express').Router(),
+    JournalRepository = require('../data/repository.journal'),
+    JournalLineRepository = require('../data/repository.journalLine'),
+    JournalLineQuery = require('../queries/query.journalLine');
 
-router.route({
-    method: 'GET',
-    path: '/journal-lines/journal/:journalId',
-    handler: (req, res, knex, kendoQueryResolve)=> {
-        var query = knex.select().from(function () {
-            baseJournalLines.apply(this, knex);
-        }).where('journalId', req.params.journalId);
-
-        var result = await(kendoQueryResolve(query, req.query, view));
-
-        var aggregates = await(knex
-            .select(knex.raw('SUM("debtor") as "sumDebtor", SUM("creditor") as "sumCreditor"'))
-            .from('journalLines').where('journalId', req.params.journalId))[0];
-
-        result.aggregates = {
-            debtor: {sum: aggregates.sumDebtor},
-            creditor: {sum: aggregates.sumCreditor}
-        };
-
+router.route('/journal/:journalId')
+    .get(async((req, res) => {
+        let journalLineQuery = new JournalLineQuery(req.knex),
+            result = await(journalLineQuery.getAll(req.params.journalId, req.query));
         res.json(result);
-    }
-});
-
-router.route({
-    method: 'GET',
-    path: '/journal-lines/:id',
-    handler: (req, res, knex)=> {
-        knex.select().from('journalLines').where('id', req.params.id)
-            .then(function (result) {
-                var entity = result[0];
-                res.json(view(entity));
-            });
-    }
-});
-
-router.route({
-    method: 'POST',
-    path: '/journal-lines/journal/:journalId',
-    handler: (req, res, journalLineRepository)=> {
-        var errors = [];
-        var cmd = req.body;
-
-        var errors = [];
+    }))
+    .post(async((req, res) => {
+        let journalRepository = new JournalRepository(req.knex),
+            journalLineRepository = new JournalLineRepository(req.knex),
+            errors = [],
+            cmd = req.body;
 
         if (string.isNullOrEmpty(cmd.article))
             errors.push(translate('The Article is required'));
@@ -58,7 +31,7 @@ router.route({
                 errors: errors
             });
 
-        var entity = {
+        let entity = {
             journalId: cmd.journalId,
             generalLedgerAccountId: cmd.generalLedgerAccountId,
             subsidiaryLedgerAccountId: cmd.subsidiaryLedgerAccountId,
@@ -72,21 +45,24 @@ router.route({
         };
 
         entity = await(journalLineRepository.create(entity));
-        await(journalLineRepository.checkIsComplete(cmd.journalId));
+        await(journalRepository.checkIsComplete(cmd.journalId));
 
         return res.json({
             isValid: true,
-            returnValue: {id: entity.id}
+            returnValue: { id: entity.id }
         });
-    }
-});
+    }));
 
-router.route({
-    method: 'PUT',
-    path: '/journal-lines/:id',
-    handler: (req, res, journalLineRepository)=> {
-        var errors = [];
-        var cmd = req.body;
+router.route('/:id')
+    .get(async((req, res) => {
+        let journalLineQuery = new JournalLineQuery(req.knex),
+            result = await(journalLineQuery.getById(req.params.id));
+        res.json(result);
+    }))
+    .put(async((req, res) => {
+        let journalLineRepository = new JournalLineRepository(req.knex),
+            errors = [],
+            cmd = req.body;
 
         if (string.isNullOrEmpty(cmd.article))
             errors.push(translate('The Article is required'));
@@ -100,7 +76,7 @@ router.route({
                 errors: errors
             });
 
-        var entity = await(journalLineRepository.findById(cmd.id));
+        let entity = await(journalLineRepository.findById(cmd.id));
 
         entity.subsidiaryLedgerAccountId = cmd.subsidiaryLedgerAccountId;
         entity.detailAccountId = cmd.detailAccountId;
@@ -113,18 +89,12 @@ router.route({
 
         await(journalLineRepository.update(entity));
 
-        return res.json({
-            isValid: true
-        });
-    }
-});
-
-router.route({
-    method: 'DELETE',
-    path: '/journal-lines/:id',
-    handler: (req, res, journalRepository, journalLineRepository)=> {
-        var errors = [];
-        var cmd = req.body;
+        return res.json({ isValid: true });
+    }))
+    .delete(async((req, res) => {
+        let journalRepository = new JournalRepository(req.knex),
+            journalLineRepository = new JournalLineRepository(req.knex),
+            errors = [];
 
         if (errors.asEnumerable().any())
             return res.json({
@@ -135,50 +105,7 @@ router.route({
         await(journalLineRepository.remove(req.params.id));
         await(journalRepository.checkIsComplete(cmd.journalId));
 
-        return res.json({
-            isValid: true
-        });
-    }
-});
+        return res.json({ isValid: true });
+    }));
 
-module.exports = router.routes;
-
-function baseJournalLines(knex) {
-    this.select(
-        'journalLines.id',
-        'journalLines.journalId',
-        'journalLines.row',
-        'journalLines.article',
-        'journalLines.debtor',
-        'journalLines.creditor',
-        'journalLines.generalLedgerAccountId',
-        'journalLines.subsidiaryLedgerAccountId',
-        knex.raw('"generalLedgerAccounts"."code" as "generalLedgerAccountCode"'),
-        knex.raw('"generalLedgerAccounts"."code" || \' \' || "generalLedgerAccounts"."title" as "generalLedgerAccountDisplay"'),
-        'journalLines.subsidiaryLedgerAccountId',
-        knex.raw('"subsidiaryLedgerAccounts"."code" as "subsidiaryLedgerAccountCode"'),
-        knex.raw('"subsidiaryLedgerAccounts".code || \' \' || "subsidiaryLedgerAccounts".title as "subsidiaryLedgerAccountDisplay"'),
-        'journalLines.detailAccountId',
-        knex.raw('"detailAccounts"."code" as "detailAccountCode"'),
-        knex.raw('"detailAccounts"."code" || \' \' || "detailAccounts"."title" as "detailAccountDisplay"'),
-        'journalLines.dimension1Id',
-        knex.raw('"dimension1s"."code" || \' \' || "dimension1s"."title" as "dimension1Display"'),
-        'journalLines.dimension2Id',
-        knex.raw('"dimension2s"."code" || \' \' || "dimension2s"."title" as "dimension2Display"'),
-        'journalLines.dimension3Id',
-        knex.raw('"dimension3s"."code" || \' \' || "dimension3s"."title" as "dimension3Display"'),
-        knex.raw('"cheques"."id" as "chequeId"'),
-        knex.raw('"cheques"."number" as "chequeNumber"'),
-        knex.raw('"cheques"."date" as "chequeDate"'),
-        knex.raw('"cheques"."description" as "chequeDescription"')
-    ).from('journalLines')
-        .leftJoin('generalLedgerAccounts', 'journalLines.generalLedgerAccountId', 'generalLedgerAccounts.id')
-        .leftJoin('subsidiaryLedgerAccounts', 'journalLines.subsidiaryLedgerAccountId', 'subsidiaryLedgerAccounts.id')
-        .leftJoin('detailAccounts', 'journalLines.detailAccountId', 'detailAccounts.id')
-        .leftJoin(knex.raw('"dimensions" as "dimension1s"'), 'journalLines.dimension1Id', 'dimension1s.id')
-        .leftJoin(knex.raw('"dimensions" as "dimension2s"'), 'journalLines.dimension2Id', 'dimension2s.id')
-        .leftJoin(knex.raw('"dimensions" as "dimension3s"'), 'journalLines.dimension3Id', 'dimension3s.id')
-        .leftJoin('cheques', 'journalLines.id', 'cheques.journalLineId')
-        .orderBy('journalLines.row')
-        .as('baseJournalLines');
-}
+module.exports = router;

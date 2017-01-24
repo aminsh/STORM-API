@@ -1,26 +1,21 @@
+"use strict";
 
-var router = require('../services/routeService').Router(),
-    view = require('../viewModel.assemblers/view.dimensionCategory');
+const async = require('asyncawait/async'),
+    await = require('asyncawait/await'),
+    router = require('express').Router(),
+    DimensionCategoryRepository = require('../data/repository.dimensionCategory'),
+    DimensionCategoryQuery = require('../queries/query.dimensionCategory');
 
-router.route({
-    method: 'GET',
-    path: '/dimension-categories',
-    handler: (req, res, knex, kendoQueryResolve)=> {
-        var query = knex.select().from('dimensionCategories');
-
-        kendoQueryResolve(query, req.query, view)
-            .then(function (result) {
-                res.json(result);
-            });
-    }
-});
-
-router.route({
-    method: 'POST',
-    path: '/dimension-categories',
-    handler: (req, res, dimensionCategoryRepository)=> {
-        var errors = [];
-        var cmd = req.body;
+router.route('/')
+    .get(async((req, res) => {
+        let dimensionCategoryQuery = new DimensionCategoryQuery(req.knex),
+            result = await(dimensionCategoryQuery.getAll(req.query));
+        res.json(result);
+    }))
+    .post(async((req, res) => {
+        let dimensionCategoryRepository = new DimensionCategoryRepository(req.knex),
+            errors = [],
+            cmd = req.body;
 
         if (string.isNullOrEmpty(cmd.title))
             errors.push(translate('The title is required'));
@@ -39,30 +34,22 @@ router.route({
             title: cmd.title
         }));
 
-        return res.json({
+        return json({
             isValid: true,
-            returnValue: {id: entity.id}
-        })
-    }
-});
+            returnValue: { id: entity.id }
+        });
+    }));
 
-router.route({
-    method: 'GET',
-    path: '/dimension-categories/:id',
-    handler: (req, res, knex)=> {
-        knex.select().from('dimensionCategories').where('id', req.params.id)
-            .then((result)=> {
-                res.json(view(result[0]))
-            });
-    }
-});
-
-router.route({
-    method: 'PUT',
-    path: '/dimension-categories/:id',
-    handler: (req, res, dimensionCategoryRepository)=> {
-        var errors = [];
-        var cmd = req.body;
+router.route('/:id')
+    .get(async((req, res) => {
+        let dimensionCategoryQuery = new DimensionCategoryQuery(req.knex),
+            result = dimensionCategoryQuery.getById(req.params.id);
+        res.json(result);
+    }))
+    .put(async((req, res) => {
+        let dimensionCategoryRepository = new DimensionCategoryRepository(req.knex),
+            errors = [],
+            cmd = req.body;
 
         if (string.isNullOrEmpty(cmd.title))
             errors.push(translate('The title is required'));
@@ -83,23 +70,17 @@ router.route({
 
         await(dimensionCategoryRepository.update(entity));
 
-        return res.json({
-            isValid: true
-        });
-    }
-});
+        return res.json({ isValid: true });
+    }))
+    .delete(async((req, res) => {
+        let dimensionCategoryRepository = new DimensionCategoryRepository(req.knex),
+            errors = [],
+            cmd = req.body;
 
-router.route({
-    method: 'DELETE',
-    path: '/dimension-categories/:id',
-    handler: (req, res, dimensionCategoryRepository)=> {
         await(dimensionCategoryRepository.remove(req.params.id));
 
-        res.json({
-            isValid: true
-        });
-    }
-});
+        return res.json({ isValid: true });
+    }));
 
-module.exports = router.routes;
+module.exports = router;
 
