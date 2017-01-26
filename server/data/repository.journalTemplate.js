@@ -1,11 +1,12 @@
 "use strict";
 
 const async = require('asyncawait/async'),
-    await = require('asyncawait/await');
+    await = require('asyncawait/await'),
+    BaseRepository = require('./repository.base');
 
-class JournalTemplateRepository {
-    constructor(knex) {
-        this.knex = knex;
+class JournalTemplateRepository extends BaseRepository {
+    constructor(branchId) {
+        super(branchId);
         this.create = async(this.create);
     }
 

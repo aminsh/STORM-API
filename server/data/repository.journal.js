@@ -1,11 +1,12 @@
 "use strict";
 
 let async = require('asyncawait/async'),
-    await = require('asyncawait/await');
+    await = require('asyncawait/await'),
+    BaseRepository = require('./repository.base');
 
-class JournalRepository {
-    constructor(knex) {
-        this.knex = knex;
+class JournalRepository extends BaseRepository {
+    constructor(branchId) {
+        super(branchId);
         this.create = async(this.create);
         this.checkIsComplete = async(this.checkIsComplete);
     }
@@ -62,7 +63,7 @@ class JournalRepository {
 
         return this.knex('journals')
             .where('id', id)
-            .update({ isInComplete });
+            .update({isInComplete});
     }
 }
 

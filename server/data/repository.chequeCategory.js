@@ -1,11 +1,12 @@
 "use strict";
 
 let async = require('asyncawait/async'),
-    await = require('asyncawait/await');
+    await = require('asyncawait/await'),
+    BaseRepository = require('./repository.base');
 
-class ChequeCategoryRepository {
-    constructor(knex) {
-        this.knex = knexl
+class ChequeCategoryRepository extends BaseRepository{
+    constructor(branchId) {
+        super(branchId)
     }
 
     findById(id) {

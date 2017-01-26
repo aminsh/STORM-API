@@ -1,7 +1,9 @@
 "use strict";
 
+const knexFactory = require('../services/knex');
+
 module.exports = class RepositoryBase {
-    constructor(knex) {
-        this.knex = knex;
+    constructor(branchId) {
+        this.knex = knexFactory(branchId);
     }
 };
