@@ -1,19 +1,17 @@
 "use strict";
 
-var passport = require('passport'),
-    config = require('../config'),
-    router = require('../services/routeService').Router();
+const config = require('../config'),
+    router = require('express').Router(),
+    Authentication = require('../services/authenticationService');
 
-router.route({
-    method: 'GET',
-    path: '/auth/return',
-    handler: authenticationService => authenticationService.authenticate()
+router.route('/auth/return').get((req, res) => {
+    let authentication = new Authentication(req, res);
+    authentication.authenticate();
 });
 
-router.route({
-    method: 'GET',
-    path: '/logout',
-    handler: authenticationService => authenticationService.logout()
+router.route('/logout').get((req, res) => {
+    let authentication = new Authentication(req, res);
+    authentication.logout();
 });
 
-module.exports = router.routes;
+module.exports = router;

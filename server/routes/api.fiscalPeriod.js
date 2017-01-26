@@ -8,7 +8,7 @@ const async = require('asyncawait/async'),
 
 router.route('/')
     .get(async((req, res) => {
-        let fiscalPeriodQuery = new FiscalPeriodQuery(req.knex),
+        let fiscalPeriodQuery = new FiscalPeriodQuery(req.cookies['branch-id']),
             result = await(fiscalPeriodQuery.getAll(req.query));
         res.json(result);
     }));

@@ -12,42 +12,42 @@ router.route('/general-ledger-account')
         res.json(result);
     }));
 
-route.route('/subsidiary-ledger-account')
+router.route('/subsidiary-ledger-account')
     .get(async((req, res) => {
         let accountReview = getAccountReviewInstance(req),
             result = await(accountReview.subsidiaryLedgerAccount());
         res.json(result);
     }));
 
-route.route('/detail-account')
+router.route('/detail-account')
     .get(async((req, res) => {
         let accountReview = getAccountReviewInstance(req),
             result = await(accountReview.detailAccount());
         res.json(result);
     }));
 
-route.route('/dimension-1')
+router.route('/dimension-1')
     .get(async((req, res) => {
         let accountReview = getAccountReviewInstance(req),
             result = await(accountReview.dimension1());
         res.json(result);
     }));
 
-route.route('/dimension-2')
+router.route('/dimension-2')
     .get(async((req, res) => {
         let accountReview = getAccountReviewInstance(req),
             result = await(accountReview.dimension2());
         res.json(result);
     }));
 
-route.route('/dimension-3')
+router.route('/dimension-3')
     .get(async((req, res) => {
         let accountReview = getAccountReviewInstance(req),
             result = await(accountReview.dimension3());
         res.json(result);
     }));
 
-route.route('/tiny')
+router.route('/tiny')
     .get(async((req, res) => {
         let accountReview = getAccountReviewInstance(req),
             result = await(accountReview.tiny());
@@ -59,7 +59,7 @@ module.exports = router;
 function getAccountReviewInstance(req) {
     const filter = (req.query.extra) ? req.query.extra.filter : undefined;
     return new AccountReview(
-        req.knex,
+        req.cookies['branch-id'],
         req.cookies['current-period'],
         filter,
         req.query);

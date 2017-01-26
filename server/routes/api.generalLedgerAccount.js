@@ -8,12 +8,12 @@ const async = require('asyncawait/async'),
 
 router.route('/')
     .get(async((req, res) => {
-        let generalLedgerAccountQuery = new GeneralLedgerAccountQuery(req.knex),
+        let generalLedgerAccountQuery = new GeneralLedgerAccountQuery(req.cookies['branch-id']),
             result = await(generalLedgerAccountQuery.getAll(req.query));
         res.json(result);
     }))
     .post(async((req, res) => {
-        let generalLedgerAccountRepository = new GeneralLedgerAccountRepository(req.knex),
+        let generalLedgerAccountRepository = new GeneralLedgerAccountRepository(req.cookies['branch-id']),
             errors = [],
             cmd = req.body;
 
@@ -58,19 +58,19 @@ router.route('/')
 
 router.route('/:id')
     .get(async((req, res) => {
-        let generalLedgerAccountQuery = new GeneralLedgerAccountQuery(req.knex),
+        let generalLedgerAccountQuery = new GeneralLedgerAccountQuery(req.cookies['branch-id']),
             result = await(generalLedgerAccountQuery.getById(req.params.id));
         res.json(result);
     }))
     .put(async((req, res) => {
-        let generalLedgerAccountRepository = new GeneralLedgerAccountRepository(req.knex),
+        let generalLedgerAccountRepository = new GeneralLedgerAccountRepository(req.cookies['branch-id']),
             errors = [],
             cmd = req.body;
 
         if (string.isNullOrEmpty(cmd.code))
             errors.push(translate('The code is required'));
         else {
-            var gla = await(repository.findByCode(cmd.code, cmd.id));
+            var gla = await(generalLedgerAccountRepository.findByCode(cmd.code, cmd.id));
 
             if (gla)
                 errors.push(translate('The code is duplicated'));
@@ -101,7 +101,7 @@ router.route('/:id')
         return res.json({ isValid: true });
     }))
     .delete(async((req, res) => {
-        let generalLedgerAccountRepository = new GeneralLedgerAccountRepository(req.knex),
+        let generalLedgerAccountRepository = new GeneralLedgerAccountRepository(req.cookies['branch-id']),
             errors = [],
             cmd = req.body,
             gla = await(generalLedgerAccountRepository.findById(req.params.id));
@@ -124,8 +124,8 @@ router.route('/:id')
     }));
 
 router.route('/:id/activate').put(async((req, res) => {
-    let generalLedgerAccountRepository = new GeneralLedgerAccountRepository(req.knex),
-        entity = await(repository.findById(req.params.id));
+    let generalLedgerAccountRepository = new GeneralLedgerAccountRepository(req.cookies['branch-id']),
+        entity = await(generalLedgerAccountRepository.findById(req.params.id));
 
     entity.isActive = true;
 
@@ -135,8 +135,8 @@ router.route('/:id/activate').put(async((req, res) => {
 }));
 
 router.route('/:id/deactivate').put(async((req, res) => {
-    let generalLedgerAccountRepository = new GeneralLedgerAccountRepository(req.knex),
-        entity = await(repository.findById(req.params.id));
+    let generalLedgerAccountRepository = new GeneralLedgerAccountRepository(req.cookies['branch-id']),
+        entity = await(generalLedgerAccountRepository.findById(req.params.id));
 
     entity.isActive = false;
 

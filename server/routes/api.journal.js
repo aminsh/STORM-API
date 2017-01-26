@@ -8,12 +8,12 @@ const async = require('asyncawait/async'),
 
 router.route('/')
     .get(async((req, res) => {
-        let journalQuery = new JournalQuery(req.knex),
+        let journalQuery = new JournalQuery(req.cookies['branch-id']),
             result = await(journalQuery.getAll(req.cookies['current-period'], req.query));
         res.json(result);
     }))
     .post(async((req, res) => {
-        let journalRepository = new JournalRepository(req.knex),
+        let journalRepository = new JournalRepository(req.cookies['branch-id']),
             errors = [],
             cmd = req.body,
             currentFiscalPeriodId = req.cookies['current-period'];
@@ -63,12 +63,12 @@ router.route('/')
 
 router.route('/:id')
     .get(async((req, res) => {
-        let journalQuery = new JournalQuery(req.knex),
+        let journalQuery = new JournalQuery(req.cookies['branch-id']),
             result = await(journalQuery.getById(req.params.id));
         res.json(result);
     }))
     .put(async((req, res) => {
-        let journalRepository = new JournalRepository(req.knex),
+        let journalRepository = new JournalRepository(req.cookies['branch-id']),
             errors = [],
             cmd = req.body,
             currentFiscalPeriod = await(fiscalPeriodRepository.findById(req.cookies['current-period'])),
@@ -107,11 +107,11 @@ router.route('/:id')
         return res.json({ isValid: true });
     }))
     .delete(async((rea, res) => {
-        let journalRepository = new JournalRepository(req.knex),
+        let journalRepository = new JournalRepository(req.cookies['branch-id']),
             errors = [],
             cmd = req.body,
             currentFiscalPeriod = await(fiscalPeriodRepository.findById(req.cookies['current-period'])),
-            journal = await(repository.findById(cmd.id));
+            journal = await(journalRepository.findById(cmd.id));
 
         if (currentFiscalPeriod.isClosed)
             errors.push(translate('The current period is closed , You are not allowed to delete Journal'));
@@ -133,13 +133,13 @@ router.route('/:id')
     }));
 
 router.route('/summary/grouped-by-month').get(async((req, res) => {
-    let journalQuery = new JournalQuery(req.knex),
+    let journalQuery = new JournalQuery(req.cookies['branch-id']),
         result = await(journalQuery.getGroupedByMouth(req.cookies['current-period']));
     res.json(result);
 }));
 
 router.route('/month/:month').get(async((req, res) => {
-    let journalQuery = new JournalQuery(req.knex),
+    let journalQuery = new JournalQuery(req.cookies['branch-id']),
         result = await(journalQuery.getJournalsByMonth(
             req.params.month,
             req.cookies['current-period'],
@@ -148,13 +148,13 @@ router.route('/month/:month').get(async((req, res) => {
 }));
 
 router.route('/period/:periodId').get(async((req, res) => {
-    let journalQuery = new JournalQuery(req.knex),
+    let journalQuery = new JournalQuery(req.cookies['branch-id']),
         result = await(journalQuery.getAllByPeriod(req.cookies['current-period'], req.query));
     res.json(result);
 }));
 
 router.route('/:id/bookkeeping').put(async((req, res) => {
-    let journalRepository = new JournalRepository(req.knex),
+    let journalRepository = new JournalRepository(req.cookies['branch-id']),
         errors = [],
         cmd = req.body,
         currentFiscalPeriod = await(fiscalPeriodRepository.findById(req.cookies['current-period'])),
@@ -175,7 +175,7 @@ router.route('/:id/bookkeeping').put(async((req, res) => {
 }));
 
 router.route('/:id/fix').put(async((req, res) => {
-    let journalRepository = new JournalRepository(req.knex),
+    let journalRepository = new JournalRepository(req.cookies['branch-id']),
         errors = [],
         cmd = req.body,
         currentFiscalPeriod = await(fiscalPeriodRepository.findById(req.cookies['current-period'])),
@@ -195,7 +195,7 @@ router.route('/:id/fix').put(async((req, res) => {
 }));
 
 router.route('/:id/attach-image').put(async((req, res) => {
-    let journalRepository = new JournalRepository(req.knex),
+    let journalRepository = new JournalRepository(req.cookies['branch-id']),
         journal = await(journalRepository.findById(cmd.id));
 
     journal.attachmentFileName = req.body.fileName;
@@ -206,7 +206,7 @@ router.route('/:id/attach-image').put(async((req, res) => {
 }));
 
 router.route('/:id/copy').post(async((req, res) => {
-    let journalRepository = new JournalRepository(req.knex);
+    let journalRepository = new JournalRepository(req.cookies['branch-id']);
 
     const id = req.params.id,
         periodId = req.cookies['current-period'],

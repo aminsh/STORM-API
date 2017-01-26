@@ -8,7 +8,7 @@ const async = require('asyncawait/async'),
 
 
 router.route('/tags').get(async((req, res) => {
-    let tagQuery = new TagQuery(req.knex),
+    let tagQuery = new TagQuery(req.cookies['branch-id']),
         result = await(tagQuery.getAll(req.query));
     res.json(result);
 }));

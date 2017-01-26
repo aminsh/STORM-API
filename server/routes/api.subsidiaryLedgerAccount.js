@@ -8,19 +8,19 @@ const async = require('asyncawait/async'),
     SubsidiaryLedgerAccountQuery = require('../queries/query.subsidiaryLedgerAccount');
 
 router.route('/subsidiary-ledger-accounts').get(async((req, res) => {
-    let subsidiaryLedgerAccountQuery = new SubsidiaryLedgerAccountQuery(req.knex),
+    let subsidiaryLedgerAccountQuery = new SubsidiaryLedgerAccountQuery(req.cookies['branch-id']),
         result = await(subsidiaryLedgerAccountQuery.getAll(req.query));
     res.json(result);
 }));
 
 router.route('/subsidiary-ledger-accounts/general-ledger-account/:parentId')
     .get(async((req, res) => {
-        let subsidiaryLedgerAccountQuery = new SubsidiaryLedgerAccountQuery(req.knex),
+        let subsidiaryLedgerAccountQuery = new SubsidiaryLedgerAccountQuery(req.cookies['branch-id']),
             result = await(subsidiaryLedgerAccountQuery.getAllByGeneralLedgerAccount(req.params.parentId, req.query));
         res.json(result);
     }))
     .post(async((req, res) => {
-        let subsidiaryLedgerAccountRepository = new SubsidiaryLedgerAccountRepository(req.knex),
+        let subsidiaryLedgerAccountRepository = new SubsidiaryLedgerAccountRepository(req.cookies['branch-id']),
             errors = [],
             cmd = req.body;
 
@@ -61,12 +61,12 @@ router.route('/subsidiary-ledger-accounts/general-ledger-account/:parentId')
 
 router.route('/:id')
     .get(async((req, res) => {
-        let subsidiaryLedgerAccountQuery = new SubsidiaryLedgerAccountQuery(req.knex),
+        let subsidiaryLedgerAccountQuery = new SubsidiaryLedgerAccountQuery(req.cookies['branch-id']),
             result = await(subsidiaryLedgerAccountQuery.getById(req.params.id));
         res.json(result);
     }))
     .put(async((req, res) => {
-        let subsidiaryLedgerAccountRepository = new SubsidiaryLedgerAccountRepository(req.knex),
+        let subsidiaryLedgerAccountRepository = new SubsidiaryLedgerAccountRepository(req.cookies['branch-id']),
             errors = [],
             cmd = req.body;
 
@@ -105,7 +105,7 @@ router.route('/:id')
         return res.json({ isValid: true });
     }))
     .delete(async((req, res) => {
-        let subsidiaryLedgerAccountRepository = new SubsidiaryLedgerAccountRepository(req.knex),
+        let subsidiaryLedgerAccountRepository = new SubsidiaryLedgerAccountRepository(req.cookies['branch-id']),
             errors = [],
             cmd = req.body;
 
@@ -117,7 +117,7 @@ router.route('/:id')
     }));
 
 router.route('/:id/activate').put(async((req, res) => {
-    let subsidiaryLedgerAccountRepository = new SubsidiaryLedgerAccountRepository(req.knex),
+    let subsidiaryLedgerAccountRepository = new SubsidiaryLedgerAccountRepository(req.cookies['branch-id']),
         errors = [],
         entity = await(subsidiaryLedgerAccountRepository.findById(req.params.id));
 
@@ -128,7 +128,7 @@ router.route('/:id/activate').put(async((req, res) => {
     return res.json({ isValid: true });
 }));
 router.route('/:id/deactivate').put(async((req, res) => {
-     let subsidiaryLedgerAccountRepository = new SubsidiaryLedgerAccountRepository(req.knex),
+     let subsidiaryLedgerAccountRepository = new SubsidiaryLedgerAccountRepository(req.cookies['branch-id']),
         errors = [],
         entity = await(subsidiaryLedgerAccountRepository.findById(req.params.id));
 

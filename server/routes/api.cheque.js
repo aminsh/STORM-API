@@ -8,31 +8,31 @@ const async = require('asyncawait/async'),
 
 router.route('/category/:categoryId')
     .get(async((req, res) => {
-        let chequeQuery = new ChequeQuery(req.knex),
+        let chequeQuery = new ChequeQuery(req.cookies['branch-id']),
             result = await(chequeQuery.getChequesByCategory(req.params.categoryId, req.query));
         res.json(result);
     }));
 
 router.route('/category/:categoryId/whites').get(async((req, res) => {
-    let chequeQuery = new ChequeQuery(req.knex),
+    let chequeQuery = new ChequeQuery(req.cookies['branch-id']),
         result = await(chequeQuery.getWhiteCheques(req.params.categoryId));
     res.json(result);
 }));
 
 router.route('/cheques/used/all').get(async((req, res) => {
-    let chequeQuery = new ChequeQuery(req.knex),
+    let chequeQuery = new ChequeQuery(req.cookies['branch-id']),
         result = await(chequeQuery.getUsedCheques(req.query));
     res.json(result);
 }));
 
 router.route('/:id').get(async((req, res) => {
-    let chequeQuery = new ChequeQuery(req.knex),
+    let chequeQuery = new ChequeQuery(req.cookies['branch-id']),
         result = await(chequeQuery.getById(req.params.id));
     res.json(result);
 }));
 
 router.route('/:id/write').put(async((req, res) => {
-    let chequeRepository = new ChequeRepository(req.knex),
+    let chequeRepository = new ChequeRepository(req.cookies['branch-id']),
         errors = [],
         cmd = req.body;
 

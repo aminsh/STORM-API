@@ -8,19 +8,19 @@ const async = require('asyncawait/async'),
 
 router.route('/')
     .get(async((req, res) => {
-        let detailAccountQuery = new DetailAccountQuery(req.knex),
+        let detailAccountQuery = new DetailAccountQuery(req.cookies['branch-id']),
             result = await(detailAccountQuery.getAll(req.query));
         res.json(result);
     }))
     .post(async((req, res) => {
-        let detailAccountRepository = new DetailAccountRepository(req.knex),
+        let detailAccountRepository = new DetailAccountRepository(req.cookies['branch-id']),
             errors = [],
             cmd = req.body;
 
         if (string.isNullOrEmpty(cmd.code))
             errors.push(translate('The code is required'));
         else {
-            var gla = await(repository.findByCode(cmd.code));
+            var gla = await(detailAccountRepository.findByCode(cmd.code));
 
             if (gla)
                 errors.push(translate('The code is duplicated'));
@@ -39,29 +39,27 @@ router.route('/')
                 errors: errors
             });
 
-        let entity = {
+        let entity = await(detailAccountRepository.create({
             code: cmd.code,
             title: cmd.title,
             description: cmd.description,
             isActive: true
-        };
-
-        let entity = await(detailAccountRepository.create(entity));
+        }));
 
         return res.json({
             isValid: true,
-            returnValue: { id: entity.id }
+            returnValue: {id: entity.id}
         });
     }));
 
 router.route('/:id')
     .get(async((req, res) => {
-        let detailAccountQuery = new DetailAccountQuery(req.knex),
+        let detailAccountQuery = new DetailAccountQuery(req.cookies['branch-id']),
             result = await(detailAccountQuery.getById(req.params.id));
         res.json(result);
     }))
     .put(async((req, res) => {
-        let detailAccountRepository = new DetailAccountRepository(req.knex),
+        let detailAccountRepository = new DetailAccountRepository(req.cookies['branch-id']),
             errors = [],
             cmd = req.body;
 
@@ -97,10 +95,10 @@ router.route('/:id')
 
         await(detailAccountRepository.update(entity));
 
-        return res.json({ isValid: true });
+        return res.json({isValid: true});
     }))
     .delete(async((req, res) => {
-        let detailAccountRepository = new DetailAccountRepository(req.knex),
+        let detailAccountRepository = new DetailAccountRepository(req.cookies['branch-id']),
             errors = [];
 
         //check for journal line
@@ -112,29 +110,29 @@ router.route('/:id')
 
         await(detailAccountRepository.remove(req.params.id));
 
-        return res.json({ isValid: true });
+        return res.json({isValid: true});
     }));
 
 router.route('/:id/activate').put(async((req, res) => {
-    let detailAccountRepository = new DetailAccountRepository(req.knex),
+    let detailAccountRepository = new DetailAccountRepository(req.cookies['branch-id']),
         entity = await(detailAccountRepository.findById(req.params.id));
 
     entity.isActive = true;
 
     await(detailAccountRepository.update(entity));
 
-    return res.json({ isValid: true });
+    return res.json({isValid: true});
 }));
 
 router.route('/:id/deactivate').put(async((req, res) => {
-    let detailAccountRepository = new DetailAccountRepository(req.knex),
+    let detailAccountRepository = new DetailAccountRepository(req.cookies['branch-id']),
         entity = await(detailAccountRepository.findById(req.params.id));
 
     entity.isActive = false;
 
     await(detailAccountRepository.update(entity));
 
-    return res.json({ isValid: true });
+    return res.json({isValid: true});
 }));
 
 

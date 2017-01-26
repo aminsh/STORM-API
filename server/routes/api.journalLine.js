@@ -9,13 +9,13 @@ const async = require('asyncawait/async'),
 
 router.route('/journal/:journalId')
     .get(async((req, res) => {
-        let journalLineQuery = new JournalLineQuery(req.knex),
+        let journalLineQuery = new JournalLineQuery(req.cookies['branch-id']),
             result = await(journalLineQuery.getAll(req.params.journalId, req.query));
         res.json(result);
     }))
     .post(async((req, res) => {
-        let journalRepository = new JournalRepository(req.knex),
-            journalLineRepository = new JournalLineRepository(req.knex),
+        let journalRepository = new JournalRepository(req.cookies['branch-id']),
+            journalLineRepository = new JournalLineRepository(req.cookies['branch-id']),
             errors = [],
             cmd = req.body;
 
@@ -55,12 +55,12 @@ router.route('/journal/:journalId')
 
 router.route('/:id')
     .get(async((req, res) => {
-        let journalLineQuery = new JournalLineQuery(req.knex),
+        let journalLineQuery = new JournalLineQuery(req.cookies['branch-id']),
             result = await(journalLineQuery.getById(req.params.id));
         res.json(result);
     }))
     .put(async((req, res) => {
-        let journalLineRepository = new JournalLineRepository(req.knex),
+        let journalLineRepository = new JournalLineRepository(req.cookies['branch-id']),
             errors = [],
             cmd = req.body;
 
@@ -92,8 +92,8 @@ router.route('/:id')
         return res.json({ isValid: true });
     }))
     .delete(async((req, res) => {
-        let journalRepository = new JournalRepository(req.knex),
-            journalLineRepository = new JournalLineRepository(req.knex),
+        let journalRepository = new JournalRepository(req.cookies['branch-id']),
+            journalLineRepository = new JournalLineRepository(req.cookies['branch-id']),
             errors = [];
 
         if (errors.asEnumerable().any())

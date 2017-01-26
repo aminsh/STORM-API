@@ -3,18 +3,20 @@
 const async = require('asyncawait/async'),
     await = require('asyncawait/await'),
     router = require('express').Router(),
-    journalRepository = require('../data/repository.journal'),
+    JournalRepository = require('../data/repository.journal'),
     JournalTemplateRepository = require('../data/repository.journalTemplate'),
-    JournalTemplateQuery = require('../queries/query.journalTemplate');
+    JournalTemplateQuery = require('../queries/query.journalTemplate'),
+    persianDateService = require('../services/persianDateService');
 
 router.route('/').get(async((req, res) => {
-    let journalTemplateQuery = new JournalTemplateQuery(req.knex),
+    let journalTemplateQuery = new JournalTemplateQuery(req.cookies['branch-id']),
         result = journalTemplateQuery.getAll(req.query);
     res.json(result);
 }));
 
 router.route('/journal/:journalId').post(async((req, res) => {
-    let journalTemplateRepository = new JournalTemplateRepository(req.knex),
+    let journalTemplateRepository = new JournalTemplateRepository(req.cookies['branch-id']),
+        journalRepository = new JournalRepository(req.cookies['branch-id']),
         journalId = req.params.journalId,
         cmd = req.body,
         journal = await(journalRepository.findById(journalId)),
@@ -48,8 +50,8 @@ router.route('/journal/:journalId').post(async((req, res) => {
 }));
 
 router.route('/:id/journal/create').post(async((req, res) => {
-    let journalRepository = new JournalRepository(req.knex),
-        journalTemplateRepository = new JournalTemplateRepository(req.knex),
+    let journalRepository = new JournalRepository(req.cookies['branch-id']),
+        journalTemplateRepository = new JournalTemplateRepository(req.cookies['branch-id']),
         id = req.params.id,
         periodId = req.cookies['current-period'],
         template = await(journalTemplateRepository.findById(id)),
@@ -59,21 +61,20 @@ router.route('/:id/journal/create').post(async((req, res) => {
     newJournal.createdById = req.user.id;
     newJournal.journalStatus = 'Temporary';
     newJournal.temporaryNumber = (await(journalRepository.maxTemporaryNumber(periodId)) || 0) + 1;
-    newJournal.temporaryDate = persianDateSerivce.current();
+    newJournal.temporaryDate = persianDateService.current();
 
     newJournal = await(journalRepository.create(newJournal));
 
     res.json({
         isValid: true,
-        returnValue: { id: newJournal.id }
+        returnValue: {id: newJournal.id}
     });
 }));
 
 router.route('/journal-templates/:id').delete(async((req, res) => {
-    let journalTemplateRepository = new JournalTemplateRepository(req.knex);
-    await(JournalTemplateRepository.remove(req.params.id));
-    res.json({ isValid: true });
-
+    let journalTemplateRepository = new JournalTemplateRepository(req.cookies['branch-id']);
+    await(journalTemplateRepository.remove(req.params.id));
+    res.json({isValid: true});
 }));
 
 module.exports = router;

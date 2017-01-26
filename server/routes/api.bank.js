@@ -8,13 +8,13 @@ const async = require('asyncawait/async'),
 
 router.route('/')
     .get(async((req, res) => {
-        let bankQuery = new BankQuery(req.knex),
+        let bankQuery = new BankQuery(req.cookies['branch-id']),
             result = await(bankQuery.getAll(req.query));
         res.json(result);
     }))
 
     .post(async((req, res) => {
-        let bankRepository = new BankRepository(req.knex),
+        let bankRepository = new BankRepository(req.cookies['branch-id']),
             errors = [],
             cmd = req.body;
 
@@ -42,13 +42,13 @@ router.route('/')
 
 router.route('/:id')
     .get(async((req, res) => {
-        let bankQuery = new BankQuery(req.knex),
+        let bankQuery = new BankQuery(req.cookies['branch-id']),
             result = bankQuery.getById(req.params.id);
         res.json(result);
     }))
 
     .put(async((req, res) => {
-        let bankRepository = new BankRepository(req.knex),
+        let bankRepository = new BankRepository(req.cookies['branch-id']),
             errors = [],
             cmd = req.body;
 
@@ -75,7 +75,7 @@ router.route('/:id')
     }))
 
     .delete(async((req, res) => {
-        let bankRepository = new BankRepository(req.knex),
+        let bankRepository = new BankRepository(req.cookies['branch-id']),
             errors = [];
 
         if (errors.asEnumerable().any())
