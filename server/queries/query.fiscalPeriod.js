@@ -8,8 +8,9 @@ const async = require('asyncawait/async'),
     translateService = require('../services/translateService');
 
 module.exports = class FiscalPeriodQuery extends BaseQuery {
-    constructor(knex) {
-        super(knex);
+    constructor(branchId) {
+        super(branchId);
+        this.getMaxId = async(this.getMaxId);
     }
 
     getAll(parameters) {
@@ -23,5 +24,10 @@ module.exports = class FiscalPeriodQuery extends BaseQuery {
         });
 
         return kendoQueryResolve(query, parameters, view);
+    }
+
+    getMaxId() {
+        let result = await(this.knex.table('fiscalPeriods').max('id').first());
+        return result.max;
     }
 };

@@ -8,8 +8,8 @@ const async = require('asyncawait/async'),
     journalLineBase = require('./query.jounalLine.base');
 
 module.exports = class JournalLineQuery extends BaseQuery {
-    constructor(knex) {
-        super(knex);
+    constructor(branchId) {
+        super(branchId);
         this.getAll = async(this.getAll);
         this.getById = async(this.getById);
     }

@@ -8,8 +8,8 @@ const async = require('asyncawait/async'),
 
 
 module.exports = class DetailAccountQuery extends BaseQuery {
-    constructor(knex) {
-        super(knex);
+    constructor(branchId) {
+        super(branchId);
 
         this.getById = async(this.getById);
     }

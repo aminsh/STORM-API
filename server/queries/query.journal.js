@@ -9,8 +9,8 @@ const async = require('asyncawait/async'),
     groupedJournals = require('./query.journal.grouped');
 
 module.exports = class JournalQuery extends BaseQuery {
-    constructor(knex) {
-        super(knex);
+    constructor(branchId) {
+        super(branchId);
         this.getGroupedByMouth = async(this.getGroupedByMouth);
         this.getById = async(this.getById);
     }

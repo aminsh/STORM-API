@@ -7,8 +7,8 @@ const async = require('asyncawait/async'),
     view = require('../viewModel.assemblers/view.chequeCategory');
 
 module.exports = class ChequeCategoryQuery extends BaseQuery {
-    constructor(knex) {
-        super(knex);
+    constructor(branchId) {
+        super(branchId);
 
         this.getById = async(this.getById);
     }

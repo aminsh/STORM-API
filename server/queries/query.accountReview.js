@@ -7,8 +7,8 @@ const async = require('asyncawait/async'),
     groupBy = require('./query.accountReview.groupby');
 
 module.exports = class AccountReview extends BaseQuery {
-    constructor(knex, fiscalPeriodId, filter, paramters) {
-        super(knex);
+    constructor(branchId, fiscalPeriodId, filter, paramters) {
+        super(branchId);
 
         this.getDateRange = async(this.getDateRange);
         this.aggregates = async(this.aggregates);

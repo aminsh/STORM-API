@@ -8,13 +8,13 @@ const async = require('asyncawait/async'),
 let view = e => ({ id: e.id, title: e.title });
 
 module.exports = class TagQuery extends BaseQuery {
-    constructor(knex) {
-        super(knex);
+    constructor(branchId) {
+        super(branchId);
     }
 
     getAll(parameters) {
-        let query = knexService.select().from('tags');
-        return kendoQueryResolve(query, req.query, view)
+        let query = this.knex.select().from('tags');
+        return kendoQueryResolve(query, parameters, view)
     }
 };
 

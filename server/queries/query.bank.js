@@ -6,8 +6,8 @@ const async = require('asyncawait/async'),
     kendoQueryResolve = require('../services/kendoQueryResolve');
 
 class BandQuery extends BaseQuery {
-    constructor(knex) {
-        super(knex);
+    constructor(branchId) {
+        super(branchId);
         this.getById = async(this.getById);
     }
 

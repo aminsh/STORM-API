@@ -7,8 +7,8 @@ const async = require('asyncawait/async'),
     view = require('../viewModel.assemblers/view.dimensionCategory');
 
 module.exports = class DimensionCategoryQuery extends BaseQuery {
-    constructor(knex) {
-        super(knex);
+    constructor(branchId) {
+        super(branchId);
         this.getById = async(this.getById);
     }
 

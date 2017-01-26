@@ -8,8 +8,8 @@ const async = require('asyncawait/async'),
 let view = e => ({ id: e.id, title: e.title });
 
 module.exports = class JournalTemplateQuery extends BaseQuery {
-    constructor(knex) {
-        super(knex);
+    constructor(branchId) {
+        super(branchId);
     }
 
     getAll(parameters) {
