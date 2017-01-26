@@ -2,20 +2,17 @@
 
 var passport = require('passport'),
     url = require('url'),
-    config = require('../config'),
-    cryptoServivce = require('../services/cryptoService'),
+    config = require('../../config'),
+    memoryService = require('../../services/memoryService'),
+    cryptoServivce = require('../../services/cryptoService'),
     eventEmitter = require('../../services/eventEmitter'),
-    routeHandler = require('../../utilities/routeHandler'),
-    indexRouter = require('../../routes')
-        .asEnumerable()
-        .single(r => r.method.toLowerCase() == 'get' && r.path == '/');
+    indexRouteHandler = require('../../routes').handler;
 
 class IntegratedAuthentication {
 
-    constructor(req, res, memoryService) {
+    constructor(req, res) {
         this.req = req;
         this.res = res;
-        this.memoryService = memoryService;
     }
 
     authenticate() {
@@ -50,11 +47,11 @@ class IntegratedAuthentication {
     }
 
     get usersOnMemory() {
-        return this.memoryService.get('users');
+        return memoryService.get('users');
     }
 
     set usersOnMemory(users) {
-        this.memoryService.set('users', users);
+        memoryService.set('users', users);
     }
 
     setBranch() {
@@ -85,7 +82,7 @@ class IntegratedAuthentication {
             if (req.xhr) return next();
             if (req.originalUrl.startsWith('/logo')) return next();
 
-            return routeHandler(req, indexRouter.handler)
+            return indexRouteHandler(req, res);
         }
 
         if (req.originalUrl.startsWith('/auth/return'))

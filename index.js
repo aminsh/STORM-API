@@ -1,8 +1,7 @@
 "use strict";
 
-var fileSystemServer = require('./server/services/fileSystemService'),
-    path = require('path'),
-    basePath = './initializers';
+const fileSystemServer = require('./server/services/fileSystemService'),
+    path = require('path');
 
 fileSystemServer.getDirectoryFiles('./initializers')
     .sort()

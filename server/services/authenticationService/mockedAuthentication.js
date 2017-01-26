@@ -1,35 +1,27 @@
 "use strict";
 
-var passport = require('passport'),
+const passport = require('passport'),
     url = require('url'),
-    config = require('../config'),
+    config = require('../../config'),
     eventEmitter = require('../../services/eventEmitter'),
-    routeHandler = require('../../utilities/routeHandler'),
-    indexRouter = require('../../routes')
-        .asEnumerable()
-        .single(r => r.method.toLowerCase() == 'get' && r.path == '/');
+    memoryService = require('../../services/memoryService'),
+    indexRouteHandler = require('../../routes').handler;
 
 class MockedAuthentication {
 
-    constructor(req, res, memoryService) {
+    constructor(req, res) {
         this.req = req;
         this.res = res;
-        this.memoryService = memoryService;
-
-        this.branchConfig = config.branch;
     }
 
     authenticate() {
         this.setBranch();
-
-        let users = [this.user];
-        this.usersOnMemory = users;
-
+        this.usersOnMemory = [this.user];
         this.login();
     }
 
     get data() {
-        return { branchId: this.branchConfig.id };
+        return {branchId: config.branch.id};
     }
 
     get user() {
@@ -37,11 +29,11 @@ class MockedAuthentication {
     }
 
     get usersOnMemory() {
-        return this.memoryService.get('users');
+        return memoryService.get('users');
     }
 
     set usersOnMemory(users) {
-        this.memoryService.set('users', users);
+        memoryService.set('users', users);
     }
 
     setBranch() {
@@ -67,12 +59,10 @@ class MockedAuthentication {
     middleware() {
         const req = this.req,
             res = this.res;
-            
+
         if (req.isAuthenticated()) {
             if (req.xhr) return next();
-            if (req.originalUrl.startsWith('/logo')) return next();
-
-            return routeHandler(req, indexRouter.handler)
+            return indexRouteHandler(req, res);
         }
 
         if (req.xhr)

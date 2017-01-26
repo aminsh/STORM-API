@@ -7,10 +7,6 @@ export default function shell($rootScope, menuItems, translate, currentService, 
         scope: {},
         link: function (scope, element, attrs) {
 
-            currentService.setFiscalPeriod(parseInt($cookies.get('current-period')));
-            currentService.setMode($cookies.get('current-mode'));
-            currentService.setBranch(JSON.parse(localStorage.getItem('currentBranch')));
-
             scope.current = {
                 period: '',
                 mode: constants.enums.AccMode().getDisplay(currentService.get().mode),

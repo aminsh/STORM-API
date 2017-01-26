@@ -12,5 +12,7 @@ config.rootPath = rootPath;
 if (config.db.connection.filename)
     config.db.connection.filename = config.db.connection.filename.format(rootPath);
 
+config.env = env;
+
 module.exports = config;
 

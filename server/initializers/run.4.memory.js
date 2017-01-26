@@ -1,6 +1,7 @@
 "use strict";
 
-var memoryService = require('../services/memoryService'),
+var config = require('../config'),
+    memoryService = require('../services/memoryService'),
     redisClient = require('../services/redisClientService'),
     cryptoService = require('../services/cryptoService'),
     async = require('asyncawait/async'),
@@ -9,10 +10,15 @@ var memoryService = require('../services/memoryService'),
 module.exports = async(()=> {
     memoryService.set('users', []);
 
-    let branches = await(redisClient.get('branches'));
+    let branches = config.mode == 'UNIT'
+        ? [config.branch]
+        : await(redisClient.get('branches'));
+
     memoryService.set('branches', branches);
 
-    let dbConfigs = (await(redisClient.get('accDbConfigs')) || [])
+    let dbConfigs = config.mode == 'UNIT'
+        ? [{branchId: config.branch.id, dbConfig: config.db}]
+        : (await(redisClient.get('accDbConfigs')) || [])
         .asEnumerable()
         .select(e => cryptoService.decrypt(e))
         .toArray();

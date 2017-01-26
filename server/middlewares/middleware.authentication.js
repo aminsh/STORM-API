@@ -3,10 +3,15 @@
 const config = require('../config'),
     async = require('asyncawait/async'),
     await = require('asyncawait/await'),
-    routeHandler = require('../utilities/routeHandler');
+    Authentication = require('../services/authenticationService');
 
 module.exports = async((req, res, next) => {
-    const authenticationService = req.ioc.resolve('authenticationService');
+    if (req.isAuthenticated())
+        return next();
 
-    authenticationService.middleware();
+    if (req.originalUrl.startsWith('/auth/return'))
+        return next();
+
+    let authentication = new Authentication(req, res);
+    authentication.middleware();
 });

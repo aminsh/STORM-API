@@ -1,25 +1,27 @@
-var config = require('../config'),
+"use strict";
+
+const config = require('../config'),
+    memoryService = require('../services/memoryService'),
     clientTranslation = require('../config/translate.client.fa.json'),
-    view = require('../viewModel.assemblers/view.dimensionCategory'),
-    router = require('../services/routeService').Router(),
-    await = require('asyncawait/await');
+    router = require('express').Router(),
+    async = require('asyncawait/async'),
+    await = require('asyncawait/await'),
+    DimensionCategoryQuery = require('../queries/query.dimensionCategory');
 
-router.route({
-    method: 'GET',
-    path: '/',
-    handler: (req, res, knex, memoryService)=> {
-        var dimensionCategories = await(knex.select().from('dimensionCategories'));
-        var mappedDimensionCategories = {data: dimensionCategories.asEnumerable().select(view).toArray()};
+let handler = module.exports.handler = async((req, res) => {
+    let dimensionCategoryQuery = new DimensionCategoryQuery(req.cookies['branch-id']),
+        dimensionCategories = await(dimensionCategoryQuery.getAll());
 
-        res.render('index.ejs', {
-            clientTranslation: clientTranslation,
-            currentUser: req.user.name,
-            currentBranch: memoryService.get('branches')
-                .asEnumerable().single(b=> b.id == req.cookies['branch-id']),
-            dimensionCategories: mappedDimensionCategories,
-            version: config.version
-        });
-    }
+    res.render('index.ejs', {
+        clientTranslation: clientTranslation,
+        currentUser: req.user.name,
+        currentBranch: memoryService.get('branches')
+            .asEnumerable().single(b => b.id == req.cookies['branch-id']),
+        dimensionCategories: dimensionCategories.data,
+        version: config.version
+    });
 });
 
-module.exports = router.routes;
+router.route('/').get(handler);
+
+module.exports.router = router;

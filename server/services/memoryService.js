@@ -1,4 +1,6 @@
-var app = require('../config/config.express').app;
+"use strict";
+
+const app = require('../config/config.express');
 
 module.exports.get = function(key){
     return app.get(key);

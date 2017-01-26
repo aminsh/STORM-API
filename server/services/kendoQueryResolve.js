@@ -2,6 +2,8 @@ var async = require('asyncawait/async');
 var await = require('asyncawait/await');
 
 function kendoQueryResolve(query, request, mapper) {
+    request = request || {};
+
     resolveFilter(query, request.filter);
 
     var count = await(query.clone().count())[0].count;
@@ -74,4 +76,4 @@ function resolveSort(query, sort) {
     });
 }
 
-module.exports = ()=> async(kendoQueryResolve);
+module.exports = async(kendoQueryResolve);
