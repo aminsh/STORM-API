@@ -1,6 +1,6 @@
 "use strict";
 
-module.exports = function (query, filter, currentFiscalPeriod) {
+module.exports = function (query, filter, currentFiscalPeriod,knex) {
     var numberOperators = {
         eq: '=',
         gt: '>',
@@ -17,7 +17,7 @@ module.exports = function (query, filter, currentFiscalPeriod) {
 
     if (filter.title && filter.title !== '') {
         var value = '%{0}%'.format(filter.title);
-        query.andWhereRaw(knexService.raw('("journals"."description" LIKE ? OR "journalLines"."article" LIKE ?)',
+        query.andWhereRaw(knex.raw('("journals"."description" LIKE ? OR "journalLines"."article" LIKE ?)',
             [value, value]));
     }
 

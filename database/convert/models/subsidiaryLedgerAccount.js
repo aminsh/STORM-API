@@ -8,6 +8,7 @@ class SubsidiaryLedgerAccount extends Base {
 
         this.generalLedgerAccountId = generalLedgerAccountId;
         this.code = model.code2;
+        this.title = model.title;
         this.description = '';
         this.isBankAccount = model.chq;
         this.detailAccountAssignmentStatus = model.det ? 'Required' : 'DoesNotHave';

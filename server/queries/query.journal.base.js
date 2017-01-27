@@ -35,5 +35,5 @@ module.exports = function(extra, currentFiscalPeriodId, knex) {
         .orderBy('journals.temporaryNumber', 'DESC')
         .as('baseJournals');
 
-    filter(q, extra, currentFiscalPeriodId);
+    filter(q, extra, currentFiscalPeriodId , knex);
 };

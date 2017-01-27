@@ -60,11 +60,6 @@ class MockedAuthentication {
         const req = this.req,
             res = this.res;
 
-        if (req.isAuthenticated()) {
-            if (req.xhr) return next();
-            return indexRouteHandler(req, res);
-        }
-
         if (req.xhr)
             return res.status(401).send('user is not authenticated');
 

@@ -7,6 +7,7 @@ import  './config/translate.config';
 import './config/gridFilterCellTypeConfig';
 import './config/authConfig';
 
+
 //load controllers
 import './controllers/homeController';
 import './controllers/generalLedgerAccountsController';

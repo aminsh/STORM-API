@@ -78,13 +78,6 @@ class IntegratedAuthentication {
         const req = this.req,
             res = this.res;
 
-        if (req.isAuthenticated()) {
-            if (req.xhr) return next();
-            if (req.originalUrl.startsWith('/logo')) return next();
-
-            return indexRouteHandler(req, res);
-        }
-
         if (req.originalUrl.startsWith('/auth/return'))
             return next();
 

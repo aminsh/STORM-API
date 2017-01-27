@@ -7,13 +7,13 @@ const async = require('asyncawait/async'),
     SubsidiaryLedgerAccountRepository = require('../data/repository.subsidiaryLedgerAccount'),
     SubsidiaryLedgerAccountQuery = require('../queries/query.subsidiaryLedgerAccount');
 
-router.route('/subsidiary-ledger-accounts').get(async((req, res) => {
+router.route('/').get(async((req, res) => {
     let subsidiaryLedgerAccountQuery = new SubsidiaryLedgerAccountQuery(req.cookies['branch-id']),
         result = await(subsidiaryLedgerAccountQuery.getAll(req.query));
     res.json(result);
 }));
 
-router.route('/subsidiary-ledger-accounts/general-ledger-account/:parentId')
+router.route('/general-ledger-account/:parentId')
     .get(async((req, res) => {
         let subsidiaryLedgerAccountQuery = new SubsidiaryLedgerAccountQuery(req.cookies['branch-id']),
             result = await(subsidiaryLedgerAccountQuery.getAllByGeneralLedgerAccount(req.params.parentId, req.query));

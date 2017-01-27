@@ -40,19 +40,6 @@ export default function shell($rootScope, menuItems, translate, currentService, 
                 else
                     $scope.isToggleMenuOpen = true;
             };
-
-            scope.$on('fiscal-period-changed', (e, fiscalPeriod)=> {
-                $cookies.put('current-period', fiscalPeriod.id);
-                currentService.setFiscalPeriod(fiscalPeriod.id);
-
-                scope.current.period = fiscalPeriod.display;
-            });
-
-            scope.$on('mode-changed', (e, mode)=> {
-                $cookies.put('current-mode', mode.key);
-                currentService.setMode(mode.key);
-                scope.current.mode = mode.display;
-            });
         }
     };
 }

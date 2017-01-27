@@ -1,27 +1,31 @@
 "use strict";
 
 export default class currentService {
-    constructor() {
+    constructor($cookies) {
         this.current = {
             fiscalPeriod: null,
             mode: null,
             branch: null
         };
+
+        this.$cookies = $cookies;
     }
 
-    setFiscalPeriod(fiscalPeriodId){
+    setFiscalPeriod(fiscalPeriodId) {
+        this.$cookies.put('current-period', fiscalPeriodId);
         this.current.fiscalPeriod = fiscalPeriodId == 0 ? null : fiscalPeriodId;
     }
 
-    setMode(mode){
+    setMode(mode) {
+        this.$cookies.put('current-mode', mode);
         this.current.mode = mode;
     }
 
-    setBranch(branch){
+    setBranch(branch) {
         this.current.branch = branch;
     }
 
-    get(){
+    get() {
         return this.current;
     }
 }

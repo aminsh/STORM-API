@@ -21,7 +21,9 @@ module.exports = class JournalQuery extends BaseQuery {
         let extra = (parameters.extra) ? parameters.extra.filter : undefined;
 
         let query = knex.select()
-            .from(() => groupedJournals.call(this, extra, fiscalPeriodId))
+            .from(function () {
+                groupedJournals.call(this, extra, fiscalPeriodId, knex);
+            })
             .as('baseJournals');
 
         return kendoQueryResolve(query, parameters, view);
@@ -51,7 +53,7 @@ module.exports = class JournalQuery extends BaseQuery {
 
         result.forEach(item => item.monthName = enums.getMonth().getDisplay(item.month));
 
-        return result;
+        return {data: result};
     }
 
     getJournalsByMonth(month, currentFiscalPeriod, parameters) {
@@ -92,8 +94,7 @@ module.exports = class JournalQuery extends BaseQuery {
         result.tagIds = await(knex.select('tagId')
             .from('journalTags')
             .where('journalId', id)
-            .map(t => t.tagId)
-            .toArray());
+            .map(t => t.tagId));
 
         return view(result);
     }

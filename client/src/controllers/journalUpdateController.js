@@ -214,9 +214,6 @@ function journalUpdateController($scope, logger, confirm, translate, navigate, $
     $scope.journalLineCurrent = false;
     $scope.journalLineCurrentChanged = (current)=> {
         $scope.journalLineCurrent = current;
-
-        if (!$scope.$$phase)
-            $scope.$apply();
     };
 
     $scope.dimensionCategories = {};

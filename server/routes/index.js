@@ -17,11 +17,11 @@ let handler = module.exports.handler = async((req, res) => {
         currentUser: req.user.name,
         currentBranch: memoryService.get('branches')
             .asEnumerable().single(b => b.id == req.cookies['branch-id']),
-        dimensionCategories: dimensionCategories.data,
+        dimensionCategories: dimensionCategories,
         version: config.version
     });
 });
 
 router.route('/').get(handler);
 
-module.exports.router = router;
+    module.exports.router = router;

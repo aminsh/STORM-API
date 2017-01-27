@@ -77,9 +77,6 @@ function journalsController($scope, translate, journalApi, navigate, logger,
         resolveExtraFilter: journalsExtraFilterResolve,
         setExtraFilter: (extra)=> {
             $scope.searchParameters = extra;
-
-            if (!$scope.$$phase)
-                $scope.$apply();
         }
     };
 

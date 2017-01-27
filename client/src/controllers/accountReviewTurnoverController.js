@@ -86,9 +86,6 @@ function accountReviewTurnoverController($scope, navigate, $routeParams, $locati
         if (!current) $scope.current = false;
 
         $scope.current = current;
-
-        if (!$scope.$$phase)
-            $scope.$apply();
     };
 
     $scope.showJournal = ()=> {

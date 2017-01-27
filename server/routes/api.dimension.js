@@ -9,7 +9,7 @@ const async = require('asyncawait/async'),
 router.route('/category/:categoryId')
     .get(async((req, res) => {
         let dimensionQuery = new DimensionQuery(req.cookies['branch-id']),
-            result = dimensionQuery.getAll(req.params.categoryId, req.query);
+            result = await(dimensionQuery.getAll(req.params.categoryId, req.query));
         res.json(result);
     }))
     .post(async((req, res) => {

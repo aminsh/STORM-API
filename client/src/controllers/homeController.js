@@ -2,8 +2,6 @@ import accModule from '../acc.module';
 
 function homeController($scope, $rootScope, constants, currentService, navigate) {
 
-    debugger;
-
     $scope.current = currentService.get();
 
     if (!$scope.current.fiscalPeriod)

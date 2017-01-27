@@ -7,10 +7,8 @@
             k-datasource="gridDateSource"
             on-current-changed="onCurrentChanged(current)"></dev-tag-grid>
 
-    <div style="margin-top: 10px">
-        <dev-tag-grid
-                ng-if="gridDimensions"
-                option="gridDimensions"></dev-tag-grid>
+    <div style="margin-top: 10px" ng-if="gridDimensions">
+        <dev-tag-grid option="gridDimensions"></dev-tag-grid>
     </div>
 
 </dev-tag-content>

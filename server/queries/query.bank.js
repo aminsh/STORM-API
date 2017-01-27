@@ -3,7 +3,8 @@
 const async = require('asyncawait/async'),
     await = require('asyncawait/await'),
     BaseQuery = require('./query.base'),
-    kendoQueryResolve = require('../services/kendoQueryResolve');
+    kendoQueryResolve = require('../services/kendoQueryResolve'),
+    view = bank => ({id: bank.id, title: bank.title});
 
 class BandQuery extends BaseQuery {
     constructor(branchId) {
@@ -12,21 +13,13 @@ class BandQuery extends BaseQuery {
     }
 
     getAll(parameters) {
-        let query = this.knex.select('*').from('banks');
-        return kendoQueryResolve(query, parameters, BankView);
+        let query = this.knex.select().from('banks');
+        return kendoQueryResolve(query, parameters, view);
     }
 
     getById(id) {
         let bank = await(this.knex.select().from('banks').where('id', id).first());
-        return new BankView(bank);
-    }
-}
-
-
-class BankView {
-    constructor(model) {
-        this.id = model.id;
-        this.title = model.title;
+        return view(bank);
     }
 }
 

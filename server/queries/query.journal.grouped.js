@@ -2,7 +2,7 @@
 
 const baseJournals = require('./query.journal.base');
 
-module.exports = function (extra, currentFiscalPeriodId) {
+module.exports = function (extra, currentFiscalPeriodId, knex) {
     this.select(
         'id',
         'temporaryNumber',
@@ -15,18 +15,20 @@ module.exports = function (extra, currentFiscalPeriodId) {
         'journalStatus',
         'journalType',
         'isInComplete'
-    ).from(() => baseJournals.call(this, extra, currentFiscalPeriodId))
+    ).from(function () {
+            baseJournals.call(this, extra, currentFiscalPeriodId, knex)
+        })
         .groupBy(
-        'id',
-        'temporaryNumber',
-        'temporaryDate',
-        'number',
-        'date',
-        'description',
-        'periodId',
-        'createdById',
-        'journalStatus',
-        'journalType',
-        'isInComplete')
+            'id',
+            'temporaryNumber',
+            'temporaryDate',
+            'number',
+            'date',
+            'description',
+            'periodId',
+            'createdById',
+            'journalStatus',
+            'journalType',
+            'isInComplete')
         .as('groupedJournals');
 };

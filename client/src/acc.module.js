@@ -30,4 +30,10 @@ accModule.init = () => {
     });
 };
 
+accModule.run((currentService, $cookies) => {
+    currentService.setFiscalPeriod(parseInt($cookies.get('current-period')));
+    currentService.setMode($cookies.get('current-mode'));
+    currentService.setBranch(JSON.parse(localStorage.getItem('currentBranch')));
+});
+
 export default accModule;

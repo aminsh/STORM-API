@@ -3,7 +3,6 @@
 const app = require('./config.express');
 
 /* config Routes */
-app.use('/', require('../routes/index').router);
 app.use('/', require('../routes/authentication'));
 
 app.use('/api/account-review', require('../routes/api.accountReview'));
@@ -18,7 +17,7 @@ app.use('/api/general-ledger-accounts', require('../routes/api.generalLedgerAcco
 app.use('/api/journals', require('../routes/api.journal'));
 app.use('/api/journal-lines', require('../routes/api.journalLine'));
 app.use('/api/journal-templates', require('../routes/api.journalTemplate'));
-app.use('/api/subsidiary-ledger-account', require('../routes/api.subsidiaryLedgerAccount'));
+app.use('/api/subsidiary-ledger-accounts', require('../routes/api.subsidiaryLedgerAccount'));
 app.use('/api/tags', require('../routes/api.tag'));
 
 
@@ -26,6 +25,8 @@ app.get('/branch/change', (req, res) => {
     const url = `${config.branch.changeUrl}/?returnUrl=${config.auth.returnUrl}`;
     res.redirect(url);
 });
+
+app.get('*', require('../routes/index').handler);
 
 
 

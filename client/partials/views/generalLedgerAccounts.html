@@ -12,7 +12,7 @@
         <ul class="dropdown-menu" role="menu" aria-labelledby="single-button">
             <li role="menuitem">
                 <a
-                        href="{{'#/subsidiary-ledger-accounts/' + gridOption.current.id}}"
+                        href="{{'/subsidiary-ledger-accounts/' + gridOption.current.id}}"
                         ng-if="gridOption.current != null">
                     <i class="glyphicon glyphicon-list"></i>
                     {{'Subsidiary ledger accounts' | translate}}
@@ -20,7 +20,7 @@
             </li>
             <li role="menuitem">
                 <a
-                        href="{{'#/subsidiary-ledger-account/{0}/create'.format(gridOption.current.id)}}"
+                        href="{{'/subsidiary-ledger-account/{0}/create'.format(gridOption.current.id)}}"
                         ng-if="gridOption.current != null">
                     <i class="glyphicon glyphicon-plus"></i>
                     {{'New Subsidiary ledger account' | translate}}

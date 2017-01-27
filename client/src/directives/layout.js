@@ -1,19 +1,37 @@
 import $ from 'jquery';
 import accModule from '../acc.module';
 
-function header() {
+function header(currentService, constants) {
     return {
         restrict: 'E',
         templateUrl: 'partials/templates/header-template.html',
         replace: true,
-        scope: false,
+        scope: true,
         link: function (scope, element, attrs) {
             scope.currentUser = localStorage.getItem('currentUser');
+
+            let current = currentService.get();
+
+            scope.current = {
+                branch: current.branch,
+                mode: constants.enums.AccMode().getDisplay(current.mode),
+                fiscalPeriod: current.fiscalPeriod
+            };
 
             $(element).find('.dropdown')
             $('input').click(function () {
                 $('.dropdown').addClass('open');
                 $('.dropdown').addClass('test-class');
+            });
+
+            scope.$on('mode-changed', (e, mode) => {
+                currentService.setMode(mode.key);
+                scope.current.mode = mode.display;
+            });
+
+            scope.$on('fiscal-period-changed', (e, fiscalPeriod) => {
+                currentService.setFiscalPeriod(fiscalPeriod.id);
+                scope.current.period = fiscalPeriod.display;
             });
         }
     }

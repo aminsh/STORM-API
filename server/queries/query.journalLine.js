@@ -17,7 +17,9 @@ module.exports = class JournalLineQuery extends BaseQuery {
     getAll(journalId, parameters) {
         let knex = this.knex;
         let query = knex.select()
-            .from(() => journalLineBase.call(this, knex))
+            .from(function () {
+                journalLineBase.call(this, knex);
+            })
             .where('journalId', journalId);
 
         let result = await(kendoQueryResolve(query, parameters, view));
@@ -30,6 +32,8 @@ module.exports = class JournalLineQuery extends BaseQuery {
             debtor: { sum: aggregates.sumDebtor },
             creditor: { sum: aggregates.sumCreditor }
         };
+
+        return result;
     }
 
     getById(id) {

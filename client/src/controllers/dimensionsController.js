@@ -62,9 +62,6 @@ function dimensionsController($scope, logger, translate, confirm, constants, $ti
 
         $scope.gridDimensions = false;
 
-        if (!$scope.$$phase)
-            $scope.$apply();
-
         if (current != null)
             $timeout(()=> $scope.gridDimensions = gridOptionFactory(current), 0);
     };
