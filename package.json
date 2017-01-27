@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node . NODE_ENV=staging",
-    "dev": "node . NODE_ENV=development"
+    "dev": "node . NODE_ENV=development --mode UNIT"
   },
   "author": "amin sheikhi",
   "license": "ISC",
