@@ -6,7 +6,7 @@
 
   function routerConfigure($stateProvider) {
     $stateProvider
-    .state('login', {
+      .state('login', {
         url: '/login',
         views: {
           "content@": {
@@ -19,6 +19,23 @@
           deps: ["$ocLazyLoad", function($ocLazyLoad) {
             return $ocLazyLoad.load([
               "/client/src/auth/login.controller.js"
+            ])
+          }],
+        },
+      })
+      .state('register', {
+        url: '/register',
+        views: {
+          "content@": {
+            templateUrl: '/client/src/auth/register.html',
+            controller: 'registerController',
+            controllerAs: 'AuthVM',
+          }
+        },
+        resolve: {
+          deps: ["$ocLazyLoad", function($ocLazyLoad) {
+            return $ocLazyLoad.load([
+              "/client/src/auth/register.controller.js"
             ])
           }],
         },
