@@ -8,11 +8,15 @@
       users: {
         base: '/api/users/',
         auth: {
-          login: 'login',
+          login: 'login/',
+          register: 'register',
+        },
+        check: {
+          email: 'is-unique-email/:email',
         }
       }
     };
-    return function(pattern) {
+    return function(pattern, params = {}) {
       var paths = pattern.split('.');
       var namespace = paths.slice(0, 1);
       var prefix = apis[namespace].base;
@@ -22,6 +26,12 @@
         apiSelected = apiSelected[path];
       });
       var url = prefix + apiSelected;
+      Object.keys(params).map((param) => {
+        const value = params[param];
+        const key = `:${param}`;
+        url = url.replace(key, value);
+        return null;
+      });
       return url;
     }
   }

@@ -12,6 +12,23 @@
     font-family: "BKoodakBold", "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
+body label.right {
+  float: right;
+}
+
+.full-height {
+  height: 100%;
+}
+
+.register-row {
+  margin-top: 20%;
+}
+
+label.help-block {
+  float: right;
+  direction: rtl;
+}
+
 .sidebar-item {
   text-align: right;
   padding-right: 30px;
@@ -61,8 +78,4 @@
 
 .login-row .panel-title {
   /*text-align: center;*/
-}
-
-.form-group label .center {
-  text-align: center;
 }
