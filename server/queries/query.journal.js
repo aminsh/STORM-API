@@ -84,7 +84,7 @@ module.exports = class JournalQuery extends BaseQuery {
                 .as('baseJournals');
         }).as('baseJournals');
 
-        kendoQueryResolve(query, parameters, view)
+        return kendoQueryResolve(query, parameters, view)
     }
 
     getById(id) {

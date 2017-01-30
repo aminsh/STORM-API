@@ -19,6 +19,7 @@ app.use('/api/journal-lines', require('../routes/api.journalLine'));
 app.use('/api/journal-templates', require('../routes/api.journalTemplate'));
 app.use('/api/subsidiary-ledger-accounts', require('../routes/api.subsidiaryLedgerAccount'));
 app.use('/api/tags', require('../routes/api.tag'));
+app.use('/report', require('../routes/report.designer'));
 
 
 app.get('/branch/change', (req, res) => {

@@ -5,12 +5,15 @@ const async = require('asyncawait/async'),
     FiscalPeriodQuery = require('../queries/query.fiscalPeriod');
 
 
-var onUserConnected = async((req, res, next) => {
-    let fiscalPeriodQuery = new FiscalPeriodQuery(req.cookies['branch-id']),
-        currentPeriod = req.cookies['current-period'];
+module.exports = async((req, res, next) => {
+    if (!req.isAuthenticated())
+        return next();
+
+    let currentPeriod = req.cookies['current-period'];
 
     if (currentPeriod == null || currentPeriod == 0) {
-        let maxId = await(fiscalPeriodQuery.getMaxId());
+        let fiscalPeriodQuery = new FiscalPeriodQuery(req.cookies['branch-id']),
+            maxId = await(fiscalPeriodQuery.getMaxId());
         maxId = maxId || 0;
 
         res.cookie('current-period', maxId);
@@ -22,6 +25,4 @@ var onUserConnected = async((req, res, next) => {
     next();
 });
 
-
-module.exports = onUserConnected;
 

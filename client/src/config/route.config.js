@@ -76,6 +76,10 @@ accModule.config(($routeProvider, $locationProvider) => {
             controller: 'chequeCategoriesController',
             templateUrl: 'partials/views/chequeCategories.html'
         })
+        .when('/cheque/:id/print', {
+            controller: 'chequePrintController',
+            templateUrl: 'partials/views/chequePrint.html'
+        })
         .when('/banks', {
             controller: 'banksController',
             templateUrl: 'partials/views/banks.html'

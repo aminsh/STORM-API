@@ -35,10 +35,10 @@ export default function shell($rootScope, menuItems, translate, currentService, 
             };
 
             scope.toggle = function () {
-                if ($scope.isToggleMenuOpen)
-                    $scope.isToggleMenuOpen = false;
+                if (scope.isToggleMenuOpen)
+                    scope.isToggleMenuOpen = false;
                 else
-                    $scope.isToggleMenuOpen = true;
+                    scope.isToggleMenuOpen = true;
             };
         }
     };

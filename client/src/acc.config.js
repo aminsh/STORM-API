@@ -27,6 +27,7 @@ import './controllers/accountReviewController';
 import './controllers/accountReviewTurnoverController';
 import './controllers/journalPrintController';
 import createFiscalPeriodController from  './controllers/createFiscalPeriodController';
+import chequePrintController from './controllers/chequePrintController';
 
 // load apis
 import './apis/generalLedgerAccountApi';
@@ -58,6 +59,7 @@ import './modals/showJournalDetail';
 import './modals/journalAdvnacedSearch';
 import './modals/detailAccountCreate';
 import './modals/detailAccountUpdate';
+import './modals/chequesByCategory';
 
 import './localData/constants';
 
@@ -84,6 +86,7 @@ import './directives/journalSearchParameters';
 import './directives/reportViewer';
 import shell from './directives/shell';
 import {contentCover, contentCoverForm} from './directives/contentCover';
+import './directives/reportDesigner';
 
 //filter
 import './filters/amount';
@@ -109,7 +112,9 @@ accModule
     .directive('devTagContentCoverFrom', contentCoverForm)
     .service(currentService.name, currentService)
     .service('fiscalPeriodApi', FiscalPeriodApi)
-    .controller(createFiscalPeriodController.name, createFiscalPeriodController);
+    .controller(createFiscalPeriodController.name, createFiscalPeriodController)
+    .controller('chequePrintController', chequePrintController)
+    .controller('reportController', reportController);
 
 accModule.init();
 

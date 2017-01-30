@@ -2,16 +2,19 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title><%=: 'Report designer' | translate %></title>
+    <title>Report Dessigner</title>
 
     <link href="/client/content/stimulsoft/stimulsoft.viewer.office2013.whiteblue.css" rel="stylesheet">
     <link href="/client/content/stimulsoft/stimulsoft.designer.office2013.whiteblue.css" rel="stylesheet">
     <link href="/client/content/fonts.min.css" rel="stylesheet"/>
 
 
-    <script src="/client/dist/stimulsoft.all.min.js"></script>
+    <!--<script src="/client/dist/stimulsoft.all.min.js"></script>-->
    <!-- <script src="/client/lib/stimulsoft.viewer.js"></script>
     <script src="/client/lib/stimulsoft.designer.js"></script>-->
+    <script src="/client/lib/stimulsoft.ultimate/stimulsoft.reports.js"></script>
+    <script src="/client/lib/stimulsoft.ultimate/stimulsoft.viewer.js"></script>
+    <script src="/client/lib/stimulsoft.ultimate/stimulsoft.designer.js"></script>
 
     <script src="/client/bower_components/jquery/dist/jquery.min.js"></script>
 
@@ -28,7 +31,8 @@
     var mode = '<%- mode %>';
     var name = '<%- name %>';
 
-    var url = '/report/json/journal/195775559';
+    //var url = '/report/json/journal/195775559';
+    var url = '/api/cheques/1';
 
     <% fonts.forEach(function (font) { %>
     Stimulsoft.Base.StiFontCollection

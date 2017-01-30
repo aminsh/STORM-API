@@ -43,7 +43,10 @@
 </html>
 
 <script src="/client/dist/vendor.bundle.min.js?v=<%- version.vendor %>"></script>
-<script src="/client/dist/stimulsoft.all.min.js"></script>
+<!--<script src="/client/dist/stimulsoft.all.min.js"></script>-->
+<script src="/client/lib/stimulsoft.ultimate/stimulsoft.reports.js"></script>
+<script src="/client/lib/stimulsoft.ultimate/stimulsoft.viewer.js"></script>
+<script src="/client/lib/stimulsoft.ultimate/stimulsoft.designer.js"></script>
 
 <script>
     require('js-helper');
@@ -55,6 +58,27 @@
     localStorage.setItem('currentUser', '<%- currentUser %>');
     localStorage.setItem('currentBranch','<%- JSON.stringify(currentBranch)%>');
     localStorage.setItem('dimensionCategories', '<%- JSON.stringify(dimensionCategories) %>');
+
+    Stimulsoft.Base.Localization.StiLocalization.setLocalizationFile('/client/content/fa.xml', true);
+
+    <% fonts.forEach(function (font) { %>
+    Stimulsoft.Base.StiFontCollection
+        .addOpentypeFontFile('/client/fonts/<%- font.fileName %>', '<%- font.name %>');
+    <% }) %>
+
+    Stimulsoft.Report.Dictionary.StiFunctions.addFunction(
+            "devFunction",
+            "digitToWord",
+            "digitToWord", "", "",
+            String, "", [Number], ["Amount"], [""],
+            window.digitToWord);
+
+    Stimulsoft.Report.Dictionary.StiFunctions.addFunction(
+        "devFunction",
+        "dateToWord",
+        "dateToWord", "", "",
+        String, "", [String], ["Date"], [""],
+        window.dateToWord);
 </script>
 
 <script src="/client/dist/acc.bundle.js?v=<%- version.acc %>"></script>
