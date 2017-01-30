@@ -1,4 +1,5 @@
 import accModule from '../acc.module';
+import Collection from 'dev.collection';
 
 function chequeCategoryUpdateModalController($scope, $modalInstance, formService, chequeCategoryApi, logger, data, constants) {
     "use strict";
@@ -21,7 +22,8 @@ function chequeCategoryUpdateModalController($scope, $modalInstance, formService
         if (form.$invalid)
             return formService.setDirty(form);
 
-        $scope.errors.asEnumerable().removeAll();
+        Collection.removeAll($scope.errors);
+
         $scope.isSaving = true;
 
         chequeCategoryApi.update($scope.chequeCategory)

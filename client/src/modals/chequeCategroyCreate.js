@@ -1,4 +1,5 @@
 import accModule from '../acc.module';
+import Collection from 'dev.collection';
 
 function chequeCategoryCreateModalController($scope, $modalInstance, formService, chequeCategoryApi, logger, constants) {
     "use strict";
@@ -17,7 +18,7 @@ function chequeCategoryCreateModalController($scope, $modalInstance, formService
         if (form.$invalid)
             return formService.setDirty(form);
 
-        $scope.errors.asEnumerable().removeAll();
+        Collection.removeAll($scope.errors);
         $scope.isSaving = true;
 
         chequeCategoryApi.create($scope.chequeCategory)

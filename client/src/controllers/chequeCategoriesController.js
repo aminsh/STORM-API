@@ -1,14 +1,13 @@
 import accModule from '../acc.module';
 
-function chequeCategoriesController($scope, logger, chequeCategoryApi, confirm, constants, translate, $timeout,
+function chequeCategoriesController($scope, logger, chequeCategoryApi, confirm, constants, translate, $timeout, navigate,
                                     chequeCategoryCreateModalService,
-                                    chequeCategoryUpdateModalService) {
+                                    chequeCategoryUpdateModalService,
+                                    chequesByCategoryModalService) {
     $scope.gridOption = {
         columns: [
-            {name: 'bankId', title: translate('Bank'), width: '10%', type: 'bank', template: '${data.bank}'},
-            {name: 'totalPages', title: translate('Total pages'), type: 'number', width: '10%'},
-            {name: 'firstPageNumber', title: translate('First page number'), type: 'number', width: '10%'},
-            {name: 'lastPageNumber', title: translate('Last page number'), type: 'number', width: '10%'},
+            {name: 'bankId', title: translate('Bank'), width: '20%', type: 'bank', template: '${data.bank}'},
+            {name: 'totalPages', title: translate('Total pages'), type: 'number', width: '50px'},
             {
                 name: 'detailAccountId',
                 title: translate('Detail account'),
@@ -28,7 +27,7 @@ function chequeCategoriesController($scope, logger, chequeCategoryApi, confirm, 
                 title: translate('Edit'),
                 action: function (current) {
                     chequeCategoryUpdateModalService.show({id: current.id})
-                        .then(()=> {
+                        .then(() => {
                             logger.success();
                             $scope.gridOption.refresh();
                         });
@@ -40,17 +39,22 @@ function chequeCategoriesController($scope, logger, chequeCategoryApi, confirm, 
                     confirm(
                         translate('Remove Cheque category'),
                         translate('Are you sure ?'))
-                        .then(()=> {
+                        .then(() => {
                             chequeCategoryApi.remove(current.id)
                                 .then(function () {
                                     logger.success();
                                     $scope.gridOption.refresh();
                                 })
-                                .catch((errors)=> $scope.errors = errors)
-                                .finally(()=> $scope.isSaving = false);
+                                .catch((errors) => $scope.errors = errors)
+                                .finally(() => $scope.isSaving = false);
                         })
 
                 }
+            },
+            {
+                title: translate('Cheques'),
+                action: current => chequesByCategoryModalService
+                    .show({categoryId: current.id})
             }
         ],
         readUrl: constants.urls.chequeCategory.all(),
@@ -65,18 +69,21 @@ function chequeCategoriesController($scope, logger, chequeCategoryApi, confirm, 
             {name: 'description', title: translate('Description'), type: 'string', width: '30%'},
             {name: 'amount', title: translate('Amount'), type: 'number', width: '10%', format: '{0:#,##}'}
         ],
-        commands: [],
+        commands: [{
+            title: translate('Print'),
+            action: current => navigate('chequePrint', {id: current.id})
+        }]
         //filterable: false
     };
     $scope.canShowCheques = false;
 
-    $scope.$watch('gridOption.current', (newValue)=> {
+    $scope.$watch('gridOption.current', (newValue) => {
         if (!newValue)
             return $scope.canShowCheques = false;
 
         $scope.canShowCheques = false;
 
-        $timeout(()=> {
+        $timeout(() => {
             $scope.chequeGridOption.readUrl = constants.urls.cheque.all(newValue.id);
 
             $scope.canShowCheques = true;
@@ -84,9 +91,9 @@ function chequeCategoriesController($scope, logger, chequeCategoryApi, confirm, 
 
     });
 
-    $scope.create = ()=> {
+    $scope.create = () => {
         chequeCategoryCreateModalService.show()
-            .then(()=> {
+            .then(() => {
                 logger.success();
                 $scope.gridOption.refresh();
             });
