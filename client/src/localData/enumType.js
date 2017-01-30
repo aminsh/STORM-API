@@ -1,3 +1,5 @@
+import Collection from 'dev.collection';
+
 class Enum {
 
     constructor(enums) {
@@ -5,13 +7,15 @@ class Enum {
     }
 
     getDisplay(key) {
-        return this.data.asEnumerable()
+        return new Collection(this.data)
+            .asEnumerable()
             .single(e=>e.key == key)
             .display;
     }
 
     getKey(name) {
-        return this.data.asEnumerable()
+        return new Collection(this.data)
+            .asEnumerable()
             .single(e=>e.name == name)
             .key;
     }
@@ -19,7 +23,8 @@ class Enum {
     getKeys() {
         let names = Array.from(arguments);
 
-        return names.asEnumerable()
+        return new Collection(names)
+            .asEnumerable()
             .select(name=> this.getKey(name))
             .toArray();
     }

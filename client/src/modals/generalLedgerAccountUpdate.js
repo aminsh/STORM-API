@@ -1,6 +1,7 @@
 import accModule from '../acc.module';
 import constants from '../localData/constants';
 import config from '../localData/config';
+import Collection from 'dev.collection';
 
 function generalLedgerAccountUpdateModalController($scope,
                                                    $modalInstance,
@@ -30,7 +31,7 @@ function generalLedgerAccountUpdateModalController($scope,
             return;
         }
 
-        $scope.errors.asEnumerable().removeAll();
+        Collection.removeAll($scope.errors);
 
         $scope.isSaving = true;
 

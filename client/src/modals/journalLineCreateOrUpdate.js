@@ -1,4 +1,5 @@
 import accModule from '../acc.module';
+import Collection from 'dev.collection';
 
 function journalLineCreateOrUpdateController($scope, $modalInstance, $timeout, formService, $q,
                                              journalLineApi, dimensionCategoryApi, logger, constants, data) {
@@ -227,22 +228,22 @@ function journalLineCreateOrUpdateController($scope, $modalInstance, $timeout, f
         }
 
         $scope.journalLine.detailAccount = {
-            canShow: ['Required', 'NotRequired'].asEnumerable().contains(item.detailAccountAssignmentStatus),
+            canShow: new Collection(['Required', 'NotRequired']).asEnumerable().contains(item.detailAccountAssignmentStatus),
             isRequired: item.detailAccountAssignmentStatus == 'Required'
         };
 
         $scope.journalLine.dimension1 = {
-            canShow: ['Required', 'NotRequired'].asEnumerable().contains(item.dimension1AssignmentStatus),
+            canShow: new Collection(['Required', 'NotRequired']).asEnumerable().contains(item.dimension1AssignmentStatus),
             isRequired: item.dimension1AssignmentStatus == 'Required'
         };
 
         $scope.journalLine.dimension2 = {
-            canShow: ['Required', 'NotRequired'].asEnumerable().contains(item.dimension2AssignmentStatus),
+            canShow: new Collection(['Required', 'NotRequired']).asEnumerable().contains(item.dimension2AssignmentStatus),
             isRequired: item.dimension2AssignmentStatus == 'Required'
         };
 
         $scope.journalLine.dimension3 = {
-            canShow: ['Required', 'NotRequired'].asEnumerable().contains(item.dimension3AssignmentStatus),
+            canShow: new Collection(['Required', 'NotRequired']).asEnumerable().contains(item.dimension3AssignmentStatus),
             isRequired: item.dimension3AssignmentStatus == 'Required'
         };
     };

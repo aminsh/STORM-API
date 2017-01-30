@@ -63,5 +63,22 @@ enums.AccMode = () => {
     ]);
 };
 
+enums.getMonth = function () {
+    return new Enum([
+        {key: 1, display: "فروردین"},
+        {key: 2, display: "اردیبهشت"},
+        {key: 3, display: "خرداد"},
+        {key: 4, display: "تیر"},
+        {key: 5, display: "مرداد"},
+        {key: 6, display: "شهریور"},
+        {key: 7, display: "مهر"},
+        {key: 8, display: "آبان"},
+        {key: 9, display: "آذر"},
+        {key: 10, display: "دی"},
+        {key: 11, display: "بهمن"},
+        {key: 12, display: "اسفند"}
+    ]);
+};
+
 export default enums;
 

@@ -1,4 +1,5 @@
 import accModule from '../acc.module';
+import Collection from 'dev.collection';
 
 function accountReviewTurnoverController($scope, navigate, $routeParams, $location, translate,
                                          dimensionCategoryApi,
@@ -43,14 +44,15 @@ function accountReviewTurnoverController($scope, navigate, $routeParams, $locati
     $scope.title = translate(titles[$routeParams.name]);
 
     if (reportName != 'tiny')
-        dimensionCategoryApi.getAllLookup().then((result)=> {
+        dimensionCategoryApi.getAllLookup().then((result) => {
             dimensionCategories = result.data;
 
             $scope.title = $routeParams.name.includes('dimension')
                 ? `${translate(titles.dimension)} ${dimensionCategories[parseInt('dimension1'.replace('dimension', '')) - 1].title}`
                 : translate(titles[$routeParams.name]);
 
-            $scope.commands = dimensionCategories.asEnumerable().select(c=> {
+            $scope.commands = new Collection(dimensionCategories)
+                .asEnumerable().select(c => {
                     let order = 3;
 
                     return {
@@ -60,8 +62,8 @@ function accountReviewTurnoverController($scope, navigate, $routeParams, $locati
                     };
                 })
                 .concat(commands)
-                .where(a=> a.key != $routeParams.name)
-                .orderBy(a=> a.order)
+                .where(a => a.key != $routeParams.name)
+                .orderBy(a => a.order)
                 .toArray();
         });
 
@@ -71,7 +73,7 @@ function accountReviewTurnoverController($scope, navigate, $routeParams, $locati
     $scope.gridOption.extra = {filter: getParameters()};
     $scope.current = false;
 
-    $scope.execute = (key)=> {
+    $scope.execute = (key) => {
         let params = angular.extend({}, parameters);
         delete params[`${key}Id`];
         delete params[`${key}Display`];
@@ -82,13 +84,13 @@ function accountReviewTurnoverController($scope, navigate, $routeParams, $locati
         navigate('accountReviewTurnover', {name: key}, params);
     };
 
-    $scope.onCurrentChanged = (current)=> {
+    $scope.onCurrentChanged = (current) => {
         if (!current) $scope.current = false;
 
         $scope.current = current;
     };
 
-    $scope.showJournal = ()=> {
+    $scope.showJournal = () => {
         showJournalDetailModalService
             .show({
                 id: $scope.current.id

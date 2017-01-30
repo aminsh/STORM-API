@@ -1,25 +1,30 @@
 var Enumerable = require('linqjs');
-Array.prototype.asEnumerable = function () {
-    var enumerable = Enumerable.from(this);
-    enumerable.remove = remove.bind(this);
-    enumerable.removeAll = removeAll.bind(this);
-    return enumerable;
-};
+/*
+ Array.prototype.asEnumerable = function () {
+ var enumerable = Enumerable.from(this);
+ enumerable.remove = remove.bind(this);
+ enumerable.removeAll = removeAll.bind(this);
+ return enumerable;
+ };
+ */
 
-function remove(item) {
-    var i = this.indexOf(item);
-    this.splice(i, 1);
-}
+/*window.removeItem(collection, item){
+ var i = collection.indexOf(item);
+ collection.splice(i, 1);
+ }
 
-function removeAll() {
-    var self = this;
+ window.removeAll(collection){
 
-    while (self.length != 0) {
-        self.shift();
-    }
+ }
+ function removeAll() {
+ var self = collection;
 
-    return this;
-}
+ while (self.length != 0) {
+ self.shift();
+ }
+
+ return this;
+ }*/
 
 window.isArray = function (obj) {
     return Object.prototype.toString.call(obj) === '[object Array]';
@@ -117,3 +122,30 @@ window.digitToWord = function (str) {
         return numbers.zero;
     }
 };
+
+window.dateToWord = function (date) {
+
+    var months = {
+        1: "فروردین",
+        2: "اردیبهشت",
+        3: "خرداد",
+        4: "تیر",
+        5: "مرداد",
+        6: "شهریور",
+        7: "مهر",
+        8: "آبان",
+        9: "آذر",
+        10: "دی",
+        11: "بهمن",
+        12: "اسفند"
+    };
+
+    var fn = window.digitToWord,
+        dateSplit = date.split('/'),
+        year = parseInt(dateSplit[0]),
+        month = parseInt(dateSplit[1]),
+        day = parseInt(dateSplit[2]);
+
+    return '{0} {1} ماه {2}'.format(fn(day), months[month], fn(year));
+};
+

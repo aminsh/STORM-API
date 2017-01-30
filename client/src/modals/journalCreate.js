@@ -1,4 +1,5 @@
 import accModule from '../acc.module';
+import Collection from 'dev.collection';
 
 function journalCreateModalController($scope, $modalInstance, journalApi, logger) {
 
@@ -15,22 +16,22 @@ function journalCreateModalController($scope, $modalInstance, journalApi, logger
         if (form.$invalid)
             return;
 
-        $scope.errors.asEnumerable().removeAll();
+        Collection.removeAll($scope.errors);
 
         $scope.isSaving = true;
 
         journalApi.create($scope.journal)
-            .then((result)=> {
+            .then((result) => {
                 logger.success();
                 $modalInstance.close(result);
             })
-            .catch((errors)=> {
+            .catch((errors) => {
                 $scope.errors = errors;
             })
-            .finally(()=> $scope.isSaving = false);
+            .finally(() => $scope.isSaving = false);
     };
 
-    $scope.close = ()=> $modalInstance.dismiss();
+    $scope.close = () => $modalInstance.dismiss();
 }
 
 function journalCreateModalControllerService(modalBase) {

@@ -1,4 +1,5 @@
 import accModule from '../acc.module';
+import Collection from 'dev.collection';
 
 function detailAccountUpdateModalController($scope, $modalInstance, data, formService, detailAccountApi, logger) {
     "use strict";
@@ -21,7 +22,8 @@ function detailAccountUpdateModalController($scope, $modalInstance, data, formSe
         if (form.$invalid)
             return formService.setDirty(form);
 
-        $scope.errors.asEnumerable().removeAll();
+        Collection.removeAll($scope.errors);
+
         $scope.isSaving = true;
 
         detailAccountApi.update(data.id, $scope.detailAccount)

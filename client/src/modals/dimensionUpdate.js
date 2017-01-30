@@ -1,4 +1,5 @@
 import accModule from '../acc.module';
+import Collection from 'dev.collection';
 
 function dimensionUpdateModalController(data, $scope, $modalInstance, dimensionApi) {
     "use strict";
@@ -20,7 +21,8 @@ function dimensionUpdateModalController(data, $scope, $modalInstance, dimensionA
         if (form.$invalid)
             return;
 
-        $scope.errors.asEnumerable().removeAll();
+        Collection.removeAll($scope.errors);
+
         $scope.isSaving = true;
 
 

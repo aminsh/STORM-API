@@ -1,5 +1,6 @@
 import accModule from '../acc.module';
 import constants from '../localData/constants';
+import Collection from 'dev.collection';
 
 function generalLedgerAccountCreateModalController($scope, $modalInstance, generalLedgerAccountApi, logger, formService) {
 
@@ -19,7 +20,7 @@ function generalLedgerAccountCreateModalController($scope, $modalInstance, gener
             return;
         }
 
-        $scope.errors.asEnumerable().removeAll();
+        Collection.removeAll($scope.errors);
 
         $scope.isSaving = true;
 

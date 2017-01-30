@@ -1,4 +1,5 @@
 import accModule from '../acc.module';
+import Collection from 'dev.collection';
 
 function journalsController($scope, translate, journalApi, navigate, logger,
                             journalCreateModalControllerService,
@@ -49,7 +50,7 @@ function journalsController($scope, translate, journalApi, navigate, logger,
         readUrl: journalApi.url.getAll,
         selectable: 'multiple cell',
         dataMapper: (result) => {
-            let data = result.data.asEnumerable().select(d=> {
+            let data = new Collection(result.data).asEnumerable().select(d=> {
 
                 d.statusTitle = d.journalStatusDisplay;
                 if (d.isInComplete) {
@@ -119,42 +120,42 @@ accModule
 
             let instance = angular.extend({}, filterData);
 
-            instance.generalLedgerAccounts = filterData.generalLedgerAccounts
+            instance.generalLedgerAccounts = new Collection(filterData.generalLedgerAccounts)
                 .asEnumerable()
                 .select((g)=> g.id)
                 .toArray();
 
-            instance.subsidiaryLedgerAccounts = filterData.subsidiaryLedgerAccounts
+            instance.subsidiaryLedgerAccounts = new Collection(filterData.subsidiaryLedgerAccounts)
                 .asEnumerable()
                 .select((s)=> s.id)
                 .toArray();
 
-            instance.detailAccounts = filterData.detailAccounts
+            instance.detailAccounts = new Collection(filterData.detailAccounts)
                 .asEnumerable()
                 .select((d)=> d.id)
                 .toArray();
 
-            instance.dimension1s = filterData.dimension2s
+            instance.dimension1s = new Collection(filterData.dimension2s)
                 .asEnumerable()
                 .select((d)=> d.id)
                 .toArray();
 
-            instance.dimension2s = filterData.dimension2s
+            instance.dimension2s = new Collection(filterData.dimension2s)
                 .asEnumerable()
                 .select((d)=> d.id)
                 .toArray();
 
-            instance.dimension3s = filterData.dimension3s
+            instance.dimension3s = new Collection(filterData.dimension3s)
                 .asEnumerable()
                 .select((d)=> d.id)
                 .toArray();
 
-            instance.dimension4s = filterData.dimension4s
+            instance.dimension4s = new Collection(filterData.dimension4s)
                 .asEnumerable()
                 .select((d)=> d.id)
                 .toArray();
 
-            instance.chequeNumbers = filterData.chequeNumbers
+            instance.chequeNumbers = new Collection(filterData.chequeNumbers)
                 .asEnumerable()
                 .select((c)=> c.id)
                 .toArray();

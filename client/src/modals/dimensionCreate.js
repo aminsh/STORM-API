@@ -1,5 +1,6 @@
 import accModule from '../acc.module';
 import config from '../localData/config';
+import Collection from 'dev.collection';
 
 function dimensionCreateModalController(data,
                                         $scope, $modalInstance, dimensionApi) {
@@ -16,7 +17,7 @@ function dimensionCreateModalController(data,
         if (form.$invalid)
             return;
 
-        $scope.errors.asEnumerable().removeAll();
+        Collection.removeAll($scope.errors);
 
         dimensionApi.create(data.categoryId, $scope.dimension)
             .then(function (result) {

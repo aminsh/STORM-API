@@ -18,5 +18,7 @@
   "kendo.culture": "./lib/kendo.culture.fa.IR",
   "kendo.messages": "./lib/kendo.messages.fa-IR",
   "jquery.filedrop": "./lib/jquery.filedrop",
-  "jszip": "./lib/jszip.js"
+  "jszip": "./lib/jszip.js",
+  "dev.collection": "./lib/dev.utilities/dev.collection",
+  "dev.guid": "./lib/dev.utilities/dev.guid"
 }

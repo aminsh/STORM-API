@@ -1,9 +1,10 @@
 import accModule from '../acc.module';
+import Collection from 'dev.collection';
 
 function routeNavigatorService($route, $location) {
 
     function getRoute(name) {
-        return getKeys($route.routes)
+        return new Collection(getKeys($route.routes))
             .asEnumerable()
             .select((r)=> $route.routes[r])
             .first((r)=> r.controller == '{0}Controller'.format(name));
@@ -26,7 +27,7 @@ function routeNavigatorService($route, $location) {
 
         $location.path(path);
 
-    }
+    };
 
     return navigate;
 }

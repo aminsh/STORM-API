@@ -1,5 +1,6 @@
 import $ from 'jquery';
 import accModule from '../acc.module';
+import Collection from 'dev.collection';
 
 let translate = JSON.parse(localStorage.translate);
 let dimensionCategories = JSON.parse(localStorage.dimensionCategories).data;
@@ -128,9 +129,10 @@ function grid(gridFilterCellType, $compile, translate) {
 
                     let state = gridState.options;
 
-                    state.columns = state.columns.asEnumerable()
+                    state.columns = new Collection(state.columns)
+                        .asEnumerable()
                         .where(c=> !c.hasOwnProperty('command'))
-                        .concat([{command: scope.option.commands.asEnumerable().select(commandFactory).toArray()}])
+                        .concat([{command: new Collection(scope.option.commands).asEnumerable().select(commandFactory).toArray()}])
                         .toArray();
 
                     grid.setOptions(state);
@@ -172,21 +174,22 @@ function grid(gridFilterCellType, $compile, translate) {
                     if (aggregates.length == 0)
                         return;
 
-                    let aggregatesForThisColumn = aggregates.asEnumerable().select(agg=> {
+                    let aggregatesForThisColumn = new Collection(aggregates).asEnumerable().select(agg=> {
                         return {
                             field: column.name,
                             aggregate: agg
                         };
                     }).toArray();
 
-                    aggregatesForDateSource = aggregatesForDateSource
+                    aggregatesForDateSource = new Collection(aggregatesForDateSource)
                         .asEnumerable()
                         .concat(aggregatesForThisColumn)
                         .toArray();
                 }
 
-                var cols = option.columns
-                    .asEnumerable().select(function (col) {
+                var cols = new Collection(option.columns)
+                    .asEnumerable()
+                    .select(function (col) {
                         setAggregatesForDataSource(col);
 
                         return {
@@ -210,7 +213,8 @@ function grid(gridFilterCellType, $compile, translate) {
                     };
                 });
 
-                var commands = option.commands.asEnumerable().select(commandFactory).toArray();
+                var commands = new Collection(option.commands).asEnumerable()
+                    .select(commandFactory).toArray();
 
                 if (option.commandTemplate)
                     cols.push({template: kendo.template($(option.commandTemplate.template).html())});

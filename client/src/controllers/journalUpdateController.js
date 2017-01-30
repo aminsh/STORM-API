@@ -1,5 +1,5 @@
 import accModule from '../acc.module';
-import $ from 'jquery';
+import Collection from 'dev.collection';
 
 function journalUpdateController($scope, logger, confirm, translate, navigate, $routeParams, $rootScope, constants,
                                  journalApi, journalLineApi, subsidiaryLedgerAccountApi, dimensionCategoryApi,
@@ -147,7 +147,7 @@ function journalUpdateController($scope, logger, confirm, translate, navigate, $
         if (form.$invalid)
             return;
 
-        $scope.errors.asEnumerable().removeAll();
+        Collection.removeAll($scope.error);
 
         $scope.isSaving = true;
 

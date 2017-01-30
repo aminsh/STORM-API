@@ -1,4 +1,5 @@
 import accModule from '../acc.module';
+import Collection from 'dev.collection';
 
 function detailAccountCreateModalController($scope, $modalInstance, formService, detailAccountApi, logger) {
     "use strict";
@@ -16,7 +17,8 @@ function detailAccountCreateModalController($scope, $modalInstance, formService,
         if (form.$invalid)
             return formService.setDirty(form);
 
-        $scope.errors.asEnumerable().removeAll();
+        Collection.removeAll($scope.errors);
+
         $scope.isSaving = true;
 
         detailAccountApi.create($scope.detailAccount)

@@ -1,4 +1,5 @@
 import accModule from '../acc.module';
+import Collection from 'dev.collection';
 
 function gridGenerateColumnsService() {
     return generate
@@ -7,7 +8,7 @@ function gridGenerateColumnsService() {
 function generate(columnsOptions, filterableColumnFactory) {
     if (!columnsOptions) return null;
 
-    return columnsOptions.asEnumerable()
+    return new Collection(columnsOptions).asEnumerable()
         .select(c => new KendoGridColumn(c, filterableColumnFactory))
         .toArray();
 }
