@@ -1,6 +1,6 @@
 import accModule from '../acc.module';
 
-function dimensionsController($scope, logger, translate, confirm, constants, $timeout,
+function dimensionsController($scope, logger, translate, confirm, devConstants, $timeout,
                               dimensionCategoryApi, dimensionApi,
                               dimensionCreateModalService,
                               dimensionUpdateModalService) {
@@ -10,7 +10,7 @@ function dimensionsController($scope, logger, translate, confirm, constants, $ti
     $scope.gridDateSource = {
         transport: {
             read: {
-                url: constants.urls.dimensionCategory.all(),
+                url: devConstants.urls.dimensionCategory.all(),
                 dataType: "json",
                 contentType: 'application/json; charset=utf-8',
                 type: 'GET'

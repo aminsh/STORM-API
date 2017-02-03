@@ -1,6 +1,6 @@
 import accModule from '../acc.module';
 
-function homeController($scope, $rootScope, constants, currentService, navigate) {
+function homeController($scope, $rootScope, devConstants, currentService, navigate) {
 
     $scope.current = currentService.get();
 
@@ -17,7 +17,7 @@ function homeController($scope, $rootScope, constants, currentService, navigate)
         serverFiltering: true,
         transport: {
             read: {
-                url: constants.urls.period.all()
+                url: devConstants.urls.period.all()
             }
         },
         schema: {
@@ -30,12 +30,12 @@ function homeController($scope, $rootScope, constants, currentService, navigate)
         $scope.$emit('fiscal-period-changed', item);
     };
 
-    $scope.modesDataSource = constants.enums.AccMode().data;
+    $scope.modesDataSource = devConstants.enums.AccMode().data;
 
     $scope.modeOnChanged = ()=> {
         $scope.$emit('mode-changed', {
             key: $scope.current.mode,
-            display: constants.enums.AccMode().getDisplay($scope.current.mode)
+            display: devConstants.enums.AccMode().getDisplay($scope.current.mode)
         });
     };
 

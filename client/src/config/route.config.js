@@ -96,6 +96,10 @@ accModule.config(($routeProvider, $locationProvider) => {
             controller: 'createFiscalPeriodController',
             templateUrl: 'partials/views/createFiscalPeriod.html'
         })
+        .when('/reports', {
+            controller: 'reportController',
+            templateUrl: 'partials/views/report.html'
+        })
         .otherwise('/not-found');
 });
 

@@ -1,7 +1,7 @@
 import accModule from '../acc.module';
 import Collection from 'dev.collection';
 
-function chequeCategoryUpdateModalController($scope, $modalInstance, formService, chequeCategoryApi, logger, data, constants) {
+function chequeCategoryUpdateModalController($scope, $modalInstance, formService, chequeCategoryApi, logger, data, devConstants) {
     "use strict";
 
     let id = data.id;
@@ -50,7 +50,7 @@ function chequeCategoryUpdateModalController($scope, $modalInstance, formService
         serverFiltering: true,
         transport: {
             read: {
-                url: constants.urls.detailAccount.all()
+                url: devConstants.urls.detailAccount.all()
             }
         },
         schema: {
@@ -63,7 +63,7 @@ function chequeCategoryUpdateModalController($scope, $modalInstance, formService
         serverFiltering: true,
         transport: {
             read: {
-                url: constants.urls.bank.all()
+                url: devConstants.urls.bank.all()
             }
         },
         schema: {

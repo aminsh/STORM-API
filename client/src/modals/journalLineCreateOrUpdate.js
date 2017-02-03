@@ -2,7 +2,7 @@ import accModule from '../acc.module';
 import Collection from 'dev.collection';
 
 function journalLineCreateOrUpdateController($scope, $modalInstance, $timeout, formService, $q,
-                                             journalLineApi, dimensionCategoryApi, logger, constants, data) {
+                                             journalLineApi, dimensionCategoryApi, logger, devConstants, data) {
 
     let journalId = data.journalId;
     let id = data.id;
@@ -29,7 +29,7 @@ function journalLineCreateOrUpdateController($scope, $modalInstance, $timeout, f
         serverFiltering: true,
         transport: {
             read: {
-                url: constants.urls.detailAccount.all()
+                url: devConstants.urls.detailAccount.all()
             }
         },
         schema: {
@@ -148,7 +148,7 @@ function journalLineCreateOrUpdateController($scope, $modalInstance, $timeout, f
         serverFiltering: true,
         transport: {
             read: {
-                url: constants.urls.generalLedgerAccount.all()
+                url: devConstants.urls.generalLedgerAccount.all()
             }
         },
         schema: {
@@ -192,7 +192,7 @@ function journalLineCreateOrUpdateController($scope, $modalInstance, $timeout, f
                         .first(f => f.field == 'generalLedgerAccountId')
                         .value;
 
-                    return constants.urls
+                    return devConstants.urls
                         .subsidiaryLedgerAccount
                         .allByGeneralLedgerAccount(generalLegerAccountId)
                 }
@@ -255,7 +255,7 @@ function journalLineCreateOrUpdateController($scope, $modalInstance, $timeout, f
         serverFiltering: true,
         transport: {
             read: {
-                url: constants.urls.detailAccount.all()
+                url: devConstants.urls.detailAccount.all()
             }
         },
         schema: {
@@ -269,7 +269,7 @@ function journalLineCreateOrUpdateController($scope, $modalInstance, $timeout, f
             serverFiltering: true,
             transport: {
                 read: {
-                    url: constants.urls.dimension.allByCategory(categoryId)
+                    url: devConstants.urls.dimension.allByCategory(categoryId)
                 }
             },
             schema: {

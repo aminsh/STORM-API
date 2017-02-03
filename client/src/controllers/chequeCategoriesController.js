@@ -1,6 +1,6 @@
 import accModule from '../acc.module';
 
-function chequeCategoriesController($scope, logger, chequeCategoryApi, confirm, constants, translate, $timeout, navigate,
+function chequeCategoriesController($scope, logger, chequeCategoryApi, confirm, devConstants, translate, $timeout, navigate,
                                     chequeCategoryCreateModalService,
                                     chequeCategoryUpdateModalService,
                                     chequesByCategoryModalService) {
@@ -57,7 +57,7 @@ function chequeCategoriesController($scope, logger, chequeCategoryApi, confirm, 
                     .show({categoryId: current.id})
             }
         ],
-        readUrl: constants.urls.chequeCategory.all(),
+        readUrl: devConstants.urls.chequeCategory.all(),
         current: null,
         selectable: true
     };
@@ -84,7 +84,7 @@ function chequeCategoriesController($scope, logger, chequeCategoryApi, confirm, 
         $scope.canShowCheques = false;
 
         $timeout(() => {
-            $scope.chequeGridOption.readUrl = constants.urls.cheque.all(newValue.id);
+            $scope.chequeGridOption.readUrl = devConstants.urls.cheque.all(newValue.id);
 
             $scope.canShowCheques = true;
         }, 500);

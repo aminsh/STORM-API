@@ -1,6 +1,6 @@
 import accModule from '../acc.module';
 
-function chequesByCategoryModalController($scope,$modalInstance,data, constants, translate, navigate, $timeout) {
+function chequesByCategoryModalController($scope,$modalInstance,data, devConstants, translate, navigate, $timeout) {
 
     $scope.gridOption = {
         columns: [
@@ -15,7 +15,7 @@ function chequesByCategoryModalController($scope,$modalInstance,data, constants,
                 $timeout(()=> navigate('chequePrint', {id: current.id}), 0);
             }
         }],
-        readUrl:constants.urls.cheque.all(data.categoryId)
+        readUrl:devConstants.urls.cheque.all(data.categoryId)
     };
 
     $scope.close = ()=> $modalInstance.dismiss();

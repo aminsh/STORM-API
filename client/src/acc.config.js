@@ -6,6 +6,7 @@ import  './config/menu.config.js';
 import  './config/translate.config';
 import './config/gridFilterCellTypeConfig';
 import './config/authConfig';
+import ADMdtpConfig from './config/ADMdtp.config';
 
 
 //load controllers
@@ -28,6 +29,7 @@ import './controllers/accountReviewTurnoverController';
 import './controllers/journalPrintController';
 import createFiscalPeriodController from  './controllers/createFiscalPeriodController';
 import chequePrintController from './controllers/chequePrintController';
+import reportController from './controllers/reportController';
 
 // load apis
 import './apis/generalLedgerAccountApi';
@@ -42,6 +44,7 @@ import './apis/bankApi';
 import './apis/chequeApi';
 import './apis/journalTemplateApi';
 import FiscalPeriodApi from './apis/fiscalPeriodApi';
+import ReportApi from './apis/reportApi';
 
 // load modals
 import './modals/generalLedgerAccountCreate';
@@ -61,7 +64,7 @@ import './modals/detailAccountCreate';
 import './modals/detailAccountUpdate';
 import './modals/chequesByCategory';
 
-import './localData/constants';
+import './localData/devConstants';
 
 //directives
 import './directives/alert';
@@ -87,6 +90,7 @@ import './directives/reportViewer';
 import shell from './directives/shell';
 import {contentCover, contentCoverForm} from './directives/contentCover';
 import './directives/reportDesigner';
+import panelBar from './directives/panelbar';
 
 //filter
 import './filters/amount';
@@ -106,12 +110,16 @@ import './services/prompt';
 import './services/showReport';
 import  currentService from './services/currentService';
 
+
 accModule
+    .config(ADMdtpConfig)
     .directive(shell.name, shell)
     .directive('devTagContentCover', contentCover)
     .directive('devTagContentCoverFrom', contentCoverForm)
+    .directive('devTagPanelBar', panelBar)
     .service(currentService.name, currentService)
     .service('fiscalPeriodApi', FiscalPeriodApi)
+    .service('reportApi', ReportApi)
     .controller(createFiscalPeriodController.name, createFiscalPeriodController)
     .controller('chequePrintController', chequePrintController)
     .controller('reportController', reportController);

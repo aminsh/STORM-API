@@ -1,6 +1,6 @@
 "use strict";
 
-export default function shell($rootScope, menuItems, translate, currentService, $cookies, constants, fiscalPeriodApi) {
+export default function shell($rootScope, menuItems, translate, currentService, $cookies, devConstants, fiscalPeriodApi) {
     return {
         restrict: 'E',
         templateUrl: 'partials/templates/shell.html',
@@ -9,12 +9,12 @@ export default function shell($rootScope, menuItems, translate, currentService, 
 
             scope.current = {
                 period: '',
-                mode: constants.enums.AccMode().getDisplay(currentService.get().mode),
+                mode: devConstants.enums.AccMode().getDisplay(currentService.get().mode),
                 branch: currentService.get().branch
             };
 
             fiscalPeriodApi.current()
-                .then(result=> scope.current.period = result.display);
+                .then(result => scope.current.period = result.display);
 
             scope.isToggleMenuOpen = false;
             scope.menuItems = menuItems;

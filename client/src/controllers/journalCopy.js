@@ -1,6 +1,6 @@
 import accModule from '../acc.module';
 
-function journalCopyController($scope, translate, journalApi, navigate, constants, $timeout, confirm) {
+function journalCopyController($scope, translate, journalApi, navigate, devConstants, $timeout, confirm) {
     "use strict";
 
     $scope.errors = [];
@@ -10,7 +10,7 @@ function journalCopyController($scope, translate, journalApi, navigate, constant
         serverFiltering: true,
         transport: {
             read: {
-                url: constants.urls.period.all()
+                url: devConstants.urls.period.all()
             }
         },
         schema: {
@@ -22,7 +22,7 @@ function journalCopyController($scope, translate, journalApi, navigate, constant
         let item = e.sender.dataItem();
 
         $scope.canShowJournalGrid = false;
-        $scope.gridOption.readUrl = constants.urls.journal.getAllByPeriod(item.id);
+        $scope.gridOption.readUrl = devConstants.urls.journal.getAllByPeriod(item.id);
 
         $timeout(()=> $scope.canShowJournalGrid = true, 0)
     };

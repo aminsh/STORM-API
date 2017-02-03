@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import accModule from '../acc.module';
 
-function header(currentService, constants) {
+function header(currentService, devConstants) {
     return {
         restrict: 'E',
         templateUrl: 'partials/templates/header-template.html',
@@ -14,7 +14,7 @@ function header(currentService, constants) {
 
             scope.current = {
                 branch: current.branch,
-                mode: constants.enums.AccMode().getDisplay(current.mode),
+                mode: devConstants.enums.AccMode().getDisplay(current.mode),
                 fiscalPeriod: current.fiscalPeriod
             };
 

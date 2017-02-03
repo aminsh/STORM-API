@@ -1,5 +1,5 @@
 import accModule from '../acc.module';
-import constants from '../localData/constants';
+import devConstants from '../localData/devConstants';
 import config from '../localData/config';
 import Collection from 'dev.collection';
 
@@ -76,8 +76,8 @@ function generalLedgerAccountUpdateModalController($scope,
 
     $scope.close = ()=> $modalInstance.dismiss();
 
-    $scope.accountPostingType = constants.enums.AccountPostingType();
-    $scope.accountBalanceType = constants.enums.AccountBalanceType();
+    $scope.accountPostingType = devConstants.enums.AccountPostingType();
+    $scope.accountBalanceType = devConstants.enums.AccountBalanceType();
 }
 
 function generalLedgerAccountUpdateModalService(modalBase) {

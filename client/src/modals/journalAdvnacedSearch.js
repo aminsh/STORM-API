@@ -1,7 +1,7 @@
 import accModule from '../acc.module';
 import Collection from 'dev.collection';
 
-function journalAdvancedSearchModalController($scope, $modalInstance, translate, constants,
+function journalAdvancedSearchModalController($scope, $modalInstance, translate, devConstants,
                                               dimensionCategoryApi) {
     $scope.journalSearch = {
         title: '',
@@ -57,7 +57,7 @@ function journalAdvancedSearchModalController($scope, $modalInstance, translate,
             serverFiltering: true,
             transport: {
                 read: {
-                    url: constants.urls.generalLedgerAccount.all()
+                    url: devConstants.urls.generalLedgerAccount.all()
                 }
             },
             schema: {
@@ -77,7 +77,7 @@ function journalAdvancedSearchModalController($scope, $modalInstance, translate,
             serverFiltering: true,
             transport: {
                 read: {
-                    url: constants.urls.subsidiaryLedgerAccount.all()
+                    url: devConstants.urls.subsidiaryLedgerAccount.all()
                 }
             },
             schema: {
@@ -102,7 +102,7 @@ function journalAdvancedSearchModalController($scope, $modalInstance, translate,
             serverFiltering: true,
             transport: {
                 read: {
-                    url: constants.urls.detailAccount.all()
+                    url: devConstants.urls.detailAccount.all()
                 }
             },
             schema: {
@@ -133,7 +133,7 @@ function journalAdvancedSearchModalController($scope, $modalInstance, translate,
                 serverFiltering: true,
                 transport: {
                     read: {
-                        url: constants.urls.dimension.allByCategory(categoryId)
+                        url: devConstants.urls.dimension.allByCategory(categoryId)
                     }
                 },
                 schema: {
@@ -154,7 +154,7 @@ function journalAdvancedSearchModalController($scope, $modalInstance, translate,
             serverFiltering: true,
             transport: {
                 read: {
-                    url: constants.urls.cheque.allUseds()
+                    url: devConstants.urls.cheque.allUseds()
                 }
             },
             schema: {

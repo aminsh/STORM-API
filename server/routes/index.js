@@ -8,7 +8,8 @@ const config = require('../config'),
     router = require('express').Router(),
     async = require('asyncawait/async'),
     await = require('asyncawait/await'),
-    DimensionCategoryQuery = require('../queries/query.dimensionCategory');
+    DimensionCategoryQuery = require('../queries/query.dimensionCategory'),
+    reports = require('../config/reports.json');
 
 let fonts = fs.readdirSync(__dirname + '/../../client/fonts')
     .filter(function (fileName) {
@@ -32,10 +33,11 @@ let handler = module.exports.handler = async((req, res) => {
             .asEnumerable().single(b => b.id == req.cookies['branch-id']),
         dimensionCategories: dimensionCategories,
         fonts: fonts,
-        version: config.version
+        version: config.version,
+        reports: reports
     });
 });
 
 router.route('/').get(handler);
 
-    module.exports.router = router;
+module.exports.router = router;

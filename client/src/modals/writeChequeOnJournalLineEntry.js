@@ -2,7 +2,7 @@ import accModule from '../acc.module';
 
 function writeChequeOnJournalLineEntryController($scope,
                                                  chequeApi, chequeCategoryApi, data, $timeout,
-                                                 formService, $modalInstance, constants) {
+                                                 formService, $modalInstance, devConstants) {
     $scope.errors = [];
     $scope.cheque = {
         journalLineId: data.journalLineId,
@@ -26,7 +26,7 @@ function writeChequeOnJournalLineEntryController($scope,
 
     $scope.selectChequeCategory = (cat)=> {
         $scope.selectedChequeCategory = false;
-        $scope.whiteChequesDataSource.transport.read.url = constants.urls.cheque.allwhites(cat.id);
+        $scope.whiteChequesDataSource.transport.read.url = devConstants.urls.cheque.allwhites(cat.id);
 
         $timeout(()=> $scope.selectedChequeCategory = cat, 1);
     };

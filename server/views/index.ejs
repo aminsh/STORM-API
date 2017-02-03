@@ -13,6 +13,7 @@
     <link href="/client/content/kendo/kendo.bootstrap.min.css?v=<%- version.css %>" rel="stylesheet"/>
     <link href="/client/content/kendo/kendo.rtl.min.css?v=<%- version.css %>" rel="stylesheet"/>
     <link href="/client/bower_components/bootstrap-sweetalert/dist/sweetalert.css?v=<%- version.css %>" rel="stylesheet"/>
+    <link rel="stylesheet" href="/client/bower_components/adm-dtp/dist/ADM-dateTimePicker.min.css" />
 
     <link href="/client/content/stimulsoft/stimulsoft.viewer.office2013.whiteblue.css" rel="stylesheet">
     <link href="/client/content/stimulsoft/stimulsoft.designer.office2013.whiteblue.css" rel="stylesheet">
@@ -20,6 +21,7 @@
     <link href="/client/content/fonts.min.css?v=<%- version.css %>" rel="stylesheet"/>
     <link href="/client/content/storm-fonts.css?v=<%- version.css %>" rel="stylesheet"/>
     <link href="/client/content/styles.css?v=<%- version.css %>" rel="stylesheet"/>
+
 </head>
 <body class="k-rtl">
 
@@ -51,13 +53,13 @@
 <script>
     require('js-helper');
     window.jQuery = window.$ = require('jquery');
-    require('JalaliDate');
     window.JSZip = require('jszip');
 
     localStorage.setItem('translate', '<%- JSON.stringify(clientTranslation) %>');
     localStorage.setItem('currentUser', '<%- currentUser %>');
     localStorage.setItem('currentBranch','<%- JSON.stringify(currentBranch)%>');
     localStorage.setItem('dimensionCategories', '<%- JSON.stringify(dimensionCategories) %>');
+    localStorage.setItem('reports', '<%- JSON.stringify(reports) %>')
 
     Stimulsoft.Base.Localization.StiLocalization.setLocalizationFile('/client/content/fa.xml', true);
 

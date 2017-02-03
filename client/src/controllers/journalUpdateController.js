@@ -1,7 +1,7 @@
 import accModule from '../acc.module';
 import Collection from 'dev.collection';
 
-function journalUpdateController($scope, logger, confirm, translate, navigate, $routeParams, $rootScope, constants,
+function journalUpdateController($scope, logger, confirm, translate, navigate, $routeParams, $rootScope, devConstants,
                                  journalApi, journalLineApi, subsidiaryLedgerAccountApi, dimensionCategoryApi,
                                  journalLineCreateControllerModalService,
                                  journalLineUpdateControllerModalService,
@@ -31,7 +31,7 @@ function journalUpdateController($scope, logger, confirm, translate, navigate, $
         tagIds: []
     };
 
-    $scope.journalTypeData = constants.enums.JournalType().data;
+    $scope.journalTypeData = devConstants.enums.JournalType().data;
 
     $scope.canShowNumberAndDate = false;
 
@@ -235,7 +235,7 @@ function journalUpdateController($scope, logger, confirm, translate, navigate, $
             serverFiltering: true,
             transport: {
                 read: {
-                    url: constants.urls.tag.getAll()
+                    url: devConstants.urls.tag.getAll()
                 }
             },
             schema: {

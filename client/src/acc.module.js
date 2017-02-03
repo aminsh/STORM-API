@@ -11,6 +11,10 @@ import 'kendo';
 import 'kendo.culture';
 import 'kendo.messages';
 import 'angular-cookies';
+import 'ADM-dateTimePicker';
+
+Object.defineProperty(Array.prototype, 'toNumber', { enumerable: false });
+Object.defineProperty(Array.prototype, 'dtp_toDate', { enumerable: false });
 
 let accModule = angular.module('acc.module', [
     'ngAnimate',
@@ -21,7 +25,8 @@ let accModule = angular.module('acc.module', [
     'pascalprecht.translate',
     'kendo.directives',
     'ngMessages',
-    'ngCookies'
+    'ngCookies',
+    'ADM-dateTimePicker'
 ]);
 
 accModule.init = () => {

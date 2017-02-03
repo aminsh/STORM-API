@@ -1,28 +1,28 @@
 body {
-    font-family: "BKoodakBold", "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-family: "IRANSans", "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
     background-color: #ededed;
 
 }
 
 h1 {
-    font-family: "BKoodakBold", "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-family: "IRANSans", "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 .sweet-alert {
-    font-family: "BKoodakBold", "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-family: "IRANSans", "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 .popover {
-    font-family: "BKoodakBold", "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-family: "IRANSans", "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 a {
-    font-family: "BKoodakBold", "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-family: "IRANSans", "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
     text-decoration: none;
     cursor: pointer;
 }
 
-header {
+.header {
     width: 100%;
     height: 65px;
     position: fixed;
@@ -33,15 +33,15 @@ header {
 }
 
 .panel-title {
-    font-family: "BBardiya", "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-family: "IRANSans", "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 .modal-title {
-    font-family: "BBardiya", "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-family: "IRANSans", "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 .title {
-    font-family: "BBardiya", "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-family: "IRANSans", "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 .button-click-menu {
@@ -851,7 +851,7 @@ h1.head-current {
     text-shadow: none !important;
     font-size: 18px;
     text-decoration: none;
-    font-family: "BBardiya", "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-family: "IRANSans", "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 .gw-nav-list > li > a:hover {
@@ -986,7 +986,7 @@ h1.head-current {
     margin: 0;
     border-bottom: 1px dotted #337AB7;
     font-size: 18px;
-    font-family: "BBardiya", "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-family: "IRANSans", "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
     text-decoration: none;
     height: 42px;
 }
@@ -1637,7 +1637,7 @@ h1.head-current {
     text-overflow: ellipsis;
 }
 
-.form-block{
+.form-block {
     background-color: transparent;
     background-position: 48% 0;
     display: block;
@@ -1646,6 +1646,24 @@ h1.head-current {
     right: 34%;
     width: 30%;
     margin: 0 auto;
+}
+
+.dtp-ig {
+    border-radius: 0;
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+    border-left: 0;
+}
+
+.ADMdtpInput input {
+    border-radius: 0;
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+    font-family: "IRANSans", "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.ADMdtp-box{
+    font-family: "IRANSans", "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 

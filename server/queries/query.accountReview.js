@@ -154,7 +154,7 @@ module.exports = class AccountReview extends BaseQuery {
 
     detailAccount() {
         let knex = this.knex;
-        let query = knexService.select().from(function () {
+        let query = knex.select().from(function () {
             this.select('detailAccountId', 'sumBeforeRemainder', 'sumDebtor', 'sumCreditor', 'sumRemainder',
                 knex.raw('"detailAccounts"."code" as "detailAccountCode"'),
                 knex.raw('"detailAccounts"."title" as "detailAccountTitle"')

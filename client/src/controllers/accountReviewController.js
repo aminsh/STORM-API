@@ -1,7 +1,7 @@
 import accModule from '../acc.module';
 import Collection from 'dev.collection';
 
-function accountReviewController($scope, navigate, dimensionCategoryApi, constants, formService) {
+function accountReviewController($scope, navigate, dimensionCategoryApi, devConstants, formService) {
 
     $scope.parameters = localStorage.getItem('account-review-state')
         ? JSON.parse(localStorage.getItem('account-review-state'))
@@ -23,7 +23,7 @@ function accountReviewController($scope, navigate, dimensionCategoryApi, constan
         serverFiltering: true,
         transport: {
             read: {
-                url: constants.urls.detailAccount.all()
+                url: devConstants.urls.detailAccount.all()
             }
         },
         schema: {
@@ -52,7 +52,7 @@ function accountReviewController($scope, navigate, dimensionCategoryApi, constan
             serverFiltering: true,
             transport: {
                 read: {
-                    url: constants.urls.dimension.allByCategory(categoryId)
+                    url: devConstants.urls.dimension.allByCategory(categoryId)
                 }
             },
             schema: {

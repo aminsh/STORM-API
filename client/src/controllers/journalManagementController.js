@@ -1,6 +1,6 @@
 import accModule from '../acc.module';
 
-function journalManagementController($scope, logger, confirm, constants, translate, $timeout,
+function journalManagementController($scope, logger, confirm, devConstants, translate, $timeout,
                                      showJournalDetailModalService,
                                      journalBookkeepingService) {
     $scope.gridOption = {
@@ -13,7 +13,7 @@ function journalManagementController($scope, logger, confirm, constants, transla
             {name: 'maxDate', title: translate('To date'), type: 'string'}
         ],
         commands: [],
-        readUrl: constants.urls.journal.getGroupedByMouth(),
+        readUrl: devConstants.urls.journal.getGroupedByMouth(),
         current: null,
         selectable: true,
         filterable: false,
@@ -51,13 +51,13 @@ function journalManagementController($scope, logger, confirm, constants, transla
         commands: [],
         selectable: true,
         current: null
-        //readUrl: constants.urls.journal.getByMonth()
+        //readUrl: devConstants.urls.journal.getByMonth()
     }
 
     $scope.$watch('gridOption.current', (newValue)=> {
         if (!newValue) return;
         $scope.canShowJournals = false;
-        $scope.journalGridOption.readUrl = constants.urls.journal.getByMonth(newValue.month);
+        $scope.journalGridOption.readUrl = devConstants.urls.journal.getByMonth(newValue.month);
         $timeout(()=> $scope.canShowJournals = true, 0);
     });
 

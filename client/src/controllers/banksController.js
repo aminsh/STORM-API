@@ -1,10 +1,10 @@
 import accModule from '../acc.module';
 
-function banksController($scope, logger, confirm, bankApi, constants, translate) {
+function banksController($scope, logger, confirm, bankApi, devConstants, translate) {
     $scope.gridDateSource = {
         transport: {
             read: {
-                url: constants.urls.bank.all(),
+                url: devConstants.urls.bank.all(),
                 dataType: "json",
                 contentType: 'application/json; charset=utf-8',
                 type: 'GET'

@@ -200,7 +200,7 @@ function accountReviewTurnoverController($scope, navigate, $routeParams, $locati
 }
 
 
-function accountReviewTurnoverGridOptionService(translate, constants) {
+function accountReviewTurnoverGridOptionService(translate, devConstants) {
     let options = {};
 
     let amountColumns = [
@@ -259,7 +259,7 @@ function accountReviewTurnoverGridOptionService(translate, constants) {
             ...amountColumns
         ],
         commands: [],
-        readUrl: constants.urls.accountReview.getAllGeneralLedgerAccount(),
+        readUrl: devConstants.urls.accountReview.getAllGeneralLedgerAccount(),
         selectable: true
     };
 
@@ -281,7 +281,7 @@ function accountReviewTurnoverGridOptionService(translate, constants) {
             ...amountColumns
         ],
         commands: [],
-        readUrl: constants.urls.accountReview.getAllSubsidiaryLedgerAccount(),
+        readUrl: devConstants.urls.accountReview.getAllSubsidiaryLedgerAccount(),
         selectable: true
     };
 
@@ -302,7 +302,7 @@ function accountReviewTurnoverGridOptionService(translate, constants) {
             ...amountColumns
         ],
         commands: [],
-        readUrl: constants.urls.accountReview.getAllDetailAccount(),
+        readUrl: devConstants.urls.accountReview.getAllDetailAccount(),
         selectable: true
     };
 
@@ -323,7 +323,7 @@ function accountReviewTurnoverGridOptionService(translate, constants) {
             ...amountColumns
         ],
         commands: [],
-        readUrl: constants.urls.accountReview.getAllDimension1(),
+        readUrl: devConstants.urls.accountReview.getAllDimension1(),
         selectable: true
     };
 
@@ -344,7 +344,7 @@ function accountReviewTurnoverGridOptionService(translate, constants) {
             ...amountColumns
         ],
         commands: [],
-        readUrl: constants.urls.accountReview.getAllDimension2(),
+        readUrl: devConstants.urls.accountReview.getAllDimension2(),
         selectable: true
     };
 
@@ -365,7 +365,7 @@ function accountReviewTurnoverGridOptionService(translate, constants) {
             ...amountColumns
         ],
         commands: [],
-        readUrl: constants.urls.accountReview.getAllDimension3(),
+        readUrl: devConstants.urls.accountReview.getAllDimension3(),
         selectable: true
     };
 
@@ -443,7 +443,7 @@ function accountReviewTurnoverGridOptionService(translate, constants) {
             },
         ],
         commands: [],
-        readUrl: constants.urls.accountReview.getAllTiny(),
+        readUrl: devConstants.urls.accountReview.getAllTiny(),
         selectable: true
     };
 

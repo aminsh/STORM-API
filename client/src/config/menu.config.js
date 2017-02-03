@@ -75,6 +75,11 @@ accModule.config(menuItemsProvider => {
                     title: 'مرور حساب',
                     url: '/account-review',
                     icon: ''
+                },
+                {
+                    title: 'گزارشات',
+                    url: '/reports',
+                    icon: ''
                 }
             ]
         });

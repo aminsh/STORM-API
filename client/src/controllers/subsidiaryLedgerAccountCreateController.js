@@ -1,14 +1,14 @@
 import accModule from '../acc.module';
 
 function subsidiaryLedgerAccountCreateController($scope, logger, navigate, $routeParams,
-                                                 constants, formService,
+                                                 devConstants, formService,
                                                  subsidiaryLedgerAccountApi,
                                                  dimensionCategoryApi) {
 
     let generalLedgerAccountId = $routeParams.generalLedgerAccountId;
 
     $scope.errors = [];
-    $scope.assignmentStatus = constants.enums.AssignmentStatus().data;
+    $scope.assignmentStatus = devConstants.enums.AssignmentStatus().data;
 
     $scope.subsidiaryLedgerAccount = {
         code: '',

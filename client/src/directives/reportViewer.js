@@ -13,7 +13,7 @@ function reportViewer() {
         link: function (scope, element, attrs) {
             let options = new Stimulsoft.Viewer.StiViewerOptions();
 
-            options.toolbar.fontFamily = "BKoodakBold";
+            options.toolbar.fontFamily = "IRANSans";
             options.toolbar.showDesignButton = true;
             options.toolbar.printDestination = Stimulsoft.Viewer.StiPrintDestination.Pdf;
             options.appearance.htmlRenderMode = Stimulsoft.Report.Export.StiHtmlExportMode.Table;

@@ -1,6 +1,6 @@
 import accModule from '../acc.module';
 
-function journalTemplatesController($scope, translate, confirm, navigate, journalTemplateApi, constants, prompt, logger, $timeout) {
+function journalTemplatesController($scope, translate, confirm, navigate, journalTemplateApi, devConstants, prompt, logger, $timeout) {
     $scope.errors = [];
     $scope.canShowJournalGrid = false;
 
@@ -9,7 +9,7 @@ function journalTemplatesController($scope, translate, confirm, navigate, journa
         serverFiltering: true,
         transport: {
             read: {
-                url: constants.urls.period.all()
+                url: devConstants.urls.period.all()
             }
         },
         schema: {
@@ -21,7 +21,7 @@ function journalTemplatesController($scope, translate, confirm, navigate, journa
         let item = e.sender.dataItem();
 
         $scope.canShowJournalGrid = false;
-        $scope.journalGridOption.readUrl = constants.urls.journal.getAllByPeriod(item.id);
+        $scope.journalGridOption.readUrl = devConstants.urls.journal.getAllByPeriod(item.id);
 
         $timeout(()=> $scope.canShowJournalGrid = true, 0)
     };
@@ -56,7 +56,7 @@ function journalTemplatesController($scope, translate, confirm, navigate, journa
                 }
             }
         ],
-        readUrl: constants.urls.journalTemplate.getAll()
+        readUrl: devConstants.urls.journalTemplate.getAll()
     };
 
     $scope.journalGridOption = {

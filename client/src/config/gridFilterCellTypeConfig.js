@@ -1,5 +1,5 @@
 import accModule from '../acc.module';
-import constants from '../localData/constants';
+import devConstants from '../localData/devConstants';
 
 accModule.config(function (gridFilterCellTypeProvider) {
 
@@ -7,7 +7,7 @@ accModule.config(function (gridFilterCellTypeProvider) {
         cell: gridFilterCellTypeProvider.control.dropdown({
             text: 'display',
             value: 'key',
-            data: constants.enums.AccountPostingType()
+            data: devConstants.enums.AccountPostingType()
         }),
         modelType: 'string'
     };
@@ -15,7 +15,7 @@ accModule.config(function (gridFilterCellTypeProvider) {
         cell: gridFilterCellTypeProvider.control.dropdown({
             text: 'display',
             value: 'key',
-            data: constants.enums.AccountBalanceType()
+            data: devConstants.enums.AccountBalanceType()
         }),
         modelType: 'string'
     };
@@ -24,7 +24,7 @@ accModule.config(function (gridFilterCellTypeProvider) {
         cell: gridFilterCellTypeProvider.control.dropdown({
             text: 'display',
             value: 'key',
-            data: constants.enums.Active()
+            data: devConstants.enums.Active()
         }),
         modelType: 'boolean'
     }
@@ -33,7 +33,7 @@ accModule.config(function (gridFilterCellTypeProvider) {
         cell: gridFilterCellTypeProvider.control.dropdown({
             text: 'display',
             value: 'key',
-            data: constants.enums.JournalType()
+            data: devConstants.enums.JournalType()
         }),
         modelType: 'number'
     };
@@ -42,7 +42,7 @@ accModule.config(function (gridFilterCellTypeProvider) {
         cell: gridFilterCellTypeProvider.control.dropdown({
             text: 'display',
             value: 'key',
-            data: constants.enums.JournalStatus()
+            data: devConstants.enums.JournalStatus()
         }),
         modelType: 'number'
     }
@@ -51,7 +51,7 @@ accModule.config(function (gridFilterCellTypeProvider) {
         cell: gridFilterCellTypeProvider.control.dropdown({
             text: 'display',
             value: 'key',
-            data: constants.enums.ChequeCategoryStatus()
+            data: devConstants.enums.ChequeCategoryStatus()
         }),
         modelType: 'number'
     }
@@ -60,7 +60,7 @@ accModule.config(function (gridFilterCellTypeProvider) {
         cell: gridFilterCellTypeProvider.control.combo({
             text: 'title',
             value: 'id',
-            url: constants.urls.generalLedgerAccount.all()
+            url: devConstants.urls.generalLedgerAccount.all()
         }),
         modelType: 'string'
     }
@@ -69,7 +69,7 @@ accModule.config(function (gridFilterCellTypeProvider) {
         cell: gridFilterCellTypeProvider.control.combo({
             text: 'title',
             value: 'id',
-            url: constants.urls.subsidiaryLedgerAccount.all()
+            url: devConstants.urls.subsidiaryLedgerAccount.all()
         }),
         modelType: 'string'
     }
@@ -78,7 +78,7 @@ accModule.config(function (gridFilterCellTypeProvider) {
         cell: gridFilterCellTypeProvider.control.combo({
             text: 'display',
             value: 'id',
-            url: constants.urls.detailAccount.all()
+            url: devConstants.urls.detailAccount.all()
         }),
         modelType: 'string'
     };
@@ -87,7 +87,7 @@ accModule.config(function (gridFilterCellTypeProvider) {
         cell: gridFilterCellTypeProvider.control.combo({
             text: 'title',
             value: 'id',
-            url: constants.urls.bank.all()
+            url: devConstants.urls.bank.all()
         }),
         modelType: 'number'
 

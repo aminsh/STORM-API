@@ -1,7 +1,7 @@
 import accModule from '../acc.module';
 
 
-function reportDesigner() {
+function reportDesigner(currentService, reportApi, $window) {
     return {
         restrict: 'E',
         template: '<div id="contentDesigner" style="direction: ltr"></div>',
@@ -25,6 +25,17 @@ function reportDesigner() {
 
             let designer = new Stimulsoft.Designer.StiDesigner(null, 'StiDesigner', false);
 
+            designer.onSaveReport = e => {
+                debugger;
+                e.preventDefault = true;
+
+                let jsonReport = e.report.saveToJsonString();
+                    /*fileName = (scope.reportFileName)
+                        ? scope.reportFileName
+                        : $window.prompt('File name :');*/
+
+                reportApi.save({fileName: e.fileName, data: jsonReport});
+            };
 
             designer.renderHtml("contentDesigner");
 
@@ -43,6 +54,22 @@ function reportDesigner() {
             user.value = localStorage.getItem('currentUser');
 
             report.dictionary.variables.add(user);
+
+            let logo = new Stimulsoft.Report.Dictionary.StiVariable();
+            logo.name = 'logo';
+            logo.alias = 'logo';
+            logo.category = "general";
+            logo.value = currentService.get().branch.logo;
+
+            report.dictionary.variables.add(logo);
+
+            let title = new Stimulsoft.Report.Dictionary.StiVariable();
+            title.name = 'title';
+            title.alias = 'title';
+            title.category = "general";
+            title.value = currentService.get().branch.name;
+
+            report.dictionary.variables.add(title);
 
             let data = {};
             data[scope.reportDataSourceName] = scope.reportData;
