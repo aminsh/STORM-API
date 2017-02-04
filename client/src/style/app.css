@@ -1,0 +1,59 @@
+/* styles in src/style directory are applied to the whole page */
+@font-face {
+    font-family: 'BKoodakBold';
+    src: url('/fonts/BKoodakBold.eot');
+    src: url('/fonts/BKoodakBold.eot') format('embedded-opentype'),
+    url('/fonts/BKoodakBold.woff') format('woff'),
+    url('/fonts/BKoodakBold.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+* {
+    font-family: "BKoodakBold", "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.our-teams {
+  height: 400px;
+  background: #e2dede;
+}
+
+.location iframe {
+  pointer-events: none;
+}
+
+body md-toolbar.toolbar {
+  /*margin-top: 50px;*/
+  background-color: transparent;
+  color: black;
+}
+
+.introduction {
+  background: url(/img/storm-background.jpg) no-repeat center center scroll;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  background-size: cover;
+  -o-background-size: cover;
+}
+
+.callout {
+  background: url(/img/acconting-main.jpg) no-repeat center center scroll;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  background-size: cover;
+  -o-background-size: cover;
+  height: 400px;
+}
+
+#protfolio div {
+  padding: 0 30px;
+  margin: 30px 0;
+}
+
+.location {
+  height: 400px;
+}
+
+.footer {
+  padding: 100px 0;
+}

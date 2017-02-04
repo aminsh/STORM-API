@@ -1,0 +1,48 @@
+<div layout="column"  layout-align="start" layout-fill class="introduction">
+
+  <toolbar classes="toolbar"></toolbar>
+
+  <div layout="row" layout-align="center center">
+    <md-whiteframe class="md-whiteframe-8dp" flex="30">
+      <md-toolbar>
+        <h2 class="md-toolbar-tools">
+          <span> ثبت‌نام </span>
+        </h2>
+      </md-toolbar>
+      <md-content class="md-padding" layout="column">
+        <form name="registerForm">
+          <md-input-container ng-repeat="input in registerVM.inputs" ng-init="name=input.input.name"class="md-block" flex-gt-sm>
+            <label>{{input.label}}</label>
+            <md-icon>{{input.icon}}</md-icon>
+            <input ng-required="input.input.required" name="{{ input.input.name }}" type="{{ input.input.type }}" ng-model="input.input.ngMmodel" />
+
+            <div class="hint" ng-if="input.hint">{{input.hint}}</div>
+
+            <div dynamic-messages getter="input.alert.getter" attr="ng-messages">
+              <div ng-repeat="message in input.messages" dynamic-messages getter="message.cause" attr="ng-message">{{message.message}}</div>
+            </div>
+          </md-input-container>
+          <div ng-if="registerVM.isError" style="text-align: center; color:rgb(221,44,0);">
+            ثبت‌نام با موفقیت انجام نشد!
+          </div>
+          <md-input-container class="md-block" flex-gt-sm style="text-align: center;">
+            <md-button ng-click="registerVM.register(registerForm)" class="md-block md-raised md-primary">ورود</md-button>
+          </md-input-container>
+          <md-input-container class="md-block" flex-gt-sm style="text-align: center;">
+            <p> یا </p>
+          </md-input-container>
+          <md-input-container class="md-block" flex-gt-sm style="text-align: center;">
+            <!-- <md-card>
+              <img class="md-card-image" src="/img/btn_google_signin.png" alt="image caption">
+            </md-card> -->
+            <md-button style="background-color: #D34836;color: white;padding: 5px;" class="md-raised md-warn md-hue-4 md-block">
+              Login with Google
+              <md-icon md-svg-src="/img/icons/google-plus.svg" style="padding: 0 15px;"></md-icon>
+            </md-button>
+          </md-input-container>
+        </form>
+      </md-content>
+    </md-whiteframe>
+  </div>
+
+</div>
