@@ -100,6 +100,10 @@ accModule.config(($routeProvider, $locationProvider) => {
             controller: 'reportController',
             templateUrl: 'partials/views/report.html'
         })
+        .when('/reports/designer/:fileName?', {
+            controller: 'reportDesignerController',
+            templateUrl: 'partials/views/reportDesigner.html'
+        })
         .otherwise('/not-found');
 });
 

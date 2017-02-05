@@ -1,27 +1,30 @@
 <dev-tag-content title="{{'Reports'|translate}}">
-    <a class="btn btn-primary" ng-click="addTab()">Add tag</a>
+
+    <dev-tag-button
+            ng-if="mode == 'design'"
+            ng-click="onExitDesign()"
+            title="Exit designer"></dev-tag-button>
 
     <dev-tag-report-designer
+            ng-if="mode == 'design'"
             report-data="data"
-            report-data-source-name="data"></dev-tag-report-designer>
+            report-data-source-name="data">
+    </dev-tag-report-designer>
 
-    <tabset active="active" ng-if="false">
+    <tabset active="active" ng-if="mode == 'view'">
 
-        <tab index="0" heading="Parameters">
+        <tab index="0" heading="Parameters" ng-attr-active="isActiveFirstTab">
             <div class="row" style="margin: 20px 0 20px 0">
                 <div class="col-md-4">
                     <accordion>
-                        <accordion-group
-                                class="panel-info"
-                                ng-repeat="r in reports"
-                                heading="{{r.text}}">
+                        <accordion-group class="panel-info" ng-repeat="r in reports" heading="{{r.text}}">
                             <ul class="list-group">
-                                <li
-                                        class="list-group-item"
-                                        style="cursor: pointer"
-                                        ng-click="select(item)"
-                                        ng-class="{'active': item == selectedReport}"
-                                        ng-repeat="item in r.items">{{item.text}}
+                                <li class="list-group-item" style="cursor: pointer" ng-click="select(item)"
+                                    ng-class="{'active': item == selectedReport}" ng-repeat="item in r.items">
+                                    {{item.text}}
+                                    <span class="glyphicon glyphicon-edit pull-left" style="cursor: pointer"
+                                          ng-click="design(item)">
+                                    </span>
                                 </li>
                             </ul>
                         </accordion-group>
@@ -35,11 +38,9 @@
                                     <label class="label-control">{{'From number' | translate}}</label>
                                 </div>
                                 <div class="col-md-3">
-                                    <dev-tag-numeric
-                                            ng-model="journalSearch.minNumber"
-                                            style="width: 100%"
-                                            name="minNumber"
-                                            not-zero></dev-tag-numeric>
+                                    <dev-tag-numeric ng-model="journalSearch.minNumber" style="width: 100%"
+                                                     name="minNumber" not-zero>
+                                    </dev-tag-numeric>
 
                                     <div ng-messages="form.minNumber.$error" ng-if="form.minNumber.$dirty">
                                         <span ng-message="notZero" class="label label-danger">{{'This field should have a value not equal to zero'|translate}}</span>
@@ -49,11 +50,9 @@
                                     <label class="label-control">{{'To number' | translate}}</label>
                                 </div>
                                 <div class="col-md-3">
-                                    <dev-tag-numeric
-                                            ng-model="journalSearch.maxNumber"
-                                            style="width: 100%"
-                                            name="maxNumber"
-                                            not-zero></dev-tag-numeric>
+                                    <dev-tag-numeric ng-model="journalSearch.maxNumber" style="width: 100%"
+                                                     name="maxNumber" not-zero>
+                                    </dev-tag-numeric>
 
                                     <div ng-messages="form.maxNumber.$error" ng-if="form.maxNumber.$dirty">
                                         <span ng-message="notZero" class="label label-danger">{{'This field should have a value not equal to zero'|translate}}</span>
@@ -65,17 +64,15 @@
                                     <label class="label-control">{{'From date' | translate}}</label>
                                 </div>
                                 <div class="col-md-3">
-                                    <dev-tag-datepicker
-                                            ng-model="journalSearch.minDate"
-                                            name="temporaryDate"></dev-tag-datepicker>
+                                    <dev-tag-datepicker ng-model="journalSearch.minDate"
+                                                        name="temporaryDate"></dev-tag-datepicker>
                                 </div>
                                 <div class="col-md-2" style="text-align: left;margin-top: 7px">
                                     <label class="label-control">{{'To date' | translate}}</label>
                                 </div>
                                 <div class="col-md-3">
-                                    <dev-tag-datepicker
-                                            ng-model="journalSearch.maxDate"
-                                            name="temporaryDate"></dev-tag-datepicker>
+                                    <dev-tag-datepicker ng-model="journalSearch.maxDate"
+                                                        name="temporaryDate"></dev-tag-datepicker>
                                 </div>
                             </div>
                             <div class="row" style="margin-top: 10px">
@@ -103,14 +100,12 @@
                                     <label class="label-control">{{'Detail account' | translate}}</label>
                                 </div>
                                 <div class="col-md-8">
-                                    <select kendo-multi-select k-options="detailAccountOptions"
-                                            k-filter="'contains'"
+                                    <select kendo-multi-select k-options="detailAccountOptions" k-filter="'contains'"
                                             k-ng-model="journalSearch.detailAccounts"></select>
                                 </div>
                             </div>
 
-                            <div ng-repeat="category in dimensionCategories"
-                                 class="row" style="margin-top: 10px">
+                            <div ng-repeat="category in dimensionCategories" class="row" style="margin-top: 10px">
                                 <div class="col-md-2" style="text-align: left;margin-top: 7px">
                                     <label class="label-control">{{category.title}}</label>
                                 </div>
@@ -136,17 +131,15 @@
                                     <label class="label-control">{{'Cheque date from' | translate}}</label>
                                 </div>
                                 <div class="col-md-3">
-                                    <dev-tag-datepicker
-                                            ng-model="journalSearch.minChequeDate"
-                                            name="temporaryDate"></dev-tag-datepicker>
+                                    <dev-tag-datepicker ng-model="journalSearch.minChequeDate"
+                                                        name="temporaryDate"></dev-tag-datepicker>
                                 </div>
                                 <div class="col-md-2" style="text-align: left;margin-top: 7px">
                                     <label class="label-control">{{'To date' | translate}}</label>
                                 </div>
                                 <div class="col-md-3">
-                                    <dev-tag-datepicker
-                                            ng-model="journalSearch.maxChequeDate"
-                                            name="temporaryDate"></dev-tag-datepicker>
+                                    <dev-tag-datepicker ng-model="journalSearch.maxChequeDate"
+                                                        name="temporaryDate"></dev-tag-datepicker>
                                 </div>
                             </div>
 
@@ -162,9 +155,8 @@
                             <div class="row">
                                 <div class="col-md-2"></div>
                                 <div class="col-md-8">
-                                    <a class="btn btn-success btn-block">
-                                        <i class="glyphicon glyphicon-play"></i>
-                                        {{'Play' | translate}}
+                                    <a class="btn btn-success btn-block" ng-click="addViewerTab()">
+                                        <i class="glyphicon glyphicon-play"></i> {{'Play' | translate}}
                                     </a>
                                 </div>
                                 <div class="col-md-2"></div>
@@ -175,18 +167,21 @@
             </div>
         </tab>
 
-        <tab index="$index + 1"
-             heading="{{tab.title}}"
-             ng-repeat="tab in tabs">
+        <tab index="$index + 1" heading="{{tab.title}}" ng-attr-active="tab.isActive" ng-repeat="tab in viewerTabs">
             <tab-heading>
                 <div class="row">
-                    <button type="button" ng-click="closeTag(tab)" class="close pull-left" style="margin-left: 12px"
-                            aria-label="Close">
+                    <button type="button" ng-click="closeViewerTab(tab)" class="close pull-left"
+                            style="margin-left: 12px" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
-                    <span class="pull-right" style="margin-left: 18px">{{tab.title}}</span>
+                    <span class="pull-right" style="margin-left: 18px;margin-right: 10px">{{tab.title}}</span>
                 </div>
             </tab-heading>
+
+            <dev-tag-report-viewer
+                    report-data="data"
+                    report-file-name="{{tab.fileName}}"
+                    report-data-source-name="data"></dev-tag-report-viewer>
         </tab>
     </tabset>
 </dev-tag-content>

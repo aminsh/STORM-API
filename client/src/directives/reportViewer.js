@@ -1,4 +1,5 @@
 import accModule from '../acc.module';
+import Guid from 'dev.guid';
 
 
 function reportViewer() {
@@ -11,6 +12,10 @@ function reportViewer() {
             reportDataSourceName: '@'
         },
         link: function (scope, element, attrs) {
+            let id = Guid.new();
+
+            $(element).find('div').attr('id', id);
+
             let options = new Stimulsoft.Viewer.StiViewerOptions();
 
             options.toolbar.fontFamily = "IRANSans";
@@ -19,10 +24,10 @@ function reportViewer() {
             options.appearance.htmlRenderMode = Stimulsoft.Report.Export.StiHtmlExportMode.Table;
 
             let report = new Stimulsoft.Report.StiReport();
-            let viewer = new Stimulsoft.Viewer.StiViewer(options, "StiViewer", false);
+            let viewer = new Stimulsoft.Viewer.StiViewer(options, "StiViewer" + id, false);
 
             report.loadFile(`/client/reportFiles/${scope.reportFileName}`);
-            viewer.renderHtml("contentViewer");
+            viewer.renderHtml(id);
 
             let today = new Stimulsoft.Report.Dictionary.StiVariable();
             today.name = 'today';

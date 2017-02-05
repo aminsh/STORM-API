@@ -89,7 +89,6 @@ function journalAdvancedSearchModalController($scope, $modalInstance, translate,
     $scope.dimension1Options = {};
     $scope.dimension2Options = {};
     $scope.dimension3Options = {};
-    $scope.dimension4Options = {};
 
     $scope.detailAccountOptions = {
         placeholder: translate('Select ...'),

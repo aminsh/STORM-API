@@ -2,7 +2,7 @@
     {
         "key":"1","text": "صدور سند حسابداری",
         "items":[
-            {"key":"1-1","text": "فرم 1"},
+            {"key":"1-1","text": "فرم 1", "func": "journals"},
             {"key":"1-2","text": "فرم 2"},
             {"key":"1-3","text": "فرم 3"},
             {"key":"1-4","text": "فرم 4"},
@@ -48,7 +48,7 @@
     {
         "key":"5","text": "فهرست حساب ها",
         "items":[
-            {"key":"5-1","text": "کل"},
+            {"key":"5-1","text": "کل", "func": "generalLedgerAccounts", "fileName": "generalLedgerAccounts"},
             {"key":"5-2","text": "معین"},
             {"key":"5-3","text": "تفصیل"},
             {"key":"5-4","text": "تراز 3 سطحی"}

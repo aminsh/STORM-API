@@ -26,15 +26,10 @@ function reportDesigner(currentService, reportApi, $window) {
             let designer = new Stimulsoft.Designer.StiDesigner(null, 'StiDesigner', false);
 
             designer.onSaveReport = e => {
-                debugger;
                 e.preventDefault = true;
 
                 let jsonReport = e.report.saveToJsonString();
-                    /*fileName = (scope.reportFileName)
-                        ? scope.reportFileName
-                        : $window.prompt('File name :');*/
-
-                reportApi.save({fileName: e.fileName, data: jsonReport});
+                reportApi.save({ fileName: e.fileName, data: jsonReport });
             };
 
             designer.renderHtml("contentDesigner");

@@ -30,6 +30,7 @@ import './controllers/journalPrintController';
 import createFiscalPeriodController from  './controllers/createFiscalPeriodController';
 import chequePrintController from './controllers/chequePrintController';
 import reportController from './controllers/reportController';
+import reportDesignerController from './controllers/reportDesignerController';
 
 // load apis
 import './apis/generalLedgerAccountApi';
@@ -122,7 +123,8 @@ accModule
     .service('reportApi', ReportApi)
     .controller(createFiscalPeriodController.name, createFiscalPeriodController)
     .controller('chequePrintController', chequePrintController)
-    .controller('reportController', reportController);
+    .controller('reportController', reportController)
+    .controller('reportDesignerController', reportDesignerController);
 
 accModule.init();
 
