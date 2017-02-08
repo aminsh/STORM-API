@@ -9,9 +9,9 @@ const config = require('../config'),
     async = require('asyncawait/async'),
     await = require('asyncawait/await'),
     DimensionCategoryQuery = require('../queries/query.dimensionCategory'),
-    reports = require('../config/reports.json');
-
-let fonts = fs.readdirSync(__dirname + '/../../client/fonts')
+    reports = require('../config/reports.json'),
+    reportTemplate = fs.readFileSync(`${config.rootPath}/client/reportFiles/reportTemplate`),
+    fonts = fs.readdirSync(__dirname + '/../../client/fonts')
     .filter(function (fileName) {
         return path.extname(fileName) == '.ttf';
     }).asEnumerable().select(function (fileName) {
@@ -34,7 +34,9 @@ let handler = module.exports.handler = async((req, res) => {
         dimensionCategories: dimensionCategories,
         fonts: fonts,
         version: config.version,
-        reports: reports
+        reports: reports,
+        reportTemplate: reportTemplate,
+        env: config.env
     });
 });
 

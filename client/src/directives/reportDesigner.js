@@ -10,18 +10,15 @@ function reportDesigner(currentService, reportApi, $window) {
             reportFileName: '@',
             reportDataSourceName: '@'
         },
-        link: function (scope, element, attrs) {
-            let options = new Stimulsoft.Viewer.StiViewerOptions();
-
-            options.toolbar.fontFamily = "BKoodakBold";
-            options.toolbar.showDesignButton = true;
-            options.toolbar.printDestination = Stimulsoft.Viewer.StiPrintDestination.Pdf;
-            options.appearance.htmlRenderMode = Stimulsoft.Report.Export.StiHtmlExportMode.Table;
-
+        link: (scope, element, attrs) => {
             let report = new Stimulsoft.Report.StiReport();
 
             if (scope.reportFileName)
                 report.loadFile(`/client/reportFiles/${scope.reportFileName}`);
+            else {
+                report.loadFile(`/client/reportFiles/reportTemplate`);
+                report.reportFile = ""
+            }
 
             let designer = new Stimulsoft.Designer.StiDesigner(null, 'StiDesigner', false);
 
@@ -29,7 +26,7 @@ function reportDesigner(currentService, reportApi, $window) {
                 e.preventDefault = true;
 
                 let jsonReport = e.report.saveToJsonString();
-                reportApi.save({ fileName: e.fileName, data: jsonReport });
+                reportApi.save({fileName: e.fileName, data: jsonReport});
             };
 
             designer.renderHtml("contentDesigner");
@@ -65,6 +62,22 @@ function reportDesigner(currentService, reportApi, $window) {
             title.value = currentService.get().branch.name;
 
             report.dictionary.variables.add(title);
+
+            let reportTitle = new Stimulsoft.Report.Dictionary.StiVariable();
+            reportTitle.name = 'reportTitle';
+            reportTitle.alias = 'Report title';
+            reportTitle.category = "general";
+            reportTitle.value = scope.reportTitle;
+
+            report.dictionary.variables.add(reportTitle);
+
+            let reportParameters = new Stimulsoft.Report.Dictionary.StiVariable();
+            reportParameters.name = 'reportParameters';
+            reportParameters.alias = 'Report parameters';
+            reportParameters.category = "general";
+            reportParameters.value = scope.reportParameters;
+
+            report.dictionary.variables.add(reportParameters);
 
             let data = {};
             data[scope.reportDataSourceName] = scope.reportData;

@@ -6,6 +6,8 @@ export default function ($scope, devConstants, dimensionCategoryApi, reportApi, 
     $scope.mode = 'view';
     $scope.data = [];
     $scope.selectedReport = false;
+    $scope.fileName = false;
+    $scope.reportTitle = '';
 
     $scope.select = report => $scope.selectedReport = report;
     $scope.isActiveFirstTab = true;
@@ -29,6 +31,8 @@ export default function ($scope, devConstants, dimensionCategoryApi, reportApi, 
 
     $scope.design = report => {
         let params = resolveFilter($scope.journalSearch);
+        $scope.fileName = report.fileName;
+        $scope.reportTitle = report.text;
         reportApi[report.func](params)
             .then(result => {
                 $scope.data = result.data;
