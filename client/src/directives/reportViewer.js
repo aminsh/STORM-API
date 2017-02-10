@@ -9,6 +9,8 @@ function reportViewer() {
         scope: {
             reportData: '=',
             reportFileName: '@',
+            reportTitle: '@',
+            reportParameters: '@',
             reportDataSourceName: '@'
         },
         link: function (scope, element, attrs) {
@@ -44,6 +46,22 @@ function reportViewer() {
             user.value = localStorage.getItem('currentUser');
 
             report.dictionary.variables.add(user);
+
+            let reportTitle = new Stimulsoft.Report.Dictionary.StiVariable();
+            reportTitle.name = 'reportTitle';
+            reportTitle.alias = 'Report title';
+            reportTitle.category = "general";
+            reportTitle.value = scope.reportTitle;
+
+            report.dictionary.variables.add(reportTitle);
+
+            let reportParameters = new Stimulsoft.Report.Dictionary.StiVariable();
+            reportParameters.name = 'reportParameters';
+            reportParameters.alias = 'Report parameters';
+            reportParameters.category = "general";
+            reportParameters.value = scope.reportParameters;
+
+            report.dictionary.variables.add(reportParameters);
 
             let data = {};
             data[scope.reportDataSourceName] = scope.reportData;

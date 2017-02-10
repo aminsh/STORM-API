@@ -8,6 +8,8 @@
     <dev-tag-report-designer
             ng-if="mode == 'design'"
             report-data="data"
+            report-file-name="{{fileName}}"
+            report-title="{{reportTitle}}"
             report-data-source-name="data">
     </dev-tag-report-designer>
 
@@ -181,6 +183,7 @@
             <dev-tag-report-viewer
                     report-data="data"
                     report-file-name="{{tab.fileName}}"
+                    report-title="{{tab.title}}"
                     report-data-source-name="data"></dev-tag-report-viewer>
         </tab>
     </tabset>

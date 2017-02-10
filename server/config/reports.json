@@ -48,7 +48,7 @@
     {
         "key":"5","text": "فهرست حساب ها",
         "items":[
-            {"key":"5-1","text": "کل", "func": "generalLedgerAccounts", "fileName": "generalLedgerAccounts"},
+            {"key":"5-1","text": "فهرست حسابهای کل", "func": "generalLedgerAccounts"},
             {"key":"5-2","text": "معین"},
             {"key":"5-3","text": "تفصیل"},
             {"key":"5-4","text": "تراز 3 سطحی"}
