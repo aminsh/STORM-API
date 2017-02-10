@@ -18,6 +18,57 @@
   background: #e2dede;
 }
 
+.pricing {
+  min-height: 400px;
+  padding-bottom: 20px;
+}
+
+.pricing-item {
+  text-align: center;
+  color: white;
+}
+
+.pricing-item header {
+  background: #26a69a;
+}
+
+.pricing-item header h2 {
+  height: 60px;
+}
+.pricing-item header h3 {
+  background: rgba(0, 0, 0, 0.2);
+  padding: 10px 0;
+}
+
+.pricing-body {
+  min-height: 150px;
+  margin-top: -20px;
+  color: black;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.pricing-body .md-button:hover {
+  background-color: rgba(38, 166, 154, 0.7)
+}
+
+.pricing-body md-list-item {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+.pricing-body md-list-item:last-child {
+  border-bottom:0;
+}
+
+.pricing-body .md-button {
+  background: #26a69a;
+  width: 95%;
+}
+
+img.md-avatar {
+  max-width: 250px;
+  max-height: 150px;
+  border-radius: 100px;
+}
+
 .location iframe {
   pointer-events: none;
 }

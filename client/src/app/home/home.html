@@ -17,36 +17,77 @@
 </div>
 <aside class="callout" layout='row'></aside>
 
+<section class="pricing" layout="column">
+  <h2 flex="10" style="text-align: center;">هزینه‌ها</h2>
+  <div flex layout="row" layout-align="space-around center">
+    <div flex="20" ng-repeat="price in home.prices">
+      <div class="pricing-item">
+        <header>
+          <h3>{{price.name}}</h3>
+          <h2>{{price.cost}} </h2>
+        </header>
+        <section class="pricing-body">
+          <md-list>
+            <md-list-item ng-repeat="feature in price.features">
+              <p>
+                {{feature}}
+              </p>
+            </md-list-item>
+            <md-divider></md-divider>
+            <md-list-item>
+              <p>
+                <md-button class="md-raised">خرید</md-button>
+              </p>
+            </md-list-item>
+          </md-list>
+        </section>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section class="our-teams" layout="column">
   <h2 flex="10" style="text-align: center;">اعضای شرکت</h2>
   <div flex layout="row"  style="text-align: center;" layout-align="center start">
     <div flex="25">
-      <img src="/img/icons/male.svg" class="md-avatar" alt="{{message.who}}">
+      <img src="/img/persons/amin_sheikhi.jpg" class="md-avatar" alt="{{message.who}}">
       <p>
-        همایون
+        امین
         <br>
-        هدایتی‌فرد
+        شیخی
       </p>
       <p>
-        مهندس محصول
+        بنیانگذار و مدیر فنی
       </p>
       <p>
-        <md-icon md-svg-src="/img/icons/twitter.svg"></md-icon>
         <md-icon md-svg-src="/img/icons/linkedin.svg"></md-icon>
       </p>
     </div>
     <div flex="25">
-      <img src="/img/icons/male.svg" class="md-avatar" alt="{{message.who}}">
+      <img src="/img/persons/peyman_zohrevandi.jpg" class="md-avatar" alt="{{message.who}}">
       <p>
-        پدرام
+        پیمان
         <br>
-        لطفی‌نژاد
+        زهره‌وندی
       </p>
       <p>
-        طراح محصول
+        برنامه نویس و طراح رابط کاربری
       </p>
       <p>
-        <md-icon md-svg-src="/img/icons/twitter.svg"></md-icon>
+        <md-icon md-svg-src="/img/icons/linkedin.svg"></md-icon>
+      </p>
+    </div>
+    <div flex="25">
+      <img src="/img/persons/sanaz_soleimani.jpg" class="md-avatar" alt="{{message.who}}">
+      <p>
+        ساناز
+        <br>
+        سلیمانی
+      </p>
+      <p>
+        برنامه نویس و طراح تجربه کاربری
+      </p>
+      <p>
         <md-icon md-svg-src="/img/icons/linkedin.svg"></md-icon>
       </p>
     </div>
