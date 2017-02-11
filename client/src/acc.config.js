@@ -85,6 +85,7 @@ import './directives/layout';
 import './directives/numeric';
 import './directives/textEditor';
 import './directives/checkbox';
+import './directives/radio';
 import './directives/ngKendoGrid';
 import './directives/journalSearchParameters';
 import './directives/reportViewer';
@@ -92,6 +93,9 @@ import shell from './directives/shell';
 import {contentCover, contentCoverForm} from './directives/contentCover';
 import './directives/reportDesigner';
 import panelBar from './directives/panelbar';
+import shellHeader from './directives/shell.header';
+import shellSidebar from './directives/shell.sidebar';
+import shellSidebarItem from './directives/shell.sidebar.item'
 
 //filter
 import './filters/amount';
@@ -114,7 +118,10 @@ import  currentService from './services/currentService';
 
 accModule
     .config(ADMdtpConfig)
-    .directive(shell.name, shell)
+    .directive('shell', shell)
+    .directive('shellHeader', shellHeader)
+    .directive('shellSidebar', shellSidebar)
+    .directive('shellSidebarItem', shellSidebarItem)
     .directive('devTagContentCover', contentCover)
     .directive('devTagContentCoverFrom', contentCoverForm)
     .directive('devTagPanelBar', panelBar)

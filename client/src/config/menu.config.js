@@ -7,7 +7,7 @@ accModule.config(menuItemsProvider => {
         .add({
             title: 'سرفصل حسابها و سطوح',
             url: '',
-            icon: '',
+            icon: 'fa fa-tasks',
             children: [
                 {
                     title: 'حسابهای کل و معین',
@@ -26,7 +26,7 @@ accModule.config(menuItemsProvider => {
         .add({
             title: 'سند حسابداری',
             url: '',
-            icon: '',
+            icon: 'fa fa-book',
             children: [
                 {
                     title: 'لیست اسناد حسابداری',
@@ -52,7 +52,7 @@ accModule.config(menuItemsProvider => {
         .add({
             title: 'خزانه داری',
             url: '',
-            icon: '',
+            icon: 'fa fa-money',
             children: [
                 {
                     title: 'دسته چک ها',
@@ -69,7 +69,7 @@ accModule.config(menuItemsProvider => {
         .add({
             title: 'گزارشات',
             url: '',
-            icon: '',
+            icon: 'fa fa-pie-chart',
             children: [
                 {
                     title: 'مرور حساب',

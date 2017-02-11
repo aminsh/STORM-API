@@ -42,7 +42,7 @@ function journalLineCreateOrUpdateController($scope, $modalInstance, $timeout, f
     $scope.dimension3DataSource = null;
 
     dimensionCategoryApi.getAll()
-        .then((result)=> {
+        .then((result) => {
             let cats = result.data;
             $scope.dimensionCategories = cats;
 
@@ -53,7 +53,7 @@ function journalLineCreateOrUpdateController($scope, $modalInstance, $timeout, f
 
     if (editMode == 'update')
         journalLineApi.getById(id)
-            .then((result)=> {
+            .then((result) => {
                 result.amount = 0;
                 result.balanceType = '';
 
@@ -70,7 +70,7 @@ function journalLineCreateOrUpdateController($scope, $modalInstance, $timeout, f
                 $scope.journalLine = result
             });
 
-    let resetForm = (form)=> {
+    let resetForm = (form) => {
 
         $scope.journalLine = {
             generalLedgerAccountId: null,
@@ -81,14 +81,14 @@ function journalLineCreateOrUpdateController($scope, $modalInstance, $timeout, f
             balanceType: ''
         };
 
-        $timeout(()=> formService.setClean(form), 100);
+        $timeout(() => formService.setClean(form), 100);
 
         $scope.generalLedgerAccountShouldBeFocus = true;
     };
 
     $scope.isSaving = false;
 
-    let save = (form)=> {
+    let save = (form) => {
         let deferred = $q.defer();
 
         function execute() {
@@ -102,30 +102,30 @@ function journalLineCreateOrUpdateController($scope, $modalInstance, $timeout, f
 
             if (editMode == 'create')
                 journalLineApi.create(journalId, $scope.journalLine)
-                    .then((result)=> {
+                    .then((result) => {
                         deferred.resolve(result);
                         logger.success();
                     })
-                    .catch((errors)=> {
+                    .catch((errors) => {
                         $scope.errors = errors;
                         deferred.reject();
                     })
-                    .finally(()=> {
+                    .finally(() => {
                         $scope.isSaving = false;
                         deferred.resolve();
                     });
 
             if (editMode == 'update')
                 journalLineApi.update(id, $scope.journalLine)
-                    .then(()=> {
+                    .then(() => {
                         deferred.resolve();
                         logger.success();
                     })
-                    .catch((errors)=> {
+                    .catch((errors) => {
                         $scope.errors = errors;
                         deferred.reject();
                     })
-                    .finally(()=> $scope.isSaving = false);
+                    .finally(() => $scope.isSaving = false);
         }
 
         $timeout(execute, 0);
@@ -133,14 +133,14 @@ function journalLineCreateOrUpdateController($scope, $modalInstance, $timeout, f
         return deferred.promise;
     };
 
-    $scope.saveAndNew = (form)=> {
+    $scope.saveAndNew = (form) => {
         save(form)
-            .then(()=> resetForm(form));
+            .then(() => resetForm(form));
     };
 
-    $scope.saveAndReturn = (form)=> {
+    $scope.saveAndReturn = (form) => {
         save(form)
-            .then((result)=> $modalInstance.close(result));
+            .then((result) => $modalInstance.close(result));
     };
 
     $scope.generalLedgerAccountDataSource = {
@@ -156,7 +156,7 @@ function journalLineCreateOrUpdateController($scope, $modalInstance, $timeout, f
         }
     };
 
-    $scope.generalLedgerAccountOnChange = ()=> {
+    $scope.generalLedgerAccountOnChange = () => {
         $scope.journalLine.subsidiaryLedgerAccountId = null;
 
         $scope.journalLine.detailAccount = {
@@ -186,8 +186,8 @@ function journalLineCreateOrUpdateController($scope, $modalInstance, $timeout, f
         serverFiltering: true,
         transport: {
             read: {
-                url: (filter)=> {
-                    let generalLegerAccountId = filter.filter.filters
+                url: (filter) => {
+                    let generalLegerAccountId = new Collection(filter.filter.filters)
                         .asEnumerable()
                         .first(f => f.field == 'generalLedgerAccountId')
                         .value;
@@ -203,7 +203,7 @@ function journalLineCreateOrUpdateController($scope, $modalInstance, $timeout, f
         }
     };
 
-    $scope.subsidiaryLedgerAccountSelect = (e)=> {
+    $scope.subsidiaryLedgerAccountSelect = (e) => {
         let item = e.sender.dataItem();
 
         if (!item) {
@@ -248,7 +248,7 @@ function journalLineCreateOrUpdateController($scope, $modalInstance, $timeout, f
         };
     };
 
-    $scope.subsidiaryLedgerAccountDataBound = (e)=> e.sender.trigger('change');
+    $scope.subsidiaryLedgerAccountDataBound = (e) => e.sender.trigger('change');
 
     $scope.detailAccountDataSource = {
         type: "json",
@@ -263,7 +263,7 @@ function journalLineCreateOrUpdateController($scope, $modalInstance, $timeout, f
         }
     };
 
-    let dimensionDataSourceFactory = (categoryId)=> {
+    let dimensionDataSourceFactory = (categoryId) => {
         return {
             type: "json",
             serverFiltering: true,
@@ -278,12 +278,12 @@ function journalLineCreateOrUpdateController($scope, $modalInstance, $timeout, f
         }
     };
 
-    $scope.changeAmountBalance = ()=>
+    $scope.changeAmountBalance = () =>
         $scope.journalLine.balanceType = $scope.journalLine.balanceType == 'debtor'
             ? 'creditor'
             : 'debtor';
 
-    $scope.close = ()=> $modalInstance.dismiss();
+    $scope.close = () => $modalInstance.dismiss();
 }
 
 function journalLineCreateOrUpdateControllerModalService(modalBase) {

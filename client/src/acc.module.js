@@ -7,9 +7,6 @@ import 'angular-translate';
 import 'angular-resource';
 import 'angular-messages';
 import 'angular-cookies';
-import 'kendo';
-import 'kendo.culture';
-import 'kendo.messages';
 import 'angular-cookies';
 import 'ADM-dateTimePicker';
 
@@ -23,7 +20,6 @@ let accModule = angular.module('acc.module', [
     'ngSanitize',
     'ui.bootstrap',
     'pascalprecht.translate',
-    'kendo.directives',
     'ngMessages',
     'ngCookies',
     'ADM-dateTimePicker'
@@ -35,10 +31,12 @@ accModule.init = () => {
     });
 };
 
-accModule.run((currentService, $cookies) => {
+accModule.run((currentService, $cookies, $rootScope) => {
     currentService.setFiscalPeriod(parseInt($cookies.get('current-period')));
     currentService.setMode($cookies.get('current-mode'));
     currentService.setBranch(JSON.parse(localStorage.getItem('currentBranch')));
+
+    $rootScope.canShowStatusSection = false;
 });
 
 export default accModule;

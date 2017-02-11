@@ -5,7 +5,8 @@ export default class currentService {
         this.current = {
             fiscalPeriod: null,
             mode: null,
-            branch: null
+            branch: null,
+            user: JSON.parse(localStorage.getItem('currentUser'))
         };
 
         this.$cookies = $cookies;

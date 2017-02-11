@@ -28,7 +28,7 @@ let handler = module.exports.handler = async((req, res) => {
 
     res.render('index.ejs', {
         clientTranslation: clientTranslation,
-        currentUser: req.user.name,
+        currentUser: req.user,
         currentBranch: memoryService.get('branches')
             .asEnumerable().single(b => b.id == req.cookies['branch-id']),
         dimensionCategories: dimensionCategories,

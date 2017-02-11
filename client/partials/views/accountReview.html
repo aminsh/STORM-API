@@ -54,11 +54,15 @@
         <div class="col-md-5">
             <div class="row" style="margin-top: 10px">
                 <div class="col-md-1">
-                    <dev-tag-check-box ng-model="parameters.isNotPeriodIncluded"></dev-tag-check-box>
+                    <dev-tag-check-box
+                            ng-model="parameters.isNotPeriodIncluded"
+                    dev-title="{{'Is not period included' | translate}}"></dev-tag-check-box>
                 </div>
-                <div class="col-md-4">
+
+                <h1>{{parameters.isNotPeriodIncluded}}</h1>
+               <!-- <div class="col-md-4">
                     <label style="margin-top: 4px">{{'Is not period included' | translate}}</label>
-                </div>
+                </div>-->
             </div>
             <div class="row">
                 <div class="col-md-1">

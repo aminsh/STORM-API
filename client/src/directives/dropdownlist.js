@@ -7,30 +7,25 @@ function dropdownlist() {
         require: 'ngModel',
         template: '<select></select>',
         replace: true,
-        scope: {
-            dataTextField: '@kDataTextField',
-            dataValueField: '@kDataValueField',
-            optionLabel: '@kOptionLabel',
-            dataSource: '=kDataSource',
-            onChange: '&kOnChange'
-        },
         link: function (scope, element, attrs, ngModel) {
             let dropdown = $(element).kendoDropDownList({
-                optionLabel: scope.optionLabel,
-                dataTextField: scope.dataTextField,
-                dataValueField: scope.dataValueField,
-                dataSource: scope.dataSource,
+                optionLabel: attrs.kOptionLabel,
+                dataTextField: attrs.kDataTextField,
+                dataValueField: attrs.kDataValueField,
+                dataSource: scope[attrs.kDataSource],
                 change: (e)=> {
                     let item = e.sender.dataItem();
 
-                    scope.$apply(()=>
-                        ngModel.$setViewValue(item[scope.dataValueField]));
-                    if (scope.onChange)
-                        scope.onChange({selectedItem: item});
+                    scope.$apply(()=> {
+                        ngModel.$setViewValue(item[attrs.kDataValueField]);
+
+                        if (scope[attrs.kOnChanged])
+                            scope[attrs.kOnChanged](item);
+                    });
                 }
             }).data('kendoDropDownList');
 
-            ngModel.$render = ()=> dropdown.value(ngModel.$modelValue);
+            scope.$watch(attrs.ngModel, newValue => dropdown.value(newValue));
         }
     };
 }
