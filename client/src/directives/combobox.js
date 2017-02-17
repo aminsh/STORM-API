@@ -19,7 +19,8 @@ function combobox() {
                     select: function (e) {
                         let dataItem = this.dataItem(e.item.index());
                         ngModel.$setViewValue(dataItem[scope.dataValueField]);
-                        scope[attrs.kOnChanged](dataItem);
+                        if (scope[attrs.kOnChanged])
+                            scope[attrs.kOnChanged](dataItem);
 
                         scope.$apply();
                     }

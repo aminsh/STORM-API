@@ -4,14 +4,36 @@ import $ from 'jquery';
 function gridFilterCellTypeProvider() {
     var type = {
         string: {
-            showOperators: false,
             operator: "contains",
-            modelType: "string"
+            template: `<input class="form-control" type="text" ng-model="filter.value"/>`
         },
         number: {
-            showOperators: true,
             operator: "eq",
-            modelType: "number"
+            data: [
+                {key: 'eq ', display: 'Equal to'},
+                {key: 'gte', display: 'Greater than or equal to'},
+                {key: 'gt ', display: 'Greater than'},
+                {key: 'lte', display: 'Less than or equal to'},
+                {key: 'lt ', display: 'Less than'}
+            ],
+            template: `<li>
+                <dev-tag-numeric ng-model="filter.value"></dev-tag-numeric>
+            </li>
+            <li>
+                <div class="btn-group" dropdown >
+      <button id="single-button" type="button" class="btn btn-white" 
+      dropdown-toggle 
+        {{text | translate }}<span class="caret"></span>
+      </button>
+      <ul class="dropdown-menu" dropdown-menu role="menu" aria-labelledby="single-button">
+        <li role="menuitem" ng-repeat="item in items">
+            <a href="#" ng-click="function(item){filter.value = item.key;text=item.display;}(item)">
+                {{item.display | translate}}
+            </a>
+        </li>
+      </ul>
+    </div>
+            </li>`
         },
         date: {
             showOperators: false,
@@ -19,7 +41,7 @@ function gridFilterCellTypeProvider() {
             modelType: "string"
         },
         boolean: {}
-    }
+    };
 
     function combo(option) {
         return {
@@ -78,11 +100,11 @@ function gridFilterCellTypeProvider() {
     this.control = {
         combo: combo,
         dropdown: dropdown
-    }
+    };
 
     this.$get = function () {
         return type;
-    }
+    };
 
     this.set = function (extendedObject) {
         type = angular.extend(type, extendedObject);

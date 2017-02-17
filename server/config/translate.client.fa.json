@@ -177,5 +177,12 @@
   "Account title": "عنوان حساب",
   "Rial": "ریال",
 
-  "Create first fiscal period": "دوره مالی اول را ایجاد کنید"
+  "Create first fiscal period": "دوره مالی اول را ایجاد کنید",
+
+  "Filter": "فیلتر",
+  "Remove filter":"حذف فیلتر",
+
+  "Page size": "اندازه صفحه",
+  "Page": "صفحه",
+  "Of":"از"
 }

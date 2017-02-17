@@ -20,7 +20,7 @@
                     required/>
 
             <div ng-messages="form.code.$error" ng-if="form.code.$dirty">
-                <span ng-message="required" class="label label-danger">{{'This field is required'|translate}}</span>
+                <label ng-message="required" class="error">{{'This field is required'|translate}}</label>
             </div>
         </div>
 
@@ -33,7 +33,7 @@
                    required/>
 
             <div ng-messages="form.title.$error" ng-if="form.title.$dirty">
-                <span ng-message="required" class="label label-danger">{{'This field is required'|translate}}</span>
+                <label ng-message="required" class="error">{{'This field is required'|translate}}</label>
             </div>
         </div>
 
@@ -51,6 +51,6 @@
             icon="glyphicon glyphicon-floppy-disk"
             ng-disabled="isSaving"
             is-waiting="isSaving"
-            style-type="success"
+            style-type="primary"
             title="{{'Save' | translate}}"></dev-tag-button>
 </div>

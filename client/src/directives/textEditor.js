@@ -2,13 +2,22 @@ import accModule from '../acc.module';
 
 function textEditor() {
     return {
+        require: 'ngModel',
         restrict: 'E',
         replace: true,
-        template: '<textarea kendo-editor k-ng-model="ngModel"></textarea>',
-        link: function (scope, element, attrs) {
-
-        }
+        template: '<textarea class="form-control"></textarea>'
     };
 }
 
-accModule.directive('devTagEditor', textEditor);
+function textBox() {
+    return {
+        require: 'ngModel',
+        restrict: 'E',
+        replace: true,
+        template: '<input type="text" class="form-control"/>'
+    };
+}
+
+accModule
+    .directive('devTagEditor', textEditor)
+    .directive('devTagTextBox', textBox);

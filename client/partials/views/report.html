@@ -17,7 +17,7 @@
             <div class="row" style="margin: 20px 0 20px 0">
                 <div class="col-md-4">
                     <accordion>
-                        <accordion-group class="panel-info" ng-repeat="r in reports" heading="{{r.text}}">
+                        <accordion-group class="panel-primary" ng-repeat="r in reports" heading="{{r.text}}">
                             <ul class="list-group">
                                 <li class="list-group-item" style="cursor: pointer" ng-click="select(item)"
                                     ng-class="{'active': item == selectedReport}" ng-repeat="item in r.items">
@@ -145,17 +145,16 @@
 
                             <div class="row" style="margin-top: 10px">
                                 <div class="col-md-2"></div>
-                                <div class="col-md-1">
-                                    <dev-tag-check-box ng-model="journalSearch.isNotPeriodIncluded"></dev-tag-check-box>
-                                </div>
-                                <div class="col-md-4">
-                                    <label style="margin-top: 4px">{{'Is not period included' | translate}}</label>
+                                <div class="col-md-5">
+                                    <dev-tag-check-box ng-model="journalSearch.isNotPeriodIncluded">
+                                        <label style="margin-top: 4px">{{'Is not period included' | translate}}</label>
+                                    </dev-tag-check-box>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-2"></div>
                                 <div class="col-md-8">
-                                    <a class="btn btn-success btn-block" ng-click="addViewerTab()">
+                                    <a class="btn btn-primary btn-block" ng-click="addViewerTab()">
                                         <i class="glyphicon glyphicon-play"></i> {{'Play' | translate}}
                                     </a>
                                 </div>

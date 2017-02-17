@@ -12,23 +12,24 @@ function generalLedgerAccountsController($scope, logger, translate, confirm,
             title: translate('Posting type'),
             type: 'postingType',
             width: '150px',
-            template: '${data.postingTypeDisplay}'
+            template: '{{item.postingTypeDisplay}}'
         },
         {
             name: 'balanceType',
             title: translate('Balance type'),
             type: 'balanceType',
             width: '150px',
-            template: '${data.balanceTypeDisplay}'
+            template: '{{item.balanceTypeDisplay}}'
         },
         {
             name: 'isActive',
             title: translate('Is active ?'),
             type: 'activeType',
             width: '150px',
-            template: '<i class="glyphicon glyphicon-${data.isActive ? "ok-circle" : "remove-circle"}"' +
-            'style="font-size: 20px;color:${data.isActive ? "green" : "red"}">' +
-            '</i>'
+            template: `<i class="fa"
+                          ng-class="{'fa-check text-navy': item.isActive,
+                                     'fa-times text-danger': !item.isActive}">
+                       </i>`
         }
     ];
 
@@ -36,6 +37,7 @@ function generalLedgerAccountsController($scope, logger, translate, confirm,
         {
             title: translate('Edit'),
             name: 'edit general ledger account',
+            icon: 'fa fa-edit',
             action: function (current) {
                 generalLedgerAccountUpdateModalService.show({id: current.id})
                     .then(function () {
@@ -45,6 +47,7 @@ function generalLedgerAccountsController($scope, logger, translate, confirm,
         },
         {
             title: translate('Remove'),
+            icon: 'fa fa-trash',
             action: function (current) {
                 confirm(
                     translate('Remove General ledger account'),

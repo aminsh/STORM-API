@@ -4,7 +4,7 @@ export default function (ADMdtpProvider) {
         calType: 'jalali',
         dtpType: 'date',
         format: 'YYYY/MM/DD',
-        default: 'today',
+        //default: 'today',
         autoClose: true
     });
 }

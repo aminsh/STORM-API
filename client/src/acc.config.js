@@ -80,7 +80,7 @@ import './directives/combobox';
 import './directives/content';
 import './directives/datepicker';
 import './directives/dropdownlist';
-import './directives/grid';
+//import './directives/grid';
 import './directives/layout';
 import './directives/numeric';
 import './directives/textEditor';
@@ -95,7 +95,12 @@ import './directives/reportDesigner';
 import panelBar from './directives/panelbar';
 import shellHeader from './directives/shell.header';
 import shellSidebar from './directives/shell.sidebar';
-import shellSidebarItem from './directives/shell.sidebar.item'
+import shellSidebarItem from './directives/shell.sidebar.item';
+import grid from './directives/grid.bootstrap';
+import gridFilter from './directives/grid.filter';
+import gridSort from './directives/grid.sort';
+import paging from './directives/paging';
+import ngHtmlCompile from './directives/ngHtmlCompile';
 
 //filter
 import './filters/amount';
@@ -125,6 +130,11 @@ accModule
     .directive('devTagContentCover', contentCover)
     .directive('devTagContentCoverFrom', contentCoverForm)
     .directive('devTagPanelBar', panelBar)
+    .directive('devTagGrid', grid)
+    .directive('devTagGridFilter', gridFilter)
+    .directive('devTagGridSort', gridSort)
+    .directive('devTagPaging', paging)
+    .directive('ngHtmlCompile', ngHtmlCompile)
     .service(currentService.name, currentService)
     .service('fiscalPeriodApi', FiscalPeriodApi)
     .service('reportApi', ReportApi)

@@ -12,14 +12,16 @@ function checkBox() {
                 icheckbox = $element.find('.icheckbox_square-green');
 
             $element.click(function () {
-               if(scope[attrs.ngModel]) {
-                   icheckbox.removeClass('checked');
-                   ngModel.$setViewValue(false);
-               }
-               else {
-                   icheckbox.addClass('checked');
-                   ngModel.$setViewValue(true);
-               }
+                scope.$apply(()=> {
+                    if(ngModel.$viewValue) {
+                        icheckbox.removeClass('checked');
+                        ngModel.$setViewValue(false);
+                    }
+                    else {
+                        icheckbox.addClass('checked');
+                        ngModel.$setViewValue(true);
+                    }
+                });
             });
 
             ngModel.$render = function () {

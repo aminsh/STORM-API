@@ -3,31 +3,38 @@ import devConstants from '../localData/devConstants';
 
 accModule.config(function (gridFilterCellTypeProvider) {
 
-    var postingType = {
-        cell: gridFilterCellTypeProvider.control.dropdown({
-            text: 'display',
-            value: 'key',
-            data: devConstants.enums.AccountPostingType()
-        }),
-        modelType: 'string'
-    };
-    var balanceType = {
-        cell: gridFilterCellTypeProvider.control.dropdown({
-            text: 'display',
-            value: 'key',
-            data: devConstants.enums.AccountBalanceType()
-        }),
-        modelType: 'string'
+    let postingType = {
+        data: devConstants.enums.AccountPostingType().data,
+        template: `<li ng-repeat="item in items">
+                <dev-tag-radio
+                        ng-class="{'checked': item.key == filter.value}"
+                        ng-model="filter.value"
+                        k-value="{{item.key}}"></dev-tag-radio>
+                        {{item.display}}
+            </li>`
     };
 
-    var activeType = {
-        cell: gridFilterCellTypeProvider.control.dropdown({
-            text: 'display',
-            value: 'key',
-            data: devConstants.enums.Active()
-        }),
-        modelType: 'boolean'
-    }
+    let balanceType = {
+        data: devConstants.enums.AccountBalanceType().data,
+        template: `<li ng-repeat="item in items">
+        <dev-tag-radio 
+            ng-class="{'checked': item.key == filter.value}"
+            ng-model="filter.value" 
+            k-value="{{item.key}}"></dev-tag-radio>
+        {{item.display}}
+        </li>`
+    };
+
+    let activeType = {
+        data: devConstants.enums.Active().data,
+        template: `<li ng-repeat="item in items">
+        <dev-tag-radio
+            ng-class="{'checked': item.key == filter.value}"
+            ng-model="filter.value" 
+            k-value="{{item.key}}"></dev-tag-radio>
+        {{item.display}}
+        </li>`
+    };
 
     let journalType = {
         cell: gridFilterCellTypeProvider.control.dropdown({
@@ -63,7 +70,7 @@ accModule.config(function (gridFilterCellTypeProvider) {
             url: devConstants.urls.generalLedgerAccount.all()
         }),
         modelType: 'string'
-    }
+    };
 
     let subsidiaryLedgerAccount = {
         cell: gridFilterCellTypeProvider.control.combo({
@@ -72,7 +79,7 @@ accModule.config(function (gridFilterCellTypeProvider) {
             url: devConstants.urls.subsidiaryLedgerAccount.all()
         }),
         modelType: 'string'
-    }
+    };
 
     let detailAccount = {
         cell: gridFilterCellTypeProvider.control.combo({
@@ -97,12 +104,12 @@ accModule.config(function (gridFilterCellTypeProvider) {
         postingType: postingType,
         balanceType: balanceType,
         activeType: activeType,
-        journalType: journalType,
+        /*journalType: journalType,
         journalStatus: journalStatus,
         chequeCategoryStatus: chequeCategoryStatus,
         generalLedgerAccount: generalLedgerAccount,
         subsidiaryLedgerAccount: subsidiaryLedgerAccount,
         detailAccount: detailAccount,
-        bank: bank
+        bank: bank*/
     });
 });
