@@ -24,10 +24,10 @@ var environment = {
     production: {
         rootPath: rootPath,
         db: {
-            username: "jkfhhrhedmzpnt",
-            password: "G0CXzLu0uLzP3jTUNLUODI2bTo",
-            database: "d4cd8gk58c0i7d",
-            host: "ec2-54-235-246-220.compute-1.amazonaws.com",
+            username: "bnsasmix",
+            password: "218F3-sPy8resQ78O8dHYGhjKeb4-dX6",
+            database: "bnsasmix",
+            host: "elmer-02.db.elephantsql.com",
             dialect: "postgres",
             ssl: true,
             dialectOptions: {
@@ -35,8 +35,7 @@ var environment = {
                 ssl: true
             },
             client: 'pg',
-            //url: 'postgres://lgxdmvmmirytbb:2df3fc723567867100f43052bcef0746d079ee75a765567be0fec2d511139541@ec2-174-129-37-15.compute-1.amazonaws.com:5432/d37aunppf7pl08'
-            url: process.env.DATABASE_URL
+            url: 'postgres://bnsasmix:218F3-sPy8resQ78O8dHYGhjKeb4-dX6@elmer.db.elephantsql.com:5432/bnsasmix'
         },
         port: process.env.PORT || 80,
         reportPath: path.normalize('{0}/server/report.templates'.format(rootPath)),
