@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node . NODE_ENV=development"
+    "start": "node . NODE_ENV=production"
   },
   "author": "amin sheikhi",
   "license": "ISC",

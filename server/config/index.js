@@ -38,7 +38,7 @@ var environment = {
             //url: 'postgres://lgxdmvmmirytbb:2df3fc723567867100f43052bcef0746d079ee75a765567be0fec2d511139541@ec2-174-129-37-15.compute-1.amazonaws.com:5432/d37aunppf7pl08'
             url: process.env.DATABASE_URL
         },
-        port: process.env.PORT || 1001,
+        port: process.env.PORT || 80,
         reportPath: path.normalize('{0}/server/report.templates'.format(rootPath)),
         version: {
             vendor: '1.0.0',
