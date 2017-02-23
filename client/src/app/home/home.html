@@ -1,26 +1,38 @@
-<div layout="column"  layout-align="start" layout-fill class="introduction">
+<div layout="column" layout-align="start" layout-fill class="introduction">
 
-  <toolbar classes="toolbar"></toolbar>
+  <md-toolbar>
+    <toolbar></toolbar>
+  </md-toolbar>
 
   <div layout="column" layout-fill layout-align="center center">
-    <div>
-      <img src="/img/storm.logo.png" />
-    </div>
-    <div>
-      <a href="#about">
-        <md-button ui-sref="register" class="md-raised md-primary">
+    <div class="product-box">
+      <!-- <img src="/img/storm.logo.png" /> -->
+      <h3 class="md-headline">
+        نرم‌افزار حسابداری آنلاین لوکا
+      </h3>
+
+      <h5 class="md-subhead">
+        ساده را پیچیده نکنیم
+      </h5>
+      <div>
+        <md-button ui-sref="register" class="md-raised md-primary btn">
           شروع کنید
+          <md-icon class="material-icons icon-circle">arrow_back</md-icon>
         </md-button>
-      </a>
+      </div>
+      <md-button ui-sref="home" class="md-subhead">
+          بیشتر بدانیم
+          <md-icon>keyboard_arrow_left</md-icon>
+      </md-button>
     </div>
   </div>
 </div>
-<aside class="callout" layout='row'></aside>
+<!-- <aside class="callout" layout='row'></aside> -->
 
-<section class="pricing" layout="column">
+<!-- <section id="prices" class="pricing" layout="column">
   <h2 flex="10" style="text-align: center;">هزینه‌ها</h2>
-  <div flex layout="row" layout-align="space-around center">
-    <div flex="20" ng-repeat="price in home.prices">
+  <div flex layout="row" layout-wrap layout-align="space-around center">
+    <div flex="20" flex-sm="45" flex-xs="90" ng-repeat="price in home.prices">
       <div class="pricing-item">
         <header>
           <h3>{{price.name}}</h3>
@@ -44,9 +56,9 @@
       </div>
     </div>
   </div>
-</section>
+</section> -->
 
-<section class="our-teams" layout="column">
+<!-- <section class="our-teams" layout="column">
   <h2 flex="10" style="text-align: center;">اعضای شرکت</h2>
   <div flex layout="row"  style="text-align: center;" layout-align="center start">
     <div flex="25">
@@ -92,39 +104,48 @@
       </p>
     </div>
   </div>
-</section>
+</section> -->
 
-<section id="protfolio" layout="row">
-  <div flex="100" layout="row">
+<section id="protfolio" layout="row" layout-wrap layout-align="center center" style="border-bottom: 1px dashed rgba(0,0,0,0.4)">
+  <div flex-sm="100" flex=50>
+    <md-content layout-padding layout-wrap style="font-size: 18px;line-height: 2;">
+      لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است. چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است و برای شرایط فعلی تکنولوژی مورد نیاز و کاربردهای متنوع با هدف بهبود ابزارهای کاربردی می باشد. کتابهای زیادی در شصت و سه درصد گذشته، حال و آینده شناخت فراوان جامعه و متخصصان را می طلبد تا با نرم افزارها شناخت بیشتری را برای طراحان رایانه ای علی الخصوص طراحان خلاقی و فرهنگ پیشرو در زبان فارسی ایجاد کرد. در این صورت می توان امید داشت که تمام و دشواری موجود در ارائه راهکارها و شرایط سخت تایپ به پایان رسد وزمان مورد نیاز شامل حروفچینی دستاوردهای اصلی و جوابگوی سوالات پیوسته اهل دنیای موجود طراحی اساسا مورد استفاده قرار گیرد.
+
+      <md-button ui-sref="home" class="md-primary md-subhead">
+          بیشتر بدانیم
+          <md-icon>keyboard_arrow_left</md-icon>
+      </md-button>
+    </md-content>
+  </div>
+  <div flex-sm="100" flex=50>
     <md-card class="card">
       <img class="" src="/img/journal-line.jpg">
-    </md-card>
-    <md-card class="card">
-      <img class="" src="/img/journal-print.jpg">
-    </md-card>
-    <md-card class="card">
-      <img class="" src="/img/general-ledger.jpg">
     </md-card>
   </div>
 </section>
 
-<section class="location">
-  <iframe layout-fill frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3239.0817488200137!2d51.334408314829!3d35.724207980184296!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzXCsDQzJzI3LjEiTiA1McKwMjAnMTEuOCJF!5e0!3m2!1sen!2sus!4v1484839910454"></iframe>
-</section>
+<section class="company-location" layout-margin layout-padding layout-wrap layout="row" layout-align="center center">
+  <!-- layout-align="center center"> -->
+  <div flex=40 flex-sm=60 style="text-align: center;">
+    <p><md-button href="mailto:info@storm-online.ir" class="md-primary">info@storm-online.ir <md-icon>email</md-icon></md-button></p>
+    <p>
+      تهران، صادقیه، خیابان سازمان آب، نرسیده به چهارراه اشرفی اصفهانی،
+        <br>
+        خیابان صباح، خیابان کوهدشت، پلاک ۱۲، واحد پنجم غربی
+    </p>
+  </div>
 
-<section class="footer" layout="column" layout-align="center center">
-  <h4>
-    <strong>شرکت فراز رایانه کیهان</strong>
-  </h4>
-  <p style="text-align: center;">
-    تهران، صادقیه، خیابان سازمان آب، نرسیده به چهارراه اشرفی اصفهانی،
-      <br>
-      خیابان صباح، خیابان کوهدشت، پلاک ۱۲، واحد پنجم غربی
-  </p>
-  <p>021-88292601<md-icon>phone</md-icon></p>
-  <p><md-button href="mailto:info@storm-online.ir" class="md-primary">info@storm-online.ir <md-icon>email</md-icon></md-button></p>
+  <div flex=30 flex-sm=60>
+    <iframe layout-fill frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3239.0817488200137!2d51.334408314829!3d35.724207980184296!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzXCsDQzJzI3LjEiTiA1McKwMjAnMTEuOCJF!5e0!3m2!1sen!2sus!4v1484839910454"></iframe>
+  </div>
   <!-- <div layout="row" layout-align="center center">
       <a href="#"><md-icon>facebook</md-icon></i></a>
       <a href="#"><md-icon>twitter</md-icon></i></a>
   </div> -->
 </section>
+
+<footer layout layout-margin layout-padding style="border-top: 1px solid rgba(0,0,0,0.4)">
+  <md-content layout-padding layout-wrap>
+      تمامی حقوق این سایت مربوط به ...
+  </md-content>
+</footer>

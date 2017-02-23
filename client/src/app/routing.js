@@ -9,6 +9,18 @@ export default function routing($stateProvider, $urlRouterProvider) {
       controller: 'HomeController',
       controllerAs: 'home'
     })
+    .state('aboutus', {
+      url: '/about-us',
+      template: require('./home/aboutus.html'),
+      controller: 'AboutUSController',
+      controllerAs: 'VM'
+    })
+    .state('pricing', {
+      url: '/product/:type/pricing',
+      template: require('./home/pricing.html'),
+      controller: 'PricingController',
+      controllerAs: 'VM'
+    })
     .state('login', {
       url: '/login',
       template: require('./auth/login.html'),

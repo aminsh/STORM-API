@@ -15,6 +15,8 @@ import dynamicMessages from './directives/dynamicMessages';
 import api from './services/api';
 import setDirty from './services/setDirty';
 import HomeController from './home/home.controller';
+import AboutUSController from './home/aboutus.controller';
+import PricingController from './home/pricing.controller';
 import LoginController from './auth/login.controller';
 import RegisterController from './auth/register.controller';
 
@@ -27,6 +29,8 @@ angular.module(MODULE_NAME, ['ngMaterial', 'ngMessages', 'ui.router'])
   .directive('toolbar', toolbar)
   .directive('dynamicMessages', dynamicMessages)
   .controller('HomeController', HomeController)
+  .controller('AboutUSController', AboutUSController)
+  .controller('PricingController', PricingController)
   .controller('LoginController', LoginController)
   .controller('RegisterController', RegisterController)
 

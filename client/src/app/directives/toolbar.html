@@ -1,47 +1,13 @@
-<div>
-  <md-toolbar class="{{toolbar.class}}">
-    <div class="md-toolbar-tools">
-      <md-button class="md-icon-button" ng-click="toolbar.openMenu()" aria-label="Settings">
-        <i class="material-icons">&#xE5D2;</i>
-      </md-button>
-
-      <h2 flex md-truncate></h2>
-    </div>
-  </md-toolbar>
-
-  <md-sidenav class="md-sidenav-right" md-component-id="right" md-whiteframe="4">
-    <md-toolbar class="md-theme-indigo">
-      <h1 class="md-toolbar-tools">Storm</h1>
-    </md-toolbar>
-
-    <md-content>
-      <md-list class="md-block">
-        <md-subheader class="md-no-sticky">منو</md-subheader>
-        <md-list-item>
-          <md-button class="md-block md-ink-ripple" flex="100" ui-sref="home">
-            <!-- <md-icon>home</md-icon> -->
-            <span>
-              صفحه اصلی
-            </span>
-          </md-button>
-        </md-list-item>
-        <md-list-item>
-          <md-button class="md-block md-ink-ripple" flex="100" ui-sref="login">
-            <!-- <md-icon>person</md-icon> -->
-            <span>
-              ورود
-            </span>
-          </md-button>
-        </md-list-item>
-        <md-list-item>
-          <md-button class="md-block md-ink-ripple" flex="100" ui-sref="register">
-            <!-- <md-icon>person</md-icon> -->
-            <span>
-              ثبت‌نام
-            </span>
-          </md-button>
-        </md-list-item>
-      <md-list>
-    </md-content>
-  </md-sidenav>
+<div class="md-toolbar-tools">
+  <md-truncate>storm</md-truncate>
+  <span flex></span>
+  <md-button ui-sref="aboutus" aria-label="Go Back">
+    درباره ما
+  </md-button>
+  <md-button aria-label="Go Back">
+    ارتباط با ما
+  </md-button>
+  <md-button aria-label="Go Back">
+    عضویت / ورود
+  </md-button>
 </div>
