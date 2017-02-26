@@ -1,18 +1,20 @@
 export default class PricingController {
-  constructor($stateParams) {
+  constructor($stateParams, $sce) {
     let products = {
       luca:{
-        name: 'لوکا',
-        description: "هدف ما در اختیار قرار دادن امکاناتی درخور و شایسته شما با کمترین هزینه می باشد. ما می خواهم شما با هر توان مالی در کنار ما براحتی به اهداف مالی خود دست یابید و بتوانید بهترین کاربرد را از اطلاعات خود داشته باشید. اینگونه بودن در کنار هم هنر است.",
+        name: 'نرم‌افزار حسابداری آنلاین لوکا',
+        title: 'لوکا',
+        logo: '/img/loka.png',
+        description: $sce.trustAsHtml("هدف ما در اختیار قرار دادن امکاناتی درخور و شایسته شما با کمترین هزینه می‌باشد. ما می خواهم شما با هر توان مالی در کنار ما براحتی به اهداف مالی خود دست یابید و بتوانید بهترین کاربرد را از اطلاعات خود داشته باشید.<br>اینگونه بودن در کنار هم هنر است."),
         prices: [
           {
             name: 'رایگان',
-            cost: '۰ هزار تومان',
+            cost: '۰',
             features: [
               'تک کاربره',
               'امنیت پایین',
               'نسخه پشتیبان ندارد',
-              'حد اکثر 1000 سند حسابداری'
+              'ماهیانه ۵۰ سند حسابداری'
             ]
           },
           {
@@ -53,4 +55,4 @@ export default class PricingController {
   }
 }
 
-PricingController.$inject = ["$stateParams"]
+PricingController.$inject = ["$stateParams", "$sce"]

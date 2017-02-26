@@ -8,9 +8,26 @@
     font-weight: normal;
     font-style: normal;
 }
+@font-face {
+  font-family:'iransans';
+  font-style:normal;
+  font-weight:400;src:url("/fonts/IRANSans.eot");
+  src: local('IranSansZ'),
+  url("/fonts/IRANSans.eot") format('embedded-opentype'),
+  url("/fonts/IRANSans.woff") format('woff'),
+  url("/fonts/IRANSans.ttf") format('truetype')
+}
 
 * {
-    font-family: "BKoodakBold", "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-family: "iransans" ,"BKoodakBold", "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.brands-img {
+  height: 50px;
+  vertical-align: middle;
+  background: rgba(255,255,255,0.2);
+  border-radius: 999px;
+  padding: 3px;
 }
 
 .our-teams {
@@ -29,14 +46,14 @@
 }
 
 .pricing-item header {
-  background: #26a69a;
+  background: #ff7a20;
 }
 
 .pricing-item header h2 {
   height: 60px;
 }
 .pricing-item header h3 {
-  background: rgba(0, 0, 0, 0.2);
+  background: rgba(0, 120, 235, 0.9);
   padding: 10px 0;
 }
 
@@ -59,7 +76,7 @@
 }
 
 .pricing-body .md-button {
-  background: #26a69a;
+  /*background: #26a69a;*/
   width: 95%;
 }
 

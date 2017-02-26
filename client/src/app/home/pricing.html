@@ -6,12 +6,12 @@
 
   <div layout="column" layout-fill layout-align="center center">
     <div flex=100 layout="row" layout layout-align="center center">
-      <div layout-padding layout-wrap class="product-box" flex=40 style="margin-top: 5%;">
-        <h3 class="md-display-2">
+      <div layout-padding layout-wrap class="product-box" flex=40 style="margin-top: 3%;">
+        <img ng-src="{{VM.product.logo}}" style="width: 100px;"/>
+        <h3 class="md-headline">
           {{VM.product.name}}
         </h3>
-        <p style="line-height:2;">
-            {{VM.product.description}}
+        <p style="line-height:2;" ng-bind-html="VM.product.description">
         </p>
       </div>
     </div>
@@ -19,13 +19,13 @@
 </div>
 
 <section id="prices" class="pricing" layout="column">
-  <h2 flex="10" style="text-align: center;">هزینه‌ها</h2>
+  <h2 flex="10" style="text-align: center;">قیمت‌های {{VM.product.title}}</h2>
   <div flex layout="row" layout-wrap layout-align="space-around center">
     <div flex="20" flex-sm="45" flex-xs="90" ng-repeat="price in VM.product.prices">
       <div class="pricing-item">
         <header>
           <h3>{{price.name}}</h3>
-          <h2>{{price.cost}} </h2>
+          <h2 class="md-headline">{{price.cost}} </h2>
         </header>
         <section class="pricing-body">
           <md-list>
@@ -37,7 +37,7 @@
             <md-divider></md-divider>
             <md-list-item>
               <p>
-                <md-button class="md-raised">خرید</md-button>
+                <md-button class="md-raised md-primary">خرید</md-button>
               </p>
             </md-list-item>
           </md-list>
