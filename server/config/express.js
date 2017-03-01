@@ -14,7 +14,7 @@ var MemoryStore = require('session-memory-store')(session);
 var config = require('./');
 var app = express();
 
-app.use(favicon(config.rootPath + '/client/content/images/favicon.ico'));
+//app.use(favicon(config.rootPath + '/client/content/images/favicon.ico'));
 app.use(cors());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
