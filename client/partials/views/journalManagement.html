@@ -1,23 +1,21 @@
-<dev-tag-content title="{{'Journal management'| translate}}">
-    <div style="width: 70%;">
-        <dev-tag-grid option="gridOption"></dev-tag-grid>
-    </div>
+<dev-tag-content dev-attr-title="{{'Journal management'| translate}}">
 
-    <div ng-if="canShowJournals" style="margin-top: 50px">
-        <dev-tag-button
-                ng-click="showJournal(journalGridOption.current)"
-                icon="glyphicon glyphicon-eye-open"
-                ng-disabled="journalGridOption.current == undefined"
-                style-type="default"
-                title="{{'Show journal detail' | translate}}"></dev-tag-button>
+    <dev-tag-grid option="gridOption"
+                  on-current-changed="onSelectMonth(current)"></dev-tag-grid>
 
-        <dev-tag-button
-                ng-click="bookkeeping(journalGridOption.current)"
-                ng-disabled="journalGridOption.current == undefined"
-                style-type="default"
-                title="{{'Bookkeep' | translate}}"></dev-tag-button>
+    <dev-tag-button
+            ng-click="showJournal(journalGridOption.current)"
+            icon="glyphicon glyphicon-eye-open"
+            ng-disabled="!currentJournal"
+            style-type="white"
+            title="{{'Show journal detail' | translate}}"></dev-tag-button>
 
-        <dev-tag-grid option="journalGridOption"></dev-tag-grid>
-        ]
-    </div>
+    <dev-tag-button
+            ng-click="bookkeeping(journalGridOption.current)"
+            ng-disabled="!currentJournal"
+            style-type="white"
+            title="{{'Bookkeep' | translate}}"></dev-tag-button>
+
+    <dev-tag-grid option="journalGridOption"
+                  on-current-changed="onSelectJournal(current)"></dev-tag-grid>
 </dev-tag-content>

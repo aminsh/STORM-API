@@ -1,5 +1,5 @@
 import accModule from '../acc.module';
-import $ from 'jquery';
+let translation = JSON.parse(localStorage.getItem('translate'));
 
 function gridFilterCellTypeProvider() {
     var type = {
@@ -10,37 +10,33 @@ function gridFilterCellTypeProvider() {
         number: {
             operator: "eq",
             data: [
-                {key: 'eq ', display: 'Equal to'},
-                {key: 'gte', display: 'Greater than or equal to'},
-                {key: 'gt ', display: 'Greater than'},
-                {key: 'lte', display: 'Less than or equal to'},
-                {key: 'lt ', display: 'Less than'}
+                {key: 'eq', display: translation['Equal to']},
+                {key: 'gte', display: translation['Greater than or equal to']},
+                {key: 'gt', display: translation['Greater than']},
+                {key: 'lte', display: translation['Less than or equal to']},
+                {key: 'lt', display: translation['Less than']}
             ],
             template: `<li>
                 <dev-tag-numeric ng-model="filter.value"></dev-tag-numeric>
             </li>
             <li>
-                <div class="btn-group" dropdown >
-      <button id="single-button" type="button" class="btn btn-white" 
-      dropdown-toggle 
-        {{text | translate }}<span class="caret"></span>
-      </button>
-      <ul class="dropdown-menu" dropdown-menu role="menu" aria-labelledby="single-button">
-        <li role="menuitem" ng-repeat="item in items">
-            <a href="#" ng-click="function(item){filter.value = item.key;text=item.display;}(item)">
-                {{item.display | translate}}
-            </a>
-        </li>
-      </ul>
-    </div>
+                <dev-tag-dropdownlist
+                    k-data-text-field="display"
+                    k-data-value-field="key"
+                    k-data-source="items"
+                    ng-model="filter.operator"></dev-tag-dropdownlist>
             </li>`
         },
         date: {
-            showOperators: false,
-            operator: "contains",
-            modelType: "string"
+            template: `<li>
+                <dev-tag-datepicker ng-model="filter.value"></dev-tag-datepicker>
+            </li>`
         },
-        boolean: {}
+        boolean: {
+            template: `<li>
+                <dev-tag-check-box ng-model="filter.value"></dev-tag-check-box>
+            </li>`
+        }
     };
 
     function combo(option) {

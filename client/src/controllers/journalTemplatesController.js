@@ -17,20 +17,15 @@ function journalTemplatesController($scope, translate, confirm, navigate, journa
         }
     };
 
-    $scope.periodOnChange = (e)=> {
-        let item = e.sender.dataItem();
-
-        $scope.canShowJournalGrid = false;
-        $scope.journalGridOption.readUrl = devConstants.urls.journal.getAllByPeriod(item.id);
-
-        $timeout(()=> $scope.canShowJournalGrid = true, 0)
+    $scope.periodOnChange = (current)=> {
+        $scope.journalGridOption.readUrl = devConstants.urls.journal.getAllByPeriod(current.id);
     };
 
     $scope.gridOption = {
         columns: [
             {
                 name: 'title', title: translate('Title'), width: '70%', type: 'string',
-                template: '<span title="${data.title}">${data.title}</span>'
+                template: '<span title="{{item.title}}">{{item.title}}</span>'
             }
         ],
         commands: [
@@ -56,21 +51,23 @@ function journalTemplatesController($scope, translate, confirm, navigate, journa
                 }
             }
         ],
-        readUrl: devConstants.urls.journalTemplate.getAll()
+        readUrl: devConstants.urls.journalTemplate.getAll(),
+        gridSize: '200px'
     };
 
     $scope.journalGridOption = {
         columns: [
-            {name: 'temporaryNumber', title: translate('Temporary number'), width: '10%', type: 'number'},
-            {name: 'temporaryDate', title: translate('Temporary date'), type: 'date', width: '20%'},
+            {name: 'temporaryNumber', title: translate('Number'), width: '10%', type: 'number'},
+            {name: 'temporaryDate', title: translate('Date'), type: 'date', width: '20%'},
             {
                 name: 'description', title: translate('Description'), type: 'string', width: '50%',
-                template: '<span title="${data.description}">${data.description}</span>'
+                template: '<span title="{{item.description}}">{{item.description}}</span>'
             }
         ],
         commands: [
             {
                 title: translate('Copy to journal template'),
+                icon: 'fa fa-copy',
                 action: (current)=> {
                     prompt({
                         title: translate('Copy to journal template'),
@@ -84,7 +81,9 @@ function journalTemplatesController($scope, translate, confirm, navigate, journa
                     })
                 }
             }
-        ]
+        ],
+        readUrl: '',
+        gridSize: '200px'
     };
 }
 

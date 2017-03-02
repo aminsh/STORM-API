@@ -1,5 +1,10 @@
 import $ from 'jquery';
 import accModule from '../acc.module';
+import 'kendo-core';
+import 'kendo-data';
+import 'kendo-list';
+import 'kendo-popup';
+import 'kendo-dropdownlist';
 
 function dropdownlist($timeout) {
     return {

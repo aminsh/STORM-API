@@ -14,8 +14,6 @@ export default function () {
             scope.pageSizes = [10, 20, 50, 100];
             scope.pageSize = 20;
 
-            scope.$watch('pageSize', ()=> scope.option.reset());
-
             scope.change = () => {
                 let page = {
                     skip: (scope.currentPage - 1 ) * scope.pageSize,
@@ -28,6 +26,8 @@ export default function () {
                 scope.currentPage = 1;
                 scope.change();
             };
+
+            scope.$watch('pageSize', ()=> scope.option.reset());
 
             scope.change();
         }

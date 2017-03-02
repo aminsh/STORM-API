@@ -1,4 +1,4 @@
-<dev-tag-content title="{{'Reports'|translate}}">
+<dev-tag-content dev-attr-title="{{'Reports'|translate}}">
 
     <dev-tag-button
             ng-if="mode == 'design'"
@@ -13,7 +13,7 @@
 
     <tabset active="active" ng-if="mode == 'view'">
 
-        <tab index="0" heading="Parameters" ng-attr-active="isActiveFirstTab">
+        <tab index="0" heading="{{'Parameters'|translate}}" ng-attr-active="isActiveFirstTab">
             <div class="row" style="margin: 20px 0 20px 0">
                 <div class="col-md-4">
                     <accordion>
@@ -37,7 +37,7 @@
                                 <div class="col-md-2" style="text-align: left;margin-top: 7px">
                                     <label class="label-control">{{'From number' | translate}}</label>
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-4">
                                     <dev-tag-numeric ng-model="journalSearch.minNumber" style="width: 100%"
                                                      name="minNumber" not-zero>
                                     </dev-tag-numeric>
@@ -49,7 +49,7 @@
                                 <div class="col-md-2" style="text-align: left;margin-top: 7px">
                                     <label class="label-control">{{'To number' | translate}}</label>
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-4">
                                     <dev-tag-numeric ng-model="journalSearch.maxNumber" style="width: 100%"
                                                      name="maxNumber" not-zero>
                                     </dev-tag-numeric>
@@ -63,14 +63,14 @@
                                 <div class="col-md-2" style="text-align: left;margin-top: 7px">
                                     <label class="label-control">{{'From date' | translate}}</label>
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-4">
                                     <dev-tag-datepicker ng-model="journalSearch.minDate"
                                                         name="temporaryDate"></dev-tag-datepicker>
                                 </div>
                                 <div class="col-md-2" style="text-align: left;margin-top: 7px">
                                     <label class="label-control">{{'To date' | translate}}</label>
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-4">
                                     <dev-tag-datepicker ng-model="journalSearch.maxDate"
                                                         name="temporaryDate"></dev-tag-datepicker>
                                 </div>
@@ -79,29 +79,42 @@
                                 <div class="col-md-2" style="text-align: left;margin-top: 7px">
                                     <label class="label-control">{{'General ledger account' | translate}}</label>
                                 </div>
-                                <div class="col-md-8">
-                                    <select kendo-multi-select k-options="generalLedgerAccountOptions"
-                                            k-filter="'contains'"
-                                            k-ng-model="journalSearch.generalLedgerAccounts"></select>
+                                <div class="col-md-10">
+
+                                    <dev-tag-multi-select
+                                            ng-model="journal.generalLedgerAccounts"
+                                            k-data-source="generalLedgerAccountDataSource"
+                                            k-placeholder="{{'Select ...'|translate}}"
+                                            k-data-text-field="display"
+                                            k-data-value-field="id"></dev-tag-multi-select>
                                 </div>
                             </div>
                             <div class="row" style="margin-top: 10px">
                                 <div class="col-md-2" style="text-align: left;margin-top: 7px">
                                     <label class="label-control">{{'Subsidiary ledger account' | translate}}</label>
                                 </div>
-                                <div class="col-md-8">
-                                    <select kendo-multi-select k-options="subsidiaryLedgerAccountOptions"
-                                            k-filter="'contains'"
-                                            k-ng-model="journalSearch.subsidiaryLedgerAccounts"></select>
+                                <div class="col-md-10">
+
+                                    <dev-tag-multi-select
+                                            ng-model="journal.subsidiaryLedgerAccounts"
+                                            k-data-source="subsidiaryLedgerAccountDataSource"
+                                            k-placeholder="{{'Select ...'|translate}}"
+                                            k-data-text-field="account"
+                                            k-data-value-field="id"></dev-tag-multi-select>
                                 </div>
                             </div>
                             <div class="row" style="margin-top: 10px">
                                 <div class="col-md-2" style="text-align: left;margin-top: 7px">
                                     <label class="label-control">{{'Detail account' | translate}}</label>
                                 </div>
-                                <div class="col-md-8">
-                                    <select kendo-multi-select k-options="detailAccountOptions" k-filter="'contains'"
-                                            k-ng-model="journalSearch.detailAccounts"></select>
+                                <div class="col-md-10">
+                                    <dev-tag-multi-select
+                                            ng-model="journal.detailAccounts"
+                                            k-data-source="detailAccountDataSource"
+                                            k-placeholder="{{'Select ...'|translate}}"
+                                            k-data-text-field="display"
+                                            k-data-value-field="id"></dev-tag-multi-select>
+
                                 </div>
                             </div>
 
@@ -109,10 +122,13 @@
                                 <div class="col-md-2" style="text-align: left;margin-top: 7px">
                                     <label class="label-control">{{category.title}}</label>
                                 </div>
-                                <div class="col-md-8">
-                                    <select kendo-multi-select k-options="{{'dimension'+($index+1)+'Options'}}"
-                                            k-filter="'contains'"
-                                            k-ng-model="journalSearch['dimension'+($index+1)+'s']"></select>
+                                <div class="col-md-10">
+                                    <dev-tag-multi-select
+                                            ng-model="journalSearch['dimension'+($index+1)+'s']"
+                                            k-data-source="{{'dimension'+($index+1)+'DataSource'}}"
+                                            k-placeholder="{{'Select ...'|translate}}"
+                                            k-data-text-field="display"
+                                            k-data-value-field="id"></dev-tag-multi-select>
                                 </div>
                             </div>
 
@@ -120,9 +136,13 @@
                                 <div class="col-md-2" style="text-align: left;margin-top: 7px">
                                     <label class="label-control">{{'Cheque number' | translate}}</label>
                                 </div>
-                                <div class="col-md-8">
-                                    <select kendo-multi-select k-options="chequeOptions"
-                                            k-ng-model="journalSearch.chequeNumbers"></select>
+                                <div class="col-md-10">
+                                    <dev-tag-multi-select
+                                            ng-model="journalSearch.chequeNumbers"
+                                            k-data-source="chequeDataSource"
+                                            k-placeholder="{{'Select ...'|translate}}"
+                                            k-data-text-field="number"
+                                            k-data-value-field="id"></dev-tag-multi-select>
                                 </div>
                             </div>
 
@@ -130,14 +150,14 @@
                                 <div class="col-md-2" style="text-align: left;margin-top: 7px">
                                     <label class="label-control">{{'Cheque date from' | translate}}</label>
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-4">
                                     <dev-tag-datepicker ng-model="journalSearch.minChequeDate"
                                                         name="temporaryDate"></dev-tag-datepicker>
                                 </div>
                                 <div class="col-md-2" style="text-align: left;margin-top: 7px">
                                     <label class="label-control">{{'To date' | translate}}</label>
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-4">
                                     <dev-tag-datepicker ng-model="journalSearch.maxChequeDate"
                                                         name="temporaryDate"></dev-tag-datepicker>
                                 </div>
@@ -153,9 +173,9 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-2"></div>
-                                <div class="col-md-8">
-                                    <a class="btn btn-primary btn-block" ng-click="addViewerTab()">
-                                        <i class="glyphicon glyphicon-play"></i> {{'Play' | translate}}
+                                <div class="col-md-10" style="text-align: center">
+                                    <a class="btn btn-primary" ng-click="addViewerTab()">
+                                        <i class="glyphicon glyphicon-play"></i> {{'Show' | translate}}
                                     </a>
                                 </div>
                                 <div class="col-md-2"></div>

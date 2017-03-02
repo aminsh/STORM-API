@@ -1,6 +1,7 @@
 export default function () {
     return {
         template: `<i class="fa  pointer"
+                        ng-if="sortable"
                         ng-class="{'fa-sort-alpha-asc': sort.dir == '' || sort.dir == 'desc',
                         'fa-sort-alpha-desc': sort.dir == 'asc'}"
                         style="font-size: 15px;"
@@ -16,6 +17,7 @@ export default function () {
             let field = scope.column.name;
 
             scope.sort = {field: '', dir: ''};
+            scope.sortable = scope.column.sortable == null ? true : scope.column.sortable;
 
             scope.change = () => {
                 let preDir = '';

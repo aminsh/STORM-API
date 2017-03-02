@@ -8,29 +8,32 @@ function detailAccountsController($scope, logger, translate, confirm, navigate,
 
     $scope.gridOption = {
         columns: [
+            {name: 'code', title: translate('Code'), width: '120px', type: 'string'},
+            {name: 'title', title: translate('Title'), type: 'string'},
             {
                 name: 'isActive',
                 title: translate('Is active ?'),
                 type: 'activeType',
                 width: '150px',
-                template: '<i class="glyphicon glyphicon-${data.isActive ? "ok-circle" : "remove-circle"}"' +
-                'style="font-size: 20px;color:${data.isActive ? "green" : "red"}">' +
-                '</i>'
+                template: `<i class="fa"
+                          ng-class="{'fa-check text-navy': item.isActive,
+                                     'fa-times text-danger': !item.isActive}">
+                       </i>`
             },
-            {name: 'code', title: translate('Code'), width: '120px', type: 'string'},
-            {name: 'title', title: translate('Title'), type: 'string'}
         ],
         commands: [
             {
                 title: translate('Edit'),
                 name: 'edit detail account',
+                icon: 'fa fa-edit',
                 action: function (current) {
                     detailAccountUpdateModalService.show({id: current.id})
-                        .then(()=> $scope.gridOption.refresh());
+                        .then(() => $scope.gridOption.refresh());
                 }
             },
             {
                 title: translate('Remove'),
+                icon: 'fa fa-trash',
                 action: function (current) {
                     confirm(
                         translate('Remove Detail account'),
@@ -41,8 +44,8 @@ function detailAccountsController($scope, logger, translate, confirm, navigate,
                                     logger.success();
                                     $scope.gridOption.refresh();
                                 })
-                                .catch((errors)=> $scope.errors = errors)
-                                .finally(()=> $scope.isSaving = false);
+                                .catch((errors) => $scope.errors = errors)
+                                .finally(() => $scope.isSaving = false);
                         })
 
                 }
@@ -51,8 +54,8 @@ function detailAccountsController($scope, logger, translate, confirm, navigate,
         readUrl: detailAccountApi.url.getAll
     };
 
-    $scope.create = ()=> detailAccountCreateModalService.show()
-        .then(()=> $scope.gridOption.refresh());
+    $scope.create = () => detailAccountCreateModalService.show()
+        .then(() => $scope.gridOption.refresh());
 }
 
 accModule.controller('detailAccountsController', detailAccountsController);

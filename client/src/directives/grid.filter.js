@@ -22,6 +22,8 @@ export default function (gridFilterCellType) {
             </li>`;
 
             scope.filterStyle = {};
+            scope.dropdownStyle = {};
+            scope.filterable = scope.column.filterable == null ? true : scope.column.filterable;
 
             scope.filter = {
                 field: scope.column.name,
@@ -33,9 +35,11 @@ export default function (gridFilterCellType) {
                 isOpen: false
             };
 
-            let cellType = gridFilterCellType[scope.column.type]
+            let cellType = gridFilterCellType[scope.column.type];
             scope.template = cellType.template + baseTemplate;
             scope.items = cellType.data;
+            scope.dataSource = cellType.dataSource;
+            scope.dropdownStyle = cellType.style;
 
             if (scope.column.type == 'string')
                 scope.filter.operator = 'contains';

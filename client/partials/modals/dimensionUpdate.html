@@ -6,35 +6,40 @@
 </div>
 <div class="modal-body k-rtl">
 
-    <dev-tag-validation-errors></dev-tag-validation-errors>
+    <dev-tag-validation-errors errors="errors"></dev-tag-validation-errors>
 
     <form name="form">
-        <div class="form-group" ng-class="{'has-error': form.code.$invalid && !form.code.$pristine }">
+        <div class="form-group">
             <label class="label-control">{{'Code' | translate}}</label>
             <input type="text" class="form-control" ng-model="dimension.code" name="code"/>
         </div>
-        <div class="form-group" ng-class="{'has-error': form.title.$invalid && !form.title.$pristine }">
+        <div class="form-group">
             <label class="label-control">{{'Title' | translate}}</label>
-            <input type="text" class="form-control" required ng-model="dimension.title" name="title"/>
+            <input type="text"
+                   class="form-control"
+                   required
+                   ng-model="dimension.title"
+                   name="title"/>
 
-            <p ng-if="form.title.$invalid && !form.title.$pristine">
-                <span class="label label-danger">{{'Title is required' | translate}}</span>
-            </p>
+            <div ng-messages="form.title.$error" ng-if="form.title.$dirty">
+                <label ng-message="required" class="error">{{'This field is required'|translate}}</label>
+            </div>
         </div>
 
         <div class="form-group">
             <label class="label-control">{{'Description' | translate}}</label>
             <dev-tag-editor
-                    k-encoded="false"
                     ng-model="dimension.description"
-                    template="{{dimension.description}}"
                     name="description"></dev-tag-editor>
         </div>
     </form>
 </div>
 <div class="modal-footer">
-    <a ng-click="save(form)" class="btn btn-success" ng-disabled="form.$invalid">
-        <i class="glyphicon glyphicon-floppy-disk"></i>
-        {{'Save' | translate}}
-    </a>
+    <dev-tag-button
+            ng-click="save(form)"
+            icon="glyphicon glyphicon-floppy-disk"
+            ng-disabled="isSaving"
+            is-waiting="isSaving"
+            style-type="primary"
+            title="{{'Save' | translate}}"></dev-tag-button>
 </div>

@@ -10,6 +10,11 @@ import 'angular-cookies';
 import 'angular-cookies';
 import 'ADM-dateTimePicker';
 
+import 'chart.js';
+import 'angular-chart';
+
+import 'angular-ladda';
+
 Object.defineProperty(Array.prototype, 'toNumber', { enumerable: false });
 Object.defineProperty(Array.prototype, 'dtp_toDate', { enumerable: false });
 
@@ -22,7 +27,9 @@ let accModule = angular.module('acc.module', [
     'pascalprecht.translate',
     'ngMessages',
     'ngCookies',
-    'ADM-dateTimePicker'
+    'ADM-dateTimePicker',
+    'chart.js',
+    'angular-ladda'
 ]);
 
 accModule.init = () => {

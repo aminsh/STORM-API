@@ -1,3 +1,145 @@
-<dev-tag-content title="{{'Home'|translate}}">
+<div class="row">
 
-</dev-tag-content>
+    <div class="col-md-5">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+
+                <h5>منوی سریع</h5>
+            </div>
+            <div class="ibox-content" style="padding: 0">
+                <div class="row">
+                    <div class="col-md-8">
+                        <dev-tag-button
+                                icon="luca-doc-new block fa-2x"
+                                class="text-navy"
+                                title="{{'New Journal' | translate}}"></dev-tag-button>
+
+                        <dev-tag-button
+                                icon="luca-search block fa-2x"
+                                class="text-navy"
+                                title="{{'Search' | translate}}"></dev-tag-button>
+
+                        <dev-tag-button
+                                icon="luca-chart block fa-2x"
+                                class="text-navy"
+                                title="{{'Account review' | translate}}"></dev-tag-button>
+                    </div>
+
+                    <div class="col-md-4" style="top: 2em;left: 2em">
+                      <form>
+                          <dev-tag-numeric ng-model="journalNumbner"
+                                           placeholder="شماره سند + Enter"></dev-tag-numeric>
+                      </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-2 text-navy">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>آخرین سند</h5>
+            </div>
+            <div class="ibox-content" >
+                <h1 class="no-margins" style="text-align: center">1024</h1>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2 text-success">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>سند قطعی</h5>
+            </div>
+            <div class="ibox-content">
+                <h1 class="no-margins" style="text-align: center">35</h1>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-2 text-warning">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>سند ناقص</h5>
+            </div>
+            <div class="ibox-content" >
+                <h1 class="no-margins" style="text-align: center">5</h1>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="ibox float-e-margins">
+            <div class="ibox-content">
+                <div>
+                    <h3 class="font-bold no-margins">
+                        مقایسه درآمد ها و هزینه ها
+                    </h3>
+                </div>
+
+                <div class="m-t-sm">
+
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div>
+                                <canvas id="line" class="chart chart-line"
+                                        chart-data="incomeAndOutcomes"
+                                        chart-labels="months" chart-series="series" chart-options="options"
+                                        chart-dataset-override="datasetOverride" chart-click="onClick">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <ul class="stat-list m-t-lg">
+                                <li>
+                                    <h2 class="no-margins">2,346</h2>
+                                    <small></small>
+                                    <div class="progress progress-mini">
+                                        <div class="progress-bar" style="width: 48%;"></div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <h2 class="no-margins ">4,422</h2>
+                                    <small></small>
+                                    <div class="progress progress-mini">
+                                        <div class="progress-bar" style="width: 60%;"></div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="m-t-md">
+                    <small class="pull-right">
+
+                    </small>
+                    <small>
+
+                    </small>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>آمار اسناد به تفکیک ماه</h5>
+            </div>
+            <div class="ibox-content">
+                <div class="row">
+                    <canvas id="doughnut" class="chart chart-doughnut"
+                            chart-data="data"
+                            chart-labels="labels"
+                            chart-options="{legend: {display: true}}"
+                            chart-click="select">
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+

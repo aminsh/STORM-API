@@ -4,7 +4,8 @@ const async = require('asyncawait/async'),
     await = require('asyncawait/await'),
     BaseQuery = require('./query.base'),
     kendoQueryResolve = require('../services/kendoQueryResolve'),
-    groupBy = require('./query.accountReview.groupby');
+    groupBy = require('./query.accountReview.groupby'),
+    enums = require('../constants/enums');
 
 module.exports = class AccountReview extends BaseQuery {
     constructor(branchId, fiscalPeriodId, filter, paramters) {
@@ -12,6 +13,7 @@ module.exports = class AccountReview extends BaseQuery {
 
         this.getDateRange = async(this.getDateRange);
         this.aggregates = async(this.aggregates);
+        this.incomesAndOutcomes = async(this.incomesAndOutcomes);
 
         this.filter = filter;
         this.paramters = paramters;
@@ -111,6 +113,37 @@ module.exports = class AccountReview extends BaseQuery {
         result.aggregates = await(this.aggregates(aggregatesQuery));
 
         return result;
+    }
+
+    incomesAndOutcomes(){
+        let options = this.getOptions(),
+            knex = this.knex;
+
+        let query = knex.select().from(function () {
+            this.select('generalLedgerAccountId','month', 'sumBeforeRemainder', 'sumDebtor', 'sumCreditor', 'sumRemainder',
+                knex.raw('"generalLedgerAccounts"."code" as "generalLedgerAccountCode"'),
+                knex.raw('"generalLedgerAccounts"."title" as "generalLedgerAccountTitle"'))
+                .from(function () {
+                    groupBy.call(this, knex, options, ['generalLedgerAccountId', 'month']);
+                })
+                .leftJoin('generalLedgerAccounts', 'generalLedgerAccounts.id', 'groupJournals.generalLedgerAccountId')
+                .as('final');
+        });
+
+        query.whereIn('generalLedgerAccountId', [5,18]);
+
+        query.orderBy('month');
+
+        let view = (item) => ({
+            amountType: item.generalLedgerAccountId == 5 ? 'income' : 'outcome',
+            month: item.month,
+            monthName:  enums.getMonth().getDisplay(item.month),
+            amount: item.sumRemainder
+        });
+
+        let result = await(query);
+
+        return result.asEnumerable().select(view).toArray();
     }
 
     subsidiaryLedgerAccount() {

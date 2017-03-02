@@ -37,66 +37,131 @@ accModule.config(function (gridFilterCellTypeProvider) {
     };
 
     let journalType = {
-        cell: gridFilterCellTypeProvider.control.dropdown({
-            text: 'display',
-            value: 'key',
-            data: devConstants.enums.JournalType()
-        }),
-        modelType: 'number'
+        data: devConstants.enums.JournalType().data,
+        template: `<li ng-repeat="item in items">
+        <dev-tag-radio
+            ng-class="{'checked': item.key == filter.value}"
+            ng-model="filter.value" 
+            k-value="{{item.key}}"></dev-tag-radio>
+        {{item.display}}
+        </li>`
     };
 
     let journalStatus = {
-        cell: gridFilterCellTypeProvider.control.dropdown({
-            text: 'display',
-            value: 'key',
-            data: devConstants.enums.JournalStatus()
-        }),
-        modelType: 'number'
-    }
+        data: devConstants.enums.JournalStatus().data,
+        template: `<li ng-repeat="item in items">
+        <dev-tag-radio
+            ng-class="{'checked': item.key == filter.value}"
+            ng-model="filter.value" 
+            k-value="{{item.key}}"></dev-tag-radio>
+        {{item.display}}
+        </li>`
+    };
 
     let chequeCategoryStatus = {
-        cell: gridFilterCellTypeProvider.control.dropdown({
-            text: 'display',
-            value: 'key',
-            data: devConstants.enums.ChequeCategoryStatus()
-        }),
-        modelType: 'number'
-    }
+        data: devConstants.enums.ChequeCategoryStatus().data,
+        template: `<li ng-repeat="item in items">
+        <dev-tag-radio
+            ng-class="{'checked': item.key == filter.value}"
+            ng-model="filter.value" 
+            k-value="{{item.key}}"></dev-tag-radio>
+        {{item.display}}
+        </li>`
+    };
 
     let generalLedgerAccount = {
-        cell: gridFilterCellTypeProvider.control.combo({
-            text: 'title',
-            value: 'id',
-            url: devConstants.urls.generalLedgerAccount.all()
-        }),
-        modelType: 'string'
+        dataSource: {
+            type: "json",
+            serverFiltering: true,
+            transport: {
+                read: {
+                    url: devConstants.urls.generalLedgerAccount.all()
+                }
+            },
+            schema: {
+                data: 'data'
+            }
+        },
+        template: `<li>
+               <dev-tag-combo-box
+               k-placeholder="{{'Select' | translate}}"
+               k-data-text-field="display"
+               k-data-value-field="id"
+               k-data-source="dataSource"
+               ng-model="filter.value"></dev-tag-combo-box>
+            </li>`,
+        style:{width: '300px'}
     };
 
     let subsidiaryLedgerAccount = {
-        cell: gridFilterCellTypeProvider.control.combo({
-            text: 'title',
-            value: 'id',
-            url: devConstants.urls.subsidiaryLedgerAccount.all()
-        }),
-        modelType: 'string'
+        dataSource: {
+            type: "json",
+            serverFiltering: true,
+            transport: {
+                read: {
+                    url: devConstants.urls.subsidiaryLedgerAccount.all()
+                }
+            },
+            schema: {
+                data: 'data'
+            }
+        },
+        template: `<li>
+               <dev-tag-combo-box
+               k-placeholder="{{'Select' | translate}}"
+               k-data-text-field="display"
+               k-data-value-field="id"
+               k-data-source="dataSource"
+               ng-model="filter.value"></dev-tag-combo-box>
+            </li>`,
+        style:{width: '300px'}
     };
 
     let detailAccount = {
-        cell: gridFilterCellTypeProvider.control.combo({
-            text: 'display',
-            value: 'id',
-            url: devConstants.urls.detailAccount.all()
-        }),
-        modelType: 'string'
+        dataSource: {
+            type: "json",
+            serverFiltering: true,
+            transport: {
+                read: {
+                    url: devConstants.urls.detailAccount.all()
+                }
+            },
+            schema: {
+                data: 'data'
+            }
+        },
+        template: `<li>
+               <dev-tag-combo-box
+               k-placeholder="{{'Select' | translate}}"
+               k-data-text-field="display"
+               k-data-value-field="id"
+               k-data-source="dataSource"
+               ng-model="filter.value"></dev-tag-combo-box>
+            </li>`,
+        style:{width: '300px'}
     };
 
     let bank = {
-        cell: gridFilterCellTypeProvider.control.combo({
-            text: 'title',
-            value: 'id',
-            url: devConstants.urls.bank.all()
-        }),
-        modelType: 'number'
+        dataSource: {
+            type: "json",
+            serverFiltering: true,
+            transport: {
+                read: {
+                    url: devConstants.urls.bank.all()
+                }
+            },
+            schema: {
+                data: 'data'
+            }
+        },
+        template: `<li>
+               <dev-tag-combo-box
+               k-placeholder="{{'Select' | translate}}"
+               k-data-text-field="title"
+               k-data-value-field="id"
+               k-data-source="dataSource"
+               ng-model="filter.value"></dev-tag-combo-box>
+            </li>`
 
     };
 
@@ -104,12 +169,12 @@ accModule.config(function (gridFilterCellTypeProvider) {
         postingType: postingType,
         balanceType: balanceType,
         activeType: activeType,
-        /*journalType: journalType,
-        journalStatus: journalStatus,
-        chequeCategoryStatus: chequeCategoryStatus,
+        bank:bank,
         generalLedgerAccount: generalLedgerAccount,
         subsidiaryLedgerAccount: subsidiaryLedgerAccount,
         detailAccount: detailAccount,
-        bank: bank*/
+        chequeCategoryStatus: chequeCategoryStatus,
+        journalType: journalType,
+        journalStatus: journalStatus
     });
 });

@@ -1,4 +1,4 @@
-//import 'metisMenu';
+import 'metisMenu';
 
 export default function (menuItems, $timeout) {
     return {

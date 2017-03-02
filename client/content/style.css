@@ -19,6 +19,10 @@ h1 {
     font-family: "IRANSans", "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
+.label{
+    font-family: "IRANSans", "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
 a {
     font-family: "IRANSans", "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
     text-decoration: none;
@@ -1284,6 +1288,7 @@ h1.head-current {
 /* waiting for start page*/
 
 .waiting-overley {
+    background-color: #2f4050;
     -moz-user-select: none;
     animation-duration: 0.5s;
     animation-fill-mode: both;
@@ -1314,7 +1319,6 @@ h1.head-current {
 }
 
 .waiting-block {
-    background-color: transparent;
     background-position: 48% 0;
     display: block;
     height: 64px;
@@ -1323,7 +1327,7 @@ h1.head-current {
     margin: 0;
     position: absolute;
     text-align: center;
-    top: 40%;
+    top: 18%;
     transform: translateX(-50%) translateY(-50%);
     width: 64px;
     z-index: 1000;
@@ -1743,6 +1747,8 @@ label.error{
 
 .command-cell{
     padding: 2px !important;
+    text-align: left;
+    min-width: 100px;
 }
 
 ::-webkit-scrollbar {
@@ -1763,42 +1769,168 @@ label.error{
     background-color: #f9f9f9;
 }
 
-tr td:last-child{
-    max-width:100%;
-    white-space:nowrap;
+
+
+
+.dataTables_empty {
+    display:none;
 }
 
-table.scroll tbody,
-table.scroll thead { display: block; }
-
-thead tr th {
-    height: 30px;
-    line-height: 30px;
-    /*text-align: left;*/
+.dataTables_scrollHead{
+    overflow: inherit !important;
 }
 
-table.scroll tbody {
-    height: 500px;
-    overflow-y: auto;
-    overflow-x: hidden;
+.ui.loader {
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin: 0;
+    text-align: center;
+    z-index: 1000;
+    -webkit-transform: translateX(-50%) translateY(-50%);
+    transform: translateX(-50%) translateY(-50%);
 }
 
-/*tbody { border-top: 2px solid black; }*/
-
-tbody td, thead th {
-    width: 20%; /* Optional */
-    /*border-right: 1px solid black;*/
+.ui.segment {
+    position: relative;
+    background: #fff;
+    margin: 1rem 0;
+    padding: 1em 1em;
+    border-radius: .28571429rem;
 }
 
-tbody td:last-child, thead th:last-child {
-    border-right: none;
+.ui.dimmer {
+    display: block;
+    position: absolute;
+    top: 0!important;
+    left: 0!important;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    vertical-align: middle;
+    background-color: transparent;
+    opacity: 1;
+    line-height: 1;
+    -webkit-animation-fill-mode: both;
+    animation-fill-mode: both;
+    -webkit-animation-duration: .5s;
+    animation-duration: .5s;
+    -webkit-transition: background-color .5s linear;
+    transition: background-color .5s linear;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    will-change: opacity;
+    z-index: 1000;
 }
 
-table{table-layout:fixed;}
-td{width:1px;white-space:nowrap;}
+
+.grid-col{
+    margin: 15px 0;
+    font-size: 15px;
+}
+
+.grid-col [class^="col-"] {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border: 1px solid #ddd;
+}
+
+.progress-waiting-container {
+    left: 50%;
+    position: absolute;
+    transform: translate(-50%, -50%);
+}
+
+.progress-waiting {
+    background-color: rgb(229,233,235);
+    height: 0.5em;
+    position: relative;
+    width: 16em;
+}
+.progress-waiting-bar {
+    background-size: 16em 0.25em;
+    height: 100%;
+    position: relative;
+    background-image: linear-gradient(to right, rgb(76,217,100), rgb(90,200,250), rgb(0,122,255), rgb(52,170,220), rgb(88,86,214), rgb(255,45,85));
+    background-image: -o-linear-gradient(to right, rgb(76,217,100), rgb(90,200,250), rgb(0,122,255), rgb(52,170,220), rgb(88,86,214), rgb(255,45,85));
+    background-image: -ms-linear-gradient(to right, rgb(76,217,100), rgb(90,200,250), rgb(0,122,255), rgb(52,170,220), rgb(88,86,214), rgb(255,45,85));
+    background-image: -webkit-linear-gradient(to right, rgb(76,217,100), rgb(90,200,250), rgb(0,122,255), rgb(52,170,220), rgb(88,86,214), rgb(255,45,85));
+    background-image: -moz-linear-gradient(to right, rgb(76,217,100), rgb(90,200,250), rgb(0,122,255), rgb(52,170,220), rgb(88,86,214), rgb(255,45,85));
+    animation: cssload-width 1.95s cubic-bezier(0.45, 0, 1, 1) infinite;
+    -o-animation: cssload-width 1.95s cubic-bezier(0.45, 0, 1, 1) infinite;
+    -ms-animation: cssload-width 1.95s cubic-bezier(0.45, 0, 1, 1) infinite;
+    -webkit-animation: cssload-width 1.95s cubic-bezier(0.45, 0, 1, 1) infinite;
+    -moz-animation: cssload-width 1.95s cubic-bezier(0.45, 0, 1, 1) infinite;
+}
 
 
 
 
+@keyframes cssload-width {
+    0%, 100% {
+        transition-timing-function: cubic-bezier(1, 0, 0.65, 0.85);
+    }
+    0% {
+        width: 0;
+    }
+    100% {
+        width: 100%;
+    }
+}
+
+@-o-keyframes cssload-width {
+    0%, 100% {
+        -o-transition-timing-function: cubic-bezier(1, 0, 0.65, 0.85);
+    }
+    0% {
+        width: 0;
+    }
+    100% {
+        width: 100%;
+    }
+}
+
+@-ms-keyframes cssload-width {
+    0%, 100% {
+        -ms-transition-timing-function: cubic-bezier(1, 0, 0.65, 0.85);
+    }
+    0% {
+        width: 0;
+    }
+    100% {
+        width: 100%;
+    }
+}
+
+@-webkit-keyframes cssload-width {
+    0%, 100% {
+        -webkit-transition-timing-function: cubic-bezier(1, 0, 0.65, 0.85);
+    }
+    0% {
+        width: 0;
+    }
+    100% {
+        width: 100%;
+    }
+}
+
+@-moz-keyframes cssload-width {
+    0%, 100% {
+        -moz-transition-timing-function: cubic-bezier(1, 0, 0.65, 0.85);
+    }
+    0% {
+        width: 0;
+    }
+    100% {
+        width: 100%;
+    }
+}
+
+.ladda-button .ladda-spinner {
+    width: 0;
+}
 
 

@@ -209,36 +209,36 @@ function accountReviewTurnoverGridOptionService(translate, devConstants) {
             title: translate('Before remainder'),
             type: 'number',
             width: '15%',
-            format: '{0:#,##;(#,##)}',
+            template: '{{item.sumBeforeRemainder | number}}',
             aggregates: ['sum'],
-            footerTemplate: "${kendo.toAmount(sum)}"
+            footerTemplate: '{{aggregates.sumBeforeRemainder.sum | number}}'
         },
         {
             name: 'sumDebtor',
             title: translate('Debtor'),
             type: 'number',
             width: '15%',
-            format: '{0:#,##;(#,##)}',
+            template: '{{item.sumDebtor | number}}',
             aggregates: ['sum'],
-            footerTemplate: "${kendo.toAmount(sum)}"
+            footerTemplate: '{{aggregates.sumDebtor.sum | number}}'
         },
         {
             name: 'sumCreditor',
             title: translate('Creditor'),
             type: 'number',
             width: '15%',
-            format: '{0:#,##;(#,##)}',
+            template: '{{item.sumCreditor | number}}',
             aggregates: ['sum'],
-            footerTemplate: "${kendo.toAmount(sum)}"
+            footerTemplate: '{{aggregates.sumCreditor.sum | number}}'
         },
         {
             name: 'sumRemainder',
             title: translate('Remainder'),
             type: 'number',
             width: '15%',
-            format: '{0:#,##;(#,##)}',
+            template: '{{item.sumRemainder | number}}',
             aggregates: ['sum'],
-            footerTemplate: "${kendo.toAmount(sum)}"
+            footerTemplate: '{{aggregates.sumRemainder.sum | number}}'
         }
     ];
 
@@ -248,7 +248,7 @@ function accountReviewTurnoverGridOptionService(translate, devConstants) {
                 name: 'generalLedgerAccountCode',
                 title: translate('General ledger account'),
                 type: 'string',
-                width: '100px'
+                width: '120px'
             },
             {
                 name: 'generalLedgerAccountTitle',
@@ -310,7 +310,7 @@ function accountReviewTurnoverGridOptionService(translate, devConstants) {
         columns: [
             {
                 name: 'dimension1Code',
-                headerTemplate: kendo.template('${kendo.dimensionCategories[0].title}'),
+                //headerTemplate: kendo.template('${kendo.dimensionCategories[0].title}'),
                 type: 'string',
                 width: '100px'
             },
@@ -331,7 +331,7 @@ function accountReviewTurnoverGridOptionService(translate, devConstants) {
         columns: [
             {
                 name: 'dimension2Code',
-                headerTemplate: kendo.template('${kendo.dimensionCategories[1].title}'),
+                //headerTemplate: kendo.template('${kendo.dimensionCategories[1].title}'),
                 type: 'string',
                 width: '100px'
             },
@@ -352,7 +352,7 @@ function accountReviewTurnoverGridOptionService(translate, devConstants) {
         columns: [
             {
                 name: 'dimension3Code',
-                headerTemplate: kendo.template('${kendo.dimensionCategories[2].title}'),
+                //headerTemplate: kendo.template('${kendo.dimensionCategories[2].title}'),
                 type: 'string',
                 width: '100px'
             },
@@ -385,19 +385,19 @@ function accountReviewTurnoverGridOptionService(translate, devConstants) {
             },
             {
                 name: 'dimension3Code',
-                headerTemplate: kendo.template('${kendo.dimensionCategories[2].title}'),
+                //headerTemplate: kendo.template('${kendo.dimensionCategories[2].title}'),
                 type: 'string',
                 width: '70px'
             },
             {
                 name: 'dimension2Code',
-                headerTemplate: kendo.template('${kendo.dimensionCategories[1].title}'),
+                //headerTemplate: kendo.template('${kendo.dimensionCategories[1].title}'),
                 type: 'string',
                 width: '70px'
             },
             {
                 name: 'dimension1Code',
-                headerTemplate: kendo.template('${kendo.dimensionCategories[0].title}'),
+                //headerTemplate: kendo.template('${kendo.dimensionCategories[0].title}'),
                 type: 'string',
                 width: '70px'
             },
@@ -426,7 +426,7 @@ function accountReviewTurnoverGridOptionService(translate, devConstants) {
                 width: '15%',
                 format: '{0:#,##}',
                 aggregates: ['sum'],
-                footerTemplate: "#= kendo.toString(sum,'n0') #"
+                footerTemplate: '{{aggregates.sumDebtor.sum | number}}'
             },
             {
                 name: 'sumCreditor',
@@ -435,7 +435,7 @@ function accountReviewTurnoverGridOptionService(translate, devConstants) {
                 width: '15%',
                 format: '{0:#,##}',
                 aggregates: ['sum'],
-                footerTemplate: "#= kendo.toString(sum,'n0') #"
+                footerTemplate: '{{aggregates.sumCreditor.sum | number}}'
             },
             {
                 name: 'article', title: translate('Article'), type: 'string', width: '10%',

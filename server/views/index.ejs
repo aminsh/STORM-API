@@ -14,28 +14,38 @@
     <link href="/client/content/kendo/kendo.rtl.min.css?v=<%- version.css %>" rel="stylesheet"/>
     <link href="/client/bower_components/bootstrap-sweetalert/dist/sweetalert.css?v=<%- version.css %>" rel="stylesheet"/>
     <link href="/client/bower_components/adm-dtp/dist/ADM-dateTimePicker.min.css" rel="stylesheet"  />
+    <link href="/client/bower_components/ladda/dist/ladda-themeless.min.css" rel="stylesheet">
 
     <!--<link href="/client/content/stimulsoft/stimulsoft.viewer.office2013.whiteblue.css" rel="stylesheet">
     <link href="/client/content/stimulsoft/stimulsoft.designer.office2013.whiteblue.css" rel="stylesheet">-->
 
-    <!--<link href="/client/content/fonts.min.css?v=<%- version.css %>" rel="stylesheet"/>-->
     <link href="/client/content/font-awesome/css/font-awesome.css?v=<%- version.css %>" rel="stylesheet"/>
-    <!--<link href="/client/content/storm-fonts.css?v=<%- version.css %>" rel="stylesheet"/>-->
     <link href="/client/content/animate.css?v=<%- version.css %>" rel="stylesheet"/>
     <link href="/client/content/inspina.style.css?v=<%- version.css %>" rel="stylesheet"/>
     <link href="/client/content/style.css?v=<%- version.css %>" rel="stylesheet"/>
+    <link href="/client/content/luca.css?v=<%- version.css %>" rel="stylesheet"/>
+
+
 
 </head>
 <body class="rtls k-rtl">
 <shell>
     <div class="waiting-overley">
         <div class="waiting-block">
-            <div class="waiting-block-spinner">
-                <div class="rect1"></div>
-                <div class="rect2"></div>
-                <div class="rect3"></div>
-                <div class="rect4"></div>
-                <div class="rect5"></div>
+            <div style="margin-bottom: 30px">
+                <img src="/client/content/images/luca.png"style="width: 70px;height: 70px">
+            </div>
+            <div class="progress-waiting-container">
+                <div class="progress-waiting">
+                    <div class="progress-waiting-bar">
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="middle-box text-center animated fadeInDown" style="margin-top: 250%;">
+                <img src="/client/content/images/Luca%20symbol.jpg" style="border-radius:50%"
+                     class="img-responsive img-center">
             </div>
         </div>
 
@@ -63,7 +73,13 @@
     localStorage.setItem('reports', '<%- JSON.stringify(reports) %>')
 
     window.jQuery = window.$ = require('jquery');
-    window.JSZip = require('jszip');
+    require("bootstrap");
+    require("slimscroll");
+    require("pace");
+
+
+
+
 
     /*
     Stimulsoft.Base.Localization.StiLocalization.setLocalizationFile('/client/content/fa.xml', true);
@@ -87,18 +103,6 @@
         String, "", [String], ["Date"], [""],
         window.dateToWord);*/
 </script>
-<script src="/client/lib/kendo/kendo.core.min.js"></script>
-<script src="/client/lib/kendo/kendo.data.min.js"></script>
-<script src="/client/lib/kendo/kendo.list.min.js"></script>
-<script src="/client/lib/kendo/kendo.popup.min.js"></script>
-<script src="/client/lib/kendo/kendo.combobox.min.js"></script>
-<script src="/client/lib/kendo/kendo.dropdownlist.min.js"></script>
-
-<script src="/client/bower_components/bootstrap/dist/js/bootstrap.js"></script>
-<script src="/client/lib/metisMenu/jquery.metisMenu.js"></script>
-<script src="/client/lib/slimscroll/jquery.slimscroll.min.js"></script>
-<script src="/client/lib/pace.min.js"></script>
-
 
 <script src="/client/dist/acc.bundle.js?v=<%- version.acc %>"></script>
 <script src="/client/dist/acc.template.bundle.js?v=<%- version.template %>"></script>

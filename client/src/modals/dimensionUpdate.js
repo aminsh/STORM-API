@@ -1,7 +1,7 @@
 import accModule from '../acc.module';
 import Collection from 'dev.collection';
 
-function dimensionUpdateModalController(data, $scope, $modalInstance, dimensionApi) {
+function dimensionUpdateModalController(data, $scope, $modalInstance, dimensionApi, formService) {
     "use strict";
 
     $scope.errors = [];
@@ -19,7 +19,7 @@ function dimensionUpdateModalController(data, $scope, $modalInstance, dimensionA
 
     $scope.save = function (form) {
         if (form.$invalid)
-            return;
+            return formService.setDirty(form);
 
         Collection.removeAll($scope.errors);
 

@@ -156,7 +156,7 @@ function journalLineCreateOrUpdateController($scope, $modalInstance, $timeout, f
         }
     };
 
-    $scope.generalLedgerAccountOnChange = () => {
+    $scope.generalLedgerAccountOnChange = (current) => {
         $scope.journalLine.subsidiaryLedgerAccountId = null;
 
         $scope.journalLine.detailAccount = {
@@ -203,8 +203,8 @@ function journalLineCreateOrUpdateController($scope, $modalInstance, $timeout, f
         }
     };
 
-    $scope.subsidiaryLedgerAccountSelect = (e) => {
-        let item = e.sender.dataItem();
+    $scope.subsidiaryLedgerAccountSelect = (current) => {
+        let item = current;
 
         if (!item) {
             $scope.journalLine.detailAccount = {

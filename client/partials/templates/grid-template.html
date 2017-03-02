@@ -1,8 +1,7 @@
-<div>
-    <div class="waiting-overley"
-         style="position: relative"
+<div class="ui segment">
+    <div class="ui dimmer"
          ng-if="isWaiting">
-        <div class="waiting-block" style="position: fixed;left: 45%;top:47%">
+        <div class="ui loader">
             <div class="waiting-block-spinner" style="height: 100px;width: 120px">
                 <div class="rect1" style="width: 10px;background-color: #18a689"></div>
                 <div class="rect2" style="width: 10px;background-color: #18a689"></div>
@@ -13,10 +12,12 @@
         </div>
 
     </div>
-    <table class="table table-hover  scroll">
+
+    <table class="table table-hover" id="{{gridId}}">
         <thead>
         <tr>
             <th ng-repeat="column in columns"
+                ng-class="{'command-cell': column.hasOwnProperty('commands')}"
                 style="{{(column.width) ? 'width: ' + column.width : ''}}">
                 {{column.title}}
                 <span ng-if="!column.hasOwnProperty('commands')">
@@ -26,24 +27,23 @@
                         dev-attr-add-sort="addSort(sort)"
                         dev-attr-remove-sort="removeSort()"
                         dev-attr-column="column"></dev-tag-grid-sort>
+
                 <dev-tag-grid-filter
                         ng-if="grid.filterable"
                         dev-attr-add-filter="addFilter(filter)"
                         dev-attr-remove-filter="removeFilter(field)"
-                        dev-attr-column="column">
-                </dev-tag-grid-filter>
-                    <!--<span ng-if="grid.filterable">-->
-                    <!--<i class="fa fa-filter" style="font-size: 12px;"></i>-->
-                    <!--</span>-->
+                        dev-attr-column="column"></dev-tag-grid-filter>
+
             </span>
             </th>
         </tr>
         </thead>
         <tbody>
-        <tr ng-repeat-start="item in data"
-            ng-click="select(item)"
-            ng-class="{'success': current == item, 'pointer':  grid.selectable}"
-            ng-class-odd="'grid-row-striped'">
+        <tr
+                ng-repeat-start="item in data"
+                ng-click="select(item)"
+                ng-class="{'success': current == item, 'pointer':  grid.selectable}"
+                ng-class-odd="'grid-row-striped'">
 
 
             <td ng-repeat="column in columns"
@@ -61,6 +61,7 @@
                 <span ng-if="column.hasOwnProperty('commands')">
                 <button ng-repeat="command in column.commands"
                         ng-click="command.action(item)"
+                        ng-if="!command.canShow || (command.canShow && command.canShow(item))"
                         class="btn btn-primary btn-circle btn-outline"
                         type="button"
                         title="{{command.title}}"
@@ -70,16 +71,23 @@
             </span>
             </td>
         </tr>
-        <tr ng-repeat-end ng-if="item.expanded">
+        <tr ng-if="item.expanded"
+            ng-repeat-end >
             <td colspan="{{columns.length}}" ng-html-compile="detailTemplate">
 
             </td>
         </tr>
+
         </tbody>
         <tfoot>
-        <!--summary-->
         <tr>
-            <td>
+            <td ng-repeat="column in columns"
+                ng-html-compile="column.footerTemplate"
+                style="font-weight: bold">
+            </td>
+        </tr>
+        <tr ng-show="pageable">
+            <td colspan="{{columns.length}}">
                 <dev-tag-paging
                         dev-attr-total="total"
                         dev-attr-set-page="fetch(page)"

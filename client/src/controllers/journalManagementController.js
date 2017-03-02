@@ -17,8 +17,9 @@ function journalManagementController($scope, logger, confirm, devConstants, tran
         current: null,
         selectable: true,
         filterable: false,
+        sortable: false,
         pageable: false,
-        gridSize: '300px'
+        gridSize: '200px'
     };
 
     $scope.canShowJournals = false;
@@ -27,41 +28,45 @@ function journalManagementController($scope, logger, confirm, devConstants, tran
         columns: [
             {name: 'temporaryNumber', title: translate('Temporary number'), type: 'number', width: '10%'},
             {name: 'temporaryDate', title: translate('Temporary date'), type: 'date', width: '10%'},
-            {name: 'number', title: translate('Number'), type: 'number', width: '10%'},
-            {name: 'date', title: translate('Date'), type: 'date', width: '10%'},
+           /* {name: 'number', title: translate('Number'), type: 'number', width: '10%'},
+            {name: 'date', title: translate('Date'), type: 'date', width: '10%'},*/
             {
                 name: 'isFixed', title: translate('Fixed ?'), type: 'boolean', width: '10%',
-                template: '<i class="glyphicon glyphicon-${data.isFixed ? "ok-circle" : "remove-circle"}"' +
-                'style="font-size: 20px;">' +
-                '</i>'
+                template: '<i class="fa fa-lock" ng-if="item.isFixed"></i>'
             },
-            {name: 'sumAmount', title: translate('Amount'), type: 'number', width: '10%', format: '{0:#,##}'},
+            {name: 'sumAmount', title: translate('Amount'), type: 'number', width: '10%', template: '{{item.sumAmount|number}}'},
             {
                 name: 'hasAttachment', title: translate('Attachment ?'), type: 'boolean', width: '10%',
-                template: '<i class="glyphicon glyphicon-${data.hasAttachment ? "ok-circle" : "remove-circle"}"' +
-                'style="font-size: 20px;">' +
-                '</i>'
+                template: '<i class="fa fa-paperclip" ng-if="item.hasAttachment"></i>'
             },
             {name: 'countOfRows', title: translate('Rows'), type: 'number', width: '10%'},
             {
                 name: 'description', title: translate('Description'), type: 'string', width: '20%',
-                template: '<span title="${data.description}">${data.description}</span>'
-            },
+                template: '<span  title="{{item.description}}">{{item.description}}</span>'
+            }
         ],
         commands: [],
         selectable: true,
-        current: null
-        //readUrl: devConstants.urls.journal.getByMonth()
-    }
+        readUrl: '',
+        gridSize: '200px'
+    };
 
-    $scope.$watch('gridOption.current', (newValue)=> {
-        if (!newValue) return;
-        $scope.canShowJournals = false;
-        $scope.journalGridOption.readUrl = devConstants.urls.journal.getByMonth(newValue.month);
-        $timeout(()=> $scope.canShowJournals = true, 0);
-    });
+    $scope.current = false;
 
-    $scope.bookkeeping = (current)=> {
+    $scope.onSelectMonth = current => {
+        $scope.current = current;
+        $scope.journalGridOption.readUrl = devConstants.urls.journal.getByMonth(current.month);
+    };
+
+    $scope.currentJournal= false;
+
+    $scope.onSelectJournal = current => {
+        $scope.currentJournal = current;
+    };
+
+    $scope.bookkeeping = () => {
+        let current = $scope.currentJournal;
+
         if (current.number)
             return logger.error(translate('This journal already bookkeeped'));
 
@@ -72,7 +77,9 @@ function journalManagementController($scope, logger, confirm, devConstants, tran
             });
     };
 
-    $scope.showJournal = (current)=> {
+    $scope.showJournal = ()=> {
+        let current = $scope.currentJournal;
+
         showJournalDetailModalService
             .show({
                 id: current.id

@@ -1,8 +1,6 @@
 import accModule from '../acc.module';
 
-function journalCopyController($scope, translate, journalApi, navigate, devConstants, $timeout, confirm) {
-    "use strict";
-
+function journalCopyController($scope, translate, journalApi, navigate, devConstants, confirm) {
     $scope.errors = [];
 
     $scope.periodDataSource = {
@@ -18,14 +16,12 @@ function journalCopyController($scope, translate, journalApi, navigate, devConst
         }
     };
 
-    $scope.periodOnChange = (e)=> {
-        let item = e.sender.dataItem();
-
-        $scope.canShowJournalGrid = false;
-        $scope.gridOption.readUrl = devConstants.urls.journal.getAllByPeriod(item.id);
-
-        $timeout(()=> $scope.canShowJournalGrid = true, 0)
+    $scope.periodOnChange = (current)=> {
+        $scope.gridOption.readUrl = devConstants.urls.journal.getAllByPeriod(current.id);
     };
+
+    $scope.current =false;
+    $scope.onCurrentChanged = current => $scope.current = current;
 
     $scope.gridOption = {
         columns: [
@@ -33,15 +29,12 @@ function journalCopyController($scope, translate, journalApi, navigate, devConst
             {name: 'temporaryDate', title: translate('Temporary date'), type: 'date', width: '20%'},
             {
                 name: 'description', title: translate('Description'), type: 'string', width: '50%',
-                template: '<span title="${data.description}">${data.description}</span>'
+                template: '<span title="{{item.description}}">{{item.description}}</span>'
             }
         ],
         commands: [],
-        selectable: true,
-        current: null
+        selectable: true
     };
-
-    $scope.canShowJournalGrid = false;
 
     $scope.isSaving = false;
 

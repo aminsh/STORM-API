@@ -4,88 +4,91 @@ function dimensionsController($scope, logger, translate, confirm, devConstants, 
                               dimensionCategoryApi, dimensionApi,
                               dimensionCreateModalService,
                               dimensionUpdateModalService) {
-    "use strict";
     $scope.errors = [];
-
-    $scope.gridDateSource = {
-        transport: {
-            read: {
-                url: devConstants.urls.dimensionCategory.all(),
-                dataType: "json",
-                contentType: 'application/json; charset=utf-8',
-                type: 'GET'
-            },
-            update: {
-                url: (model)=> `/api/dimension-categories/${model.id}`,
-                dataType: 'json',
-                type: "PUT"
-            },
-            parameterMap: (options, method)=> {
-                if (method == 'read')
-                    $scope.onCurrentChanged(null);
-                return options;
-            }
-        },
-        pageSize: 20,
-        schema: {
-            data: 'data',
-            total: 'total',
-            model: {
-                id: 'id',
-                fields: {
-                    title: {validation: {required: true}}
-                },
-
-            }
-        },
-        serverPaging: true,
-        serverFiltering: true,
-        serverSorting: true,
-    };
+    $scope.dimensionCategories = [];
 
     $scope.gridOption = {
         columns: [
-            {name: 'title', title: translate('Title'), type: 'string'}
+            {
+                name: 'title',
+                title: translate('Title'),
+                type: 'string',
+                template: `<span ng-if="!item.isEditing">{{item.title}}</span>
+                    <form name="form">
+                    <input ng-if="item.isEditing" class="form-control" name="title" ng-model="item.title" required/>
+                    <div ng-messages="form.title.$error" ng-if="form.title.$dirty">
+                        <label ng-message="required" class="error">{{'This field is required'|translate}}</label>
+                    </div>
+                    </form>`
+            }
         ],
-        commands: ['edit'],
-        editable: "inline",
+        commands: [
+            {
+                title: translate('Edit'),
+                icon: 'fa fa-edit',
+                canShow: current => !current.isEditing,
+                action: current => {
+                    current.originalTitle = current.title;
+                    current.isEditing = true;
+                }
+            },
+            {
+                title: translate('Save'),
+                icon: 'fa fa-floppy-o',
+                canShow: current => current.isEditing,
+                action: current => {
+                    if(!current.title) return;
+
+                    dimensionCategoryApi.update(current)
+                        .then(() => current.isEditing = false);
+                }
+            },
+            {
+                title: translate('Cancel'),
+                icon: 'fa fa-times',
+                canShow: current => current.isEditing,
+                action: current => {
+                    current.title = current.originalTitle;
+                    current.isEditing = false;
+                }
+            }
+        ],
         selectable: true,
         filterable: false,
-        gridSize: '200px'
+        sortable: false,
+        gridSize: '150px',
+        readUrl: dimensionCategoryApi.url.getAll,
+        mapper: item => item.isEditig = false
     };
 
     $scope.current = false;
     $scope.gridDimensions = false;
 
-    $scope.onCurrentChanged = (current)=> {
+    $scope.onCurrentChanged = (current) => {
         $scope.current = current == null ? false : current;
-
-        $scope.gridDimensions = false;
-
-        if (current != null)
-            $timeout(()=> $scope.gridDimensions = gridOptionFactory(current), 0);
+        $scope.dimensionGridOption.readUrl = dimensionApi.url.getAll(current.id);
     };
 
-    $scope.createDimension = (cat)=> {
-        dimensionCreateModalService.show({categoryId: cat.id})
-            .then(()=> {
-                cat.gridOption.refresh();
+    $scope.createDimension = () => {
+        dimensionCreateModalService.show({categoryId: $scope.current.id})
+            .then(() => {
+                $scope.dimensionGridOption.refresh();
                 logger.success();
             });
     };
 
-    function gridOptionFactory(cat) {
-        let columns = [
+    $scope.dimensionGridOption = {
+        columns: [
             {name: 'code', title: translate('Code'), width: '120px', type: 'string'},
             {name: 'title', title: translate('Title'), type: 'string'}
-        ];
-
-        let commands = [
+        ],
+        commands: [
             {
                 title: translate('Edit'),
+                icon: 'fa fa-edit',
                 action: function (current) {
                     dimensionUpdateModalService.show({id: current.id})
-                        .then(()=> {
+                        .then(() => {
                             $scope.gridDimensions.refresh();
                             logger.success();
                         });
@@ -93,30 +96,26 @@ function dimensionsController($scope, logger, translate, confirm, devConstants, 
             },
             {
                 title: translate('Remove'),
+                icon: 'fa fa-trash',
                 action: function (current) {
                     confirm(
                         translate('Remove Dimension'),
                         translate('Are you sure ?'))
-                        .then(()=> {
+                        .then(() => {
                             dimensionApi.remove(current.id)
                                 .then(function () {
                                     $scope.gridDimensions.refresh();
                                     logger.success();
                                 })
-                                .catch((err)=> $scope.errors = err);
+                                .catch((err) => $scope.errors = err);
                         })
 
                 }
             }
-        ];
-
-        return {
-            columns: columns,
-            commands: commands,
-            readUrl: dimensionApi.url.getAll(cat.id)
-        }
-    }
-
+        ],
+        readUrl: '',
+        gridSize: '200px'
+    };
 }
 
 accModule.controller('dimensionsController', dimensionsController);

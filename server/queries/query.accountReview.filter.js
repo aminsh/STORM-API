@@ -8,6 +8,7 @@ module.exports = function (knex, options) {
     this.select(
         'id',
         'date',
+        'month',
         'number',
         'description',
         'periodId',

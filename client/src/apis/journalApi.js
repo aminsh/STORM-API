@@ -7,6 +7,7 @@ function journalApi(apiPromise) {
         url: {
             getAll: '{0}/journals'.format(urlPrefix)
         },
+        getGroupedByMouth: ()=> apiPromise.get('{0}/journals/summary/grouped-by-month'.format(urlPrefix)),
         getById: function (id) {
             return apiPromise.get('{0}/journals/{1}'.format(urlPrefix, id));
         },
@@ -22,7 +23,8 @@ function journalApi(apiPromise) {
         },
         copy: (id)=> apiPromise.post('{0}/journals/{1}/copy'.format(urlPrefix, id)),
         bookkeeping: (id, data)=> apiPromise.put('{0}/journals/{1}/bookkeeping'.format(urlPrefix, id), data),
-        attachImage: (id, data)=> apiPromise.put('{0}/journals/{1}/attach-image'.format(urlPrefix, id), data)
+        attachImage: (id, data)=> apiPromise.put('{0}/journals/{1}/attach-image'.format(urlPrefix, id), data),
+        incomesAndOutcomes: ()=> apiPromise.get(`${urlPrefix}/account-review/incomes-outcomes`)
     };
 }
 
