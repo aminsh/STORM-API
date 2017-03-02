@@ -5,6 +5,7 @@ module.exports = function (knex, options) {
         'journals.id',
         knex.raw(`"journals"."${options.numberFieldName}" as number`),
         knex.raw(`"journals"."${options.dateFieldName}" as date`),
+        knex.raw(`cast(substring("${options.dateFieldName}" from 6 for 2) as INTEGER) as "month"`),
         'journals.description',
         'journals.periodId',
         'journals.isInComplete',

@@ -7,11 +7,13 @@ import 'angular-translate';
 import 'angular-resource';
 import 'angular-messages';
 import 'angular-cookies';
-import 'kendo';
-import 'kendo.culture';
-import 'kendo.messages';
 import 'angular-cookies';
 import 'ADM-dateTimePicker';
+
+import 'chart.js';
+import 'angular-chart';
+
+import 'angular-ladda';
 
 Object.defineProperty(Array.prototype, 'toNumber', { enumerable: false });
 Object.defineProperty(Array.prototype, 'dtp_toDate', { enumerable: false });
@@ -23,10 +25,11 @@ let accModule = angular.module('acc.module', [
     'ngSanitize',
     'ui.bootstrap',
     'pascalprecht.translate',
-    'kendo.directives',
     'ngMessages',
     'ngCookies',
-    'ADM-dateTimePicker'
+    'ADM-dateTimePicker',
+    'chart.js',
+    'angular-ladda'
 ]);
 
 accModule.init = () => {
@@ -35,10 +38,12 @@ accModule.init = () => {
     });
 };
 
-accModule.run((currentService, $cookies) => {
+accModule.run((currentService, $cookies, $rootScope) => {
     currentService.setFiscalPeriod(parseInt($cookies.get('current-period')));
     currentService.setMode($cookies.get('current-mode'));
     currentService.setBranch(JSON.parse(localStorage.getItem('currentBranch')));
+
+    $rootScope.canShowStatusSection = false;
 });
 
 export default accModule;

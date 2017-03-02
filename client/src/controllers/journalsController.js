@@ -7,6 +7,7 @@ function journalsController($scope, translate, journalApi, navigate, logger,
                             journalsExtraFilterResolve) {
 
     $scope.searchParameters = false;
+    []
 
     $scope.gridOption = {
         name: 'journals',
@@ -16,9 +17,9 @@ function journalsController($scope, translate, journalApi, navigate, logger,
                 title: translate('Status'),
                 type: 'journalStatus',
                 width: '70px',
-                filterable: false,
-                template: `<i title="#: data.statusTitle #" class="glyphicon glyphicon-#: data.statusIcon #"
-                            style="color: #: data.statusColor #;font-size: 20px"></i>`
+                template: `<i title="{{item.statusTitle}}" 
+                            class="fa fa-{{item.statusIcon}}"
+                            style="color: {{item.statusColor}};font-size: 20px"></i>`
             },
             {name: 'temporaryNumber', title: translate('Temporary number'), width: '100px', type: 'number'},
             {name: 'temporaryDate', title: translate('Temporary date'), type: 'date', width: '100px',},
@@ -26,20 +27,14 @@ function journalsController($scope, translate, journalApi, navigate, logger,
             {name: 'date', title: translate('Date'), type: 'date', width: '100px',},
             {
                 name: 'description', title: translate('Description'), type: 'string', width: '30%',
-                template: '<span title="${data.description}">${data.description}</span>'
+                template: '<span title="{{item.description}}">{{item.description}}</span>'
             },
             {name: 'createdBy', title: translate('User'), width: '100px', type: 'string'}
-            /*{name: 'sumDebtor', title: translate('sum debtor'), type: 'number', format: '{0:#,##}'},
-             {
-             name: 'sumCreditor',
-             title: translate('sum creditor'),
-             type: 'number',
-             format: '{0:#,##}'
-             },*/
         ],
         commands: [
             {
                 title: translate('Edit'),
+                icon: 'fa fa-edit',
                 action: function (current) {
                     navigate('journalUpdate', {
                         id: current.id
@@ -48,42 +43,33 @@ function journalsController($scope, translate, journalApi, navigate, logger,
             }
         ],
         readUrl: journalApi.url.getAll,
-        selectable: 'multiple cell',
-        dataMapper: (result) => {
-            let data = new Collection(result.data).asEnumerable().select(d=> {
-
-                d.statusTitle = d.journalStatusDisplay;
-                if (d.isInComplete) {
-                    d.statusIcon = 'exclamation-sign';
-                    d.statusColor = 'red';
-                    d.statusTitle = translate('InComplete journal');
-                    return d;
-                }
-
-                if (d.journalStatus == 'BookKeeped') {
-                    d.statusIcon = 'ok-circle';
-                    d.statusColor = 'green';
-                }
-
+        selectable: false,
+        mapper: (d) => {
+            d.statusTitle = d.journalStatusDisplay;
+            if (d.isInComplete) {
+                d.statusIcon = 'warning';
+                d.statusColor = 'red';
+                d.statusTitle = translate('InComplete journal');
+            }
+            else {
                 if (d.journalStatus == 'Fixed') {
                     d.statusIcon = 'lock';
                     d.statusColor = 'blue';
+                } else {
+                    d.statusIcon = 'check';
+                    d.statusColor = 'green';
                 }
-
-                return d;
-            }).toArray();
-
-            return data;
+            }
         },
         resolveExtraFilter: journalsExtraFilterResolve,
-        setExtraFilter: (extra)=> {
+        setExtraFilter: (extra) => {
             $scope.searchParameters = extra;
         }
     };
 
-    $scope.create = ()=> {
+    $scope.create = () => {
         journalCreateModalControllerService.show()
-            .then((result)=> {
+            .then((result) => {
                 logger.success();
                 navigate('journalUpdate', {
                     id: result.id
@@ -91,9 +77,9 @@ function journalsController($scope, translate, journalApi, navigate, logger,
             });
     };
 
-    $scope.advancedSearch = ()=> {
+    $scope.advancedSearch = () => {
         journalAdvancedSearchModalService.show()
-            .then((result)=> {
+            .then((result) => {
                 $scope.searchParameters = result;
 
                 $scope.$broadcast('{0}/execute-advanced-search'.format($scope.gridOption.name),
@@ -101,7 +87,7 @@ function journalsController($scope, translate, journalApi, navigate, logger,
             });
     };
 
-    $scope.removeParameters = ()=> {
+    $scope.removeParameters = () => {
         $scope.searchParameters = false;
         $scope.$broadcast('{0}/execute-advanced-search'
             .format($scope.gridOption.name), null);
@@ -114,7 +100,7 @@ function journalsController($scope, translate, journalApi, navigate, logger,
 
 accModule
     .controller('journalsController', journalsController)
-    .factory('journalsExtraFilterResolve', ()=> {
+    .factory('journalsExtraFilterResolve', () => {
         return function (filterData) {
             if (!filterData) return null;
 
@@ -122,42 +108,42 @@ accModule
 
             instance.generalLedgerAccounts = new Collection(filterData.generalLedgerAccounts)
                 .asEnumerable()
-                .select((g)=> g.id)
+                .select((g) => g.id)
                 .toArray();
 
             instance.subsidiaryLedgerAccounts = new Collection(filterData.subsidiaryLedgerAccounts)
                 .asEnumerable()
-                .select((s)=> s.id)
+                .select((s) => s.id)
                 .toArray();
 
             instance.detailAccounts = new Collection(filterData.detailAccounts)
                 .asEnumerable()
-                .select((d)=> d.id)
+                .select((d) => d.id)
                 .toArray();
 
             instance.dimension1s = new Collection(filterData.dimension2s)
                 .asEnumerable()
-                .select((d)=> d.id)
+                .select((d) => d.id)
                 .toArray();
 
             instance.dimension2s = new Collection(filterData.dimension2s)
                 .asEnumerable()
-                .select((d)=> d.id)
+                .select((d) => d.id)
                 .toArray();
 
             instance.dimension3s = new Collection(filterData.dimension3s)
                 .asEnumerable()
-                .select((d)=> d.id)
+                .select((d) => d.id)
                 .toArray();
 
             instance.dimension4s = new Collection(filterData.dimension4s)
                 .asEnumerable()
-                .select((d)=> d.id)
+                .select((d) => d.id)
                 .toArray();
 
             instance.chequeNumbers = new Collection(filterData.chequeNumbers)
                 .asEnumerable()
-                .select((c)=> c.id)
+                .select((c) => c.id)
                 .toArray();
 
 

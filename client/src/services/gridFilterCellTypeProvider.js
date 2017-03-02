@@ -1,25 +1,43 @@
 import accModule from '../acc.module';
-import $ from 'jquery';
+let translation = JSON.parse(localStorage.getItem('translate'));
 
 function gridFilterCellTypeProvider() {
     var type = {
         string: {
-            showOperators: false,
             operator: "contains",
-            modelType: "string"
+            template: `<input class="form-control" type="text" ng-model="filter.value"/>`
         },
         number: {
-            showOperators: true,
             operator: "eq",
-            modelType: "number"
+            data: [
+                {key: 'eq', display: translation['Equal to']},
+                {key: 'gte', display: translation['Greater than or equal to']},
+                {key: 'gt', display: translation['Greater than']},
+                {key: 'lte', display: translation['Less than or equal to']},
+                {key: 'lt', display: translation['Less than']}
+            ],
+            template: `<li>
+                <dev-tag-numeric ng-model="filter.value"></dev-tag-numeric>
+            </li>
+            <li>
+                <dev-tag-dropdownlist
+                    k-data-text-field="display"
+                    k-data-value-field="key"
+                    k-data-source="items"
+                    ng-model="filter.operator"></dev-tag-dropdownlist>
+            </li>`
         },
         date: {
-            showOperators: false,
-            operator: "contains",
-            modelType: "string"
+            template: `<li>
+                <dev-tag-datepicker ng-model="filter.value"></dev-tag-datepicker>
+            </li>`
         },
-        boolean: {}
-    }
+        boolean: {
+            template: `<li>
+                <dev-tag-check-box ng-model="filter.value"></dev-tag-check-box>
+            </li>`
+        }
+    };
 
     function combo(option) {
         return {
@@ -78,11 +96,11 @@ function gridFilterCellTypeProvider() {
     this.control = {
         combo: combo,
         dropdown: dropdown
-    }
+    };
 
     this.$get = function () {
         return type;
-    }
+    };
 
     this.set = function (extendedObject) {
         type = angular.extend(type, extendedObject);

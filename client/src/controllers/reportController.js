@@ -72,67 +72,46 @@ export default function ($scope, devConstants, dimensionCategoryApi, reportApi, 
         isNotPeriodIncluded: false
     };
 
-    $scope.generalLedgerAccountOptions = {
-        placeholder: translate('Select ...'),
-        dataTextField: "display",
-        dataValueField: "id",
-        valuePrimitive: false,
-        autoBind: false,
-        dataSource: {
-            type: "json",
-            serverFiltering: true,
-            transport: {
-                read: {
-                    url: devConstants.urls.generalLedgerAccount.all()
-                }
-            },
-            schema: {
-                data: 'data'
+    $scope.generalLedgerAccountDataSource = {
+        type: "json",
+        serverFiltering: true,
+        transport: {
+            read: {
+                url: devConstants.urls.generalLedgerAccount.all()
             }
+        },
+        schema: {
+            data: 'data'
         }
     };
 
-    $scope.subsidiaryLedgerAccountOptions = {
-        placeholder: translate('Select ...'),
-        dataTextField: "account",
-        dataValueField: "id",
-        valuePrimitive: false,
-        autoBind: false,
-        dataSource: {
-            type: "json",
-            serverFiltering: true,
-            transport: {
-                read: {
-                    url: devConstants.urls.subsidiaryLedgerAccount.all()
-                }
-            },
-            schema: {
-                data: 'data'
+    $scope.subsidiaryLedgerAccountDataSource = {
+        type: "json",
+        serverFiltering: true,
+        transport: {
+            read: {
+                url: devConstants.urls.subsidiaryLedgerAccount.all()
             }
+        },
+        schema: {
+            data: 'data'
         }
     };
 
-    $scope.dimension1Options = {};
-    $scope.dimension2Options = {};
-    $scope.dimension3Options = {};
+    $scope.dimension1DataSource = {};
+    $scope.dimension2DataSource = {};
+    $scope.dimension3DataSource = {};
 
-    $scope.detailAccountOptions = {
-        placeholder: translate('Select ...'),
-        dataTextField: "display",
-        dataValueField: "id",
-        valuePrimitive: false,
-        autoBind: false,
-        dataSource: {
-            type: "json",
-            serverFiltering: true,
-            transport: {
-                read: {
-                    url: devConstants.urls.detailAccount.all()
-                }
-            },
-            schema: {
-                data: 'data'
+    $scope.detailAccountDataSource = {
+        type: "json",
+        serverFiltering: true,
+        transport: {
+            read: {
+                url: devConstants.urls.detailAccount.all()
             }
+        },
+        schema: {
+            data: 'data'
         }
     };
 
@@ -141,50 +120,36 @@ export default function ($scope, devConstants, dimensionCategoryApi, reportApi, 
             let cats = result.data;
             $scope.dimensionCategories = cats;
 
-            $scope.dimension1Options = dimensionOptionFactory(cats[0].id);
-            $scope.dimension2Options = dimensionOptionFactory(cats[1].id);
-            $scope.dimension3Options = dimensionOptionFactory(cats[2].id);
+            $scope.dimension1DataSource = dimensionDataSourceFactory(cats[0].id);
+            $scope.dimension2DataSource = dimensionDataSourceFactory(cats[1].id);
+            $scope.dimension3DataSource = dimensionDataSourceFactory(cats[2].id);
         });
 
-    function dimensionOptionFactory(categoryId) {
+    function dimensionDataSourceFactory(categoryId) {
         return {
-            placeholder: translate('Select ...'),
-            dataTextField: "display",
-            dataValueField: "id",
-            valuePrimitive: false,
-            autoBind: false,
-            dataSource: {
-                type: "json",
-                serverFiltering: true,
-                transport: {
-                    read: {
-                        url: devConstants.urls.dimension.allByCategory(categoryId)
-                    }
-                },
-                schema: {
-                    data: 'data'
-                }
-            }
-        };
-    }
-
-    $scope.chequeOptions = {
-        placeholder: translate('Select ...'),
-        dataTextField: "number",
-        dataValueField: "id",
-        valuePrimitive: true,
-        autoBind: false,
-        dataSource: {
             type: "json",
             serverFiltering: true,
             transport: {
                 read: {
-                    url: devConstants.urls.cheque.allUseds()
+                    url: devConstants.urls.dimension.allByCategory(categoryId)
                 }
             },
             schema: {
                 data: 'data'
             }
+        };
+    }
+
+    $scope.chequeDataSource = {
+        type: "json",
+        serverFiltering: true,
+        transport: {
+            read: {
+                url: devConstants.urls.cheque.allUseds()
+            }
+        },
+        schema: {
+            data: 'data'
         }
     };
 

@@ -1,6 +1,7 @@
-<div class="panel panel-primary" style="border:0;">
-    <div class="panel-heading">
-        <h3 class="panel-title">
+
+<dev-tag-content>
+    <dev-tag-content-heading>
+        <h5 class="panel-title">
             {{title}}
 
             <span ng-repeat="p in titleParameters">
@@ -9,36 +10,37 @@
 
                 <span>{{p.name}}</span>
                 <span ng-if="p.value">
-                    <i class="glyphicon glyphicon-arrow-left"></i>
+                    <i class="fa fa-arrow-left"></i>
                     {{p.value}}
                 </span>
 
                 <span ng-if="$index == titleParameters.length -1">)</span>
             </span>
-        </h3>
-    </div>
-    <div class="panel-body content-panel-body">
+        </h5>
+    </dev-tag-content-heading>
+
+    <dev-tag-content-body>
         <dev-tag-button
                 ng-repeat="a in commands"
                 ng-click="execute(a.key)"
                 title="{{a.display}}"
                 ng-disabled="!current"
-                style-type="default"></dev-tag-button>
+                style-type="white"></dev-tag-button>
 
         <dev-tag-button
                 ng-if="reportName == 'tiny'"
                 ng-click="showJournal()"
                 title="{{'Show journal detail' | translate}}"
                 ng-disabled="!current"
-                style-type="default"></dev-tag-button>
+                style-type="white"></dev-tag-button>
 
         <dev-tag-button
                 title="{{'Print' | translate}}"
                 icon="glyphicon glyphicon-print"
-                style-type="default"></dev-tag-button>
+                style-type="white"></dev-tag-button>
 
         <dev-tag-grid
                 option="gridOption"
                 on-current-changed="onCurrentChanged(current)"></dev-tag-grid>
-    </div>
-</div>
+    </dev-tag-content-body>
+</dev-tag-content>

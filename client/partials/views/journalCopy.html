@@ -1,4 +1,4 @@
-<dev-tag-content title="{{'Copy journal'|translate}}">
+<dev-tag-content dev-attr-title="{{'Copy journal'|translate}}">
 
     <dev-tag-validation-summary errors="errors"></dev-tag-validation-summary>
 
@@ -7,38 +7,29 @@
             <div class="col-xs-6 col-sm-4">
                 <div class="form-group">
                     <label class="label-control">{{'Select Period' | translate}}</label>
-                    <dev-tag-combo-box
-                            name="fiscalPeriod"
-                            k-placeholder="'{{'Select ...'|translate}}'"
-                            k-data-value-field="'id'"
-                            k-data-text-field="'display'"
+                    <dev-tag-dropdownlist
+                            k-data-value-field="id"
+                            k-data-text-field="display"
                             k-data-source="periodDataSource"
-                            k-value-primitive="true"
-                            k-filter="'contains'"
-                            k-auto-bind="false"
-                            k-min-length="3"
-                            k-on-change="periodOnChange(kendoEvent)"
-                            style="width: 100%"></dev-tag-combo-box>
+                            ng-model="fiscalPeriod"
+                            k-on-changed="periodOnChange"></dev-tag-dropdownlist>
                 </div>
             </div>
         </div>
 
         <div class="row">
             <div class="col-xs-12 col-sm-12">
-                <div style="margin-top: 50px" ng-if="canShowJournalGrid">
-                    <dev-tag-button
-                            ng-if="gridOption.current"
-                            ng-click="submit(gridOption.current)"
-                            icon="glyphicon glyphicon-copy"
-                            is-waiting="isSaving"
-                            ng-disabled="isSaving"
-                            style-type="primary"
-                            title="{{'Copy journal' | translate}}"></dev-tag-button>
+                <dev-tag-button
+                        ng-if="current"
+                        ng-click="submit(current)"
+                        icon="fa fa-copy"
+                        is-waiting="isSaving"
+                        ng-disabled="isSaving"
+                        style-type="primary"
+                        title="{{'Copy journal' | translate}}"></dev-tag-button>
 
-                    <dev-tag-grid option="gridOption"></dev-tag-grid>
-
-
-                </div>
+                <dev-tag-grid option="gridOption"
+                              on-current-changed="onCurrentChanged(current)"></dev-tag-grid>
             </div>
         </div>
 

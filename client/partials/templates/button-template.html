@@ -1,9 +1,6 @@
-<a class="btn btn-{{styleType}}">
+<a class="btn btn-{{styleType}}"
+   ladda="isWaiting"
+   data-style="expand-left">
     <i class="{{icon}}"></i>
     {{title}}
-        <span class="spinner" ng-if="isWaiting">
-            <div class="bounce1 spinner-border-radius-100"></div>
-            <div class="bounce2 spinner-border-radius-100"></div>
-            <div class="bounce3 spinner-border-radius-100"></div>
-        </span>
 </a>

@@ -46,10 +46,12 @@ import './apis/chequeApi';
 import './apis/journalTemplateApi';
 import FiscalPeriodApi from './apis/fiscalPeriodApi';
 import ReportApi from './apis/reportApi';
+import TagApi from './apis/tagApi';
 
 // load modals
 import './modals/generalLedgerAccountCreate';
 import './modals/generalLedgerAccountUpdate';
+import './modals/subsidiaryLedgerAccountEntry';
 import './modals/dimensionCreate';
 import './modals/dimensionUpdate';
 import './modals/journalCreate';
@@ -80,11 +82,13 @@ import './directives/combobox';
 import './directives/content';
 import './directives/datepicker';
 import './directives/dropdownlist';
-import './directives/grid';
+import './directives/multiSelect';
+//import './directives/grid';
 import './directives/layout';
 import './directives/numeric';
 import './directives/textEditor';
 import './directives/checkbox';
+import './directives/radio';
 import './directives/ngKendoGrid';
 import './directives/journalSearchParameters';
 import './directives/reportViewer';
@@ -92,6 +96,17 @@ import shell from './directives/shell';
 import {contentCover, contentCoverForm} from './directives/contentCover';
 import './directives/reportDesigner';
 import panelBar from './directives/panelbar';
+import shellHeader from './directives/shell.header';
+import shellSidebar from './directives/shell.sidebar';
+import shellSidebarItem from './directives/shell.sidebar.item';
+import grid from './directives/grid.bootstrap';
+import gridFilter from './directives/grid.filter';
+import gridSort from './directives/grid.sort';
+import EditableGrid from './directives/grid.editable';
+import EditableGridRow from './directives/grid.editable.row';
+import paging from './directives/paging';
+import ngHtmlCompile from './directives/ngHtmlCompile';
+import doughnutChart from './directives/chart.doughnut';
 
 //filter
 import './filters/amount';
@@ -114,13 +129,25 @@ import  currentService from './services/currentService';
 
 accModule
     .config(ADMdtpConfig)
-    .directive(shell.name, shell)
+    .directive('shell', shell)
+    .directive('shellHeader', shellHeader)
+    .directive('shellSidebar', shellSidebar)
+    .directive('shellSidebarItem', shellSidebarItem)
     .directive('devTagContentCover', contentCover)
     .directive('devTagContentCoverFrom', contentCoverForm)
     .directive('devTagPanelBar', panelBar)
+    .directive('devTagGrid', grid)
+    .directive('devTagGridFilter', gridFilter)
+    .directive('devTagGridSort', gridSort)
+    .directive('devTagPaging', paging)
+    .directive('devTagGridEditable', EditableGrid)
+    .directive('devTagGridEditableRow', EditableGridRow)
+    .directive('ngHtmlCompile', ngHtmlCompile)
+    .directive('devTagChartDoughnut', doughnutChart)
     .service(currentService.name, currentService)
     .service('fiscalPeriodApi', FiscalPeriodApi)
     .service('reportApi', ReportApi)
+    .service('tagApi', TagApi)
     .controller(createFiscalPeriodController.name, createFiscalPeriodController)
     .controller('chequePrintController', chequePrintController)
     .controller('reportController', reportController)

@@ -10,7 +10,7 @@ module.exports = {
             database: 'dbAccFRK',
             ssl: false
         },
-        debug: false
+        debug: true
     },
     /*db: {
         client: 'sqlite3',

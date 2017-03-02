@@ -1,6 +1,9 @@
+.arrow {
+    float: left;
+}
+
 body {
     font-family: "IRANSans", "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
-    background-color: #ededed;
 
 }
 
@@ -13,6 +16,10 @@ h1 {
 }
 
 .popover {
+    font-family: "IRANSans", "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.label{
     font-family: "IRANSans", "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
@@ -222,23 +229,11 @@ div.dropdown-menu h1 {
     border-radius: 2px;
 }
 
-.dropdown-menu a {
-    width: 100%;
-    float: right;
-    text-align: center;
-    padding: 20px;
+.dropdown-menu.shadow{
+    -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+    -moz-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
 }
-
-.dropdown-menu::after {
-    content: "\e253";
-    position: absolute;
-    color: rgba(240, 239, 239, 1);
-    top: -15px;
-    /* bottom: -70px; */
-    font-size: 1.5em;
-    right: 87%;
-}
-
 .notify-arrow {
     border-style: solid;
     border-width: 0 13px 13px;
@@ -304,13 +299,6 @@ div.dropdown-menu h1 {
     width: 250px;
 }
 
-#page-content-wrapper {
-    width: 100%;
-    position: absolute;
-
-    background-color: #ededed;
-    height: 600px;
-}
 
 #wrapper.toggled #page-content-wrapper {
     position: absolute;
@@ -403,7 +391,6 @@ a.change-pass {
     #page-content-wrapper {
         padding: 20px 8px 0 8px;
         position: relative;
-        background-color: #ededed;
     }
 
     #wrapper.toggled #page-content-wrapper {
@@ -1187,7 +1174,7 @@ h1.head-current {
 }
 
 .k-dropdown {
-    display: block;
+    /*display: block;*/
     width: 100%;
 }
 
@@ -1198,6 +1185,8 @@ h1.head-current {
     text-align: center;
     /*font-size: 10px;*/
 }
+
+
 
 .waiting-block-spinner > div {
     background-color: white;
@@ -1299,10 +1288,10 @@ h1.head-current {
 /* waiting for start page*/
 
 .waiting-overley {
+    background-color: #2f4050;
     -moz-user-select: none;
     animation-duration: 0.5s;
     animation-fill-mode: both;
-    background-color: #2980b9;
     box-sizing: border-box;
     display: block;
     height: 100%;
@@ -1321,12 +1310,15 @@ h1.head-current {
     opacity: .6;
 }
 
+.waiting-overley.relative {
+    position: relative;
+}
+
 .modal-backdrop.in {
     background-color: #2980b9;
 }
 
 .waiting-block {
-    background-color: transparent;
     background-position: 48% 0;
     display: block;
     height: 64px;
@@ -1335,7 +1327,7 @@ h1.head-current {
     margin: 0;
     position: absolute;
     text-align: center;
-    top: 40%;
+    top: 18%;
     transform: translateX(-50%) translateY(-50%);
     width: 64px;
     z-index: 1000;
@@ -1650,21 +1642,295 @@ h1.head-current {
 
 .dtp-ig {
     border-radius: 0;
-    border-top-left-radius: 4px;
-    border-bottom-left-radius: 4px;
+    border-top-left-radius: 1px;
+    border-bottom-left-radius: 1px;
     border-left: 0;
 }
 
 .ADMdtpInput input {
     border-radius: 0;
-    border-top-right-radius: 4px;
-    border-bottom-right-radius: 4px;
+    /*overrde for inspinia */
+    border-top-right-radius: 1px;
+    border-bottom-right-radius: 1px;
     font-family: "IRANSans", "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+/*overrde for inspinia */
+.ADMdtpInput input:focus {
+    border-color: #1ab394;
 }
 
 .ADMdtp-box{
     font-family: "IRANSans", "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
+/* icheck*/
+.icheckbox_square-green,
+.iradio_square-green {
+    display: inline-block;
+    *display: inline;
+    vertical-align: middle;
+    margin: 0;
+    padding: 0;
+    width: 22px;
+    height: 22px;
+    background: url(/client/content/images/green.png) no-repeat;
+    border: none;
+    cursor: pointer;
+}
+
+.icheckbox_square-green {
+    background-position: 0 0;
+}
+.icheckbox_square-green:hover {
+    background-position: -24px 0;
+}
+.icheckbox_square-green.checked {
+    background-position: -48px 0;
+}
+.icheckbox_square-green.disabled {
+    background-position: -72px 0;
+    cursor: default;
+}
+.icheckbox_square-green.checked.disabled {
+    background-position: -96px 0;
+}
+
+.iradio_square-green {
+    background-position: -120px 0;
+}
+.iradio_square-green:hover {
+    background-position: -144px 0;
+}
+.iradio_square-green.checked {
+    background-position: -168px 0;
+}
+.iradio_square-green.disabled {
+    background-position: -192px 0;
+    cursor: default;
+}
+.iradio_square-green.checked.disabled {
+    background-position: -216px 0;
+}
+
+/* HiDPI support */
+@media (-o-min-device-pixel-ratio: 5/4), (-webkit-min-device-pixel-ratio: 1.25), (min-resolution: 120dpi) {
+    .icheckbox_square-green,
+    .iradio_square-green {
+        background-image: url(/client/content/images/green@2x.png);
+        -webkit-background-size: 240px 24px;
+        background-size: 240px 24px;
+    }
+}
+
+.pace .pace-progress {
+    right: 220px;
+}
+
+.form-control.ng-invalid.ng-dirty {
+    border: 1px dotted #cc5965;
+}
+
+label.error{
+    color: #cc5965;
+    display: inline-block;
+    margin-right: 5px;
+}
+
+.dtp-ig .closeIcon {
+    background: #1ab394;
+}
+
+.pointer{
+    cursor: pointer;
+}
+
+.command-cell{
+    padding: 2px !important;
+    text-align: left;
+    min-width: 100px;
+}
+
+::-webkit-scrollbar {
+    width: 12px;
+}
+
+::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
+}
+
+.grid-row-striped{
+    background-color: #f9f9f9;
+}
+
+
+
+
+.dataTables_empty {
+    display:none;
+}
+
+.dataTables_scrollHead{
+    overflow: inherit !important;
+}
+
+.ui.loader {
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin: 0;
+    text-align: center;
+    z-index: 1000;
+    -webkit-transform: translateX(-50%) translateY(-50%);
+    transform: translateX(-50%) translateY(-50%);
+}
+
+.ui.segment {
+    position: relative;
+    background: #fff;
+    margin: 1rem 0;
+    padding: 1em 1em;
+    border-radius: .28571429rem;
+}
+
+.ui.dimmer {
+    display: block;
+    position: absolute;
+    top: 0!important;
+    left: 0!important;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    vertical-align: middle;
+    background-color: transparent;
+    opacity: 1;
+    line-height: 1;
+    -webkit-animation-fill-mode: both;
+    animation-fill-mode: both;
+    -webkit-animation-duration: .5s;
+    animation-duration: .5s;
+    -webkit-transition: background-color .5s linear;
+    transition: background-color .5s linear;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    will-change: opacity;
+    z-index: 1000;
+}
+
+
+.grid-col{
+    margin: 15px 0;
+    font-size: 15px;
+}
+
+.grid-col [class^="col-"] {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border: 1px solid #ddd;
+}
+
+.progress-waiting-container {
+    left: 50%;
+    position: absolute;
+    transform: translate(-50%, -50%);
+}
+
+.progress-waiting {
+    background-color: rgb(229,233,235);
+    height: 0.5em;
+    position: relative;
+    width: 16em;
+}
+.progress-waiting-bar {
+    background-size: 16em 0.25em;
+    height: 100%;
+    position: relative;
+    background-image: linear-gradient(to right, rgb(76,217,100), rgb(90,200,250), rgb(0,122,255), rgb(52,170,220), rgb(88,86,214), rgb(255,45,85));
+    background-image: -o-linear-gradient(to right, rgb(76,217,100), rgb(90,200,250), rgb(0,122,255), rgb(52,170,220), rgb(88,86,214), rgb(255,45,85));
+    background-image: -ms-linear-gradient(to right, rgb(76,217,100), rgb(90,200,250), rgb(0,122,255), rgb(52,170,220), rgb(88,86,214), rgb(255,45,85));
+    background-image: -webkit-linear-gradient(to right, rgb(76,217,100), rgb(90,200,250), rgb(0,122,255), rgb(52,170,220), rgb(88,86,214), rgb(255,45,85));
+    background-image: -moz-linear-gradient(to right, rgb(76,217,100), rgb(90,200,250), rgb(0,122,255), rgb(52,170,220), rgb(88,86,214), rgb(255,45,85));
+    animation: cssload-width 1.95s cubic-bezier(0.45, 0, 1, 1) infinite;
+    -o-animation: cssload-width 1.95s cubic-bezier(0.45, 0, 1, 1) infinite;
+    -ms-animation: cssload-width 1.95s cubic-bezier(0.45, 0, 1, 1) infinite;
+    -webkit-animation: cssload-width 1.95s cubic-bezier(0.45, 0, 1, 1) infinite;
+    -moz-animation: cssload-width 1.95s cubic-bezier(0.45, 0, 1, 1) infinite;
+}
+
+
+
+
+@keyframes cssload-width {
+    0%, 100% {
+        transition-timing-function: cubic-bezier(1, 0, 0.65, 0.85);
+    }
+    0% {
+        width: 0;
+    }
+    100% {
+        width: 100%;
+    }
+}
+
+@-o-keyframes cssload-width {
+    0%, 100% {
+        -o-transition-timing-function: cubic-bezier(1, 0, 0.65, 0.85);
+    }
+    0% {
+        width: 0;
+    }
+    100% {
+        width: 100%;
+    }
+}
+
+@-ms-keyframes cssload-width {
+    0%, 100% {
+        -ms-transition-timing-function: cubic-bezier(1, 0, 0.65, 0.85);
+    }
+    0% {
+        width: 0;
+    }
+    100% {
+        width: 100%;
+    }
+}
+
+@-webkit-keyframes cssload-width {
+    0%, 100% {
+        -webkit-transition-timing-function: cubic-bezier(1, 0, 0.65, 0.85);
+    }
+    0% {
+        width: 0;
+    }
+    100% {
+        width: 100%;
+    }
+}
+
+@-moz-keyframes cssload-width {
+    0%, 100% {
+        -moz-transition-timing-function: cubic-bezier(1, 0, 0.65, 0.85);
+    }
+    0% {
+        width: 0;
+    }
+    100% {
+        width: 100%;
+    }
+}
+
+.ladda-button .ladda-spinner {
+    width: 0;
+}
 
 

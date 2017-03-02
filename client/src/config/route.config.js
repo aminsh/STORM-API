@@ -104,7 +104,11 @@ accModule.config(($routeProvider, $locationProvider) => {
             controller: 'reportDesignerController',
             templateUrl: 'partials/views/reportDesigner.html'
         })
+        .when('/not-found', {
+            templateUrl: 'partials/views/notFound.html'
+        })
         .otherwise('/not-found');
 });
 
-accModule.run($route => $route.reload());
+accModule.run(
+    $route => $route.reload());

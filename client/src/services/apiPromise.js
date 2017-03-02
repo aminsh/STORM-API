@@ -26,7 +26,7 @@ function apiPromise($http, $q) {
         get: function (url, data) {
             var deferred = $q.defer();
 
-            $http.get(url, data)
+            $http.get(url, {params: data, paramSerializer: '$httpParamSerializerJQLike'})
                 .success(function (result) {
                     deferred.resolve(result);
                 })

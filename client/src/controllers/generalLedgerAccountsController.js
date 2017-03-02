@@ -2,8 +2,12 @@ import accModule from '../acc.module';
 
 function generalLedgerAccountsController($scope, logger, translate, confirm,
                                          generalLedgerAccountApi,
+                                         subsidiaryLedgerAccountApi,
+                                         subsidiaryLedgerAccountEntryModalService,
                                          generalLedgerAccountCreateModalService,
                                          generalLedgerAccountUpdateModalService) {
+
+
     let columns = [
         {name: 'code', title: translate('Code'), width: '120px', type: 'string'},
         {name: 'title', title: translate('Title'), type: 'string'},
@@ -12,23 +16,24 @@ function generalLedgerAccountsController($scope, logger, translate, confirm,
             title: translate('Posting type'),
             type: 'postingType',
             width: '150px',
-            template: '${data.postingTypeDisplay}'
+            template: '{{item.postingTypeDisplay}}'
         },
         {
             name: 'balanceType',
             title: translate('Balance type'),
             type: 'balanceType',
             width: '150px',
-            template: '${data.balanceTypeDisplay}'
+            template: '{{item.balanceTypeDisplay}}'
         },
         {
             name: 'isActive',
             title: translate('Is active ?'),
             type: 'activeType',
             width: '150px',
-            template: '<i class="glyphicon glyphicon-${data.isActive ? "ok-circle" : "remove-circle"}"' +
-            'style="font-size: 20px;color:${data.isActive ? "green" : "red"}">' +
-            '</i>'
+            template: `<i class="fa"
+                          ng-class="{'fa-check text-navy': item.isActive,
+                                     'fa-times text-danger': !item.isActive}">
+                       </i>`
         }
     ];
 
@@ -36,6 +41,7 @@ function generalLedgerAccountsController($scope, logger, translate, confirm,
         {
             title: translate('Edit'),
             name: 'edit general ledger account',
+            icon: 'fa fa-edit',
             action: function (current) {
                 generalLedgerAccountUpdateModalService.show({id: current.id})
                     .then(function () {
@@ -45,6 +51,7 @@ function generalLedgerAccountsController($scope, logger, translate, confirm,
         },
         {
             title: translate('Remove'),
+            icon: 'fa fa-trash',
             action: function (current) {
                 confirm(
                     translate('Remove General ledger account'),
@@ -55,27 +62,93 @@ function generalLedgerAccountsController($scope, logger, translate, confirm,
                                 logger.success();
                                 $scope.gridOption.refresh();
                             })
-                            .catch((errors)=> $scope.errors = errors)
-                            .finally(()=> $scope.isSaving = false);
+                            .catch((errors) => $scope.errors = errors)
+                            .finally(() => $scope.isSaving = false);
                     })
 
             }
         }
     ];
 
+    $scope.current = false;
+
     $scope.gridOption = {
         columns: columns,
         commands: commands,
         readUrl: generalLedgerAccountApi.url.getAll,
-        current: null,
-        selectable: true
+        selectable: true,
+        gridSize: '200px'
     };
 
-    $scope.create = function () {
+    $scope.selectGeneralLedgerAccount = current => {
+        $scope.gridOptionSubsidiaryLedgerAccount.readUrl =
+            subsidiaryLedgerAccountApi.url.getAll(current.id);
+        $scope.current = current;
+    };
+
+    $scope.createGeneralLedgerAccount = function () {
         generalLedgerAccountCreateModalService.show()
             .then(function () {
                 $scope.gridOption.refresh();
             });
+    };
+
+    $scope.gridOptionSubsidiaryLedgerAccount = {
+        columns: [
+            {name: 'code', title: translate('Code'), type: 'string'},
+            {name: 'title', title: translate('Title'), type: 'string', width: '40%'},
+            {
+                name: 'isActive',
+                title: translate('Is active ?'),
+                type: 'activeType',
+                template: `<i class="fa"
+                          ng-class="{'fa-check text-navy': item.isActive,
+                                     'fa-times text-danger': !item.isActive}">
+                       </i>`
+            }
+        ],
+        commands: [
+            {
+                title: translate('Edit'),
+                name: 'editSubsidiaryLedgerAccount',
+                icon: 'fa fa-edit',
+                action: current => {
+                    subsidiaryLedgerAccountEntryModalService.show({
+                        subsidiaryLedgerAccountId: current.id,
+                        editMode: 'edit'
+                    })
+                        .then(() => $scope.gridOptionSubsidiaryLedgerAccount.refresh());
+                }
+            },
+            {
+                title: translate('Remove'),
+                icon: 'fa fa-trash',
+                action: (current) => {
+                    confirm(
+                        translate('Remove Subsidiary ledger account'),
+                        translate('Are you sure ?'))
+                        .then(() => {
+                            subsidiaryLedgerAccountApi.remove(current.id)
+                                .then(() => {
+                                    logger.success();
+                                    $scope.gridOption.refresh();
+                                })
+                                .catch((errors) => $scope.errors = errors);
+                        });
+
+                }
+            }
+        ],
+        readUrl: '',
+        gridSize: '200px'
+    };
+
+    $scope.createSubsidiaryLedgerAccount = () => {
+        subsidiaryLedgerAccountEntryModalService.show({
+            generalLedgerAccount: $scope.current,
+            editMode: 'create'
+        })
+            .then(() => $scope.gridOptionSubsidiaryLedgerAccount.refresh());
     };
 }
 

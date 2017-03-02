@@ -1,36 +1,52 @@
 import $ from 'jquery';
 import accModule from '../acc.module';
+import 'kendo-core';
+import 'kendo-data';
+import 'kendo-list';
+import 'kendo-popup';
+import 'kendo-dropdownlist';
 
-function dropdownlist() {
+function dropdownlist($timeout) {
     return {
         restrict: 'E',
         require: 'ngModel',
         template: '<select></select>',
         replace: true,
-        scope: {
-            dataTextField: '@kDataTextField',
-            dataValueField: '@kDataValueField',
-            optionLabel: '@kOptionLabel',
-            dataSource: '=kDataSource',
-            onChange: '&kOnChange'
-        },
         link: function (scope, element, attrs, ngModel) {
-            let dropdown = $(element).kendoDropDownList({
-                optionLabel: scope.optionLabel,
-                dataTextField: scope.dataTextField,
-                dataValueField: scope.dataValueField,
-                dataSource: scope.dataSource,
-                change: (e)=> {
-                    let item = e.sender.dataItem();
+            $timeout(() => {
+                let option = {
+                    dataSource: scope[attrs.kDataSource],
+                    change(e){
+                        let item = e.sender.dataItem(),
+                        value = (attrs.kDataValueField && attrs.kDataValueField != '')
+                            ? item[attrs.kDataValueField]
+                            : item;
 
-                    scope.$apply(()=>
-                        ngModel.$setViewValue(item[scope.dataValueField]));
-                    if (scope.onChange)
-                        scope.onChange({selectedItem: item});
-                }
-            }).data('kendoDropDownList');
+                        scope.$apply(() => {
+                            ngModel.$setViewValue(value);
 
-            ngModel.$render = ()=> dropdown.value(ngModel.$modelValue);
+                            if (scope[attrs.kOnChanged])
+                                scope[attrs.kOnChanged](item);
+                        });
+                    }
+                };
+
+                if (attrs.kOptionLabel && attrs.kOptionLabel != '')
+                    option.optionLabel = attrs.kOptionLabel;
+
+                if (attrs.kDataTextField && attrs.kDataTextField != '')
+                    option.dataTextField = attrs.kDataTextField;
+
+                if (attrs.kDataValueField && attrs.kDataValueField != '')
+                    option.dataValueField = attrs.kDataValueField;
+
+                let dropdown = $(element).kendoDropDownList(option)
+                    .data('kendoDropDownList');
+
+                scope.$watch(attrs.ngModel, newValue => dropdown.value(newValue));
+            });
+
+
         }
     };
 }

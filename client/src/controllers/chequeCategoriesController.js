@@ -6,25 +6,26 @@ function chequeCategoriesController($scope, logger, chequeCategoryApi, confirm, 
                                     chequesByCategoryModalService) {
     $scope.gridOption = {
         columns: [
-            {name: 'bankId', title: translate('Bank'), width: '20%', type: 'bank', template: '${data.bank}'},
+            {name: 'bankId', title: translate('Bank'), width: '20%', type: 'bank', template: '{{item.bank}}'},
             {name: 'totalPages', title: translate('Total pages'), type: 'number', width: '50px'},
             {
                 name: 'detailAccountId',
                 title: translate('Detail account'),
                 type: 'detailAccount',
-                template: '${data.detailAccount}'
+                template: '{{item.detailAccount}}'
             },
             {
                 name: 'status',
                 title: translate('Status'),
                 type: 'chequeCategoryStatus',
-                template: '${data.statusDisplay}',
+                template: '{{item.statusDisplay}}',
                 width: '10%'
             }
         ],
         commands: [
             {
                 title: translate('Edit'),
+                icon: 'fa fa-edit',
                 action: function (current) {
                     chequeCategoryUpdateModalService.show({id: current.id})
                         .then(() => {
@@ -35,6 +36,7 @@ function chequeCategoriesController($scope, logger, chequeCategoryApi, confirm, 
             },
             {
                 title: translate('Remove'),
+                icon: 'fa fa-trash',
                 action: function (current) {
                     confirm(
                         translate('Remove Cheque category'),
@@ -53,13 +55,14 @@ function chequeCategoriesController($scope, logger, chequeCategoryApi, confirm, 
             },
             {
                 title: translate('Cheques'),
+                icon: 'fa fa-money',
                 action: current => chequesByCategoryModalService
                     .show({categoryId: current.id})
             }
         ],
         readUrl: devConstants.urls.chequeCategory.all(),
-        current: null,
-        selectable: true
+        selectable: true,
+        gridSize: '200px'
     };
 
     $scope.chequeGridOption = {
@@ -67,29 +70,20 @@ function chequeCategoriesController($scope, logger, chequeCategoryApi, confirm, 
             {name: 'number', title: translate('Number'), width: '10%', type: 'number'},
             {name: 'date', title: translate('Date'), type: 'date', width: '10%'},
             {name: 'description', title: translate('Description'), type: 'string', width: '30%'},
-            {name: 'amount', title: translate('Amount'), type: 'number', width: '10%', format: '{0:#,##}'}
+            {name: 'amount', title: translate('Amount'), type: 'number', width: '10%', format: '{0:#,##}', template: '{{item.amount|number}}'}
         ],
         commands: [{
             title: translate('Print'),
+            icon: 'fa fa-print',
             action: current => navigate('chequePrint', {id: current.id})
-        }]
-        //filterable: false
+        }],
+        gridSize: '200px',
+        readUrl: ''
     };
-    $scope.canShowCheques = false;
 
-    $scope.$watch('gridOption.current', (newValue) => {
-        if (!newValue)
-            return $scope.canShowCheques = false;
-
-        $scope.canShowCheques = false;
-
-        $timeout(() => {
-            $scope.chequeGridOption.readUrl = devConstants.urls.cheque.all(newValue.id);
-
-            $scope.canShowCheques = true;
-        }, 500);
-
-    });
+    $scope.onSelectCategory = current => {
+        $scope.chequeGridOption.readUrl = devConstants.urls.cheque.all(current.id);
+    };
 
     $scope.create = () => {
         chequeCategoryCreateModalService.show()

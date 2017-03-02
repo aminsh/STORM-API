@@ -12,6 +12,13 @@ router.route('/general-ledger-account')
         res.json(result);
     }));
 
+router.route('/incomes-outcomes')
+    .get(async((req, res) => {
+        let accountReview = getAccountReviewInstance(req),
+            result = await(accountReview.incomesAndOutcomes());
+        res.json(result);
+    }));
+
 router.route('/subsidiary-ledger-account')
     .get(async((req, res) => {
         let accountReview = getAccountReviewInstance(req),
@@ -57,7 +64,7 @@ router.route('/tiny')
 module.exports = router;
 
 function getAccountReviewInstance(req) {
-    const filter = (req.query.extra) ? req.query.extra.filter : undefined;
+    const filter = (req.query.extra) ? req.query.extra.filter : {};
     return new AccountReview(
         req.cookies['branch-id'],
         req.cookies['current-period'],

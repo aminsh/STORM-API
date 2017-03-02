@@ -15,39 +15,41 @@ function showJournalDetailController($scope, translate, $modalInstance, journalA
 
     $scope.gridOption = {
         columns: [
-            {name: 'row', title: '#', width: '60px', type: 'number', filterable: false},
+            {name: 'row', title: '#', width: '60px', type: 'number', filterable: false, sortable: false},
             {
                 name: 'generalLedgerAccountId',
                 title: translate('General ledger account'),
                 type: 'generalLedgerAccount',
-                template: '${data.generalLedgerAccountCode}',
+                template: '{{item.generalLedgerAccountCode}}',
                 width: '100px'
             },
             {
                 name: 'subsidiaryLedgerAccountId',
                 title: translate('Subsidiary ledger account'),
                 type: 'subsidiaryLedgerAccount',
-                template: '${data.subsidiaryLedgerAccountCode}',
+                template: '{{item.subsidiaryLedgerAccountCode}}',
                 width: '100px'
             },
             {
                 name: 'detailAccountId',
                 title: translate('Detail account'),
                 type: 'detailAccount',
-                template: '${data.detailAccountCode}',
+                template: '{{item.detailAccountCode}}',
                 width: '120px'
             },
             {
                 name: 'article', title: translate('Article'), width: '200px', type: 'string',
-                template: '<span title="${data.article}">${data.article}</span>'
+                template: '<span title="{{item.article}}">{{item.article}}</span>'
             },
             {
-                name: 'debtor', title: translate('Debtor'), width: '120px', type: 'number', format: '{0:#,##}',
-                aggregates: ['sum'], footerTemplate: "{0}: #= kendo.toString(sum,'n0') #".format(translate('Sum'))
+                name: 'debtor', title: translate('Debtor'), width: '120px', type: 'number', template: '{{item.debtor|number}}',
+                aggregates: ['sum'],
+                footerTemplate: '{{aggregates.debtor.sum | number}}'
             },
             {
-                name: 'creditor', title: translate('Creditor'), width: '120px', type: 'number', format: '{0:#,##}',
-                aggregates: ['sum'], footerTemplate: "{0}: #= kendo.toString(sum,'n0') #".format(translate('Sum'))
+                name: 'creditor', title: translate('Creditor'), width: '120px', type: 'number', template: '{{item.creditor|number}}',
+                aggregates: ['sum'],
+                footerTemplate: '{{aggregates.creditor.sum | number}}'
             }
         ],
         commands: [],

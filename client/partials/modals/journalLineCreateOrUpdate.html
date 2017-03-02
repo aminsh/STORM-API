@@ -6,38 +6,32 @@
         {{editMode == 'create'?'Journal line create':'Journal line edit'|translate}}
     </h3>
 </div>
-<div class="modal-body k-rtl row">
+<div class="modal-body k-rtl row" style="padding-right: 60px">
 
     <dev-tag-validation-summary errors="errors"></dev-tag-validation-summary>
 
     <form name="form">
         <div class="col-md-11">
             <div class="row" style="margin-top: 10px">
-                <div class="col-md-2" style="text-align: left">
+                <div class="col-md-1" style="text-align: left">
                     <label class="label-control">{{'General ledger account' | translate}}</label>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-5">
                     <dev-tag-combo-box
                             name="generalLedgerAccountId"
                             id="generalLedgerAccountId"
                             focus-me="generalLedgerAccountShouldBeFocus"
-                            k-placeholder="'{{'Select ...'|translate}}'"
-                            k-data-value-field="'id'"
-                            k-data-text-field="'display'"
+                            k-placeholder="{{'Select ...'|translate}}"
+                            k-data-value-field="id"
+                            k-data-text-field="display"
                             k-data-source="generalLedgerAccountDataSource"
-                            k-value-primitive="true"
-                            k-filter="'contains'"
-                            k-auto-bind="false"
-                            k-min-length="3"
-                            k-on-change="generalLedgerAccountOnChange(kendoEvent)"
-
+                            k-on-changed="generalLedgerAccountOnChange"
                             ng-model="journalLine.generalLedgerAccountId"
-                            required
-                            style="width: 100%"></dev-tag-combo-box>
+                            required></dev-tag-combo-box>
 
                     <div ng-messages="form.generalLedgerAccountId.$error" ng-if="form.generalLedgerAccountId.$dirty">
-                        <span ng-message="required"
-                              class="label label-danger">{{'This field is required'|translate}}</span>
+                        <label ng-message="required"
+                              class="error">{{'This field is required'|translate}}</label>
                     </div>
                 </div>
                 <div class="col-md-1">
@@ -49,45 +43,19 @@
                             ng-model="journalLine.subsidiaryLedgerAccountId"
                             k-ng-model="journalLine.subsidiaryLedgerAccountId"
                             k-value-primitive="true"
-                            k-placeholder="'{{'Select ...'|translate}}'"
-                            k-data-value-field="'id'"
-                            k-data-text-field="'display'"
-                            k-cascade-from="'generalLedgerAccountId'"
-                            k-cascade-from-field="'generalLedgerAccountId'"
+                            k-placeholder="{{'Select ...'|translate}}"
+                            k-data-value-field="id"
+                            k-data-text-field="display"
+                            k-cascade-from="generalLedgerAccountId"
                             k-data-source="subsidiaryLedgerAccountDataSource"
-                            k-filter="'contains'"
-                            k-auto-bind="false"
-                            k-min-length="3"
-                            k-on-change="subsidiaryLedgerAccountSelect(kendoEvent)"
-                            k-data-bound="subsidiaryLedgerAccountDataBound"
-                            required
-                            style="width: 100%"></dev-tag-combo-box>
-
-                    <!--This input when added loading image removed and above combo box work correctly
--->
-                    <input kendo-combo-box ng-show="false"
-                           name="subsidiaryLedgerAccountId_2"
-                           ng-model="journalLine.subsidiaryLedgerAccountId"
-                           k-ng-model="journalLine.subsidiaryLedgerAccountId"
-                           k-value-primitive="true"
-                           k-placeholder="'{{'Select ...'|translate}}'"
-                           k-data-value-field="'id'"
-                           k-data-text-field="'title'"
-                           k-cascade-from="'generalLedgerAccountId'"
-                           k-cascade-from-field="'generalLedgerAccountId'"
-                           k-data-source="subsidiaryLedgerAccountDataSource"
-                           k-filter="'contains'"
-                           k-auto-bind="true"
-                           k-min-length="3"
-                           k-on-change="subsidiaryLedgerAccountSelect(kendoEvent)"
-                           k-data-bound="subsidiaryLedgerAccountDataBound"
-                           required
-                           style="width: 100%;display:none">
+                            k-on-changed="subsidiaryLedgerAccountSelect"
+                            k-on-data-bound="subsidiaryLedgerAccountDataBound"
+                            required></dev-tag-combo-box>
 
                     <div ng-messages="form.subsidiaryLedgerAccountId.$error"
                          ng-if="form.subsidiaryLedgerAccountId.$dirty">
-                        <span ng-message="required"
-                              class="label label-danger">{{'This field is required'|translate}}</span>
+                        <label ng-message="required"
+                              class="error">{{'This field is required'|translate}}</label>
                     </div>
                 </div>
             </div>
@@ -95,110 +63,98 @@
             <div class="row"
                  style="margin-top: 10px"
                  ng-if="journalLine.detailAccount.canShow">
-                <div class="col-md-2" style="text-align: left">
+                <div class="col-md-1" style="text-align: left">
                     <label class="label-control">{{'Detail account' | translate}}</label>
                 </div>
-                <div class="col-md-10">
+                <div class="col-md-11">
                     <dev-tag-combo-box
                             name="detailAccountId"
-                            k-placeholder="'{{'Select ...'|translate}}'"
-                            k-data-value-field="'id'"
-                            k-data-text-field="'title'"
+                            k-placeholder="{{'Select ...'|translate}}"
+                            k-data-value-field="id"
+                            k-data-text-field="title"
                             k-data-source="detailAccountDataSource"
-                            k-filter="'contains'"
-                            k-auto-bind="false"
-                            k-min-length="3"
                             ng-model="journalLine.detailAccountId"
                             ng-required="{{journalLine.detailAccount.isRequired}}"
                             style="width: 100%"></dev-tag-combo-box>
 
                     <div ng-messages="form.detailAccountId.$error" ng-if="form.detailAccountId.$dirty">
-                        <span ng-message="required"
-                              class="label label-danger">{{'This field is required'|translate}}</span>
+                        <label ng-message="required"
+                              class="error">{{'This field is required'|translate}}</label>
                     </div>
                 </div>
             </div>
 
             <div class="row" style="margin-top: 10px" ng-if="journalLine.dimension1.canShow">
-                <div class="col-md-2" style="text-align: left">
+                <div class="col-md-1" style="text-align: left">
                     <label class="label-control">{{dimensionCategories[0].title}}</label>
                 </div>
-                <div class="col-md-10">
+                <div class="col-md-11">
                     <dev-tag-combo-box
                             name="dimension1Id"
-                            k-placeholder="'{{'Select ...'|translate}}'"
-                            k-data-value-field="'id'"
-                            k-data-text-field="'title'"
+                            k-placeholder="{{'Select ...'|translate}}"
+                            k-data-value-field="id"
+                            k-data-text-field="title"
                             k-data-source="dimension1.dataSource"
-                            k-filter="'contains'"
-                            k-auto-bind="false"
-                            k-min-length="3"
                             ng-model="journalLine.dimension1Id"
                             ng-required="{{journalLine.dimension1.isRequired}}"
                             style="width: 100%"></dev-tag-combo-box>
 
                     <div ng-messages="form.dimension1Id.$error" ng-if="form.dimension1Id.$dirty">
-                        <span ng-message="required"
-                              class="label label-danger">{{'This field is required'|translate}}</span>
+                        <label ng-message="required"
+                              class="error">{{'This field is required'|translate}}</label>
                     </div>
                 </div>
             </div>
 
             <div class="row" style="margin-top: 10px" ng-if="journalLine.dimension2.canShow">
-                <div class="col-md-2" style="text-align: left">
+                <div class="col-md-1" style="text-align: left">
                     <label class="label-control">{{dimensionCategories[1].title}}</label>
                 </div>
-                <div class="col-md-10">
+                <div class="col-md-11">
                     <dev-tag-combo-box
                             name="dimension2Id"
-                            k-placeholder="'{{'Select ...'|translate}}'"
-                            k-data-value-field="'id'"
-                            k-data-text-field="'title'"
+                            k-placeholder="{{'Select ...'|translate}}"
+                            k-data-value-field="id"
+                            k-data-text-field="title"
                             k-data-source="dimension2.dataSource"
-                            k-filter="'contains'"
-                            k-auto-bind="false"
-                            k-min-length="3"
                             ng-model="journalLine.dimension2Id"
                             ng-required="{{journalLine.dimension2.isRequired}}"
                             style="width: 100%"></dev-tag-combo-box>
 
                     <div ng-messages="form.dimension2Id.$error" ng-if="form.dimension2Id.$dirty">
-                        <span ng-message="required"
-                              class="label label-danger">{{'This field is required'|translate}}</span>
+                        <label ng-message="required"
+                              class="error">{{'This field is required'|translate}}</label>
                     </div>
                 </div>
             </div>
 
             <div class="row" style="margin-top: 10px" ng-if="journalLine.dimension3.canShow">
-                <div class="col-md-2" style="text-align: left">
+                <div class="col-md-1" style="text-align: left">
                     <label class="label-control">{{dimensionCategories[2].title}}</label>
                 </div>
-                <div class="col-md-10">
+                <div class="col-md-11">
                     <dev-tag-combo-box
                             name="dimension3Id"
-                            k-placeholder="'{{'Select ...'|translate}}'"
-                            k-data-value-field="'id'"
-                            k-data-text-field="'title'"
+                            k-placeholder="{{'Select ...'|translate}}"
+                            k-data-value-field="id"
+                            k-data-text-field="title"
                             k-data-source="dimension3.dataSource"
-                            k-filter="'contains'"
-                            k-auto-bind="false"
-                            k-min-length="3"
                             ng-model="journalLine.dimension3Id"
                             ng-required="{{journalLine.dimension3.isRequired}}"
                             style="width: 100%"></dev-tag-combo-box>
 
                     <div ng-messages="form.dimension3Id.$error" ng-if="form.dimension3Id.$dirty">
-                        <span ng-message="required"
-                              class="label label-danger">{{'This field is required'|translate}}</span>
+                        <label ng-message="required"
+                              class="error">{{'This field is required'|translate}}</label>
                     </div>
                 </div>
             </div>
 
             <div class="row" style="margin-top: 10px">
-                <div class="col-md-2" style="text-align: left">
+                <div class="col-md-1" style="text-align: left">
                     <label class="label-control">{{'Article' | translate}}</label>
                 </div>
-                <div class="col-md-10">
+                <div class="col-md-11">
                     <textarea class="form-control" ng-model="journalLine.article"
                               name="article"></textarea>
                 </div>
@@ -210,13 +166,13 @@
                         <button
                                 ng-click="changeAmountBalance()"
                                 ng-disabled="journalLine.balanceType == 'debtor'"
-                                class="btn btn-{{journalLine.balanceType == 'debtor'?'primary':'default'}}">
+                                class="btn btn-{{journalLine.balanceType == 'debtor'?'primary':'white'}}">
                             {{'Debtor'|translate}}
                         </button>
                         <button
                                 ng-click="changeAmountBalance()"
                                 ng-disabled="journalLine.balanceType == 'creditor'"
-                                class="btn btn-{{journalLine.balanceType == 'creditor'?'primary':'default'}}">
+                                class="btn btn-{{journalLine.balanceType == 'creditor'?'primary':'white'}}">
                             {{'Creditor'|translate}}
                         </button>
                     </div>
@@ -228,21 +184,15 @@
                             name="amount"
                             required
                             not-zero
-                            popover="{{'Choose debtor or creditor'|translate}}"
+                            popover="{{journalLine.amount|number}}"
                             popover-trigger="focus" class="form-control"
-                            popover-placement="left"
-                            popover-enable="journalLine.balanceType == ''"></dev-tag-numeric>
+                            popover-placement="left"></dev-tag-numeric>
 
                     <div ng-messages="form.amount.$error" ng-if="form.amount.$dirty">
-                        <span ng-message="required"
-                              class="label label-danger">{{'This field is required'|translate}}</span>
-                        <span ng-message="notZero" class="label label-danger">{{'This field should have a value not equal to zero'|translate}}</span>
+                        <label ng-message="required"
+                              class="error">{{'This field is required'|translate}}</label>
+                        <label ng-message="notZero" class="error">{{'This field should have a value not equal to zero'|translate}}</label>
                     </div>
-                </div>
-                <div class="col-md-5">
-                    <h3>
-                        <span class="label label-default">{{journalLine.amount|amount}}</span>
-                    </h3>
                 </div>
             </div>
         </div>
@@ -254,7 +204,7 @@
             icon="glyphicon glyphicon-floppy-disk"
             is-waiting="isSaving"
             ng-disabled="isSaving"
-            style-type="success"
+            style-type="primary"
             title="{{'Save and new' | translate}}"></dev-tag-button>
 
     <dev-tag-button
@@ -262,6 +212,6 @@
             icon="glyphicon glyphicon-floppy-disk"
             is-waiting="isSaving"
             ng-disabled="isSaving"
-            style-type="success"
+            style-type="primary"
             title="{{'Save and return' | translate}}"></dev-tag-button>
 </div>

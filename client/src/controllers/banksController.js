@@ -1,76 +1,79 @@
 import accModule from '../acc.module';
 
-function banksController($scope, logger, confirm, bankApi, devConstants, translate) {
-    $scope.gridDateSource = {
-        transport: {
-            read: {
-                url: devConstants.urls.bank.all(),
-                dataType: "json",
-                contentType: 'application/json; charset=utf-8',
-                type: 'GET'
-            },
-            update: {
-                url: (model)=> '/api/banks/{0}'.format(model.id),
-                dataType: 'json',
-                type: "PUT"
-            },
-            create: {
-                url: '/api/banks',
-                dataType: 'json',
-                type: 'POST'
-            },
-            destroy: {
-                url: (model)=> '/api/banks/{0}'.format(model.id),
-                dataType: 'json',
-                type: "DELETE"
-            }
-        },
-        pageSize: 20,
-        schema: {
-            data: 'data',
-            total: 'total',
-            model: {
-                id: 'id',
-                fields: {
-                    title: {validation: {required: true}}
-                },
-
-            }
-        },
-        serverPaging: true,
-        serverFiltering: true,
-        serverSorting: true
-    };
-
+function banksController($scope, logger, confirm, bankApi, translate, devConstants) {
 
     let gridOption = $scope.gridOption = {
         columns: [
-            {name: 'title', title: translate('Title'), type: 'string'}
+            {name: 'title', title: translate('Title'), type: 'string',
+                template: `<span ng-if="!item.isEditing">{{item.title}}</span>
+                    <form name="form">
+                    <input ng-if="item.isEditing" class="form-control" name="title" ng-model="item.title" required/>
+                    <div ng-messages="form.title.$error" ng-if="form.title.$dirty">
+                        <label ng-message="required" class="error">{{'This field is required'|translate}}</label>
+                    </div>
+                    </form>`}
         ],
         commands: [
-            'edit',
+            {
+                title: translate('Edit'),
+                icon: 'fa fa-edit',
+                canShow: current => !current.isEditing,
+                action: current => {
+                    current.originalTitle = current.title;
+                    current.isEditing = true;
+                }
+            },
             {
                 title: translate('Remove'),
+                icon: 'fa fa-trash',
+                canShow: current => !current.isEditing,
                 action: function (current) {
                     confirm(
                         translate('Remove Bank'),
                         translate('Are you sure ?'))
                         .then(function () {
-                            gridOption.grid.dataSource.remove(current);
-                            gridOption.grid.dataSource.sync()
-                                .then(function () {
+                            bankApi.remove(current.id)
+                                .then(()=> {
+                                    $scope.gridOption.refresh();
                                     logger.success();
-                                    $scope.$apply();
                                 });
                         });
                 }
+            },
+            {
+                title: translate('Save'),
+                icon: 'fa fa-floppy-o',
+                canShow: current => current.isEditing,
+                action: current => {
+                    if(current.isNew)
+                        return bankApi.create(current)
+                            .then(result=> {
+                               current.id = result.id;
+                               current.isNew= false;
+                               current.isEditing = false;
+                            });
+                    bankApi.update(current.id, current)
+                        .then(()=> current.isEditing = false);
+                }
+            },
+            {
+                title: translate('Cancel'),
+                icon: 'fa fa-times',
+                canShow: current  => current.isEditing,
+                action: current => {
+                    if(current.isNew)
+                        return gridOption.removeItem(current);
+
+                    current.isEditing = false;
+                    current.title = current.originalTitle;
+                }
             }
         ],
-        editable: "inline"
-    }
+        readUrl: devConstants.urls.bank.all()
+    };
 
-    $scope.create = ()=> {
-        gridOption.grid.addRow();
+    $scope.create = () => {
+        gridOption.addItem({title: '', isEditing: true, isNew: true});
     }
 
 

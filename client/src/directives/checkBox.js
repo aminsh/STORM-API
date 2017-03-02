@@ -1,19 +1,36 @@
 import accModule from '../acc.module';
 
 function checkBox() {
+
     return {
-        require: 'ngModel',
+        transclude: true,
         restrict: 'E',
+        require: 'ngModel',
         templateUrl: 'partials/templates/checkbox-template.html',
-        replace: true,
-        scope: {
-            ngModel: '=',
-            title: '@'
-        },
-        link: function (scope, element, attrs) {
-            scope.change = ()=> {
-                scope.ngModel = !scope.ngModel;
-            }
+        link: (scope, element, attrs, ngModel) => {
+            let $element = $(element),
+                icheckbox = $element.find('.icheckbox_square-green');
+
+            $element.click(function () {
+                scope.$apply(()=> {
+                    if(ngModel.$viewValue) {
+                        icheckbox.removeClass('checked');
+                        ngModel.$setViewValue(false);
+                    }
+                    else {
+                        icheckbox.addClass('checked');
+                        ngModel.$setViewValue(true);
+                    }
+                });
+            });
+
+            ngModel.$render = function () {
+                if (ngModel.$viewValue) {
+                    icheckbox.addClass("checked");
+                } else {
+                    icheckbox.removeClass("checked");
+                }
+            };
         }
     };
 }

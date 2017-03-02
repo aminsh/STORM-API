@@ -8,11 +8,10 @@ function journalUpdateController($scope, logger, confirm, translate, navigate, $
                                  journalBookkeepingService,
                                  journalAttachImageService,
                                  writeChequeOnJournalLineEntryService,
+                                 tagApi,
                                  showReport) {
 
     let id = $routeParams.id;
-
-    $scope.title = translate('Edit Journal');
 
     $scope.errors = [];
 
@@ -37,7 +36,7 @@ function journalUpdateController($scope, logger, confirm, translate, navigate, $
 
     function fetch() {
         journalApi.getById(id)
-            .then((result)=> {
+            .then((result) => {
                 $scope.journal = result;
 
                 $scope.canShowNumberAndDate = result.journalStatus != 'Temporary';
@@ -45,21 +44,20 @@ function journalUpdateController($scope, logger, confirm, translate, navigate, $
                 let status = $scope.journalStatueForTitle;
 
                 if ($scope.journal.isInComplete) {
-                    status.icon = 'exclamation-sign';
+                    status.icon = 'warning';
                     status.color = 'red';
                     status.title = translate('InComplete journal');
                 }
-
-                if ($scope.journal.journalStatus == 'BookKeeped') {
-                    status.icon = 'ok-circle';
-                    status.color = 'green';
-                    status.title = $scope.journal.journalStatusDisplay;
-                }
-
-                if ($scope.journal.journalStatus == 'Fixed') {
-                    status.icon = 'lock';
-                    status.color = 'blue';
-                    status.title = $scope.journal.journalStatusDisplay;
+                else {
+                    if ($scope.journal.journalStatus == 'Fixed') {
+                        status.icon = 'lock';
+                        status.color = 'blue';
+                        status.title = $scope.journal.journalStatusDisplay;
+                    } else {
+                        status.icon = 'check';
+                        status.color = 'green';
+                        status.title = $scope.journal.journalStatusDisplay;
+                    }
                 }
             });
     }
@@ -68,55 +66,65 @@ function journalUpdateController($scope, logger, confirm, translate, navigate, $
 
     $scope.gridOption = {
         columns: [
-            {name: 'row', title: '#', width: '50px', type: 'number'},
+            {
+                name: 'row', title: '#', width: '70px', type: 'number',
+                filterable: false
+            },
             {
                 name: 'detailAccountId',
                 title: translate('Detail account'),
                 type: 'detailAccount',
-                template: '${data.detailAccountCode}',
+                template: '{{item.detailAccountCode}}',
                 width: '100px'
             },
             {
                 name: 'subsidiaryLedgerAccountId',
                 title: translate('Subsidiary ledger account'),
                 type: 'subsidiaryLedgerAccount',
-                template: '${data.subsidiaryLedgerAccountCode}',
-                width: '70px'
+                template: '{{item.subsidiaryLedgerAccountCode}}',
+                width: '100px'
             },
             {
                 name: 'generalLedgerAccountId',
                 title: translate('General ledger account'),
                 type: 'generalLedgerAccount',
-                template: '${data.generalLedgerAccountCode}',
-                width: '70px'
+                template: '{{item.generalLedgerAccountCode}}',
+                width: '100px'
             },
             {
-                name: 'article', title: translate('Article'), type: 'string', width: '20%',
-                template: '<span title="${data.article}">${data.article}</span>'
+                name: 'article', title: translate('Article'), type: 'string',
+                width: '30%',
+                template: '<span title="{{item.article}}">{{item.article}}</span>'
             },
             {
-                name: 'debtor', title: translate('Debtor'), width: '120px', type: 'number', format: '{0:#,##}',
-                aggregates: ['sum'], footerTemplate: "#= kendo.toString(sum,'n0') #"
+                name: 'debtor', title: translate('Debtor'), width: '120px', type: 'number',
+                template: '{{item.debtor | number}}',
+                aggregates: ['sum'],
+                footerTemplate: "{{aggregates.debtor.sum | number}}"
             },
             {
-                name: 'creditor', title: translate('Creditor'), width: '120px', type: 'number', format: '{0:#,##}',
-                aggregates: ['sum'], footerTemplate: "#= kendo.toString(sum,'n0') #"
+                name: 'creditor', title: translate('Creditor'), width: '120px', type: 'number',
+                template: '{{item.creditor | number}}',
+                aggregates: ['sum'],
+                footerTemplate: "{{aggregates.creditor.sum | number}}"
             }
         ],
         commands: [
             {
                 title: translate('Edit'),
+                icon: 'fa fa-edit',
                 action: function (current) {
                     journalLineUpdateControllerModalService
                         .show({
                             journalId: id,
                             id: current.id
                         })
-                        .then(()=> $scope.gridOption.refresh());
+                        .then(() => $scope.gridOption.refresh());
                 }
             },
             {
                 title: translate('Remove'),
+                icon: 'fa fa-trash',
                 action: function (current) {
                     confirm(
                         translate('Remove General ledger account'),
@@ -127,23 +135,22 @@ function journalUpdateController($scope, logger, confirm, translate, navigate, $
                                     logger.success();
                                     $scope.gridOption.refresh();
                                 })
-                                .catch((errors)=>
+                                .catch((errors) =>
                                     logger.error(errors.join('<b/>')));
                         })
 
                 }
             }
         ],
-        current: null,
         selectable: true,
         filterable: false,
         readUrl: journalLineApi.url.getAll(id),
-        gridSize: '400px'
+        gridSize: '300px'
     };
 
     $scope.isSaving = false;
 
-    $scope.save = (form)=> {
+    $scope.save = (form) => {
         if (form.$invalid)
             return;
 
@@ -152,43 +159,43 @@ function journalUpdateController($scope, logger, confirm, translate, navigate, $
         $scope.isSaving = true;
 
         journalApi.update(id, $scope.journal)
-            .then(()=> {
+            .then(() => {
                 logger.success();
             })
-            .catch((errors)=>$scope.errors = errors)
-            .finally(()=> $scope.isSaving = false);
+            .catch((errors) => $scope.errors = errors)
+            .finally(() => $scope.isSaving = false);
     };
 
-    $scope.createJournalLine = ()=> {
+    $scope.createJournalLine = () => {
         journalLineCreateControllerModalService
             .show({journalId: id})
-            .then(()=> $scope.gridOption.refresh())
+            .then(() => $scope.gridOption.refresh())
     };
 
-    $scope.bookkeeping = ()=> {
+    $scope.bookkeeping = () => {
         journalBookkeepingService.show({id: id})
-            .then(()=> {
+            .then(() => {
                 logger.success();
                 fetch();
             });
     };
 
-    $scope.attachImage = ()=> {
+    $scope.attachImage = () => {
         journalAttachImageService.show({id: id})
-            .then(()=> {
+            .then(() => {
                 logger.success();
                 fetch();
             });
     };
 
-    $scope.print = ()=> navigate('journalPrint', {id: id});//showReport(`/report/journal/${id}`);
+    $scope.print = () => navigate('journalPrint', {id: id});//showReport(`/report/journal/${id}`);
 
-    $scope.writeCheque = ()=> {
+    $scope.writeCheque = () => {
         $rootScope.blockUi.block();
 
-        let current = $scope.gridOption.current;
+        let current = $scope.journalLineCurrent;
         subsidiaryLedgerAccountApi.getById(current.subsidiaryLedgerAccountId)
-            .then((result)=> {
+            .then((result) => {
                 $rootScope.blockUi.unBlock();
 
                 if (result.isBankAccount) {
@@ -199,7 +206,7 @@ function journalUpdateController($scope, logger, confirm, translate, navigate, $
                         amount: current.creditor,
                         description: current.article,
                         date: $scope.journal.date
-                    }).then(()=> {
+                    }).then(() => {
                         $scope.gridOption.refresh();
                         logger.success();
                     });
@@ -212,38 +219,35 @@ function journalUpdateController($scope, logger, confirm, translate, navigate, $
 
     };
     $scope.journalLineCurrent = false;
-    $scope.journalLineCurrentChanged = (current)=> {
+    $scope.journalLineCurrentChanged = (current) => {
         $scope.journalLineCurrent = current;
     };
 
     $scope.dimensionCategories = {};
 
     dimensionCategoryApi.getAllLookup()
-        .then((result)=> {
+        .then((result) => {
             let cats = result.data;
             $scope.dimensionCategories = cats;
         });
 
-    $scope.tagsOptions = {
-        placeholder: translate('Select ...'),
-        dataTextField: "title",
-        dataValueField: "id",
-        valuePrimitive: true,
-        autoBind: false,
-        dataSource: {
-            type: "json",
-            serverFiltering: true,
-            transport: {
-                read: {
-                    url: devConstants.urls.tag.getAll()
-                }
-            },
-            schema: {
-                data: 'data'
+    $scope.tagsDataSource = new kendo.data.DataSource({
+        batch: true,
+        type: "json",
+        serverFiltering: true,
+        transport: {
+            read: {
+                url: devConstants.urls.tag.getAll()
             }
+        },
+        schema: {
+            data: 'data'
         }
-    };
+    });
 
+    $scope.onSaveTag = value => {
+      return tagApi.create({title: value});
+    };
 }
 
 accModule.controller('journalUpdateController', journalUpdateController);

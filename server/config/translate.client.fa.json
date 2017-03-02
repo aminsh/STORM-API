@@ -6,6 +6,7 @@
   "Show": "نمایش",
   "Print": "چاپ",
   "Sign out": "خروج",
+  "Create":"ایجاد",
   "New": "جدید",
   "Edit": "ویرایش",
   "Remove": "حذف",
@@ -18,6 +19,7 @@
   "Less than": "کوچکتر از",
   "Are you sure ?": "آیا مطمئن هستید ؟",
   "Please wait ...": "لطفا صبر کنید ...",
+  "No data":"اطلاعاتی وجود ندارد",
   "Type something": "یه چیزی تایپ کنید",
   "You should type something": "شما باید یه چیزی تایپ کنید",
   "Done successfully": "عملیات با موفقیت انجام شد",
@@ -34,6 +36,7 @@
   "Cancel": "انصراف",
   "Error": "خطا",
   "Warning": "هشدار",
+  "Page not found": "صفحه مورد نظر پیدا نشد",
   "Info": "اطلاعات",
   "Activate": "فعال کردن",
   "Deactivate": "غیر فعال کردن",
@@ -44,7 +47,7 @@
   "Save and new": "ذخیره و جدید",
   "Save and return": "ذخیره و بازگشت",
   "Status": "وضعیت",
-  "General ledger accounts": "لیست حساب کل و معین",
+  "General ledger accounts": "لیست حساب کل",
   "Subsidiary ledger accounts": "لیست حسابهای معین",
   "General ledger account": "کل",
   "Subsidiary ledger account": "معین",
@@ -162,7 +165,9 @@
   "Enter Title of journal template": "عنوان سند استاندارد را وارد کنید",
   "Journal Template": "سند استاندارد",
   "Create journal by journal template": "ایجاد سند از روی سند استاندارد",
+  "Reports": "گزارشات",
   "Journal advanced search": "جستجوی پیشرفته اسناد",
+  "Parameters": "پارامتر  ها",
   "Search parameters": "‍‍‍پارامترهای جستجو",
   "Cheque date from": "تاریخ چک از",
   "Is not period included": "بدون شرط دوره",
@@ -177,5 +182,15 @@
   "Account title": "عنوان حساب",
   "Rial": "ریال",
 
-  "Create first fiscal period": "دوره مالی اول را ایجاد کنید"
+  "Create first fiscal period": "دوره مالی اول را ایجاد کنید",
+
+  "Filter": "فیلتر",
+  "Remove filter":"حذف فیلتر",
+
+  "Page size": "اندازه صفحه",
+  "Page": "صفحه",
+  "Of":"از",
+
+  "Income": "درآمد",
+  "Outcome": "هزینه"
 }

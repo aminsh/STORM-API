@@ -1,35 +1,29 @@
-<dev-tag-content title="{{'General ledger accounts' | translate}}">
-    <a class="btn btn-primary" ng-click="create()">
-        <i class="glyphicon glyphicon-plus"></i>
-        {{'New General ledger accounts' | translate}}
-    </a>
+<dev-tag-content dev-attr-title="{{'General ledger accounts' | translate}}">
+    <dev-tag-button
+            ng-click="createGeneralLedgerAccount()"
+            style-type="primary"
+            icon="glyphicon glyphicon-plus"
+            title="{{'New General ledger accounts' | translate}}"></dev-tag-button>
 
-    <div class="btn-group" dropdown ng-if="gridOption.current != null">
-        <button id="single-button" type="button" class="btn btn-default" dropdown-toggle ng-disabled="disabled">
-            {{gridOption.current.title}}
-            <span class="caret"></span>
-        </button>
-        <ul class="dropdown-menu" role="menu" aria-labelledby="single-button">
-            <li role="menuitem">
-                <a
-                        href="{{'/subsidiary-ledger-accounts/' + gridOption.current.id}}"
-                        ng-if="gridOption.current != null">
-                    <i class="glyphicon glyphicon-list"></i>
-                    {{'Subsidiary ledger accounts' | translate}}
-                </a>
-            </li>
-            <li role="menuitem">
-                <a
-                        href="{{'/subsidiary-ledger-account/{0}/create'.format(gridOption.current.id)}}"
-                        ng-if="gridOption.current != null">
-                    <i class="glyphicon glyphicon-plus"></i>
-                    {{'New Subsidiary ledger account' | translate}}
-                </a>
-            </li>
-        </ul>
-    </div>
+    <dev-tag-grid option="gridOption"
+                  on-current-changed="selectGeneralLedgerAccount(current)">
 
-    <dev-tag-grid option="gridOption"></dev-tag-grid>
+    </dev-tag-grid>
 
 </dev-tag-content>
+
+<dev-tag-content dev-attr-title="{{'Subsidiary ledger accounts' | translate}}">
+    <dev-tag-button
+            ng-click="createSubsidiaryLedgerAccount()"
+            style-type="primary"
+            icon="glyphicon glyphicon-plus"
+            title="{{'New Subsidiary ledger account' | translate}}"
+            ng-disabled="!current"></dev-tag-button>
+
+    <dev-tag-grid option="gridOptionSubsidiaryLedgerAccount">
+
+    </dev-tag-grid>
+
+</dev-tag-content>
+
 

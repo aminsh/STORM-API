@@ -3,7 +3,7 @@ import config from '../localData/config';
 import Collection from 'dev.collection';
 
 function dimensionCreateModalController(data,
-                                        $scope, $modalInstance, dimensionApi) {
+                                        $scope, $modalInstance, dimensionApi, formService) {
     "use strict";
 
     $scope.errors = [];
@@ -15,7 +15,7 @@ function dimensionCreateModalController(data,
 
     $scope.save = function (form) {
         if (form.$invalid)
-            return;
+            return formService.setDirty(form);
 
         Collection.removeAll($scope.errors);
 

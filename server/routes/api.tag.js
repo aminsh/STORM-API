@@ -7,7 +7,7 @@ const async = require('asyncawait/async'),
     TagQuery = require('../queries/query.tag');
 
 
-router.route('/tags').get(async((req, res) => {
+router.route('/').get(async((req, res) => {
     let tagQuery = new TagQuery(req.cookies['branch-id']),
         result = await(tagQuery.getAll(req.query));
     res.json(result);
