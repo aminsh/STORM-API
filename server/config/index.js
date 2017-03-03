@@ -37,7 +37,7 @@ var environment = {
             client: 'pg',
             url: 'postgres://fylstbtt:n-qAFaaf0BNGbrXhEr44C_iFeguI0chB@qdjjtnkv.db.elephantsql.com:5432/fylstbtt'
         },
-        port: process.env.PORT || 80,
+        port: process.env.PORT || 8080,
         reportPath: path.normalize('{0}/server/report.templates'.format(rootPath)),
         version: {
             vendor: '1.0.0',
