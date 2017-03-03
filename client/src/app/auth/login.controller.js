@@ -1,6 +1,11 @@
 export default class LoginController {
-  constructor(api, $http, setDirty) {
+  constructor(api, $http, setDirty, $rootScope, $scope, $state) {
+    $rootScope.noFooter = true;
+    $scope.$on('$destroy', () => {
+      $rootScope.noFooter = false;
+    })
     self.vm = this;
+    self.$state = $state
     self.api = api;
     self.$http = $http;
     self.setDirty = setDirty;
@@ -17,12 +22,14 @@ export default class LoginController {
     }
     $http.post(self.api('users.auth.login'), self.vm.user)
       .then(function(data) {
-        // happend
+        console.log("logined");
+        self.$state.go("home")
       })
       .catch(function(error) {
+        console.log("error: ", error);
         self.vm.isError = true;
       })
   }
 }
 
-LoginController.$inject = ['api', '$http', 'setDirty'];
+LoginController.$inject = ['api', '$http', 'setDirty', "$rootScope", "$scope", "$state"];

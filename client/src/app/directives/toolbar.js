@@ -1,11 +1,9 @@
 class ToolbarController {
   constructor($mdSidenav) {
     self.$mdSidenav = $mdSidenav;
-    console.log(self.scope);
   }
 
   openMenu() {
-    console.log('clicked from ToolbarController');
     self.$mdSidenav('right').open();
   }
 }

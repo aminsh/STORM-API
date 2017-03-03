@@ -1,8 +1,10 @@
 <div layout="column"  layout-align="start" layout-fill class="introduction">
 
-  <toolbar classes="toolbar"></toolbar>
+  <md-toolbar>
+    <toolbar></toolbar>
+  </md-toolbar>
 
-  <div layout="row" layout-align="center center">
+  <div layout="row" layout-align="center center" layout-margin>
     <md-whiteframe class="md-whiteframe-8dp" flex="30">
       <md-toolbar>
         <h2 class="md-toolbar-tools">
@@ -11,16 +13,32 @@
       </md-toolbar>
       <md-content class="md-padding" layout="column">
         <form name="registerForm">
-          <md-input-container ng-repeat="input in registerVM.inputs" ng-init="name=input.input.name"class="md-block" flex-gt-sm>
-            <label>{{input.label}}</label>
-            <md-icon>{{input.icon}}</md-icon>
-            <input ng-required="input.input.required" name="{{ input.input.name }}" type="{{ input.input.type }}" ng-model="input.input.ngMmodel" />
+          <md-input-container class="md-block" flex-gt-sm>
+            <label>نام</label>
+            <md-icon>person</md-icon>
+            <input ng-required="true" name="name" type="name" ng-model="registerVM.user.name" />
+          </md-input-container>
+          <md-input-container class="md-block" flex-gt-sm>
+            <label>معرف</label>
+            <md-icon>person</md-icon>
+            <input ng-required="false" name="inviter" type="name" ng-model="registerVM.user.inviter" />
 
-            <div class="hint" ng-if="input.hint">{{input.hint}}</div>
-
-            <div dynamic-messages getter="input.alert.getter" attr="ng-messages">
-              <div ng-repeat="message in input.messages" dynamic-messages getter="message.cause" attr="ng-message">{{message.message}}</div>
-            </div>
+            <div class="hint">شخصی که ما را به شما معرفی کرده است.</div>
+          </md-input-container>
+          <md-input-container class="md-block" flex-gt-sm>
+            <label>ایمیل</label>
+            <md-icon>email</md-icon>
+            <input ng-required="true" name="email" type="email" ng-model="registerVM.user.email" />
+          </md-input-container>
+          <md-input-container class="md-block" flex-gt-sm>
+            <label>پسورد</label>
+            <md-icon>lock</md-icon>
+            <input ng-required="true" name="password" type="password" ng-model="registerVM.user.password" />
+          </md-input-container>
+          <md-input-container class="md-block" flex-gt-sm>
+            <label>تکرار پسورد</label>
+            <md-icon>lock</md-icon>
+            <input ng-required="true" name="confirm_password" type="password" ng-model="registerVM.user.confirm_password" />
           </md-input-container>
           <div ng-if="registerVM.isError" style="text-align: center; color:rgb(221,44,0);">
             ثبت‌نام با موفقیت انجام نشد!

@@ -28,6 +28,7 @@ export default function apiManager() {
       url = url.replace(key, value);
       return null;
     });
+    url = 'http://localhost:2000' + url
     console.log(url + ' :url');
     return url;
   }
