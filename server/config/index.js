@@ -35,7 +35,7 @@ var environment = {
                 ssl: true
             },
             client: 'pg',
-            url: 'postgres://bnsasmix:218F3-sPy8resQ78O8dHYGhjKeb4-dX6@elmer.db.elephantsql.com:5432/bnsasmix'
+            url: 'postgres://fylstbtt:n-qAFaaf0BNGbrXhEr44C_iFeguI0chB@qdjjtnkv.db.elephantsql.com:5432/fylstbtt'
         },
         port: process.env.PORT || 80,
         reportPath: path.normalize('{0}/server/report.templates'.format(rootPath)),
