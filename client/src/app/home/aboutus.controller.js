@@ -35,7 +35,7 @@ export default class AboutUSController {
       },
       {
         name: 'علیرضا آقازاده',
-        img: '/img/persons/Alireza_Aghazadeh1.jpg',
+        img: '/img/persons/alireza.jpg',
         position: 'مشاور مالی نرم افزار',
         degree: 'کارشناسی مالی و حسابداری',
         desc: 'مدیر مالی چندین شرکت معتبر در صنعت برق بوده و اکنون مشاور مالی  چندین شرکت می باشد.',
