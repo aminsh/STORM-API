@@ -14,7 +14,10 @@
   <md-button aria-label="Go Back">
     ارتباط با ما
   </md-button>
-  <md-button ui-sref="login" aria-label="Go Back">
+  <md-button ui-sref="login" aria-label="Go Back" ng-hide="logined">
     عضویت / ورود
+  </md-button>
+  <md-button aria-label="Go Back" ng-show="logined">
+    {{currentUser}}
   </md-button>
 </div>

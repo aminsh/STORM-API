@@ -41,6 +41,3 @@ app.get('*', async(function (req, res) {
         version: config.version
     });
 }));
-
-
-

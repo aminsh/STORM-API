@@ -1,6 +1,10 @@
 class ToolbarController {
-  constructor($mdSidenav) {
+  constructor($mdSidenav, $scope, $rootScope) {
     self.$mdSidenav = $mdSidenav;
+    $rootScope.$on("logined", function(evt, data) {
+      $scope.currentUser = data.currentUser
+      $scope.logined = true;
+    })
   }
 
   openMenu() {
@@ -8,7 +12,7 @@ class ToolbarController {
   }
 }
 
-ToolbarController.$inject = ['$mdSidenav'];
+ToolbarController.$inject = ['$mdSidenav', '$scope', "$rootScope"];
 
 export default function toolbar() {
   return {
