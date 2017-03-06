@@ -5,6 +5,7 @@ export default class RegisterController {
       $rootScope.noFooter = false;
     })
     self.vm = this;
+    self.$rootScope = $rootScope;
     self.api = api;
     self.$http = $http;
     self.$state = $state;
@@ -51,6 +52,7 @@ export default class RegisterController {
         if(data.data.isValid===true) {
           $http.post(self.api('users.auth.login'), self.vm.user)
             .then(function(data) {
+              self.$rootScope.currentUser = data.data.returnValue.currentUser;
               self.$state.go("home");
             })
         }

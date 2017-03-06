@@ -23,9 +23,12 @@ export default class LoginController {
     }
     $http.post(self.api('users.auth.login'), self.vm.user)
       .then(function(data) {
-        console.log(data);
-        self.$rootScope.$emit("logined", data.data.returnValue)
-        self.$state.go("home")
+        if(data.data.isValid===true) {
+          self.$rootScope.currentUser = data.data.returnValue.currentUser;
+          self.$state.go("home")
+        } else {
+          self.vm.isError = true;
+        }
       })
       .catch(function(error) {
         console.log("error: ", error);
