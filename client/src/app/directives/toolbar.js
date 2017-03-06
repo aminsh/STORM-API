@@ -1,6 +1,17 @@
 class ToolbarController {
-  constructor($mdSidenav) {
+  constructor($mdSidenav, $scope, $rootScope, $window) {
     self.$mdSidenav = $mdSidenav;
+    let currentUser = $window.document.getElementsByName("currentUser")[0].content
+    if(currentUser !== '' && currentUser !== null) {
+      $scope.currentUser = currentUser
+      $scope.logined = true;
+    } else {
+      currentUser = $rootScope.currentUser;
+      if(currentUser !== '' && currentUser !== null) {
+        $scope.currentUser = currentUser
+        $scope.logined = true;
+      }
+    }
   }
 
   openMenu() {
@@ -8,7 +19,7 @@ class ToolbarController {
   }
 }
 
-ToolbarController.$inject = ['$mdSidenav'];
+ToolbarController.$inject = ['$mdSidenav', '$scope', "$rootScope", "$window"];
 
 export default function toolbar() {
   return {

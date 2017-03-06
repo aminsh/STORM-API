@@ -26,18 +26,18 @@
             </div>
           </md-input-container>
           <md-input-container class="md-block" flex-gt-sm>
-            <label>گذرواژه</label>
+            <label>کلمه‌عبور</label>
             <md-icon>star</md-icon>
-            <input required name="password" ng-model="login.user.password" />
+            <input required name="password" type="password" ng-model="login.user.password" />
 
             <div class="hint" ng-if="showHints"></div>
 
             <div ng-messages="loginForm.password.$error" ng-if="loginForm.password.$dirty">
-              <div ng-message="required">وارد کردن گذرواژه الزامیست.</div>
+              <div ng-message="required">وارد کردن کلمه‌عبور الزامیست.</div>
             </div>
           </md-input-container>
           <div ng-if="login.isError" style="text-align: center; color:rgb(221,44,0);">
-            ایمیل یا گذرواژه شما نادرست است.
+            ایمیل یا کلمه‌عبور شما نادرست است.
           </div>
           <md-input-container class="md-block" flex-gt-sm style="text-align: center;">
             <md-button ng-click="login.login(loginForm)" class="md-block md-raised md-primary">ورود</md-button>

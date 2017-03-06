@@ -4,6 +4,7 @@ export default class LoginController {
     $scope.$on('$destroy', () => {
       $rootScope.noFooter = false;
     })
+    self.$rootScope = $rootScope;
     self.vm = this;
     self.$state = $state
     self.api = api;
@@ -22,8 +23,12 @@ export default class LoginController {
     }
     $http.post(self.api('users.auth.login'), self.vm.user)
       .then(function(data) {
-        console.log("logined");
-        self.$state.go("home")
+        if(data.data.isValid===true) {
+          self.$rootScope.currentUser = data.data.returnValue.currentUser;
+          self.$state.go("home")
+        } else {
+          self.vm.isError = true;
+        }
       })
       .catch(function(error) {
         console.log("error: ", error);
