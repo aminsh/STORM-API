@@ -1,0 +1,62 @@
+<div layout="column"  layout-align="start" layout-fill class="introduction">
+
+  <md-toolbar>
+    <toolbar></toolbar>
+  </md-toolbar>
+
+  <div layout="row" layout-align="center center" layout-margin>
+    <md-whiteframe class="md-whiteframe-8dp" flex="30">
+      <md-toolbar>
+        <h2 class="md-toolbar-tools">
+          <span> ورود </span>
+        </h2>
+      </md-toolbar>
+      <md-content class="md-padding" layout="column">
+        <form name="loginForm">
+          <md-input-container class="md-block" flex-gt-sm>
+            <label>ایمیل</label>
+            <md-icon>mail</md-icon>
+            <input required name="email" type="email" ng-model="login.user.email" />
+
+            <div class="hint" ng-if="showHints"></div>
+
+            <div ng-messages="loginForm.email.$error" ng-if="loginForm.email.$dirty">
+              <div ng-message="required">وارد کردن ایمیل الزامیست.</div>
+              <div ng-message="email">لطفا یک ایمیل مجاز وارد کنید.</div>
+            </div>
+          </md-input-container>
+          <md-input-container class="md-block" flex-gt-sm>
+            <label>کلمه‌عبور</label>
+            <md-icon>star</md-icon>
+            <input required name="password" type="password" ng-model="login.user.password" />
+
+            <div class="hint" ng-if="showHints"></div>
+
+            <div ng-messages="loginForm.password.$error" ng-if="loginForm.password.$dirty">
+              <div ng-message="required">وارد کردن کلمه‌عبور الزامیست.</div>
+            </div>
+          </md-input-container>
+          <div ng-if="login.isError" style="text-align: center; color:rgb(221,44,0);">
+            ایمیل یا کلمه‌عبور شما نادرست است.
+          </div>
+          <md-input-container class="md-block" flex-gt-sm style="text-align: center;">
+            <md-button ng-click="login.login(loginForm)" class="md-block md-raised md-primary">ورود</md-button>
+          </md-input-container>
+          <md-input-container class="md-block" flex-gt-sm style="text-align: center;">
+            <p> یا </p>
+          </md-input-container>
+          <md-input-container class="md-block" flex-gt-sm style="text-align: center;">
+            <!-- <md-card>
+              <img class="md-card-image" src="/img/btn_google_signin.png" alt="image caption">
+            </md-card> -->
+            <md-button style="background-color: #D34836;color: white;padding: 5px;" class="md-raised md-warn md-hue-4 md-block">
+              Login with Google
+              <md-icon md-svg-src="/img/icons/google-plus.svg" style="padding: 0 15px;"></md-icon>
+            </md-button>
+          </md-input-container>
+        </form>
+      </md-content>
+    </md-whiteframe>
+  </div>
+
+</div>

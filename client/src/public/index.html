@@ -1,0 +1,68 @@
+<!doctype html>
+<html ng-app="app" lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>Storm</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="currentUser" content="<%- currentUser %>">
+
+  <base href="/">
+</head>
+<body>
+    <ui-view></ui-view>
+
+    <section ng-hide="noFooter" class="company-location" layout-margin layout-padding layout-wrap layout="row" layout-align="center center">
+      <!-- layout-align="center center"> -->
+      <div flex=20 flex-sm=60>
+        <iframe layout-fill frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3239.0817488200137!2d51.334408314829!3d35.724207980184296!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzXCsDQzJzI3LjEiTiA1McKwMjAnMTEuOCJF!5e0!3m2!1sen!2sus!4v1484839910454"></iframe>
+      </div>
+
+      <div flex=30 flex-sm=60 style="text-align: center;">
+        <p><md-button href="mailto:info@storm-online.ir" class="md-primary">info@storm-online.ir <md-icon>email</md-icon></md-button></p>
+        <p>
+          تهران، صادقیه، خیابان سازمان آب، نرسیده به چهارراه اشرفی اصفهانی،
+            <br>
+            خیابان صباح، خیابان کوهدشت، پلاک ۱۲، واحد پنجم غربی
+        </p>
+      </div>
+
+
+      <md-list flex=20 flex-sm=60>
+        <md-subheader class="md-no-sticky">منو</md-subheader>
+        <md-list-item>
+          <div class="md-list-item-text" ng-click="null">
+            <p> محصولات </p>
+          </div>
+        </md-list-item>
+        <md-list-item>
+          <div class="md-list-item-text">
+            <p> درباره‌ما </p>
+          </div>
+        </md-list-item>
+      </md-list>
+      <md-list flex=20 flex-sm=60>
+        <md-subheader class="md-no-sticky">منو</md-subheader>
+        <md-list-item>
+          <div class="md-list-item-text" ng-click="null">
+            <p> محصولات </p>
+          </div>
+        </md-list-item>
+        <md-list-item>
+          <div class="md-list-item-text">
+            <p> درباره‌ما </p>
+          </div>
+        </md-list-item>
+      </md-list>
+    </section>
+
+    <footer ng-hide="noFooter" layout layout-margin layout-padding style="border-top: 1px solid rgba(0,0,0,0.4)">
+      <md-content layout-padding layout-wrap>
+          تمامی حقوق این سایت مربوط به ...
+      </md-content>
+    </footer>
+</body>
+</html>

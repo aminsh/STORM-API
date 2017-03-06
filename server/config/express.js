@@ -14,7 +14,7 @@ var MemoryStore = require('session-memory-store')(session);
 var config = require('./');
 var app = express();
 
-app.use(favicon(config.rootPath + '/client/content/images/favicon.ico'));
+//app.use(favicon(config.rootPath + '/client/content/images/favicon.ico'));
 app.use(cors());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
@@ -41,11 +41,12 @@ app.use(function (req, res, next) {
     });
 
 app.use(compression());
-app.set('views', config.rootPath + '/server/views');
+app.set('views', config.rootPath + '/server/public');
 app.engine('html', require('ejs').renderFile);
 app.use('/client', express.static(config.rootPath + '/client'));
 app.use('/content', express.static(config.rootPath + '/client/content'));
 app.use('/uploads', express.static(config.rootPath + '/uploads'));
+app.use('/', express.static(config.rootPath + '/server/public'));
 
 app.use(multer({dest: './uploads/;'}));
 

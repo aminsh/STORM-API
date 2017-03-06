@@ -13,12 +13,12 @@ var path = require('path'),
     concat = require('gulp-concat');
 
 gulp.task('build-template', function () {
-    return gulp.src('partials/**/*.html')
+    return gulp.src('src/app/**/*.html')
         .pipe(templateCache(
             {
-                module: 'app.module',
+                module: 'app',
                 filename: 'app.template.bundle.js',
-                root: 'partials'
+                root: 'app'
             }))
         .pipe(gulp.dest(distPath));
 });
@@ -26,21 +26,21 @@ gulp.task('build-template', function () {
 gulp.task('build-app', function () {
     var b = browserify(
         {
-            entries: "./src/app.config.js",
+            entries: "./src/app/app.js",
             debug: true
         });
 
-    var vendorPathSetting = require('./vendor.path.setting');
+    /*var vendorPathSetting = require('./vendor.path.setting');
     _.keys(vendorPathSetting).forEach(function (key) {
         b.external(key);
-    });
+    });*/
 
 
     return b
         .transform("babelify", {
             presets: ["es2015", "react"]
         })
-        //.transform("uglifyify")
+        .transform("uglifyify")
         .bundle()
         .pipe(exorcist(path.join(distPath, 'app.bundle.js.map')))
         .pipe(fs.createWriteStream(path.join(distPath, 'app.bundle.js'), 'utf8'));
@@ -67,4 +67,5 @@ gulp.task('build-vendor', function () {
 
 
 gulp.task('default', ['build-app', 'build-template']);
+
 

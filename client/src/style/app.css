@@ -1,0 +1,167 @@
+/* styles in src/style directory are applied to the whole page */
+@font-face {
+    font-family: 'BKoodakBold';
+    src: url('/fonts/BKoodakBold.eot');
+    src: url('/fonts/BKoodakBold.eot') format('embedded-opentype'),
+    url('/fonts/BKoodakBold.woff') format('woff'),
+    url('/fonts/BKoodakBold.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+.height {
+  height: 100%;
+}
+
+@font-face {
+  font-family:'iransans';
+  font-style:normal;
+  font-weight:400;src:url("/fonts/IRANSans.eot");
+  src: local('IranSansZ'),
+  url("/fonts/IRANSans.eot") format('embedded-opentype'),
+  url("/fonts/IRANSans.woff") format('woff'),
+  url("/fonts/IRANSans.ttf") format('truetype')
+}
+
+* {
+    font-family: "iransans" ,"BKoodakBold", "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.brands-img {
+  height: 50px;
+  vertical-align: middle;
+  background: rgba(255,255,255,0.2);
+  border-radius: 999px;
+  padding: 3px;
+}
+
+.our-teams {
+  height: 400px;
+  background: #e2dede;
+}
+
+.pricing {
+  min-height: 400px;
+  padding-bottom: 20px;
+}
+
+.pricing-item {
+  text-align: center;
+  color: white;
+}
+
+.pricing-item header {
+  background: #ff7a20;
+}
+
+.pricing-item header h2 {
+  height: 60px;
+}
+.pricing-item header h3 {
+  background: rgba(0, 120, 235, 0.9);
+  padding: 10px 0;
+}
+
+.pricing-body {
+  min-height: 150px;
+  margin-top: -20px;
+  color: black;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.pricing-body .md-button:hover {
+  background-color: rgba(38, 166, 154, 0.7)
+}
+
+.pricing-body md-list-item {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+.pricing-body md-list-item:last-child {
+  border-bottom:0;
+}
+
+.pricing-body .md-button {
+  /*background: #26a69a;*/
+  width: 95%;
+}
+
+img.md-avatar {
+  min-width: 100%;
+  max-height: 100%;
+  /*border: 5px solid #3f51b5;*/
+}
+
+.person {
+  box-shadow: 0 11px 15px -7px rgba(0,0,0,.2), 0 24px 38px 3px rgba(0,0,0,.14), 0 9px 46px 8px rgba(0,0,0,.12);
+}
+
+.person-desc {
+  /*border-right: 5px solid rgb(142, 142, 142);*/
+  border-left: 5px solid rgb(142, 142, 142);
+}
+.person-name {
+  border-right: 5px solid #009688;
+  /*border-left: 5px solid #009688;*/
+}
+.person-link {
+  /*border-right: 5px solid #009688;*/
+  border-left: 5px solid rgba(255, 0, 0, 0.5);
+}
+
+.company-location iframe {
+  pointer-events: none;
+}
+
+body md-toolbar.toolbar {
+  /*margin-top: 50px;*/
+  background-color: transparent;
+  color: black;
+}
+
+.introduction {
+  background: url(/img/storm-background.jpg) no-repeat center center scroll;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  background-size: cover;
+  -o-background-size: cover;
+}
+
+.callout {
+  background: url(/img/acconting-main.jpg) no-repeat center center scroll;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  background-size: cover;
+  -o-background-size: cover;
+  height: 400px;
+}
+
+#protfolio div {
+  padding: 0 30px;
+  margin: 30px 0;
+}
+
+.location {
+  height: 400px;
+}
+
+.footer {
+  padding: 100px 0;
+}
+
+
+body .icon-circle {
+  background: white;
+  margin-right: 10px;
+  color: black !important;
+  border-radius: 100px;
+}
+
+body .btn {
+  padding: 3px 30px;
+}
+
+.product-box {
+  text-align: center;
+  padding: 30px;
+  background: rgba(255, 255, 255, 0.5);
+}
