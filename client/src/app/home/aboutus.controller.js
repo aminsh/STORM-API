@@ -41,14 +41,14 @@ export default class AboutUSController {
         desc: 'مدیر مالی چندین شرکت معتبر در صنعت برق بوده و اکنون مشاور مالی  چندین شرکت می باشد.',
         linkedin: ''
       },
-      {
+      /*{
         name: 'هما مقیاسی',
         img: '/img/persons/Homa_Meghyasi1.jpg',
         position: 'کارشناس مارکتینگ',
         degree: 'مهندسی نرم افزار',
         desc: 'با سابقه ی مشاوره در زمینه مارکتینگ در شرکت ایرانسل به مدت 4 سال می باشد.',
         linkedin: ''
-      },
+      },*/
     ]
   }
 }

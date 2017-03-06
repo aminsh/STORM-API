@@ -7,7 +7,7 @@ var environment = {
         rootPath: rootPath,
         db: {
             username: "postgres",
-            password: "123456",
+            password: "P@ssw0rd",
             database: "admin",
             host: "localhost",
             dialect: "postgres",
