@@ -5,6 +5,7 @@ export default function shell() {
         restrict: 'E',
         templateUrl: 'app/directives/shell.html',
         link: (scope, element, attrs) => {
+            scope.toggleSidenav = () => scope.$broadcast('toggle-sidenav');
         }
     }
 }

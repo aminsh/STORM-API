@@ -20,6 +20,7 @@ import AboutUSController from './home/aboutus.controller';
 import PricingController from './home/pricing.controller';
 import LoginController from './auth/login.controller';
 import RegisterController from './auth/register.controller';
+import ContactUsController from './home/contactUs.controller';
 
 const MODULE_NAME = 'app';
 
@@ -35,5 +36,6 @@ angular.module(MODULE_NAME, ['ngMaterial', 'ngMessages', 'ui.router'])
     .controller('PricingController', PricingController)
     .controller('LoginController', LoginController)
     .controller('RegisterController', RegisterController)
+    .controller('ContactUsController', ContactUsController);
 
 export default MODULE_NAME;

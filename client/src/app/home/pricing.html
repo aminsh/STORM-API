@@ -4,7 +4,19 @@
     <toolbar></toolbar>
   </md-toolbar>
 
-  <div layout="column" layout-fill layout-align="center center">
+  <div layout="row" layout-margin layout-align="center center" >
+    <div class="product-box"  flex="100" flex-gt-sm="30">
+      <img ng-src="{{VM.product.logo}}" style="width: 100px;"/>
+      <h3 class="md-headline">
+        {{VM.product.name}}
+      </h3>
+      <p style="line-height:2;" ng-bind-html="VM.product.description">
+      </p>
+    </div>
+  </div>
+</div>
+
+<!--<div layout="column" layout-fill layout-align="center center">
     <div flex=100 layout="row" layout layout-align="center center">
       <div layout-padding layout-wrap class="product-box" flex=40 style="margin-top: 3%;">
         <img ng-src="{{VM.product.logo}}" style="width: 100px;"/>
@@ -15,8 +27,10 @@
         </p>
       </div>
     </div>
-  </div>
+  </div>-->
 </div>
+
+
 
 <section id="prices" class="pricing" layout="column">
   <h2 flex="10" style="text-align: center;">قیمت‌های {{VM.product.title}}</h2>

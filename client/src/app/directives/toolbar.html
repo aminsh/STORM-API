@@ -1,23 +1,28 @@
 <div class="md-toolbar-tools">
-  <md-truncate>
+
+    <md-button class="md-icon-button" aria-label="Settings" ng-click="openMenu()"  hide-gt-xs>
+        <md-icon>menu</md-icon>
+    </md-button>
+
     <a ui-sref="home">
-      <img src="/img/storm-logo.png" class="brands-img">
+        <img src="/img/storm-logo.png" class="brands-img">
     </a>
-    <!-- <md-button ui-sref="home">
-      storm
-    </md-button> -->
-  </md-truncate>
-  <span flex></span>
-  <md-button ui-sref="aboutus" aria-label="Go Back">
+    <span flex></span>
+
+
+    <span hide-xs>
+        <md-button ui-sref="aboutus" aria-label="Go Back">
     درباره ما
   </md-button>
-  <md-button aria-label="Go Back">
+        <md-button aria-label="Go Back" ui-sref="contactUs">
     ارتباط با ما
   </md-button>
-  <md-button ui-sref="login" aria-label="Go Back" ng-hide="logined">
+        <md-button ui-sref="login" aria-label="Go Back" ng-hide="logined">
     عضویت / ورود
   </md-button>
-  <md-button aria-label="Go Back" ng-show="logined">
+        <md-button aria-label="Go Back" ng-show="logined">
     {{currentUser}}
   </md-button>
+  </span>
+
 </div>
