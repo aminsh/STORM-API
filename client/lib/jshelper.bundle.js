@@ -67,6 +67,7 @@ window.isNumeric = function (input) {
 };
 
 window.digitToWord = function (str) {
+    if (!str) return '';
     var delimiter, digit, i, iThree, numbers, part, parts, result, resultThree, three;
     if (!isFinite(str)) {
         return '';

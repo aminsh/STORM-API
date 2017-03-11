@@ -2,6 +2,8 @@
 
 const async = require('asyncawait/async'),
     await = require('asyncawait/await'),
+    string = require('../utilities/string'),
+    translate = require('../services/translateService'),
     router = require('express').Router(),
     BankRepository = require('../data/repository.bank'),
     BankQuery = require('../queries/query.bank');
@@ -84,7 +86,7 @@ router.route('/:id')
                 errors: errors
             });
 
-        await(repository.remove(req.params.id));
+        await(bankRepository.remove(req.params.id));
 
         res.json({isValid: true});
     }));

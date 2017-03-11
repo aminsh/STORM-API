@@ -7,6 +7,11 @@ Array.prototype.asEnumerable = function () {
     return enumerable;
 };
 
+if(!Array.prototype.includes)
+    Array.prototype.includes = function (item) {
+      return this.asEnumerable().contains(item);
+    };
+
 function remove(item) {
     var i = this.indexOf(item);
     this.splice(i, 1);

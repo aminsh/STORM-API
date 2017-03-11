@@ -22,8 +22,8 @@ module.exports = class AccountReview extends BaseQuery {
 
     getDateRange(fiscalPeriodId) {
         let currentPeriod = await(this.knex.select()
-            .from('fiscalPeriods')
-            .where('id', fiscalPeriodId).first()),
+                .from('fiscalPeriods')
+                .where('id', fiscalPeriodId).first()),
             filter = this.filter;
 
         if (!eval(filter.isNotPeriodIncluded))
@@ -115,12 +115,12 @@ module.exports = class AccountReview extends BaseQuery {
         return result;
     }
 
-    incomesAndOutcomes(){
+    incomesAndOutcomes() {
         let options = this.getOptions(),
             knex = this.knex;
 
         let query = knex.select().from(function () {
-            this.select('generalLedgerAccountId','month', 'sumBeforeRemainder', 'sumDebtor', 'sumCreditor', 'sumRemainder',
+            this.select('generalLedgerAccountId', 'month', 'sumBeforeRemainder', 'sumDebtor', 'sumCreditor', 'sumRemainder',
                 knex.raw('"generalLedgerAccounts"."code" as "generalLedgerAccountCode"'),
                 knex.raw('"generalLedgerAccounts"."title" as "generalLedgerAccountTitle"'))
                 .from(function () {
@@ -130,14 +130,14 @@ module.exports = class AccountReview extends BaseQuery {
                 .as('final');
         });
 
-        query.whereIn('generalLedgerAccountId', [5,18]);
+        query.whereIn('generalLedgerAccountId', [5, 18]);
 
         query.orderBy('month');
 
         let view = (item) => ({
             amountType: item.generalLedgerAccountId == 5 ? 'income' : 'outcome',
             month: item.month,
-            monthName:  enums.getMonth().getDisplay(item.month),
+            monthName: enums.getMonth().getDisplay(item.month),
             amount: item.sumRemainder
         });
 
@@ -147,7 +147,8 @@ module.exports = class AccountReview extends BaseQuery {
     }
 
     subsidiaryLedgerAccount() {
-        let knex = this.knex;
+        let knex = this.knex,
+            options = this.getOptions();
 
         let query = knex.select().from(function () {
             this.select('subsidiaryLedgerAccountId', 'sumBeforeRemainder', 'sumDebtor', 'sumCreditor', 'sumRemainder',
@@ -155,14 +156,14 @@ module.exports = class AccountReview extends BaseQuery {
                 knex.raw('"subsidiaryLedgerAccounts"."title" as "subsidiaryLedgerAccountTitle"'),
                 knex.raw('"generalLedgerAccounts"."code" as "generalLedgerAccountCode"'))
                 .from(function () {
-                    groupBy.call(this, knex, this.getOptions(), 'subsidiaryLedgerAccountId');
+                    groupBy.call(this, knex, options, 'subsidiaryLedgerAccountId');
                 })
                 .leftJoin('subsidiaryLedgerAccounts', 'subsidiaryLedgerAccounts.id', 'groupJournals.subsidiaryLedgerAccountId')
                 .leftJoin('generalLedgerAccounts', 'generalLedgerAccounts.id', 'subsidiaryLedgerAccounts.generalLedgerAccountId')
                 .as('final')
         });
 
-        if (eval(filter.notShowZeroRemainder))
+        if (eval(this.filter.notShowZeroRemainder))
             query.whereNot('sumRemainder', 0);
 
         let view = item => ({
@@ -186,21 +187,23 @@ module.exports = class AccountReview extends BaseQuery {
     }
 
     detailAccount() {
-        let knex = this.knex;
+        let knex = this.knex,
+            options = this.getOptions();
+
         let query = knex.select().from(function () {
             this.select('detailAccountId', 'sumBeforeRemainder', 'sumDebtor', 'sumCreditor', 'sumRemainder',
                 knex.raw('"detailAccounts"."code" as "detailAccountCode"'),
                 knex.raw('"detailAccounts"."title" as "detailAccountTitle"')
-                )
+            )
                 .from(function () {
-                    groupBy.call(this, knex, this.getOptions(), 'detailAccountId');
+                    groupBy.call(this, knex, options, 'detailAccountId');
                 })
                 .leftJoin('detailAccounts', 'detailAccounts.id', 'groupJournals.detailAccountId')
                 .as('final');
         });
 
 
-        if (eval(filter.notShowZeroRemainder))
+        if (eval(this.filter.notShowZeroRemainder))
             query.whereNot('sumRemainder', 0);
 
         let view = item => ({
@@ -221,21 +224,22 @@ module.exports = class AccountReview extends BaseQuery {
     }
 
     dimension1() {
-        let knex = this.knex;
+        let knex = this.knex,
+            options = this.getOptions();
 
         let query = knex.select().from(function () {
             this.select('dimension1Id', 'sumBeforeRemainder', 'sumDebtor', 'sumCreditor', 'sumRemainder',
                 knex.raw('"dimensions"."code" as "dimension1Code"'),
                 knex.raw('"dimensions"."title" as "dimension1Title"')
-                )
+            )
                 .from(function () {
-                    groupBy.call(this, knex, this.getOptions(), 'dimension1Id');
+                    groupBy.call(this, knex, options, 'dimension1Id');
                 })
                 .leftJoin('dimensions', 'dimensions.id', 'groupJournals.dimension1Id')
                 .as('final');
         });
 
-        if (eval(filter.notShowZeroRemainder))
+        if (eval(this.filter.notShowZeroRemainder))
             query.whereNot('sumRemainder', 0);
 
         let view = item => ({
@@ -258,22 +262,23 @@ module.exports = class AccountReview extends BaseQuery {
     }
 
     dimension2() {
-        let knex = this.knex;
+        let knex = this.knex,
+            options = this.getOptions();
 
         let query = knex.select().from(function () {
             this.select('dimension2Id', 'sumBeforeRemainder', 'sumDebtor', 'sumCreditor', 'sumRemainder',
                 knex.raw('"dimensions"."code" as "dimension2Code"'),
                 knex.raw('"dimensions"."title" as "dimension2Title"')
-                )
+            )
                 .from(function () {
-                    groupBy.call(this, knex, this.getOptions(), 'dimension2Id');
+                    groupBy.call(this, knex, options, 'dimension2Id');
                 })
                 .leftJoin('dimensions', 'dimensions.id', 'groupJournals.dimension2Id')
                 .as('final');
         });
 
 
-        if (eval(filter.notShowZeroRemainder))
+        if (eval(this.filter.notShowZeroRemainder))
             query.whereNot('sumRemainder', 0);
 
         let view = item => ({
@@ -296,21 +301,23 @@ module.exports = class AccountReview extends BaseQuery {
     }
 
     dimension3() {
-        let knex = this.knex;
+        let knex = this.knex,
+            options = this.getOptions();
+
         let query = knex.select().from(function () {
             this.select('dimension3Id', 'sumBeforeRemainder', 'sumDebtor', 'sumCreditor', 'sumRemainder',
                 knex.raw('"dimensions"."code" as "dimension3Code"'),
                 knex.raw('"dimensions"."title" as "dimension3Title"')
-                )
+            )
                 .from(function () {
-                    groupBy.call(this, knex, this.getOptions(), 'dimension3Id');
+                    groupBy.call(this, knex, options, 'dimension3Id');
                 })
                 .leftJoin('dimensions', 'dimensions.id', 'groupJournals.dimension3Id')
                 .as('final');
         });
 
 
-        if (eval(filter.notShowZeroRemainder))
+        if (eval(this.filter.notShowZeroRemainder))
             query.whereNot('sumRemainder', 0);
 
         let view = item => ({
@@ -367,7 +374,7 @@ module.exports = class AccountReview extends BaseQuery {
                 'dimension3Id',
                 knex.raw('"dimension3s"."code" as "dimension3Code"'),
                 knex.raw('"dimension3s"."title" as "dimension3Title"')
-                )
+            )
                 .from(function () {
                     groupBy.call(this, knex, options, 'tiny');
                 })

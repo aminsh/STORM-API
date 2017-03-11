@@ -1,7 +1,9 @@
 import accModule from '../acc.module';
 import Collection from 'dev.collection';
 
-function homeController($scope, currentService, navigate, journalApi, translate) {
+function homeController($scope, currentService, navigate, journalApi, translate,
+                        journalCreateModalControllerService,
+                        journalAdvancedSearchModalService) {
 
     let current = currentService.get();
 
@@ -13,13 +15,13 @@ function homeController($scope, currentService, navigate, journalApi, translate)
         console.log(c);
     };
 
-    $scope.save = ()=> $scope.isWaiting = !$scope.isWaiting;
+    $scope.save = () => $scope.isWaiting = !$scope.isWaiting;
 
     journalApi.getGroupedByMouth()
         .then(result => {
             let items = new Collection(result.data).asEnumerable();
 
-            let colors = [ '#803690', '#00ADF9', '#DCDCDC', '#46BFBD', '#FDB45C', '#949FB1', '#4D5360'];
+            let colors = ['#803690', '#00ADF9', '#DCDCDC', '#46BFBD', '#FDB45C', '#949FB1', '#4D5360'];
             $scope.labels = items.select(item => item.monthName).toArray();
 
             $scope.labelForDisplay = new Collection(colors).asEnumerable()
@@ -48,11 +50,18 @@ function homeController($scope, currentService, navigate, journalApi, translate)
                 incomes, outcomes
             ];
 
-            $scope.months =items
+            $scope.months = items
                 .distinct(item => item.monthName)
                 .select(item => item.monthName)
                 .toArray();
 
+            let income = new Collection(incomes).asEnumerable().sum(),
+                outcome = new Collection(outcomes).asEnumerable().sum(),
+                total = income + outcome,
+                incomePercent = (income * 100) / total,
+                outcomePercent = (outcome * 100) / total;
+
+            $scope.totalIncomeAndOutcome = {income, outcome, incomePercent, outcomePercent};
         });
 
     $scope.incomeAndOutcomes = [];
@@ -60,7 +69,7 @@ function homeController($scope, currentService, navigate, journalApi, translate)
 
     $scope.series = [translate('Income'), translate('Outcome')];
 
-    $scope.datasetOverride = [{ yAxisID: 'y-axis-1' }, { yAxisID: 'y-axis-2' }];
+    $scope.datasetOverride = [{yAxisID: 'y-axis-1'}, {yAxisID: 'y-axis-2'}];
 
     $scope.options = {
         scales: {
@@ -84,7 +93,31 @@ function homeController($scope, currentService, navigate, journalApi, translate)
     $scope.data = [];
     $scope.labels = [];
 
+    journalApi.getTotalInfo().then(result => $scope.totalInfo = result);
 
+    $scope.journalCreate = () => {
+        journalCreateModalControllerService.show()
+            .then((result) => {
+                logger.success();
+                navigate('journalUpdate', {
+                    id: result.id
+                });
+            });
+    };
+
+    $scope.journalSearch = () => {
+        journalAdvancedSearchModalService.show()
+            .then((result) => {
+                navigate('journals', null, result);
+            });
+    };
+
+    $scope.goToJournal = () => {
+        if (!$scope.journalNumber) return;
+
+        journalApi.getByNumber($scope.journalNumber)
+            .then(result => navigate('journalUpdate', {id: result.id}));
+    };
 
     /* $scope.data = [
      {

@@ -25,10 +25,10 @@
                             style-type="primary"
                             title="{{'Save' | translate}}"></dev-tag-button>
 
-                    <dev-tag-button
+                    <!--<dev-tag-button
                             ng-click="bookkeeping()"
                             style-type="white"
-                            title="{{'Record Bookkeeping' | translate}}"></dev-tag-button>
+                            title="{{'Record Bookkeeping' | translate}}"></dev-tag-button>-->
 
                     <dev-tag-button
                             ng-click="attachImage()"
@@ -37,11 +37,11 @@
                             title="{{'Upload image' | translate}}"></dev-tag-button>
 
                     <dev-tag-button
-                            ng-if="journal.attachment"
-                            href="{{journal.attachment}}"
+                            ng-if="journal.attachmentFileName"
+                            href="/{{journal.attachmentFileName}}"
                             target="_blank"
                             icon="glyphicon glyphicon-paperclip"
-                            style-type="primary"
+                            style-type="white"
                             title="{{'Show attachment image' | translate}}"></dev-tag-button>
 
                     <dev-tag-button
@@ -64,8 +64,8 @@
                                     required></dev-tag-numeric>
 
                             <div ng-messages="form.temporaryNumber.$error" ng-if="form.temporaryNumber.$dirty">
-                                <label ng-message="required" class="error">{{'This field is
-                                    required'|translate}}</label>
+                                <label ng-message="required" class="error">
+                                    {{'This field is required'|translate}}</label>
                             </div>
                         </div>
                         <div class="col-md-2" style="text-align: left;margin-top: 7px">
@@ -83,20 +83,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row" style="margin-top: 10px">
-                        <div class="col-md-2" style="text-align: left;margin-top: 7px">
-                            <label class="label-control">{{'Number' | translate}}</label>
-                        </div>
-                        <div class="col-md-3">
-                            <span>{{journal.number}}</span>
-                        </div>
-                        <div class="col-md-2" style="text-align: left;margin-top: 7px">
-                            <label class="label-control">{{'Date' | translate}}</label>
-                        </div>
-                        <div class="col-md-3">
-                            <span>{{journal.date}}</span>
-                        </div>
-                    </div>
+
 
                     <div class="row" style="margin-top: 10px">
                         <div class="col-md-2" style="text-align: left;margin-top: 7px">
@@ -128,7 +115,7 @@
                                     k-data-text-field="display"
                                     k-data-source="journalTypeData"
                                     ng-model="journal.journalType"
-                                    required></dev-tag-dropdownlist>
+                                    ></dev-tag-dropdownlist>
                         </div>
                     </div>
 

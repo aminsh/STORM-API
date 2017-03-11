@@ -102,7 +102,7 @@ function journalLineCreateOrUpdateController($scope, $modalInstance, $timeout, f
 
             if (editMode == 'create')
                 journalLineApi.create(journalId, $scope.journalLine)
-                    .then((result) => {
+                    .then(result => {
                         deferred.resolve(result);
                         logger.success();
                     })
@@ -117,8 +117,8 @@ function journalLineCreateOrUpdateController($scope, $modalInstance, $timeout, f
 
             if (editMode == 'update')
                 journalLineApi.update(id, $scope.journalLine)
-                    .then(() => {
-                        deferred.resolve();
+                    .then(result => {
+                        deferred.resolve(result);
                         logger.success();
                     })
                     .catch((errors) => {

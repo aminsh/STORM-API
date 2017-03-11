@@ -6,17 +6,19 @@ function accountReviewTurnoverController($scope, navigate, $routeParams, $locati
                                          accountReviewTurnoverGridOptionService,
                                          showJournalDetailModalService) {
     let titles = {
-        generalLedgerAccount: 'Total turnover general ledger account',
-        subsidiaryLedgerAccount: 'Total turnover subsidiary ledger account',
-        detailAccount: 'Total turnover detail account',
-        dimension: 'Total turnover',
-        tiny: 'Tiny turnover journals'
+        generalLedgerAccount: translate('Total turnover general ledger account'),
+        subsidiaryLedgerAccount: translate('Total turnover subsidiary ledger account'),
+        detailAccount: translate('Total turnover detail account'),
+        dimension1: `${translate('Total turnover dimension')} ${translate('Dimension1')}`,
+        dimension2: `${translate('Total turnover dimension')} ${translate('Dimension2')}`,
+        dimension3: `${translate('Total turnover dimension')} ${translate('Dimension2')}`,
+        tiny: translate('Tiny turnover journals')
     };
 
     let reportName = $scope.reportName = $routeParams.name;
     let parameters = $location.search();
-    let dimensionCategories = [];
-    let commands = [
+
+    $scope.commands = [
         {
             order: 0,
             key: 'tiny',
@@ -36,36 +38,25 @@ function accountReviewTurnoverController($scope, navigate, $routeParams, $locati
             order: 3,
             key: 'detailAccount',
             display: translate('Detail account')
+        },
+        {
+            order: 4,
+            key: 'dimension1',
+            display: translate('Dimension1')
+        },
+        {
+            order: 5,
+            key: 'dimension2',
+            display: translate('Dimension2')
+        },
+        {
+            order: 6,
+            key: 'dimension3',
+            display: translate('Dimension3')
         }
     ];
 
-    $scope.commands = [];
-
-    $scope.title = translate(titles[$routeParams.name]);
-
-    if (reportName != 'tiny')
-        dimensionCategoryApi.getAllLookup().then((result) => {
-            dimensionCategories = result.data;
-
-            $scope.title = $routeParams.name.includes('dimension')
-                ? `${translate(titles.dimension)} ${dimensionCategories[parseInt('dimension1'.replace('dimension', '')) - 1].title}`
-                : translate(titles[$routeParams.name]);
-
-            $scope.commands = new Collection(dimensionCategories)
-                .asEnumerable().select(c => {
-                    let order = 3;
-
-                    return {
-                        order: ++order,
-                        key: `dimension${dimensionCategories.indexOf(c) + 1}`,
-                        display: c.title
-                    };
-                })
-                .concat(commands)
-                .where(a => a.key != $routeParams.name)
-                .orderBy(a => a.order)
-                .toArray();
-        });
+    $scope.title = titles[$routeParams.name];
 
     $scope.titleParameters = getTitleParameters();
 
@@ -120,19 +111,19 @@ function accountReviewTurnoverController($scope, navigate, $routeParams, $locati
 
         if (parameters.dimension1Id)
             titleParameters.push({
-                name: parameters.dimension1Caption,
+                name: translate('Dimension1'),
                 value: parameters.dimension1Display
             });
 
         if (parameters.dimension2Id)
             titleParameters.push({
-                name: parameters.dimension2Caption,
+                name: translate('Dimension2'),
                 value: parameters.dimension2Display
             });
 
         if (parameters.dimension3Id)
             titleParameters.push({
-                name: parameters.dimension3Caption,
+                name: translate('Dimension3'),
                 value: parameters.dimension3Display
             });
 
@@ -248,13 +239,13 @@ function accountReviewTurnoverGridOptionService(translate, devConstants) {
                 name: 'generalLedgerAccountCode',
                 title: translate('General ledger account'),
                 type: 'string',
-                width: '120px'
+                width: '10%'
             },
             {
                 name: 'generalLedgerAccountTitle',
                 title: translate('Title'),
                 type: 'string',
-                width: '40%'
+                width: '30%'
             },
             ...amountColumns
         ],
@@ -269,15 +260,15 @@ function accountReviewTurnoverGridOptionService(translate, devConstants) {
                 name: 'subsidiaryLedgerAccountCode',
                 title: translate('Subsidiary ledger account'),
                 type: 'string',
-                width: '100px'
+                width: '7%'
             },
             {
                 name: 'generalLedgerAccountCode',
                 title: translate('General ledger account'),
                 type: 'string',
-                width: '100px'
+                width: '5%'
             },
-            {name: 'subsidiaryLedgerAccountTitle', title: translate('Title'), type: 'string', width: '40%'},
+            {name: 'subsidiaryLedgerAccountTitle', title: translate('Title'), type: 'string', width: '28%'},
             ...amountColumns
         ],
         commands: [],
@@ -291,13 +282,13 @@ function accountReviewTurnoverGridOptionService(translate, devConstants) {
                 name: 'detailAccountCode',
                 title: translate('Detail account'),
                 type: 'string',
-                width: '100px'
+                width: '10%'
             },
             {
                 name: 'detailAccountTitle',
                 title: translate('Title'),
                 type: 'string',
-                width: '40%'
+                width: '30%'
             },
             ...amountColumns
         ],
@@ -310,15 +301,15 @@ function accountReviewTurnoverGridOptionService(translate, devConstants) {
         columns: [
             {
                 name: 'dimension1Code',
-                //headerTemplate: kendo.template('${kendo.dimensionCategories[0].title}'),
+                title: translate('Dimension1'),
                 type: 'string',
-                width: '100px'
+                width: '10%'
             },
             {
                 name: 'dimension1Title',
                 title: translate('Title'),
                 type: 'string',
-                width: '40%'
+                width: '30%'
             },
             ...amountColumns
         ],
@@ -331,15 +322,15 @@ function accountReviewTurnoverGridOptionService(translate, devConstants) {
         columns: [
             {
                 name: 'dimension2Code',
-                //headerTemplate: kendo.template('${kendo.dimensionCategories[1].title}'),
+                title: translate('Dimension2'),
                 type: 'string',
-                width: '100px'
+                width: '10%'
             },
             {
                 name: 'dimension2Title',
                 title: translate('Title'),
                 type: 'string',
-                width: '40%'
+                width: '30%'
             },
             ...amountColumns
         ],
@@ -352,15 +343,15 @@ function accountReviewTurnoverGridOptionService(translate, devConstants) {
         columns: [
             {
                 name: 'dimension3Code',
-                //headerTemplate: kendo.template('${kendo.dimensionCategories[2].title}'),
+                title: translate('Dimension3'),
                 type: 'string',
-                width: '100px'
+                width: '10%'
             },
             {
                 name: 'dimension3Title',
                 title: translate('Title'),
                 type: 'string',
-                width: '40%'
+                width: '30%'
             },
             ...amountColumns
         ],

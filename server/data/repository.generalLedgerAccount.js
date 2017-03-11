@@ -11,9 +11,15 @@ class GeneralLedgerAccountRepository extends BaseRepository {
     }
 
     findById(id) {
-        return this.knex.table('generalLedgerAccounts')
-            .where('id', id)
-            .first();
+        let generalLedgerAccount = await(this.knex.table('generalLedgerAccounts')
+                .where('id', id)
+                .first()),
+            subsidiaryLedgerAccounts = await(this.knex.select().from('subsidiaryLedgerAccounts')
+                .where('generalLedgerAccountId', id));
+
+        generalLedgerAccount.subsidiaryLedgerAccounts = subsidiaryLedgerAccounts;
+
+        return generalLedgerAccount;
     }
 
     findByCode(code, notEqualId) {

@@ -27,6 +27,8 @@ export default function () {
                 scope.change();
             };
 
+            scope.option.refresh = scope.change;
+
             scope.$watch('pageSize', ()=> scope.option.reset());
 
             scope.change();

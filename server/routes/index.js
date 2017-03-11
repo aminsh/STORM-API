@@ -24,10 +24,13 @@ const config = require('../config'),
 
 let handler = module.exports.handler = async((req, res) => {
     let dimensionCategoryQuery = new DimensionCategoryQuery(req.cookies['branch-id']),
-        dimensionCategories = await(dimensionCategoryQuery.getAll());
+        dimensionCategories = await(dimensionCategoryQuery.getAll()),
+        localTranslate = clientTranslation;
+
+    dimensionCategories.data.forEach((c, i) => localTranslate[`Dimension${i+1}`] = c.title);
 
     res.render('index.ejs', {
-        clientTranslation: clientTranslation,
+        clientTranslation: localTranslate,
         currentUser: req.user,
         currentBranch: memoryService.get('branches')
             .asEnumerable().single(b => b.id == req.cookies['branch-id']),

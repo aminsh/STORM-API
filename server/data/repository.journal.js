@@ -13,8 +13,8 @@ class JournalRepository extends BaseRepository {
 
     findByTemporaryNumber(number, periodId) {
         return this.knex.table('journals')
-            .where('period', periodId)
-            .andWhere('temporaryNumber', temporaryNumber)
+            .where('periodId', periodId)
+            .andWhere('temporaryNumber', number)
             .first();
     }
 
@@ -51,19 +51,63 @@ class JournalRepository extends BaseRepository {
     }
 
     checkIsComplete(id) {
-        let exp = this.knex
-            .row('sum("debtor") - sum("creditor") as "remainder"'),
+        let knex = this.knex,
             isInComplete = false,
-            remainder = await(this.knex.table('journalLines')
-                .select(exp)
+            hasAnyLines = await(knex
+                .from('journalLines')
                 .where('journalId', id)
-                .first()).remainder;
+                .first());
 
-        isInComplete = remainder != 0;
+        if (hasAnyLines) {
+            let exp = this.knex
+                    .raw('sum("debtor") - sum("creditor") as "remainder"'),
 
-        return this.knex('journals')
+                remainder = await(this.knex.table('journalLines')
+                    .select(exp)
+                    .where('journalId', id)
+                    .first()).remainder;
+
+            isInComplete = remainder != 0;
+        } else {
+            isInComplete = true;
+        }
+
+        await(knex('journals')
             .where('id', id)
-            .update({isInComplete});
+            .update({isInComplete}));
+
+        return isInComplete;
+    }
+
+    updateTags(id, tagIds) {
+        tagIds = tagIds.asEnumerable().select(t => parseInt(t)).toArray();
+
+        let knex = this.knex,
+            journalTagIds = (await(knex.select('tagId')
+                .from('journalTags')
+                .where('journalId', id)) || []).asEnumerable().select(t => t.tagId).toArray(),
+            notExistInJournalTag = tagIds.asEnumerable()
+                .where(t => !journalTagIds.includes(t))
+                .toArray(),
+            notExistInTag = journalTagIds.asEnumerable()
+                .where(jt => !tagIds.includes(jt))
+                .toArray();
+
+        if (notExistInTag.length)
+            await(knex.table('journalTags').whereIn('journalId', notExistInTag).del());
+
+        if (notExistInJournalTag.length) {
+            let addedTags = notExistInJournalTag.asEnumerable()
+                .select(tj => ({
+                    journalId: id,
+                    tagId: tj
+                }))
+                .toArray();
+
+            await(knex('journalTags').insert(addedTags));
+        }
+
+
     }
 }
 

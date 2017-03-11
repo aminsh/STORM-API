@@ -7,6 +7,8 @@ const async = require('asyncawait/async'),
 module.exports = class TagRepository extends BaseRepository {
     constructor(branchId) {
         super(branchId);
+
+        this.create = async(this.create);
     }
 
     findById(id) {
@@ -14,7 +16,12 @@ module.exports = class TagRepository extends BaseRepository {
     }
 
     create(entity) {
-        return this.knex('tags').insert(entity);
+        entity.id = await(this.knex('tags').returning('id').insert(entity));
+
+        if(Array.isArray(entity.id))
+            entity.id = entity.id[0];
+
+        return entity;
     }
 
     update(entity) {

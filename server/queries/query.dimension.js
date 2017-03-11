@@ -23,7 +23,7 @@ module.exports = class DimensionQuery extends BaseQuery {
     }
 
     getById(id) {
-        let dimension = await(this.knex.select().from('dimensions').where('id', id).first());
+        let dimension = await(this.knex.select('*').from('dimensions').where('id', id).first());
         return view(dimension);
     }
 };

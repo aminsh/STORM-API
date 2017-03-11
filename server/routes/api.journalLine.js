@@ -2,6 +2,8 @@
 
 const async = require('asyncawait/async'),
     await = require('asyncawait/await'),
+    string = require('../utilities/string'),
+    translate = require('../services/translateService'),
     router = require('express').Router(),
     JournalRepository = require('../data/repository.journal'),
     JournalLineRepository = require('../data/repository.journalLine'),
@@ -17,7 +19,8 @@ router.route('/journal/:journalId')
         let journalRepository = new JournalRepository(req.cookies['branch-id']),
             journalLineRepository = new JournalLineRepository(req.cookies['branch-id']),
             errors = [],
-            cmd = req.body;
+            cmd = req.body,
+            journalId = req.params.journalId;
 
         if (string.isNullOrEmpty(cmd.article))
             errors.push(translate('The Article is required'));
@@ -32,24 +35,24 @@ router.route('/journal/:journalId')
             });
 
         let entity = {
-            journalId: cmd.journalId,
+            journalId: journalId,
             generalLedgerAccountId: cmd.generalLedgerAccountId,
             subsidiaryLedgerAccountId: cmd.subsidiaryLedgerAccountId,
             detailAccountId: cmd.detailAccountId,
             dimension1Id: cmd.dimension1Id,
             dimension2Id: cmd.dimension2Id,
             dimension3Id: cmd.dimension3Id,
-            description: cmd.description,
+            article: cmd.article,
             debtor: cmd.balanceType == 'debtor' ? cmd.amount : 0,
             creditor: cmd.balanceType == 'creditor' ? cmd.amount : 0
         };
 
         entity = await(journalLineRepository.create(entity));
-        await(journalRepository.checkIsComplete(cmd.journalId));
+        let isInComplete = await(journalRepository.checkIsComplete(journalId));
 
         return res.json({
             isValid: true,
-            returnValue: { id: entity.id }
+            returnValue: { id: entity.id, isInComplete }
         });
     }));
 
@@ -60,7 +63,8 @@ router.route('/:id')
         res.json(result);
     }))
     .put(async((req, res) => {
-        let journalLineRepository = new JournalLineRepository(req.cookies['branch-id']),
+        let journalRepository = new JournalRepository(req.cookies['branch-id']),
+            journalLineRepository = new JournalLineRepository(req.cookies['branch-id']),
             errors = [],
             cmd = req.body;
 
@@ -76,7 +80,7 @@ router.route('/:id')
                 errors: errors
             });
 
-        let entity = await(journalLineRepository.findById(cmd.id));
+        let entity = await(journalLineRepository.findById(req.params.id));
 
         entity.subsidiaryLedgerAccountId = cmd.subsidiaryLedgerAccountId;
         entity.detailAccountId = cmd.detailAccountId;
@@ -88,13 +92,16 @@ router.route('/:id')
         entity.creditor = cmd.balanceType == 'creditor' ? cmd.amount : 0;
 
         await(journalLineRepository.update(entity));
+        let isInComplete = await(journalRepository.checkIsComplete(cmd.journalId));
 
-        return res.json({ isValid: true });
+        return res.json({ isValid: true, returnValue: {isInComplete} });
     }))
     .delete(async((req, res) => {
         let journalRepository = new JournalRepository(req.cookies['branch-id']),
             journalLineRepository = new JournalLineRepository(req.cookies['branch-id']),
-            errors = [];
+            errors = [],
+            id = req.params.id,
+            journalLine = await(journalLineRepository.findById(id));
 
         if (errors.asEnumerable().any())
             return res.json({
@@ -102,10 +109,11 @@ router.route('/:id')
                 errors: errors
             });
 
-        await(journalLineRepository.remove(req.params.id));
-        await(journalRepository.checkIsComplete(cmd.journalId));
 
-        return res.json({ isValid: true });
+        await(journalLineRepository.remove(id));
+        let isInComplete = await(journalRepository.checkIsComplete(journalLine.journalId));
+
+        return res.json({ isValid: true, returnValue: {isInComplete} });
     }));
 
 module.exports = router;

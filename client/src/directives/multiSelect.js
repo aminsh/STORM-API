@@ -24,8 +24,10 @@ function multiSelect($window) {
                 var dataSource = scope[attrs.kDataSource];
                 dataSource.add({title: value});
                 scope[attrs.onCreated](value)
-                    .then(result =>
-                        multiSelect.value(multiSelect.value().concat([result.id])));
+                    .then(result => {
+                        multiSelect.value(multiSelect.value().concat([result.id]));
+                        ngModel.$setViewValue(multiSelect.value());
+                    });
             };
 
             let template = `<div>

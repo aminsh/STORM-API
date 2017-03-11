@@ -21,7 +21,7 @@ class DetailAccountRepository extends BaseRepository {
             .where('code', code);
 
         if (notEqualId)
-            query.andWhere('id', '$ne', notEqualId);
+            query.andWhere('id', '!=', notEqualId);
 
         return query.first();
     }

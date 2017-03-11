@@ -26,7 +26,7 @@ class JournalLineRepository extends BaseRepository {
 
     update(entity) {
         return this.knex('journalLines')
-            .where('id', id)
+            .where('id', entity.id)
             .update(entity);
     }
 

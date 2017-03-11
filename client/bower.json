@@ -29,6 +29,7 @@
     "bootstrap-sweetalert": "^1.0.1",
     "adm-dtp": "*",
     "chart.js": "^2.5.0",
-    "angular-ladda": "^0.4.3"
+    "angular-ladda": "^0.4.3",
+    "dropzone": "^4.3.0"
   }
 }

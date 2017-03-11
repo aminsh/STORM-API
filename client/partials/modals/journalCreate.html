@@ -6,25 +6,34 @@
 </div>
 <div class="modal-body k-rtl">
 
-    <dev-tag-validation-errors></dev-tag-validation-errors>
+    <dev-tag-validation-summary errors="errors"></dev-tag-validation-summary>
 
-    <form name="form">
-        <div class="form-group">
-            <label class="label-control">{{'Temporary number' | translate}}</label>
-            <dev-tag-numeric ng-model="journal.temporaryNumber"></dev-tag-numeric>
+    <form name="form" class="form-horizontal">
+        <div class="row" style="margin-bottom: 30px">
+            <dev-tag-check-box ng-model="isDefaultNumberAndDate">
+                {{'is default dumber and date'|translate}}
+            </dev-tag-check-box>
+        </div>
+        <div class="row" ng-hide="isDefaultNumberAndDate">
+            <div class="form-group col-md-6">
+                <label class="control-label col-lg-2">{{'Number' | translate}}</label>
+                <div class="col-lg-10">
+                    <dev-tag-numeric  ng-model="journal.temporaryNumber"></dev-tag-numeric>
+                </div>
+
+            </div>
+
+            <div class="form-group col-md-6">
+                <label class="control-label col-lg-2">{{'Date' | translate}}</label>
+                <div class="col-lg-10">
+                    <dev-tag-datepicker
+                            ng-model="journal.temporaryDate"
+                            name="temporaryDate"></dev-tag-datepicker>
+                </div>
+            </div>
         </div>
 
-        <div class="form-group">
-            <label class="label-control">{{'Temporary date' | translate}}</label>
-            <dev-tag-datepicker
-                    ng-model="journal.temporaryDate"
-                    name="temporaryDate"></dev-tag-datepicker>
-
-            <adm-dtp ng-model="journal.temporaryDate"></adm-dtp>
-        </div>
-
-
-        <div class="form-group">
+        <div class="form-group row">
             <label class="label-control">{{'Description' | translate}}</label>
             <dev-tag-editor
                     k-encoded="false"
@@ -38,7 +47,7 @@
     <dev-tag-button
             ng-click="save(form)"
             icon="glyphicon glyphicon-floppy-disk"
-            waiting="isSaving"
+            is-waiting="isSaving"
             style-type="primary"
             title="{{'Save' | translate}}"
             ng-disabled="form.$invalid"></dev-tag-button>

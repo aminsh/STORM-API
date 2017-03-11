@@ -47,7 +47,7 @@ app.set('views', config.rootPath + '/server/views');
 app.engine('html', ejs.renderFile);
 app.use('/client', express.static(config.rootPath + '/client'));
 app.use('/content', express.static(config.rootPath + '/client/content'));
-app.use('/uploads', express.static(config.rootPath + '/server/uploads'));
+app.use('/uploads', express.static(config.rootPath + '/uploads'));
 
 app.use(multer({dest: './uploads/;'}));
 

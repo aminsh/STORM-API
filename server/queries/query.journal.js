@@ -13,6 +13,7 @@ module.exports = class JournalQuery extends BaseQuery {
         super(branchId);
         this.getGroupedByMouth = async(this.getGroupedByMouth);
         this.getById = async(this.getById);
+        this.getTotalInfo = async(this.getTotalInfo);
     }
 
     getAll(fiscalPeriodId, parameters) {
@@ -40,11 +41,11 @@ module.exports = class JournalQuery extends BaseQuery {
             '"max"("temporaryDate") as "maxDate"';
 
         let query = knex.select(knex.raw(selectExp)).from(function () {
-                this.select(knex.raw('*,cast(substring("temporaryDate" from 6 for 2) as INTEGER) as "month"'))
-                    .from('journals')
-                    .where('periodId', currentFiscalPeriod)
-                    .as('baseJournals');
-            })
+            this.select(knex.raw('*,cast(substring("temporaryDate" from 6 for 2) as INTEGER) as "month"'))
+                .from('journals')
+                .where('periodId', currentFiscalPeriod)
+                .as('baseJournals');
+        })
             .as('baseJournals')
             .groupBy('month')
             .orderBy('month');
@@ -97,6 +98,25 @@ module.exports = class JournalQuery extends BaseQuery {
             .map(t => t.tagId));
 
         return view(result);
+    }
+
+    getByNumber(currentFiscalPeriodId, number){
+        return this.knex.select('*').from('journals')
+            .where('periodId', currentFiscalPeriodId)
+            .where('temporaryNumber', number)
+            .first();
+    }
+
+    getTotalInfo(currentFiscalPeriod) {
+        let knex = this.knex,
+            base = knex.from('journals').where('periodId', currentFiscalPeriod),
+            lastNumber = await(base.max('temporaryNumber').first()).max,
+            totalFixed = await(base.where('journalStatus', 'Fixed')
+                .select(knex.raw('count(*)')).first()).count,
+            totalInComplete = await(base.where('isInComplete', true)
+                .select(knex.raw('count(*)')).first()).count;
+
+        return {lastNumber, totalFixed, totalInComplete};
     }
 };
 

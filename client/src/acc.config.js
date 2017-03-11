@@ -65,7 +65,6 @@ import './modals/showJournalDetail';
 import './modals/journalAdvnacedSearch';
 import './modals/detailAccountCreate';
 import './modals/detailAccountUpdate';
-import './modals/chequesByCategory';
 
 import './localData/devConstants';
 

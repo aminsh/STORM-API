@@ -1,13 +1,12 @@
 import accModule from '../acc.module';
 
-function chequeCategoriesController($scope, logger, chequeCategoryApi, confirm, devConstants, translate, $timeout, navigate,
+function chequeCategoriesController($scope, logger, chequeCategoryApi, confirm, devConstants, translate, navigate,
                                     chequeCategoryCreateModalService,
-                                    chequeCategoryUpdateModalService,
-                                    chequesByCategoryModalService) {
+                                    chequeCategoryUpdateModalService) {
     $scope.gridOption = {
         columns: [
             {name: 'bankId', title: translate('Bank'), width: '20%', type: 'bank', template: '{{item.bank}}'},
-            {name: 'totalPages', title: translate('Total pages'), type: 'number', width: '50px'},
+            {name: 'totalPages', title: translate('Total pages'), type: 'number', width: '120px'},
             {
                 name: 'detailAccountId',
                 title: translate('Detail account'),
@@ -47,17 +46,10 @@ function chequeCategoriesController($scope, logger, chequeCategoryApi, confirm, 
                                     logger.success();
                                     $scope.gridOption.refresh();
                                 })
-                                .catch((errors) => $scope.errors = errors)
-                                .finally(() => $scope.isSaving = false);
+                                .catch(errors => logger.error(errors.join('<br/>')));
                         })
 
                 }
-            },
-            {
-                title: translate('Cheques'),
-                icon: 'fa fa-money',
-                action: current => chequesByCategoryModalService
-                    .show({categoryId: current.id})
             }
         ],
         readUrl: devConstants.urls.chequeCategory.all(),
@@ -70,7 +62,14 @@ function chequeCategoriesController($scope, logger, chequeCategoryApi, confirm, 
             {name: 'number', title: translate('Number'), width: '10%', type: 'number'},
             {name: 'date', title: translate('Date'), type: 'date', width: '10%'},
             {name: 'description', title: translate('Description'), type: 'string', width: '30%'},
-            {name: 'amount', title: translate('Amount'), type: 'number', width: '10%', format: '{0:#,##}', template: '{{item.amount|number}}'}
+            {
+                name: 'amount',
+                title: translate('Amount'),
+                type: 'number',
+                width: '10%',
+                format: '{0:#,##}',
+                template: '{{item.amount|number}}'
+            }
         ],
         commands: [{
             title: translate('Print'),

@@ -22,7 +22,7 @@ class SubsidiaryLedgerAccountRepository extends BaseRepository {
             .andWhere('generalLedgerAccountId', generalLedgerAccountId);
 
         if (notEqualId)
-            query.andWhere('id', '$ne', notEqualId);
+            query.andWhere('id', '!=', notEqualId);
 
         return query.first();
     }
@@ -37,7 +37,7 @@ class SubsidiaryLedgerAccountRepository extends BaseRepository {
 
     update(entity) {
         return this.knex('subsidiaryLedgerAccounts')
-            .where('id', id)
+            .where('id', entity.id)
             .update(entity);
     }
 

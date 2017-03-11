@@ -9,4 +9,9 @@ function amount() {
     }
 }
 
+function digtToWord() {
+    return window.digitToWord;
+}
 accModule.filter('amount', amount);
+
+accModule.filter('digitToWord', digtToWord)

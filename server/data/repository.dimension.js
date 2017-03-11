@@ -22,7 +22,7 @@ class DimensionRepository extends BaseRepository {
             .andWhere('dimensionCategoryId', dimensionCategoryId);
 
         if (notEqualId)
-            query.andWhere('id', '$ne', notEqualId);
+            query.andWhere('id', '!=', notEqualId);
 
         return query.first();
     }
@@ -37,7 +37,7 @@ class DimensionRepository extends BaseRepository {
 
     update(entity) {
         return this.knex('dimensions')
-            .where('id', id)
+            .where('id', entity.id)
             .update(entity);
     }
 

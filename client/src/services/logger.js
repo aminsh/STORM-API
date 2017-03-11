@@ -35,7 +35,7 @@ function logger(translate) {
                 title: translate('Error'),
                 text: message,
                 type: 'error',
-                timer: 2000,
+                timer: 4000,
                 confirmButtonText: translate('OK')
             });
         }

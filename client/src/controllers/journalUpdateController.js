@@ -9,7 +9,7 @@ function journalUpdateController($scope, logger, confirm, translate, navigate, $
                                  journalAttachImageService,
                                  writeChequeOnJournalLineEntryService,
                                  tagApi,
-                                 showReport) {
+                                 formService) {
 
     let id = $routeParams.id;
 
@@ -27,7 +27,8 @@ function journalUpdateController($scope, logger, confirm, translate, navigate, $
         number: null,
         date: null,
         description: '',
-        tagIds: []
+        tagIds: [],
+        journalType: null
     };
 
     $scope.journalTypeData = devConstants.enums.JournalType().data;
@@ -36,7 +37,7 @@ function journalUpdateController($scope, logger, confirm, translate, navigate, $
 
     function fetch() {
         journalApi.getById(id)
-            .then((result) => {
+            .then(result => {
                 $scope.journal = result;
 
                 $scope.canShowNumberAndDate = result.journalStatus != 'Temporary';
@@ -152,9 +153,9 @@ function journalUpdateController($scope, logger, confirm, translate, navigate, $
 
     $scope.save = (form) => {
         if (form.$invalid)
-            return;
+            return formService.setDirty(form);
 
-        Collection.removeAll($scope.error);
+        Collection.removeAll($scope.errors);
 
         $scope.isSaving = true;
 
@@ -169,7 +170,10 @@ function journalUpdateController($scope, logger, confirm, translate, navigate, $
     $scope.createJournalLine = () => {
         journalLineCreateControllerModalService
             .show({journalId: id})
-            .then(() => $scope.gridOption.refresh())
+            .then(isInComplete => {
+                $scope.gridOption.refresh();
+                $scope.journal.isInComplete = isInComplete;
+            });
     };
 
     $scope.bookkeeping = () => {
@@ -182,9 +186,9 @@ function journalUpdateController($scope, logger, confirm, translate, navigate, $
 
     $scope.attachImage = () => {
         journalAttachImageService.show({id: id})
-            .then(() => {
+            .then(fileName => {
+                $scope.journal.attachmentFileName = fileName;
                 logger.success();
-                fetch();
             });
     };
 

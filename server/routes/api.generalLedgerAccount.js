@@ -2,6 +2,7 @@
 
 const async = require('asyncawait/async'),
     await = require('asyncawait/await'),
+    string = require('../utilities/string'),
     router = require('express').Router(),
     GeneralLedgerAccountRepository = require('../data/repository.generalLedgerAccount'),
     GeneralLedgerAccountQuery = require('../queries/query.generalLedgerAccount');
@@ -52,7 +53,7 @@ router.route('/')
 
         return res.json({
             isValid: true,
-            returnValue: { id: entity.id }
+            returnValue: {id: entity.id}
         });
     }));
 
@@ -98,7 +99,7 @@ router.route('/:id')
 
         await(generalLedgerAccountRepository.update(generalLedgerAccount));
 
-        return res.json({ isValid: true });
+        return res.json({isValid: true});
     }))
     .delete(async((req, res) => {
         let generalLedgerAccountRepository = new GeneralLedgerAccountRepository(req.cookies['branch-id']),
@@ -120,7 +121,7 @@ router.route('/:id')
 
         await(generalLedgerAccountRepository.remove(req.params.id));
 
-        return res.json({ isValid: true });
+        return res.json({isValid: true});
     }));
 
 router.route('/:id/activate').put(async((req, res) => {
@@ -131,7 +132,7 @@ router.route('/:id/activate').put(async((req, res) => {
 
     await(generalLedgerAccountRepository.update(entity));
 
-    return res.json({ isValid: true });
+    return res.json({isValid: true});
 }));
 
 router.route('/:id/deactivate').put(async((req, res) => {
@@ -142,7 +143,7 @@ router.route('/:id/deactivate').put(async((req, res) => {
 
     await(generalLedgerAccountRepository.update(entity));
 
-    return res.json({ isValid: true });
+    return res.json({isValid: true});
 }));
 
 

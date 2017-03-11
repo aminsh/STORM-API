@@ -192,5 +192,15 @@
   "Of":"از",
 
   "Income": "درآمد",
-  "Outcome": "هزینه"
+  "Outcome": "هزینه",
+
+  "is default dumber and date": "شماره و تاریخ پیش فرض باشد",
+  "Drop files here or click to upload":"برای آپلود فایل را اینجا رها کنید یا کلیک کنید",
+  "Last journal": "آخرین سند",
+  "Fixed journal": "سند قطعی",
+  "InComplete journal": "سند ناقص",
+  "Quick menu": "منوی سریع",
+  "Journal number": "شماره سند",
+  "Comparing income and outcome": "مقایسه درآمد و هزینه",
+  "Journal grouped by months": "آمار اسناد به تفکیک ماه"
 }

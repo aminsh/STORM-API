@@ -3,6 +3,8 @@
 const async = require('asyncawait/async'),
     await = require('asyncawait/await'),
     router = require('express').Router(),
+    string = require('../utilities/string'),
+    translate = require('../services/translateService'),
     DetailAccountRepository = require('../data/repository.detailAccount'),
     DetailAccountQuery = require('../queries/query.detailAccount');
 

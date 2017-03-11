@@ -1,7 +1,7 @@
 import accModule from '../acc.module';
 import Collection from 'dev.collection';
 
-function journalCreateModalController($scope, $modalInstance, journalApi, logger) {
+function journalCreateModalController($scope, $modalInstance, journalApi, logger, formService) {
 
     $scope.errors = [];
     $scope.journal = {
@@ -10,15 +10,22 @@ function journalCreateModalController($scope, $modalInstance, journalApi, logger
         description: ''
     };
 
+    $scope.isDefaultNumberAndDate = false;
+
     $scope.isSaving = false;
 
     $scope.save = function (form) {
         if (form.$invalid)
-            return;
+            return formService.setDirty(form);
 
         Collection.removeAll($scope.errors);
 
         $scope.isSaving = true;
+
+        if ($scope.isDefaultNumberAndDate) {
+            $scope.journal.temporaryNumber = null;
+            $scope.journal.temporaryDate = null;
+        }
 
         journalApi.create($scope.journal)
             .then((result) => {

@@ -13,6 +13,8 @@ export default function (apiPromise, $timeout) {
             onCurrentChanged: '&'
         },
         link: (scope, element, attrs) => {
+            let extra = scope.option.extra || null;
+
             let option = scope.option;
             scope.gridId = Guid.new();
 
@@ -43,14 +45,15 @@ export default function (apiPromise, $timeout) {
                 scope.current = current;
                 scope.onCurrentChanged({current});
             };
-            scope.option.refresh = scope.pageOption.reset;
+            scope.option.refresh = () => scope.pageOption.refresh();
             scope.option.addItem = newItem => scope.data.unshift(newItem);
             scope.option.removeItem = item => Collection.remove(scope.data, item);
 
             function fetch(page) {
-                if(!option.readUrl) return;
+                if (!option.readUrl) return;
 
                 parameters = angular.extend({}, parameters, page);
+
                 scope.isWaiting = true;
 
                 apiPromise.get(option.readUrl, parameters)
@@ -114,7 +117,7 @@ export default function (apiPromise, $timeout) {
 
             let filter = {logic: 'and', filters: []},
                 sort = [],
-                parameters = {filter, sort};
+                parameters = {filter, sort, extra};
 
             function addFilter(filterParam) {
                 let filters = filter.filters;

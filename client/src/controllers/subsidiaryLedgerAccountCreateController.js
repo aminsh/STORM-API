@@ -11,6 +11,7 @@ function subsidiaryLedgerAccountCreateController($scope, logger, navigate, $rout
     $scope.assignmentStatus = devConstants.enums.AssignmentStatus().data;
 
     $scope.subsidiaryLedgerAccount = {
+        generalLedgerAccountId: generalLedgerAccountId,
         code: '',
         title: '',
         detailAccountAssignmentStatus: null,

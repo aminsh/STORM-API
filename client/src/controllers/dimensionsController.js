@@ -37,9 +37,9 @@ function dimensionsController($scope, logger, translate, confirm, devConstants, 
                 icon: 'fa fa-floppy-o',
                 canShow: current => current.isEditing,
                 action: current => {
-                    if(!current.title) return;
+                    if (!current.title) return;
 
-                    dimensionCategoryApi.update(current)
+                    dimensionCategoryApi.update(current.id, current)
                         .then(() => current.isEditing = false);
                 }
             },
@@ -89,7 +89,7 @@ function dimensionsController($scope, logger, translate, confirm, devConstants, 
                 action: function (current) {
                     dimensionUpdateModalService.show({id: current.id})
                         .then(() => {
-                            $scope.gridDimensions.refresh();
+                            $scope.dimensionGridOption.refresh();
                             logger.success();
                         });
                 }
@@ -104,7 +104,7 @@ function dimensionsController($scope, logger, translate, confirm, devConstants, 
                         .then(() => {
                             dimensionApi.remove(current.id)
                                 .then(function () {
-                                    $scope.gridDimensions.refresh();
+                                    $scope.dimensionGridOption.refresh();
                                     logger.success();
                                 })
                                 .catch((err) => $scope.errors = err);

@@ -5,7 +5,8 @@ function dimensionAssembler(entity) {
         display: entity.display,
         title: entity.title,
         description: entity.description,
-        isActive: entity.isActive
+        isActive: entity.isActive,
+        dimensionCategoryId: entity.dimensionCategoryId
     };
 
     return viewModel;

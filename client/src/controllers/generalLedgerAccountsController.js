@@ -114,6 +114,7 @@ function generalLedgerAccountsController($scope, logger, translate, confirm,
                 icon: 'fa fa-edit',
                 action: current => {
                     subsidiaryLedgerAccountEntryModalService.show({
+                        generalLedgerAccount: $scope.current,
                         subsidiaryLedgerAccountId: current.id,
                         editMode: 'edit'
                     })
@@ -131,7 +132,7 @@ function generalLedgerAccountsController($scope, logger, translate, confirm,
                             subsidiaryLedgerAccountApi.remove(current.id)
                                 .then(() => {
                                     logger.success();
-                                    $scope.gridOption.refresh();
+                                    $scope.gridOptionSubsidiaryLedgerAccount.refresh();
                                 })
                                 .catch((errors) => $scope.errors = errors);
                         });

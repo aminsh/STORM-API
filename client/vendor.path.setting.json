@@ -19,6 +19,7 @@
   "spin.js": "./bower_components/ladda/js/spin.js",
   "angular-ladda": "./bower_components/angular-ladda/src/angular-ladda",
   "linqjs": "./bower_components/linqjs/linq.js",
+  "dropzone": "./bower_components/dropzone/dist/dropzone",
   "js-helper": "./lib/jshelper.bundle",
   "jquery.filedrop": "./lib/jquery.filedrop",
   "jszip": "./lib/jszip.min.js",

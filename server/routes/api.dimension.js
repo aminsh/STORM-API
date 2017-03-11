@@ -2,6 +2,8 @@
 
 const async = require('asyncawait/async'),
     await = require('asyncawait/await'),
+    string = require('../utilities/string'),
+    translate = require('../services/translateService'),
     router = require('express').Router(),
     DimensionRepository = require('../data/repository.dimension'),
     DimensionQuery = require('../queries/query.dimension');
@@ -15,10 +17,11 @@ router.route('/category/:categoryId')
     .post(async((req, res) => {
         let dimensionRepository = new DimensionRepository(req.cookies['branch-id']),
             errors = [],
-            cmd = req.body;
+            cmd = req.body,
+            categoryId = req.params.categoryId;
 
         if (!string.isNullOrEmpty(cmd.code)) {
-            let dimension = await(dimensionRepository.findByCode(cmd.code, cmd.dimensionCategoryId));
+            let dimension = await(dimensionRepository.findByCode(cmd.code, categoryId));
 
             if (dimension)
                 errors.push(translate('The code is duplicated'));
@@ -31,20 +34,19 @@ router.route('/category/:categoryId')
                 errors.push(translate('The title should have at least 3 character'));
         }
 
-        if (errors.errors.asEnumerable().any())
+        if (errors.asEnumerable().any())
             return res.json({
                 isValid: false,
                 errors: errors
             });
 
         let entity = await(dimensionRepository.create({
+            dimensionCategoryId: categoryId,
             code: cmd.code,
             title: cmd.title,
             description: cmd.description,
             isActive: true
         }));
-
-        entity = await(repository.create(entity));
 
         return res.json({
             isValid: true,

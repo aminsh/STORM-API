@@ -16,15 +16,15 @@ function journalsController($scope, translate, journalApi, navigate, logger,
                 name: 'journalStatus',
                 title: translate('Status'),
                 type: 'journalStatus',
-                width: '70px',
+                width: '120px',
                 template: `<i title="{{item.statusTitle}}" 
                             class="fa fa-{{item.statusIcon}}"
-                            style="color: {{item.statusColor}};font-size: 20px"></i>`
+                            style="color: {{item.statusColor}};"></i>`
             },
-            {name: 'temporaryNumber', title: translate('Temporary number'), width: '100px', type: 'number'},
-            {name: 'temporaryDate', title: translate('Temporary date'), type: 'date', width: '100px',},
-            {name: 'number', title: translate('Number'), width: '100px', type: 'number'},
-            {name: 'date', title: translate('Date'), type: 'date', width: '100px',},
+            {name: 'temporaryNumber', title: translate('Number'), width: '120px', type: 'number'},
+            {name: 'temporaryDate', title: translate('Date'), type: 'date', width: '120px',},
+           /* {name: 'number', title: translate('Number'), width: '100px', type: 'number'},
+            {name: 'date', title: translate('Date'), type: 'date', width: '100px',},*/
             {
                 name: 'description', title: translate('Description'), type: 'string', width: '30%',
                 template: '<span title="{{item.description}}">{{item.description}}</span>'
@@ -43,7 +43,6 @@ function journalsController($scope, translate, journalApi, navigate, logger,
             }
         ],
         readUrl: journalApi.url.getAll,
-        selectable: false,
         mapper: (d) => {
             d.statusTitle = d.journalStatusDisplay;
             if (d.isInComplete) {

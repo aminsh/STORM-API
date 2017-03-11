@@ -26,7 +26,7 @@ router.route('/')
         let cheques = [],
             lastPageNumber = cmd.firstPageNumber + cmd.totalPages - 1;
 
-        for (var i = cmd.firstPageNumber; i <= lastPageNumber; i++)
+        for (let i = cmd.firstPageNumber; i <= lastPageNumber; i++)
             cheques.push({
                 number: i,
                 status: 'White'
@@ -46,7 +46,7 @@ router.route('/')
 
         return res.json({
             isValid: true,
-            returnValue: { id: entity.id }
+            returnValue: {id: entity.id}
         });
     }));
 
@@ -81,13 +81,18 @@ router.route('/:id')
 
         await(chequeCategoryRepository.update(entity));
 
-        res.json({ isValid: true });
+        res.json({isValid: true});
     }))
     .delete(async((req, res) => {
         let chequeCategoryRepository = new ChequeCategoryRepository(req.cookies['branch-id']),
-            errors = [];
+            errors = [],
+            id = req.params.id,
+            hasCheque = await(chequeCategoryRepository.hasCheque(id));
 
-        if (errors.errors.asEnumerable().any())
+        if (hasCheque)
+            errors.push('This chequeCategory has cheque , You can not remove it');
+
+        if (errors.asEnumerable().any())
             return res.json({
                 isValid: !errors.asEnumerable().any(),
                 errors: errors
@@ -95,7 +100,7 @@ router.route('/:id')
 
         await(chequeCategoryRepository.remove(req.params.id));
 
-        res.json({ isValid: true });
+        res.json({isValid: true});
     }));
 
 module.exports = router;

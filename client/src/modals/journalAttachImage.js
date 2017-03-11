@@ -7,7 +7,7 @@ function journalAttachImageController($scope, $modalInstance, data, journalApi) 
 
     $scope.uploaded = (fileName)=> {
         journalApi.attachImage(journalId, {fileName: fileName})
-            .then(()=> $modalInstance.close())
+            .then(()=> $modalInstance.close(fileName))
             .catch((err)=> errors = err);
     };
 

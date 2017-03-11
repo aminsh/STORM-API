@@ -38,12 +38,23 @@ function subsidiaryLedgerAccountEntryModalController($scope, $modalInstance,
         Collection.removeAll($scope.errors);
         $scope.isSaving = true;
 
+        if (data.editMode == 'edit')
+            subsidiaryLedgerAccountApi.update(
+                $scope.subsidiaryLedgerAccount.id,
+                $scope.subsidiaryLedgerAccount)
+                .then(() => {
+                    logger.success();
+                    $modalInstance.close();
+                })
+                .catch(errors => $scope.errors = errors)
+                .finally(() => $scope.isSaving = false);
+
         subsidiaryLedgerAccountApi.create(
-            data.id,
+            data.generalLedgerAccount.id,
             $scope.subsidiaryLedgerAccount)
-            .then(() => {
+            .then(result => {
                 logger.success();
-                $modalInstance.close();
+                $modalInstance.close(result);
             })
             .catch(errors => $scope.errors = errors)
             .finally(() => $scope.isSaving = false);

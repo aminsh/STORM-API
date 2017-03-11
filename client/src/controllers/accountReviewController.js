@@ -87,7 +87,10 @@ function accountReviewController($scope, navigate, dimensionCategoryApi, devCons
         return params;
     }
 
-    $scope.executeTurnover = (reportName)=> {
+    $scope.executeTurnover = (form,reportName)=> {
+        /*if(form.$invalid)
+            return formService.setDirty(form);
+*/
         saveState();
         let params = getParameters();
 

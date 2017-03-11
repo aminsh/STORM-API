@@ -11,7 +11,9 @@ function dimensionCreateModalController(data,
         title: '',
         code: '',
         description: ''
-    }
+    };
+
+    $scope.isSaving = false;
 
     $scope.save = function (form) {
         if (form.$invalid)
@@ -19,13 +21,15 @@ function dimensionCreateModalController(data,
 
         Collection.removeAll($scope.errors);
 
+        $scope.isSaving = true;
+
         dimensionApi.create(data.categoryId, $scope.dimension)
             .then(function (result) {
                 $modalInstance.close(result);
             })
             .catch(function (errors) {
                 $scope.errors = errors;
-            });
+            }).finally(()=> $scope.isSaving = false);
     };
 
     $scope.close = function () {

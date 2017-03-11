@@ -2,11 +2,12 @@
 
 let async = require('asyncawait/async'),
     await = require('asyncawait/await'),
-    BaseRepository = require('./repository.base');
+    BaseRepository = require('./repository.base'),
+    Promise = require('promise');
 
-class ChequeCategoryRepository extends BaseRepository{
+class ChequeCategoryRepository extends BaseRepository {
     constructor(branchId) {
-        super(branchId)
+        super(branchId);
     }
 
     findById(id) {
@@ -15,26 +16,46 @@ class ChequeCategoryRepository extends BaseRepository{
             .first();
     }
 
+    hasCheque(id){
+        return  this.knex('cheques')
+            .where('chequeCategoryId', id)
+            .first();
+    }
+
     create(entity) {
-        knex.transaction((trx) => {
-            try {
-                let id = await(knex('chequeCategories')
-                    .transaction(trx)
-                    .returning('id')
-                    .insert(entity));
+        let knex = this.knex,
+            handler = (resolve, reject) => {
+                knex.transaction(async(trx => {
+                    try {
+                        let cheques = entity.cheques;
 
-                entity.cheques.forEach(c => c.chequeCategoryId = id);
+                        delete entity.cheques;
 
-                await(this.knex('cheques')
-                    .transaction(trx)
-                    .insert(entity.cheques));
+                        let ids = await(knex('chequeCategories')
+                            .transacting(trx)
+                            .returning('id')
+                            .insert(entity));
 
-                trx.commit();
-            }
-            catch (e) {
-                trx.rollback();
-            }
-        });
+                        cheques.forEach(c => c.chequeCategoryId = ids[0]);
+
+                        await(knex('cheques')
+                            .transacting(trx)
+                            .insert(cheques));
+
+                        trx.commit();
+
+                        entity.id = ids[0];
+
+                        resolve(entity);
+                    }
+                    catch (e) {
+                        trx.rollback();
+                        reject(e);
+                    }
+                }));
+            };
+
+        return new Promise(handler);
     }
 
     update(entity) {

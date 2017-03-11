@@ -21,6 +21,7 @@ app.use('/api/subsidiary-ledger-accounts', require('../routes/api.subsidiaryLedg
 app.use('/api/tags', require('../routes/api.tag'));
 app.use('/report', require('../routes/report.designer'));
 app.use('/api/reports', require('../routes/api.report'));
+app.use('/upload', require('../routes/api.upload'));
 
 
 app.get('/branch/change', (req, res) => {

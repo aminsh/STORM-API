@@ -179,13 +179,15 @@
                 </div>
                 <div class="col-md-5">
                     <dev-tag-numeric
+                            class="form-control"
+                            ng-init="isOpenNumericPopover=true"
                             ng-model="journalLine.amount"
                             style="width: 100%;margin-top: 19px;"
                             name="amount"
                             required
                             not-zero
-                            popover="{{journalLine.amount|number}}"
-                            popover-trigger="focus" class="form-control"
+                            popover-is-open="isOpenNumericPopover"
+                            popover-template="'partials/templates/amount-template.html'"
                             popover-placement="left"></dev-tag-numeric>
 
                     <div ng-messages="form.amount.$error" ng-if="form.amount.$dirty">
