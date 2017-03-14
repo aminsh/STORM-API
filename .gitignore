@@ -22,6 +22,7 @@ coverage
 
 # node-waf configuration
 .lock-wscript
+./idea
 
 # Compiled binary addons (http://nodejs.org/api/addons.html)
 build/Release
@@ -35,3 +36,5 @@ jspm_packages
 
 # Optional REPL history
 .node_repl_history
+/uploads
+/.idea
