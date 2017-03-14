@@ -14,11 +14,10 @@ function initServer() {
     });
 }
 
-var db = require('./server/models/index');
+initServer();
 
-db.sequelize.sync().then(function () {
-    initServer();
-});
+
+
 
 
 

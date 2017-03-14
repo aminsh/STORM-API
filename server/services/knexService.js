@@ -1,16 +1,7 @@
-var dbConfig = require('../config').db;
+"use strict";
 
-var knex = require('knex')({
-    client: dbConfig.client,
-    connection: dbConfig.url || {
-        host: dbConfig.host,
-        user: dbConfig.username,
-        password: dbConfig.password,
-        database: dbConfig.database,
-        ssl: dbConfig.ssl
-    },
-    debug: true
-});
+const dbConfig = require('../config').db,
+    knex = require('knex')(dbConfig);
 
 module.exports = knex;
 

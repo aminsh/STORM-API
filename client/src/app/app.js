@@ -21,6 +21,7 @@ import PricingController from './home/pricing.controller';
 import LoginController from './auth/login.controller';
 import RegisterController from './auth/register.controller';
 import ContactUsController from './home/contactUs.controller';
+import RequestLucaDemoController from './home/requestLucaDemo.controller';
 
 const MODULE_NAME = 'app';
 
@@ -36,6 +37,7 @@ angular.module(MODULE_NAME, ['ngMaterial', 'ngMessages', 'ui.router'])
     .controller('PricingController', PricingController)
     .controller('LoginController', LoginController)
     .controller('RegisterController', RegisterController)
-    .controller('ContactUsController', ContactUsController);
+    .controller('ContactUsController', ContactUsController)
+    .controller('RequestLucaDemoController', RequestLucaDemoController);
 
 export default MODULE_NAME;

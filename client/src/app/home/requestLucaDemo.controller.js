@@ -1,10 +1,8 @@
-export default class ContactUs {
+export default class RequestLucaDemo {
     constructor($http, setDirty) {
-        this.contactUsModel = {
+        this.model = {
             name: '',
-            email: '',
-            phone: '',
-            message: ''
+            email: ''
         };
 
         this.$http = $http;
@@ -18,11 +16,12 @@ export default class ContactUs {
             return this.setDirty(form);
         }
 
-        this.$http.post('/api/send-message', this.contactUsModel)
+        this.$http.post('/api/request-luca-demo',this.model)
             .then(result => this.result = result.data);
     }
 }
 
-ContactUs.$inject = ['$http', 'setDirty'];
+RequestLucaDemo.$inject = ['$http', 'setDirty'];
+
 
 
