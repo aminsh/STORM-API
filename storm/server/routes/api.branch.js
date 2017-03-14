@@ -3,7 +3,6 @@
 const express = require('express'),
     router = express.Router(),
     guid = require('../utilities/guidService'),
-    db = require('../models'),
     knexService = require('../services/knexService'),
     async = require('asyncawait/async'),
     await = require('asyncawait/await'),
@@ -11,25 +10,28 @@ const express = require('express'),
     eventEmitter = require('../services/eventEmitter'),
     branchQuery = require('../queries/query.branch');
 
-router.route('/').post(async((req, res) => {
-    var errors = [],
-        cmd = req.body;
+router.route('/')
+    .get((req, res) => {
+        knexService.select('id', 'name', 'logo', 'lucaConnectionId').from('branches')
+            .then(branches => res.json(branches));
+    })
+    .post(async((req, res) => {
+        let errors = [],
+            cmd = req.body,
+            entity = {
+                id: guid.newGuid(),
+                name: cmd.name,
+                logo: cmd.logo,
+                phone: cmd.phone,
+                address: cmd.address,
+                ownerId: req.user.id
+            };
 
-    var entity = {
-        id: guid.newGuid(),
-        name: cmd.name,
-        logo: cmd.logo,
-        phone: cmd.phone,
-        address: cmd.address,
-        ownerId: req.user.id
-    };
+        entity = await(knexService('branches').insert(entity));
 
-    db.branch.create(entity)
-        .then(function () {
-            res.json({ isValid: true, returnValue: entity.id });
-            eventEmitter.emit('on-branch-created', branchQuery.getById(entity.id))
-        });
-}));
+        res.json({isValid: true, returnValue: entity.id});
+        eventEmitter.emit('on-branch-created', branchQuery.getById(entity.id))
+    }));
 
 router.route('/my').get(async(function (req, res) {
     var branches = await(knexService.select('id', 'name', 'logo')
@@ -67,47 +69,42 @@ router.route('/members').get(function (req, res) {
         });
 });
 router.route('/members/add').post(async(function (req, res) {
-    var userId = req.body.userId,
+    let userId = req.body.userId,
         branchId = req.cookies['branch-id'],
-        errors = [];
-
-    var isUserExistInBranch = await(db.userInBranch.findOne({
-        where: { userId: userId, branchId: branchId }
-    }));
+        errors = [],
+        isUserExistInBranch = await(knexService.where('userId', userId).first());
 
     if (isUserExistInBranch)
         errors.push('User is already exist in current branch');
 
     if (errors.length != 0)
-        return res.json({ isValid: false, errors: errors });
+        return res.json({isValid: false, errors: errors});
 
-    var entity = {
+    let entity = {
         branchId: branchId,
         userId: req.body.userId,
         app: 'accounting',
         state: 'active'
     };
 
-    await(db.userInBranch.create(entity));
-
-    res.json({ isValid: true });
+    await(knexService('userInBranches').insert(entity));
+    res.json({isValid: true});
 }));
 
-router.route('/members/change-state/:memberId').put(async(function (req, res) {
-    var member = await(db.userInBranch.findById(req.params.memberId));
+router.route('/members/change-state/:id').put(async(function (req, res) {
+    let id = req.params.id,
+        member = await(knexService.table('userInBranches').where('id', id).first());
 
     if (member.state == 'active') member.state = 'inactive';
     else if (member.state == 'inactive') member.state = 'active';
 
-    await(member.save());
+    await(knexService('userInBranches').where('id', id).update(member));
 
-    res.json({ isValid: true });
+    res.json({isValid: true});
 }));
 
 router.route('/:id/logo').get(async((req, res) => {
-    var branch = await(knexService
-        .select('logo')
-        .from('branches').where('id', req.params.id))[0],
+    let branch = await(knexService.select('logo').from('branches').where('id', req.params.id).first()),
         logo = '/uploads/;/{0}'.format(branch.logo),
         options = {
             root: config.rootPath,
@@ -118,5 +115,11 @@ router.route('/:id/logo').get(async((req, res) => {
 
     res.sendFile(logo, options);
 }));
+
+router.route('/:id').get((req, res) => {
+    knexService.select('id', 'name', 'logo').from('branches')
+        .where('id', req.params.id).first()
+        .then(branch => res.json(branch));
+});
 
 module.exports = router;

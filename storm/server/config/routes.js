@@ -28,6 +28,7 @@ var basePath = '../routes';
 
 app.use('/api/users', require('{0}/api.user'.format(basePath)));
 app.use('/api/branches', require('{0}/api.branch'.format(basePath)));
+app.use('/api', require('{0}/api.message'.format(basePath)));
 app.use('/', require('{0}/api.upload'.format(basePath)));
 
 app.get('*', async(function (req, res) {

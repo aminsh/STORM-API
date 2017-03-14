@@ -14,24 +14,19 @@
 </div>
 
 
-<div flex layout="row" layout-padding style="text-align: center;" layout-wrap layout-align="start center">
-  <div flex="50" flex-sm="100" flex-xs="100" ng-repeat="person in VM.teams">
+<div flex layout="row" layout-padding style="text-align: center;" layout-wrap>
+  <div flex="25" flex-sm="100" flex-xs="100" layout-align="center center" ng-repeat="person in VM.teams"
+  style="margin-top: 20px">
     <md-card md-theme="{{ showDarkTheme ? 'dark-grey' : 'default' }}" md-theme-watch>
-      <md-card-title>
-        <md-card-title-media>
-          <div class="md-media-lg card-media">
-            <img ng-src="{{person.img}}" class="md-card-image" style="height: 100%" alt="{{person.name}}">
-          </div>
-        </md-card-title-media>
+      <img ng-src="{{person.img}}" class="md-card-image team"  alt="{{person.name}}">
+      <md-card-title layout-align="center center" style="padding-top: 0">
+
         <md-card-title-text>
           <span class="md-headline">{{person.name}}</span>
-          <span class="md-subhead">{{person.degree}}</span>
-          <md-card-content>
-            {{person.desc}}
-          </md-card-content>
+          <span class="md-subhead">{{person.position}}</span>
         </md-card-title-text>
       </md-card-title>
-      <md-card-actions layout="row" layout-align="end center">
+      <md-card-actions  layout-align="center center">
         <md-button class="md-icon-button" href="{{person.linkedin}}" md-no-ink="false">
           <md-icon md-svg-src="/img/icons/linkedin.svg"></md-icon>
         </md-button>

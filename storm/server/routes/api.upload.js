@@ -3,7 +3,7 @@ var express = require('express'),
 
 router.route('/upload')
     .post(function (req, res) {
-        var file = req.files.userfile;
+        let file = req.files.userfile;
 
         res.send({
             name: file.name,
