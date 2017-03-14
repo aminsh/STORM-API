@@ -3,21 +3,9 @@ module.exports = {
     port: process.env.PORT || 1000,
     db: {
         client: 'pg',
-        connection: {
-            host: 'localhost',
-            user: 'postgres',
-            password: 'P@ssw0rd',
-            database: 'dbAccFRK',
-            ssl: false
-        },
+        connection: 'postgres://postgres:P@ssw0rd@localhost:5432/dbLucaDemo',
         debug: true
     },
-    /*db: {
-        client: 'sqlite3',
-        connection: {
-            filename: '{0}/database/sqlitefiles/db.sqlite'
-        }
-    },*/
     user: {
         id: 'aaa2a686-1cb7-45ab-9660-5e8736ca821f',
         name: 'کاربر عمومی',
@@ -38,6 +26,9 @@ module.exports = {
     auth: {
         url: 'http://dev-storm:2000/auth',
         returnUrl: 'http://dev-storm:1000/auth/return',
-        logout: 'http://dev-storm:1000/auth/logout'
+        logout: 'http://dev-storm:1000/auth/logout',
+        storm: {
+            getBranches: 'http://localhost:2000/api/branches'
+        }
     }
 };

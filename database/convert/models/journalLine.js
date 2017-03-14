@@ -17,6 +17,7 @@ class JournalLine extends Base {
         this.article = model.Article;
         this.generalLedgerAccountId = account.generalLedgerAccountId;
         this.subsidiaryLedgerAccountId = account.subsidiaryLedgerAccountId;
+        this.detailAccountId = account.detailAccountId;
         this.dimension1Id = account.dimension1Id;
         this.dimension2Id = account.dimension2Id;
         this.dimension3Id = account.dimension3Id;

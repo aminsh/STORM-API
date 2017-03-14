@@ -8,11 +8,14 @@ module.exports = function (branchId) {
     let context = memoryService.get(`context.${branchId}`);
     if (context) return context;
 
-    const dbConfig = memoryService.get('dbConfigs')
+    const branch = memoryService.get('branches')
         .asEnumerable()
-        .single(d => d.branchId == branchId).dbConfig;
+        .single(d => d.id == branchId);
 
-    context = knex(dbConfig);
+    context = knex({
+        client: 'pg',
+        connection: branch.lucaConnectionId
+    });
 
     memoryService.set(`context.${branchId}`, context);
 

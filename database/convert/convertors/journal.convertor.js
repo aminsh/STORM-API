@@ -16,7 +16,7 @@ class JournalConvertor {
     }
 
     execute() {
-        let topics = await(this.sql.query('select * from topics'));
+        let topics = await(this.sql.query('select * from topics where year <> 95'));
 
         data.journals = topics.asEnumerable()
             .select(t => new Journal(

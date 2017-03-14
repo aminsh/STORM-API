@@ -1,6 +1,6 @@
 "use strict";
 
-var passport = require('passport'),
+const passport = require('passport'),
     url = require('url'),
     config = require('../../config'),
     memoryService = require('../../services/memoryService'),
@@ -16,34 +16,42 @@ class IntegratedAuthentication {
     }
 
     authenticate() {
-        if (this.goToLoginUrlIfTokenIsNotValid())
-            return;
 
-        this.setBranch();
+        try {
+            this.setBranch();
 
-        let users = this.usersOnMemory,
-            isUserExistsInMemory = users.asEnumerable().any(u => u.id == this.user.id);
+            let users = this.usersOnMemory,
+                isUserExistsInMemory = users.asEnumerable().any(u => u.id == this.user.id);
 
-        if (!isUserExistsInMemory) {
-            users.push(this.user);
-            this.usersOnMemory = users;
+            if (!isUserExistsInMemory) {
+                users.push(this.user);
+                this.usersOnMemory = users;
 
-            eventEmitter.emit('on-user-created', this.user, this.req);
+                eventEmitter.emit('on-user-created', this.user, this.req);
+            }
+
+            this.login();
+
+        } catch (error) {
+            this.goToLoginUrlIfTokenIsNotValid()
         }
-
-        this.login();
     }
 
     get data() {
-        let token = (url.parse(req.url).query)
-            ? url.parse(req.url).query.replace('token=', '')
+        let token = (url.parse(this.req.url).query)
+            ? url.parse(this.req.url).query.replace('token=', '')
             : null;
 
         return cryptoServivce.decrypt(token);
     }
 
     get user() {
-        return this.data.user;
+        let user = this.data.user;
+
+        if(!user.image)
+            user.image = config.user.image;
+
+        return user;
     }
 
     get usersOnMemory() {
@@ -84,14 +92,14 @@ class IntegratedAuthentication {
         if (req.xhr)
             return res.status(401).send('user is not authenticated');
 
-        var url = `${config.auth.url}/?returnUrl=${config.auth.returnUrl}`;
+        let url = `${config.auth.url}/?returnUrl=${config.auth.returnUrl}`;
 
         return res.redirect(url);
     }
 
     goToLoginUrlIfTokenIsNotValid() {
         let loginUrl = `${config.auth.url}/?returnUrl=${config.auth.returnUrl}`;
-        res.redirect(loginUrl);
+        this.res.redirect(loginUrl);
         return true;
     }
 }

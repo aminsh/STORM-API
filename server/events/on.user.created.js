@@ -1,16 +1,16 @@
 "use strict";
 
-var async = require('asyncawait/async');
-var await = require('asyncawait/await');
+const async = require('asyncawait/async'),
+    await = require('asyncawait/await'),
+    UserRepository = require('../data/repository.user');
 
 module.exports.name = 'on-user-created';
 
-module.exports.action = async((user, req)=> {
-    var ioc = req.ioc,
-        userRepository = ioc.resolve('userRepository');
+module.exports.action = async((user, req) => {
+    let userRepository = new UserRepository(req.cookies['branch-id']);
 
     let isUserExists = await(userRepository.findById(user.id));
-    if(isUserExists)
+    if (isUserExists)
         return;
 
     await(userRepository.create(user));
