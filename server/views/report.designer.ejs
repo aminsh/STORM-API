@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Report Dessigner</title>
+
+    <link href="/client/content/stimulsoft/stimulsoft.viewer.office2013.whiteblue.css" rel="stylesheet">
+    <link href="/client/content/stimulsoft/stimulsoft.designer.office2013.whiteblue.css" rel="stylesheet">
+    <link href="/client/content/fonts.min.css" rel="stylesheet"/>
+
+
+    <!--<script src="/client/dist/stimulsoft.all.min.js"></script>-->
+   <!-- <script src="/client/lib/stimulsoft.viewer.js"></script>
+    <script src="/client/lib/stimulsoft.designer.js"></script>-->
+    <script src="/client/lib/stimulsoft.ultimate/stimulsoft.reports.js"></script>
+    <script src="/client/lib/stimulsoft.ultimate/stimulsoft.viewer.js"></script>
+    <script src="/client/lib/stimulsoft.ultimate/stimulsoft.designer.js"></script>
+
+    <script src="/client/bower_components/jquery/dist/jquery.min.js"></script>
+
+</head>
+<body>
+<input type="text" id="url" width="500px">
+<input type="text" id="dataSourceName" width="200px">
+<input type="button" value="Start" id="btnStart">
+
+<div id="content"></div>
+
+<script>
+    var translates = JSON.parse('<%- JSON.stringify(translates) %>');
+    var mode = '<%- mode %>';
+    var name = '<%- name %>';
+
+    //var url = '/report/json/journal/195775559';
+    var url = '/api/cheques/1';
+
+    <% fonts.forEach(function (font) { %>
+    Stimulsoft.Base.StiFontCollection
+            .addOpentypeFontFile('/client/fonts/<%- font.fileName %>', '<%- font.name %>');
+    <% }) %>
+
+    var report = new Stimulsoft.Report.StiReport();
+
+    if (mode == 'edit')
+        report.loadFile('/client/reportFiles/' + name);
+
+    var designer = new Stimulsoft.Designer.StiDesigner(null, 'StiDesigner', false);
+    var viewer = new Stimulsoft.Viewer.StiViewer(null, "StiViewer", false);
+
+
+    function exec() {
+        var url = $('#url').val();
+        var dataSourceName = $('#dataSourceName').val();
+        designer.renderHtml('content');
+        //viewer.renderHtml("content");
+
+        //Stimulsoft.Base.Localization.StiLocalization.setLocalizationFile('/client/content/fa.xml',true);
+
+        Stimulsoft.Report.Dictionary.StiFunctions.addFunction(
+                "devFunction",
+                "digitToWord",
+                "digitToWord", "", "",
+                String, "", [Number], ["Amount"], [""],
+                function (str) {
+                    var delimiter, digit, i, iThree, numbers, part, parts, result, resultThree, three;
+                    if (!isFinite(str)) {
+                        return '';
+                    }
+                    if (typeof str !== "string") {
+                        str = str.toString();
+                    }
+                    parts = ['', 'هزار', 'میلیون', 'میلیارد', 'هزار میلیارد', 'کوادریلیون', 'کویینتیلیون', 'سکستیلیون'];
+                    numbers = {
+                        0: ['', 'صد', 'دویست', 'سیصد', 'چهارصد', 'پانصد', 'ششصد', 'هفتصد', 'هشتصد', 'نهصد'],
+                        1: ['', 'ده', 'بیست', 'سی', 'چهل', 'پنجاه', 'شصت', 'هفتاد', 'هشتاد', 'نود'],
+                        2: ['', 'یک', 'دو', 'سه', 'چهار', 'پنج', 'شش', 'هفت', 'هشت', 'نه'],
+                        two: ['ده', 'یازده', 'دوازده', 'سیزده', 'چهارده', 'پانزده', 'شانزده', 'هفده', 'هجده', 'نوزده'],
+                        zero: 'صفر'
+                    };
+                    delimiter = ' و ';
+                    str = str.split('').reverse().join('').replace(/\d{3}(?=\d)/g, "$&,").split('').reverse().join('').split(',').map(function (str) {
+                        return Array(4 - str.length).join('0') + str;
+                    });
+                    result = (function () {
+                        var results;
+                        results = [];
+                        for (iThree in str) {
+                            three = str[iThree];
+                            resultThree = (function () {
+                                var j, len, results1;
+                                results1 = [];
+                                for (i = j = 0, len = three.length; j < len; i = ++j) {
+                                    digit = three[i];
+                                    if (i === 1 && digit === '1') {
+                                        results1.push(numbers.two[three[2]]);
+                                    } else if ((i !== 2 || three[1] !== '1') && numbers[i][digit] !== '') {
+                                        results1.push(numbers[i][digit]);
+                                    } else {
+                                        continue;
+                                    }
+                                }
+                                return results1;
+                            })();
+                            resultThree = resultThree.join(delimiter);
+                            part = resultThree.length > 0 ? ' ' + parts[str.length - iThree - 1] : '';
+                            results.push(resultThree + part);
+                        }
+                        return results;
+                    })();
+                    result = result.filter(function (x) {
+                        return x.trim() !== '';
+                    });
+                    result = result.join(delimiter).trim();
+                    if (result !== '') {
+                        return result;
+                    } else {
+                        return numbers.zero;
+                    }
+                });
+
+        $.getJSON(url).then(function (result) {
+
+            Object.keys(translates).forEach(function (key) {
+                var v = new Stimulsoft.Report.Dictionary.StiVariable();
+                v.name = key;
+                v.alias = key;
+                v.category = "translate";
+                v.value = translates[key];
+
+                report.dictionary.variables.add(v);
+            });
+
+            var today = new Stimulsoft.Report.Dictionary.StiVariable();
+            today.name = 'today';
+            today.alias = 'Today';
+            today.category = "general";
+            today.value = '<%- today %>';
+
+            report.dictionary.variables.add(today);
+
+            var user = new Stimulsoft.Report.Dictionary.StiVariable();
+            user.name = 'user';
+            user.alias = 'User';
+            user.category = "general";
+            user.value = '<%- user.name %>';
+
+            report.dictionary.variables.add(user);
+
+            var data = {};
+            data[dataSourceName] = result;
+
+            report.regData("data", "data", data);
+            report.dictionary.synchronize();
+            designer.report = report;
+        });
+
+
+    }
+
+    $('#btnStart').click(function () {
+        exec();
+    });
+
+</script>
+
+</body>
+</html>

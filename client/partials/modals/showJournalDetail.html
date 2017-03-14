@@ -1,0 +1,41 @@
+<div class="modal-header">
+    <button type="button" ng-click="close()" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+    <h3 class="modal-title">{{'Show journal detail'| translate}}</h3>
+</div>
+<div class="modal-body k-rtl">
+    <div class="container-fluid">
+        <div class="row" style="margin-top: 20px">
+            <div class="col-xs-6 col-sm-4">
+                {{'Temporary number' | translate}} :
+                {{journal.temporaryNumber}}
+            </div>
+            <div class="col-xs-6 col-sm-4">
+                {{'Temporary date' | translate}} : {{journal.temporaryDate}}
+            </div>
+            <div class="col-xs-6 col-sm-4">
+                {{'Status'|translate}} :
+                {{journal.journalStatusDisplay}}
+            </div>
+        </div>
+        <div class="row" style="margin-top: 20px">
+            <div class="col-xs-6 col-sm-4">
+                {{'Number'|translate}} : {{journal.number}}
+            </div>
+            <div class="col-xs-6 col-sm-4">
+                {{'Date'|translate}} : {{journal.date}}
+            </div>
+        </div>
+        <div class="row" style="margin-top: 20px">
+            <div class="col-xs-12 col-sm-12">
+                {{'Description'|translate}} :
+                {{journal.description}}
+            </div>
+        </div>
+    </div>
+
+    <div style="margin-top: 50px">
+        <dev-tag-grid option="gridOption"></dev-tag-grid>
+    </div>
+</div>

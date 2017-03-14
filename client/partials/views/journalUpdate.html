@@ -1,0 +1,266 @@
+<dev-tag-content dev-attr-title="{{'Edit Journal'|translate}}">
+    <dev-tag-content-heading>
+        <div class="row">
+            <div class="col-md-1">
+                <i class="fa fa-{{journalStatueForTitle.icon}}"
+                   style="color: {{journalStatueForTitle.color}}"
+                   title="{{journalStatueForTitle.title}}"></i>
+            </div>
+            <div class="col-md-11">
+                <h4>{{'Edit Journal'|translate}}</h4>
+            </div>
+        </div>
+    </dev-tag-content-heading>
+
+    <dev-tag-content-body>
+        <div class="row">
+            <form name="form">
+
+                <div class="col-md-12">
+                    <dev-tag-button
+                            ng-click="save(form)"
+                            icon="glyphicon glyphicon-floppy-disk"
+                            ng-disabled="isSaving"
+                            is-waiting="isSaving"
+                            style-type="primary"
+                            title="{{'Save' | translate}}"></dev-tag-button>
+
+                    <!--<dev-tag-button
+                            ng-click="bookkeeping()"
+                            style-type="white"
+                            title="{{'Record Bookkeeping' | translate}}"></dev-tag-button>-->
+
+                    <dev-tag-button
+                            ng-click="attachImage()"
+                            icon="glyphicon glyphicon-open"
+                            style-type="white"
+                            title="{{'Upload image' | translate}}"></dev-tag-button>
+
+                    <dev-tag-button
+                            ng-if="journal.attachmentFileName"
+                            href="/{{journal.attachmentFileName}}"
+                            target="_blank"
+                            icon="glyphicon glyphicon-paperclip"
+                            style-type="white"
+                            title="{{'Show attachment image' | translate}}"></dev-tag-button>
+
+                    <dev-tag-button
+                            ng-click="print()"
+                            title="{{'Print' | translate}}"
+                            icon="glyphicon glyphicon-print"
+                            style-type="white"></dev-tag-button>
+                </div>
+
+                <div class="col-md-7">
+                    <div class="row" style="margin-top: 20px">
+                        <div class="col-md-2" style="text-align: left;margin-top: 7px">
+                            <label class="label-control">{{'Temporary number' | translate}}</label>
+                        </div>
+                        <div class="col-md-2">
+                            <dev-tag-numeric
+                                    ng-model="journal.temporaryNumber"
+                                    style="width: 100%"
+                                    name="temporaryNumber"
+                                    required></dev-tag-numeric>
+
+                            <div ng-messages="form.temporaryNumber.$error" ng-if="form.temporaryNumber.$dirty">
+                                <label ng-message="required" class="error">
+                                    {{'This field is required'|translate}}</label>
+                            </div>
+                        </div>
+                        <div class="col-md-2" style="text-align: left;margin-top: 7px">
+                            <label class="label-control">{{'Temporary date' | translate}}</label>
+                        </div>
+                        <div class="col-md-4">
+                            <dev-tag-datepicker
+                                    ng-model="journal.temporaryDate"
+                                    name="temporaryDate"
+                                    required></dev-tag-datepicker>
+
+                            <div ng-messages="form.temporaryDate.$error" ng-if="form.temporaryDate.$dirty">
+                                <label ng-message="required" class="error">{{'This field is
+                                    required'|translate}}</label>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="row" style="margin-top: 10px">
+                        <div class="col-md-2" style="text-align: left;margin-top: 7px">
+                            <i class="fa fa-tags" style="font-size: 18px"></i>
+                            <label class="label-control">{{'Tag' | translate}}</label>
+                        </div>
+                        <div class="col-md-10">
+                            <dev-tag-multi-select
+                                    ng-model="journal.tagIds"
+                                    k-data-source="tagsDataSource"
+                                    k-placeholder="{{'Select ...'|translate}}"
+                                    k-data-text-field="title"
+                                    k-data-value-field="id"
+                                    show-no-data-template
+                                    on-created="onSaveTag"></dev-tag-multi-select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-5">
+                    <div class="row" style="margin-top: 20px">
+                        <div class="col-md-3" style="text-align: left;margin-top: 7px">
+                            <label class="label-control">{{'Journal type' | translate}}</label>
+                        </div>
+                        <div class="col-md-5">
+                            <dev-tag-dropdownlist
+                                    name="journalType"
+                                    k-option-label="{{'Select ...'|translate}}"
+                                    k-data-value-field="key"
+                                    k-data-text-field="display"
+                                    k-data-source="journalTypeData"
+                                    ng-model="journal.journalType"
+                                    ></dev-tag-dropdownlist>
+                        </div>
+                    </div>
+
+                    <div class="row" style="margin-top: 10px">
+                        <div class="col-md-3" style="text-align: left;margin-top: 7px">
+                            <label class="label-control">{{'Description' | translate}}</label>
+                        </div>
+                        <div class="col-md-8">
+                        <textarea type="text" class="form-control" ng-model="journal.description"
+                                  name="description" style="width: 100%;height: 90px"></textarea>
+                        </div>
+                    </div>
+
+                </div>
+            </form>
+        </div>
+
+        <hr>
+
+        <div class="row">
+            <div class="col-md-12">
+                <dev-tag-button
+                        ng-click="createJournalLine()"
+                        icon="glyphicon glyphicon-plus"
+                        style-type="primary"
+                        title="{{'New Journal line' | translate}}"></dev-tag-button>
+
+                <dev-tag-button
+                        ng-click="writeCheque()"
+                        icon="glyphicon glyphicon-credit-card"
+                        style-type="white"
+                        title="{{'Write cheque' | translate}}"
+                        ng-disabled="!journalLineCurrent || (journalLineCurrent && journalLineCurrent.creditor == 0)"></dev-tag-button>
+
+                <dev-tag-grid option="gridOption"
+                              on-current-changed="journalLineCurrentChanged(current)">
+                    <dev-tag-grid-detail>
+                        <div class="panel panel-default">
+                            <div class="panel-body">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="row">
+                                            <div class="col-md-1">
+                                                <label class="label-control">
+                                                    {{'General ledger account' | translate}}
+                                                </label>
+                                            </div>
+                                            <div class="col-md-8" style="overflow: hidden">
+                                                {{item.generalLedgerAccountDisplay}}
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-1">
+                                                <label class="label-control">
+                                                    {{'Subsidiary ledger account'|translate}}
+                                                </label>
+                                            </div>
+                                            <div class="col-md-8" style="overflow: hidden">
+                                                {{item.subsidiaryLedgerAccountDisplay}}
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-1">
+                                                <label class="label-control">
+                                                    {{'Detail account'|translate}}
+                                                </label>
+                                            </div>
+                                            <div class="col-md-8" style="overflow: hidden"
+                                                 title="{{item.detailAccountDisplay}}">
+                                                {{item.detailAccountDisplay}}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-3">
+                                        <div class="row">
+                                            <div class="col-md-1">
+                                                <label class="label-control">
+                                                    {{dimensionCategories[0].title}}
+                                                </label>
+                                            </div>
+                                            <div class="col-md-8" title="${data.dimension1Display}">
+                                                {{item.dimension1Display}}
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-1">
+                                                <label class="label-control">
+                                                    {{dimensionCategories[1].title}}
+                                                </label>
+                                            </div>
+                                            <div class="col-md-8" title="{{item.dimension2Display}}">
+                                                {{item.dimension2Display}}
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-1">
+                                                <label class="label-control">
+                                                    {{dimensionCategories[2].title}}
+                                                </label>
+                                            </div>
+                                            <div class="col-md-8" title="{{item.dimension3Display}}">
+                                                {{item.dimension3Display}}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-3">
+                                        <div class="row">
+                                            <div class="col-md-1">
+                                                <label class="label-control">
+                                                    {{'Cheque number (abrv)'|translate}}
+                                                </label>
+                                            </div>
+                                            <div class="col-md-8" title="{{item.chequeNumber}}">
+                                                {{item.chequeNumber}}
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-1">
+                                                <label class="label-control">
+                                                    {{'Cheque date (abrv)'|translate}}
+                                                </label>
+                                            </div>
+                                            <div class="col-md-8" title="{{item.chequeDate}}">
+                                                {{item.chequeDate}}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </dev-tag-grid-detail>
+                </dev-tag-grid>
+            </div>
+
+
+        </div>
+    </dev-tag-content-body>
+</dev-tag-content>
+
+
+

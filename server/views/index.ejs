@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width"/>
+    <meta http-equiv="Content-Type" content="text/html" charset="utf-8"/>
+
+    <title><%- currentBranch.name %></title>
+
+    <link href="/client/content/bootstrap/bootstrap.min.css?v=<%- version.css %>" rel="stylesheet"/>
+    <link href="/client/content/bootstrap/bootstrap-rtl.min.css?v=<%- version.css %>" rel="stylesheet"/>
+    <link href="/client/content/kendo/kendo.common.min.css?v=<%- version.css %>" rel="stylesheet"/>
+    <link href="/client/content/kendo/kendo.custom.css?v=<%- version.css %>" rel="stylesheet"/>
+    <link href="/client/content/kendo/kendo.rtl.min.css?v=<%- version.css %>" rel="stylesheet"/>
+    <link href="/client/bower_components/bootstrap-sweetalert/dist/sweetalert.css?v=<%- version.css %>"
+          rel="stylesheet"/>
+    <link href="/client/bower_components/adm-dtp/dist/ADM-dateTimePicker.min.css" rel="stylesheet"/>
+    <link href="/client/bower_components/ladda/dist/ladda-themeless.min.css" rel="stylesheet">
+    <link href="/client/bower_components/dropzone/dist/min/dropzone.min.css" rel="stylesheet">
+    <!--<link href="/client/content/stimulsoft/stimulsoft.viewer.office2013.whiteblue.css" rel="stylesheet">
+    <link href="/client/content/stimulsoft/stimulsoft.designer.office2013.whiteblue.css" rel="stylesheet">-->
+
+    <link href="/client/content/font-awesome/css/font-awesome.css?v=<%- version.css %>" rel="stylesheet"/>
+    <link href="/client/content/animate.css?v=<%- version.css %>" rel="stylesheet"/>
+    <link href="/client/content/inspina.style.css?v=<%- version.css %>" rel="stylesheet"/>
+    <link href="/client/content/style.css?v=<%- version.css %>" rel="stylesheet"/>
+    <link href="/client/content/luca.css?v=<%- version.css %>" rel="stylesheet"/>
+
+</head>
+<body class="rtls k-rtl">
+<shell>
+    <div class="waiting-overley">
+        <div class="waiting-block">
+            <div style="margin-bottom: 30px">
+                <img src="/client/content/images/luca.png" style="width: 70px;height: 70px">
+            </div>
+            <div class="progress-waiting-container">
+                <div class="progress-waiting">
+                    <div class="progress-waiting-bar">
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="middle-box text-center animated fadeInDown" style="margin-top: 250%;">
+                <img src="/client/content/images/Luca%20symbol.jpg" style="border-radius:50%"
+                     class="img-responsive img-center">
+            </div>
+        </div>
+
+    </div>
+</shell>
+
+</body>
+
+</html>
+
+<script src="/client/dist/vendor.bundle.min.js?v=<%- version.vendor %>"></script>
+
+<script src="/client/dist/stimulsoft.all.min.js"></script>
+<script src="/client/lib/stimulsoft.ultimate/stimulsoft.reports.js"></script>
+<script src="/client/lib/stimulsoft.ultimate/stimulsoft.viewer.js"></script>
+<script src="/client/lib/stimulsoft.ultimate/stimulsoft.designer.js"></script>
+
+<script>
+    require('js-helper');
+
+    localStorage.setItem('translate', '<%- JSON.stringify(clientTranslation) %>');
+    localStorage.setItem('currentUser', '<%- JSON.stringify(currentUser) %>');
+    localStorage.setItem('currentBranch', '<%- JSON.stringify(currentBranch) %>');
+    localStorage.setItem('dimensionCategories', '<%- JSON.stringify(dimensionCategories) %>');
+    localStorage.setItem('reports', '<%- JSON.stringify(reports) %>');
+
+    window.jQuery = window.$ = require('jquery');
+    require("bootstrap");
+    require("slimscroll");
+    require("pace");
+
+    <% if(env == 'development') { %>
+    localStorage.setItem('reportTemplate', '<%- reportTemplate %>');
+    <% } else { %>
+
+    Stimulsoft.Base.Localization.StiLocalization.setLocalizationFile('/client/content/fa.xml', true);
+    <% } %>
+
+    <% fonts.forEach(function (font) { %>
+    Stimulsoft.Base.StiFontCollection
+        .addOpentypeFontFile('/client/fonts/<%- font.fileName %>', '<%- font.name %>');
+    <% }) %>
+
+    Stimulsoft.Report.Dictionary.StiFunctions.addFunction(
+        "devFunction",
+        "digitToWord",
+        "digitToWord", "", "",
+        String, "", [Number], ["Amount"], [""],
+        window.digitToWord);
+
+    Stimulsoft.Report.Dictionary.StiFunctions.addFunction(
+        "devFunction",
+        "dateToWord",
+        "dateToWord", "", "",
+        String, "", [String], ["Date"], [""],
+        window.dateToWord);
+</script>
+
+<script src="/client/dist/acc.bundle.js?v=<%- version.acc %>"></script>
+<script src="/client/dist/acc.template.bundle.js?v=<%- version.template %>"></script>
