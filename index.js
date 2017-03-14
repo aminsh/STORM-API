@@ -1,13 +1,8 @@
 "use strict";
 
-const fileSystemServer = require('./server/services/fileSystemService'),
-    path = require('path');
+const config = require('./storm/server/config'),
+    app = require('./storm/server/config/express').app;
 
-fileSystemServer.getDirectoryFiles('./initializers')
-    .sort()
-    .forEach(file => {
-        var run = require(`./server/initializers/${file.replace(path.extname(file), '')}`);
+require('./storm');
 
-        if (typeof run == 'function')
-            run();
-    });
+app.listen(config.port, () => console.log(`Port ${config.port} is listening ...`));

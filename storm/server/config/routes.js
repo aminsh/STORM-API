@@ -1,4 +1,6 @@
-var express = require('express'),
+"use strict";
+
+const express = require('express'),
     passport = require('passport'),
     app = require('./express').app,
     async = require('asyncawait/async'),
@@ -10,19 +12,6 @@ var express = require('express'),
     branchRoute = require('../services/branchRoute');
 
 var clientTranslation = require('./translate.fa.json');
-
-/*app.use(async(function (req, res, next) {
-    if (shouldNextRoute(req, res, next))
-        return;
-
-    if (authRoute(req, res, next))
-        return;
-
-    if (branchRoute(req, res, next))
-        return;
-
-
-}));*/
 
 var basePath = '../routes';
 
