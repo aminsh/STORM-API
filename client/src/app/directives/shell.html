@@ -1,53 +1,101 @@
 <body>
-    <ui-view></ui-view>
 
-    <section ng-hide="noFooter" class="company-location" layout-margin layout-padding layout-wrap layout="row" layout-align="center center">
-        <!-- layout-align="center center"> -->
-        <div flex=20 flex-sm=60>
-            <iframe layout-fill frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3239.0817488200137!2d51.334408314829!3d35.724207980184296!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzXCsDQzJzI3LjEiTiA1McKwMjAnMTEuOCJF!5e0!3m2!1sen!2sus!4v1484839910454"></iframe>
-        </div>
+<ui-view></ui-view>
 
-        <div flex=30 flex-sm=60 style="text-align: center;">
-            <p><md-button href="mailto:info@storm-online.ir" class="md-primary">info@storm-online.ir <md-icon>email</md-icon></md-button></p>
-            <p>
-                تهران، صادقیه، خیابان سازمان آب، نرسیده به چهارراه اشرفی اصفهانی،
-                <br>
-                خیابان صباح، خیابان کوهدشت، پلاک ۱۲، واحد پنجم غربی
-            </p>
-        </div>
+<md-sidenav class="md-sidenav-right" md-component-id="right"
+            md-whiteframe="4" flex="50">
 
+    <md-toolbar class="md-theme-indigo" layout-align="center center">
+        <img src="/img/storm-logo.png" style="width: 150px">
+        <small>        ساده را پیچیده نکنیم
+        </small>
+    </md-toolbar>
 
-        <!--<md-list flex=20 flex-sm=60>
-            <md-subheader class="md-no-sticky">منو</md-subheader>
-            <md-list-item>
-                <div class="md-list-item-text" ng-click="null">
-                    <p> محصولات </p>
-                </div>
+    <!--<md-subheader class="md-no-sticky introduction" style="height: 200px">
+
+    </md-subheader>-->
+    <md-content layout-margin>
+        <md-list flex>
+
+            <md-list-item ui-sref="aboutus" ng-click="toggleSidenav()">
+                درباره ما
             </md-list-item>
-            <md-list-item>
-                <div class="md-list-item-text">
-                    <p> درباره‌ما </p>
-                </div>
+            <md-list-item ui-sref="contactUs" ng-click="toggleSidenav()">
+                ارتباط با ما
+            </md-list-item >
+            <md-list-item ui-sref="login" ng-click="toggleSidenav()">
+                عضویت / ورود
             </md-list-item>
+
+            <md-list-item ui-sref="pricing({type: 'luca'})" ng-click="toggleSidenav()">
+لیست قیمت لوکا
+            </md-list-item>
+
         </md-list>
-        <md-list flex=20 flex-sm=60>
-            <md-subheader class="md-no-sticky">منو</md-subheader>
-            <md-list-item>
-                <div class="md-list-item-text" ng-click="null">
-                    <p> محصولات </p>
-                </div>
-            </md-list-item>
-            <md-list-item>
-                <div class="md-list-item-text">
-                    <p> درباره‌ما </p>
-                </div>
-            </md-list-item>
-        </md-list>-->
-    </section>
+    </md-content>
 
-    <!--<footer ng-hide="noFooter" layout layout-margin layout-padding style="border-top: 1px solid rgba(0,0,0,0.4)">
-        <md-content layout-padding layout-wrap>
-            تمامی حقوق این سایت مربوط به ...
-        </md-content>
-    </footer>-->
+</md-sidenav>
+
+
+<section ng-hide="noFooter" class="company-location" layout-margin layout-padding layout-wrap layout="row"
+         layout-align="center center">
+
+    <!-- layout-align="center center"> -->
+    <div flex="20" hide show-gt-sm>
+        <iframe layout-fill frameborder="0" scrolling="no" marginheight="0" marginwidth="0"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3239.0817488200137!2d51.334408314829!3d35.724207980184296!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzXCsDQzJzI3LjEiTiA1McKwMjAnMTEuOCJF!5e0!3m2!1sen!2sus!4v1484839910454"></iframe>
+    </div>
+
+    <div flex="30" flex-xs="100">
+        <p style="text-align: left">
+            <md-button href="mailto:info@storm-online.ir" class="md-primary">info@storm-online.ir
+                <md-icon>email</md-icon>
+            </md-button>
+            <md-button href="tel:09396408566" class="md-primary">
+                0939-6408566
+                <md-icon>call</md-icon>
+            </md-button>
+            <md-button href="tel:02144292601" class="md-primary">
+                021-44292601
+                <md-icon>call</md-icon>
+            </md-button>
+            <md-button href="https://www.linkedin.com/company-beta/13263871/" class="md-primary">
+                <md-icon md-svg-src="/img/icons/linkedin.svg"></md-icon>
+            </md-button>
+
+        </p>
+        <p style="text-align: right;font-size: 12px">
+            تهران، صادقیه، خیابان سازمان آب، نرسیده به چهارراه اشرفی اصفهانی،
+            خیابان صباح، خیابان کوهدشت، پلاک ۱۲، واحد پنجم غربی
+        </p>
+    </div>
+
+
+
+    <!--<md-list flex=20>
+
+
+    </md-list>
+    <md-list flex=20 flex-sm=60>
+        <md-subheader class="md-no-sticky">منو</md-subheader>
+        <md-list-item>
+            <div class="md-list-item-text" ng-click="null">
+                <p> محصولات </p>
+            </div>
+        </md-list-item>
+        <md-list-item>
+            <div class="md-list-item-text">
+                <p> درباره‌ما </p>
+            </div>
+        </md-list-item>
+    </md-list>
+    </md-subheader>-->
+
+</section>
+
+<!--<footer ng-hide="noFooter" layout layout-margin layout-padding style="border-top: 1px solid rgba(0,0,0,0.4)">
+    <md-content layout-padding layout-wrap>
+        تمامی حقوق این سایت مربوط به ...
+    </md-content>
+</footer>-->
 </body>

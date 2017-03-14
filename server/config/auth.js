@@ -1,6 +1,8 @@
-var passport = require('passport'),
+"use strict";
+
+const passport = require('passport'),
     LocalStrategy = require('passport-local').Strategy,
-    db = require('../models'),
+    knex = require('../services/knexService'),
     md5 = require('md5');
 
 function configure() {
@@ -11,9 +13,9 @@ function configure() {
     });
 
     passport.deserializeUser(function (id, done) {
-        db.user.findById(id).then(function (user) {
-            done(null, user);
-        });
+
+        knex.table('users').where('id', id).first()
+            .then(user => done(null, user));
     });
 
     passport.use(
@@ -22,29 +24,25 @@ function configure() {
                 passReqToCallback: true
             },
             function (req, email, password, done) {
-                db.user.findOne({
-                    where: {
-                        email: {
-                            $iLike: email
-                        },
-                        password: md5(password)
-                    }
-                }).then(function (user) {
-                    if (user)
-                        return done(null, user);
-                    return done(null, false, {message: 'Username or password in incorrect'});
-                });
+                knex.table('users')
+                    .where('email', 'ILIKE', email).first()
+                    .andWhere('password', md5(password))
+                    .then(user => {
+                        if (user)
+                            return done(null, user);
+                        return done(null, false, {message: 'Username or password in incorrect'});
+                    });
             }
         ));
 }
 
 function authenticate(req, res, next) {
 
-    var auth = passport.authenticate('local', function (err, user) {
+    let auth = passport.authenticate('local', function (err, user) {
         if (err) return next(err);
         if (!user)return res.send({isValid: false, errors: ['Username or password in incorrect']});
         req.logIn(user, function (err) {
-            var token = req.cookies['branch-id'] && req.cookies['return-url']
+            let token = req.cookies['branch-id'] && req.cookies['return-url']
                 ? require('../queries/query.token').authToken(user, req.cookies['branch-id'])
                 : null;
 
@@ -53,7 +51,7 @@ function authenticate(req, res, next) {
                 isValid: true,
                 returnValue: {
                     currentUser: user.name,
-                    returnUrl: token ? '{0}/?token={1}'.format(req.cookies['return-url'],token) : null
+                    returnUrl: token ? '{0}/?token={1}'.format(req.cookies['return-url'], token) : null
                 }
             });
         })

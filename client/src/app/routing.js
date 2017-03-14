@@ -33,4 +33,16 @@ export default function routing($stateProvider, $urlRouterProvider) {
             controller: 'RegisterController',
             controllerAs: 'registerVM'
         })
+        .state('contactUs', {
+            url: '/contact-us',
+            templateUrl: 'app/home/contactUs.html',//require('./auth/register.html'),
+            controller: 'ContactUsController',
+            controllerAs: 'vm'
+        })
+        .state('requestLucaDemo', {
+            url: '/request-luca-demo',
+            templateUrl: 'app/home/requestLucaDemo.html',//require('./auth/register.html'),
+            controller: 'RequestLucaDemoController',
+            controllerAs: 'vm'
+        });
 }

@@ -6,12 +6,9 @@ var environment = {
     development: {
         rootPath: rootPath,
         db: {
-            username: "postgres",
-            password: "P@ssw0rd",
-            database: "admin",
-            host: "localhost",
-            dialect: "postgres",
-            client: 'pg'
+            client: 'pg',
+            connection: 'postgres://hbbxkylt:6FL1uRTUdewpGcYiL43PmW0PwPz3MvsJ@stampy.db.elephantsql.com:5432/hbbxkylt',
+            debug: true
         },
         port: process.env.PORT || 2000,
         version: {
@@ -19,6 +16,20 @@ var environment = {
             acc: '1.0.0',
             css: '1.0.0',
             template: '1.0.0'
+        },
+        email: {
+            from: 'STORM <info@storm-online.ir>',
+            transporter: {
+                host: 'smtp.zoho.com',
+                port: 465, //example
+                auth: {
+                    user: 'info@storm-online.ir',
+                    pass: 'rAEMtxezr3UN'
+                }
+            }
+        },
+        url: {
+            luca: 'http://dev-storm:1000/auth/return'
         }
     },
     production: {
@@ -45,6 +56,20 @@ var environment = {
             acc: '1.0.0',
             css: '1.0.0',
             template: '1.0.0'
+        },
+        email: {
+            from: 'STORM <info@storm-online.ir>',
+            transporter: {
+                host: 'smtp.zoho.com',
+                port: 465, //example
+                auth: {
+                    user: 'info@storm-online.ir',
+                    pass: 'rAEMtxezr3UN'
+                }
+            }
+        },
+        url: {
+            luca: 'http://www.luca.storm-online.ir/auth/return'
         }
     }
 };
