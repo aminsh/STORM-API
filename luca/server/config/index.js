@@ -9,8 +9,8 @@ const path = require('path'),
 config.mode = args.mode ? args.mode.toUpperCase() : 'INTEGRATED';
 config.rootPath = rootPath;
 
-if (config.db.connection.filename)
-    config.db.connection.filename = config.db.connection.filename.format(rootPath);
+/*if (config.db.connection.filename)
+    config.db.connection.filename = config.db.connection.filename.format(rootPath);*/
 
 config.env = env;
 
