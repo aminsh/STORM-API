@@ -1,0 +1,35 @@
+{
+  "name": "sfdjl",
+  "description": "",
+  "main": "index.js",
+  "license": "ISC",
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "~1.4.6",
+    "angular-animate": "~1.4.6",
+    "angular-resource": "~1.4.6",
+    "angular-route": "~1.4.6",
+    "angular-sanitize": "~1.4.6",
+    "angular-translate": "~2.8.0",
+    "angular-bootstrap": "~0.13.4",
+    "bootstrap-rtl": "~3.3.4",
+    "angular-translate-loader-url": "~2.8.1",
+    "angular-messages": "^1.5.7",
+    "angular-cookies": "^1.5.8",
+    "linqjs": "^3.0.5",
+    "jquery": "2.2.4",
+    "bootstrap-sweetalert": "^1.0.1",
+    "adm-dtp": "*",
+    "chart.js": "^2.5.0",
+    "angular-ladda": "^0.4.3",
+    "dropzone": "^4.3.0"
+  }
+}

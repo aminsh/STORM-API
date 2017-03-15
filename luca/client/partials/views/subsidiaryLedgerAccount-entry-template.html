@@ -1,0 +1,43 @@
+<dev-tag-validation-summary errors="errors"></dev-tag-validation-summary>
+
+<div class="row">
+    <div class="form-group col-xs-6">
+        <label class="label-control">{{'Code' | translate}}</label>
+        <input type="text"
+               class="form-control"
+               ng-model="subsidiaryLedgerAccount.code"
+               name="code"/>
+    </div>
+</div>
+
+<div class="row">
+    <div class="form-group col-xs-6">
+        <label class="label-control">{{'Title' | translate}}</label>
+        <input type="text"
+               class="form-control"
+               required
+               ng-model="subsidiaryLedgerAccount.title"
+               name="title"
+        />
+
+        <div ng-messages="form.title.$error" ng-if="form.title.$dirty">
+            <span ng-message="required" class="label label-danger">{{'This field is required'|translate}}</span>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="form-group col-xs-6">
+        <dev-tag-check-box ng-model="subsidiaryLedgerAccount.isBankAccount"></dev-tag-check-box>
+        <label>{{'Is Bank account ?' | translate}}</label>
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="label-control">{{'Description' | translate}}</label>
+    <dev-tag-editor type="text" class="form-control" ng-model="subsidiaryLedgerAccount.description"
+                    name="description"></dev-tag-editor>
+</div>
+
+
+

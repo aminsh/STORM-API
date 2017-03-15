@@ -1,32 +1,16 @@
-require('./server/utilities/string.prototypes.js');
-require('./server/utilities/array.prototypes.js');
-require('./server/utilities/function.prototypes.js');
+"use strict";
 
-var config = require('./server/config');
-var app = require('./server/config/express').app;
-require('./server/config/routes');
-require('./server/config/translation');
-require('./server/config/auth').configure();
+require('./utilities/string.prototypes.js');
+require('./utilities/array.prototypes.js');
+require('./utilities/function.prototypes.js');
 
-function initServer() {
-    app.listen(config.port, function () {
-        console.log('Port {0} is listening ...'.format(config.port));
-    });
-}
+const config = require('./storm/server/config'),
+    lucaApp = require('./luca/server/config/config.express'),
+    app = require('./storm/server/config/express').app;
 
-initServer();
+app.use('/luca', lucaApp);
 
+require('./storm');
+require('./luca');
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+app.listen(config.port, () => console.log(`Port ${config.port} is listening ...`));

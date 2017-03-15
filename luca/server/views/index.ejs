@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width"/>
+    <meta http-equiv="Content-Type" content="text/html" charset="utf-8"/>
+
+    <title><%- currentBranch.name %></title>
+    <base href="/">
+
+    <link href="/luca/client/content/bootstrap/bootstrap.min.css" rel="stylesheet"/>
+    <link href="/luca/client/content/bootstrap/bootstrap.min.css?v=<%- version.css %>" rel="stylesheet"/>
+    <link href="/luca/client/content/bootstrap/bootstrap-rtl.min.css?v=<%- version.css %>" rel="stylesheet"/>
+    <link href="/luca/client/content/kendo/kendo.common.min.css?v=<%- version.css %>" rel="stylesheet"/>
+    <link href="/luca/client/content/kendo/kendo.custom.css?v=<%- version.css %>" rel="stylesheet"/>
+    <link href="/luca/client/content/kendo/kendo.rtl.min.css?v=<%- version.css %>" rel="stylesheet"/>
+    <link href="/luca/client/bower_components/bootstrap-sweetalert/dist/sweetalert.css?v=<%- version.css %>"
+          rel="stylesheet"/>
+    <link href="/luca/client/bower_components/adm-dtp/dist/ADM-dateTimePicker.min.css" rel="stylesheet"/>
+    <link href="/luca/client/bower_components/ladda/dist/ladda-themeless.min.css" rel="stylesheet">
+    <link href="/luca/client/bower_components/dropzone/dist/min/dropzone.min.css" rel="stylesheet">
+    <!--<link href="/client/content/stimulsoft/stimulsoft.viewer.office2013.whiteblue.css" rel="stylesheet">
+    <link href="/client/content/stimulsoft/stimulsoft.designer.office2013.whiteblue.css" rel="stylesheet">-->
+
+    <link href="/luca/client/content/font-awesome/css/font-awesome.css?v=<%- version.css %>" rel="stylesheet"/>
+    <link href="/luca/client/content/animate.css?v=<%- version.css %>" rel="stylesheet"/>
+    <link href="/luca/client/content/inspina.style.css?v=<%- version.css %>" rel="stylesheet"/>
+    <link href="/luca/client/content/style.css?v=<%- version.css %>" rel="stylesheet"/>
+    <link href="/luca/client/content/luca.css?v=<%- version.css %>" rel="stylesheet"/>
+</head>
+<body class="rtls k-rtl">
+<shell>
+    <div class="waiting-overley">
+        <div class="waiting-block">
+            <div style="margin-bottom: 30px">
+                <img src="/luca/client/content/images/luca.png" style="width: 70px;height: 70px">
+            </div>
+            <div class="progress-waiting-container">
+                <div class="progress-waiting">
+                    <div class="progress-waiting-bar">
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="middle-box text-center animated fadeInDown" style="margin-top: 250%;">
+                <img src="/luca/client/content/images/Luca%20symbol.jpg" style="border-radius:50%"
+                     class="img-responsive img-center">
+            </div>
+        </div>
+
+    </div>
+</shell>
+
+<script type="text/javascript">window.vasleSettings = {app_id: "xwiIitqQ"};</script>
+<script type="text/javascript"> !function () {
+        function t() {
+            var t = n.createElement("script");
+            t.type = "text/javascript", t.async = !0, t.src = "https://www.retain.ir/app/xwiIitqQ/widget/?" + Math.random().toString(34).slice(2);
+            var e = n.getElementsByTagName("script")[0];
+            e.parentNode.insertBefore(t, e)
+        }
+
+        var e = window, a = e.Vasle;
+        if ("function" == typeof a) a("reattach_activator"), a("update", e.vasleSettings); else {
+            var n = document, c = function () {
+                c.c(arguments)
+            };
+            c.q = [], c.c = function (t) {
+                c.q.push(t)
+            }, e.Vasle = c, e.attachEvent ? e.attachEvent("onload", t) : e.addEventListener("load", t, !1)
+        }
+    }();</script>
+</body>
+
+</html>
+
+<script src="/luca/client/dist/vendor.bundle.min.js?v=<%- version.vendor %>"></script>
+<script src="/luca/client/lib/stimulsoft.ultimate/stimulsoft.reports.js"></script>
+<script src="/luca/client/lib/stimulsoft.ultimate/stimulsoft.viewer.js"></script>
+<script src="/luca/client/lib/stimulsoft.ultimate/stimulsoft.designer.js"></script>
+
+<script>
+    require('js-helper');
+
+    localStorage.setItem('translate', '<%- JSON.stringify(clientTranslation) %>');
+    localStorage.setItem('currentUser', '<%- JSON.stringify(currentUser) %>');
+    localStorage.setItem('currentBranch', '<%- JSON.stringify(currentBranch) %>');
+    localStorage.setItem('dimensionCategories', '<%- JSON.stringify(dimensionCategories) %>');
+    localStorage.setItem('reports', '<%- JSON.stringify(reports) %>');
+
+    window.jQuery = window.$ = require('jquery');
+    require("bootstrap");
+    require("slimscroll");
+    require("pace");
+
+    <% if(env == 'development') { %>
+    localStorage.setItem('reportTemplate', '<%- reportTemplate %>');
+    <% } else { %>
+
+    Stimulsoft.Base.Localization.StiLocalization.setLocalizationFile('/client/content/fa.xml', true);
+    <% } %>
+
+    <% fonts.forEach(function (font) { %>
+    Stimulsoft.Base.StiFontCollection
+        .addOpentypeFontFile('/client/fonts/<%- font.fileName %>', '<%- font.name %>');
+    <% }) %>
+
+    Stimulsoft.Report.Dictionary.StiFunctions.addFunction(
+        "devFunction",
+        "digitToWord",
+        "digitToWord", "", "",
+        String, "", [Number], ["Amount"], [""],
+        window.digitToWord);
+
+    Stimulsoft.Report.Dictionary.StiFunctions.addFunction(
+        "devFunction",
+        "dateToWord",
+        "dateToWord", "", "",
+        String, "", [String], ["Date"], [""],
+        window.dateToWord);
+</script>
+
+<script src="/luca/client/dist/acc.bundle.js?v=<%- version.acc %>"></script>
+<script src="/luca/client/dist/acc.template.bundle.js?v=<%- version.template %>"></script>

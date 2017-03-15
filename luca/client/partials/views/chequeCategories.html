@@ -1,0 +1,13 @@
+<dev-tag-content dev-attr-title="{{'Cheque categories'| translate}}">
+    <dev-tag-button
+            ng-click="create()"
+            title="{{'New Cheque category'| translate}}"
+            style-type="primary"
+            icon="glyphicon glyphicon-plus"></dev-tag-button>
+
+    <dev-tag-grid option="gridOption"
+                  on-current-changed="onSelectCategory(current)"></dev-tag-grid>
+
+    <dev-tag-grid option="chequeGridOption"></dev-tag-grid>
+
+</dev-tag-content>

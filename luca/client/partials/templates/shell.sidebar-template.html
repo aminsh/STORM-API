@@ -1,0 +1,60 @@
+<nav class="navbar-default navbar-static-side" role="navigation">
+    <div class="sidebar-collapse">
+        <ul class="nav" id="side-menu">
+            <li class="nav-header">
+                <div class="dropdown profile-element"> <span>
+                            <img alt="image" class="img-circle" src="{{user.image}}"/>
+                             </span>
+                    <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                            <span class="clear"> <span class="block m-t-xs"> <strong class="font-bold"> </strong>
+                             </span> <span class="text-muted text-xs block" style="color:white">{{user.name}}<b
+                                    class="caret"></b></span> </span> </a>
+                    <ul class="dropdown-menu animated fadeInRight m-t-xs">
+                        <li><a href="profile.html">پروفایل</a></li>
+                        <!--<li><a href="contacts.html">Contacts</a></li>-->
+                        <!--<li><a href="mailbox.html">Mailbox</a></li>-->
+                        <li class="divider"></li>
+                        <li>
+                            <a href="/logout">
+                                <i class="fa fa-sign-out"></i>
+                                خروج
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="logo-element text-navy">
+                    <i class="fa fa-calculator"></i>
+                </div>
+            </li>
+
+            <li>
+                <a href="/luca">
+                    <i class="fa fa-home"></i>
+                    <span class="nav-label">{{'Home'|translate}}</span>
+                </a>
+            </li>
+
+            <li ng-repeat="item in items">
+                <a href="{{item.url}}">
+                    <i class="{{item.icon}}"></i>
+                    <span class="nav-label">{{item.title}}</span>
+                    <span class="fa arrow" ng-if="item.children.length"></span>
+                </a>
+                <ul class="nav nav-second-level"
+                    ng-if="item.children.length">
+                    <li ng-repeat="child in item.children">
+                        <a href="{{child.url}}">{{child.title}}</a>
+                    </li>
+                </ul>
+            </li>
+
+            <li class="landing_link">
+
+            </li>
+            <li class="special_link">
+
+            </li>
+        </ul>
+
+    </div>
+</nav>

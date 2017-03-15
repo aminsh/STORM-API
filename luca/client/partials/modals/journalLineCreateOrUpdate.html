@@ -1,0 +1,219 @@
+<div class="modal-header">
+    <button type="button" ng-click="close()" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+    <h3 class="modal-title">
+        {{editMode == 'create'?'Journal line create':'Journal line edit'|translate}}
+    </h3>
+</div>
+<div class="modal-body k-rtl row" style="padding-right: 60px">
+
+    <dev-tag-validation-summary errors="errors"></dev-tag-validation-summary>
+
+    <form name="form">
+        <div class="col-md-11">
+            <div class="row" style="margin-top: 10px">
+                <div class="col-md-1" style="text-align: left">
+                    <label class="label-control">{{'General ledger account' | translate}}</label>
+                </div>
+                <div class="col-md-5">
+                    <dev-tag-combo-box
+                            name="generalLedgerAccountId"
+                            id="generalLedgerAccountId"
+                            focus-me="generalLedgerAccountShouldBeFocus"
+                            k-placeholder="{{'Select ...'|translate}}"
+                            k-data-value-field="id"
+                            k-data-text-field="display"
+                            k-data-source="generalLedgerAccountDataSource"
+                            k-on-changed="generalLedgerAccountOnChange"
+                            ng-model="journalLine.generalLedgerAccountId"
+                            required></dev-tag-combo-box>
+
+                    <div ng-messages="form.generalLedgerAccountId.$error" ng-if="form.generalLedgerAccountId.$dirty">
+                        <label ng-message="required"
+                              class="error">{{'This field is required'|translate}}</label>
+                    </div>
+                </div>
+                <div class="col-md-1">
+                    <label class="label-control">{{'Subsidiary ledger account' | translate}}</label>
+                </div>
+                <div class="col-md-5">
+                    <dev-tag-combo-box
+                            name="subsidiaryLedgerAccountId"
+                            ng-model="journalLine.subsidiaryLedgerAccountId"
+                            k-ng-model="journalLine.subsidiaryLedgerAccountId"
+                            k-value-primitive="true"
+                            k-placeholder="{{'Select ...'|translate}}"
+                            k-data-value-field="id"
+                            k-data-text-field="display"
+                            k-cascade-from="generalLedgerAccountId"
+                            k-data-source="subsidiaryLedgerAccountDataSource"
+                            k-on-changed="subsidiaryLedgerAccountSelect"
+                            k-on-data-bound="subsidiaryLedgerAccountDataBound"
+                            required></dev-tag-combo-box>
+
+                    <div ng-messages="form.subsidiaryLedgerAccountId.$error"
+                         ng-if="form.subsidiaryLedgerAccountId.$dirty">
+                        <label ng-message="required"
+                              class="error">{{'This field is required'|translate}}</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row"
+                 style="margin-top: 10px"
+                 ng-if="journalLine.detailAccount.canShow">
+                <div class="col-md-1" style="text-align: left">
+                    <label class="label-control">{{'Detail account' | translate}}</label>
+                </div>
+                <div class="col-md-11">
+                    <dev-tag-combo-box
+                            name="detailAccountId"
+                            k-placeholder="{{'Select ...'|translate}}"
+                            k-data-value-field="id"
+                            k-data-text-field="title"
+                            k-data-source="detailAccountDataSource"
+                            ng-model="journalLine.detailAccountId"
+                            ng-required="{{journalLine.detailAccount.isRequired}}"
+                            style="width: 100%"></dev-tag-combo-box>
+
+                    <div ng-messages="form.detailAccountId.$error" ng-if="form.detailAccountId.$dirty">
+                        <label ng-message="required"
+                              class="error">{{'This field is required'|translate}}</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row" style="margin-top: 10px" ng-if="journalLine.dimension1.canShow">
+                <div class="col-md-1" style="text-align: left">
+                    <label class="label-control">{{dimensionCategories[0].title}}</label>
+                </div>
+                <div class="col-md-11">
+                    <dev-tag-combo-box
+                            name="dimension1Id"
+                            k-placeholder="{{'Select ...'|translate}}"
+                            k-data-value-field="id"
+                            k-data-text-field="title"
+                            k-data-source="dimension1.dataSource"
+                            ng-model="journalLine.dimension1Id"
+                            ng-required="{{journalLine.dimension1.isRequired}}"
+                            style="width: 100%"></dev-tag-combo-box>
+
+                    <div ng-messages="form.dimension1Id.$error" ng-if="form.dimension1Id.$dirty">
+                        <label ng-message="required"
+                              class="error">{{'This field is required'|translate}}</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row" style="margin-top: 10px" ng-if="journalLine.dimension2.canShow">
+                <div class="col-md-1" style="text-align: left">
+                    <label class="label-control">{{dimensionCategories[1].title}}</label>
+                </div>
+                <div class="col-md-11">
+                    <dev-tag-combo-box
+                            name="dimension2Id"
+                            k-placeholder="{{'Select ...'|translate}}"
+                            k-data-value-field="id"
+                            k-data-text-field="title"
+                            k-data-source="dimension2.dataSource"
+                            ng-model="journalLine.dimension2Id"
+                            ng-required="{{journalLine.dimension2.isRequired}}"
+                            style="width: 100%"></dev-tag-combo-box>
+
+                    <div ng-messages="form.dimension2Id.$error" ng-if="form.dimension2Id.$dirty">
+                        <label ng-message="required"
+                              class="error">{{'This field is required'|translate}}</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row" style="margin-top: 10px" ng-if="journalLine.dimension3.canShow">
+                <div class="col-md-1" style="text-align: left">
+                    <label class="label-control">{{dimensionCategories[2].title}}</label>
+                </div>
+                <div class="col-md-11">
+                    <dev-tag-combo-box
+                            name="dimension3Id"
+                            k-placeholder="{{'Select ...'|translate}}"
+                            k-data-value-field="id"
+                            k-data-text-field="title"
+                            k-data-source="dimension3.dataSource"
+                            ng-model="journalLine.dimension3Id"
+                            ng-required="{{journalLine.dimension3.isRequired}}"
+                            style="width: 100%"></dev-tag-combo-box>
+
+                    <div ng-messages="form.dimension3Id.$error" ng-if="form.dimension3Id.$dirty">
+                        <label ng-message="required"
+                              class="error">{{'This field is required'|translate}}</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row" style="margin-top: 10px">
+                <div class="col-md-1" style="text-align: left">
+                    <label class="label-control">{{'Article' | translate}}</label>
+                </div>
+                <div class="col-md-11">
+                    <textarea class="form-control" ng-model="journalLine.article"
+                              name="article"></textarea>
+                </div>
+            </div>
+
+            <div class="row" style="margin-top: 10px">
+                <div class="col-md-2" style="text-align: left">
+                    <div class="btn-group-vertical">
+                        <button
+                                ng-click="changeAmountBalance()"
+                                ng-disabled="journalLine.balanceType == 'debtor'"
+                                class="btn btn-{{journalLine.balanceType == 'debtor'?'primary':'white'}}">
+                            {{'Debtor'|translate}}
+                        </button>
+                        <button
+                                ng-click="changeAmountBalance()"
+                                ng-disabled="journalLine.balanceType == 'creditor'"
+                                class="btn btn-{{journalLine.balanceType == 'creditor'?'primary':'white'}}">
+                            {{'Creditor'|translate}}
+                        </button>
+                    </div>
+                </div>
+                <div class="col-md-5">
+                    <dev-tag-numeric
+                            class="form-control"
+                            ng-init="isOpenNumericPopover=true"
+                            ng-model="journalLine.amount"
+                            style="width: 100%;margin-top: 19px;"
+                            name="amount"
+                            required
+                            not-zero
+                            popover-is-open="isOpenNumericPopover"
+                            popover-template="'partials/templates/amount-template.html'"
+                            popover-placement="left"></dev-tag-numeric>
+
+                    <div ng-messages="form.amount.$error" ng-if="form.amount.$dirty">
+                        <label ng-message="required"
+                              class="error">{{'This field is required'|translate}}</label>
+                        <label ng-message="notZero" class="error">{{'This field should have a value not equal to zero'|translate}}</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="modal-footer">
+    <dev-tag-button
+            ng-click="saveAndNew(form)"
+            icon="glyphicon glyphicon-floppy-disk"
+            is-waiting="isSaving"
+            ng-disabled="isSaving"
+            style-type="primary"
+            title="{{'Save and new' | translate}}"></dev-tag-button>
+
+    <dev-tag-button
+            ng-click="saveAndReturn(form)"
+            icon="glyphicon glyphicon-floppy-disk"
+            is-waiting="isSaving"
+            ng-disabled="isSaving"
+            style-type="primary"
+            title="{{'Save and return' | translate}}"></dev-tag-button>
+</div>
