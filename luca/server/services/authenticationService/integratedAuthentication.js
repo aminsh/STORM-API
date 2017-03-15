@@ -5,8 +5,7 @@ const passport = require('passport'),
     config = require('../../config'),
     memoryService = require('../../services/memoryService'),
     cryptoServivce = require('../../services/cryptoService'),
-    eventEmitter = require('../../services/eventEmitter'),
-    indexRouteHandler = require('../../routes').handler;
+    eventEmitter = require('../../services/eventEmitter');
 
 class IntegratedAuthentication {
 
@@ -92,7 +91,7 @@ class IntegratedAuthentication {
         if (req.xhr)
             return res.status(401).send('user is not authenticated');
 
-        let url = `${config.auth.url}/?returnUrl=${config.auth.returnUrl}`;
+        let url = `/login?returnUrl=${req.originalUrl}`;
 
         return res.redirect(url);
     }

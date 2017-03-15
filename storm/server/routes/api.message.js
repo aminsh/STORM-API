@@ -45,7 +45,7 @@ router.route('/request-luca-demo').post((req, res) => {
         to: info.email,
         subject: translate('Luca demo link'),
         html: `<p><h3>${translate('Hello')}</h3></p>
-               <p>${url}</p>`
+               <p><a href="${url}">${url}</a></p>`
     });
 
 });

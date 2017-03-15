@@ -1,7 +1,7 @@
 import accModule from '../acc.module';
 
 function chequeApi(apiPromise) {
-    var urlPrefix = '/api';
+    var urlPrefix = '/luca/api';
 
     return {
         getById: function (id) {

@@ -4,6 +4,7 @@ const config = require('../config'),
     fs = require('fs'),
     path = require('path'),
     memoryService = require('../services/memoryService'),
+    eventEmitter = require('../services/eventEmitter'),
     clientTranslation = require('../config/translate.client.fa.json'),
     router = require('express').Router(),
     async = require('asyncawait/async'),
@@ -12,14 +13,14 @@ const config = require('../config'),
     reports = require('../config/reports.json'),
     reportTemplate = fs.readFileSync(`${config.rootPath}/client/reportFiles/reportTemplate`),
     fonts = fs.readdirSync(__dirname + '/../../client/fonts')
-    .filter(function (fileName) {
-        return path.extname(fileName) == '.ttf';
-    }).asEnumerable().select(function (fileName) {
-        return {
-            fileName: fileName,
-            name: path.basename(fileName, '.ttf')
-        }
-    }).toArray();
+        .filter(function (fileName) {
+            return path.extname(fileName) == '.ttf';
+        }).asEnumerable().select(function (fileName) {
+            return {
+                fileName: fileName,
+                name: path.basename(fileName, '.ttf')
+            }
+        }).toArray();
 
 
 let handler = module.exports.handler = async((req, res) => {
@@ -27,7 +28,13 @@ let handler = module.exports.handler = async((req, res) => {
         dimensionCategories = await(dimensionCategoryQuery.getAll()),
         localTranslate = clientTranslation;
 
-    dimensionCategories.data.forEach((c, i) => localTranslate[`Dimension${i+1}`] = c.title);
+    eventEmitter.emit('on-user-created',
+        {id: req.user.id, name: req.user.name}, req);
+
+    dimensionCategories.data.forEach((c, i) => localTranslate[`Dimension${i + 1}`] = c.title);
+
+    if (!req.user.image)
+        req.user.image = config.user.image;
 
     res.render('index.ejs', {
         clientTranslation: localTranslate,

@@ -1,32 +1,16 @@
 {
-<<<<<<< HEAD
   "name": "admin",
   "version": "1.0.0",
   "description": "dev storm admin",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node . NODE_ENV=development"
-  },
   "author": "amin sheikhi",
   "license": "ISC",
   "homepage": "https://github.com/Foxandxss/angular-webpack-workflow",
-  "dependencies": {
-    "async": "^2.0.1",
-    "asyncawait": "^1.0.6",
-    "body-parser": "^1.10.0",
-=======
-  "name": "accounting",
-  "version": "1.0.0",
-  "description": "dev storm accounting",
-  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node . NODE_ENV=staging",
+    "start": "node .",
     "dev": "node . NODE_ENV=development --mode UNIT"
   },
-  "author": "amin sheikhi",
-  "license": "ISC",
   "engines": {
     "node": "4.4.x"
   },
@@ -35,8 +19,6 @@
     "async": "^2.0.1",
     "asyncawait": "^1.0.6",
     "body-parser": "^1.10.0",
-    "bookshelf": "^0.10.2",
->>>>>>> 422da1acb6764e551e83795c12bd1d0af3518578
     "compression": "^1.6.2",
     "connect-flash": "^0.1.1",
     "connect-redis": "^3.1.0",
@@ -46,16 +28,11 @@
     "ejs": "^1.0.0",
     "express": "^4.10.4",
     "express-session": "^1.11.1",
-<<<<<<< HEAD
-    "gulp-util": "^3.0.8",
-=======
     "get-parameter-names": "^0.3.0",
     "gulp-bundle-assets": "^2.27.1",
-    "gulp-util": "^3.0.8",
     "html-pdf": "^2.1.0",
     "jsdom": "^9.8.3",
     "jszip": "^2.6.0",
->>>>>>> 422da1acb6764e551e83795c12bd1d0af3518578
     "knex": "^0.12.0",
     "linq": "^3.0.5",
     "lodash": "^4.14.2",
@@ -64,38 +41,23 @@
     "moment-jalaali": "^0.4.0",
     "mssql": "^3.3.0",
     "multer": "^0.1.8",
-<<<<<<< HEAD
     "nodemailer": "^3.1.5",
-=======
->>>>>>> 422da1acb6764e551e83795c12bd1d0af3518578
     "passport": "^0.2.1",
     "passport-custom": "^1.0.5",
     "passport-local": "^1.0.0",
     "pg": "^6.1.0",
-<<<<<<< HEAD
-    "promise": "^7.1.1",
-    "redis": "^2.6.2",
-=======
     "pluralize": "^3.1.0",
     "promise": "^7.1.1",
     "redis": "^2.6.3",
     "request": "^2.79.0",
     "request-promise": "^4.1.1",
->>>>>>> 422da1acb6764e551e83795c12bd1d0af3518578
-    "sequelize": "^3.23.6",
-    "sequelize-cli": "^2.4.0",
     "serve-favicon": "^2.3.0",
     "session-memory-store": "^0.2.2",
-<<<<<<< HEAD
-    "tedious": "^1.14.0",
-    "yargs": "^7.0.2"
-=======
+    "yargs": "^7.0.2",
     "sqlite3": "^3.1.8",
     "stimulsoft-reports-js": "^2016.2.2-1",
     "tedious": "^1.14.0",
-    "to-pascal-case": "^1.0.0",
-    "yargs": "^6.6.0"
->>>>>>> 422da1acb6764e551e83795c12bd1d0af3518578
+    "to-pascal-case": "^1.0.0"
   },
   "devDependencies": {
     "babel-preset-es2015": "^6.9.0",
@@ -105,20 +67,14 @@
     "exorcist": "^0.4.0",
     "gulp": "^3.9.1",
     "gulp-angular-templatecache": "^1.8.0",
-<<<<<<< HEAD
     "gulp-bower": "0.0.13",
     "gulp-concat": "^2.6.1",
     "gulp-inject": "^4.2.0",
     "gulp-minify": "0.0.14",
-    "gulp-uglify": "^1.5.3",
+    "gulp-util": "^3.0.8",
     "main-bower-files": "^2.13.1",
-    "uglifyify": "^3.0.2"
-=======
-    "gulp-concat": "^2.6.1",
-    "gulp-minify": "0.0.14",
-    "gulp-uglify": "^1.5.3",
     "uglifyify": "^3.0.2",
+    "gulp-uglify": "^1.5.3",
     "yargs": "^6.6.0"
->>>>>>> 422da1acb6764e551e83795c12bd1d0af3518578
   }
 }

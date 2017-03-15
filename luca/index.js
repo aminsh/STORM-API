@@ -6,7 +6,7 @@ const fileSystemServer = require('./server/services/fileSystemService'),
 fileSystemServer.getDirectoryFiles('./initializers')
     .sort()
     .forEach(file => {
-        var run = require(`./server/initializers/${file.replace(path.extname(file), '')}`);
+        let run = require(`./server/initializers/${file.replace(path.extname(file), '')}`);
 
         if (typeof run == 'function')
             run();

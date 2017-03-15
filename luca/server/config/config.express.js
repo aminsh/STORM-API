@@ -45,7 +45,7 @@ app.use(function (req, res, next) {
 app.use(compression());
 app.set('views', config.rootPath + '/server/views');
 app.engine('html', ejs.renderFile);
-app.use('/client', express.static(config.rootPath + '/client'));
+app.use('/client', express.static(config.rootPath + 'client'));
 app.use('/content', express.static(config.rootPath + '/client/content'));
 app.use('/uploads', express.static(config.rootPath + '/uploads'));
 

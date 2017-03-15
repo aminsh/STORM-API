@@ -7,7 +7,7 @@ const path = require('path'),
             rootPath: rootPath,
             db: {
                 client: 'pg',
-                connection: 'postgres://postgres:P@ssw0rd@localhost:5432/postgres',
+                connection: 'postgres://postgres:P@ssw0rd@localhost:5432/admin-knex',
                 debug: true
             },
             port: 2000,
@@ -27,6 +27,9 @@ const path = require('path'),
                         pass: 'rAEMtxezr3UN'
                     }
                 }
+            },
+            url: {
+                luca: 'http://localhost:2000/luca-demo'
             }
         },
         production: {
@@ -52,6 +55,9 @@ const path = require('path'),
                         pass: 'rAEMtxezr3UN'
                     }
                 }
+            },
+            url: {
+                luca: 'https://www.storm-online.ir/luca-demo'
             }
         }
     };

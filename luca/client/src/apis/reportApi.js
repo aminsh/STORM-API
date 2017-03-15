@@ -1,7 +1,7 @@
 
 export default class {
     constructor(apiPromise) {
-        this.urlPrefix = '/api/reports';
+        this.urlPrefix = '/luca/api/reports';
         this.apiPromise = apiPromise;
     }
 

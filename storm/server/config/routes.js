@@ -2,12 +2,14 @@
 
 const express = require('express'),
     passport = require('passport'),
+    url = require('url'),
     app = require('./express').app,
     async = require('asyncawait/async'),
     await = require('asyncawait/await'),
     knexService = require('../services/knexService'),
     config = require('./'),
-    shouldNextRoute = require('../services/shouldNextRoute'),
+    memoryService = require('../services/memoryService'),
+    cryptoService = require('../services/cryptoService'),
     authRoute = require('../services/authRoute'),
     branchRoute = require('../services/branchRoute');
 
@@ -20,6 +22,27 @@ app.use('/api/branches', require('{0}/api.branch'.format(basePath)));
 app.use('/api', require('{0}/api.message'.format(basePath)));
 app.use('/', require('{0}/api.upload'.format(basePath)));
 
+app.get('/luca-demo', (req, res) => {
+    try {
+        let token = (url.parse(req.url).query)
+                ? url.parse(req.url).query.replace('token=', '')
+                : null,
+            info = cryptoService.decrypt(token);
+
+        res.cookie('branch-id', info.branchId);
+
+        req.demoUser = info.user;
+
+        let demoUsers = memoryService.get('demoUsers');
+        if (!demoUsers.asEnumerable().any(u => u.id == info.user.id))
+            demoUsers.push(info.user);
+
+        req.logIn(info.user, err => res.redirect('/luca'));
+
+    } catch (e) {
+        debugger;
+    }
+});
 app.get('*', async(function (req, res) {
     return res.render('index.ejs', {
         clientTranslation: clientTranslation,

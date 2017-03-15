@@ -2,16 +2,17 @@
 
 const config = require('../config'),
     async = require('asyncawait/async'),
-    await = require('asyncawait/await'),
-    Authentication = require('../services/authenticationService');
+    await = require('asyncawait/await');
 
 module.exports = async((req, res, next) => {
     if (req.isAuthenticated())
         return next();
 
-    if (req.originalUrl.startsWith('/auth/return'))
+    let url = `/login?returnUrl=${req.originalUrl}`;
+    return res.redirect(url);
+   /* if (req.originalUrl.startsWith('/auth/return'))
         return next();
 
     let authentication = new Authentication(req, res);
-    authentication.middleware();
+    authentication.middleware();*/
 });

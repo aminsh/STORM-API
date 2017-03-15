@@ -1,7 +1,7 @@
 import accModule from '../acc.module';
 
 function journalTemplateApi(apiPromise) {
-    var urlPrefix = '/api';
+    var urlPrefix = '/luca/api';
 
     return {
         create: (journalId, data)=>

@@ -17,11 +17,7 @@ class UserRepository extends BaseRepository {
     }
 
     create(entity) {
-        entity.id = this.knex('users')
-            .returning('id')
-            .insert(entity);
-
-        return entity;
+        return this.knex('users').insert(entity);
     }
 }
 

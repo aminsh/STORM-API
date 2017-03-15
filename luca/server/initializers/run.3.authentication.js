@@ -1,3 +1,3 @@
 
-require('../config/config.authentication');
+//require('../config/config.authentication');
 

@@ -1,7 +1,14 @@
-routing.$inject = ['$stateProvider', '$urlRouterProvider'];
+routing.$inject = ['$stateProvider', '$urlRouterProvider', '$locationProvider'];
 
-export default function routing($stateProvider, $urlRouterProvider) {
-    $urlRouterProvider.otherwise('/');
+export default function routing($stateProvider, $urlRouterProvider, $locationProvider) {
+    $locationProvider.html5Mode({
+        enabled: true,
+        requireBase: false
+    });
+
+    $locationProvider.hashPrefix('!');
+
+    $urlRouterProvider.otherwise('/404');
     $stateProvider
         .state('home', {
             url: '/',
@@ -44,5 +51,8 @@ export default function routing($stateProvider, $urlRouterProvider) {
             templateUrl: 'app/home/requestLucaDemo.html',//require('./auth/register.html'),
             controller: 'RequestLucaDemoController',
             controllerAs: 'vm'
+        })
+        .state('/404', {
+            template: '<h1>404</h1>'
         });
 }

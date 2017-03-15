@@ -1,7 +1,7 @@
 import accModule from '../acc.module';
 
 function chequeCategoryApi(apiPromise) {
-    var urlPrefix = '/api';
+    var urlPrefix = '/luca/api';
 
     return {
         getOpens: (detailAccountId)=>

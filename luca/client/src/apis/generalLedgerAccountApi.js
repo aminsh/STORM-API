@@ -1,7 +1,7 @@
 import accModule from '../acc.module';
 
 function generalLedgerAccountApi(apiPromise) {
-    var urlPrefix = '/api';
+    var urlPrefix = '/luca/api';
 
     return {
         url: {

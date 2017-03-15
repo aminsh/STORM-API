@@ -1,6 +1,6 @@
 export  default class FiscalPeriodApi{
     constructor(apiPromise){
-        this.urlPrefix = '/api';
+        this.urlPrefix = '/luca/api';
         this.apiPromise = apiPromise;
 
         this.getAll= '{0}/periods'.format(this.urlPrefix)
