@@ -9,7 +9,7 @@ function content() {
         scope: {},
         link: function (scope, element, attrs) {
             let $element = $(element),
-                title_template = `<div class="ibox-title">
+                title_template = `<div class="ibox-title panel-primary">
                                     <h5>${attrs.devAttrTitle}</h5>     
                                  </div>`,
                 content = $element.children();
@@ -31,7 +31,7 @@ accModule
     .directive('devTagContentHeading', function () {
         return {
             restrict: 'E',
-            template: `<div class="ibox-title" ng-transclude></div>`,
+            template: `<div class="ibox-title panel-primary" ng-transclude></div>`,
             transclude: true,
             replace: true
         };

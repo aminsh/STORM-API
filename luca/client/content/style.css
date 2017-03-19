@@ -1950,4 +1950,9 @@ label.error{
     padding: 20px 20px;
 }
 
+.nav-header {
+    padding: 25px 25px;
+    background: url(/luca/client/content/images/storm-nav-header.jpg) no-repeat;
+}
+
 

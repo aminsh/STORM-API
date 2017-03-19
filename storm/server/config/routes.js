@@ -17,6 +17,21 @@ var clientTranslation = require('./translate.fa.json');
 
 var basePath = '../routes';
 
+app.use(async((req, res, next) => {
+    res.locals = {
+        isAuthenticated: req.isAuthenticated(),
+        currentUser: req.isAuthenticated() ? req.user.name : null,
+        clientTranslation: clientTranslation,
+        currentBranch: req.cookies['branch-id']
+            ? require('../queries/query.branch').getById(req.cookies['branch-id'])
+            : false,
+        env: process.env.NODE_ENV,
+        version: config.version
+    };
+
+    next();
+}));
+
 app.use('/api/users', require('{0}/api.user'.format(basePath)));
 app.use('/api/branches', require('{0}/api.branch'.format(basePath)));
 app.use('/api', require('{0}/api.message'.format(basePath)));
@@ -40,17 +55,9 @@ app.get('/luca-demo', (req, res) => {
         req.logIn(info.user, err => res.redirect('/luca'));
 
     } catch (e) {
-        debugger;
+        res.send('token is not valid please send email to support@storm-online.ir');
     }
 });
 app.get('*', async(function (req, res) {
-    return res.render('index.ejs', {
-        clientTranslation: clientTranslation,
-        currentUser: req.isAuthenticated() ? req.user.name : '',
-        currentBranch: req.cookies['branch-id']
-            ? require('../queries/query.branch').getById(req.cookies['branch-id'])
-            : false,
-        env: process.env.NODE_ENV,
-        version: config.version
-    });
+    return res.render('index.ejs');
 }));

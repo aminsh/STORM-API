@@ -19,10 +19,12 @@
     <link href="/luca/client/bower_components/adm-dtp/dist/ADM-dateTimePicker.min.css" rel="stylesheet"/>
     <link href="/luca/client/bower_components/ladda/dist/ladda-themeless.min.css" rel="stylesheet">
     <link href="/luca/client/bower_components/dropzone/dist/min/dropzone.min.css" rel="stylesheet">
-    <!--<link href="/client/content/stimulsoft/stimulsoft.viewer.office2013.whiteblue.css" rel="stylesheet">
-    <link href="/client/content/stimulsoft/stimulsoft.designer.office2013.whiteblue.css" rel="stylesheet">-->
+
+    <link href="/luca/client/content/stimulsoft/stimulsoft.viewer.office2013.whitegreen.css" rel="stylesheet">
+    <link href="/luca/client/content/stimulsoft/stimulsoft.designer.office2013.whitegreen.css" rel="stylesheet">
 
     <link href="/luca/client/content/font-awesome/css/font-awesome.css?v=<%- version.css %>" rel="stylesheet"/>
+    <link href="/luca/client/content/fonts.min.css" rel="stylesheet">
     <link href="/luca/client/content/animate.css?v=<%- version.css %>" rel="stylesheet"/>
     <link href="/luca/client/content/inspina.style.css?v=<%- version.css %>" rel="stylesheet"/>
     <link href="/luca/client/content/style.css?v=<%- version.css %>" rel="stylesheet"/>
@@ -51,8 +53,14 @@
 
     </div>
 </shell>
-
-<script type="text/javascript">window.vasleSettings = {app_id: "xwiIitqQ"};</script>
+<% if(env != 'development') { %>
+<script type="text/javascript">
+    window.vasleSettings = {
+        app_id: "xwiIitqQ",
+        user_id: '<%- currentUser.id %>',
+        fullname: '<%- currentUser.name %>'
+    };
+</script>
 <script type="text/javascript"> !function () {
         function t() {
             var t = n.createElement("script");
@@ -71,6 +79,7 @@
             }, e.Vasle = c, e.attachEvent ? e.attachEvent("onload", t) : e.addEventListener("load", t, !1)
         }
     }();</script>
+<% } %>
 </body>
 
 </html>
@@ -83,6 +92,7 @@
 <script>
     require('js-helper');
 
+    localStorage.setItem('today', '<%- today %>');
     localStorage.setItem('translate', '<%- JSON.stringify(clientTranslation) %>');
     localStorage.setItem('currentUser', '<%- JSON.stringify(currentUser) %>');
     localStorage.setItem('currentBranch', '<%- JSON.stringify(currentBranch) %>');
@@ -95,16 +105,29 @@
     require("pace");
 
     <% if(env == 'development') { %>
-    localStorage.setItem('reportTemplate', '<%- reportTemplate %>');
+    Stimulsoft.Base.Localization.StiLocalization.setLocalizationFile('/luca/client/content/fa.xml', true);
     <% } else { %>
 
     Stimulsoft.Base.Localization.StiLocalization.setLocalizationFile('/client/content/fa.xml', true);
     <% } %>
 
-    <% fonts.forEach(function (font) { %>
-    Stimulsoft.Base.StiFontCollection
-        .addOpentypeFontFile('/client/fonts/<%- font.fileName %>', '<%- font.name %>');
-    <% }) %>
+    let fonts = [
+        {"fileName": "BBadr.ttf", "name": "BBadr"},
+        {"fileName": "BBaran.ttf", "name": "BBaran"},
+        {"fileName": "BBardiya.ttf", "name": "BBardiya"},
+        {"fileName": "BCompset.ttf", "name": "BCompset"},
+        {"fileName": "BElham.ttf", "name": "BElham"},
+        {"fileName": "BKoodakBold.ttf", "name": "BKoodakBold"},
+        {"fileName": "BLotus.ttf", "name": "BLotus"},
+        {"fileName": "BTraffic.ttf", "name": "BTraffic"},
+        {"fileName": "BZar.ttf", "name": "BZar"},
+        //{"fileName": "IRANSans.ttf", "name": "IRANSans"}
+    ];
+
+    fonts.forEach(f => Stimulsoft
+        .Base
+        .StiFontCollection
+        .addOpentypeFontFile(`/luca/client/fonts/${f.fileName}`, f.name));
 
     Stimulsoft.Report.Dictionary.StiFunctions.addFunction(
         "devFunction",
@@ -119,6 +142,7 @@
         "dateToWord", "", "",
         String, "", [String], ["Date"], [""],
         window.dateToWord);
+
 </script>
 
 <script src="/luca/client/dist/acc.bundle.js?v=<%- version.acc %>"></script>

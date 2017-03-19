@@ -11,16 +11,7 @@ const config = require('../config'),
     await = require('asyncawait/await'),
     DimensionCategoryQuery = require('../queries/query.dimensionCategory'),
     reports = require('../config/reports.json'),
-    reportTemplate = fs.readFileSync(`${config.rootPath}/client/reportFiles/reportTemplate`),
-    fonts = fs.readdirSync(__dirname + '/../../client/fonts')
-        .filter(function (fileName) {
-            return path.extname(fileName) == '.ttf';
-        }).asEnumerable().select(function (fileName) {
-            return {
-                fileName: fileName,
-                name: path.basename(fileName, '.ttf')
-            }
-        }).toArray();
+    persianDate = require('../services/persianDateService');
 
 
 let handler = module.exports.handler = async((req, res) => {
@@ -37,15 +28,14 @@ let handler = module.exports.handler = async((req, res) => {
         req.user.image = config.user.image;
 
     res.render('index.ejs', {
+        today: persianDate.current(),
         clientTranslation: localTranslate,
         currentUser: req.user,
         currentBranch: memoryService.get('branches')
             .asEnumerable().single(b => b.id == req.cookies['branch-id']),
         dimensionCategories: dimensionCategories,
-        fonts: fonts,
         version: config.version,
         reports: reports,
-        reportTemplate: reportTemplate,
         env: config.env
     });
 });

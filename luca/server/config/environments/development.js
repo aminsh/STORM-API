@@ -3,7 +3,7 @@ module.exports = {
     port: process.env.PORT || 1000,
     db: {
         client: 'pg',
-        connection: 'postgres://postgres:P@ssw0rd@localhost:5432/dbLucaDemo',
+        connection: 'postgres://khdntotyvarety:41cb005a1d3e157843239557043d5d7fcd992728b579f89ddea8cd1f986bf82e@ec2-54-235-247-224.compute-1.amazonaws.com:5432/d6ep66drpevbhr?ssl=true',
         debug: true
     },
     user: {

@@ -18,8 +18,8 @@ const express = require('express'),
 
 app.use(favicon(config.rootPath + '/client/content/images/favicon.ico'));
 app.use(cors());
-app.use(bodyParser.urlencoded({extended: false}));
-app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({limit: '50mb', extended: false}));
+app.use(bodyParser.json({limit: '50mb'}));
 app.use(cookieParser());
 app.use(session({
     store: new MemoryStore(),
