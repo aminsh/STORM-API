@@ -1,26 +1,27 @@
 import accModule from '../acc.module';
+import {addVariable} from '../utilities/stimulsoft';
 
 
-function reportDesigner(currentService, reportApi, $window) {
+function reportDesigner(currentService, reportApi) {
     return {
         restrict: 'E',
         template: '<div id="contentDesigner" style="direction: ltr"></div>',
         scope: {
             reportData: '=',
             reportFileName: '@',
-            reportDataSourceName: '@'
+            reportDataSourceName: '@',
+            reportTitle: '@'
         },
         link: (scope, element, attrs) => {
-            let report = new Stimulsoft.Report.StiReport();
+            let report = new Stimulsoft.Report.StiReport(),
+                designer = new Stimulsoft.Designer.StiDesigner(null, 'StiDesigner', false),
+                current = currentService.get(),
+                data = {};
 
             if (scope.reportFileName)
-                report.loadFile(`/client/reportFiles/${scope.reportFileName}`);
-            else {
-                report.loadFile(`/client/reportFiles/reportTemplate`);
-                report.reportFile = ""
-            }
+                report.loadFile(`/luca/client/reportFiles/${scope.reportFileName}`);
 
-            let designer = new Stimulsoft.Designer.StiDesigner(null, 'StiDesigner', false);
+            designer.renderHtml("contentDesigner");
 
             designer.onSaveReport = e => {
                 e.preventDefault = true;
@@ -29,57 +30,49 @@ function reportDesigner(currentService, reportApi, $window) {
                 reportApi.save({fileName: e.fileName, data: jsonReport});
             };
 
-            designer.renderHtml("contentDesigner");
+            report.dictionary.variables.add(addVariable({
+                name: 'today',
+                alias: 'Today',
+                category: 'general',
+                value: '1395/01/01',
+            }));
 
-            let today = new Stimulsoft.Report.Dictionary.StiVariable();
-            today.name = 'today';
-            today.alias = 'Today';
-            today.category = "general";
-            today.value = '1395/01/01';
 
-            report.dictionary.variables.add(today);
+            report.dictionary.variables.add(addVariable({
+                name: 'user',
+                alias: 'User',
+                category: 'general',
+                value: current.user.name
+            }));
 
-            let user = new Stimulsoft.Report.Dictionary.StiVariable();
-            user.name = 'user';
-            user.alias = 'User';
-            user.category = "general";
-            user.value = localStorage.getItem('currentUser');
+            report.dictionary.variables.add(addVariable({
+                name: 'branchLogo',
+                alias: 'Branch Logo',
+                category: "general",
+                value: current.branch.logo
+            }));
 
-            report.dictionary.variables.add(user);
+            report.dictionary.variables.add(addVariable({
+                name: 'branchTitle',
+                alias: 'Branch title',
+                category: "general",
+                value: current.branch.title
+            }));
 
-            let logo = new Stimulsoft.Report.Dictionary.StiVariable();
-            logo.name = 'logo';
-            logo.alias = 'logo';
-            logo.category = "general";
-            logo.value = currentService.get().branch.logo;
+            report.dictionary.variables.add(addVariable({
+                name: 'reportTitle',
+                alias: 'Report title',
+                category: "general",
+                value: scope.reportTitle
+            }));
 
-            report.dictionary.variables.add(logo);
+            report.dictionary.variables.add(addVariable({
+                name: 'reportParameters',
+                alias: 'Report parameters',
+                category: "general",
+                value: scope.reportParameters
+            }));
 
-            let title = new Stimulsoft.Report.Dictionary.StiVariable();
-            title.name = 'title';
-            title.alias = 'title';
-            title.category = "general";
-            title.value = currentService.get().branch.name;
-
-            report.dictionary.variables.add(title);
-
-            let reportTitle = new Stimulsoft.Report.Dictionary.StiVariable();
-            reportTitle.name = 'reportTitle';
-            reportTitle.alias = 'Report title';
-            reportTitle.category = "general";
-            reportTitle.value = scope.reportTitle;
-
-            report.dictionary.variables.add(reportTitle);
-
-            let reportParameters = new Stimulsoft.Report.Dictionary.StiVariable();
-            reportParameters.name = 'reportParameters';
-            reportParameters.alias = 'Report parameters';
-            reportParameters.category = "general";
-            reportParameters.value = scope.reportParameters;
-
-            report.dictionary.variables.add(reportParameters);
-
-            let data = {};
             data[scope.reportDataSourceName] = scope.reportData;
 
             report.regData("data", "data", data);

@@ -1,8 +1,11 @@
 import accModule from '../acc.module';
 import Guid from 'dev.guid';
+import {viewerConfig, addVariable, addTranslates} from '../utilities/stimulsoft';
+
+let config = viewerConfig();
 
 
-function reportViewer() {
+function reportViewer(currentService) {
     return {
         restrict: 'E',
         template: '<div id="contentViewer" style="direction: ltr"></div>',
@@ -14,56 +17,61 @@ function reportViewer() {
             reportDataSourceName: '@'
         },
         link: function (scope, element, attrs) {
-            let id = Guid.new();
+            let id = Guid.new(),
+                data = {},
+                current = currentService.get(),
+                report = new Stimulsoft.Report.StiReport(),
+                viewer = new Stimulsoft.Viewer.StiViewer(config, "StiViewer" + id, false);
 
             $(element).find('div').attr('id', id);
 
-            let options = new Stimulsoft.Viewer.StiViewerOptions();
-
-            options.toolbar.fontFamily = "IRANSans";
-            options.toolbar.showDesignButton = true;
-            options.toolbar.printDestination = Stimulsoft.Viewer.StiPrintDestination.Pdf;
-            options.appearance.htmlRenderMode = Stimulsoft.Report.Export.StiHtmlExportMode.Table;
-
-            let report = new Stimulsoft.Report.StiReport();
-            let viewer = new Stimulsoft.Viewer.StiViewer(options, "StiViewer" + id, false);
-
-            report.loadFile(`/client/reportFiles/${scope.reportFileName}`);
+            report.loadFile(`/luca/api/reports/file/${scope.reportFileName}`);
             viewer.renderHtml(id);
 
-            let today = new Stimulsoft.Report.Dictionary.StiVariable();
-            today.name = 'today';
-            today.alias = 'Today';
-            today.category = "general";
-            today.value = '1395/01/01';
+            report.dictionary.variables.add(addVariable({
+                name: 'today',
+                alias: 'Today',
+                category: "general",
+                value: current.today
+            }));
 
-            report.dictionary.variables.add(today);
+            report.dictionary.variables.add(addVariable({
+                name: 'user',
+                alias: 'User',
+                category: 'general',
+                value: current.user.name
+            }));
 
-            let user = new Stimulsoft.Report.Dictionary.StiVariable();
-            user.name = 'user';
-            user.alias = 'User';
-            user.category = "general";
-            user.value = localStorage.getItem('currentUser');
+            report.dictionary.variables.add(addVariable({
+                name: 'branchLogo',
+                alias: 'Branch Logo',
+                category: "general",
+                value: current.branch.logo
+            }));
 
-            report.dictionary.variables.add(user);
+            report.dictionary.variables.add(addVariable({
+                name: 'branchTitle',
+                alias: 'Branch title',
+                category: "general",
+                value: current.branch.name
+            }));
 
-            let reportTitle = new Stimulsoft.Report.Dictionary.StiVariable();
-            reportTitle.name = 'reportTitle';
-            reportTitle.alias = 'Report title';
-            reportTitle.category = "general";
-            reportTitle.value = scope.reportTitle;
+            report.dictionary.variables.add(addVariable({
+                name: 'reportTitle',
+                alias: 'Report title',
+                category: "general",
+                value: scope.reportTitle
+            }));
 
-            report.dictionary.variables.add(reportTitle);
+            report.dictionary.variables.add(addVariable({
+                name: 'reportParameters',
+                alias: 'Report parameters',
+                category: "general",
+                value: scope.reportParameters
+            }));
 
-            let reportParameters = new Stimulsoft.Report.Dictionary.StiVariable();
-            reportParameters.name = 'reportParameters';
-            reportParameters.alias = 'Report parameters';
-            reportParameters.category = "general";
-            reportParameters.value = scope.reportParameters;
+            addTranslates(report);
 
-            report.dictionary.variables.add(reportParameters);
-
-            let data = {};
             data[scope.reportDataSourceName] = scope.reportData;
 
             report.regData("data", "data", data);
