@@ -33,6 +33,12 @@ export default function ($scope, devConstants, dimensionCategoryApi, reportApi, 
         let params = resolveFilter($scope.journalSearch);
         $scope.fileName = report.fileName;
         $scope.reportTitle = report.text;
+
+        if (!report.func) {
+            $scope.mode = 'design';
+            return;
+        }
+
         reportApi[report.func](params)
             .then(result => {
                 $scope.data = result.data;
