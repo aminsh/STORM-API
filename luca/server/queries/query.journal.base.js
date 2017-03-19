@@ -24,6 +24,7 @@ module.exports = function(extra, currentFiscalPeriodId, knex) {
         'journalLines.article',
         'journalLines.debtor',
         'journalLines.creditor',
+        'journalLines.row',
         knex.raw('"cheques"."id" as "chequeId"'),
         knex.raw('"cheques"."date" as "chequeDate"'),
         knex.raw('"cheques"."description" as "chequeDescription"'),

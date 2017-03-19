@@ -4298,7 +4298,7 @@ body.rtls .pull-right {
   float: left !important;
 }
 body.rtls .pull-left {
-  float: right !important;
+  float: right /*!important*/;
 }
 body.rtls .ibox-tools {
   float: left;
