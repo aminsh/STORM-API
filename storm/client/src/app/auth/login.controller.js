@@ -44,6 +44,11 @@ export default class LoginController {
                 self.vm.isError = true;
             })
     }
+
+    loginByGoogle(){
+        let url = `${this.$window.location.origin}/auth/google`;
+        this.$window.open(url, '_self');
+    }
 }
 
 LoginController.$inject = ['api', '$http', 'setDirty', "$rootScope", "$scope", "$state", "$location", "$window"];

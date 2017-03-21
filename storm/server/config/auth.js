@@ -1,11 +1,15 @@
 "use strict";
 
-const passport = require('passport'),
+const config = require('./'),
+    passport = require('passport'),
     LocalStrategy = require('passport-local').Strategy,
+    GoogleStrategy = require('passport-google-oauth').OAuth2Strategy,
     knex = require('../services/knexService'),
     md5 = require('md5'),
     memoryService = require('../services/memoryService'),
-    string = require('../utilities/string');
+    string = require('../utilities/string'),
+    async = require('asyncawait/async'),
+    await = require('asyncawait/await');
 
 function configure() {
     "use strict";
@@ -47,6 +51,33 @@ function configure() {
                     });
             }
         ));
+
+    // auth by google
+
+    passport.use(
+        new GoogleStrategy(
+            config.auth.google,
+            (token, refreshToken, profile, done) => {
+                process.nextTick(async(() => {
+                    let user = await(knex.table('users').where('id', profile.id).first());
+
+                    if (user) return done(null, user);
+
+                    user = {
+                        id: profile.id,
+                        googleToken: token,
+                        name: profile.displayName,
+                        email: profile.emails[0].value,
+                        image: profile.photos[0].value,
+                        state: 'active'
+                    };
+
+                    await(knex('users').insert(user));
+
+                    return done(null, user);
+
+                }));
+            }));
 }
 
 function authenticate(req, res, next) {
@@ -70,6 +101,11 @@ function authenticate(req, res, next) {
 
 module.exports[configure.name] = configure;
 module.exports[authenticate.name] = authenticate;
+module.exports.googleAuthenticate = passport.authenticate('google', {scope: ['profile', 'email']});
+module.exports.googleAuthenticateCallback = passport.authenticate('google', {
+    successRedirect : '/',
+    failureRedirect : '/login'
+});
 
 
 
