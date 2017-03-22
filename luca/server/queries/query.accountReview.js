@@ -4,82 +4,52 @@ const async = require('asyncawait/async'),
     await = require('asyncawait/await'),
     BaseQuery = require('./query.base'),
     kendoQueryResolve = require('../services/kendoQueryResolve'),
-    groupBy = require('./query.accountReview.groupby'),
-    enums = require('../constants/enums');
+    groupBy = require('./query.journal.grouped'),
+    enums = require('../constants/enums'),
+    JournalQueryConfig = require('./query.journal.config');
 
 module.exports = class AccountReview extends BaseQuery {
-    constructor(branchId, fiscalPeriodId, filter, paramters) {
+    constructor(branchId, fiscalPeriodId, mode, filter, paramters) {
         super(branchId);
 
-        this.getDateRange = async(this.getDateRange);
+        this.journalConfig = new JournalQueryConfig(branchId, fiscalPeriodId, mode, filter);
+
+        this.generalLedgerAccount = async(this.generalLedgerAccount);
         this.aggregates = async(this.aggregates);
         this.incomesAndOutcomes = async(this.incomesAndOutcomes);
+        this.subsidiaryLedgerAccount = async(this.subsidiaryLedgerAccount);
+        this.detailAccount = async(this.detailAccount);
+        this.dimension1 = async(this.dimension1);
+        this.dimension2 = async(this.dimension2);
+        this.dimension3 = async(this.dimension3);
+        this.tiny = async(this.tiny);
 
         this.filter = filter;
         this.paramters = paramters;
         this.fiscalPeriodId = fiscalPeriodId;
-    }
-
-    getDateRange(fiscalPeriodId) {
-        let currentPeriod = await(this.knex.select()
-                .from('fiscalPeriods')
-                .where('id', fiscalPeriodId).first()),
-            filter = this.filter;
-
-        if (!eval(filter.isNotPeriodIncluded))
-            return {
-                fromDate: currentPeriod.minDate,
-                fromMainDate: (filter.minDate && filter.minDate >= currentPeriod.minDate) ? filter.minDate : currentPeriod.minDate,
-                toDate: (filter.maxDate && filter.maxDate <= currentPeriod.maxDate) ? filter.maxDate : currentPeriod.maxDate
-            };
-
-        if (!(filter.minDate && filter.maxDate))
-            return {
-                fromDate: "0",
-                fromMainDate: "0",
-                toDate: "9999/99/99"
-
-            };
-
-        return {
-            fromDate: "0",
-            fromMainDate: filter.minDate,
-            toDate: filter.maxDate
-        };
+        this.mode = mode;
     }
 
     aggregates(query) {
         let knex = this.knex;
         let aggregates = await(query
             .select(
-                knex.raw('SUM("sumBeforeRemainder") as "totalBeforeRemainder"'),
-                knex.raw('SUM("sumDebtor") as "totalDebtor"'),
-                knex.raw('SUM("sumCreditor") as "totalCreditor"'),
-                knex.raw('SUM("sumRemainder") as "totalRemainder"')
+            knex.raw('SUM("sumBeforeRemainder") as "totalBeforeRemainder"'),
+            knex.raw('SUM("sumDebtor") as "totalDebtor"'),
+            knex.raw('SUM("sumCreditor") as "totalCreditor"'),
+            knex.raw('SUM("sumRemainder") as "totalRemainder"')
             ).first());
 
         return {
-            sumBeforeRemainder: {sum: aggregates.totalBeforeRemainder},
-            sumDebtor: {sum: aggregates.totalDebtor},
-            sumCreditor: {sum: aggregates.totalCreditor},
-            sumRemainder: {sum: aggregates.totalRemainder}
-        };
-    }
-
-    getOptions() {
-        let dateRange = await(this.getDateRange(this.fiscalPeriodId));
-        return {
-            fromDate: dateRange.fromDate,
-            toDate: dateRange.toDate,
-            fromMainDate: dateRange.fromMainDate,
-            filter: this.filter,
-            dateFieldName: 'temporaryDate',
-            numberFieldName: 'temporaryNumber'
+            sumBeforeRemainder: { sum: aggregates.totalBeforeRemainder },
+            sumDebtor: { sum: aggregates.totalDebtor },
+            sumCreditor: { sum: aggregates.totalCreditor },
+            sumRemainder: { sum: aggregates.totalRemainder }
         };
     }
 
     generalLedgerAccount() {
-        let options = this.getOptions(),
+        let options = await(this.getOptions()),
             knex = this.knex;
 
         let query = knex.select().from(function () {
@@ -116,15 +86,16 @@ module.exports = class AccountReview extends BaseQuery {
     }
 
     incomesAndOutcomes() {
-        let options = this.getOptions(),
-            knex = this.knex;
+        let options = await(this.journalConfig.getOptions()),
+            knex = this.knex,
+            fiscalPeriodId = this.fiscalPeriodId;
 
         let query = knex.select().from(function () {
             this.select('generalLedgerAccountId', 'month', 'sumBeforeRemainder', 'sumDebtor', 'sumCreditor', 'sumRemainder',
                 knex.raw('"generalLedgerAccounts"."code" as "generalLedgerAccountCode"'),
                 knex.raw('"generalLedgerAccounts"."title" as "generalLedgerAccountTitle"'))
                 .from(function () {
-                    groupBy.call(this, knex, options, ['generalLedgerAccountId', 'month']);
+                    groupBy.call(this, knex, options, fiscalPeriodId, ['generalLedgerAccountId', 'month']);
                 })
                 .leftJoin('generalLedgerAccounts', 'generalLedgerAccounts.id', 'groupJournals.generalLedgerAccountId')
                 .as('final');
@@ -148,7 +119,7 @@ module.exports = class AccountReview extends BaseQuery {
 
     subsidiaryLedgerAccount() {
         let knex = this.knex,
-            options = this.getOptions();
+            options = await(this.getOptions());
 
         let query = knex.select().from(function () {
             this.select('subsidiaryLedgerAccountId', 'sumBeforeRemainder', 'sumDebtor', 'sumCreditor', 'sumRemainder',
@@ -188,7 +159,7 @@ module.exports = class AccountReview extends BaseQuery {
 
     detailAccount() {
         let knex = this.knex,
-            options = this.getOptions();
+            options = await(this.getOptions());
 
         let query = knex.select().from(function () {
             this.select('detailAccountId', 'sumBeforeRemainder', 'sumDebtor', 'sumCreditor', 'sumRemainder',
@@ -225,7 +196,7 @@ module.exports = class AccountReview extends BaseQuery {
 
     dimension1() {
         let knex = this.knex,
-            options = this.getOptions();
+            options = await(this.getOptions());
 
         let query = knex.select().from(function () {
             this.select('dimension1Id', 'sumBeforeRemainder', 'sumDebtor', 'sumCreditor', 'sumRemainder',
@@ -263,7 +234,7 @@ module.exports = class AccountReview extends BaseQuery {
 
     dimension2() {
         let knex = this.knex,
-            options = this.getOptions();
+            options = await(this.getOptions());
 
         let query = knex.select().from(function () {
             this.select('dimension2Id', 'sumBeforeRemainder', 'sumDebtor', 'sumCreditor', 'sumRemainder',
@@ -302,7 +273,7 @@ module.exports = class AccountReview extends BaseQuery {
 
     dimension3() {
         let knex = this.knex,
-            options = this.getOptions();
+            options = await(this.getOptions());
 
         let query = knex.select().from(function () {
             this.select('dimension3Id', 'sumBeforeRemainder', 'sumDebtor', 'sumCreditor', 'sumRemainder',
@@ -341,7 +312,7 @@ module.exports = class AccountReview extends BaseQuery {
 
     tiny() {
         let knex = this.knex,
-            options = this.getOptions();
+            options = await(this.getOptions());
 
         options.groupByField = this.tinyGroupByFields;
 

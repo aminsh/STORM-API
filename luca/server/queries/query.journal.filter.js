@@ -1,6 +1,68 @@
 "use strict";
 
-module.exports = function (query, filter, currentFiscalPeriod,knex) {
+const baseJournals = require('./query.journal.base');
+
+module.exports = function (knex, options, currentFiscalPeriod) {
+    let amountFields = _getAmountFields(knex, options);
+
+    this.select(
+        'id',
+        'date',
+        'month',
+        'number',
+        'description',
+        'periodId',
+        'isInComplete',
+        'createdById',
+        'journalStatus',
+        'journalType',
+        'generalLedgerAccountId',
+        'subsidiaryLedgerAccountId',
+        'detailAccountId',
+        'dimension1Id',
+        'dimension2Id',
+        'dimension3Id',
+        'article',
+        'row',
+        'chequeId',
+        'chequeDate',
+        'chequeDescription',
+        'createdBy',
+        amountFields.debtor,
+        amountFields.creditor,
+        amountFields.beforeRemainder
+    ).from(function () {
+        baseJournals.call(this, knex, options);
+    })
+        .whereBetween('date', [options.fromDate, options.toDate])
+        .as('dateControlJournals');
+
+    _executeFilter(this, options.filter, currentFiscalPeriod);
+};
+
+function _getAmountFields(knex, options) {
+    if (options.groupByField == 'tiny')
+        return {
+            beforeRemainder: knex.raw('0 as "beforeRemainder"'),
+            creditor: 'creditor',
+            debtor: 'debtor'
+        };
+
+    let beforeRemainder = `CASE WHEN "date" < '${options.fromMainDate}'
+        THEN "debtor"  -  "creditor" 
+        ELSE 0 END as "beforeRemainder"`;
+
+    let debtor = `CASE WHEN "date" >= '${options.fromMainDate}' THEN "debtor" ELSE 0 END as "debtor"`;
+    let creditor = `CASE WHEN "date" >= '${options.fromMainDate}' THEN "creditor" ELSE 0 END as "creditor"`;
+
+    return {
+        beforeRemainder: knex.raw(beforeRemainder),
+        creditor: knex.raw(creditor),
+        debtor: knex.raw(debtor)
+    };
+}
+
+function _executeFilter(query, filter, currentFiscalPeriod) {
     var numberOperators = {
         eq: '=',
         gt: '>',
@@ -8,6 +70,7 @@ module.exports = function (query, filter, currentFiscalPeriod,knex) {
         lt: '<',
         lte: '<='
     };
+    query.andWhere('isInComplete', false);
 
     if (!filter)
         return query.where('periodId', currentFiscalPeriod);
@@ -22,28 +85,28 @@ module.exports = function (query, filter, currentFiscalPeriod,knex) {
     }
 
     if (filter.minNumber && filter.maxNumber)
-        query.andWhereBetween('temporaryNumber', [filter.minNumber, filter.maxNumber]);
+        query.andWhereBetween('number', [filter.minNumber, filter.maxNumber]);
 
     if (filter.minDate && filter.maxDate)
-        query.andWhereBetween('temporaryDate', [filter.minDate, filter.maxDate]);
+        query.andWhereBetween('date', [filter.minDate, filter.maxDate]);
 
-    if (filter.generalLedgerAccounts && filter.generalLedgerAccounts.length > 0)
-        query.whereIn('generalLedgerAccountId', filter.generalLedgerAccounts);
+    if (filter.generalLedgerAccountId)
+        query.andWhere('generalLedgerAccountId', filter.generalLedgerAccountId);
 
-    if (filter.subsidiaryLedgerAccounts && filter.subsidiaryLedgerAccounts.length > 0)
-        query.whereIn('subsidiaryLedgerAccountId', filter.subsidiaryLedgerAccounts);
+    if (filter.subsidiaryLedgerAccountId)
+        query.andWhere('subsidiaryLedgerAccountId', filter.subsidiaryLedgerAccountId);
 
-    if (filter.detailAccounts && filter.detailAccounts.length > 0)
-        query.whereIn('detailAccountId', filter.detailAccounts);
+    if (filter.detailAccountId)
+        query.andWhere('detailAccountId', filter.detailAccountId);
 
-    if (filter.dimension1s && filter.dimension1s.length > 0)
-        query.whereIn('dimension1Id', filter.dimension1s);
+    if (filter.dimension1Id)
+        query.andWhere('dimension1Id', filter.dimension1Id);
 
-    if (filter.dimension2s && filter.dimension2s.length > 0)
-        query.whereIn('dimension2Id', filter.dimension2s);
+    if (filter.dimension2Id)
+        query.andWhere('dimension2Id', filter.dimension2Id);
 
-    if (filter.dimension3s && filter.dimension3s.length > 0)
-        query.whereIn('dimension3Id', filter.dimension3s);
+    if (filter.dimension3Id)
+        query.andWhere('dimension3Id', filter.dimension3Id);
 
     if (filter.chequeNumbers && filter.chequeNumbers.length > 0)
         query.whereIn('chequeId', filter.chequeNumbers);
@@ -55,6 +118,7 @@ module.exports = function (query, filter, currentFiscalPeriod,knex) {
         query.andWhere('chequeDescription', 'LIKE', '%{0}%'.format(filter.chequeDescription));
 
     if (filter.amount && filter.amount.value && filter.amount.operator)
-        query.andWhereRaw('("journalLines"."debtor" {0} ? OR "journalLines"."creditor" {0} ?)'.format(
+        query.andWhereRaw('("debtor" {0} ? OR "creditor" {0} ?)'.format(
             numberOperators[filter.amount.operator]), [filter.amount.value, filter.amount.value]);
-};
+
+}

@@ -1,34 +1,44 @@
 "use strict";
 
-const baseJournals = require('./query.journal.base');
+const filterJournals = require('./query.journal.filter');
 
-module.exports = function (extra, currentFiscalPeriodId, knex) {
-    this.select(
-        'id',
-        'temporaryNumber',
-        'temporaryDate',
-        'number',
-        'date',
-        'description',
-        'periodId',
-        'createdById',
-        'journalStatus',
-        'journalType',
-        'isInComplete'
-    ).from(function () {
-            baseJournals.call(this, extra, currentFiscalPeriodId, knex)
-        })
-        .groupBy(
+module.exports = function (knex, options, currentFiscalPeriod, groupByFields) {
+    let groupByField = groupByFields != 'tiny'
+        ? groupByFields
+        : [
             'id',
-            'temporaryNumber',
-            'temporaryDate',
-            'number',
             'date',
+            'month',
+            'number',
             'description',
             'periodId',
+            'isInComplete',
             'createdById',
             'journalStatus',
             'journalType',
-            'isInComplete')
-        .as('groupedJournals');
+            'generalLedgerAccountId',
+            'subsidiaryLedgerAccountId',
+            'detailAccountId',
+            'dimension1Id',
+            'dimension2Id',
+            'dimension3Id',
+            'article',
+            'row',
+            'chequeId',
+            'chequeDate',
+            'chequeDescription',
+            'createdBy'
+        ];
+
+    this.select([
+        knex.raw('SUM("beforeRemainder") as "sumBeforeRemainder"'),
+        knex.raw('SUM("debtor") as "sumDebtor"'),
+        knex.raw('SUM("creditor") as "sumCreditor"'),
+        knex.raw('SUM("beforeRemainder") + SUM("debtor") - SUM("creditor") as "sumRemainder"')
+    ].concat(groupByField)).from(function () {
+        filterJournals.call(this, knex, options, currentFiscalPeriod);
+    })
+        .groupBy(groupByField)
+        .orderBy(groupByField)
+        .as('groupJournals');
 };

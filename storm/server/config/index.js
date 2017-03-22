@@ -7,7 +7,7 @@ const path = require('path'),
             rootPath: rootPath,
             db: {
                 client: 'pg',
-                connection: 'postgres://postgres:P@ssw0rd@localhost:5432/admin-knex',
+                connection: 'postgres://postgres:P@ssw0rd@localhost:5432/admin',
                 debug: true
             },
             port: 2000,
