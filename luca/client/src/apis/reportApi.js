@@ -10,6 +10,6 @@ export default class {
     }
 
     generalLedgerAccounts(data){
-        return this.apiPromise.get('/api/general-ledger-accounts', data);
+        return this.apiPromise.get('/luca/api/general-ledger-accounts', data);
     }
 }

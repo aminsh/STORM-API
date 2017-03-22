@@ -3,6 +3,7 @@
 export default class currentService {
     constructor($cookies) {
         this.current = {
+            today: null,
             fiscalPeriod: null,
             mode: null,
             branch: null,
@@ -10,6 +11,10 @@ export default class currentService {
         };
 
         this.$cookies = $cookies;
+    }
+
+    setToday(today){
+        this.current.today = today;
     }
 
     setFiscalPeriod(fiscalPeriodId) {
