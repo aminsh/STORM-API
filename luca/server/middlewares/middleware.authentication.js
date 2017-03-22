@@ -10,9 +10,4 @@ module.exports = async((req, res, next) => {
 
     let url = `/login?returnUrl=${req.originalUrl}`;
     return res.redirect(url);
-   /* if (req.originalUrl.startsWith('/auth/return'))
-        return next();
-
-    let authentication = new Authentication(req, res);
-    authentication.middleware();*/
 });

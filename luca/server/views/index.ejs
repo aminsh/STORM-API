@@ -29,6 +29,7 @@
     <link href="/luca/client/content/inspina.style.css?v=<%- version.css %>" rel="stylesheet"/>
     <link href="/luca/client/content/style.css?v=<%- version.css %>" rel="stylesheet"/>
     <link href="/luca/client/content/luca.css?v=<%- version.css %>" rel="stylesheet"/>
+
 </head>
 <body class="rtls k-rtl">
 <shell>
@@ -98,17 +99,15 @@
     localStorage.setItem('currentBranch', '<%- JSON.stringify(currentBranch) %>');
     localStorage.setItem('dimensionCategories', '<%- JSON.stringify(dimensionCategories) %>');
     localStorage.setItem('reports', '<%- JSON.stringify(reports) %>');
+    localStorage.setItem('env', '<%- env %>')
 
     window.jQuery = window.$ = require('jquery');
     require("bootstrap");
     require("slimscroll");
     require("pace");
 
-    <% if(env == 'development') { %>
+    <% if(env !== 'development') { %>
     Stimulsoft.Base.Localization.StiLocalization.setLocalizationFile('/luca/client/content/fa.xml', true);
-    <% } else { %>
-
-    Stimulsoft.Base.Localization.StiLocalization.setLocalizationFile('/client/content/fa.xml', true);
     <% } %>
 
     let fonts = [
@@ -120,8 +119,7 @@
         {"fileName": "BKoodakBold.ttf", "name": "BKoodakBold"},
         {"fileName": "BLotus.ttf", "name": "BLotus"},
         {"fileName": "BTraffic.ttf", "name": "BTraffic"},
-        {"fileName": "BZar.ttf", "name": "BZar"},
-        //{"fileName": "IRANSans.ttf", "name": "IRANSans"}
+        {"fileName": "BZar.ttf", "name": "BZar"}
     ];
 
     fonts.forEach(f => Stimulsoft

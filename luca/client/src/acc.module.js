@@ -45,6 +45,7 @@ accModule.run((currentService, $cookies, $rootScope) => {
     currentService.setBranch(JSON.parse(localStorage.getItem('currentBranch')));
 
     $rootScope.canShowStatusSection = false;
+    $rootScope.isDevelopment = localStorage.getItem('env') == 'development';
 });
 
 export default accModule;

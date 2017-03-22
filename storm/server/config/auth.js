@@ -12,7 +12,6 @@ const config = require('./'),
     await = require('asyncawait/await');
 
 function configure() {
-    "use strict";
 
     passport.serializeUser(function (user, done) {
         done(null, user.id);
