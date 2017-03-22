@@ -30,7 +30,9 @@ module.exports = function (knex, options, currentFiscalPeriod) {
         'createdBy',
         amountFields.debtor,
         amountFields.creditor,
-        amountFields.beforeRemainder
+        amountFields.beforeRemainder,
+        amountFields.beforeCreditor,
+        amountFields.beforeDebtor
     ).from(function () {
         baseJournals.call(this, knex, options);
     })
@@ -45,12 +47,17 @@ function _getAmountFields(knex, options) {
         return {
             beforeRemainder: knex.raw('0 as "beforeRemainder"'),
             creditor: 'creditor',
-            debtor: 'debtor'
+            beforeCreditor: 0,
+            debtor: 'debtor',
+            beforeDebtor: 0
         };
 
     let beforeRemainder = `CASE WHEN "date" < '${options.fromMainDate}'
         THEN "debtor"  -  "creditor" 
         ELSE 0 END as "beforeRemainder"`;
+
+    let beforeDebtor = `CASE WHEN "date" < '${options.fromMainDate}' THEN "debtor" ELSE 0 END as "beforeDebtor"`;
+    let beforeCreditor = `CASE WHEN "date" < '${options.fromMainDate}' THEN "creditor" ELSE 0 END as "beforeCreditor"`;
 
     let debtor = `CASE WHEN "date" >= '${options.fromMainDate}' THEN "debtor" ELSE 0 END as "debtor"`;
     let creditor = `CASE WHEN "date" >= '${options.fromMainDate}' THEN "creditor" ELSE 0 END as "creditor"`;
@@ -58,7 +65,9 @@ function _getAmountFields(knex, options) {
     return {
         beforeRemainder: knex.raw(beforeRemainder),
         creditor: knex.raw(creditor),
-        debtor: knex.raw(debtor)
+        beforeCreditor: knex.raw(beforeCreditor),
+        debtor: knex.raw(debtor),
+        beforeDebtor: knex.raw(beforeDebtor)
     };
 }
 
