@@ -7,7 +7,10 @@ const fs = require('fs'),
     async = require('asyncawait/async'),
     await = require('asyncawait/await'),
     router = require('express').Router(),
-    layout = getReport('layout');
+    layout = getReport('layout'),
+    ReportQueryAccounts = require('../queries/query.report.accounts'),
+    ReportQueryBalance = require('../queries/query.report.balance'),
+    ReportQueryFinancialOffices = require('../queries/query.report.financialOffices');
 
 function getReport(fileName) {
     return JSON.parse(
@@ -24,9 +27,9 @@ router.route('/')
             report.data,
             err => {
                 if (err)
-                    return res.status(500).send({isValid: false, error: err});
+                    return res.status(500).send({ isValid: false, error: err });
 
-                res.json({isValid: true});
+                res.json({ isValid: true });
             }
         );
     });
@@ -35,9 +38,9 @@ router.route('/file/:fileName').get((req, res) => {
     let report = getReport(req.params.fileName),
         reportComponents = report.Pages[0].Components,
         reportComponentsMaxKeys = (Object.keys(reportComponents)
-                .asEnumerable()
-                .select(c => parseInt(c))
-                .max() || 0) + 1,
+            .asEnumerable()
+            .select(c => parseInt(c))
+            .max() || 0) + 1,
         layoutComponents = layout.Pages[0].Components,
         header = layoutComponents[0],
         footer = layoutComponents[1];
@@ -48,6 +51,100 @@ router.route('/file/:fileName').get((req, res) => {
     res.json(report);
 
 });
+
+router.route('/general-ledger-accounts')
+    .get(async((req, res) => {
+        let ins = new ReportQueryAccounts(req.cookies['branch-id']),
+            result = await(ins.getGeneralLedgerAccounts());
+        res.json(result);
+
+    }));
+
+router.route('/subsidiary-ledger-accounts')
+    .get(async((req, res) => {
+        let ins = new ReportQueryAccounts(req.cookies['branch-id']),
+            result = await(ins.getSubsidiaryLedgerAccounts());
+        res.json(result);
+    }));
+
+router.route('/detail-accounts')
+    .get(async((req, res) => {
+        let ins = new ReportQueryAccounts(req.cookies['branch-id']),
+            result = await(ins.getDetailAccounts());
+        res.json(result);
+
+    }));
+
+router.route('/general-balance')
+    .get(async((req, res) => {
+        let ins = new ReportQueryBalance(
+            req.cookies['branch-id'],
+            req.cookies['current-period'],
+            req.cookies['current-mode'],
+            req.query),
+            result = await(ins.getGeneralBalance());
+        res.json(result);
+    }));
+
+router.route('/subsidiary-balance')
+    .get(async((req, res) => {
+        let ins = new ReportQueryBalance(req.cookies['branch-id'],
+            req.cookies['current-period'],
+            req.cookies['current-mode'],
+            req.query),
+            result = await(ins.getSubsidiaryBalance());
+        res.json(result);
+    }));
+
+router.route('/subsidiary-detail-balance')
+    .get(async((req, res) => {
+        let ins = new ReportQueryBalance(req.cookies['branch-id'],
+            req.cookies['current-period'],
+            req.cookies['current-mode'],
+            req.query),
+            result = await(ins.getSubsidiaryDetailBalance());
+        res.json(result);
+    }));
+
+router.route('/general-subsidiary-detail-balance')
+    .get(async((req, res) => {
+        let ins = new ReportQueryBalance(req.cookies['branch-id'],
+            req.cookies['current-period'],
+            req.cookies['current-mode'],
+            req.query),
+            result = await(ins.getSubsidiaryDetailBalance());
+        res.json(result);
+    }));
+
+router.route('/journal-office')
+    .get(async((req, res) => {
+        let ins = new ReportQueryFinancialOffices(req.cookies['branch-id'],
+            req.cookies['current-period'],
+            req.cookies['current-mode'],
+            req.query),
+            result = await(ins.getJournalOffice());
+        res.json(result);
+    }));
+
+router.route('/general-office')
+    .get(async((req, res) => {
+        let ins = new ReportQueryFinancialOffices(req.cookies['branch-id'],
+            req.cookies['current-period'],
+            req.cookies['current-mode'],
+            req.query),
+            result = await(ins.getGeneralOffice());
+        res.json(result);
+    }));
+
+router.route('/subsidiary-office')
+    .get(async((req, res) => {
+        let ins = new ReportQueryFinancialOffices(req.cookies['branch-id'],
+            req.cookies['current-period'],
+            req.cookies['current-mode'],
+            req.query),
+            result = await(ins.getSubsidiaryOffice());
+        res.json(result);
+    }));
 
 
 module.exports = router;

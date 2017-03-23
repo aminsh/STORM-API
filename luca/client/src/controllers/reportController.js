@@ -22,7 +22,7 @@ export default function ($scope, devConstants, dimensionCategoryApi, reportApi, 
 
         reportApi[report.func](params)
             .then(result => {
-                $scope.data = result.data;
+                $scope.data = result;
                 $scope.viewerTabs.push({title: report.text, isActive: true, fileName: report.fileName});
             });
     };
@@ -41,14 +41,20 @@ export default function ($scope, devConstants, dimensionCategoryApi, reportApi, 
 
         reportApi[report.func](params)
             .then(result => {
-                $scope.data = result.data;
+                $scope.data = result;
                 $scope.mode = 'design';
             });
     };
 
-    $scope.onExitDesign = () => $scope.mode = 'view';
+    $scope.onExitDesign = () => {
+        $scope.mode = 'view';
+        $scope.isActiveFirstTab = true;
+    };
 
-    $scope.closeDesignerTab = tab => Collection.remove($scope.designerTabs, tab);
+    $scope.closeDesignerTab = tab => {
+        Collection.remove($scope.designerTabs, tab);
+        $scope.isActiveFirstTab = true;
+    }
 
     function deactivateAllTab() {
         $scope.isActiveFirstTab = false;

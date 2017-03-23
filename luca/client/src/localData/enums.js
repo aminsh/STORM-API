@@ -58,8 +58,8 @@ enums.ChequeCategoryStatus = ()=> {
 
 enums.AccMode = () => {
     return new Enum([
-        {key: 'Create', display: 'تنظیم اسناد'},
-        {key: 'Audit', display: 'رسیدگی اسناد'}
+        {key: 'create', display: 'تنظیم اسناد'},
+        {key: 'audit', display: 'رسیدگی اسناد'}
     ]);
 };
 
