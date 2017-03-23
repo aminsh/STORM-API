@@ -30,6 +30,13 @@ const path = require('path'),
             },
             url: {
                 luca: 'http://localhost:2000/luca-demo'
+            },
+            auth: {
+                google: {
+                    clientID        : '44908669153-rgtap5scj693g240t9p3k69tplearpto.apps.googleusercontent.com',
+                    clientSecret    : 'ZAc3SYGLyKenCssgRzs0iY-1',
+                    callbackURL     : 'http://localhost:2000/auth/google/callback',
+                }
             }
         },
         production: {
@@ -58,6 +65,13 @@ const path = require('path'),
             },
             url: {
                 luca: 'https://www.storm-online.ir/luca-demo'
+            },
+            auth: {
+                google: {
+                    clientID        : '44908669153-rgtap5scj693g240t9p3k69tplearpto.apps.googleusercontent.com',
+                    clientSecret    : 'ZAc3SYGLyKenCssgRzs0iY-1',
+                    callbackURL     : 'https://www.storm-online.ir/auth/google/callback',
+                }
             }
         }
     };
