@@ -46,7 +46,10 @@ export default function ($scope, devConstants, dimensionCategoryApi, reportApi, 
             });
     };
 
-    $scope.onExitDesign = () => $scope.mode = 'view';
+    $scope.onExitDesign = () => {
+        $scope.mode = 'view';
+        $scope.isActiveFirstTab = true;
+    };
 
     $scope.closeDesignerTab = tab => {
         Collection.remove($scope.designerTabs, tab);

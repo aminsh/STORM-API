@@ -29,9 +29,9 @@
     {
         "key":"4","text": "دفاتر مالی",
         "items":[
-            {"key":"400","text": "دفتر روزنامه","func": "generalBalance", "fileName":""},
-            {"key":"401","text": "دفتر کل","func": "generalBalance", "fileName":""},
-            {"key":"402","text": "دفتر معین","func": "generalBalance", "fileName":""}
+            {"key":"400","text": "دفتر روزنامه","func": "journalOffice", "fileName":"journalOfficeList"},
+            {"key":"401","text": "دفتر کل","func": "generalOffice", "fileName":"generalOfficeList"},
+            {"key":"402","text": "دفتر معین","func": "subsidiaryOffice", "fileName":"subsidiaryOfficeList"}
         ]
     },
     {

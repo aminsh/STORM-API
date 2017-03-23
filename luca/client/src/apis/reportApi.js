@@ -54,4 +54,16 @@ export default class {
         return this.apiPromise.get(`${this.urlPrefix}/general-subsidiary-detail-balance`);
     }
 
+    journalOffice() {
+        return this.apiPromise.get(`${this.urlPrefix}/journal-office`);
+    }
+
+    generalOffice() {
+        return this.apiPromise.get(`${this.urlPrefix}/general-office`);
+    }
+
+    subsidiaryOffice() {
+        return this.apiPromise.get(`${this.urlPrefix}/subsidiary-office`);
+    }
+
 }
