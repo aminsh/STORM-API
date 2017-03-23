@@ -20,7 +20,7 @@ module.exports = async((req, res, next) => {
     }
 
     if (!req.cookies['current-mode'])
-        res.cookie('current-mode', 'Create');
+        res.cookie('current-mode', 'create');
 
     next();
 });

@@ -7,8 +7,7 @@ const path = require('path'),
             rootPath: rootPath,
             db: {
                 client: 'pg',
-                //connection: 'postgres://ixvjjgapifdqgi:13e3747db471031640403487edbea7ebfabacb42e81d75ad243c9715f86e0293@ec2-54-235-181-120.compute-1.amazonaws.com:5432/delk9gd4qu34kk?ssl=true',
-                connection: 'postgres://postgres:P@ssw0rd@localhost:5432/admin-knex',
+                connection: 'postgres://postgres:P@ssw0rd@localhost:5432/admin',
                 debug: true
             },
             port: 2000,
@@ -31,13 +30,6 @@ const path = require('path'),
             },
             url: {
                 luca: 'http://localhost:2000/luca-demo'
-            },
-            auth: {
-                google: {
-                    clientID: '44908669153-rgtap5scj693g240t9p3k69tplearpto.apps.googleusercontent.com',
-                    clientSecret: 'ZAc3SYGLyKenCssgRzs0iY-1',
-                    callbackURL: 'http://localhost:2000/auth/google/callback'
-                }
             }
         },
         production: {
@@ -66,13 +58,6 @@ const path = require('path'),
             },
             url: {
                 luca: 'https://www.storm-online.ir/luca-demo'
-            },
-            auth: {
-                google: {
-                    clientID: '44908669153-rgtap5scj693g240t9p3k69tplearpto.apps.googleusercontent.com',
-                    clientSecret: 'ZAc3SYGLyKenCssgRzs0iY-1',
-                    callbackURL: 'https://www.storm-online.ir/auth/google/callback'
-                }
             }
         }
     };

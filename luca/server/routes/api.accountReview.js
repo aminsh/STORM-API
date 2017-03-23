@@ -68,6 +68,7 @@ function getAccountReviewInstance(req) {
     return new AccountReview(
         req.cookies['branch-id'],
         req.cookies['current-period'],
+        req.cookies['current-mode'],
         filter,
         req.query);
 }

@@ -1,20 +1,17 @@
 "use strict";
 
-const filter = require('./query.journal.filter');
-
-module.exports = function(extra, currentFiscalPeriodId, knex) {
-    var q = this.select(
+module.exports = function (knex, options) {
+    this.select(
         'journals.id',
-        'journals.temporaryNumber',
-        'journals.temporaryDate',
-        'journals.number',
-        'journals.date',
+        knex.raw(`"journals"."${options.numberFieldName}" as "number"`),
+        knex.raw(`"journals"."${options.dateFieldName}" as "date"`),
+        knex.raw(`cast(substring("journals"."${options.dateFieldName}" from 6 for 2) as INTEGER) as "month"`),
         'journals.description',
         'journals.periodId',
+        'journals.isInComplete',
         'journals.createdById',
         'journals.journalStatus',
         'journals.journalType',
-        'journals.isInComplete',
         'journalLines.generalLedgerAccountId',
         'journalLines.subsidiaryLedgerAccountId',
         'journalLines.detailAccountId',
@@ -25,16 +22,14 @@ module.exports = function(extra, currentFiscalPeriodId, knex) {
         'journalLines.debtor',
         'journalLines.creditor',
         'journalLines.row',
-        knex.raw('"cheques"."id" as "chequeId"'),
-        knex.raw('"cheques"."date" as "chequeDate"'),
-        knex.raw('"cheques"."description" as "chequeDescription"'),
-        knex.raw('"users"."name" as "createdBy"')
+        knex.raw(`"cheques"."id" as "chequeId"`),
+        knex.raw(`"cheques"."date" as "chequeDate"`),
+        knex.raw(`"cheques"."description" as "chequeDescription"`),
+        knex.raw(`"users"."name" as "createdBy"`)
     ).from('journals')
         .leftJoin('journalLines', 'journals.id', 'journalLines.journalId')
         .leftJoin('cheques', 'journalLines.id', 'cheques.journalLineId')
         .leftJoin('users', 'journals.createdById', 'users.id')
-        .orderBy('journals.temporaryNumber', 'DESC')
+        .orderBy('number', 'DESC')
         .as('baseJournals');
-
-    filter(q, extra, currentFiscalPeriodId , knex);
 };
