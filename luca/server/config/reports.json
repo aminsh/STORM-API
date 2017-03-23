@@ -39,19 +39,18 @@
     {
         "key":"5","text": "تراز",
         "items":[
-            {"key":"5-1","text": "تراز کل"},
-            {"key":"5-2","text": "تراز کل - معین"},
-            {"key":"5-3","text": "تراز معین - تفصیل"},
-            {"key":"5-4","text": "تراز 3 سطحی"}
+            {"key":"500","text": "گزارش تراز کل","func": "generalBalance", "fileName":""},
+            {"key":"501","text": "گزارش تراز کل - معین","func": "subsidiaryBalance", "fileName":""},
+            {"key":"502","text": "گزارش تراز معین - تفصیل","func": "subsidiaryDetailBalance", "fileName":""},
+            {"key":"503","text": "گزارش تراز 3 سطحی","func": "generalSubsidiaryDetailBalance", "fileName":""}
         ]
     },
     {
-        "key":"5","text": "فهرست حساب ها",
+        "key":"6","text": "فهرست حساب ها",
         "items":[
-            {"key":"5-1","text": "فهرست حسابهای کل", "func": "generalLedgerAccounts", "fileName": "generalLedgerAccountList"},
-            {"key":"5-2","text": "معین"},
-            {"key":"5-3","text": "تفصیل"},
-            {"key":"5-4","text": "تراز 3 سطحی"}
+            {"key":"600","text": "گزارش حساب های کل", "func": "generalLedgerAccounts", "fileName": "generalLedgerAccountList"},
+            {"key":"601","text": "گزارش حساب های معین", "func": "subsidiaryLedgerAccounts", "fileName": ""},
+            {"key":"602","text": "گزارش حساب های تفضیل", "func": "detailAccounts", "fileName": ""}
         ]
     }
 ]

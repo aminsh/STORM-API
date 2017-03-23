@@ -17,7 +17,7 @@ module.exports = class ReportQueryAccounts extends BaseQuery {
             .from('generalLedgerAccounts');
     };
 
-    getSubsidiaryLedgerAccounts(generalCode) {
+    getSubsidiaryLedgerAccounts() {
         let knex = this.knex;
 
         let subsidiaryLedgerAccountsValues = `"subsidiaryLedgerAccounts".code as "subsidiaryCode",
@@ -39,7 +39,6 @@ module.exports = class ReportQueryAccounts extends BaseQuery {
                 .from('subsidiaryLedgerAccounts')
                 .innerJoin('generalLedgerAccounts', 'generalLedgerAccounts.id', 'subsidiaryLedgerAccounts.generalLedgerAccountId')
                 .as('generalLedgerAccount')
-                .where('subsidiaryLedgerAccounts.generalLedgerAccountId', generalCode);
         });
     };
 

@@ -41,7 +41,7 @@ export default function ($scope, devConstants, dimensionCategoryApi, reportApi, 
 
         reportApi[report.func](params)
             .then(result => {
-                $scope.data = result.data;
+                $scope.data = result;
                 $scope.mode = 'design';
             });
     };
