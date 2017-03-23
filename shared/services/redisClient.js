@@ -1,5 +1,7 @@
+"use strict";
+
 const redis = require('redis'),
-    config = require('../config'),
+    config = require('../../storm/server/config/index'),
     client = redis.createClient(config.redis),
     Promise = require('promise');
 

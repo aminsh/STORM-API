@@ -1,66 +1,29 @@
 "use strict";
 
-const express = require('express'),
-    passport = require('passport'),
-    url = require('url'),
-    app = require('./express').app,
-    async = require('asyncawait/async'),
-    await = require('asyncawait/await'),
-    knexService = require('../services/knexService'),
-    config = require('./'),
-    memoryService = require('../services/memoryService'),
-    cryptoService = require('../services/cryptoService'),
-    authRoute = require('../services/authRoute'),
-    branchRoute = require('../services/branchRoute');
+const app = require('./express').app;
 
-var clientTranslation = require('./translate.fa.json');
+/* middlewares */
+app.use(require('../middlewares/locals'));
 
-var basePath = '../routes';
+/* apis */
+app.use('/api/users', require('../features/user/user.api'));
+app.use('/api/branches', require('../features/branch/branch.api'));
+app.use('/api', require('../features/message/message.api'));
+app.use('/api/auth', require('../features/auth/auth.api'));
 
-app.use(async((req, res, next) => {
-    res.locals = {
-        isAuthenticated: req.isAuthenticated(),
-        currentUser: req.isAuthenticated() ? req.user.name : null,
-        currentUserImage: req.isAuthenticated() ? req.user.image : '',
-        clientTranslation: clientTranslation,
-        currentBranch: req.cookies['branch-id']
-            ? require('../queries/query.branch').getById(req.cookies['branch-id'])
-            : false,
-        env: process.env.NODE_ENV,
-        version: config.version
-    };
+/* ctrls */
+app.use('/auth', require('../features/auth/auth.controller'));
+app.use('/', require('../features/luca/luca.controller'));
 
-    next();
-}));
+app.post('/upload', (req, res) => {
+    let file = req.files.userfile;
 
-app.use('/api/users', require('{0}/api.user'.format(basePath)));
-app.use('/api/branches', require('{0}/api.branch'.format(basePath)));
-app.use('/api', require('{0}/api.message'.format(basePath)));
-app.use('/', require('{0}/api.upload'.format(basePath)));
-
-app.use('/auth', require(`${basePath}/ctrl.auth`));
-
-app.get('/luca-demo', (req, res) => {
-    try {
-        let token = (url.parse(req.url).query)
-                ? url.parse(req.url).query.replace('token=', '')
-                : null,
-            info = cryptoService.decrypt(token);
-
-        res.cookie('branch-id', info.branchId);
-
-        req.demoUser = info.user;
-
-        let demoUsers = memoryService.get('demoUsers');
-        if (!demoUsers.asEnumerable().any(u => u.id == info.user.id))
-            demoUsers.push(info.user);
-
-        req.logIn(info.user, err => res.redirect('/luca'));
-
-    } catch (e) {
-        res.send('token is not valid please send email to support@storm-online.ir');
-    }
+    res.send({
+        name: file.name,
+        fullName: file.path
+    });
 });
-app.get('*', async(function (req, res) {
-    return res.render('index.ejs');
-}));
+
+/* rest of routes should handled by angular  */
+app.get('*', (req, res) => res.render('index.ejs'));
+

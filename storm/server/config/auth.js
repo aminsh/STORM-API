@@ -4,10 +4,10 @@ const config = require('./'),
     passport = require('passport'),
     LocalStrategy = require('passport-local').Strategy,
     GoogleStrategy = require('passport-google-oauth').OAuth2Strategy,
-    knex = require('../services/knexService'),
-    md5 = require('md5'),
-    memoryService = require('../services/memoryService'),
-    string = require('../utilities/string'),
+    UserRepository = require('../features/user/user.repository'),
+    userRepository = new UserRepository(),
+    memoryService = require('../../../shared/services/memoryService'),
+    string = require('../services/shared').utility.String,
     async = require('asyncawait/async'),
     await = require('asyncawait/await');
 
@@ -17,7 +17,7 @@ function configure() {
         done(null, user.id);
     });
 
-    passport.deserializeUser(function (id, done) {
+    passport.deserializeUser(async((id, done) => {
 
         if (string.isEmail(id)) {
             let user = memoryService.get('demoUsers')
@@ -27,38 +27,34 @@ function configure() {
             return done(null, user);
         }
 
-        knex.table('users').where('id', id).first()
-            .then(user => done(null, user));
-    });
+        let user = await(userRepository.getById(id));
+
+        done(null, user);
+    }));
 
     passport.use(
         new LocalStrategy({
                 usernameField: 'email',
                 passReqToCallback: true
             },
-            function (req, email, password, done) {
+            async((req, email, password, done) => {
                 if (req.demoUser)
                     return done(null, {id: req.demoUser.id, name: req.demoUser.name});
 
-                knex.table('users')
-                    .where('email', 'ILIKE', email).first()
-                    .andWhere('password', md5(password))
-                    .then(user => {
-                        if (user)
-                            return done(null, user);
-                        return done(null, false, {message: 'Username or password in incorrect'});
-                    });
-            }
+                let user = await(userRepository.getUserByEmailAndPassword(email, password));
+                if (user)
+                    return done(null, user);
+                return done(null, false, {message: 'Username or password in incorrect'});
+            })
         ));
 
-    // auth by google
-
+    /* auth by google */
     passport.use(
         new GoogleStrategy(
             config.auth.google,
             (token, refreshToken, profile, done) => {
                 process.nextTick(async(() => {
-                    let user = await(knex.table('users').where('id', profile.id).first());
+                    let user = await(userRepository.getById(profile.id));
 
                     if (user) return done(null, user);
 
@@ -71,10 +67,9 @@ function configure() {
                         state: 'active'
                     };
 
-                    await(knex('users').insert(user));
+                    await(userRepository.create(user));
 
                     return done(null, user);
-
                 }));
             }));
 }
@@ -102,8 +97,8 @@ module.exports[configure.name] = configure;
 module.exports[authenticate.name] = authenticate;
 module.exports.googleAuthenticate = passport.authenticate('google', {scope: ['profile', 'email']});
 module.exports.googleAuthenticateCallback = passport.authenticate('google', {
-    successRedirect : '/',
-    failureRedirect : '/login'
+    successRedirect: '/',
+    failureRedirect: '/login'
 });
 
 

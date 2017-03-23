@@ -1,4 +1,4 @@
-﻿var Enum = require('../utilities/Enum');
+﻿var Enum = require('../.././Enum');
 
 var enums = {};
 

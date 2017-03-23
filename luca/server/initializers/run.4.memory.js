@@ -1,11 +1,11 @@
 "use strict";
 
-var config = require('../config'),
+const config = require('../config'),
     memoryService = require('../services/memoryService'),
-    rp = require('request-promise'),
     async = require('asyncawait/async'),
     await = require('asyncawait/await'),
-    branchQuery = require('../../../storm/server/queries/query.branch');
+    BranchQuery = require('../../../storm/server/features/branch/branch.query'),
+    branchQuery = new BranchQuery();
 
 module.exports = async(() => {
 

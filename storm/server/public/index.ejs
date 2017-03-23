@@ -30,6 +30,8 @@
 </shell>
 <script src="/client/dist/app.bundle.js"></script>
 <script src="/client/dist/app.template.bundle.js"></script>
+
+<% if(env !== 'development') { %>
 <script type="text/javascript">window.vasleSettings = {app_id: "xwiIitqQ"};</script>
 <script type="text/javascript"> !function () {
         function t() {
@@ -48,5 +50,7 @@
                 c.q.push(t)
             }, e.Vasle = c, e.attachEvent ? e.attachEvent("onload", t) : e.addEventListener("load", t, !1)
         }
-    }();</script>
+    }();
+</script>
+<% } %>
 </html>

@@ -1,19 +1,18 @@
-"use strict";
-
 const express = require('express'),
     router = express.Router(),
     async = require('asyncawait/async'),
     await = require('asyncawait/await'),
-    knex = require('../services/knexService');
+    UserRepository = require('./user.repository');
 
 
 router('/activate/:token').get(async((req, res) => {
     let token = req.params.token,
-        user = await(knex.table('users').where('token', token).first());
+        userRepository = new UserRepository(),
+        user = await(userRepository.getByToken(token));
 
     user.token = null;
 
-    await(knex.table('users').where('id', user.id).update(user));
+    await(userRepository.update(user));
 
     res.render('index.ejs');
 }));

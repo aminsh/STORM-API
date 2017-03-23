@@ -1,4 +1,6 @@
-var app = require('../config/express').app;
+"use strict";
+
+const app = require('../../storm/server/config/express').app;
 
 module.exports.get = function(key){
     return app.get(key);

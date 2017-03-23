@@ -4,9 +4,9 @@ const express = require('express'),
     router = express.Router(),
     async = require('asyncawait/async'),
     await = require('asyncawait/await'),
-    config = require('../config'),
-    emailService = require('../services/emailService'),
-    translate = require('../services/translateService');
+    config = require('../../config'),
+    emailService = require('../../services/emailService'),
+    translate = require('../../services/translateService');
 
 router.route('/send-message').post((req, res) => {
     let message = req.body;
