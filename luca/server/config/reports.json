@@ -29,28 +29,26 @@
     {
         "key":"4","text": "دفاتر مالی",
         "items":[
-            {"key":"4-1","text": "دفتر روزنامه"},
-            {"key":"4-2","text": "دفتر روزنامه 2"},
-            {"key":"4-3","text": "دفتر روزنامه 3"},
-            {"key":"4-4","text": "دفتر کل"},
-            {"key":"4-5","text": "دفتر معین"}
+            {"key":"400","text": "دفتر روزنامه","func": "generalBalance", "fileName":""},
+            {"key":"401","text": "دفتر کل","func": "generalBalance", "fileName":""},
+            {"key":"402","text": "دفتر معین","func": "generalBalance", "fileName":""}
         ]
     },
     {
-        "key":"5","text": "تراز",
+        "key":"5","text": "گزارش های تراز",
         "items":[
-            {"key":"500","text": "گزارش تراز کل","func": "generalBalance", "fileName":""},
-            {"key":"501","text": "گزارش تراز کل - معین","func": "subsidiaryBalance", "fileName":""},
-            {"key":"502","text": "گزارش تراز معین - تفصیل","func": "subsidiaryDetailBalance", "fileName":""},
-            {"key":"503","text": "گزارش تراز 3 سطحی","func": "generalSubsidiaryDetailBalance", "fileName":""}
+            {"key":"500","text": "تراز کل","func": "generalBalance", "fileName":""},
+            {"key":"501","text": "تراز کل - معین","func": "subsidiaryBalance", "fileName":""},
+            {"key":"502","text": "تراز معین - تفصیل","func": "subsidiaryDetailBalance", "fileName":""},
+            {"key":"503","text": "تراز 3 سطحی","func": "generalSubsidiaryDetailBalance", "fileName":""}
         ]
     },
     {
         "key":"6","text": "فهرست حساب ها",
         "items":[
-            {"key":"600","text": "گزارش حساب های کل", "func": "generalLedgerAccounts", "fileName": "generalLedgerAccountList"},
-            {"key":"601","text": "گزارش حساب های معین", "func": "subsidiaryLedgerAccounts", "fileName": ""},
-            {"key":"602","text": "گزارش حساب های تفضیل", "func": "detailAccounts", "fileName": ""}
+            {"key":"600","text": "حساب های کل", "func": "generalLedgerAccounts", "fileName": "generalLedgerAccountList"},
+            {"key":"601","text": "حساب های معین", "func": "subsidiaryLedgerAccounts", "fileName": "subsidiaryLedgerAccountList"},
+            {"key":"602","text": "حساب های تفضیل", "func": "detailAccounts", "fileName": "detailAccountList"}
         ]
     }
 ]

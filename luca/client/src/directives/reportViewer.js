@@ -36,8 +36,8 @@ function reportViewer(currentService) {
             }));
 
             report.dictionary.variables.add(addVariable({
-                name: 'user',
-                alias: 'User',
+                name: 'currentUser',
+                alias: 'Current user',
                 category: 'general',
                 value: current.user.name
             }));

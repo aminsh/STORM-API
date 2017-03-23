@@ -66,6 +66,14 @@ router.route('/subsidiary-ledger-accounts')
         res.json(result);
     }));
 
+router.route('/detail-accounts')
+    .get(async((req, res) => {
+        let ins = new ReportQueryAccounts(req.cookies['branch-id']),
+            result = await(ins.getDetailAccounts());
+        res.json(result);
+        
+    }));
+
 router.route('/general-balance')
     .get(async((req, res) => {
         let ins = new ReportQueryBalance(
