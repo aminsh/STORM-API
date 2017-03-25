@@ -23,7 +23,7 @@ module.exports = class JournalQuery extends BaseQuery {
 
         let query = knex.select()
             .from(function () {
-                groupedJournals.call(this, extra, fiscalPeriodId, knex);
+                groupedJournals.call(this, knex, {filter: extra}, fiscalPeriodId, 'tiny');
             })
             .as('baseJournals');
 

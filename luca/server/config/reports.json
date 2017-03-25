@@ -37,10 +37,10 @@
     {
         "key":"5","text": "گزارش های تراز",
         "items":[
-            {"key":"500","text": "تراز کل","func": "generalBalance", "fileName":""},
-            {"key":"501","text": "تراز کل - معین","func": "subsidiaryBalance", "fileName":""},
-            {"key":"502","text": "تراز معین - تفصیل","func": "subsidiaryDetailBalance", "fileName":""},
-            {"key":"503","text": "تراز 3 سطحی","func": "generalSubsidiaryDetailBalance", "fileName":""}
+            {"key":"500","text": "تراز کل","func": "generalBalance", "fileName":"generalBalanceList"},
+            {"key":"501","text": "تراز کل - معین","func": "subsidiaryBalance", "fileName":"subsidiaryBalanceList"},
+            {"key":"502","text": "تراز معین - تفصیل","func": "subsidiaryDetailBalance", "fileName":"subsidiaryDetailBalanceList"},
+            {"key":"503","text": "تراز 3 سطحی","func": "generalSubsidiaryDetailBalance", "fileName":"generalSubsidiaryDetailBalanceList"}
         ]
     },
     {
