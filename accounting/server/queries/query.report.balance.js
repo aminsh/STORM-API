@@ -36,7 +36,9 @@ module.exports = class ReportQueryBalance extends BaseQuery {
             ELSE 0 END as "creditorRemainder",
             CASE WHEN "groupJournals"."totalRemainder" > 0 
             THEN "groupJournals"."totalRemainder" 
-            ELSE 0 END as "debtorRemainder"`;
+            ELSE 0 END as "debtorRemainder",
+            "groupJournals"."sumBeforeDebtor" as "sumBeforeDebtor",
+            "groupJournals"."sumBeforeCreditor" as "sumBeforeCreditor"`;
 
         let generalLedgerAccounts = `"generalLedgerAccounts".code as generalCode,
             "generalLedgerAccounts".title as generalTitle,
@@ -74,13 +76,15 @@ module.exports = class ReportQueryBalance extends BaseQuery {
             "groupJournals"."sumBeforeDebtor" as "beforeRemainderDebtor",
             "groupJournals"."sumBeforeCreditor" as "beforeRemainderCreditor"`;
 
-        let generalLedgerAccounts = `"generalLedgerAccounts".code as generalCode,
-            "generalLedgerAccounts".title as generalTitle,
+        let generalLedgerAccounts = `"generalLedgerAccounts".code as "generalCode",
+            "generalLedgerAccounts".id as "generalId",
+            "generalLedgerAccounts".title as "generalTitle",
             CASE WHEN "generalLedgerAccounts".code ISNULL 
             THEN "generalLedgerAccounts".title 
             ELSE "generalLedgerAccounts".title||' ${translate('Code')} ' || "generalLedgerAccounts".code END AS generalDisplay`;
 
         let subsidiaryLedgerAccounts = `"subsidiaryLedgerAccounts".code as subsidiaryCode,
+            "subsidiaryLedgerAccounts".id as subsidiaryId,
             "subsidiaryLedgerAccounts".title as subsidiaryTitle,
             CASE WHEN "subsidiaryLedgerAccounts".code ISNULL 
             THEN "subsidiaryLedgerAccounts".title 
@@ -117,6 +121,7 @@ module.exports = class ReportQueryBalance extends BaseQuery {
             "groupJournals"."sumBeforeCreditor" as "beforeRemainderCreditor"`;
 
         let generalLedgerAccounts = `"generalLedgerAccounts".code as generalCode,
+            "generalLedgerAccounts".id as "generalId",
             "generalLedgerAccounts".title as generalTitle,
             CASE WHEN "generalLedgerAccounts".code ISNULL 
             THEN "generalLedgerAccounts".title 
@@ -124,6 +129,7 @@ module.exports = class ReportQueryBalance extends BaseQuery {
             END AS generalDisplay`;
 
         let subsidiaryLedgerAccounts = `"subsidiaryLedgerAccounts".code as subsidiaryCode,
+            "subsidiaryLedgerAccounts".id as "subsidiaryId",
             "subsidiaryLedgerAccounts".title as subsidiaryTitle,
             CASE WHEN "subsidiaryLedgerAccounts".code ISNULL 
             THEN "subsidiaryLedgerAccounts".title 
@@ -131,6 +137,7 @@ module.exports = class ReportQueryBalance extends BaseQuery {
             END AS subsidiaryDisplay`;
 
         let detailAccounts = `"detailAccounts".code as detailCode,
+            "detailAccounts".id as detailId,
             "detailAccounts".title as detailTitle,
             CASE WHEN "detailAccounts".code ISNULL 
             THEN "detailAccounts".title 
@@ -140,7 +147,7 @@ module.exports = class ReportQueryBalance extends BaseQuery {
             subsidiaryLedgerAccounts + ',' + detailAccounts))
             .from(function () {
                 groupJournals.call(this, knex,
-                    options,currentFiscalPeriodId,
+                    options, currentFiscalPeriodId,
                     ['generalLedgerAccountId', 'subsidiaryLedgerAccountId', 'detailAccountId']);
             })
             .leftJoin('generalLedgerAccounts', 'groupJournals.generalLedgerAccountId', 'generalLedgerAccounts.id')
