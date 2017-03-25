@@ -1,0 +1,48 @@
+﻿<article>
+    <div id="wrapper" class="{{toggleobservable ? 'toggled' : ''}}">
+        <!-- Sidebar -->
+        <div id="sidebar-wrapper">
+
+            <div class="gw-sidebar">
+                <div id="gw-sidebar" class="gw-sidebar">
+                    <div class="nano-content">
+                        <ul class="gw-nav gw-nav-list">
+                            <li class="init-un-active"><a href="/"><span class="glyphicon glyphicon-home webfont-menu"
+                                                                          aria-hidden="true">
+                                </span> <span class="gw-menu-text">{{'Home'| translate}}</span> </a></li>
+
+                            <li class="init-arrow-down">
+                                <a> <span class="gw-menu-text"><span class="glyphicon glyphicon-th-large webfont-menu"
+                                                                     aria-hidden="true">
+                                    </span>تنظیمات</span> <b class="gw-arrow icon-arrow-up8"></b> </a>
+                                <ul class="gw-submenu">
+                                    <li><a href="#"><span class="fa-managing webfont-submenu" aria-hidden="true"></span>مدیریت
+                                        سیستم</a></li>
+                                    <li><a href="#"><span class="fa-default webfont-submenu" aria-hidden="true"></span>
+                                        پیش فرض های سیستم</a></li>
+
+                                </ul>
+                            </li>
+
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <!-- /#sidebar-wrapper -->
+
+
+        <!-- Page Content -->
+        <div id="page-content-wrapper" class="content-total">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-12 content-ngtransclude" ng-transclude>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /#page-content-wrapper -->
+    </div>
+    <!-- /#wrapper -->
+</article>

@@ -39,3 +39,4 @@ jspm_packages
 /.idea
 /.vscode
 /luca/database/convert/data.json
+/data

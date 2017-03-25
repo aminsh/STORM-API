@@ -72,10 +72,11 @@
     "gulp-concat": "^2.6.1",
     "gulp-inject": "^4.2.0",
     "gulp-minify": "0.0.14",
+    "gulp-uglify": "^1.5.3",
+    "gulp-uncss": "^1.0.6",
     "gulp-util": "^3.0.8",
     "main-bower-files": "^2.13.1",
     "uglifyify": "^3.0.2",
-    "gulp-uglify": "^1.5.3",
     "yargs": "^6.6.0"
   }
 }

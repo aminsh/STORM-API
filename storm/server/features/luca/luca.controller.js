@@ -21,7 +21,7 @@ router.route('/luca-demo').get((req, res) => {
         if (!demoUsers.asEnumerable().any(u => u.id == info.user.id))
             demoUsers.push(info.user);
 
-        req.logIn(info.user, err => res.redirect('/luca'));
+        req.logIn(info.user, err => res.redirect('/acc'));
 
     } catch (e) {
         res.send('token is not valid please send email to support@storm-online.ir');

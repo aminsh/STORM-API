@@ -1,0 +1,22 @@
+{
+    "source-db":{
+        "url": "mssql://sa:P@ssw0rd@frk-server/mali"
+    },
+    "execution-ordering": [
+        "user",
+        "fiscalPeriod",
+        "generalLedgerAccount",
+        "subsidiaryLedgerAccount",
+        "detailAccount",
+        "dimensionCategory",
+        "dimension",
+        "bank",
+        "chequeCategory",
+        "tag",
+        "journal",
+        "journalTag",
+        "journalLine",
+        "cheque"
+    ],
+    "data-file-name": "/convert/data.json"
+}

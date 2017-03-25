@@ -1,16 +1,18 @@
 "use strict";
 
-require('./utilities/string.prototypes.js');
-require('./utilities/array.prototypes.js');
-require('./utilities/function.prototypes.js');
+require('./shared/utilities/string.prototypes');
+require('./shared/utilities/array.prototypes');
+require('./shared/utilities/function.prototypes');
+
+
+require('./accounting/server/config/route');
 
 const config = require('./storm/server/config'),
-    lucaApp = require('./luca/server/config/config.express'),
+    accApp = require('./accounting/server/config/express'),
     app = require('./storm/server/config/express').app;
 
-app.use('/luca', lucaApp);
+app.use('/acc', accApp);
 
 require('./storm');
-require('./luca');
 
 app.listen(config.port, () => console.log(`Port ${config.port} is listening ...`));

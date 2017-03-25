@@ -9,11 +9,11 @@ module.exports = class {
 
     }
 
-    getById(id){
-        return knex.select('id', 'name', 'logo').from('branches').where('id', id).first();
+    getById(id) {
+        return knex.select('id', 'name', 'logo', 'accConnection').from('branches').where('id', id).first();
     }
 
-    getAll(){
-        return knex.select('id', 'name', 'logo', 'lucaConnectionId').from('branches');
+    getAll() {
+        return knex.select('id', 'name', 'logo', 'accConnection').from('branches');
     }
 };

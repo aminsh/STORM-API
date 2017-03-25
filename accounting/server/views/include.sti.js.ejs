@@ -1,0 +1,53 @@
+<script src="/client/lib/stimulsoft.reports.js"></script>
+<script src="/client/lib/stimulsoft.viewer.js"></script>
+
+<script>
+    Stimulsoft.Base.Localization.StiLocalization.setLocalizationFile('/client/content/fa.xml', true);
+
+    <% fonts.forEach(function (font) { %>
+    Stimulsoft.Base.StiFontCollection
+            .addOpentypeFontFile('/client/fonts/<%- font.fileName %>', '<%- font.name %>');
+    <% }) %>
+    var options = new Stimulsoft.Viewer.StiViewerOptions();
+
+    options.toolbar.fontFamily = "BKoodakBold";
+    options.toolbar.showDesignButton = true;
+    options.toolbar.printDestination = Stimulsoft.Viewer.StiPrintDestination.Pdf;
+    options.appearance.htmlRenderMode = Stimulsoft.Report.Export.StiHtmlExportMode.Table;
+
+    var report = new Stimulsoft.Report.StiReport();
+    var viewer = new Stimulsoft.Viewer.StiViewer(options, "StiViewer", false);
+
+    /*var print = report.print;
+
+     viewer.onPrintReport = function (event) {
+     debugger;
+     print();
+     console.log("printing");
+     };*/
+
+    report.loadFile('/client/reportFiles/' + fileName);
+    viewer.renderHtml("content");
+
+    var today = new Stimulsoft.Report.Dictionary.StiVariable();
+    today.name = 'today';
+    today.alias = 'Today';
+    today.category = "general";
+    today.value = '<%- today %>';
+
+    report.dictionary.variables.add(today);
+
+    var user = new Stimulsoft.Report.Dictionary.StiVariable();
+    user.name = 'user';
+    user.alias = 'User';
+    user.category = "general";
+    user.value = '<%- user.name %>';
+
+    report.dictionary.variables.add(user);
+
+    var data = {};
+    data[dataSourceName] = JSON.parse('<%- JSON.stringify(reportData) %>');
+
+    report.regData("data", "data", data);
+    viewer.report = report;
+</script>

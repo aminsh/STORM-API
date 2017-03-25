@@ -1,0 +1,21 @@
+<dev-tag-content dev-attr-title="{{'Journal management'| translate}}">
+
+    <dev-tag-grid option="gridOption"
+                  on-current-changed="onSelectMonth(current)"></dev-tag-grid>
+
+    <dev-tag-button
+            ng-click="showJournal(journalGridOption.current)"
+            icon="glyphicon glyphicon-eye-open"
+            ng-disabled="!currentJournal"
+            style-type="white"
+            title="{{'Show journal detail' | translate}}"></dev-tag-button>
+
+    <dev-tag-button
+            ng-click="bookkeeping(journalGridOption.current)"
+            ng-disabled="!currentJournal"
+            style-type="white"
+            title="{{'Bookkeep' | translate}}"></dev-tag-button>
+
+    <dev-tag-grid option="journalGridOption"
+                  on-current-changed="onSelectJournal(current)"></dev-tag-grid>
+</dev-tag-content>
