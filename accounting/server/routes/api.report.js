@@ -10,7 +10,9 @@ const fs = require('fs'),
     layout = getReport('layout'),
     ReportQueryAccounts = require('../queries/query.report.accounts'),
     ReportQueryBalance = require('../queries/query.report.balance'),
-    ReportQueryFinancialOffices = require('../queries/query.report.financialOffices');
+    ReportQueryFinancialOffices = require('../queries/query.report.financialOffices'),
+    ReportQueryTurnover = require('../queries/query.report.turnover'),
+    ReportQueryJournal = require('../queries/query.report.journal');
 
 function getReport(fileName) {
     return JSON.parse(
@@ -146,5 +148,104 @@ router.route('/subsidiary-office')
         res.json(result);
     }));
 
+router.route('/total-general-subsidiary-turnover')
+    .get(async((req, res) => {
+        let ins = new ReportQueryTurnover(req.cookies['branch-id'],
+            req.cookies['current-period'],
+            req.cookies['current-mode'],
+            req.query),
+            result = await(ins.getTotalTurnover());
+        res.json(result);
+    }));
+
+router.route('/total-subsidiary-detail-turnover')
+    .get(async((req, res) => {
+        let ins = new ReportQueryTurnover(req.cookies['branch-id'],
+            req.cookies['current-period'],
+            req.cookies['current-mode'],
+            req.query),
+            result = await(ins.getTotalTurnover());
+        res.json(result);
+    }));
+
+router.route('/total-general-subsidiary-detail-turnover')
+    .get(async((req, res) => {
+        let ins = new ReportQueryTurnover(req.cookies['branch-id'],
+            req.cookies['current-period'],
+            req.cookies['current-mode'],
+            req.query),
+            result = await(ins.getTotalTurnover());
+        res.json(result);
+    }));
+
+router.route('/detail-general-subsidiary-turnover')
+    .get(async((req, res) => {
+        let ins = new ReportQueryTurnover(req.cookies['branch-id'],
+            req.cookies['current-period'],
+            req.cookies['current-mode'],
+            req.query),
+            result = await(ins.getDetailTurnover());
+        res.json(result);
+    }));
+
+router.route('/detail-subsidiary-detail-turnover')
+    .get(async((req, res) => {
+        let ins = new ReportQueryTurnover(req.cookies['branch-id'],
+            req.cookies['current-period'],
+            req.cookies['current-mode'],
+            req.query),
+            result = await(ins.getDetailTurnover());
+        res.json(result);
+    }));
+
+router.route('/detail-general-subsidiary-detail-turnover')
+    .get(async((req, res) => {
+        let ins = new ReportQueryTurnover(req.cookies['branch-id'],
+            req.cookies['current-period'],
+            req.cookies['current-mode'],
+            req.query),
+            result = await(ins.getDetailTurnover());
+        res.json(result);
+    }));
+
+router.route('/detail-journal')
+    .get(async((req, res) => {
+        let ins = new ReportQueryJournal(req.cookies['branch-id'],
+            req.cookies['current-period'],
+            req.cookies['current-mode'],
+            req.query),
+            result = await(ins.getDetailJournals());
+        res.json(result);
+    }));
+
+router.route('/detail-general-journal')
+    .get(async((req, res) => {
+        let ins = new ReportQueryJournal(req.cookies['branch-id'],
+            req.cookies['current-period'],
+            req.cookies['current-mode'],
+            req.query),
+            result = await(ins.getDetailJournals());
+        res.json(result);
+    }));
+
+router.route('/detail-general-subsidiary-journal')
+    .get(async((req, res) => {
+        let ins = new ReportQueryJournal(req.cookies['branch-id'],
+            req.cookies['current-period'],
+            req.cookies['current-mode'],
+            req.query),
+            result = await(ins.getDetailJournals());
+        res.json(result);
+    }));
+
+router.route('/detail-subsidiary-detail-journal')
+    .get(async((req, res) => {
+        let ins = new ReportQueryJournal(req.cookies['branch-id'],
+            req.cookies['current-period'],
+            req.cookies['current-mode'],
+            req.query),
+            result = await(ins.getDetailJournals());
+        res.json(result);
+    }));
 
 module.exports = router;
