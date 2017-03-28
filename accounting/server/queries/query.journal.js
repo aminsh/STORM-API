@@ -6,7 +6,7 @@ const async = require('asyncawait/async'),
     kendoQueryResolve = require('../services/kendoQueryResolve'),
     view = require('../viewModel.assemblers/view.journal'),
     enums = require('../constants/enums'),
-    groupedJournals = require('./query.journal.grouped');
+    journalBaseFilter = require('./query.journal.baseFilter');
 
 module.exports = class JournalQuery extends BaseQuery {
     constructor(branchId) {
@@ -18,15 +18,11 @@ module.exports = class JournalQuery extends BaseQuery {
 
     getAll(fiscalPeriodId, parameters) {
         let knex = this.knex;
-
         let extra = (parameters.extra) ? parameters.extra.filter : undefined;
 
-        let query = knex.select()
-            .from(function () {
-                groupedJournals.call(this, knex, {filter: extra}, fiscalPeriodId, 'tiny');
-            })
-            .as('baseJournals');
+        let query = knex.select().from('journals').as('baseJournals');
 
+        journalBaseFilter(query, extra, fiscalPeriodId, knex);
         return kendoQueryResolve(query, parameters, view);
     }
 

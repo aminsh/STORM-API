@@ -1,6 +1,6 @@
 "use strict";
 
-const filterJournals = require('./query.journal.filter');
+const filterJournals = require('./query.journal.reportFilter');
 
 module.exports = function (knex, options, currentFiscalPeriod, groupByFields) {
     let groupByField = groupByFields != 'tiny'
