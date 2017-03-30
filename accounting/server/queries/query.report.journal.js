@@ -26,12 +26,15 @@ module.exports = class ReportQueryJournals extends BaseQuery {
             knex = this.knex,
             currentFiscalPeriodId = this.currentFiscalPeriodId;
 
-        let journals = `"groupJournals".number as "number",
+        let journals = `"groupJournals".number as "number", 
             "groupJournals".date as "date",
             "groupJournals".month as "journalmonth",
             "groupJournals".description as "journalsDescription",
             "groupJournals"."sumDebtor" as "debtor",
-            "groupJournals"."sumCreditor" as "creditor"`;
+            "groupJournals"."sumCreditor" as "creditor",
+            CASE WHEN "groupJournals"."journalStatus"= 'BookKeeped' 
+                THEN '${translate('Bookkeep')}' 
+                ELSE '${translate('New Journal')}' END AS "journalStatusText"`;
 
         let generalLedgerAccounts = `"generalLedgerAccounts".code as generalCode,
             "generalLedgerAccounts".title as generalTitle,
@@ -60,12 +63,13 @@ module.exports = class ReportQueryJournals extends BaseQuery {
                     options,
                     currentFiscalPeriodId,
                     ['number','date','month','generalLedgerAccountId', 'subsidiaryLedgerAccountId', 'detailAccountId',
-                    'description']);
+                        'journalStatus','description']);
             })
             .leftJoin('generalLedgerAccounts', 'groupJournals.generalLedgerAccountId', 'generalLedgerAccounts.id')
             .leftJoin('subsidiaryLedgerAccounts', 'groupJournals.subsidiaryLedgerAccountId', 'subsidiaryLedgerAccounts.id')
             .leftJoin('detailAccounts', 'groupJournals.detailAccountId', 'detailAccounts.id')
             .as('totalJournals')
+
         return query;
     };
 
@@ -86,7 +90,10 @@ module.exports = class ReportQueryJournals extends BaseQuery {
             "groupJournals"."chequeId" as "chequeId",
             "groupJournals"."chequeDate" as "chequeDate",
             "groupJournals".article as "article",
-            "groupJournals".row as "row"`;
+            "groupJournals".row as "row",
+            CASE WHEN "groupJournals"."journalStatus"= 'BookKeeped' 
+                THEN '${translate('Bookkeep')}' 
+                ELSE '${translate('New Journal')}' END AS "journalStatusText"`;
 
         let generalLedgerAccounts = `"generalLedgerAccounts".code as generalCode,
             "generalLedgerAccounts".title as generalTitle,
@@ -110,8 +117,8 @@ module.exports = class ReportQueryJournals extends BaseQuery {
             subsidiaryLedgerAccounts + ',' + detailAccounts))
             .from(function () {
                 groupJournals.call(this, knex, options, currentFiscalPeriodId,
-                    ['id','periodId','number','date','month','generalLedgerAccountId', 'subsidiaryLedgerAccountId', 
-                    'detailAccountId','description','chequeId','chequeDate','row','article']);
+                    ['id','periodId','number','date','month','generalLedgerAccountId', 'subsidiaryLedgerAccountId',
+                        'journalStatus','detailAccountId','description','chequeId','chequeDate','row','article']);
             })
             .leftJoin('generalLedgerAccounts', 'groupJournals.generalLedgerAccountId', 'generalLedgerAccounts.id')
             .leftJoin('subsidiaryLedgerAccounts', 'groupJournals.subsidiaryLedgerAccountId', 'subsidiaryLedgerAccounts.id')

@@ -66,4 +66,43 @@ export default class {
         return this.apiPromise.get(`${this.urlPrefix}/subsidiary-office`);
     }
 
+    totalGeneralSubsidiaryTurnover() {
+        return this.apiPromise.get(`${this.urlPrefix}/total-general-subsidiary-turnover`);
+    }
+
+    totalSubsidiaryDetailTurnover() {
+        return this.apiPromise.get(`${this.urlPrefix}/total-subsidiary-detail-turnover`);
+    }
+
+    totalGeneralSubsidiaryDetailTurnover() {
+        return this.apiPromise.get(`${this.urlPrefix}/total-general-subsidiary-detail-turnover`);
+    }
+
+    detailGeneralSubsidiaryTurnover() {
+        return this.apiPromise.get(`${this.urlPrefix}/detail-general-subsidiary-turnover`);
+    }
+
+    detailSubsidiaryDetailTurnover() {
+        return this.apiPromise.get(`${this.urlPrefix}/detail-subsidiary-detail-turnover`);
+    }
+
+    detailGeneralSubsidiaryDetailTurnover() {
+        return this.apiPromise.get(`${this.urlPrefix}/detail-general-subsidiary-detail-turnover`);
+    }
+
+    detailJournals() {
+        return this.apiPromise.get(`${this.urlPrefix}/detail-journal`);
+    }
+
+    detailGeneralJournal() {
+        return this.apiPromise.get(`${this.urlPrefix}/detail-general-journal`);
+    }
+
+    detailGeneralSubsidiaryJournal() {
+        return this.apiPromise.get(`${this.urlPrefix}/detail-general-subsidiary-journal`);
+    }
+
+    detailSubsidiaryDetailJournal() {
+        return this.apiPromise.get(`${this.urlPrefix}/detail-subsidiary-detail-journal`);
+    }
 }

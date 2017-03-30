@@ -25,7 +25,7 @@ function reportViewer(currentService) {
 
             $(element).find('div').attr('id', id);
 
-            report.loadFile(`/luca/api/reports/file/${scope.reportFileName}`);
+            report.loadFile(`/acc/api/reports/file/${scope.reportFileName}`);
             viewer.renderHtml(id);
 
             report.dictionary.variables.add(addVariable({
