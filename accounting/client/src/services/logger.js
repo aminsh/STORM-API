@@ -1,4 +1,4 @@
-import swal from 'bootstrap-sweetalert';
+import swal from 'sweetalert';
 import accModule from '../acc.module';
 
 function logger(translate) {

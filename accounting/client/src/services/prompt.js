@@ -1,5 +1,5 @@
 import accModule from '../acc.module';
-import swal from 'bootstrap-sweetalert';
+import swal from 'sweetalert';
 
 function prompt(translate, $q) {
     return (option)=> {
