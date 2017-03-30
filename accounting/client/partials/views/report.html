@@ -14,26 +14,32 @@
                 report-data-source-name="data">
         </dev-tag-report-designer>
 
-        <tabset active="active" ng-if="mode == 'view'">
+        <uib-tabset active="activeTabIndex" ng-if="mode == 'view'">
 
-            <tab index="0" heading="{{'Parameters'|translate}}" ng-attr-active="isActiveFirstTab">
+            <uib-tab index="0" heading="{{'Parameters'|translate}}" ">
                 <div class="row" style="margin: 20px 0 20px 0">
                     <div class="col-md-4">
-                        <accordion>
-                            <accordion-group class="panel-primary" ng-repeat="r in reports" heading="{{r.text}}">
+
+                        <uib-accordion close-others="true">
+                            <div uib-accordion-group class="panel-primary" ng-repeat="r in reports">
+
+                                <uib-accordion-heading>
+                                    <h4>{{r.text}}</h4>
+                                </uib-accordion-heading>
+
                                 <ul class="list-group">
                                     <li class="list-group-item" style="cursor: pointer" ng-click="select(item)"
                                         ng-class="{'active': item == selectedReport}" ng-repeat="item in r.items">
                                         {{item.text}}
 
                                         <span ng-if="isDevelopment"
-                                                class="fa fa-edit pull-left"
+                                              class="fa fa-edit pull-left"
                                               style="cursor: pointer"
                                               ng-click="design(item)"></span>
                                     </li>
                                 </ul>
-                            </accordion-group>
-                        </accordion>
+                            </div>
+                        </uib-accordion>
                     </div>
                     <div class="col-md-8">
                         <form name="form">
@@ -172,7 +178,8 @@
                                     <div class="col-md-2"></div>
                                     <div class="col-md-5">
                                         <dev-tag-check-box ng-model="journalSearch.isNotPeriodIncluded">
-                                            <label style="margin-top: 4px">{{'Is not period included' | translate}}</label>
+                                            <label style="margin-top: 4px">{{'Is not period included' |
+                                                translate}}</label>
                                         </dev-tag-check-box>
                                     </div>
                                 </div>
@@ -199,28 +206,27 @@
                         </form>
                     </div>
                 </div>
-            </tab>
+            </uib-tab>
 
-            <tab index="$index + 1" heading="{{tab.title}}" ng-attr-active="tab.isActive" ng-repeat="tab in viewerTabs">
-                <tab-heading>
+            <uib-tab index="$index + 1" heading="{{tab.title}}" ng-repeat="tab in viewerTabs">
+                <uib-tab-heading>
                     <div class="row">
                         <button type="button"
-                                ng-click="closeViewerTab(tab)"
+                                ng-click="closeViewerTab(tab , $event)"
                                 class="close pull-left"
                                 aria-label="Close">
-                            <span style="margin-right: 5px"
-                                  aria-hidden="true">&times;</span>
+                            <span style="margin-right: 5px">&times;</span>
                         </button>
                         <span class="pull-right" style="margin-left: 18px;margin-right: 10px">{{tab.title}}</span>
                     </div>
-                </tab-heading>
+                </uib-tab-heading>
 
                 <dev-tag-report-viewer
                         report-data="data"
                         report-file-name="{{tab.fileName}}"
                         report-title="{{tab.title}}"
                         report-data-source-name="data"></dev-tag-report-viewer>
-            </tab>
-        </tabset>
+            </uib-tab>
+        </uib-tabset>
     </div>
 </dev-tag-content>

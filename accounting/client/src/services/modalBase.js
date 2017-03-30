@@ -1,11 +1,11 @@
 import accModule from '../acc.module';
 
-function modalBase($modal, $q) {
+function modalBase($uibModal, $q) {
 
     /*{controller: string, templateUrl: string, size(optional): string, data: object}*/
 
     var modalFunction = function (option) {
-        var modalInstance = $modal.open({
+        var modalInstance = $uibModal.open({
             animation: true,
             templateUrl: option.templateUrl,
             controller: option.controller,
