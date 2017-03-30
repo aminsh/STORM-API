@@ -1,6 +1,4 @@
 import accModule from '../acc.module';
-import Collection from 'dev.collection';
-
 
 function gridGenerateCommandsService() {
     return generate;
@@ -9,7 +7,7 @@ function gridGenerateCommandsService() {
 function generate(commandOptions) {
     if (!commandOptions) return null;
 
-    new Collection(commandOptions).asEnumerable()
+    commandOptions.asEnumerable()
         .select(c=> typeof cmd == "string" ? c : new KendoGridCommand(c))
         .toArray();
 }

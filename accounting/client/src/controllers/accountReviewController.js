@@ -1,5 +1,4 @@
 import accModule from '../acc.module';
-import Collection from 'dev.collection';
 
 function accountReviewController($scope, navigate, dimensionCategoryApi, devConstants, formService) {
 
@@ -39,7 +38,7 @@ function accountReviewController($scope, navigate, dimensionCategoryApi, devCons
     dimensionCategoryApi.getAll()
         .then((result)=> {
             let cats = result.data;
-            $scope.dimensionCategories = new Collection(cats).asEnumerable().take(3).toArray();
+            $scope.dimensionCategories = cats.asEnumerable().take(3).toArray();
 
             $scope.dimension1DataSource = dimensionDataSourceFactory(cats[0].id);
             $scope.dimension2DataSource = dimensionDataSourceFactory(cats[1].id);

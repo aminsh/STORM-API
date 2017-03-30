@@ -1,7 +1,9 @@
-var Enumerable = require('linq');
+"use strict";
+
+const Enumerable = require('linq');
 
 Array.prototype.asEnumerable = function () {
-    var enumerable = Enumerable.from(this);
+    let enumerable = Enumerable.from(this);
     enumerable.remove = remove.bind(this);
     enumerable.removeAll = removeAll.bind(this);
     return enumerable;
@@ -21,3 +23,5 @@ function removeAll() {
 
     return this;
 }
+
+Object.defineProperty(Array.prototype, 'asEnumerable', { enumerable: false });

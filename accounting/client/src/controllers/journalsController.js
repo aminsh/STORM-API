@@ -1,5 +1,4 @@
 import accModule from '../acc.module';
-import Collection from 'dev.collection';
 
 function journalsController($scope, translate, journalApi, navigate, logger,
                             journalCreateModalControllerService,
@@ -105,42 +104,42 @@ accModule
 
             let instance = angular.extend({}, filterData);
 
-            instance.generalLedgerAccounts = new Collection(filterData.generalLedgerAccounts)
+            instance.generalLedgerAccounts = filterData.generalLedgerAccounts
                 .asEnumerable()
                 .select((g) => g.id)
                 .toArray();
 
-            instance.subsidiaryLedgerAccounts = new Collection(filterData.subsidiaryLedgerAccounts)
+            instance.subsidiaryLedgerAccounts = filterData.subsidiaryLedgerAccounts
                 .asEnumerable()
                 .select((s) => s.id)
                 .toArray();
 
-            instance.detailAccounts = new Collection(filterData.detailAccounts)
+            instance.detailAccounts = filterData.detailAccounts
                 .asEnumerable()
                 .select((d) => d.id)
                 .toArray();
 
-            instance.dimension1s = new Collection(filterData.dimension2s)
+            instance.dimension1s = filterData.dimension2s
                 .asEnumerable()
                 .select((d) => d.id)
                 .toArray();
 
-            instance.dimension2s = new Collection(filterData.dimension2s)
+            instance.dimension2s = filterData.dimension2s
                 .asEnumerable()
                 .select((d) => d.id)
                 .toArray();
 
-            instance.dimension3s = new Collection(filterData.dimension3s)
+            instance.dimension3s = filterData.dimension3s
                 .asEnumerable()
                 .select((d) => d.id)
                 .toArray();
 
-            instance.dimension4s = new Collection(filterData.dimension4s)
+            instance.dimension4s = filterData.dimension4s
                 .asEnumerable()
                 .select((d) => d.id)
                 .toArray();
 
-            instance.chequeNumbers = new Collection(filterData.chequeNumbers)
+            instance.chequeNumbers = filterData.chequeNumbers
                 .asEnumerable()
                 .select((c) => c.id)
                 .toArray();

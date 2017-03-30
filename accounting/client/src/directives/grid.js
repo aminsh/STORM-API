@@ -1,6 +1,5 @@
 import $ from 'jquery';
 import accModule from '../acc.module';
-import Collection from 'dev.collection';
 
 let translate = JSON.parse(localStorage.translate);
 let dimensionCategories = JSON.parse(localStorage.dimensionCategories).data;
@@ -129,10 +128,10 @@ function grid(gridFilterCellType, $compile, translate) {
 
                     let state = gridState.options;
 
-                    state.columns = new Collection(state.columns)
+                    state.columns = state.columns
                         .asEnumerable()
                         .where(c=> !c.hasOwnProperty('command'))
-                        .concat([{command: new Collection(scope.option.commands).asEnumerable().select(commandFactory).toArray()}])
+                        .concat([{command: scope.option.commands.select(commandFactory).toArray()}])
                         .toArray();
 
                     grid.setOptions(state);
@@ -174,20 +173,20 @@ function grid(gridFilterCellType, $compile, translate) {
                     if (aggregates.length == 0)
                         return;
 
-                    let aggregatesForThisColumn = new Collection(aggregates).asEnumerable().select(agg=> {
+                    let aggregatesForThisColumn = aggregates.asEnumerable().select(agg=> {
                         return {
                             field: column.name,
                             aggregate: agg
                         };
                     }).toArray();
 
-                    aggregatesForDateSource = new Collection(aggregatesForDateSource)
+                    aggregatesForDateSource = aggregatesForDateSource
                         .asEnumerable()
                         .concat(aggregatesForThisColumn)
                         .toArray();
                 }
 
-                var cols = new Collection(option.columns)
+                var cols = option.columns
                     .asEnumerable()
                     .select(function (col) {
                         setAggregatesForDataSource(col);
@@ -213,7 +212,7 @@ function grid(gridFilterCellType, $compile, translate) {
                     };
                 });
 
-                var commands = new Collection(option.commands).asEnumerable()
+                var commands = option.commands.asEnumerable()
                     .select(commandFactory).toArray();
 
                 if (option.commandTemplate)

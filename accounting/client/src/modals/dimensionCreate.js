@@ -1,6 +1,5 @@
 import accModule from '../acc.module';
 import config from '../localData/config';
-import Collection from 'dev.collection';
 
 function dimensionCreateModalController(data,
                                         $scope, $modalInstance, dimensionApi, formService) {
@@ -19,7 +18,7 @@ function dimensionCreateModalController(data,
         if (form.$invalid)
             return formService.setDirty(form);
 
-        Collection.removeAll($scope.errors);
+        $scope.errors.removeAll();
 
         $scope.isSaving = true;
 

@@ -1,5 +1,4 @@
 import Chart from 'chart.js';
-import Collection from 'dev.collection';
 
 export default function () {
     return {
@@ -23,7 +22,7 @@ export default function () {
                     '#b3d8f1'
                 ],
                 labels = eval(`scope.${attrs.kLabels}`),
-                usableColors = new Collection(colors)
+                usableColors = colors
                     .asEnumerable()
                     .take(labels.length)
                     .toArray(),

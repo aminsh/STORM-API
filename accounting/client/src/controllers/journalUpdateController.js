@@ -1,5 +1,4 @@
 import accModule from '../acc.module';
-import Collection from 'dev.collection';
 
 function journalUpdateController($scope, logger, confirm, translate, navigate, $routeParams, $rootScope, devConstants,
                                  journalApi, journalLineApi, subsidiaryLedgerAccountApi, dimensionCategoryApi,

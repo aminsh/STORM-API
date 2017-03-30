@@ -1,5 +1,4 @@
 import accModule from '../acc.module';
-import Collection from 'dev.collection';
 
 function journalCreateModalController($scope, $modalInstance, journalApi, logger, formService) {
 
@@ -18,7 +17,7 @@ function journalCreateModalController($scope, $modalInstance, journalApi, logger
         if (form.$invalid)
             return formService.setDirty(form);
 
-        Collection.removeAll($scope.errors);
+        $scope.errors.removeAll();
 
         $scope.isSaving = true;
 

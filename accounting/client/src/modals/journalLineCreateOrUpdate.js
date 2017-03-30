@@ -1,5 +1,4 @@
 import accModule from '../acc.module';
-import Collection from 'dev.collection';
 
 function journalLineCreateOrUpdateController($scope, $modalInstance, $timeout, formService, $q,
                                              journalLineApi, dimensionCategoryApi, logger, devConstants, data) {
@@ -187,7 +186,7 @@ function journalLineCreateOrUpdateController($scope, $modalInstance, $timeout, f
         transport: {
             read: {
                 url: (filter) => {
-                    let generalLegerAccountId = new Collection(filter.filter.filters)
+                    let generalLegerAccountId = filter.filter.filters
                         .asEnumerable()
                         .first(f => f.field == 'generalLedgerAccountId')
                         .value;
@@ -228,22 +227,23 @@ function journalLineCreateOrUpdateController($scope, $modalInstance, $timeout, f
         }
 
         $scope.journalLine.detailAccount = {
-            canShow: new Collection(['Required', 'NotRequired']).asEnumerable().contains(item.detailAccountAssignmentStatus),
+            canShow: ['Required', 'NotRequired']
+                .asEnumerable().contains(item.detailAccountAssignmentStatus),
             isRequired: item.detailAccountAssignmentStatus == 'Required'
         };
 
         $scope.journalLine.dimension1 = {
-            canShow: new Collection(['Required', 'NotRequired']).asEnumerable().contains(item.dimension1AssignmentStatus),
+            canShow: ['Required', 'NotRequired'].asEnumerable().contains(item.dimension1AssignmentStatus),
             isRequired: item.dimension1AssignmentStatus == 'Required'
         };
 
         $scope.journalLine.dimension2 = {
-            canShow: new Collection(['Required', 'NotRequired']).asEnumerable().contains(item.dimension2AssignmentStatus),
+            canShow: ['Required', 'NotRequired'].asEnumerable().contains(item.dimension2AssignmentStatus),
             isRequired: item.dimension2AssignmentStatus == 'Required'
         };
 
         $scope.journalLine.dimension3 = {
-            canShow: new Collection(['Required', 'NotRequired']).asEnumerable().contains(item.dimension3AssignmentStatus),
+            canShow: ['Required', 'NotRequired'].asEnumerable().contains(item.dimension3AssignmentStatus),
             isRequired: item.dimension3AssignmentStatus == 'Required'
         };
     };

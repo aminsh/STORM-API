@@ -1,5 +1,4 @@
 import accModule from '../acc.module';
-import Collection from 'dev.collection';
 
 function accountReviewTurnoverController($scope, navigate, $routeParams, $location, translate,
                                          dimensionCategoryApi,

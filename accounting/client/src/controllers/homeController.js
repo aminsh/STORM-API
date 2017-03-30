@@ -1,5 +1,4 @@
 import accModule from '../acc.module';
-import Collection from 'dev.collection';
 
 function homeController($scope, currentService, navigate, journalApi, translate,
                         journalCreateModalControllerService,
@@ -11,20 +10,20 @@ function homeController($scope, currentService, navigate, journalApi, translate,
         return navigate('createFiscalPeriod');
 
     $scope.select = c => {
-        var x = c;
-        console.log(c);
+     /*   var x = c;
+        console.log(c);*/
     };
 
     $scope.save = () => $scope.isWaiting = !$scope.isWaiting;
 
     journalApi.getGroupedByMouth()
         .then(result => {
-            let items = new Collection(result.data).asEnumerable();
+            let items = result.data.asEnumerable();
 
             let colors = ['#803690', '#00ADF9', '#DCDCDC', '#46BFBD', '#FDB45C', '#949FB1', '#4D5360'];
             $scope.labels = items.select(item => item.monthName).toArray();
 
-            $scope.labelForDisplay = new Collection(colors).asEnumerable()
+            $scope.labelForDisplay = colors.asEnumerable()
                 .take($scope.labels.length)
                 .select(c => ({color: c, label: $scope.labels[colors.indexOf(c)]}))
                 .toArray();
@@ -34,7 +33,7 @@ function homeController($scope, currentService, navigate, journalApi, translate,
 
     journalApi.incomesAndOutcomes()
         .then(result => {
-            let items = new Collection(result).asEnumerable()
+            let items = result.asEnumerable()
 
             let incomes = items
                 .where(item => item.amountType == 'income')
@@ -55,8 +54,8 @@ function homeController($scope, currentService, navigate, journalApi, translate,
                 .select(item => item.monthName)
                 .toArray();
 
-            let income = new Collection(incomes).asEnumerable().sum(),
-                outcome = new Collection(outcomes).asEnumerable().sum(),
+            let income = incomes.asEnumerable().sum(),
+                outcome = outcomes.asEnumerable().sum(),
                 total = income + outcome,
                 incomePercent = (income * 100) / total,
                 outcomePercent = (outcome * 100) / total;

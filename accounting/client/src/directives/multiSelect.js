@@ -1,5 +1,4 @@
 import accModule from '../acc.module';
-import Collection from 'dev.collection';
 import 'kendo-core';
 import 'kendo-data';
 import 'kendo-list';
@@ -64,7 +63,7 @@ function multiSelect($window) {
                         let dataItem = e.dataItem,
                             model = ngModel.$viewValue || [];
 
-                        Collection.remove(model, dataItem[attrs.kDataValueField]);
+                        model.remove(dataItem[attrs.kDataValueField]);
                         ngModel.$setViewValue(model);
 
                         if (scope[attrs.kOnChanged])
