@@ -45,9 +45,10 @@ app.use(function (req, res, next) {
 app.use(compression());
 app.set('views', config.rootPath + '/server/public');
 app.engine('html', require('ejs').renderFile);
+app.use('/public', express.static(config.rootPath + '../public'));
 app.use('/client', express.static(config.rootPath + '/client'));
 app.use('/content', express.static(config.rootPath + '/client/content'));
-app.use('/uploads', express.static(config.rootPath + '/uploads'));
+app.use('/data', express.static(config.rootPath + '/data'));
 app.use('/', express.static(config.rootPath + '/server/public'));
 
 app.use(multer({dest: './uploads/;'}));
