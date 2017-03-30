@@ -6,7 +6,7 @@ function apiPromise($http, $q) {
         var deferred = $q.defer();
 
         $httpPromise
-            .success(function (result) {
+            .then(function (result) {
                 if (result.isValid) {
                     deferred.resolve(result.returnValue);
                 }
@@ -14,7 +14,7 @@ function apiPromise($http, $q) {
                     deferred.reject(result.errors)
                 }
             })
-            .error(function (error) {
+            .catch(function (error) {
                 console.error(error);
                 deferred.reject(['Internal Error']);
             });
@@ -27,10 +27,10 @@ function apiPromise($http, $q) {
             var deferred = $q.defer();
 
             $http.get(url, {params: data, paramSerializer: '$httpParamSerializerJQLike'})
-                .success(function (result) {
-                    deferred.resolve(result);
+                .then(function (result) {
+                    deferred.resolve(result.data);
                 })
-                .error(function (error) {
+                .catch(function (error) {
                     console.error(error);
                     deferred.reject(['Internal Error']);
                 });
