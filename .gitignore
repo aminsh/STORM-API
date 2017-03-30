@@ -40,3 +40,5 @@ jspm_packages
 /.vscode
 /luca/database/convert/data.json
 /data
+/.sass-cache
+/public

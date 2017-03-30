@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import accModule from '../acc.module';
 import 'kendo-core';
 import 'kendo-data';
