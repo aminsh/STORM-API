@@ -3,6 +3,8 @@ import 'function-prototypes';
 import 'number-prototypes';
 import 'string-prototypes';
 import 'jquery-global-resolve';
+//import 'slimscroll'; this is not implemented
+import 'pace';
 
 import accModule from './acc.module';
 

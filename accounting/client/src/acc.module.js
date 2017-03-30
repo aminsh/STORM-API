@@ -1,6 +1,6 @@
 import angular from 'angular';
 import 'angular-animate';
-import 'angular-bootstrap';
+import 'angular-ui-bootstrap';
 import 'angular-route';
 import 'angular-sanitize';
 import 'angular-translate';
@@ -8,12 +8,10 @@ import 'angular-resource';
 import 'angular-messages';
 import 'angular-cookies';
 import 'angular-cookies';
-import 'ADM-dateTimePicker';
-
-import 'chart.js';
 import 'angular-chart';
-
 import 'angular-ladda';
+import 'adm-dtp';
+import 'chart.js';
 
 Object.defineProperty(Array.prototype, 'toNumber', { enumerable: false });
 Object.defineProperty(Array.prototype, 'dtp_toDate', { enumerable: false });
