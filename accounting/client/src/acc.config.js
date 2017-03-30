@@ -1,3 +1,9 @@
+import 'array-prototypes';
+import 'function-prototypes';
+import 'number-prototypes';
+import 'string-prototypes';
+import 'jquery-global-resolve';
+
 import accModule from './acc.module';
 
 // load config
