@@ -6,7 +6,8 @@ const express = require('express'),
     await = require('asyncawait/await'),
     config = require('../../config'),
     emailService = require('../../services/emailService'),
-    translate = require('../../services/translateService');
+    translate = require('../../services/translateService'),
+    Crypto = require('../../services/shared').service.Crypto;
 
 router.route('/send-message').post((req, res) => {
     let message = req.body;
@@ -36,9 +37,13 @@ router.route('/request-luca-demo').post((req, res) => {
                <p>Email: ${info.email}</p>`
     });
 
-    let token = require('../queries/query.token')
-            .authToken({id: info.email, name: info.name || info.email},
-                'c3339d0d-b4f7-4c96-b5c2-2d4376ceb9ea'),
+    let token = Crypto.encrypt({
+            user: {
+                id: info.email,
+                name: info.name || info.email
+            },
+            branchId: 'c3339d0d-b4f7-4c96-b5c2-2d4376ceb9ea'
+        }),
         url = `${config.url.luca}/?token=${token}`;
 
     emailService.send({
