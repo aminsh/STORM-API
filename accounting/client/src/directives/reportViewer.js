@@ -1,5 +1,5 @@
 import accModule from '../acc.module';
-import Guid from 'dev.guid';
+import Guid from 'guid';
 import {viewerConfig, addVariable, addTranslates} from '../utilities/stimulsoft';
 
 let config = viewerConfig();

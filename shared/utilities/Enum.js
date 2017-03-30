@@ -1,20 +1,26 @@
-function Enum(enums) {
-    this.data = enums;
+"use strict";
 
-        this.getDisplay = function (key) {
-            return this.data.asEnumerable()
-            .single(function (e) {
-                return e.key == key;
-            }).display;
+module.exports = class {
+    constructor(enums) {
+        this.data = enums;
     }
 
-    this.getKeys = function () {
+    getDisplay(key) {
+        return this.data
+            .asEnumerable()
+            .single(e => e.key == key)
+            .display;
+    }
+
+    getKey(key) {
+        return this.data
+            .asEnumerable()
+            .single(e => e.key == key);
+    }
+
+    getKeys() {
         return this.data.asEnumerable()
-            .select(function (e) {
-                return e.key;
-    })
+            .select(e => e.key)
             .toArray();
     }
-}
-
-module.exports = Enum;
+};

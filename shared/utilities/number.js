@@ -54,3 +54,7 @@ module.exports.digitToWord = function (str) {
         return numbers.zero;
     }
 };
+
+module.exports.isNumeric = function (input) {
+    return (input - 0) == input && (input + '').replace(/^\s+|\s+$/g, "").length > 0;
+};

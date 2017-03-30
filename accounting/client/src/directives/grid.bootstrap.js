@@ -1,6 +1,5 @@
-import Collection from 'dev.collection';
-import Guid from 'dev.guid';
-import 'dataTables';
+import Guid from 'guid';
+import 'jquery-datatables';
 
 export default function (apiPromise, $timeout) {
     return {
@@ -47,7 +46,7 @@ export default function (apiPromise, $timeout) {
             };
             scope.option.refresh = () => scope.pageOption.refresh();
             scope.option.addItem = newItem => scope.data.unshift(newItem);
-            scope.option.removeItem = item => Collection.remove(scope.data, item);
+            scope.option.removeItem = item => scope.data.remove(item);
 
             function fetch(page) {
                 if (!option.readUrl) return;
@@ -122,11 +121,11 @@ export default function (apiPromise, $timeout) {
             function addFilter(filterParam) {
                 let filters = filter.filters;
 
-                let sameFieldFilters = new Collection(filters).asEnumerable()
+                let sameFieldFilters = filters.asEnumerable()
                     .where(f => f.field == filterParam.field)
                     .toArray();
 
-                sameFieldFilters.forEach(f => Collection.remove(filters, f));
+                sameFieldFilters.forEach(f => filters.remove(f));
 
                 filters.push(filterParam);
 
@@ -136,11 +135,11 @@ export default function (apiPromise, $timeout) {
             function removeFilter(field) {
                 let filters = filter.filters;
 
-                let sameFieldFilters = new Collection(filters).asEnumerable()
+                let sameFieldFilters = filters.asEnumerable()
                     .where(f => f.field == field)
                     .toArray();
 
-                sameFieldFilters.forEach(f => Collection.remove(filters, f));
+                sameFieldFilters.forEach(f => filters.remove(f));
 
                 scope.pageOption.reset();
             }
