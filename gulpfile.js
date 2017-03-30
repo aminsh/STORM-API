@@ -1,5 +1,8 @@
-var path = require('path'),
+"use strict";
+
+const path = require('path'),
     fs = require('fs'),
+    mkdirp = require('mkdirp'),
     gulp = require('gulp'),
     util = require('gulp-util'),
     gulpif = require('gulp-if'),
@@ -39,29 +42,33 @@ gulp.task('build-template', function () {
 });
 
 gulp.task('build-acc', function () {
-    var bundler = browserify(
-        {
-            entries: `${config.accSrcDir}/src/acc.config.js`,
-            debug: !config.isProduction
-        });
+    const distPath = `${config.publicDir}/js`;
 
-    //Object.keys(config.vendors).forEach(key => bundler.external(key));
+    mkdirp(`${config.publicDir}/js`, err => {
+        if (err) {
+            return util.log(util.colors.green.bold(JSON.stringify(err)));
+            process.exit();
+        }
 
-    bundler
-    /*.transform("babelify", {
-     presets: ["es2015", "react"]
-     })
-     .transform({
-     global: true,
-     mangle: false,
-     comments: true,
-     compress: {
-     angular: true
-     }
-     }, 'uglifyify');*/
-    return bundler.bundle()
-        .pipe(exorcist(path.join(`${config.publicDir}/js`, 'acc.bundle.js.map')))
-        .pipe(fs.createWriteStream(path.join(`${config.publicDir}/js`, 'acc.bundle.js'), 'utf8'));
+        return browserify(
+            {
+                entries: `${config.accSrcDir}/src/acc.config.js`,
+                debug: !config.isProduction
+            })
+            .transform({
+                global: true,
+                mangle: false,
+                comments: true,
+                compress: {
+                    angular: true
+                }
+            }, 'uglifyify')
+            .bundle()
+            .pipe(exorcist(path.join(distPath, `acc.bundle.min.map`)))
+            .pipe(fs.createWriteStream(path.join(distPath, 'acc.bundle.min.js'), 'utf8'));
+
+        process.exit();
+    });
 });
 
 gulp.task('build-vendor', function () {
@@ -148,14 +155,6 @@ gulp.task('copy-bootstrap-fonts', function () {
         .pipe(gulp.dest(`${config.publicDir}/fonts`));
 });
 
-
-gulp.task('bower', function () {
-    return bower({
-        cwd: '.',
-        interactive: true
-    })
-});
-
 gulp.task('watch', () => {
     gulp.watch(`${config.accSrcDir}/src/**/*.js`, ['build-acc']);
     gulp.watch(`${config.accSrcDir}/src/**/*.scss`, ['build-sass']);
@@ -179,10 +178,10 @@ gulp.task('copy-assets', [
 ]);
 
 gulp.task('default', [
-    'bower',
-    'build-vendor',
     'build-acc',
     'build-template',
+    'build-sass',
+    'build-stimulsoft',
     'copy-assets'
 ]);
 
