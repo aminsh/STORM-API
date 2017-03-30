@@ -1,6 +1,6 @@
 import accModule from '../acc.module';
 
-function journalCreateModalController($scope, $modalInstance, journalApi, logger, formService) {
+function journalCreateModalController($scope, $uibModalInstance, journalApi, logger, formService) {
 
     $scope.errors = [];
     $scope.journal = {
@@ -29,7 +29,7 @@ function journalCreateModalController($scope, $modalInstance, journalApi, logger
         journalApi.create($scope.journal)
             .then((result) => {
                 logger.success();
-                $modalInstance.close(result);
+                $uibModalInstance.close(result);
             })
             .catch((errors) => {
                 $scope.errors = errors;
@@ -37,7 +37,7 @@ function journalCreateModalController($scope, $modalInstance, journalApi, logger
             .finally(() => $scope.isSaving = false);
     };
 
-    $scope.close = () => $modalInstance.dismiss();
+    $scope.close = () => $uibModalInstance.dismiss();
 }
 
 function journalCreateModalControllerService(modalBase) {

@@ -1,6 +1,6 @@
 import accModule from '../acc.module';
 
-function journalLineCreateOrUpdateController($scope, $modalInstance, $timeout, formService, $q,
+function journalLineCreateOrUpdateController($scope, $uibModalInstance, $timeout, formService, $q,
                                              journalLineApi, dimensionCategoryApi, logger, devConstants, data) {
 
     let journalId = data.journalId;
@@ -139,7 +139,7 @@ function journalLineCreateOrUpdateController($scope, $modalInstance, $timeout, f
 
     $scope.saveAndReturn = (form) => {
         save(form)
-            .then((result) => $modalInstance.close(result));
+            .then((result) => $uibModalInstance.close(result));
     };
 
     $scope.generalLedgerAccountDataSource = {
@@ -283,7 +283,7 @@ function journalLineCreateOrUpdateController($scope, $modalInstance, $timeout, f
             ? 'creditor'
             : 'debtor';
 
-    $scope.close = () => $modalInstance.dismiss();
+    $scope.close = () => $uibModalInstance.dismiss();
 }
 
 function journalLineCreateOrUpdateControllerModalService(modalBase) {

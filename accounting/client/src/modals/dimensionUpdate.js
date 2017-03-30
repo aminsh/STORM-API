@@ -1,6 +1,6 @@
 import accModule from '../acc.module';
 
-function dimensionUpdateModalController(data, $scope, $modalInstance, dimensionApi, formService) {
+function dimensionUpdateModalController(data, $scope, $uibModalInstance, dimensionApi, formService) {
     "use strict";
 
     $scope.errors = [];
@@ -27,13 +27,13 @@ function dimensionUpdateModalController(data, $scope, $modalInstance, dimensionA
 
         dimensionApi.update(data.id, $scope.dimension)
             .then(function (result) {
-                $modalInstance.close(result);
+                $uibModalInstance.close(result);
             })
             .catch((errors)=> $scope.errors = errors)
             .finally(()=> $scope.isSaving = false);
     };
 
-    $scope.close = ()=> $modalInstance.dismiss();
+    $scope.close = ()=> $uibModalInstance.dismiss();
 }
 
 function dimensionUpdateModalService(modalBase) {

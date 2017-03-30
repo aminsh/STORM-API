@@ -1,7 +1,7 @@
 import accModule from '../acc.module';
 import devConstants from '../localData/devConstants';
 
-function generalLedgerAccountCreateModalController($scope, $modalInstance, generalLedgerAccountApi, logger, formService) {
+function generalLedgerAccountCreateModalController($scope, $uibModalInstance, generalLedgerAccountApi, logger, formService) {
 
     $scope.errors = [];
     $scope.generalLedgerAccount = {
@@ -26,14 +26,14 @@ function generalLedgerAccountCreateModalController($scope, $modalInstance, gener
         generalLedgerAccountApi.create($scope.generalLedgerAccount)
             .then(function (result) {
                 logger.success();
-                $modalInstance.close(result);
+                $uibModalInstance.close(result);
             })
             .catch((errors)=> $scope.errors = errors)
             .finally(()=> $scope.isSaving = false);
     };
 
     $scope.close = function () {
-        $modalInstance.dismiss();
+        $uibModalInstance.dismiss();
     };
 
     $scope.accountPostingType = devConstants.enums.AccountPostingType();

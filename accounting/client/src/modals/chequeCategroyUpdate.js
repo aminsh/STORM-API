@@ -1,6 +1,6 @@
 import accModule from '../acc.module';
 
-function chequeCategoryUpdateModalController($scope, $modalInstance, formService, chequeCategoryApi, logger, data, devConstants) {
+function chequeCategoryUpdateModalController($scope, $uibModalInstance, formService, chequeCategoryApi, logger, data, devConstants) {
     "use strict";
 
     let id = data.id;
@@ -28,7 +28,7 @@ function chequeCategoryUpdateModalController($scope, $modalInstance, formService
         chequeCategoryApi.update($scope.chequeCategory)
             .then(function (result) {
                 logger.success();
-                $modalInstance.close(result);
+                $uibModalInstance.close(result);
             })
             .catch((errors)=> $scope.errors = errors)
             .finally(()=> $scope.isSaving = false);
@@ -42,7 +42,7 @@ function chequeCategoryUpdateModalController($scope, $modalInstance, formService
             : null
     };
 
-    $scope.close = ()=> $modalInstance.dismiss();
+    $scope.close = ()=> $uibModalInstance.dismiss();
 
     $scope.detailAccountDataSource = {
         type: "json",

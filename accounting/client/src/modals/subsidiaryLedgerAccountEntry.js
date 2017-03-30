@@ -1,6 +1,6 @@
 import accModule from '../acc.module';
 
-function subsidiaryLedgerAccountEntryModalController($scope, $modalInstance,
+function subsidiaryLedgerAccountEntryModalController($scope, $uibModalInstance,
                                                      dimensionCategoryApi, subsidiaryLedgerAccountApi,
                                                      logger, formService, data, devConstants) {
 

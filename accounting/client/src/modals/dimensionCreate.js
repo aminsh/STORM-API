@@ -2,7 +2,7 @@ import accModule from '../acc.module';
 import config from '../localData/config';
 
 function dimensionCreateModalController(data,
-                                        $scope, $modalInstance, dimensionApi, formService) {
+                                        $scope, $uibModalInstance, dimensionApi, formService) {
     "use strict";
 
     $scope.errors = [];
@@ -24,7 +24,7 @@ function dimensionCreateModalController(data,
 
         dimensionApi.create(data.categoryId, $scope.dimension)
             .then(function (result) {
-                $modalInstance.close(result);
+                $uibModalInstance.close(result);
             })
             .catch(function (errors) {
                 $scope.errors = errors;
@@ -32,7 +32,7 @@ function dimensionCreateModalController(data,
     };
 
     $scope.close = function () {
-        $modalInstance.dismiss();
+        $uibModalInstance.dismiss();
     };
 }
 

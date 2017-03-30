@@ -1,6 +1,6 @@
 import accModule from '../acc.module';
 
-function journalAdvancedSearchModalController($scope, $modalInstance, translate, devConstants,
+function journalAdvancedSearchModalController($scope, $uibModalInstance, translate, devConstants,
                                               dimensionCategoryApi) {
     $scope.journalSearch = {
         title: '',
@@ -40,10 +40,10 @@ function journalAdvancedSearchModalController($scope, $modalInstance, translate,
             data: $scope.journalSearch
         };
 
-        $modalInstance.close(result);
+        $uibModalInstance.close(result);
     };
 
-    $scope.close = () => $modalInstance.dismiss();
+    $scope.close = () => $uibModalInstance.dismiss();
 
     $scope.generalLedgerAccountDataSource = {
         type: "json",

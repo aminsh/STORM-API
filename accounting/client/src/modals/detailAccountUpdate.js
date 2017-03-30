@@ -1,6 +1,6 @@
 import accModule from '../acc.module';
 
-function detailAccountUpdateModalController($scope, $modalInstance, formService, detailAccountApi, logger, data) {
+function detailAccountUpdateModalController($scope, $uibModalInstance, formService, detailAccountApi, logger, data) {
     "use strict";
 
     let id = data.id;
@@ -22,13 +22,13 @@ function detailAccountUpdateModalController($scope, $modalInstance, formService,
         detailAccountApi.update(id, $scope.detailAccount)
             .then((result) => {
                 logger.success();
-                $modalInstance.close(result);
+                $uibModalInstance.close(result);
             })
             .catch((errors) => $scope.errors = errors)
             .finally(() => $scope.isSaving = false);
     };
 
-    $scope.close = () => $modalInstance.dismiss();
+    $scope.close = () => $uibModalInstance.dismiss();
 }
 
 function detailAccountUpdateModalService(modalBase) {

@@ -1,6 +1,6 @@
 import accModule from '../acc.module';
 
-function journalBookkeepingController($scope, $modalInstance, formService,
+function journalBookkeepingController($scope, $uibModalInstance, formService,
                                       data, journalApi) {
 
     let journalId = data.id;
@@ -20,12 +20,12 @@ function journalBookkeepingController($scope, $modalInstance, formService,
         $scope.isSaving = true;
 
         journalApi.bookkeeping(journalId, $scope.bookkeeping)
-            .then((result)=> $modalInstance.close())
+            .then((result)=> $uibModalInstance.close())
             .catch((errors)=> $scope.errors = errors)
             .finally(()=> $scope.isSaving = false);
     };
 
-    $scope.close = ()=> $modalInstance.dismiss();
+    $scope.close = ()=> $uibModalInstance.dismiss();
 }
 
 function journalBookkeepingService(modalBase) {

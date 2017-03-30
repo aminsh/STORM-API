@@ -1,6 +1,6 @@
 import accModule from '../acc.module';
 
-function showJournalDetailController($scope, translate, $modalInstance, journalApi, journalLineApi, data) {
+function showJournalDetailController($scope, translate, $uibModalInstance, journalApi, journalLineApi, data) {
     "use strict";
 
     let id = data.id;
@@ -57,7 +57,7 @@ function showJournalDetailController($scope, translate, $modalInstance, journalA
         readUrl: journalLineApi.url.getAll(id)
     };
 
-    $scope.close = ()=> $modalInstance.dismiss();
+    $scope.close = ()=> $uibModalInstance.dismiss();
 }
 
 function showJournalDetailModalService(modalBase) {

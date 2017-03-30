@@ -2,7 +2,7 @@ import accModule from '../acc.module';
 
 function writeChequeOnJournalLineEntryController($scope,
                                                  chequeApi, chequeCategoryApi, data, $timeout,
-                                                 formService, $modalInstance, devConstants) {
+                                                 formService, $uibModalInstance, devConstants) {
     $scope.errors = [];
     $scope.cheque = {
         journalLineId: data.journalLineId,
@@ -41,12 +41,12 @@ function writeChequeOnJournalLineEntryController($scope,
 
         $scope.isSaving = true;
         chequeApi.write($scope.cheque.chequeId, $scope.cheque)
-            .then((result)=> $modalInstance.close(result))
+            .then((result)=> $uibModalInstance.close(result))
             .catch((result)=> $scope.errors = result)
             .finally(()=> $scope.isSaving = false);
     };
 
-    $scope.close = ()=> $modalInstance.dismiss();
+    $scope.close = ()=> $uibModalInstance.dismiss();
 
     $scope.whiteChequesDataSource = {
         type: "json",

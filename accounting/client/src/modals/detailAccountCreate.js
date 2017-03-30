@@ -1,6 +1,6 @@
 import accModule from '../acc.module';
 
-function detailAccountCreateModalController($scope, $modalInstance, formService, detailAccountApi, logger) {
+function detailAccountCreateModalController($scope, $uibModalInstance, formService, detailAccountApi, logger) {
     "use strict";
 
     $scope.errors = [];
@@ -23,13 +23,13 @@ function detailAccountCreateModalController($scope, $modalInstance, formService,
         detailAccountApi.create($scope.detailAccount)
             .then((result) => {
                 logger.success();
-                $modalInstance.close(result);
+                $uibModalInstance.close(result);
             })
             .catch((errors)=> $scope.errors = errors)
             .finally(()=> $scope.isSaving = false);
     };
 
-    $scope.close = ()=> $modalInstance.dismiss();
+    $scope.close = ()=> $uibModalInstance.dismiss();
 }
 
 function detailAccountCreateModalService(modalBase) {

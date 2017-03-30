@@ -2,7 +2,7 @@ import accModule from '../acc.module';
 import devConstants from '../localData/devConstants';
 
 function generalLedgerAccountUpdateModalController($scope,
-                                                   $modalInstance,
+                                                   $uibModalInstance,
                                                    data,
                                                    generalLedgerAccountApi,
                                                    logger, formService) {
@@ -36,7 +36,7 @@ function generalLedgerAccountUpdateModalController($scope,
         generalLedgerAccountApi.update(data.id, $scope.generalLedgerAccount)
             .then(function (result) {
                 logger.success();
-                $modalInstance.close(result);
+                $uibModalInstance.close(result);
             })
             .catch(function (errors) {
                 $scope.errors = errors;
@@ -70,9 +70,9 @@ function generalLedgerAccountUpdateModalController($scope,
             .catch(function () {
                 $scope.errors = err.errors;
             })
-    }
+    };
 
-    $scope.close = ()=> $modalInstance.dismiss();
+    $scope.close = ()=> $uibModalInstance.dismiss();
 
     $scope.accountPostingType = devConstants.enums.AccountPostingType();
     $scope.accountBalanceType = devConstants.enums.AccountBalanceType();
