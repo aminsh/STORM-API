@@ -6,10 +6,12 @@ $fa-font-path: $font-path;
 $icon-font-path: '#{$font-path}/';
 
 $primary-color: #1ab394;
+$primary-select-color: #87c56f;
 
 $bootstrap-sass-asset-helper: false;
+$dir: rtl;
 
-@import "bootstrap-sass/assets/stylesheets/bootstrap";
+@import "loadingbar.start";
 @import "bootstrap-sass-directional/assets/stylesheets/bootstrap";
 @import "bootstrap.override";
 
@@ -1312,7 +1314,7 @@ h1.head-current {
 }
 
 .modal-backdrop.in {
-  background-color: #2980b9;
+  background-color: $primary-color;
 }
 
 .waiting-block {
