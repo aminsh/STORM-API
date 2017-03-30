@@ -7,58 +7,29 @@
 
     <title><%- currentBranch.name %></title>
 
-    <!--<link href="/acc/client/content/bootstrap/bootstrap.min.css" rel="stylesheet"/>
-    <link href="/acc/client/content/bootstrap/bootstrap.min.css?v=<%- version.css %>" rel="stylesheet"/>
-    <link href="/acc/client/content/bootstrap/bootstrap-rtl.min.css?v=<%- version.css %>" rel="stylesheet"/>
-    <link href="/acc/client/content/kendo/kendo.common.min.css?v=<%- version.css %>" rel="stylesheet"/>
-    <link href="/acc/client/content/kendo/kendo.custom.css?v=<%- version.css %>" rel="stylesheet"/>
-    <link href="/acc/client/content/kendo/kendo.rtl.min.css?v=<%- version.css %>" rel="stylesheet"/>
-    <link href="/acc/client/bower_components/bootstrap-sweetalert/dist/sweetalert.css?v=<%- version.css %>"
-          rel="stylesheet"/>
-    <link href="/acc/client/bower_components/adm-dtp/dist/ADM-dateTimePicker.min.css" rel="stylesheet"/>
-    <link href="/acc/client/bower_components/ladda/dist/ladda-themeless.min.css" rel="stylesheet">
-    <link href="/acc/client/bower_components/dropzone/dist/min/dropzone.min.css" rel="stylesheet">
-
-        <link href="/acc/client/content/stimulsoft/stimulsoft.viewer.office2013.whitegreen.css" rel="stylesheet">
-    <link href="/acc/client/content/stimulsoft/stimulsoft.designer.office2013.whitegreen.css" rel="stylesheet">
-
-    <link href="/acc/client/content/font-awesome/css/font-awesome.css?v=<%- version.css %>" rel="stylesheet"/>
-    <link href="/acc/client/content/fonts.min.css" rel="stylesheet">
-    <link href="/acc/client/content/animate.css?v=<%- version.css %>" rel="stylesheet"/>
-    <link href="/acc/client/content/inspina.style.css?v=<%- version.css %>" rel="stylesheet"/>
-    <link href="/acc/client/content/style.css?v=<%- version.css %>" rel="stylesheet"/>
-    <link href="/acc/client/content/luca.css?v=<%- version.css %>" rel="stylesheet"/>-->
-
     <link href="/public/css/acc.min.css" rel="stylesheet"/>
-
-    <!--<link href="/acc/client/content/kendo/kendo.common.min.css?v=<%- version.css %>" rel="stylesheet"/>
-    <link href="/acc/client/content/kendo/kendo.material.custom.css?v=<%- version.css %>" rel="stylesheet"/>
-    <link href="/acc/client/content/kendo/kendo.rtl.min.css?v=<%- version.css %>" rel="stylesheet"/>-->
 
     <base href="/acc/" />
 </head>
 <body class="rtls k-rtl">
 <shell>
     <div class="waiting-overley">
-        <div class="waiting-block">
+        <div class="start-waiting-block">
             <div style="margin-bottom: 30px">
-                <img src="/public/images/logo.png" style="width: 70px;height: 70px">
+                <img src="/public/images/logo.png" style="height: 70px">
             </div>
-            <div class="progress-waiting-container">
-                <div class="progress-waiting">
-                    <div class="progress-waiting-bar">
+            <div class="progress-line"></div>
+        </div>
 
-                    </div>
-                </div>
-            </div>
-
+        <div class="start-waiting-block-accountant" >
             <div class="middle-box text-center animated fadeInDown" style="margin-top: 250%;">
                 <img src="/public/images/account-symbol.jpg" style="border-radius:50%"
                      class="img-responsive img-center">
             </div>
         </div>
-
     </div>
+
+
 </shell>
 <% if(env != 'development') { %>
 <script type="text/javascript">
@@ -90,16 +61,20 @@
 </body>
 
 </html>
+<script>
+    String.prototype.format = String.prototype.f = function () {
+        var s = this,
+            i = arguments.length;
 
-<!--
-<script src="/acc/client/dist/vendor.bundle.min.js?v=<%- version.vendor %>"></script>
-<script src="/acc/client/lib/stimulsoft.ultimate/stimulsoft.reports.js"></script>
-<script src="/acc/client/lib/stimulsoft.ultimate/stimulsoft.viewer.js"></script>
-<script src="/acc/client/lib/stimulsoft.ultimate/stimulsoft.designer.js"></script>
--->
+        while (i--) {
+            s = s.replace(new RegExp('\\{' + i + '\\}', 'gm'), arguments[i]);
+        }
+        return s;
+    };
+</script>
 
-<script src="/public/js/stimulsoft.all.js"></script>
-<script src="/public/js/acc.bundle.js"></script>
+<script src="/public/js/stimulsoft.all.min.js"></script>
+<script src="/public/js/acc.bundle.min.js"></script>
 <script src="/public/js/acc.template.bundle.js"></script>
 
 <script>
@@ -112,10 +87,7 @@
     localStorage.setItem('reports', '<%- JSON.stringify(reports) %>');
     localStorage.setItem('env', '<%- env %>')
 
-    //window.jQuery = window.$ = require('jquery');
-    //require("bootstrap");
-    //require("slimscroll");
-    //require("pace");
+
 
     <% if(env !== 'development') { %>
     Stimulsoft.Base.Localization.StiLocalization.setLocalizationFile('/luca/client/content/fa.xml', true);
