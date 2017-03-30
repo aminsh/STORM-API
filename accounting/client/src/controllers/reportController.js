@@ -1,5 +1,4 @@
-
-export default function ($scope, devConstants, dimensionCategoryApi, reportApi, translate) {
+export default function ($scope, devConstants, dimensionCategoryApi, reportApi, $timeout) {
 
     $scope.reports = devConstants.reports;
     $scope.mode = 'view';
@@ -10,12 +9,11 @@ export default function ($scope, devConstants, dimensionCategoryApi, reportApi, 
 
     $scope.select = report => $scope.selectedReport = report;
     $scope.isActiveFirstTab = true;
+    $scope.activeTabIndex = 0;
 
     $scope.viewerTabs = [];
 
     $scope.addViewerTab = () => {
-        deactivateAllTab();
-
         let report = $scope.selectedReport,
             params = resolveFilter($scope.journalSearch);
 
@@ -23,10 +21,16 @@ export default function ($scope, devConstants, dimensionCategoryApi, reportApi, 
             .then(result => {
                 $scope.data = result;
                 $scope.viewerTabs.push({title: report.text, isActive: true, fileName: report.fileName});
+                $timeout(() => $scope.activeTabIndex = $scope.viewerTabs.length)
             });
     };
 
-    $scope.closeViewerTab = tab => $scope.viewerTabs.remove(tab);
+    $scope.closeViewerTab = (tab, $event) => {
+        $event.preventDefault();
+
+        $scope.viewerTabs.remove(tab);
+        $timeout(() => $scope.activeTabIndex = $scope.viewerTabs.length);
+    };
 
     $scope.design = report => {
         let params = resolveFilter($scope.journalSearch);
@@ -47,18 +51,13 @@ export default function ($scope, devConstants, dimensionCategoryApi, reportApi, 
 
     $scope.onExitDesign = () => {
         $scope.mode = 'view';
-        $scope.isActiveFirstTab = true;
+        $scope.activeTabIndex = 0;
     };
 
     $scope.closeDesignerTab = tab => {
         $scope.designerTabs.remove(tab);
-        $scope.isActiveFirstTab = true;
-    }
-
-    function deactivateAllTab() {
-        $scope.isActiveFirstTab = false;
-        $scope.viewerTabs.forEach(t => t.isActive = false);
-    }
+        $scope.activeTabIndex = 0;
+    };
 
     $scope.execute = () => resolveFilter($scope.journalSearch);
     //search parameter cals
