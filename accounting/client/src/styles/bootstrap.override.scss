@@ -1,0 +1,25 @@
+.popover {
+  font-family: $font-family
+}
+
+.list-group-item.active,
+.list-group-item.active:focus,
+.list-group-item.active:hover {
+  background-color: $primary-color;
+  border-color: $primary-color;
+}
+
+.label{
+  font-family: $font-family;
+}
+
+.dropdown-menu.shadow{
+  -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+  -moz-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+}
+
+.dropdown-menu a:hover {
+  text-decoration: none;
+  color: #000000;
+}

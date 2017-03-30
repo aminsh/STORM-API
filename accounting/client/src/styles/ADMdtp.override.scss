@@ -1,0 +1,26 @@
+
+.dtp-ig {
+  border-radius: 0;
+  border-top-left-radius: 1px;
+  border-bottom-left-radius: 1px;
+  border-left: 0;
+}
+
+.ADMdtpInput input {
+  border-radius: 0;
+  border-top-right-radius: 1px;
+  border-bottom-right-radius: 1px;
+  font-family: $font-family;
+}
+
+.ADMdtpInput input:focus {
+  border-color: $primary-color;
+}
+
+.ADMdtp-box{
+  font-family: $font-family;
+}
+
+.dtp-ig .closeIcon {
+  background: $primary-color;
+}

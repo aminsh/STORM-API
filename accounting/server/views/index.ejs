@@ -6,9 +6,8 @@
     <meta http-equiv="Content-Type" content="text/html" charset="utf-8"/>
 
     <title><%- currentBranch.name %></title>
-    <base href="/">
 
-    <link href="/acc/client/content/bootstrap/bootstrap.min.css" rel="stylesheet"/>
+    <!--<link href="/acc/client/content/bootstrap/bootstrap.min.css" rel="stylesheet"/>
     <link href="/acc/client/content/bootstrap/bootstrap.min.css?v=<%- version.css %>" rel="stylesheet"/>
     <link href="/acc/client/content/bootstrap/bootstrap-rtl.min.css?v=<%- version.css %>" rel="stylesheet"/>
     <link href="/acc/client/content/kendo/kendo.common.min.css?v=<%- version.css %>" rel="stylesheet"/>
@@ -20,7 +19,7 @@
     <link href="/acc/client/bower_components/ladda/dist/ladda-themeless.min.css" rel="stylesheet">
     <link href="/acc/client/bower_components/dropzone/dist/min/dropzone.min.css" rel="stylesheet">
 
-    <link href="/acc/client/content/stimulsoft/stimulsoft.viewer.office2013.whitegreen.css" rel="stylesheet">
+        <link href="/acc/client/content/stimulsoft/stimulsoft.viewer.office2013.whitegreen.css" rel="stylesheet">
     <link href="/acc/client/content/stimulsoft/stimulsoft.designer.office2013.whitegreen.css" rel="stylesheet">
 
     <link href="/acc/client/content/font-awesome/css/font-awesome.css?v=<%- version.css %>" rel="stylesheet"/>
@@ -28,15 +27,22 @@
     <link href="/acc/client/content/animate.css?v=<%- version.css %>" rel="stylesheet"/>
     <link href="/acc/client/content/inspina.style.css?v=<%- version.css %>" rel="stylesheet"/>
     <link href="/acc/client/content/style.css?v=<%- version.css %>" rel="stylesheet"/>
-    <link href="/acc/client/content/luca.css?v=<%- version.css %>" rel="stylesheet"/>
+    <link href="/acc/client/content/luca.css?v=<%- version.css %>" rel="stylesheet"/>-->
 
+    <link href="/public/css/acc.min.css" rel="stylesheet"/>
+
+    <!--<link href="/acc/client/content/kendo/kendo.common.min.css?v=<%- version.css %>" rel="stylesheet"/>
+    <link href="/acc/client/content/kendo/kendo.material.custom.css?v=<%- version.css %>" rel="stylesheet"/>
+    <link href="/acc/client/content/kendo/kendo.rtl.min.css?v=<%- version.css %>" rel="stylesheet"/>-->
+
+    <base href="/acc/" />
 </head>
 <body class="rtls k-rtl">
 <shell>
     <div class="waiting-overley">
         <div class="waiting-block">
             <div style="margin-bottom: 30px">
-                <img src="/acc/client/content/images/luca.png" style="width: 70px;height: 70px">
+                <img src="/public/images/logo.png" style="width: 70px;height: 70px">
             </div>
             <div class="progress-waiting-container">
                 <div class="progress-waiting">
@@ -47,7 +53,7 @@
             </div>
 
             <div class="middle-box text-center animated fadeInDown" style="margin-top: 250%;">
-                <img src="/acc/client/content/images/Luca%20symbol.jpg" style="border-radius:50%"
+                <img src="/public/images/account-symbol.jpg" style="border-radius:50%"
                      class="img-responsive img-center">
             </div>
         </div>
@@ -85,13 +91,18 @@
 
 </html>
 
+<!--
 <script src="/acc/client/dist/vendor.bundle.min.js?v=<%- version.vendor %>"></script>
 <script src="/acc/client/lib/stimulsoft.ultimate/stimulsoft.reports.js"></script>
 <script src="/acc/client/lib/stimulsoft.ultimate/stimulsoft.viewer.js"></script>
 <script src="/acc/client/lib/stimulsoft.ultimate/stimulsoft.designer.js"></script>
+-->
+
+<script src="/public/js/stimulsoft.all.js"></script>
+<script src="/public/js/acc.bundle.js"></script>
+<script src="/public/js/acc.template.bundle.js"></script>
 
 <script>
-    require('js-helper');
 
     localStorage.setItem('today', '<%- today %>');
     localStorage.setItem('translate', '<%- JSON.stringify(clientTranslation) %>');
@@ -101,10 +112,10 @@
     localStorage.setItem('reports', '<%- JSON.stringify(reports) %>');
     localStorage.setItem('env', '<%- env %>')
 
-    window.jQuery = window.$ = require('jquery');
-    require("bootstrap");
-    require("slimscroll");
-    require("pace");
+    //window.jQuery = window.$ = require('jquery');
+    //require("bootstrap");
+    //require("slimscroll");
+    //require("pace");
 
     <% if(env !== 'development') { %>
     Stimulsoft.Base.Localization.StiLocalization.setLocalizationFile('/luca/client/content/fa.xml', true);
@@ -125,7 +136,7 @@
     fonts.forEach(f => Stimulsoft
         .Base
         .StiFontCollection
-        .addOpentypeFontFile(`/luca/client/fonts/${f.fileName}`, f.name));
+        .addOpentypeFontFile(`/acc/client/fonts/${f.fileName}`, f.name));
 
     Stimulsoft.Report.Dictionary.StiFunctions.addFunction(
         "devFunction",
@@ -143,5 +154,6 @@
 
 </script>
 
-<script src="/acc/client/dist/acc.bundle.js?v=<%- version.acc %>"></script>
-<script src="/acc/client/dist/acc.template.bundle.js?v=<%- version.template %>"></script>
+
+<!--<script src="/acc/client/dist/acc.bundle.js?v=<%- version.acc %>"></script>
+<script src="/acc/client/dist/acc.template.bundle.js?v=<%- version.template %>"></script>-->
