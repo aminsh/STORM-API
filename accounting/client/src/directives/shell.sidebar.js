@@ -12,6 +12,20 @@ export default function (menuItems, $timeout) {
 
             $timeout(()=> sideMenu.metisMenu());
 
+            if ($(document).width() <= 992) {
+                $('body').addClass('body-small')
+            } else {
+                $('body').removeClass('body-small')
+            }
+
+            $(window).bind("resize", function () {
+                if ($(document).width() <= 992) {
+                    $('body').addClass('body-small')
+                } else {
+                    $('body').removeClass('body-small')
+                }
+            });
+
             scope.$on('toggle-sidebar', () => {
                 $("body").toggleClass("mini-navbar");
                 SmoothlyMenu();
