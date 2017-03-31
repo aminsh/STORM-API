@@ -13,8 +13,14 @@
   font-family: $font-family;
 }
 
+
 .ADMdtpInput input:focus {
   border-color: $primary-color;
+}
+
+.ADMdtpInput >
+.removeIcon {
+  right: 0
 }
 
 .ADMdtp-box{
