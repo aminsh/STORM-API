@@ -45,6 +45,10 @@ function combobox() {
             scope.$watch(attrs.ngModel, newValue => {
                 combo.value(newValue);
             });
+
+            scope.$watch(attrs.ngDisabled, newValue => {
+                combo.enable(!newValue);
+            });
         }
     };
 }
