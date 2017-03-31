@@ -1,7 +1,113 @@
 <dev-tag-content dev-attr-title="{{'Account review'| translate}}">
     <form name="form">
+
+
+        <div class="row" style="padding: 30px 1em 30px 1em;">
+            <div class="col-md-3">
+                <div class="row"
+                     ng-repeat="item in reportTypes"
+                style="margin-top: 3px">
+                    <dev-tag-radio
+                            ng-class="{'checked': item.key == parameters.reportType}"
+
+                            k-value="{{item.key}}"
+                            ng-model="parameters.reportType"></dev-tag-radio>
+                    {{item.display}}
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <dev-tag-check-box ng-model="parameters.filterByDetailAccountOrDimension">
+                    {{'Filter by' | translate}}
+                </dev-tag-check-box>
+            </div>
+
+            <div class="col-md-6"
+                 ng-if="parameters.filterByDetailAccountOrDimension">
+                <div class="row"
+                     ng-repeat="item in detailAccountAndDimensions">
+                    <div class="col-md-3">
+                        <dev-tag-radio ng-class="{'checked': item.key == parameters.DetailAccountOrDimension}"
+                                k-value="{{item.key}}"
+                                ng-model="parameters.DetailAccountOrDimension"></dev-tag-radio>
+                        {{item.display}}
+                    </div>
+
+                    <div class="col-md-9">
+                        <div ng-if="'detailAccount' == item.key">
+                            <dev-tag-combo-box
+                                    ng-disabled="parameters.DetailAccountOrDimension != 'detailAccount'"
+                                    name="detailAccount"
+                                    k-placeholder="{{'Select ...'|translate}}"
+                                    k-data-value-field="id"
+                                    k-data-text-field="display"
+                                    k-data-source="detailAccountDataSource"
+                                    ng-required="parameters.DetailAccountOrDimension == 'detailAccount'"
+                                    ng-model="parameters.detailAccount"></dev-tag-combo-box>
+
+                            <div ng-messages="form.detailAccount.$error" ng-if="form.detailAccount.$dirty">
+                                <label ng-message="required" class="error">{{'This field is required'|translate}}</label>
+                            </div>
+                        </div>
+
+                        <div ng-if="'dimension1' == item.key">
+                            <dev-tag-combo-box
+
+                                    ng-disabled="parameters.DetailAccountOrDimension != 'dimension1'"
+                                    name="dimension1"
+                                    k-placeholder="{{'Select ...'|translate}}"
+                                    k-data-value-field="id"
+                                    k-data-text-field="display"
+                                    k-data-source="dimension1DataSource"
+                                    ng-model="parameters.dimension1"
+                                    ng-required="parameters.DetailAccountOrDimension == 'dimension1'"></dev-tag-combo-box>
+
+                            <div ng-messages="form.dimension1.$error" ng-if="form.dimension1.$dirty">
+                                <label ng-message="required" class="error">{{'This field is required'|translate}}</label>
+                            </div>
+                        </div>
+
+                        <div ng-if="'dimension2' == item.key">
+                            <dev-tag-combo-box
+
+                                    ng-disabled="parameters.DetailAccountOrDimension != 'dimension2'"
+                                    name="dimension1"
+                                    k-placeholder="{{'Select ...'|translate}}"
+                                    k-data-value-field="id"
+                                    k-data-text-field="display"
+                                    k-data-source="dimension2DataSource"
+                                    ng-model="parameters.dimension2"
+                                    ng-required="parameters.DetailAccountOrDimension == 'dimension2'"></dev-tag-combo-box>
+
+                            <div ng-messages="form.dimension2.$error" ng-if="form.dimension2.$dirty">
+                                <label ng-message="required" class="error">{{'This field is required'|translate}}</label>
+                            </div>
+                        </div>
+
+                        <div ng-if="'dimension3' == item.key">
+                            <dev-tag-combo-box
+
+                                    ng-disabled="parameters.DetailAccountOrDimension != 'dimension3'"
+                                    name="dimension1"
+                                    k-placeholder="{{'Select ...'|translate}}"
+                                    k-data-value-field="id"
+                                    k-data-text-field="display"
+                                    k-data-source="dimension3DataSource"
+                                    ng-model="parameters.dimension3"
+                                    ng-required="parameters.DetailAccountOrDimension == 'dimension3'"></dev-tag-combo-box>
+
+                            <div ng-messages="form.dimension3.$error" ng-if="form.dimension3.$dirty">
+                                <label ng-message="required" class="error">{{'This field is required'|translate}}</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
         <div class="row">
-            <div class="col-md-7" style="margin-top: 10px">
+            <div class="col-md-8" style="margin-top: 10px">
                 <div class="row">
                     <div class="col-md-2" style="text-align: left;margin-top: 7px">
                         <label class="label-control">{{'From date' | translate}}</label>
@@ -77,7 +183,7 @@
                 </div>
 
             </div>
-            <div class="col-md-5">
+            <div class="col-md-3">
                 <div class="row" style="margin-top: 10px">
                     <div class="col-md-12">
                         <dev-tag-check-box
@@ -97,7 +203,14 @@
             </div>
         </div>
 
-        <div class="row" style="margin-top: 50px;">
+        <div class="row" style="text-align: center; margin-top: 30px">
+            <dev-tag-button
+                    ng-click="executeTurnover(form)"
+                    icon="fa fa-play-circle-o"
+                    style-type="primary"
+                    title="{{'Show' | translate}}"></dev-tag-button>
+        </div>
+        <!--<div class="row" style="margin-top: 50px;">
             <div class="col-md-3">
                 <dev-tag-button
                         ng-click="executeTurnover(form,'tiny')"
@@ -109,7 +222,7 @@
                         style-type="white  btn-block"></dev-tag-button>
                 <dev-tag-button
                         ng-click="executeTurnover(form,'subsidiaryLedgerAccount')"
-                        title="{{'Total turnover subsidiary ledger account'| translate}}"
+                            title="{{'Total turnover subsidiary ledger account'| translate}}"
                         style-type="white  btn-block"></dev-tag-button>
                 <dev-tag-button
                         ng-click="executeTurnover(form,'detailAccount')"
@@ -303,7 +416,7 @@
                     </accordion-group>
                 </accordion>
             </div>
-        </div>
+        </div>-->
 
     </form>
 </dev-tag-content>
