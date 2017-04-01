@@ -91,7 +91,7 @@ gulp.task('build-stimulsoft', function () {
     ])
         .pipe(beautify({indent_size: 2}))
         .pipe(gulpif(!config.isProduction, sourcemaps.init()))
-        .pipe(concat(`stimulsoft.all${config.isProduction ? '.min' : ''}.js`))
+        .pipe(concat(`stimulsoft.all.min.js`))
         .pipe(gulpif(!config.isProduction, sourcemaps.write()))
         .pipe(gulp.dest(`${config.publicDir}/js`))
 });
@@ -108,7 +108,7 @@ gulp.task('build-sass', function () {
     return gulp.src('./accounting/client/src/styles/acc.scss')
         .pipe(sourcemaps.init())
         .pipe(sass({
-            //outputStyle: 'compressed',
+            outputStyle: 'compressed',
             includePaths: ['./node_modules']
         }).on('error', sass.logError))
         .pipe(gulpif(!config.isProduction, sourcemaps.write()))
