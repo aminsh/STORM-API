@@ -33,7 +33,7 @@ exports.up = function (knex, Promise) {
 
 exports.down = function (knex, Promise) {
     return knex.schema
-        .dropTable('users')
+        .dropTable('userInBranches')
         .dropTable('branches')
-        .dropTable('userInBranches');
+        .dropTable('users');
 };
