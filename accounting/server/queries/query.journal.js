@@ -24,7 +24,6 @@ module.exports = class JournalQuery extends BaseQuery {
 
         journalBaseFilter(query, extra, fiscalPeriodId, knex);
         return kendoQueryResolve(query, parameters, view);
-
     }
 
     getGroupedByMouth(currentFiscalPeriod) {
