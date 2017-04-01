@@ -146,7 +146,8 @@
     "kendo-popup": "./vendors/kendo/kendo.popup.min",
     "kendo-combobox": "./vendors/kendo/kendo.combobox.min",
     "kendo-dropdownlist": "./vendors/kendo/kendo.dropdownlist.min",
-    "kendo-multiselect": "./vendors/kendo/kendo.multiselect.min"
+    "kendo-multiselect": "./vendors/kendo/kendo.multiselect.min",
+    "metisMenu": "./vendors/jquery.metisMenu.js"
   },
   "browserify-shim": {
     "ladda": "global:Ladda",
