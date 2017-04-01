@@ -6,18 +6,11 @@ require('../server/utilities/array.prototypes');
 const gulp = require('gulp'),
     path = require('path'),
     Util = require('gulp-util'),
-    dbConfig = require('../server/config').db,
-    knex = require('knex')(dbConfig/*{
-     client: dbConfig.client,
-     connection: dbConfig.url || {
-     host: dbConfig.host,
-     user: dbConfig.username,
-     password: dbConfig.password,
-     database: dbConfig.database,
-     ssl: dbConfig.ssl
-     },
-     debug: false
-     }*/),
+    knex = require('knex')({
+        client: 'pg',
+        connection: 'postgres://postgres:P@ssw0rd@localhost:5432/dbAccFRK',
+        debug: true
+    }),
     options = {
         migrations: path.resolve(`${__dirname}/database/migrations`),
         tableName: 'accounitng_schema_migrations',
@@ -25,7 +18,7 @@ const gulp = require('gulp'),
     },
     argv = require('yargs').argv,
     fs = require('fs'),
-    //mssql = require('./convert/connection/mssql'),
+    mssql = require('./convert/connection/mssql'),
     convertConfig = require('./convert/config.json'),
     async = require('asyncawait/async'),
     await = require('asyncawait/await'),

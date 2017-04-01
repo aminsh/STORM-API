@@ -1,3 +1,5 @@
+"use strict";
+
 module.exports = {
     isNullOrEmpty: function (str) {
         if (!str) return true;
