@@ -49,15 +49,16 @@ module.exports = class AccountReview extends BaseQuery {
     }
 
     generalLedgerAccount() {
-        let options = await(this.getOptions()),
-            knex = this.knex;
+        let options = await(this.journalConfig.getOptions()),
+            knex = this.knex,
+            fiscalPeriodId = this.fiscalPeriodId;
 
         let query = knex.select().from(function () {
             this.select('generalLedgerAccountId', 'sumBeforeRemainder', 'sumDebtor', 'sumCreditor', 'sumRemainder',
                 knex.raw('"generalLedgerAccounts"."code" as "generalLedgerAccountCode"'),
                 knex.raw('"generalLedgerAccounts"."title" as "generalLedgerAccountTitle"'))
                 .from(function () {
-                    groupBy.call(this, knex, options, 'generalLedgerAccountId')
+                    groupBy.call(this, knex, options, fiscalPeriodId, 'generalLedgerAccountId')
                 })
                 .leftJoin('generalLedgerAccounts', 'generalLedgerAccounts.id', 'groupJournals.generalLedgerAccountId')
                 .as('final');
@@ -119,7 +120,8 @@ module.exports = class AccountReview extends BaseQuery {
 
     subsidiaryLedgerAccount() {
         let knex = this.knex,
-            options = await(this.getOptions());
+            options = await(this.journalConfig.getOptions()),
+            fiscalPeriodId = this.fiscalPeriodId;
 
         let query = knex.select().from(function () {
             this.select('subsidiaryLedgerAccountId', 'sumBeforeRemainder', 'sumDebtor', 'sumCreditor', 'sumRemainder',
@@ -127,7 +129,7 @@ module.exports = class AccountReview extends BaseQuery {
                 knex.raw('"subsidiaryLedgerAccounts"."title" as "subsidiaryLedgerAccountTitle"'),
                 knex.raw('"generalLedgerAccounts"."code" as "generalLedgerAccountCode"'))
                 .from(function () {
-                    groupBy.call(this, knex, options, 'subsidiaryLedgerAccountId');
+                    groupBy.call(this, knex, options, fiscalPeriodId, 'subsidiaryLedgerAccountId');
                 })
                 .leftJoin('subsidiaryLedgerAccounts', 'subsidiaryLedgerAccounts.id', 'groupJournals.subsidiaryLedgerAccountId')
                 .leftJoin('generalLedgerAccounts', 'generalLedgerAccounts.id', 'subsidiaryLedgerAccounts.generalLedgerAccountId')
@@ -159,7 +161,8 @@ module.exports = class AccountReview extends BaseQuery {
 
     detailAccount() {
         let knex = this.knex,
-            options = await(this.getOptions());
+            options = await(this.journalConfig.getOptions()),
+            fiscalPeriodId = this.fiscalPeriodId;
 
         let query = knex.select().from(function () {
             this.select('detailAccountId', 'sumBeforeRemainder', 'sumDebtor', 'sumCreditor', 'sumRemainder',
@@ -167,7 +170,7 @@ module.exports = class AccountReview extends BaseQuery {
                 knex.raw('"detailAccounts"."title" as "detailAccountTitle"')
             )
                 .from(function () {
-                    groupBy.call(this, knex, options, 'detailAccountId');
+                    groupBy.call(this, knex, options, fiscalPeriodId, 'detailAccountId');
                 })
                 .leftJoin('detailAccounts', 'detailAccounts.id', 'groupJournals.detailAccountId')
                 .as('final');
@@ -196,7 +199,8 @@ module.exports = class AccountReview extends BaseQuery {
 
     dimension1() {
         let knex = this.knex,
-            options = await(this.getOptions());
+            options = await(this.journalConfig.getOptions()),
+            fiscalPeriodId = this.fiscalPeriodId;
 
         let query = knex.select().from(function () {
             this.select('dimension1Id', 'sumBeforeRemainder', 'sumDebtor', 'sumCreditor', 'sumRemainder',
@@ -204,7 +208,7 @@ module.exports = class AccountReview extends BaseQuery {
                 knex.raw('"dimensions"."title" as "dimension1Title"')
             )
                 .from(function () {
-                    groupBy.call(this, knex, options, 'dimension1Id');
+                    groupBy.call(this, knex, options, fiscalPeriodId, 'dimension1Id');
                 })
                 .leftJoin('dimensions', 'dimensions.id', 'groupJournals.dimension1Id')
                 .as('final');
@@ -234,7 +238,8 @@ module.exports = class AccountReview extends BaseQuery {
 
     dimension2() {
         let knex = this.knex,
-            options = await(this.getOptions());
+            options = await(this.journalConfig.getOptions()),
+            fiscalPeriodId = this.fiscalPeriodId;
 
         let query = knex.select().from(function () {
             this.select('dimension2Id', 'sumBeforeRemainder', 'sumDebtor', 'sumCreditor', 'sumRemainder',
@@ -242,7 +247,7 @@ module.exports = class AccountReview extends BaseQuery {
                 knex.raw('"dimensions"."title" as "dimension2Title"')
             )
                 .from(function () {
-                    groupBy.call(this, knex, options, 'dimension2Id');
+                    groupBy.call(this, knex, options, fiscalPeriodId, 'dimension2Id');
                 })
                 .leftJoin('dimensions', 'dimensions.id', 'groupJournals.dimension2Id')
                 .as('final');
@@ -273,7 +278,8 @@ module.exports = class AccountReview extends BaseQuery {
 
     dimension3() {
         let knex = this.knex,
-            options = await(this.getOptions());
+            options = await(this.journalConfig.getOptions()),
+            fiscalPeriodId = this.fiscalPeriodId;
 
         let query = knex.select().from(function () {
             this.select('dimension3Id', 'sumBeforeRemainder', 'sumDebtor', 'sumCreditor', 'sumRemainder',
@@ -281,7 +287,7 @@ module.exports = class AccountReview extends BaseQuery {
                 knex.raw('"dimensions"."title" as "dimension3Title"')
             )
                 .from(function () {
-                    groupBy.call(this, knex, options, 'dimension3Id');
+                    groupBy.call(this, knex, options, fiscalPeriodId, 'dimension3Id');
                 })
                 .leftJoin('dimensions', 'dimensions.id', 'groupJournals.dimension3Id')
                 .as('final');
@@ -312,7 +318,8 @@ module.exports = class AccountReview extends BaseQuery {
 
     tiny() {
         let knex = this.knex,
-            options = await(this.getOptions());
+            options = await(this.journalConfig.getOptions()),
+            fiscalPeriodId = this.fiscalPeriodId;
 
         options.groupByField = this.tinyGroupByFields;
 
@@ -347,7 +354,7 @@ module.exports = class AccountReview extends BaseQuery {
                 knex.raw('"dimension3s"."title" as "dimension3Title"')
             )
                 .from(function () {
-                    groupBy.call(this, knex, options, 'tiny');
+                    groupBy.call(this, knex, options, fiscalPeriodId, 'tiny');
                 })
                 .leftJoin('generalLedgerAccounts', 'generalLedgerAccounts.id', 'groupJournals.generalLedgerAccountId')
                 .leftJoin('subsidiaryLedgerAccounts', 'subsidiaryLedgerAccounts.id', 'groupJournals.subsidiaryLedgerAccountId')
