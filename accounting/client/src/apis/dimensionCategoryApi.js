@@ -24,6 +24,9 @@ function dimensionCategoryApi(apiPromise, $q, $timeout) {
 
             return deferred.promise;
         },
+        getAllLookupSync:()=> {
+            return JSON.parse(localStorage.getItem('dimensionCategories'));
+        },
         getById: function (id) {
             return apiPromise.get('{0}/dimension-categories/{1}'.format(urlPrefix, id));
         },
