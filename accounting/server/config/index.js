@@ -8,11 +8,13 @@ const path = require('path'),
         acc: '1.0.0',
         css: '1.0.0',
         template: '1.0.0'
-    };
+    },
+    branchId = 'c3339d0d-b4f7-4c96-b5c2-2d4376ceb9ea';
 
 module.exports = {
     rootPath,
     env,
-    version
+    version,
+    branchId
 };
 
