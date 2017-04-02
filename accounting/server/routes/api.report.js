@@ -17,7 +17,7 @@ const fs = require('fs'),
 function getReport(fileName) {
     return JSON.parse(
         fs.readFileSync(
-            path.normalize(`${config.rootPath}/client/reportFiles/${fileName}`)));
+            path.normalize(`${config.rootPath}/reporting/files/${fileName}`)));
 }
 
 router.route('/')
