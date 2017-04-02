@@ -1,3 +1,4 @@
+import 'bootstrap';
 import 'metisMenu';
 
 export default function (menuItems, $timeout) {
