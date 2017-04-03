@@ -1,48 +1,35 @@
 <dev-tag-content dev-attr-title="{{'Account review'| translate}}">
     <form name="form">
 
-
-        <div class="row" style="padding: 30px 1em 30px 1em;">
-            <div class="col-md-3">
-                <div class="row"
-                     ng-repeat="item in reportTypes"
-                style="margin-top: 3px">
-                    <dev-tag-radio
-                            ng-class="{'checked': item.key == parameters.reportType}"
-
-                            k-value="{{item.key}}"
-                            ng-model="parameters.reportType"></dev-tag-radio>
-                    {{item.display}}
-                </div>
-            </div>
-
-            <div class="col-md-3">
-                <dev-tag-check-box ng-model="parameters.filterByDetailAccountOrDimension">
+        <div class="row">
+            <div class="col-md-2">
+                <dev-tag-check-box
+                        ng-model="parameters.filterByDetailAccountOrDimension">
                     {{'Filter by' | translate}}
                 </dev-tag-check-box>
             </div>
-
-            <div class="col-md-6"
+            <div class="col-md-10"
                  ng-if="parameters.filterByDetailAccountOrDimension">
                 <div class="row"
                      ng-repeat="item in detailAccountAndDimensions">
                     <div class="col-md-3">
-                        <dev-tag-radio ng-class="{'checked': item.key == parameters.DetailAccountOrDimension}"
-                                k-value="{{item.key}}"
-                                ng-model="parameters.DetailAccountOrDimension"></dev-tag-radio>
+                        <dev-tag-radio ng-class="{'checked': item.key == parameters.detailAccountOrDimension}"
+                                       k-value="{{item.key}}"
+                                       ng-model="parameters.detailAccountOrDimension"></dev-tag-radio>
                         {{item.display}}
                     </div>
 
                     <div class="col-md-9">
                         <div ng-if="'detailAccount' == item.key">
                             <dev-tag-combo-box
-                                    ng-disabled="parameters.DetailAccountOrDimension != 'detailAccount'"
+                                    ng-disabled="parameters.detailAccountOrDimension != 'detailAccount'"
                                     name="detailAccount"
                                     k-placeholder="{{'Select ...'|translate}}"
                                     k-data-value-field="id"
                                     k-data-text-field="display"
                                     k-data-source="detailAccountDataSource"
-                                    ng-required="parameters.DetailAccountOrDimension == 'detailAccount'"
+                                    k-value-primitive="false"
+                                    ng-required="parameters.detailAccountOrDimension == 'detailAccount'"
                                     ng-model="parameters.detailAccount"></dev-tag-combo-box>
 
                             <div ng-messages="form.detailAccount.$error" ng-if="form.detailAccount.$dirty">
@@ -52,15 +39,15 @@
 
                         <div ng-if="'dimension1' == item.key">
                             <dev-tag-combo-box
-
-                                    ng-disabled="parameters.DetailAccountOrDimension != 'dimension1'"
+                                    ng-disabled="parameters.detailAccountOrDimension != 'dimension1'"
                                     name="dimension1"
                                     k-placeholder="{{'Select ...'|translate}}"
                                     k-data-value-field="id"
                                     k-data-text-field="display"
                                     k-data-source="dimension1DataSource"
+                                    k-value-primitive="false"
                                     ng-model="parameters.dimension1"
-                                    ng-required="parameters.DetailAccountOrDimension == 'dimension1'"></dev-tag-combo-box>
+                                    ng-required="parameters.detailAccountOrDimension == 'dimension1'"></dev-tag-combo-box>
 
                             <div ng-messages="form.dimension1.$error" ng-if="form.dimension1.$dirty">
                                 <label ng-message="required" class="error">{{'This field is required'|translate}}</label>
@@ -70,14 +57,15 @@
                         <div ng-if="'dimension2' == item.key">
                             <dev-tag-combo-box
 
-                                    ng-disabled="parameters.DetailAccountOrDimension != 'dimension2'"
-                                    name="dimension1"
+                                    ng-disabled="parameters.detailAccountOrDimension != 'dimension2'"
+                                    name="dimension2"
                                     k-placeholder="{{'Select ...'|translate}}"
                                     k-data-value-field="id"
                                     k-data-text-field="display"
                                     k-data-source="dimension2DataSource"
+                                    k-value-primitive="false"
                                     ng-model="parameters.dimension2"
-                                    ng-required="parameters.DetailAccountOrDimension == 'dimension2'"></dev-tag-combo-box>
+                                    ng-required="parameters.detailAccountOrDimension == 'dimension2'"></dev-tag-combo-box>
 
                             <div ng-messages="form.dimension2.$error" ng-if="form.dimension2.$dirty">
                                 <label ng-message="required" class="error">{{'This field is required'|translate}}</label>
@@ -87,14 +75,15 @@
                         <div ng-if="'dimension3' == item.key">
                             <dev-tag-combo-box
 
-                                    ng-disabled="parameters.DetailAccountOrDimension != 'dimension3'"
-                                    name="dimension1"
+                                    ng-disabled="parameters.detailAccountOrDimension != 'dimension3'"
+                                    name="dimension3"
                                     k-placeholder="{{'Select ...'|translate}}"
                                     k-data-value-field="id"
                                     k-data-text-field="display"
                                     k-data-source="dimension3DataSource"
+                                    k-value-primitive="false"
                                     ng-model="parameters.dimension3"
-                                    ng-required="parameters.DetailAccountOrDimension == 'dimension3'"></dev-tag-combo-box>
+                                    ng-required="parameters.detailAccountOrDimension == 'dimension3'"></dev-tag-combo-box>
 
                             <div ng-messages="form.dimension3.$error" ng-if="form.dimension3.$dirty">
                                 <label ng-message="required" class="error">{{'This field is required'|translate}}</label>
@@ -103,113 +92,150 @@
                     </div>
                 </div>
             </div>
+        </div>
+
+        <div class="row" style="margin-top: 10px">
+            <div class="col-md-2">
+                <dev-tag-check-box ng-model="parameters.withDateCondition">
+                    {{'Filter Date'|translate}}
+                </dev-tag-check-box>
+            </div>
+            <span ng-if="parameters.withDateCondition">
+                <div class="col-md-2" style="text-align: left;margin-top: 7px">
+                <label class="label-control">{{'From date' | translate}}</label>
+            </div>
+                <div class="col-md-3">
+                    <dev-tag-datepicker
+                            ng-model="parameters.minDate"
+                            name="minDate"
+                            required></dev-tag-datepicker>
+
+                    <div ng-messages="form.minDate.$error" ng-if="form.minDate.$dirty">
+                        <label ng-message="required" class="error">
+                            {{'This field is required'|translate}}
+                        </label>
+                    </div>
+                </div>
+                <div class="col-md-2" style="text-align: left;margin-top: 7px">
+                    <label class="label-control">{{'To date' | translate}}</label>
+                </div>
+                <div class="col-md-3">
+                    <dev-tag-datepicker
+                            ng-model="parameters.maxDate"
+                            name="maxDate"
+                            required></dev-tag-datepicker>
+
+                    <div ng-messages="form.maxDate.$error" ng-if="form.maxDate.$dirty">
+                        <label ng-message="required" class="error">
+                            {{'This field is required'|translate}}
+                        </label>
+                    </div>
+                </div>
+           </span>
+        </div>
+
+        <div class="row" style="margin-top: 10px">
+            <div class="col-md-2">
+                <dev-tag-check-box ng-model="parameters.withNumberCondition">
+                    {{'Filter Number'|translate}}
+                </dev-tag-check-box>
+            </div>
+
+            <span ng-if="parameters.withNumberCondition">
+                <div class="col-md-2" style="text-align: left;margin-top: 7px">
+                <label class="label-control">{{'From number' | translate}}</label>
+            </div>
+                <div class="col-md-3">
+                    <dev-tag-numeric
+                            ng-model="parameters.minNumber"
+                            style="width: 100%"
+                            name="minNumber"
+                            required
+                            not-zero></dev-tag-numeric>
+
+                    <div ng-messages="form.minNumber.$error" ng-if="form.minNumber.$dirty">
+                        <label ng-message="required" class="error">
+                            {{'This field is required'|translate}}
+                        </label>
+                        <label ng-message="notZero" class="error">
+                            {{'This field should have a value not equal to zero'|translate}}
+                        </label>
+                    </div>
+                </div>
+                <div class="col-md-2" style="text-align: left;margin-top: 7px">
+                    <label class="label-control">{{'To number' | translate}}</label>
+                </div>
+                <div class="col-md-3">
+                    <dev-tag-numeric
+                            ng-model="parameters.maxNumber"
+                            style="width: 100%"
+                            name="maxNumber"
+                            required
+                            not-zero></dev-tag-numeric>
+
+                    <div ng-messages="form.maxNumber.$error" ng-if="form.maxNumber.$dirty">
+                        <label ng-message="required" class="error">
+                            {{'This field is required'|translate}}
+                        </label>
+                        <label ng-message="notZero" class="error">
+                            {{'This field should have a value not equal to zero'|translate}}</label>
+                    </div>
+                </div>
+            </span>
 
         </div>
 
-        <div class="row">
-            <div class="col-md-8" style="margin-top: 10px">
-                <div class="row">
-                    <div class="col-md-2" style="text-align: left;margin-top: 7px">
-                        <label class="label-control">{{'From date' | translate}}</label>
-                    </div>
-                    <div class="col-md-4">
-                        <dev-tag-datepicker
-                                ng-model="parameters.minDate"
-                                name="minDate"
-                                ng-required="{{parameters.maxDate}}"></dev-tag-datepicker>
+        <div class="row col-md-12" style="margin-top: 10px">
+            <dev-tag-check-box
+                    ng-model="parameters.isNotPeriodIncluded"
+                    dev-title="{{'Is not period included' | translate}}">
+                {{'Is not period included' | translate}}
+            </dev-tag-check-box>
+        </div>
+        <div class="row col-md-12" style="margin-top: 10px">
+            <dev-tag-check-box ng-model="parameters.notShowZeroRemainder">
+                {{'Not show zero remiander' | translate}}
+            </dev-tag-check-box>
+        </div>
 
-                        <div ng-messages="form.minDate.$error" ng-if="form.minDate.$dirty">
-                            <label ng-message="required" class="error">
-                                {{'This field is required'|translate}}
-                            </label>
-                        </div>
-                    </div>
-                    <div class="col-md-2" style="text-align: left;margin-top: 7px">
-                        <label class="label-control">{{'To date' | translate}}</label>
-                    </div>
-                    <div class="col-md-4">
-                        <dev-tag-datepicker
-                                ng-model="parameters.maxDate"
-                                name="maxDate"
-                                ng-required="{{parameters.minDate}}"></dev-tag-datepicker>
+        <div class="row" style="margin-top: 30px;padding: 30px 1em 30px 1em;">
+            <div class="col-md-12">
+               <!-- <div class="row"
+                     ng-repeat="item in reportTypes | filter: reportTypeFilter"
+                     style="margin-top: 3px">
+                    <dev-tag-radio
+                            ng-class="{'checked': item.key == parameters.reportType}"
+                            ng-model="parameters.reportType"></dev-tag-radio>
+                    {{item.display}}
+                </div>-->
 
-                        <div ng-messages="form.maxDate.$error" ng-if="form.maxDate.$dirty">
-                            <label ng-message="required" class="error">
-                                {{'This field is required'|translate}}
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <div class="row" style="margin-top: 10px">
-                    <div class="col-md-2" style="text-align: left;margin-top: 7px">
-                        <label class="label-control">{{'From number' | translate}}</label>
-                    </div>
-                    <div class="col-md-4">
-                        <dev-tag-numeric
-                                ng-model="parameters.minNumber"
-                                style="width: 100%"
-                                name="minNumber"
-                                ng-required="{{parameters.maxNumber}}"
-                                not-zero></dev-tag-numeric>
-
-                        <div ng-messages="form.minNumber.$error" ng-if="form.minNumber.$dirty">
-                            <label ng-message="required" class="error">
-                                {{'This field is required'|translate}}
-                            </label>
-                            <label ng-message="notZero" class="error">
-                                {{'This field should have a value not equal to zero'|translate}}
-                            </label>
-                        </div>
-                    </div>
-                    <div class="col-md-2" style="text-align: left;margin-top: 7px">
-                        <label class="label-control">{{'To number' | translate}}</label>
-                    </div>
-                    <div class="col-md-4">
-                        <dev-tag-numeric
-                                ng-model="parameters.maxNumber"
-                                style="width: 100%"
-                                name="maxNumber"
-                                ng-required="{{parameters.minNumber}}"
-                                not-zero></dev-tag-numeric>
-
-                        <div ng-messages="form.maxNumber.$error" ng-if="form.maxNumber.$dirty">
-                            <label ng-message="required" class="error">
-                                {{'This field is required'|translate}}
-                            </label>
-                            <label ng-message="notZero" class="error">
-                                {{'This field should have a value not equal to zero'|translate}}</label>
-                        </div>
-                    </div>
-                </div>
+                <span style="margin-left: 5px"
+                      ng-repeat="item in reportTypes | filter: reportTypeFilter">
+                    <dev-tag-button
+                            ng-click="executeTurnover(form, item.key)"
+                            style-type="primary"
+                            title="{{item.display}}"></dev-tag-button>
+                </span>
 
             </div>
-            <div class="col-md-3">
-                <div class="row" style="margin-top: 10px">
-                    <div class="col-md-12">
-                        <dev-tag-check-box
-                                ng-model="parameters.isNotPeriodIncluded"
-                                dev-title="{{'Is not period included' | translate}}">
-                            {{'Is not period included' | translate}}
-                        </dev-tag-check-box>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <dev-tag-check-box ng-model="parameters.notShowZeroRemainder">
-                            {{'Not show zero remiander' | translate}}
-                        </dev-tag-check-box>
-                    </div>
-                </div>
-            </div>
+
+
         </div>
 
-        <div class="row" style="text-align: center; margin-top: 30px">
-            <dev-tag-button
-                    ng-click="executeTurnover(form)"
-                    icon="fa fa-play-circle-o"
-                    style-type="primary"
-                    title="{{'Show' | translate}}"></dev-tag-button>
+      <!--  <div class="row" style="padding: 30px 1em 30px 1em;">
+
+  <div class="col-md-9">
+                <dev-tag-button
+                        ng-click="executeTurnover(form)"
+                        icon="fa fa-play-circle-o"
+                        style-type="primary"
+                        title="{{'Show' | translate}}"></dev-tag-button>
+            </div>
+
+
+
         </div>
+-->
         <!--<div class="row" style="margin-top: 50px;">
             <div class="col-md-3">
                 <dev-tag-button

@@ -15,9 +15,8 @@ function accountReviewController($scope, navigate, dimensionCategoryApi, devCons
             dimension1: null,
             dimension2: null,
             dimension3: null,
-            reportType: 'tiny',
             filterByDetailAccountOrDimension: false,
-            DetailAccountOrDimension: 'detailAccount'
+            detailAccountOrDimension: 'detailAccount'
         };
 
     $scope.reportTypes = [
@@ -30,6 +29,9 @@ function accountReviewController($scope, navigate, dimensionCategoryApi, devCons
         {key: 'dimension3', display: `${translate('Total turnover dimension')} ${translate('Dimension3')}`}
     ];
 
+    $scope.reportTypeFilter = item =>
+    !$scope.parameters.filterByDetailAccountOrDimension ||
+    ($scope.parameters.filterByDetailAccountOrDimension && item.key != $scope.parameters.detailAccountOrDimension);
 
     $scope.detailAccountAndDimensions = [
         {key: 'detailAccount', display: translate('Detail account')},
@@ -51,20 +53,10 @@ function accountReviewController($scope, navigate, dimensionCategoryApi, devCons
         }
     };
 
-    $scope.dimension1DataSource = {};
-    $scope.dimension2DataSource = {};
-    $scope.dimension3DataSource = {};
-    $scope.dimension4DataSource = {};
-
-    dimensionCategoryApi.getAll()
-        .then((result) => {
-            let cats = result.data;
-            $scope.dimensionCategories = cats.asEnumerable().take(3).toArray();
-
-            $scope.dimension1DataSource = dimensionDataSourceFactory(cats[0].id);
-            $scope.dimension2DataSource = dimensionDataSourceFactory(cats[1].id);
-            $scope.dimension3DataSource = dimensionDataSourceFactory(cats[2].id);
-        });
+    $scope.dimensionCategories = dimensionCategoryApi.getAllLookupSync().data;
+    $scope.dimension1DataSource = dimensionDataSourceFactory($scope.dimensionCategories[0].id);
+    $scope.dimension2DataSource = dimensionDataSourceFactory($scope.dimensionCategories[1].id);
+    $scope.dimension3DataSource = dimensionDataSourceFactory($scope.dimensionCategories[2].id);
 
     function dimensionDataSourceFactory(categoryId) {
         return {
@@ -107,24 +99,23 @@ function accountReviewController($scope, navigate, dimensionCategoryApi, devCons
         return params;
     }
 
-    $scope.executeTurnover = (form) => {
+    $scope.executeTurnover = (form, reportName) => {
         if (form.$invalid)
             return formService.setDirty(form);
 
         saveState();
-        let params = getParameters(),
-            reportName = $scope.parameters.reportType;
+        let parameters = $scope.parameters;
 
-        if (!params.filterByDetailAccountOrDimension)
-            return navigate('accountReviewTurnover', {name: reportName}, params);
+        if (parameters.filterByDetailAccountOrDimension == false)
+            return navigate('accountReviewTurnover', {name: reportName}, getParameters());
 
-        if (params.DetailAccountOrDimension == 'detailAccount')
+        if (parameters.detailAccountOrDimension == 'detailAccount')
             return $scope.detailAccountExecuteTurnovers(reportName);
 
         return $scope.dimensionExecuteTurnovers(
-            params.DetailAccountOrDimension,
+            parameters.detailAccountOrDimension,
             reportName,
-            parseInt(params.DetailAccountOrDimension.replace('dimension', '')) - 1)
+            parseInt(parameters.detailAccountOrDimension.replace('dimension', '')) - 1)
     };
 
     $scope.detailAccountExecuteTurnovers = (reportName) => {

@@ -5,6 +5,9 @@ const config = require('../config'),
     await = require('asyncawait/await');
 
 module.exports = async((req, res, next) => {
+    if(config.env = 'development')
+        res.cookie('branch-id', config.branchId);
+
     if (req.isAuthenticated())
         return next();
 

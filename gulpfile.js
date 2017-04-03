@@ -26,8 +26,7 @@ const path = require('path'),
     config = {
         isProduction: util.env.production,
         accSrcDir: './accounting/client',
-        publicDir: './public',
-        vendors: require(`./accounting/client/vendor.path.setting`)
+        publicDir: './public'
     };
 
 gulp.task('build-template', function () {
@@ -69,18 +68,6 @@ gulp.task('build-acc', function () {
 
         process.exit();
     });
-});
-
-gulp.task('build-vendor', function () {
-    var bundle = browserify({debug: !config.isProduction});
-
-    Object.keys(config.vendors).forEach(key => bundle.require(config.vendors[key], {expose: key}))
-
-    return bundle
-        .transform('uglifyify')
-        .bundle()
-        .pipe(exorcist(path.join(`${config.publicDir}/js`, 'vendor.bundle.min.js.map')))
-        .pipe(fs.createWriteStream(path.join(`${config.publicDir}/js`, 'vendor.bundle.min.js'), 'utf8'));
 });
 
 gulp.task('build-stimulsoft', function () {
