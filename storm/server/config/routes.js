@@ -14,6 +14,7 @@ app.use('/api/auth', require('../features/auth/auth.api'));
 /* ctrls */
 app.use('/auth', require('../features/auth/auth.controller'));
 app.use('/', require('../features/luca/luca.controller'));
+app.use('/', require('../features/user/user.controller'));
 
 app.post('/upload', (req, res) => {
     let file = req.files.userfile;
