@@ -6,7 +6,7 @@ const express = require('express'),
     memoryService = require('../../services/shared').service.Memory,
     cryptoService = require('../../services/shared').service.Crypto;
 
-router.route('/luca-demo').get((req, res) => {
+router.route('/accounting-demo').get((req, res) => {
     try {
         let token = (url.parse(req.url).query)
                 ? url.parse(req.url).query.replace('token=', '')

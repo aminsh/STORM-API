@@ -25,14 +25,14 @@ router.route('/send-message').post((req, res) => {
 
 });
 
-router.route('/request-luca-demo').post((req, res) => {
+router.route('/request-accounting-demo').post((req, res) => {
     let info = req.body;
 
     res.json({isValid: true});
 
     emailService.send({
         to: 'amin@storm-online.ir',
-        subject: `Email from ${info.name || info.email} - request for luca demo`,
+        subject: `Email from ${info.name || info.email} - request for accounting demo`,
         html: `<p><h1>Name: ${info.name}</h1></p>
                <p>Email: ${info.email}</p>`
     });
@@ -48,7 +48,7 @@ router.route('/request-luca-demo').post((req, res) => {
 
     emailService.send({
         to: info.email,
-        subject: translate('Luca demo link'),
+        subject: translate('Accounting demo link'),
         html: `<p><h3>${translate('Hello')}</h3></p>
                <p>${url}</p>`
     });
