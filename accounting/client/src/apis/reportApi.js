@@ -34,7 +34,7 @@ export default class {
         return deferred.promise;
     }
 
-    detailAccounts(reportId) {
+    detailAccounts() {
         return this.apiPromise.get(`${this.urlPrefix}/detail-accounts`);
     }
 
