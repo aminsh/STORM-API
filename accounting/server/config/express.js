@@ -9,10 +9,9 @@ module.exports = app;
 
 app.set('views', config.rootPath + '/server/views');
 app.engine('html', ejs.renderFile);
-app.use('/reporting', express.static(config.rootPath + '/reporting/files'));
 app.use('/content', express.static(config.rootPath + '/client/content'));
 app.use('/uploads', express.static(config.rootPath + '/uploads'));
-
+app.use('/reporting', express.static(config.rootPath + '/reporting'));
 app.use(require('../middlewares/goToLoginIfNotAuthenticated'));
 app.use(require('../middlewares/onUserConnected'));
 app.use(require('../middlewares/locals'));
