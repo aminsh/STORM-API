@@ -47,7 +47,7 @@ export default function routing($stateProvider, $urlRouterProvider, $locationPro
             controllerAs: 'vm'
         })
         .state('requestLucaDemo', {
-            url: '/request-luca-demo',
+            url: '/request-accounting-demo',
             templateUrl: 'app/home/requestLucaDemo.html',//require('./auth/register.html'),
             controller: 'RequestLucaDemoController',
             controllerAs: 'vm'

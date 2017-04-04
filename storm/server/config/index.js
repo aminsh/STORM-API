@@ -1,6 +1,7 @@
 "use strict";
 
 const path = require('path'),
+    env = process.env.NODE_ENV || 'development',
     rootPath = path.normalize(__dirname + '/../../'),
     environment = {
         development: {
@@ -33,11 +34,14 @@ const path = require('path'),
             },
             auth: {
                 google: {
-                    clientID        : '44908669153-rgtap5scj693g240t9p3k69tplearpto.apps.googleusercontent.com',
-                    clientSecret    : 'ZAc3SYGLyKenCssgRzs0iY-1',
-                    callbackURL     : 'http://localhost:2000/auth/google/callback',
+                    clientID: '44908669153-rgtap5scj693g240t9p3k69tplearpto.apps.googleusercontent.com',
+                    clientSecret: 'ZAc3SYGLyKenCssgRzs0iY-1',
+                    callbackURL: 'http://localhost:2000/auth/google/callback',
                 }
-            }
+            },
+            branchId: 'c3339d0d-b4f7-4c96-b5c2-2d4376ceb9ea',
+            env
+
         },
         production: {
             rootPath: rootPath,
@@ -68,14 +72,12 @@ const path = require('path'),
             },
             auth: {
                 google: {
-                    clientID        : '44908669153-rgtap5scj693g240t9p3k69tplearpto.apps.googleusercontent.com',
-                    clientSecret    : 'ZAc3SYGLyKenCssgRzs0iY-1',
-                    callbackURL     : 'https://www.storm-online.ir/auth/google/callback',
+                    clientID: '44908669153-rgtap5scj693g240t9p3k69tplearpto.apps.googleusercontent.com',
+                    clientSecret: 'ZAc3SYGLyKenCssgRzs0iY-1',
+                    callbackURL: 'https://www.storm-online.ir/auth/google/callback',
                 }
             }
         }
     };
-
-var env = process.env.NODE_ENV || 'development';
 
 module.exports = environment[env];

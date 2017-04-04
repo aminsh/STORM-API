@@ -57,4 +57,22 @@ module.exports = function (query, filter, currentFiscalPeriod,knex) {
     if (filter.amount && filter.amount.value && filter.amount.operator)
         query.andWhereRaw('("journalLines"."debtor" {0} ? OR "journalLines"."creditor" {0} ?)'.format(
             numberOperators[filter.amount.operator]), [filter.amount.value, filter.amount.value]);
+
+    if (filter.generalLedgerAccountId)
+        query.andWhere('generalLedgerAccountId', filter.generalLedgerAccountId);
+
+    if (filter.subsidiaryLedgerAccountId)
+        query.andWhere('subsidiaryLedgerAccountId', filter.subsidiaryLedgerAccountId);
+
+    if (filter.detailAccountId)
+        query.andWhere('detailAccountId', filter.detailAccountId);
+
+    if (filter.dimension1Id)
+        query.andWhere('dimension1Id', filter.dimension1Id);
+
+    if (filter.dimension2Id)
+        query.andWhere('dimension2Id', filter.dimension2Id);
+
+    if (filter.dimension3Id)
+        query.andWhere('dimension3Id', filter.dimension3Id);
 };

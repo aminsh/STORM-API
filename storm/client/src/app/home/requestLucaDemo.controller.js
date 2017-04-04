@@ -16,7 +16,7 @@ export default class RequestLucaDemo {
             return this.setDirty(form);
         }
 
-        this.$http.post('/api/request-luca-demo',this.model)
+        this.$http.post('/api/request-accounting-demo',this.model)
             .then(result => this.result = result.data);
     }
 }

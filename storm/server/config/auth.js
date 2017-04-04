@@ -97,7 +97,7 @@ module.exports[configure.name] = configure;
 module.exports[authenticate.name] = authenticate;
 module.exports.googleAuthenticate = passport.authenticate('google', {scope: ['profile', 'email']});
 module.exports.googleAuthenticateCallback = passport.authenticate('google', {
-    successRedirect: '/',
+    successRedirect: '/profile',
     failureRedirect: '/login'
 });
 
