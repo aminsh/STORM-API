@@ -9,7 +9,7 @@ module.exports = app;
 
 app.set('views', config.rootPath + '/server/views');
 app.engine('html', ejs.renderFile);
-app.use('/client', express.static(config.rootPath + 'client'));
+app.use('/reporting', express.static(config.rootPath + '/reporting/files'));
 app.use('/content', express.static(config.rootPath + '/client/content'));
 app.use('/uploads', express.static(config.rootPath + '/uploads'));
 

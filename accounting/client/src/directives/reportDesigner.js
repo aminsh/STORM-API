@@ -19,7 +19,7 @@ function reportDesigner(currentService, reportApi) {
                 data = {};
 
             if (scope.reportFileName)
-                report.loadFile(`/acc/client/reportFiles/${scope.reportFileName}`);
+                report.loadFile(`/acc/reporting/files/${scope.reportFileName}`);
 
             designer.renderHtml("contentDesigner");
 
