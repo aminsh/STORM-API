@@ -60,7 +60,7 @@ module.exports = class AccountReview extends BaseQuery {
                 .from(function () {
                     groupBy.call(this, knex, options, fiscalPeriodId, 'generalLedgerAccountId')
                 })
-                .leftJoin('generalLedgerAccounts', 'generalLedgerAccounts.id', 'groupJournals.generalLedgerAccountId')
+                .innerJoin('generalLedgerAccounts', 'generalLedgerAccounts.id', 'groupJournals.generalLedgerAccountId')
                 .as('final');
         });
 
@@ -98,7 +98,7 @@ module.exports = class AccountReview extends BaseQuery {
                 .from(function () {
                     groupBy.call(this, knex, options, fiscalPeriodId, ['generalLedgerAccountId', 'month']);
                 })
-                .leftJoin('generalLedgerAccounts', 'generalLedgerAccounts.id', 'groupJournals.generalLedgerAccountId')
+                .innerJoin('generalLedgerAccounts', 'generalLedgerAccounts.id', 'groupJournals.generalLedgerAccountId')
                 .as('final');
         });
 
@@ -131,8 +131,8 @@ module.exports = class AccountReview extends BaseQuery {
                 .from(function () {
                     groupBy.call(this, knex, options, fiscalPeriodId, 'subsidiaryLedgerAccountId');
                 })
-                .leftJoin('subsidiaryLedgerAccounts', 'subsidiaryLedgerAccounts.id', 'groupJournals.subsidiaryLedgerAccountId')
-                .leftJoin('generalLedgerAccounts', 'generalLedgerAccounts.id', 'subsidiaryLedgerAccounts.generalLedgerAccountId')
+                .innerJoin('subsidiaryLedgerAccounts', 'subsidiaryLedgerAccounts.id', 'groupJournals.subsidiaryLedgerAccountId')
+                .innerJoin('generalLedgerAccounts', 'generalLedgerAccounts.id', 'subsidiaryLedgerAccounts.generalLedgerAccountId')
                 .as('final')
         });
 
@@ -172,7 +172,7 @@ module.exports = class AccountReview extends BaseQuery {
                 .from(function () {
                     groupBy.call(this, knex, options, fiscalPeriodId, 'detailAccountId');
                 })
-                .leftJoin('detailAccounts', 'detailAccounts.id', 'groupJournals.detailAccountId')
+                .innerJoin('detailAccounts', 'detailAccounts.id', 'groupJournals.detailAccountId')
                 .as('final');
         });
 
@@ -210,7 +210,7 @@ module.exports = class AccountReview extends BaseQuery {
                 .from(function () {
                     groupBy.call(this, knex, options, fiscalPeriodId, 'dimension1Id');
                 })
-                .leftJoin('dimensions', 'dimensions.id', 'groupJournals.dimension1Id')
+                .innerJoin('dimensions', 'dimensions.id', 'groupJournals.dimension1Id')
                 .as('final');
         });
 
@@ -249,7 +249,7 @@ module.exports = class AccountReview extends BaseQuery {
                 .from(function () {
                     groupBy.call(this, knex, options, fiscalPeriodId, 'dimension2Id');
                 })
-                .leftJoin('dimensions', 'dimensions.id', 'groupJournals.dimension2Id')
+                .innerJoin('dimensions', 'dimensions.id', 'groupJournals.dimension2Id')
                 .as('final');
         });
 
@@ -289,7 +289,7 @@ module.exports = class AccountReview extends BaseQuery {
                 .from(function () {
                     groupBy.call(this, knex, options, fiscalPeriodId, 'dimension3Id');
                 })
-                .leftJoin('dimensions', 'dimensions.id', 'groupJournals.dimension3Id')
+                .innerJoin('dimensions', 'dimensions.id', 'groupJournals.dimension3Id')
                 .as('final');
         });
 
