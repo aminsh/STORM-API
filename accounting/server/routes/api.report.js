@@ -25,7 +25,7 @@ router.route('/')
         let report = req.body;
 
         fs.writeFile(
-            path.normalize(`${config.rootPath}/client/reportFiles/${report.fileName}`),
+            path.normalize(`${config.rootPath}/reporting/files/${report.fileName}`),
             report.data,
             err => {
                 if (err)
