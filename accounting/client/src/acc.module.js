@@ -1,7 +1,8 @@
 import angular from 'angular';
 import 'angular-animate';
 import 'angular-ui-bootstrap';
-import 'angular-route';
+import 'angular-ui-router';
+//import 'angular-route';
 import 'angular-sanitize';
 import 'angular-translate';
 import 'angular-resource';
@@ -10,6 +11,7 @@ import 'angular-cookies';
 import 'angular-cookies';
 import 'angular-chart';
 import 'angular-ladda';
+
 import 'adm-dtp';
 import 'chart.js';
 
@@ -18,10 +20,11 @@ Object.defineProperty(Array.prototype, 'dtp_toDate', { enumerable: false });
 
 let accModule = angular.module('acc.module', [
     'ngAnimate',
-    'ngRoute',
+    //'ngRoute',
     'ngResource',
     'ngSanitize',
     'ui.bootstrap',
+    'ui.router',
     'pascalprecht.translate',
     'ngMessages',
     'ngCookies',

@@ -3,7 +3,7 @@ export  default class FiscalPeriodApi{
         this.urlPrefix = '/acc/api';
         this.apiPromise = apiPromise;
 
-        this.getAll= '{0}/periods'.format(this.urlPrefix)
+        //this.getAll= '{0}/periods'.format(this.urlPrefix)
     }
 
     create(fiscalPeriod){
@@ -12,6 +12,10 @@ export  default class FiscalPeriodApi{
 
     current(){
         return this.apiPromise.get(`${this.urlPrefix}/fiscal-periods/current`);
+    }
+
+    getAll(){
+        return this.apiPromise.get(`${this.urlPrefix}/fiscal-periods`);
     }
 }
 

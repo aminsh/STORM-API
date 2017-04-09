@@ -1,0 +1,12 @@
+<div class="col-md-2" style="text-align: left;margin-top: 7px">
+    <label class="label-control">{{'Subsidiary ledger account' | translate}}</label>
+</div>
+<div class="col-md-10">
+
+    <dev-tag-multi-select
+            ng-model="journal.subsidiaryLedgerAccounts"
+            k-data-source="subsidiaryLedgerAccountDataSource"
+            k-placeholder="{{'Select ...'|translate}}"
+            k-data-text-field="account"
+            k-data-value-field="id"></dev-tag-multi-select>
+</div>

@@ -30,7 +30,7 @@ accModule.config(menuItemsProvider => {
             children: [
                 {
                     title: 'لیست اسناد حسابداری',
-                    url: 'journals',
+                    url: 'journals/list',
                     icon: ''
                 },
                 {

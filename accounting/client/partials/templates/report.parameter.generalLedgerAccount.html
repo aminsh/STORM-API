@@ -1,0 +1,12 @@
+<div class="col-md-2" style="text-align: left;margin-top: 7px">
+    <label class="label-control">{{'General ledger account' | translate}}</label>
+</div>
+<div class="col-md-10">
+
+    <dev-tag-multi-select
+            ng-model="journal.generalLedgerAccounts"
+            k-data-source="generalLedgerAccountDataSource"
+            k-placeholder="{{'Select ...'|translate}}"
+            k-data-text-field="display"
+            k-data-value-field="id"></dev-tag-multi-select>
+</div>

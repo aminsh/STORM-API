@@ -4,6 +4,7 @@ import 'jquery-datatables';
 export default function (apiPromise, $timeout) {
     return {
         restrict: 'E',
+        priority: 100,
         transclude: true,
         templateUrl: 'partials/templates/grid-template.html',
         scope: {
@@ -12,13 +13,13 @@ export default function (apiPromise, $timeout) {
             onCurrentChanged: '&'
         },
         link: (scope, element, attrs) => {
-            let extra = scope.option.extra || null;
+            let extra = scope.option.extra || null,
+                option = scope.option;
 
-            let option = scope.option;
             scope.gridId = Guid.new();
 
 
-            scope.columns = scope.option.columns;
+            scope.columns = [...scope.option.columns];
             scope.grid = {
                 sortable: (option.sortable == undefined) ? true : option.sortable,
                 filterable: (option.filterable == undefined) ? true : option.filterable,
@@ -150,7 +151,7 @@ export default function (apiPromise, $timeout) {
             }
 
             function removeSort() {
-                Collection.removeAll(sort);
+                sort.asEnumerable().removeAll();
                 scope.columns.forEach(c => c.removeSort && c.removeSort());
             }
 
@@ -159,7 +160,14 @@ export default function (apiPromise, $timeout) {
                 if (!detailTemplate) return;
 
                 scope.detailTemplate = detailTemplate;
-                scope.expand = item => item.expanded = !item.expanded;
+                scope.expand = item => {
+                    let detailOption = scope.detailOption;
+
+                    detailOption && detailOption.init && detailOption.init(item, detailOption);
+                    item.detailOption = detailOption;
+
+                    item.expanded = !item.expanded;
+                };
 
                 $(element).find('dev-tag-grid-detail').remove();
             }

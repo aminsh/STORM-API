@@ -13,6 +13,12 @@ export default function ($scope, devConstants, dimensionCategoryApi, reportApi, 
 
     $scope.viewerTabs = [];
 
+    $scope.$emit('close-sidebar');
+
+    $scope.canShowReportList = true;
+
+    $scope.toggleReportList = () => $scope.canShowReportList = !$scope.canShowReportList;
+
     $scope.addViewerTab = () => {
         let report = $scope.selectedReport,
             params = resolveFilter($scope.journalSearch);
@@ -108,10 +114,6 @@ export default function ($scope, devConstants, dimensionCategoryApi, reportApi, 
         }
     };
 
-    $scope.dimension1DataSource = {};
-    $scope.dimension2DataSource = {};
-    $scope.dimension3DataSource = {};
-
     $scope.detailAccountDataSource = {
         type: "json",
         serverFiltering: true,
@@ -125,15 +127,11 @@ export default function ($scope, devConstants, dimensionCategoryApi, reportApi, 
         }
     };
 
-    dimensionCategoryApi.getAll()
-        .then((result) => {
-            let cats = result.data;
-            $scope.dimensionCategories = cats;
+    let cats = $scope.dimensionCategories = dimensionCategoryApi.getAllLookupSync().data;
 
-            $scope.dimension1DataSource = dimensionDataSourceFactory(cats[0].id);
-            $scope.dimension2DataSource = dimensionDataSourceFactory(cats[1].id);
-            $scope.dimension3DataSource = dimensionDataSourceFactory(cats[2].id);
-        });
+    $scope.dimension1DataSource = dimensionDataSourceFactory(cats[0].id);
+    $scope.dimension2DataSource = dimensionDataSourceFactory(cats[1].id);
+    $scope.dimension3DataSource = dimensionDataSourceFactory(cats[2].id);
 
     function dimensionDataSourceFactory(categoryId) {
         return {

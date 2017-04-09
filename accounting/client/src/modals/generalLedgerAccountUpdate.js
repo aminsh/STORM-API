@@ -3,7 +3,7 @@ import devConstants from '../localData/devConstants';
 
 function generalLedgerAccountUpdateModalController($scope,
                                                    $uibModalInstance,
-                                                   data,
+                                                   id,
                                                    generalLedgerAccountApi,
                                                    logger, formService) {
 
@@ -16,7 +16,7 @@ function generalLedgerAccountUpdateModalController($scope,
         description: ''
     };
 
-    generalLedgerAccountApi.getById(data.id)
+    generalLedgerAccountApi.getById(id)
         .then(function (result) {
             $scope.generalLedgerAccount = result;
         });
@@ -33,7 +33,7 @@ function generalLedgerAccountUpdateModalController($scope,
 
         $scope.isSaving = true;
 
-        generalLedgerAccountApi.update(data.id, $scope.generalLedgerAccount)
+        generalLedgerAccountApi.update(id, $scope.generalLedgerAccount)
             .then(function (result) {
                 logger.success();
                 $uibModalInstance.close(result);

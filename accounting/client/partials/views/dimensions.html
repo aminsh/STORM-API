@@ -11,7 +11,7 @@
 
     <dev-tag-content-body>
         <dev-tag-button
-                ng-click="createDimension()"
+                ui-sref=".create({categoryId: current.id})"
                 icon="glyphicon glyphicon-plus"
                 ng-disabled="!current"
                 style-type="primary"

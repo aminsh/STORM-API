@@ -10,7 +10,7 @@ function generalLedgerAccountCreateModalController($scope, $uibModalInstance, ge
         postingType: null,
         balanceType: null,
         description: ''
-    }
+    };
 
     $scope.isSaving = false;
     $scope.save = function (form) {

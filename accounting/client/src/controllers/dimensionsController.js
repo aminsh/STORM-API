@@ -80,23 +80,17 @@ function dimensionsController($scope, logger, translate, confirm, devConstants, 
     $scope.dimensionGridOption = {
         columns: [
             {name: 'code', title: translate('Code'), width: '120px', type: 'string'},
-            {name: 'title', title: translate('Title'), type: 'string'}
+            {
+                name: 'title',
+                title: translate('Title'),
+                type: 'string',
+                template: `<a ui-sref=".edit({id: item.id})">{{item.title}}</a>`
+            }
         ],
         commands: [
             {
-                title: translate('Edit'),
-                icon: 'fa fa-edit',
-                action: function (current) {
-                    dimensionUpdateModalService.show({id: current.id})
-                        .then(() => {
-                            $scope.dimensionGridOption.refresh();
-                            logger.success();
-                        });
-                }
-            },
-            {
                 title: translate('Remove'),
-                icon: 'fa fa-trash',
+                icon: 'fa fa-trash text-danger',
                 action: function (current) {
                     confirm(
                         translate('Remove Dimension'),
