@@ -13,6 +13,12 @@ export default function ($scope, devConstants, dimensionCategoryApi, reportApi, 
 
     $scope.viewerTabs = [];
 
+    $scope.$emit('close-sidebar');
+
+    $scope.canShowReportList = true;
+
+    $scope.toggleReportList = () => $scope.canShowReportList = !$scope.canShowReportList;
+
     $scope.addViewerTab = () => {
         let report = $scope.selectedReport,
             params = resolveFilter($scope.journalSearch);
