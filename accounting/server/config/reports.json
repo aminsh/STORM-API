@@ -38,7 +38,7 @@
             {"key":"500","text": "تراز کل","func": "generalBalance", "fileName":"generalBalanceList"},
             {"key":"501","text": "تراز کل - معین","func": "subsidiaryBalance", "fileName":"subsidiaryBalanceList"},
             {"key":"502","text": "تراز معین - تفصیل","func": "subsidiaryDetailBalance", "fileName":"subsidiaryDetailBalanceList"},
-            {"key":"503","text": "تراز 3 سطحی","func": "generalSubsidiaryDetailBalance", "fileName":"generalSubsidiaryDetailBalanceList"}
+            {"key":"503","text": "تراز سه سطحی","func": "generalSubsidiaryDetailBalance", "fileName":"generalSubsidiaryDetailBalanceList"}
         ]
     },
     {
