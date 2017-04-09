@@ -2,6 +2,7 @@
 export default function () {
     return {
         restrict: 'E',
+        priority: 200,
         templateUrl: 'partials/templates/paging-template.html',
         replace: true,
         scope: {
