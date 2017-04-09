@@ -1,6 +1,6 @@
 import accModule from '../acc.module';
 
-function journalUpdateController($scope, logger, confirm, translate, navigate, $routeParams, $rootScope, devConstants,
+function journalUpdateController($scope, logger, confirm, translate, navigate, $stateParams, $rootScope, devConstants,
                                  journalApi, journalLineApi, subsidiaryLedgerAccountApi, dimensionCategoryApi,
                                  journalLineCreateControllerModalService,
                                  journalLineUpdateControllerModalService,
@@ -10,7 +10,7 @@ function journalUpdateController($scope, logger, confirm, translate, navigate, $
                                  tagApi,
                                  formService) {
 
-    let id = $routeParams.id;
+    let id = $stateParams.id;
 
     $scope.errors = [];
 

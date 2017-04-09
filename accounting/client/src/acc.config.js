@@ -9,7 +9,8 @@ import 'pace';
 import accModule from './acc.module';
 
 // load config
-import  './config/route.config';
+//import  './config/route.config';
+import uiRouteConfig from './config/config.ui.route';
 import  './config/menu.config.js';
 import  './config/translate.config';
 import './config/gridFilterCellTypeConfig';
@@ -90,6 +91,7 @@ import './directives/content';
 import './directives/datepicker';
 import './directives/dropdownlist';
 import './directives/multiSelect';
+import './directives/toolbar';
 //import './directives/grid';
 import './directives/layout';
 import './directives/numeric';
@@ -132,9 +134,11 @@ import './services/translate';
 import './services/prompt';
 import './services/showReport';
 import  currentService from './services/currentService';
+import $ModalFactory from './services/$modalFactory';
 
 
 accModule
+    .config(uiRouteConfig)
     .config(ADMdtpConfig)
     .directive('shell', shell)
     .directive('shellHeader', shellHeader)
@@ -151,6 +155,7 @@ accModule
     .directive('devTagGridEditableRow', EditableGridRow)
     .directive('ngHtmlCompile', ngHtmlCompile)
     .directive('devTagChartDoughnut', doughnutChart)
+    .service('$modelFactory', $ModalFactory)
     .service(currentService.name, currentService)
     .service('fiscalPeriodApi', FiscalPeriodApi)
     .service('reportApi', ReportApi)
