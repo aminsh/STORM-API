@@ -62,11 +62,11 @@
                 <button ng-repeat="command in column.commands"
                         ng-click="command.action(item)"
                         ng-if="!command.canShow || (command.canShow && command.canShow(item))"
-                        class="btn btn-primary btn-circle btn-outline"
+                        class="btn btn-outline "
                         type="button"
                         title="{{command.title}}"
                         style="margin-top: 0;margin-bottom: 0">
-                    <i class="{{command.icon}}"></i>
+                    <i class="{{command.icon}} fa-lg"></i>
                 </button>
             </span>
             </td>
