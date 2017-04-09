@@ -11,7 +11,7 @@ export default function (menuItems, $timeout) {
 
             let sideMenu = $(element).find('#side-menu');
 
-            $timeout(()=> sideMenu.metisMenu());
+            $timeout(() => sideMenu.metisMenu());
 
             if ($(document).width() <= 992) {
                 $('body').addClass('body-small')
@@ -29,6 +29,11 @@ export default function (menuItems, $timeout) {
 
             scope.$on('toggle-sidebar', () => {
                 $("body").toggleClass("mini-navbar");
+                SmoothlyMenu();
+            });
+
+            scope.$on('close-sidebar', () => {
+                $("body").addClass("mini-navbar");
                 SmoothlyMenu();
             });
 
@@ -54,15 +59,15 @@ export default function (menuItems, $timeout) {
             }
         },
         /*compile: (tElem, tAttr) => {
-            return {
-                pre: (scope, element, attrs) => {
-                    scope.items = menuItems;
-                },
-                post(scope, element, attrs){
-                    let ele = tElem;
-                    $(element).find('#side-menu').metisMenu();
-                }
-            }
-        }*/
+         return {
+         pre: (scope, element, attrs) => {
+         scope.items = menuItems;
+         },
+         post(scope, element, attrs){
+         let ele = tElem;
+         $(element).find('#side-menu').metisMenu();
+         }
+         }
+         }*/
     }
 }
