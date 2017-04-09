@@ -1,15 +1,18 @@
 import accModule from '../acc.module';
 
-function detailAccountsController($scope, logger, translate, confirm, navigate,
-                                  detailAccountApi,
-                                  detailAccountCreateModalService,
-                                  detailAccountUpdateModalService) {
+function detailAccountsController($scope, logger, translate, confirm,
+                                  detailAccountApi) {
     "use strict";
 
     $scope.gridOption = {
         columns: [
             {name: 'code', title: translate('Code'), width: '120px', type: 'string'},
-            {name: 'title', title: translate('Title'), type: 'string'},
+            {
+                name: 'title',
+                title: translate('Title'),
+                type: 'string',
+                template: `<a ui-sref=".edit({id: item.id})">{{item.title}}</a>`
+            },
             {
                 name: 'isActive',
                 title: translate('Is active ?'),
@@ -23,17 +26,8 @@ function detailAccountsController($scope, logger, translate, confirm, navigate,
         ],
         commands: [
             {
-                title: translate('Edit'),
-                name: 'edit detail account',
-                icon: 'fa fa-edit',
-                action: function (current) {
-                    detailAccountUpdateModalService.show({id: current.id})
-                        .then(() => $scope.gridOption.refresh());
-                }
-            },
-            {
                 title: translate('Remove'),
-                icon: 'fa fa-trash',
+                icon: 'fa fa-trash text-danger',
                 action: function (current) {
                     confirm(
                         translate('Remove Detail account'),
@@ -53,9 +47,6 @@ function detailAccountsController($scope, logger, translate, confirm, navigate,
         ],
         readUrl: detailAccountApi.url.getAll
     };
-
-    $scope.create = () => detailAccountCreateModalService.show()
-        .then(() => $scope.gridOption.refresh());
 }
 
 accModule.controller('detailAccountsController', detailAccountsController);

@@ -1,6 +1,6 @@
 import accModule from '../acc.module';
 
-function chequeCategoriesController($scope, logger, chequeCategoryApi, confirm, devConstants, translate, navigate,
+function chequeCategoriesController($scope, logger, chequeCategoryApi, confirm, devConstants, translate, navigate,$state,
                                     chequeCategoryCreateModalService,
                                     chequeCategoryUpdateModalService) {
     $scope.gridOption = {
@@ -25,13 +25,7 @@ function chequeCategoriesController($scope, logger, chequeCategoryApi, confirm, 
             {
                 title: translate('Edit'),
                 icon: 'fa fa-edit',
-                action: function (current) {
-                    chequeCategoryUpdateModalService.show({id: current.id})
-                        .then(() => {
-                            logger.success();
-                            $scope.gridOption.refresh();
-                        });
-                }
+                action: current => $state.go('.edit', {id: current.id})
             },
             {
                 title: translate('Remove'),

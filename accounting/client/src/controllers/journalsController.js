@@ -1,6 +1,6 @@
 import accModule from '../acc.module';
 
-function journalsController($scope, translate, journalApi, navigate, logger,
+function journalsController($scope, translate, journalApi, $state, logger,
                             journalCreateModalControllerService,
                             journalAdvancedSearchModalService,
                             journalsExtraFilterResolve) {
@@ -35,7 +35,7 @@ function journalsController($scope, translate, journalApi, navigate, logger,
                 title: translate('Edit'),
                 icon: 'fa fa-edit',
                 action: function (current) {
-                    navigate('journalUpdate', {
+                    $state.go('^.edit', {
                         id: current.id
                     });
                 }

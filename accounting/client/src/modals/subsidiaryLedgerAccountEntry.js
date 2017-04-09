@@ -1,13 +1,22 @@
 import accModule from '../acc.module';
 
-function subsidiaryLedgerAccountEntryModalController($scope, $uibModalInstance,
-                                                     dimensionCategoryApi, subsidiaryLedgerAccountApi,
+function subsidiaryLedgerAccountEntryModalController($scope, $uibModalInstance, $stateParams, $location,
+                                                     dimensionCategoryApi,
+                                                     generalLedgerAccountApi,
+                                                     subsidiaryLedgerAccountApi,
                                                      logger, formService, data, devConstants) {
 
+    let isEditMode = $location.$$url.includes('edit'),
+        generalLedgerAccountId = $stateParams.generalLedgerAccountId,
+        id = $stateParams.id;
+
     $scope.errors = [];
+    $scope.isEditMode = isEditMode;
     $scope.editMode = data.editMode;
     $scope.generalLedgerAccount = data.generalLedgerAccount;
     $scope.assignmentStatus = devConstants.enums.AssignmentStatus().data;
+    $scope.dimensionCategories = dimensionCategoryApi.getAllLookupSync().data;
+    $scope.isSaving = false;
 
     $scope.subsidiaryLedgerAccount = {
         code: '',
@@ -19,47 +28,43 @@ function subsidiaryLedgerAccountEntryModalController($scope, $uibModalInstance,
         dimension3AssignmentStatus: null,
     };
 
-    if (data.editMode == 'edit')
-        subsidiaryLedgerAccountApi.getById(data.subsidiaryLedgerAccountId)
+    if (!isEditMode)
+        generalLedgerAccountApi.getById(generalLedgerAccountId)
+            .then(result => $scope.generalLedgerAccount = result);
+
+
+    if (isEditMode)
+        subsidiaryLedgerAccountApi.getById(id)
             .then(result => $scope.subsidiaryLedgerAccount = result);
-
-    $scope.dimensionCategories = [];
-
-    dimensionCategoryApi.getAll()
-        .then(result => $scope.dimensionCategories = result.data);
-
-    $scope.isSaving = false;
 
     $scope.save = form => {
         if (form.$invalid)
             return formService.setDirty(form);
 
-        $scope.errors.removeAll();
+        $scope.errors.asEnumerable().removeAll();
         $scope.isSaving = true;
 
-        if (data.editMode == 'edit')
+        if (isEditMode)
             subsidiaryLedgerAccountApi.update(
                 $scope.subsidiaryLedgerAccount.id,
                 $scope.subsidiaryLedgerAccount)
                 .then(() => {
                     logger.success();
-                    $modalInstance.close();
+                    $uibModalInstance.close();
                 })
                 .catch(errors => $scope.errors = errors)
                 .finally(() => $scope.isSaving = false);
 
-        subsidiaryLedgerAccountApi.create(
-            data.generalLedgerAccount.id,
-            $scope.subsidiaryLedgerAccount)
+        subsidiaryLedgerAccountApi.create(generalLedgerAccountId, $scope.subsidiaryLedgerAccount)
             .then(result => {
                 logger.success();
-                $modalInstance.close(result);
+                $scope.$close(result);
             })
             .catch(errors => $scope.errors = errors)
             .finally(() => $scope.isSaving = false);
     };
 
-    $scope.close = () => $modalInstance.dismiss();
+    $scope.close = () => $scope.$dismiss();
 
 }
 

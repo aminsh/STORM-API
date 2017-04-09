@@ -5,10 +5,10 @@
     <span ></span>
 
     <h3 class="modal-title"
-        ng-if="editMode == 'create'">{{'Create Subsidiary ledger account'| translate}}</h3>
+        ng-if="!isEditMode">{{'Create Subsidiary ledger account'| translate}}</h3>
     <h3 class="modal-title"
-        ng-if="editMode == 'edit'">{{'Edit Subsidiary ledger account'| translate}}</h3>
-    <h5 ng-if="editMode == 'create'">
+        ng-if="isEditMode">{{'Edit Subsidiary ledger account'| translate}}</h3>
+    <h5 ng-if="!isEditMode">
         {{'General ledger account'|translate}} : {{generalLedgerAccount.code}} - {{generalLedgerAccount.title}}
     </h5>
 </div>
