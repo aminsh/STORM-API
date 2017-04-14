@@ -12,6 +12,9 @@ function dimensionApi(apiPromise, $q, $timeout) {
         getAll: function () {
             return apiPromise.get('{0}/dimensions'.format(urlPrefix));
         },
+        getByCategory(categoryId){
+          return apiPromise.get(`${urlPrefix}/dimensions/category/${categoryId}`);
+        },
         getById: function (id) {
             return apiPromise.get('{0}/dimensions/{1}'.format(urlPrefix, id));
         },
