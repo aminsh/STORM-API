@@ -8,6 +8,9 @@ function detailAccountApi(apiPromise) {
             getAll: '{0}/detail-accounts'.format(urlPrefix),
             getAllActive: '{0}/detail-accounts/active'.format(urlPrefix)
         },
+        getAll(){
+            return apiPromise.get(`${urlPrefix}/detail-accounts`);
+        },
         getById: function (id) {
             return apiPromise.get('{0}/detail-accounts/{1}'.format(urlPrefix, id));
         },
