@@ -28,12 +28,31 @@
     font-family: "iransans", "BKoodakBold", "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
+
+md-nav-bar md-nav-ink-bar {
+    background: blue;
+}
+
+md-nav-bar .md-button._md-nav-button{
+    color: orange;
+    font-family: "IRANSans";
+    font-size: 1.1pc;
+}
+
+md-nav-bar .md-button._md-nav-button.md-unselected {
+    color: white;
+    font-family: "IRANSans";
+    font-size: 1pc;
+}
+
 .brands-img {
     height: 50px;
     vertical-align: middle;
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 999px;
+    /*background: rgba(255, 255, 255, 0.2);
+    border-radius: 999px;*/
     padding: 3px;
+    padding-top: 8px;
+    position: relative;
 }
 
 .our-teams {
@@ -6397,7 +6416,7 @@ md-toolbar ~ md-content > md-list md-list-item:last-child md-divider {
 
     .md-toolbar-tools {
         height: 48px;
-        max-height: 48px
+        max-height: 48px;
     }
 }
 

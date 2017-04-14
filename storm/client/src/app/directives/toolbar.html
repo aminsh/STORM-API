@@ -1,33 +1,37 @@
 <div class="md-toolbar-tools">
 
-    <md-button class="md-icon-button" aria-label="Settings" ng-click="openMenu()" hide-gt-xs>
-        <md-icon>menu</md-icon>
-    </md-button>
+    <span hide-xs flex="90">
+        <div layout="row">
+                <md-nav-bar md-selected-nav-item="currentNavItem">
+                    <md-nav-item md-nav-sref="ourTeam" name="ourTeam">
+                        our team
+                    </md-nav-item>
+                    <md-nav-item ui-sref="home" name="home">Home</md-nav-item>
+                    <!--<md-nav-item  name="ourTeam">تیم ما</md-nav-item>-->
+                    <md-nav-item md-nav-sref="app.page4" sref-opts="{reload: true, notify: true}" name="page4">
+                        contact Us
+                    </md-nav-item>
+                    <md-nav-item md-nav-sref="page5" name="page5"> ورود/ عضویت</md-nav-item>
+                </md-nav-bar>
+        </div>
+    </span>
 
-    <a ui-sref="home">
-        <img src="/img/storm-logo.png" class="brands-img">
-    </a>
+    <div flex="10" hide-xs>
+        <a ui-sref="home">
+            <img src="/img/storm.logo.white.png" class="brands-img">
+        </a>
+    </div>
+
+    <span hide-gt-sm>
+        <md-button class="md-icon-button" aria-label="Settings" ng-click="openMenu()" hide-gt-xs>
+            <md-icon>menu</md-icon>
+        </md-button>
+
+        <a ui-sref="home">
+            <img src="/img/storm.logo.white.png" class="brands-img">
+        </a>
+    </span>
     <span flex></span>
 
-
-    <span hide-xs>
-         <md-button ui-sref="pricing({type: 'luca'})" aria-label="Go Back">
-   لیست قیمت لوکا
-  </md-button>
-
-        <md-button ui-sref="aboutus" aria-label="Go Back">
-    درباره ما
-  </md-button>
-        <md-button aria-label="Go Back" ui-sref="contactUs">
-    ارتباط با ما
-  </md-button>
-        <md-button ui-sref="login" aria-label="Go Back" ng-hide="logined">
-    عضویت / ورود
-  </md-button>
-        <md-button aria-label="Go Back" ng-show="logined">
-    {{currentUser}}
-            <img ng-src="{{currentUserImage}}" class="img-circle">
-  </md-button>
-  </span>
-
 </div>
+

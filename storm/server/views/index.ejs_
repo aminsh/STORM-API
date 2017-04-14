@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fa">
+<html ng-app="app" lang="fa">
 <head>
     <meta charset="UTF-8">
     <title><%=: 'Storm' | translate %></title>
