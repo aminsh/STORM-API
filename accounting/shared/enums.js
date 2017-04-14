@@ -18,14 +18,6 @@ enums.AccountBalanceType = function () {
     ]);
 };
 
-enums.AssignmentStatus = function () {
-    return new Enum([
-        {key: 'Required', display: 'اجباری است'},
-        {key: 'NotRequired', display: 'انتخابی است'},
-        {key: 'DoesNotHave', display: 'ندارد'}
-    ]);
-};
-
 enums.JournalType = function () {
     return new Enum([
         {key: 'Opening', display: 'افتتاحیه'},

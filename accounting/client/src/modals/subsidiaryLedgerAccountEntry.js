@@ -4,7 +4,7 @@ function subsidiaryLedgerAccountEntryModalController($scope, $uibModalInstance, 
                                                      dimensionCategoryApi,
                                                      generalLedgerAccountApi,
                                                      subsidiaryLedgerAccountApi,
-                                                     logger, formService, data, devConstants) {
+                                                     logger, formService, data) {
 
     let isEditMode = $location.$$url.includes('edit'),
         generalLedgerAccountId = $stateParams.generalLedgerAccountId,
@@ -14,18 +14,17 @@ function subsidiaryLedgerAccountEntryModalController($scope, $uibModalInstance, 
     $scope.isEditMode = isEditMode;
     $scope.editMode = data.editMode;
     $scope.generalLedgerAccount = data.generalLedgerAccount;
-    $scope.assignmentStatus = devConstants.enums.AssignmentStatus().data;
     $scope.dimensionCategories = dimensionCategoryApi.getAllLookupSync().data;
     $scope.isSaving = false;
 
     $scope.subsidiaryLedgerAccount = {
         code: '',
         title: '',
-        detailAccountAssignmentStatus: null,
         isBankAccount: false,
-        dimension1AssignmentStatus: null,
-        dimension2AssignmentStatus: null,
-        dimension3AssignmentStatus: null,
+        hasDetailAccount: false,
+        hasDimension1: false,
+        hasDimension2: false,
+        hasDimension3: false,
     };
 
     if (!isEditMode)

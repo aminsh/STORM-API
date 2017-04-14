@@ -11,10 +11,10 @@ class SubsidiaryLedgerAccount extends Base {
         this.title = model.title;
         this.description = '';
         this.isBankAccount = model.chq;
-        this.detailAccountAssignmentStatus = model.det ? 'Required' : 'DoesNotHave';
-        this.dimension1AssignmentStatus = model.cen ? 'Required' : 'DoesNotHave';
-        this.dimension2AssignmentStatus = model.code5 ? 'Required' : 'DoesNotHave';
-        this.dimension3AssignmentStatus = model.code6 ? 'Required' : 'DoesNotHave';
+        this.hasDetailAccount = !!model.det;
+        this.hasDimension1 = !!model.cen;
+        this.hasDimension2 = !!model.code5;
+        this.hasDimension3 = !!model.code6;
         this.isActive = true;
     }
 }

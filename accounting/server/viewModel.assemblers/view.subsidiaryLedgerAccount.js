@@ -4,23 +4,16 @@ function subsidiaryLedgerAccountAssembler(entity) {
     var viewModel = {
         id: entity.id,
         generalLedgerAccountId: entity.generalLedgerAccountId,
+        generalLedgerAccountDisplay: entity.generalLedgerAccountDisplay,
         code: entity.code,
         title: entity.title,
         display: entity.display,
         account: entity.account,
         isBankAccount: entity.isBankAccount,
-        detailAccountAssignmentStatus: entity.detailAccountAssignmentStatus,
-        detailAccountAssignmentStatusDisplay: enums.AssignmentStatus()
-            .getDisplay(entity.detailAccountAssignmentStatus),
-        dimension1AssignmentStatus: entity.dimension1AssignmentStatus,
-        dimension1AssignmentStatusDisplay: enums.AssignmentStatus()
-            .getDisplay(entity.dimension1AssignmentStatus),
-        dimension2AssignmentStatus: entity.dimension2AssignmentStatus,
-        dimension2AssignmentStatusDisplay: enums.AssignmentStatus()
-            .getDisplay(entity.dimension2AssignmentStatus),
-        dimension3AssignmentStatus: entity.dimension3AssignmentStatus,
-        dimension3AssignmentStatusDisplay: enums.AssignmentStatus()
-            .getDisplay(entity.dimension3AssignmentStatus),
+        hasDetailAccount: entity.hasDetailAccount,
+        hasDimension1: entity.hasDimension1,
+        hasDimension2: entity.hasDimension2,
+        hasDimension3: entity.hasDimension3,
         description: entity.description,
         isActive: entity.isActive
     };
