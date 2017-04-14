@@ -11,6 +11,7 @@ import 'angular-cookies';
 import 'angular-cookies';
 import 'angular-chart';
 import 'angular-ladda';
+import 'angular-ui-select';
 
 import 'adm-dtp';
 import 'chart.js';
@@ -30,7 +31,8 @@ let accModule = angular.module('acc.module', [
     'ngCookies',
     'ADM-dateTimePicker',
     'chart.js',
-    'angular-ladda'
+    'angular-ladda',
+    'ui.select'
 ]);
 
 accModule.init = () => {

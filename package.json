@@ -22,6 +22,7 @@
     "angular-chart.js": "^1.1.1",
     "angular-cookies": "^1.6.3",
     "angular-ladda": "^0.4.3",
+    "angular-material": "^1.1.3",
     "angular-messages": "^1.6.3",
     "angular-resource": "^1.6.3",
     "angular-route": "^1.6.3",
@@ -81,6 +82,7 @@
     "sweetalert": "^1.1.3",
     "tedious": "^1.14.0",
     "to-pascal-case": "^1.0.0",
+    "ui-select": "^0.19.7",
     "yargs": "^7.0.2"
   },
   "devDependencies": {
@@ -159,7 +161,8 @@
     "kendo-dropdownlist": "./vendors/kendo/kendo.dropdownlist.min",
     "kendo-multiselect": "./vendors/kendo/kendo.multiselect.min",
     "bootstrap": "./node_modules/bootstrap-sass-directional/assets/javascripts/bootstrap.js",
-    "metisMenu": "./vendors/jquery.metisMenu.js"
+    "metisMenu": "./vendors/jquery.metisMenu.js",
+    "angular-ui-select": "./node_modules/ui-select/dist/select.js"
   },
   "browserify-shim": {
     "ladda": "global:Ladda",
