@@ -7,6 +7,9 @@ function journalLineApi(apiPromise) {
         url: {
             getAll: (journalId)=> '{0}/journal-lines/journal/{1}'.format(urlPrefix, journalId)
         },
+        getAll(journalId){
+            return apiPromise.get(`${urlPrefix}/journal-lines/journal/${journalId}`);
+        },
         getById: function (id) {
             return apiPromise.get('{0}/journal-lines/{1}'.format(urlPrefix, id));
         },

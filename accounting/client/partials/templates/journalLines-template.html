@@ -1,0 +1,145 @@
+<div class="row">
+    <table class="table table-hover"
+           dev-data-table height="300px">
+        <thead>
+        <tr>
+            <th>#</th>
+            <th style="width: 25%;text-align: center">{{'Detail account'|translate}}</th>
+            <th style="width: 15%;text-align: center">{{'Account'|translate}}</th>
+            <th style="width: 40%;text-align: center">{{'Article'|translate}}</th>
+            <th style="width: 10%;text-align: center">{{'Debtor'|translate}}</th>
+            <th style="width: 10%;text-align: center">{{'Creditor'|translate}}</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr name="form-{{$index}}"
+            ng-form
+            ng-repeat="item in journalLines"
+            ng-class-odd="'grid-row-striped'">
+
+            <td>{{item.row}}</td>
+            <td>
+                <dev-tag-combo-box
+                        focus-on="subsidiaryLedgerAccount-focus-{{item.id}}"
+                        ng-if="item.canShowDetailAccount"
+                        name="detailAccountId"
+                        k-placeholder="{{'Select ...'|translate}}"
+                        k-data-value-field="id"
+                        k-data-text-field="display"
+                        k-data-source="columnConfig.detailAccount.dataSource"
+                        ng-model="item.detailAccountId"
+                        required></dev-tag-combo-box>
+
+                <div ng-messages="form['form-'+$index].detailAccountId.$error"
+                     ng-if="form['form-'+$index].detailAccountId.$dirty">
+                    <label ng-message="required"
+                           class="error">{{'This field is required'|translate}}</label>
+                </div>
+            </td>
+            <td>
+
+                <dev-tag-combo-box
+                        name="subsidiaryLedgerAccountId"
+                        k-placeholder="{{'Select ...'|translate}}"
+                        k-data-value-field="id"
+                        k-data-text-field="account"
+                        k-data-source="columnConfig.subsidiaryLedgerAccount.dataSource"
+                        group-by="generalLedgerAccountDisplay"
+                        on-changed="columnConfig.subsidiaryLedgerAccount.onChanged($item, item)"
+                        ng-model="item.subsidiaryLedgerAccountId"
+                        required></dev-tag-combo-box>
+
+                <div ng-messages="form['form-'+$index].subsidiaryLedgerAccountId.$error"
+                     ng-if="form['form-'+$index].subsidiaryLedgerAccountId.$dirty">
+                    <label ng-message="required"
+                           class="error">{{'This field is required'|translate}}</label>
+                </div>
+            </td>
+            <td>
+                <dev-tag-text-box ng-model="item.article" name="article" required minlength="3"></dev-tag-text-box>
+                <div ng-messages="form['form-'+ $index].article.$error"
+                     ng-if="form['form-'+ $index].article.$dirty">
+                    <label ng-message="required" class="error">{{'This field is required'|translate}}</label>
+                    <label ng-message="minlength" class="error">{{'This field should at least 3 characters'|translate}}</label>
+                </div>
+            </td>
+            <td>
+                <dev-tag-numeric
+                        class="form-control"
+                        ng-model="item.debtor"
+                        name="debtor"
+                        required
+                        not-should-be-zero-both="item.creditor"
+                        not-should-have-value-both="item.creditor"></dev-tag-numeric>
+
+                <div ng-messages="form['form-'+ $index].debtor.$error" ng-if="form['form-'+ $index].debtor.$dirty">
+                    <label ng-message="required" class="error">{{'This field is required'|translate}}</label>
+                    <label ng-message="notShouldBeZeroBoth" class="error">{{'Debtor and creditor are not allowed to be zero , both of them'|translate}}</label>
+                    <label ng-message="notShouldHaveValueBoth" class="error">{{'Debtor and creditor are not allowed to have value , both of them'|translate}}</label>
+                </div>
+            </td>
+            <td>
+                <dev-tag-numeric
+                        class="form-control"
+                        ng-model="item.creditor"
+                        name="creditor"
+                        required
+                        not-should-be-zero-both="item.debtor"
+                        not-should-have-value-both="item.debtor"></dev-tag-numeric>
+
+                <div ng-messages="form['form-'+ $index].creditor.$error" ng-if="form['form-'+ $index].creditor.$dirty">
+                    <label ng-message="required" class="error">{{'This field is required'|translate}}</label>
+                    <label ng-message="notShouldBeZeroBoth" class="error">{{'Debtor and creditor are not allowed to be zero , both of them'|translate}}</label>
+                    <label ng-message="notShouldHaveValueBoth" class="error">{{'Debtor and creditor are not allowed to have value , both of them'|translate}}</label>
+                </div>
+            </td>
+            <td style="text-align: left;width: 105px">
+                <button
+                        ng-disabled="!(item.canShowDimension1 || item.canShowDimension2 || item.canShowDimension3)"
+                        class="btn btn-outline "
+                        type="button"
+                        title="{{'Dimensions (on journalLine)'|translate}}"
+                        style="margin-top: 0;margin-bottom: 0"
+                        uib-popover-template="'partials/templates/journalLines-dimension-template.html'"
+                        popover-title="{{'Dimensions (on journalLine)'|translate}}"
+                        popover-placement="right"
+                        popover-class="journal-lines-dimensions"
+                        popover-trigger="'outsideClick'">
+                    <i class="fa fa-ellipsis-h fa-lg text-navy"></i>
+                </button>
+
+                <button
+                        ng-click="removeJournalLine(item)"
+                        class="btn btn-outline "
+                        type="button"
+                        title="{{'Remove'| translate}}"
+                        style="margin-top: 0;margin-bottom: 0">
+                    <i class="fa fa-trash fa-lg text-danger"></i>
+                </button>
+
+            </td>
+        </tr>
+        </tbody>
+        <tfoot>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>{{journalLines | totalSum: ('debtor') | number}}</td>
+            <td>{{journalLines | totalSum: ('creditor') | number}}</td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td colspan="2" style="text-align: center">{{journalLines | remainder | number}}</td>
+            <td></td>
+        </tr>
+        </tfoot>
+    </table>
+</div>

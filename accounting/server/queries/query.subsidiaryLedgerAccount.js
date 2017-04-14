@@ -15,11 +15,12 @@ module.exports = class SubsidiaryLedgerAccountQuery extends BaseQuery {
     getAll(parameters) {
         let knex = this.knex;
         let query = knex.select().from(function () {
-            let selectExp = '"subsidiaryLedgerAccounts".*,' +
-                '"subsidiaryLedgerAccounts".code || \' \' || "subsidiaryLedgerAccounts".title as "display",' +
-                '"generalLedgerAccounts".code || \'-\' || "subsidiaryLedgerAccounts".code || \' \' || "subsidiaryLedgerAccounts".title as "account"';
-
-            this.select(knex.raw(selectExp))
+            this.select(
+                knex.raw('"subsidiaryLedgerAccounts".*'),
+                knex.raw('"subsidiaryLedgerAccounts".code || \' \' || "subsidiaryLedgerAccounts".title as "display"'),
+                knex.raw('"generalLedgerAccounts".code || \' \' || "generalLedgerAccounts".title as "generalLedgerAccountDisplay"'),
+                knex.raw('"generalLedgerAccounts".code || \'-\' || "subsidiaryLedgerAccounts".code || \' \' || "subsidiaryLedgerAccounts".title as "account"')
+            )
                 .from('subsidiaryLedgerAccounts')
                 .leftJoin('generalLedgerAccounts', 'generalLedgerAccounts.id', 'subsidiaryLedgerAccounts.generalLedgerAccountId')
                 .as('baseSubsidiaryLedgerAccounts');

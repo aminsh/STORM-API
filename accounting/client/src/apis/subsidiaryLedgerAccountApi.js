@@ -12,6 +12,9 @@ function subsidiaryLedgerAccountApi(apiPromise) {
                 return '{0}/subsidiary-ledger-accounts/general-ledger-account/{1}/active'.format(urlPrefix, parentId)
             }
         },
+        getAll(){
+            return apiPromise.get(`${urlPrefix}/subsidiary-ledger-accounts`);
+        },
         getById: function (id) {
             return apiPromise.get('{0}/subsidiary-ledger-accounts/{1}/'
                 .format(urlPrefix, id));
