@@ -9,7 +9,6 @@ import 'pace';
 import accModule from './acc.module';
 
 // load config
-//import  './config/route.config';
 import uiRouteConfig from './config/config.ui.route';
 import  './config/menu.config.js';
 import  './config/translate.config';
@@ -22,8 +21,6 @@ import ADMdtpConfig from './config/ADMdtp.config';
 import './controllers/homeController';
 import './controllers/generalLedgerAccountsController';
 import './controllers/subsidiaryLedgerAccountsController';
-import './controllers/subsidiaryLedgerAccountCreateController';
-import './controllers/subsidiaryLedgerAccountUpdateController';
 import './controllers/detailAccountsController';
 import './controllers/dimensionsController';
 import './controllers/journalsController';
@@ -92,13 +89,11 @@ import './directives/datepicker';
 import './directives/dropdownlist';
 import './directives/multiSelect';
 import './directives/toolbar';
-//import './directives/grid';
 import './directives/layout';
 import './directives/numeric';
 import './directives/textEditor';
 import './directives/checkbox';
 import './directives/radio';
-import './directives/ngKendoGrid';
 import './directives/journalSearchParameters';
 import './directives/reportViewer';
 import shell from './directives/shell';
@@ -108,17 +103,17 @@ import panelBar from './directives/panelbar';
 import shellHeader from './directives/shell.header';
 import shellSidebar from './directives/shell.sidebar';
 import shellSidebarItem from './directives/shell.sidebar.item';
-import grid from './directives/grid.bootstrap';
+import grid from './directives/grid';
 import gridFilter from './directives/grid.filter';
 import gridSort from './directives/grid.sort';
-import EditableGrid from './directives/grid.editable';
-import EditableGridRow from './directives/grid.editable.row';
+import dataTable from './directives/dataTable';
 import paging from './directives/paging';
 import ngHtmlCompile from './directives/ngHtmlCompile';
 import doughnutChart from './directives/chart.doughnut';
 
 //filter
 import './filters/amount';
+import totalSum from './filters/total';
 
 //service
 import './services/formService';
@@ -135,11 +130,13 @@ import './services/prompt';
 import './services/showReport';
 import  currentService from './services/currentService';
 import $ModalFactory from './services/$modalFactory';
+import Promise from './services/promise';
 
 
 accModule
     .config(uiRouteConfig)
     .config(ADMdtpConfig)
+
     .directive('shell', shell)
     .directive('shellHeader', shellHeader)
     .directive('shellSidebar', shellSidebar)
@@ -151,19 +148,22 @@ accModule
     .directive('devTagGridFilter', gridFilter)
     .directive('devTagGridSort', gridSort)
     .directive('devTagPaging', paging)
-    .directive('devTagGridEditable', EditableGrid)
-    .directive('devTagGridEditableRow', EditableGridRow)
     .directive('ngHtmlCompile', ngHtmlCompile)
     .directive('devTagChartDoughnut', doughnutChart)
+    .directive('devDataTable', dataTable)
+
     .service('$modelFactory', $ModalFactory)
+    .service('promise', Promise)
     .service(currentService.name, currentService)
     .service('fiscalPeriodApi', FiscalPeriodApi)
     .service('reportApi', ReportApi)
     .service('tagApi', TagApi)
+
     .controller(createFiscalPeriodController.name, createFiscalPeriodController)
     .controller('chequePrintController', chequePrintController)
     .controller('reportController', reportController)
-    .controller('reportDesignerController', reportDesignerController);
+    .controller('reportDesignerController', reportDesignerController)
+    .filter('totalSum', totalSum);
 
 accModule.init();
 

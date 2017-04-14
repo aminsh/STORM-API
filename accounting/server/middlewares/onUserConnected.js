@@ -7,7 +7,8 @@ const async = require('asyncawait/async'),
     Memory = require('../services/shared').service.Memory,
     BranchQuery = require('../../../storm/server/features/branch/branch.query'),
     branchQuery = new BranchQuery(),
-    knex = require('knex');
+    knex = require('knex'),
+    config = require('../config');
 
 
 module.exports = async((req, res, next) => {
@@ -16,9 +17,14 @@ module.exports = async((req, res, next) => {
         knexInstance = Memory.get(`context.${branchId}`);
 
     if (!knexInstance) {
-        let branch = await(branchQuery.getById(branchId));
+        let branch = await(branchQuery.getById(branchId)),
+            dbConnection = {
+                client: 'pg',
+                connection: branch.accConnection,
+                debug: config.env == 'development'
+            };
 
-        knexInstance = knex(branch.accConnection);
+        knexInstance = knex(dbConnection);
 
         Memory.set(`context.${branchId}`, knexInstance);
     }

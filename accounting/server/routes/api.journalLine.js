@@ -15,6 +15,7 @@ router.route('/journal/:journalId')
             result = await(journalLineQuery.getAll(req.params.journalId, req.query));
         res.json(result);
     }))
+
     .post(async((req, res) => {
         let journalRepository = new JournalRepository(req.cookies['branch-id']),
             journalLineRepository = new JournalLineRepository(req.cookies['branch-id']),

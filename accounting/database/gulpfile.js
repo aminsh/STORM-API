@@ -46,7 +46,7 @@ gulp.task('migrate-latest', () => {
             } else {
                 Util.log(Util.colors.green.bold(`Migrating group ${results[0]}`));
                 results[1].forEach(migration_path => {
-                    Util.log('\t', Util.colors.green(migration_path.replace(path.dirname(options.directory), '')));
+                    Util.log('\t', Util.colors.green(migration_path.replace(path.dirname(options.migrations), '')));
                 });
             }
 
