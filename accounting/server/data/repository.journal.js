@@ -107,15 +107,13 @@ class JournalRepository extends BaseRepository {
 
             await(knex('journalTags').insert(addedTags));
         }
-
-
     }
 
     batchCreate(journalLines, journal) {
         let knex = this.knex;
 
         return new Promise((resolve, reject) => {
-            knex.transaction(async function (trans) {
+            knex.transaction(async(function(trans) {
                 try {
                     let id = await(kex('journal')
                         .transaction(trans)
@@ -133,7 +131,7 @@ class JournalRepository extends BaseRepository {
                     reject(e);
                 }
 
-            });
+            }));
         });
     }
 
@@ -141,7 +139,7 @@ class JournalRepository extends BaseRepository {
         let knex = this.knex;
 
         return new Promise((resolve, reject) => {
-            knex.transaction(async function (trx) {
+            knex.transaction(async(function (trx) {
                 try {
                     let id = await(knex('journal')
                         .transacting(trx)
@@ -161,9 +159,8 @@ class JournalRepository extends BaseRepository {
                     trx.rollback();
                     reject(e);
                 }
-            })
+                 }))
         });
-
     }
 }
 

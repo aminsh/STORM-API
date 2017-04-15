@@ -8,7 +8,6 @@ class JournalLineRepository extends BaseRepository {
     constructor(branchId) {
         super(branchId);
         this.create = async(this.create);
-        this.batchCreate = async(this.batchCreate);
     }
 
     findById(id) {
