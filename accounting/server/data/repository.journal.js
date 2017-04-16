@@ -2,7 +2,8 @@
 
 let async = require('asyncawait/async'),
     await = require('asyncawait/await'),
-    BaseRepository = require('./repository.base');
+    BaseRepository = require('./repository.base'),
+    Promise = require('promise');
 
 class JournalRepository extends BaseRepository {
     constructor(branchId) {
@@ -106,8 +107,60 @@ class JournalRepository extends BaseRepository {
 
             await(knex('journalTags').insert(addedTags));
         }
+    }
 
+    batchCreate(journalLines, journal) {
+        let knex = this.knex;
 
+        return new Promise((resolve, reject) => {
+            knex.transaction(async(function(trans) {
+                try {
+                    let id = await(kex('journal')
+                        .transaction(trans)
+                        .returning('id')
+                        .insert(journal));
+
+                    await(knex('journalLines')
+                        .insert(journalLines));
+
+                    trans.commit();
+                    resolve(id);
+                }
+                catch (e) {
+                    trans.rollback();
+                    reject(e);
+                }
+
+            }));
+        });
+    }
+
+    batchUpdate(createJournalLines, updateJournalLine, deleteJournalLine, journal) {
+        let knex = this.knex;
+
+        return new Promise((resolve, reject) => {
+            knex.transaction(async(function (trx) {
+                try {
+                    let id = await(knex('journal')
+                        .transacting(trx)
+                        .returning('id')
+                        .insert(journal));
+
+                    await (knex('journalLines').tranacting(trx).insert(createJournalLines));
+                    await (knex('journalLines').tranacting(trx).update(updateJournalLine));
+                    await (knex('journalLines').transacting(trx)
+                        .whereIn('id', deleteJournalLine)
+                        .del());
+
+                    trx.commit();
+                    resolve(id);
+                }
+                catch (e) {
+                    trx.rollback();
+                    reject(e);
+                }
+                 }))
+        });
     }
 }
 

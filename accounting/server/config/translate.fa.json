@@ -34,5 +34,11 @@
   "Report department title": "امور مالی",
   "Report title": "سند حسابداری",
   "Creator": "تهیه کننده",
-  "Report designer": "طراحی گزارش"
+  "Report designer": "طراحی گزارش",
+  "The detailAccount is not define": "حساب تفضیل تعریف نشده است",
+  "The Dimension1 is not define": "حساب تفضیل1 تعریف نشده است",
+  "The Dimension2 is not define": "حساب تفضیل2 تعریف نشده است",
+  "The Dimension3 is not define": "حساب تفضیل3 تعریف نشده است",
+  "Debtor and creditor are not allowed to be zero , both of them":"بدهکار و بستانکار هر دو نباید صفر باشد",
+  "Debtor and creditor are not allowed to have value , both of them": "بدهکار و بستانکار نباید هر دو دارای مقدار باشد"
 }
