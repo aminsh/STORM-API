@@ -12,7 +12,7 @@ export default function () {
         link: (scope, element, attrs) => {
             scope.currentPage = 1;
             scope.pageSizes = [10, 20, 50, 100];
-            scope.pageSize = scope.option.pageSize || 20;
+            scope.pageSize = 20;
 
             scope.change = () => {
                 let page = {

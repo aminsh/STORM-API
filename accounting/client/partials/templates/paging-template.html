@@ -5,10 +5,10 @@
 
     <div class="col-md-4">
         {{'Page size'|translate}}
-        <dev-tag-dropdownlist
-                style="width: 50px"
-                k-data-source="pageSizes"
-                ng-model="pageSize"></dev-tag-dropdownlist>
+        <select class="form-control form-control-dropdown-paging"
+                ng-model="pageSize"
+                style="width: 70px"
+                ng-options="p as p for p in pageSizes"></select>
 
         <dev-tag-button
                 icon="fa fa-refresh grid-refresh"

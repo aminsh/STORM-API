@@ -22,14 +22,12 @@
         </div>
         <div class="form-group">
             <label class="label-control">{{'Posting type' | translate}}</label>
-            <dev-tag-dropdownlist
-                    name="postingType"
-                    k-option-label="{{'Select ...'|translate}}"
-                    k-data-value-field="key"
-                    k-data-text-field="display"
-                    k-data-source="accountPostingType"
+            <select name="postingType"
                     ng-model="generalLedgerAccount.postingType"
-                    required></dev-tag-dropdownlist>
+                    ng-options="p.key as p.display for p in accountPostingType.data"
+                    class="form-control">
+                <option value="">{{'Select ...'|translate}}</option>
+            </select>
 
             <div ng-messages="form.postingType.$error" ng-if="form.postingType.$dirty">
                 <label ng-message="required" class="error">{{'This field is required'|translate}}</label>
@@ -38,15 +36,13 @@
 
         <div class="form-group">
             <label class="label-control">{{'Balance type' | translate}}</label>
-            <dev-tag-dropdownlist
-                    name="balanceType"
-                    k-option-label="{{'Select ...'|translate}}"
-                    k-data-value-field="key"
-                    k-data-text-field="display"
-                    k-value-primitive="true"
-                    k-data-source="accountBalanceType"
+
+            <select name="balanceType"
                     ng-model="generalLedgerAccount.balanceType"
-                    required></dev-tag-dropdownlist>
+                    ng-options="p.key as p.display for p in accountBalanceType.data"
+                    class="form-control">
+                <option value="">{{'Select ...'|translate}}</option>
+            </select>
 
             <div ng-messages="form.balanceType.$error" ng-if="form.balanceType.$dirty">
                 <label ng-message="required" class="error">{{'This field is required'|translate}}</label>

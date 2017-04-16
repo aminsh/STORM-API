@@ -47,6 +47,7 @@ $dir: rtl;
 @import "grid";
 @import "loader";
 @import "pace.override";
+@import "sk-loading";
 
 @import "../journal/journalLine-style";
 
@@ -1256,6 +1257,11 @@ label.error{
   top: 3px;
   position: relative;
   color: black;
+}
+
+.form-control-dropdown-paging {
+  width: inherit;
+  display: initial;
 }
 
 

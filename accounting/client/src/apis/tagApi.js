@@ -5,6 +5,10 @@ export default class {
         this.apiPromise = apiPromise;
     }
 
+    getAll(){
+        return this.apiPromise.get(this.urlPrefix);
+    }
+
     create(data){
         return this.apiPromise.post(this.urlPrefix, data);
     }

@@ -24,7 +24,6 @@ import './controllers/subsidiaryLedgerAccountsController';
 import './controllers/detailAccountsController';
 import './controllers/dimensionsController';
 import './controllers/journalsController';
-import './controllers/journalUpdateController';
 import './controllers/chequeCategoriesController';
 import './controllers/banksController';
 import './controllers/journalManagementController';
@@ -86,8 +85,8 @@ import './directives/button';
 import './directives/combobox';
 import './directives/content';
 import './directives/datepicker';
-import './directives/dropdownlist';
-import './directives/multiSelect';
+/*import './directives/dropdownlist';
+import './directives/multiSelect';*/
 import './directives/toolbar';
 import './directives/layout';
 import './directives/numeric';
@@ -132,6 +131,7 @@ import  currentService from './services/currentService';
 import $ModalFactory from './services/$modalFactory';
 import Promise from './services/promise';
 
+import './journal';
 
 accModule
     .config(uiRouteConfig)

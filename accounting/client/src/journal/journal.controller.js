@@ -1,14 +1,14 @@
-import accModule from '../acc.module';
 import Guid from 'guid';
 
 export default function journalUpdateController($scope, logger, translate, navigate, $stateParams, $rootScope, devConstants, $timeout,
-                                 journalApi, journalLineApi, subsidiaryLedgerAccountApi, dimensionCategoryApi, dimensionApi, detailAccountApi,
-                                 journalAttachImageService,
-                                 writeChequeOnJournalLineEntryService,
-                                 tagApi,
-                                 formService) {
+                                                journalApi, journalLineApi, subsidiaryLedgerAccountApi, dimensionCategoryApi, dimensionApi, detailAccountApi,
+                                                journalAttachImageService,
+                                                writeChequeOnJournalLineEntryService,
+                                                tagApi,
+                                                formService) {
 
     let id = $stateParams.id,
+        isNewJournal = $stateParams.id == null,
         columnConfig = {
             subsidiaryLedgerAccount: {
                 dataSource: [],
@@ -35,6 +35,7 @@ export default function journalUpdateController($scope, logger, translate, navig
 
 
     $scope.errors = [];
+    $scope.tags = [];
     $scope.journalLines = [];
     $scope.journal = {
         temporaryNumber: null,
@@ -53,40 +54,49 @@ export default function journalUpdateController($scope, logger, translate, navig
     fetch();
 
     function fetch() {
-        $scope.isJournalLineLoading = true;
+        $scope.$broadcast('grid-changed');
 
-        journalApi.getById(id)
-            .then(result => {
-                $scope.journal = result;
-                $scope.journalLines = result.journalLines;
-            })
-            .finally(() => $scope.isJournalLineLoading = false);
+        if (!isNewJournal){
+            $scope.isJournalLineLoading = true;
+
+            journalApi.getById(id)
+                .then(result => {
+                    $scope.journal = result;
+                    $scope.journalLines = result.journalLines;
+                    $scope.$broadcast('grid-changed');
+                })
+                .finally(() => $scope.isJournalLineLoading = false);
+        }
 
         /*subsidiaryLedgerAccountApi.getAll()
-            .then(result => {
-                columnConfig.subsidiaryLedgerAccount.dataSource = result.data;
+         .then(result => {
+         columnConfig.subsidiaryLedgerAccount.dataSource = result.data;
 
-                journalLineApi.getAll(id)
-                    .then(result => {
-                        let subsidiaryLedgerAccounts = columnConfig.subsidiaryLedgerAccount.dataSource;
+         journalLineApi.getAll(id)
+         .then(result => {
+         let subsidiaryLedgerAccounts = columnConfig.subsidiaryLedgerAccount.dataSource;
 
-                        result.data.forEach(item => {
-                            let subsidiaryLedgerAccount = subsidiaryLedgerAccounts
-                                .asEnumerable()
-                                .single(s => s.id == item.subsidiaryLedgerAccountId);
+         result.data.forEach(item => {
+         let subsidiaryLedgerAccount = subsidiaryLedgerAccounts
+         .asEnumerable()
+         .single(s => s.id == item.subsidiaryLedgerAccountId);
 
-                            item.canShowDetailAccount = subsidiaryLedgerAccount.hasDetailAccount;
-                            item.canShowDimension1 = subsidiaryLedgerAccount.hasDimension1;
-                            item.canShowDimension2 = subsidiaryLedgerAccount.hasDimension2;
-                            item.canShowDimension3 = subsidiaryLedgerAccount.hasDimension3;
-                        });
+         item.canShowDetailAccount = subsidiaryLedgerAccount.hasDetailAccount;
+         item.canShowDimension1 = subsidiaryLedgerAccount.hasDimension1;
+         item.canShowDimension2 = subsidiaryLedgerAccount.hasDimension2;
+         item.canShowDimension3 = subsidiaryLedgerAccount.hasDimension3;
+         });
 
-                        $scope.journalLines = result.data;
-                        $scope.$emit('gird-changed');
-                    })
-                    .finally(() => $scope.isJournalLineLoading = false);
-            });
-*/
+         $scope.journalLines = result.data;
+         $scope.$emit('gird-changed');
+         })
+         .finally(() => $scope.isJournalLineLoading = false);
+         });
+         */
+
+        subsidiaryLedgerAccountApi.getAll()
+            .then(result => columnConfig.subsidiaryLedgerAccount.dataSource = result.data);
+
         detailAccountApi.getAll()
             .then(result => columnConfig.detailAccount.dataSource = result.data);
 
@@ -112,17 +122,28 @@ export default function journalUpdateController($scope, logger, translate, navig
 
         $scope.isSaving = true;
 
+        let cmd = Object.assign($scope.journal, {journalLines: $scope.journalLines});
+
+        if (isNewJournal)
+            return journalLineApi.create(cmd)
+                .then(result => {
+                    logger.success();
+                    $scope.journal.id = result.id;
+                })
+                .catch((errors) => $scope.errors = errors)
+                .finally(() => $scope.isSaving = false);
+
         journalApi.update(id, $scope.journal)
-            .then(() => {
-                logger.success();
-            })
+            .then(() => logger.success())
             .catch((errors) => $scope.errors = errors)
             .finally(() => $scope.isSaving = false);
     };
 
     $scope.createJournalLine = () => {
 
-        let maxRow = $scope.journalLines.asEnumerable().max(line => line.row) || 0,
+        let maxRow = $scope.journalLines.length == 0
+                ? 0
+                : $scope.journalLines.asEnumerable().max(line => line.row),
             newJournal = {
                 id: Guid.new(),
                 row: ++maxRow,
@@ -139,7 +160,10 @@ export default function journalUpdateController($scope, logger, translate, navig
 
         $scope.journalLines.unshift(newJournal);
 
-        $timeout(() => $scope.$broadcast(`subsidiaryLedgerAccount-focus-${newJournal.id}`));
+        $timeout(() => {
+            $scope.$broadcast(`subsidiaryLedgerAccount-focus-${newJournal.id}`);
+            $scope.$broadcast('grid-changed');
+        });
     };
 
     $scope.attachImage = () => {
@@ -150,7 +174,7 @@ export default function journalUpdateController($scope, logger, translate, navig
             });
     };
 
-    $scope.print = () => navigate('journalPrint', {id: id});//showReport(`/report/journal/${id}`);
+    $scope.print = () => navigate('journalPrint', {id: id});
 
     $scope.writeCheque = () => {
         $rootScope.blockUi.block();
@@ -177,8 +201,6 @@ export default function journalUpdateController($scope, logger, translate, navig
                     logger.error(translate('The current subsidiaryLedgerAccount is not bank account'));
                 }
             });
-
-
     };
 
     $scope.onSaveTag = value => {

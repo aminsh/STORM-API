@@ -36,12 +36,30 @@ accModule
             replace: true
         };
     })
-    .directive('devTagContentBody', function () {
+    .directive('devTagContentBody', function ($parse) {
         return {
             restrict: 'E',
             template: `<div class="ibox-content" ng-transclude></div>`,
             transclude: true,
-            replace: true
+            replace: true,
+            link(scope, element, attrs){
+                const waitingTags = `<div class="sk-spinner sk-spinner-wave">
+                                <div class="sk-rect1"></div>
+                                <div class="sk-rect2"></div>
+                                <div class="sk-rect3"></div>
+                                <div class="sk-rect4"></div>
+                                <div class="sk-rect5"></div>
+                            </div>`;
+
+                $(element).append(waitingTags);
+
+                scope.$watch(attrs.isLoading, newValue => {
+                   if(newValue)
+                       $(element).addClass('sk-loading');
+                   else
+                       $(element).removeClass('sk-loading');
+                });
+            }
         };
     })
     .directive('devTagContentFooter', function () {

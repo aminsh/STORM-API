@@ -6,22 +6,22 @@
             <th>#</th>
             <th style="width: 25%;text-align: center">{{'Detail account'|translate}}</th>
             <th style="width: 15%;text-align: center">{{'Account'|translate}}</th>
-            <th style="width: 40%;text-align: center">{{'Article'|translate}}</th>
+            <th style="width: 30%;text-align: center">{{'Article'|translate}}</th>
             <th style="width: 10%;text-align: center">{{'Debtor'|translate}}</th>
             <th style="width: 10%;text-align: center">{{'Creditor'|translate}}</th>
-            <th></th>
+            <th style="text-align: left;width: 120px"></th>
         </tr>
         </thead>
         <tbody>
         <tr name="form-{{$index}}"
             ng-form
             ng-repeat="item in journalLines"
-            ng-class-odd="'grid-row-striped'">
+            ng-class-odd="'grid-row-striped'"
+            style="height: 50px">
 
-            <td>{{item.row}}</td>
+            <td style="text-align: center">{{item.row}}</td>
             <td>
                 <dev-tag-combo-box
-                        focus-on="subsidiaryLedgerAccount-focus-{{item.id}}"
                         ng-if="item.canShowDetailAccount"
                         name="detailAccountId"
                         k-placeholder="{{'Select ...'|translate}}"
@@ -41,6 +41,7 @@
 
                 <dev-tag-combo-box
                         name="subsidiaryLedgerAccountId"
+                        focus-on="subsidiaryLedgerAccount-focus-{{item.id}}"
                         k-placeholder="{{'Select ...'|translate}}"
                         k-data-value-field="id"
                         k-data-text-field="account"
@@ -74,9 +75,15 @@
                         not-should-have-value-both="item.creditor"></dev-tag-numeric>
 
                 <div ng-messages="form['form-'+ $index].debtor.$error" ng-if="form['form-'+ $index].debtor.$dirty">
-                    <label ng-message="required" class="error">{{'This field is required'|translate}}</label>
-                    <label ng-message="notShouldBeZeroBoth" class="error">{{'Debtor and creditor are not allowed to be zero , both of them'|translate}}</label>
-                    <label ng-message="notShouldHaveValueBoth" class="error">{{'Debtor and creditor are not allowed to have value , both of them'|translate}}</label>
+                    <label ng-message="required" class="error">
+                        {{'This field is required'|translate}}
+                    </label>
+                    <label ng-message="notShouldBeZeroBoth" class="error">
+                        {{'Debtor and creditor are not allowed to be zero , both of them'|translate}}
+                    </label>
+                    <label ng-message="notShouldHaveValueBoth" class="error">
+                        {{'Debtor and creditor are not allowed to have value , both of them'|translate}}
+                    </label>
                 </div>
             </td>
             <td>
@@ -90,11 +97,15 @@
 
                 <div ng-messages="form['form-'+ $index].creditor.$error" ng-if="form['form-'+ $index].creditor.$dirty">
                     <label ng-message="required" class="error">{{'This field is required'|translate}}</label>
-                    <label ng-message="notShouldBeZeroBoth" class="error">{{'Debtor and creditor are not allowed to be zero , both of them'|translate}}</label>
-                    <label ng-message="notShouldHaveValueBoth" class="error">{{'Debtor and creditor are not allowed to have value , both of them'|translate}}</label>
+                    <label ng-message="notShouldBeZeroBoth" class="error">
+                        {{'Debtor and creditor are not allowed to be zero , both of them'|translate}}
+                    </label>
+                    <label ng-message="notShouldHaveValueBoth" class="error">
+                        {{'Debtor and creditor are not allowed to have value , both of them'|translate}}
+                    </label>
                 </div>
             </td>
-            <td style="text-align: left;width: 105px">
+            <td>
                 <button
                         ng-disabled="!(item.canShowDimension1 || item.canShowDimension2 || item.canShowDimension3)"
                         class="btn btn-outline "
@@ -133,8 +144,13 @@
         </tr>
 
         <tr>
-            <td></td>
-            <td></td>
+            <td colspan="2">
+                <dev-tag-button
+                        ng-click="createJournalLine()"
+                        icon="glyphicon glyphicon-plus"
+                        style-type="primary"
+                        title="{{'New Journal line' | translate}}"></dev-tag-button>
+            </td>
             <td></td>
             <td></td>
             <td colspan="2" style="text-align: center">{{journalLines | remainder | number}}</td>

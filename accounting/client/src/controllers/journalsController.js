@@ -6,8 +6,6 @@ function journalsController($scope, translate, journalApi, $state, logger,
                             journalsExtraFilterResolve) {
 
     $scope.searchParameters = false;
-    []
-
     $scope.gridOption = {
         name: 'journals',
         columns: [
