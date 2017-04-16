@@ -3,6 +3,7 @@ $dir: rtl;
 .btn-primary {
   @include button-variant($btn-success-color, $btn-success-bg, $btn-success-border);
 }
+
 // Success appears as green
 .btn-success {
   @include button-variant($btn-success-color, $btn-success-bg, $btn-success-border);
@@ -19,18 +20,18 @@ $dir: rtl;
   border-color: $primary-select-color;
 }
 
-.dropdown-menu>.active>a, .dropdown-menu>.active>a:hover, .dropdown-menu>.active>a:focus {
+.dropdown-menu > .active > a, .dropdown-menu > .active > a:hover, .dropdown-menu > .active > a:focus {
   color: #fff;
   text-decoration: none;
   outline: 0;
   background-color: $primary-select-color;
 }
 
-.label{
+.label {
   font-family: $font-family;
 }
 
-.dropdown-menu.shadow{
+.dropdown-menu.shadow {
   -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
   -moz-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
@@ -41,6 +42,7 @@ $dir: rtl;
   color: #000000;
 }
 
-.popover{
+.popover {
   max-width: 1000px;
 }
+
