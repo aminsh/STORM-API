@@ -16,6 +16,27 @@ module.exports = class JournalQuery extends BaseQuery {
         this.getTotalInfo = async(this.getTotalInfo);
     }
 
+    batchFindById(journalId) {
+        let knex = this.knex,
+        journalLines = knex.select('journalLines.*'
+            ,'subsidiaryLedgerAccounts.hasDetailAccount'
+            ,'subsidiaryLedgerAccounts.hasDimension1'
+            ,'subsidiaryLedgerAccounts.hasDimension2'
+            ,'subsidiaryLedgerAccounts.hasDimension3')
+            .from('journalLines')
+            .innerJoin('subsidiaryLedgerAccounts','subsidiaryLedgerAccounts.id','journalLines.subsidiaryLedgerAccountsId')
+            .where('journalLines.journalId', journalId)
+            .as('journalLinesWithDetail');
+
+        let journal = knex.select()
+            .form('journals')
+            .where('id', journalId);
+
+        journal.journalLines = journalLines;
+
+        return journal;
+    }
+
     getAll(fiscalPeriodId, parameters) {
         let knex = this.knex;
         let extra = (parameters.extra) ? parameters.extra.filter : undefined;
@@ -96,7 +117,7 @@ module.exports = class JournalQuery extends BaseQuery {
         return view(result);
     }
 
-    getByNumber(currentFiscalPeriodId, number){
+    getByNumber(currentFiscalPeriodId, number) {
         return this.knex.select('*').from('journals')
             .where('periodId', currentFiscalPeriodId)
             .where('temporaryNumber', number)

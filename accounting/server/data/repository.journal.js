@@ -113,7 +113,7 @@ class JournalRepository extends BaseRepository {
         let knex = this.knex;
 
         return new Promise((resolve, reject) => {
-            knex.transaction(async(function(trans) {
+            knex.transaction(async(function (trans) {
                 try {
                     let id = await(kex('journal')
                         .transaction(trans)
@@ -146,9 +146,9 @@ class JournalRepository extends BaseRepository {
                         .returning('id')
                         .insert(journal));
 
-                    await (knex('journalLines').tranacting(trx).insert(createJournalLines));
-                    await (knex('journalLines').tranacting(trx).update(updateJournalLine));
-                    await (knex('journalLines').transacting(trx)
+                    await(knex('journalLines').tranacting(trx).insert(createJournalLines));
+                    await(knex('journalLines').tranacting(trx).update(updateJournalLine));
+                    await(knex('journalLines').transacting(trx)
                         .whereIn('id', deleteJournalLine)
                         .del());
 
@@ -159,7 +159,7 @@ class JournalRepository extends BaseRepository {
                     trx.rollback();
                     reject(e);
                 }
-                 }))
+            }))
         });
     }
 }

@@ -4,11 +4,9 @@ const async = require('asyncawait/async'),
     JournalLineRepository = require('../data/repository.journalLine'),
     SubsidiaryLedgerAccountRepository = require('../data/repository.subsidiaryLedgerAccount'),
     FiscalPeriodRepository = require('../data/repository.fiscalPeriod'),
-    router = require('express').Router(),
     translate = require('../services/translateService');
 
-router.route('/journals')
-    .post(async((req, res) => {
+module.exports.Insert = async((req, res) => {
         let branchId = req.cookies['branch-id'],
             currentFiscalPeriodId = req.cookies['current-period'],
             currentFiscalPeriod = await(fiscalPeriodRepository.findById(currentFiscalPeriodId)),
@@ -118,10 +116,9 @@ router.route('/journals')
             returnValue: {id: jId}
         });
 
-    }));
+    });
 
-router.route('/journals/:id')
-    .put(async((req, res) => {
+module.exports.update =  async((req, res) => {
         let branchId = req.cookies['branch-id'],
             journalRepository = new JournalRepository(branchId),
             journalLineRepository = new JournalLineRepository(branchId),
@@ -213,9 +210,9 @@ router.route('/journals/:id')
 
         await(journalRepository.batchUpdate(createdLines, updatedLines, deletedLines, entity));
 
-    }))
+    });
 
-    .delete(async((rea, res) => {
+module.exports.delete = async((rea, res) => {
         let journalRepository = new JournalRepository(req.cookies['branch-id']),
             errors = [],
             cmd = req.body,
@@ -237,9 +234,7 @@ router.route('/journals/:id')
         await(journalRepository.remove(req.params.id));
 
         return res.json({isValid: true});
-    }));
+    });
 
-
-module.exports = router;
 
 
