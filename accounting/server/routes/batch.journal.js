@@ -13,7 +13,8 @@ module.exports.Insert = async((req, res) => {
             cmd = req.body,
             journalRepository = new JournalRepository(branchId),
             subsidiaryLedgerAccountRepository = new SubsidiaryLedgerAccountRepository(branchId),
-            errors = [];
+            errors = [],
+            temporaryNumber;
 
         if (cmd.temporaryNumber) {
             let checkExistsJournalByTemporaryNumber = await(journalRepository.findByTemporaryNumber(
