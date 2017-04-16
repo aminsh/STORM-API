@@ -12,7 +12,7 @@
     <meta name="currentUserImage" content="<%- currentUserImage %>">
 
     <base href="/">
-    <link href="/css/app.css" rel="stylesheet">
+    <link href="../../client/src/style/app.css" rel="stylesheet">
 </head>
 <shell>
     <div layout="column"
@@ -31,7 +31,7 @@
 <script src="/client/dist/app.bundle.js"></script>
 <script src="/client/dist/app.template.bundle.js"></script>
 
-<% if(env !== 'development') { %>
+<!--<% if(env !== 'development') { %>
 <script type="text/javascript">window.vasleSettings = {app_id: "xwiIitqQ"};</script>
 <script type="text/javascript"> !function () {
         function t() {
@@ -52,5 +52,5 @@
         }
     }();
 </script>
-<% } %>
+<% } %>-->
 </html>

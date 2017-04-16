@@ -30,6 +30,7 @@
     "angular-translate": "^2.15.1",
     "angular-ui-bootstrap": "^2.5.0",
     "angular-ui-router": "^0.4.2",
+    "angular-aria": "^1.6.4",
     "async": "^2.0.1",
     "asyncawait": "^1.0.6",
     "body-parser": "^1.10.0",
