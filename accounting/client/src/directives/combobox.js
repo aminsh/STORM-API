@@ -3,9 +3,6 @@ import angular from 'angular';
 
 function combo($parse) {
     return {
-        templateUrl: function (tElement, tAttrs) {
-            return '/global/dg-ui/dg-select' + ((angular.isDefined(tAttrs.multiple) ? '-multi' : '') + '.tpl.html');
-        },
         restrict: 'E',
         require: ['ngModel'],
         scope: true,
@@ -18,6 +15,9 @@ function combo($parse) {
 
             if (tAttrs.onChanged)
                 $('ui-select', tElement).attr('on-select', tAttrs.onChanged);
+
+            if(tAttrs.searchEnabled)
+                $('ui-select', tElement).attr('search-enabled', tAttrs.searchEnabled);
 
             if(tAttrs.focusOn)
                 $('ui-select', tElement).attr('focus-on', tAttrs.focusOn);
