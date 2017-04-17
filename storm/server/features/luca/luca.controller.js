@@ -28,4 +28,12 @@ router.route('/accounting-demo').get((req, res) => {
     }
 });
 
+router.route('/demo').get((req, res) => {
+    if (!req.isAuthenticated())
+        return res.redirect('/login');
+
+    res.cookie('branch-id', 'c3339d0d-b4f7-4c96-b5c2-2d4376ceb9ea');
+    return res.redirect('/acc');
+});
+
 module.exports = router;
