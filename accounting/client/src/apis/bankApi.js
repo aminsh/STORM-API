@@ -4,6 +4,9 @@ function bankApi(apiPromise) {
     var urlPrefix = '/acc/api';
 
     return {
+        getAll(){
+            return apiPromise.get(`${urlPrefix}/banks`);
+        },
         getById: function (id) {
             return apiPromise.get('{0}/banks/{1}'.format(urlPrefix, id));
         },

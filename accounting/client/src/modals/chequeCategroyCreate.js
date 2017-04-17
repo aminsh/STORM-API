@@ -1,17 +1,22 @@
 import accModule from '../acc.module';
 
-function chequeCategoryCreateModalController($scope, $uibModalInstance, formService, chequeCategoryApi, logger, devConstants) {
+function chequeCategoryCreateModalController($scope, $uibModalInstance, formService, chequeCategoryApi, logger, detailAccountApi, bankApi) {
     "use strict";
 
     $scope.errors = [];
+    $scope.detailAccountDataSource = [];
+    $scope.bankDataSource = [];
     $scope.chequeCategory = {
         bankId: '',
         detailAccountId: null,
         totalPages: null,
         firstPageNumber: null
     };
-
     $scope.isSaving = false;
+
+
+    init();
+
 
     $scope.save = function (form) {
         if (form.$invalid)
@@ -25,11 +30,11 @@ function chequeCategoryCreateModalController($scope, $uibModalInstance, formServ
                 logger.success();
                 $uibModalInstance.close(result);
             })
-            .catch((errors)=> $scope.errors = errors)
-            .finally(()=> $scope.isSaving = false);
+            .catch((errors) => $scope.errors = errors)
+            .finally(() => $scope.isSaving = false);
     };
 
-    $scope.lastPageNumber = ()=> {
+    $scope.lastPageNumber = () => {
         let model = $scope.chequeCategory;
 
         return (model.firstPageNumber && model.totalPages)
@@ -37,32 +42,11 @@ function chequeCategoryCreateModalController($scope, $uibModalInstance, formServ
             : null
     };
 
-    $scope.close = ()=> $uibModalInstance.dismiss();
+    $scope.close = () => $uibModalInstance.dismiss();
 
-    $scope.detailAccountDataSource = {
-        type: "json",
-        serverFiltering: true,
-        transport: {
-            read: {
-                url: devConstants.urls.detailAccount.all()
-            }
-        },
-        schema: {
-            data: 'data'
-        }
-    };
-
-    $scope.bankDataSource = {
-        type: 'json',
-        serverFiltering: true,
-        transport: {
-            read: {
-                url: devConstants.urls.bank.all()
-            }
-        },
-        schema: {
-            data: 'data'
-        }
+    function init() {
+        detailAccountApi.getAll().then(result => $scope.detailAccountDataSource = result.data);
+        bankApi.getAll().then(result => $scope.bankDataSource = result.data);
     }
 }
 
