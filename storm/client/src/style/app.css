@@ -205,7 +205,8 @@ body .btn {
 .product-box {
   text-align: center;
   padding: 30px;
-  background: rgba(255, 255, 255, 0.5);
+ /* background: rgba(255, 255, 255, 0.5);*/
+  color: white;
 }
 
 .md-card-image.team {
