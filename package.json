@@ -13,7 +13,7 @@
     "build": "gulp"
   },
   "engines": {
-    "node": "4.4.x"
+    "node": "6.10.x"
   },
   "dependencies": {
     "adm-dtp": "^1.2.0",
