@@ -8,7 +8,7 @@
   "homepage": "https://github.com/Foxandxss/angular-webpack-workflow",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "gulp --production && node .",
+    "start": "node .",
     "dev": "gulp && node . NODE_ENV=development --mode UNIT",
     "build": "gulp"
   },
