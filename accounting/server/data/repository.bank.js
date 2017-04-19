@@ -20,7 +20,7 @@ class BankRepository extends BaseRepository{
     create(entity) {
         let id = await(this.knex('banks')
             .returning('id')
-            .insert(entity));
+            .insert(entity))[0];
 
         entity.id = id;
         return entity;

@@ -19,7 +19,7 @@ class JournalTemplateRepository extends BaseRepository {
     create(entity) {
         entity.id = await(this.knex('journalTemplates')
             .returning('id')
-            .insert(entity));
+            .insert(entity))[0];
 
         return entity;
     }

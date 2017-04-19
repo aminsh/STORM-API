@@ -29,7 +29,7 @@ function generalLedgerAccountUpdateModalController($scope,
             return;
         }
 
-        $scope.errors.removeAll();
+        $scope.errors.asEnumerable().removeAll();
 
         $scope.isSaving = true;
 

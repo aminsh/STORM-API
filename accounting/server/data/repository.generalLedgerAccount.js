@@ -27,7 +27,7 @@ class GeneralLedgerAccountRepository extends BaseRepository {
             .where('code', code);
 
         if (notEqualId)
-            query.andWhere('id', '$ne', notEqualId);
+            query.andWhere('id', '!=', notEqualId);
 
         return query.first();
     }
@@ -35,7 +35,7 @@ class GeneralLedgerAccountRepository extends BaseRepository {
     create(entity) {
         entity.id = await(this.knex('generalLedgerAccounts')
             .returning('id')
-            .insert(entity));
+            .insert(entity))[0];
 
         return entity;
     }

@@ -118,7 +118,7 @@ class JournalRepository extends BaseRepository {
                     let id = await(kex('journal')
                         .transaction(trans)
                         .returning('id')
-                        .insert(journal));
+                        .insert(journal))[0];
 
                     await(knex('journalLines')
                         .insert(journalLines));

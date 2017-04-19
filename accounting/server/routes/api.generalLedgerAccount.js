@@ -5,7 +5,8 @@ const async = require('asyncawait/async'),
     string = require('../utilities/string'),
     router = require('express').Router(),
     GeneralLedgerAccountRepository = require('../data/repository.generalLedgerAccount'),
-    GeneralLedgerAccountQuery = require('../queries/query.generalLedgerAccount');
+    GeneralLedgerAccountQuery = require('../queries/query.generalLedgerAccount'),
+    translate = require('../services/translateService');
 
 router.route('/')
     .get(async((req, res) => {
@@ -66,12 +67,13 @@ router.route('/:id')
     .put(async((req, res) => {
         let generalLedgerAccountRepository = new GeneralLedgerAccountRepository(req.cookies['branch-id']),
             errors = [],
-            cmd = req.body;
+            cmd = req.body,
+            id = req.params.id;
 
         if (string.isNullOrEmpty(cmd.code))
             errors.push(translate('The code is required'));
         else {
-            var gla = await(generalLedgerAccountRepository.findByCode(cmd.code, cmd.id));
+            var gla = await(generalLedgerAccountRepository.findByCode(cmd.code, id));
 
             if (gla)
                 errors.push(translate('The code is duplicated'));
@@ -84,20 +86,22 @@ router.route('/:id')
                 errors.push(translate('The title should have at least 3 character'));
         }
 
-        return res.json({
-            isValid: !errors.asEnumerable().any(),
-            errors: errors
-        });
+        if (errors.asEnumerable().any())
+            return res.json({
+                isValid: false,
+                errors: errors
+            });
 
-        let generalLedgerAccount = await(generalLedgerAccountRepository.findById(cmd.id));
+        let entity = {
+            id,
+            title: cmd.title,
+            code: cmd.code,
+            postingType: cmd.postingType,
+            balanceType: cmd.balanceType,
+            description: cmd.description,
+        };
 
-        generalLedgerAccount.title = cmd.title;
-        generalLedgerAccount.code = cmd.code;
-        generalLedgerAccount.potingType = cmd.postingType;
-        generalLedgerAccount.balanceType = cmd.balanceType;
-        generalLedgerAccount.description = cmd.description;
-
-        await(generalLedgerAccountRepository.update(generalLedgerAccount));
+        await(generalLedgerAccountRepository.update(entity));
 
         return res.json({isValid: true});
     }))

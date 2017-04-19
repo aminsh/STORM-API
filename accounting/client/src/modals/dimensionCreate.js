@@ -18,7 +18,7 @@ function dimensionCreateModalController(data,
         if (form.$invalid)
             return formService.setDirty(form);
 
-        $scope.errors.removeAll();
+        $scope.errors.asEnumerable().removeAll();
 
         $scope.isSaving = true;
 

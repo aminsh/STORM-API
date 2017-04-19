@@ -30,7 +30,7 @@ class DimensionRepository extends BaseRepository {
     create(entity) {
         entity.id = await(this.knex('dimensions')
             .returning('id')
-            .insert(entity));
+            .insert(entity))[0];
 
         return entity;
     }

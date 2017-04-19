@@ -20,7 +20,7 @@ function dimensionUpdateModalController(data, $scope, $uibModalInstance, dimensi
         if (form.$invalid)
             return formService.setDirty(form);
 
-        $scope.errors.removeAll();
+        $scope.errors.asEnumerable().removeAll();
 
         $scope.isSaving = true;
 

@@ -96,15 +96,16 @@ router.route('/:id')
                 errors: errors
             });
 
-        let entity = await(subsidiaryLedgerAccountRepository.findById(cmd.id));
-
-        entity.code = cmd.code;
-        entity.title = cmd.title;
-        entity.isBankAccount = cmd.isBankAccount;
-        entity.detailAccountAssignmentStatus = cmd.detailAccountAssignmentStatus;
-        entity.dimension1AssignmentStatus = cmd.dimension1AssignmentStatus;
-        entity.dimension2AssignmentStatus = cmd.dimension2AssignmentStatus;
-        entity.dimension3AssignmentStatus = cmd.dimension3AssignmentStatus;
+        let entity = {
+            id,
+            code: cmd.code,
+            title: cmd.title,
+            isBankAccount: cmd.isBankAccount,
+            detailAccountAssignmentStatus: cmd.detailAccountAssignmentStatus,
+            dimension1AssignmentStatus: cmd.dimension1AssignmentStatus,
+            dimension2AssignmentStatus: cmd.dimension2AssignmentStatus,
+            dimension3AssignmentStatus: cmd.dimension3AssignmentStatus
+        };
 
         await(subsidiaryLedgerAccountRepository.update(entity));
 

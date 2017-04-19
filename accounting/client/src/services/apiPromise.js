@@ -6,7 +6,9 @@ function apiPromise($http, $q) {
         var deferred = $q.defer();
 
         $httpPromise
-            .then(function (result) {
+            .then(function (data) {
+                let result = data.data;
+
                 if (result.isValid) {
                     deferred.resolve(result.returnValue);
                 }

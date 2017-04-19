@@ -16,7 +16,7 @@ function detailAccountCreateModalController($scope, $uibModalInstance, formServi
         if (form.$invalid)
             return formService.setDirty(form);
 
-        $scope.errors.removeAll();
+        $scope.errors.asEnumerable().removeAll();
 
         $scope.isSaving = true;
 
