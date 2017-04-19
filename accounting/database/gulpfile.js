@@ -18,11 +18,12 @@ const gulp = require('gulp'),
     },
     argv = require('yargs').argv,
     fs = require('fs'),
-    mssql = require('./convert/connection/mssql'),
+    //mssql = require('./convert/connection/mssql'),
     convertConfig = require('./convert/config.json'),
     async = require('asyncawait/async'),
     await = require('asyncawait/await'),
-    data = require('./convert/models/data');
+    data = require('./convert/models/data'),
+    pg = require('pg');
 
 gulp.task('make-migrate', () => {
     let filename = (argv.filename)
@@ -58,10 +59,10 @@ gulp.task('migrate-latest', () => {
         });
 });
 
-gulp.task('migrate-rollback', ()=> {
+gulp.task('migrate-rollback', () => {
     knex.migrate.rollback(options)
-        .then(()=> process.exit())
-        .catch((err)=> {
+        .then(() => process.exit())
+        .catch((err) => {
             Util.log(Util.colors.red(err));
             process.exit();
         });
@@ -90,8 +91,8 @@ gulp.task('make-seed', () => {
         });
 });
 
-gulp.task('run-seed', ()=> {
-    knex.seed.run().then(()=> {
+gulp.task('run-seed', () => {
+    knex.seed.run().then(() => {
         Util.log(Util.colors.green('seed ran successfully'));
         process.exit();
     });
@@ -126,4 +127,53 @@ gulp.task('make-json-converted', async(() => {
             process.exit();
         });
 }));
+
+gulp.task('rest-primary-key', () => {
+    const config = {
+            user: 'khdntotyvarety',
+            password: '41cb005a1d3e157843239557043d5d7fcd992728b579f89ddea8cd1f986bf82e',
+            host: 'ec2-54-235-247-224.compute-1.amazonaws.com',
+            port: '5432',
+            database: 'd6ep66drpevbhr',
+            ssl: true
+        }/*{
+            user: 'postgres',
+            password: 'P@ssw0rd',
+            host: 'localhost',
+            port: '5432',
+            database: 'dbAccFRK',
+            ssl: true
+        }*/,
+        tables = [
+            'banks',
+            'chequeCategories',
+            'cheques',
+            'detailAccounts',
+            'dimensions',
+            'fiscalPeriods',
+            'generalLedgerAccounts',
+            'journalLines',
+            'journalTemplates',
+            'journals',
+            'subsidiaryLedgerAccounts',
+            'tags'
+        ],
+        pool = new pg.Pool(config);
+
+    pool.connect((err, client, done) => {
+        let command = tables.asEnumerable()
+            .select(t=> `SELECT setval('"${t}_id_seq"', (SELECT MAX(id) FROM "${t}")+1);`)
+            .toArray()
+            .join(';');
+
+        client.query(command, function (err, result) {
+            if(err)
+                Util.log(Util.colors.red(err.message));
+
+            Util.log(Util.colors.green('command ran successfully'));
+            process.exit();
+        });
+    });
+
+});
 
