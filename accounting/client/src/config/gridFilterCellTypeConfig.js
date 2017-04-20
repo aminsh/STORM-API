@@ -1,7 +1,9 @@
 import accModule from '../acc.module';
 import devConstants from '../localData/devConstants';
 
-accModule.config(function (gridFilterCellTypeProvider) {
+accModule.config(function (gridFilterCellTypeProvider,
+                           detailAccountApiProvider,
+                           bankApiProvider) {
 
     let postingType = {
         data: devConstants.enums.AccountPostingType().data,
@@ -90,7 +92,7 @@ accModule.config(function (gridFilterCellTypeProvider) {
                k-data-source="dataSource"
                ng-model="filter.value"></dev-tag-combo-box>
             </li>`,
-        style:{width: '300px'}
+        style: {width: '300px'}
     };
 
     let subsidiaryLedgerAccount = {
@@ -114,22 +116,11 @@ accModule.config(function (gridFilterCellTypeProvider) {
                k-data-source="dataSource"
                ng-model="filter.value"></dev-tag-combo-box>
             </li>`,
-        style:{width: '300px'}
+        style: {width: '300px'}
     };
 
     let detailAccount = {
-        dataSource: {
-            type: "json",
-            serverFiltering: true,
-            transport: {
-                read: {
-                    url: devConstants.urls.detailAccount.all()
-                }
-            },
-            schema: {
-                data: 'data'
-            }
-        },
+        dataSource: detailAccountApiProvider.$get().getAll,
         template: `<li>
                <dev-tag-combo-box
                k-placeholder="{{'Select' | translate}}"
@@ -138,22 +129,11 @@ accModule.config(function (gridFilterCellTypeProvider) {
                k-data-source="dataSource"
                ng-model="filter.value"></dev-tag-combo-box>
             </li>`,
-        style:{width: '300px'}
+        style: {width: '300px'}
     };
 
     let bank = {
-        dataSource: {
-            type: "json",
-            serverFiltering: true,
-            transport: {
-                read: {
-                    url: devConstants.urls.bank.all()
-                }
-            },
-            schema: {
-                data: 'data'
-            }
-        },
+        dataSource: bankApiProvider.$get().getAll,
         template: `<li>
                <dev-tag-combo-box
                k-placeholder="{{'Select' | translate}}"
@@ -169,7 +149,7 @@ accModule.config(function (gridFilterCellTypeProvider) {
         postingType: postingType,
         balanceType: balanceType,
         activeType: activeType,
-        bank:bank,
+        bank: bank,
         generalLedgerAccount: generalLedgerAccount,
         subsidiaryLedgerAccount: subsidiaryLedgerAccount,
         detailAccount: detailAccount,
