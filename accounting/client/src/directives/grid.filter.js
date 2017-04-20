@@ -1,3 +1,5 @@
+let dataSource = {};
+
 export default function (gridFilterCellType) {
     return {
         templateUrl: 'partials/templates/grid-filter-template.html',
@@ -38,8 +40,11 @@ export default function (gridFilterCellType) {
             let cellType = gridFilterCellType[scope.column.type];
             scope.template = cellType.template + baseTemplate;
             scope.items = cellType.data;
-            scope.dataSource = cellType.dataSource;
+            scope.dataSource = dataSource[scope.column.type] || [];
             scope.dropdownStyle = cellType.style;
+
+            if(cellType.dataSource && !dataSource[scope.column.type])
+                cellType.dataSource().then(result => scope.dataSource = dataSource[scope.column.type] = result.data);
 
             if (scope.column.type == 'string')
                 scope.filter.operator = 'contains';
