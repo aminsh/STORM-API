@@ -1,19 +1,28 @@
 import accModule from '../acc.module';
 
-function chequeCategoryUpdateModalController($scope, $uibModalInstance, formService, chequeCategoryApi, logger, data, devConstants) {
-    "use strict";
+function chequeCategoryUpdateModalController($scope,
+                                             $q,
+                                             $uibModalInstance,
+                                             formService,
+                                             chequeCategoryApi,
+                                             logger,
+                                             data,
+                                             detailAccountApi,
+                                             bankApi) {
 
     let id = data.id;
     $scope.errors = [];
+    $scope.detailAccountDataSource = [];
+    $scope.bankDataSource = [];
     $scope.chequeCategory = {
         bankId: '',
         detailAccountId: null,
         totalPages: null,
         firstPageNumber: null
-    }
+    };
 
-    chequeCategoryApi.getById(id)
-        .then((result)=> $scope.chequeCategory = result);
+    init();
+
 
     $scope.isSaving = false;
 
@@ -25,16 +34,16 @@ function chequeCategoryUpdateModalController($scope, $uibModalInstance, formServ
 
         $scope.isSaving = true;
 
-        chequeCategoryApi.update($scope.chequeCategory)
+        chequeCategoryApi.update(id,$scope.chequeCategory)
             .then(function (result) {
                 logger.success();
                 $uibModalInstance.close(result);
             })
-            .catch((errors)=> $scope.errors = errors)
-            .finally(()=> $scope.isSaving = false);
+            .catch((errors) => $scope.errors = errors)
+            .finally(() => $scope.isSaving = false);
     };
 
-    $scope.lastPageNumber = ()=> {
+    $scope.lastPageNumber = () => {
         let model = $scope.chequeCategory;
 
         return (model.firstPageNumber && model.totalPages)
@@ -42,32 +51,17 @@ function chequeCategoryUpdateModalController($scope, $uibModalInstance, formServ
             : null
     };
 
-    $scope.close = ()=> $uibModalInstance.dismiss();
+    $scope.close = () => $uibModalInstance.dismiss();
 
-    $scope.detailAccountDataSource = {
-        type: "json",
-        serverFiltering: true,
-        transport: {
-            read: {
-                url: devConstants.urls.detailAccount.all()
-            }
-        },
-        schema: {
-            data: 'data'
-        }
-    };
+    function init() {
+        $q.all([detailAccountApi.getAll(), bankApi.getAll()])
+            .then(result => {
+                $scope.detailAccountDataSource = result[0].data;
+                $scope.bankDataSource = result[1].data;
 
-    $scope.bankDataSource = {
-        type: 'json',
-        serverFiltering: true,
-        transport: {
-            read: {
-                url: devConstants.urls.bank.all()
-            }
-        },
-        schema: {
-            data: 'data'
-        }
+                chequeCategoryApi.getById(id)
+                    .then(result => $scope.chequeCategory = result);
+            });
     }
 }
 

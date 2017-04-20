@@ -1,8 +1,7 @@
 import accModule from '../acc.module';
 
 function chequeCategoriesController($scope, logger, chequeCategoryApi, confirm, devConstants, translate, navigate,$state,
-                                    chequeCategoryCreateModalService,
-                                    chequeCategoryUpdateModalService) {
+                                    $q) {
     $scope.gridOption = {
         columns: [
             {name: 'bankId', title: translate('Bank'), width: '20%', type: 'bank', template: '{{item.bank}}'},
@@ -78,13 +77,7 @@ function chequeCategoriesController($scope, logger, chequeCategoryApi, confirm, 
         $scope.chequeGridOption.readUrl = devConstants.urls.cheque.all(current.id);
     };
 
-    $scope.create = () => {
-        chequeCategoryCreateModalService.show()
-            .then(() => {
-                logger.success();
-                $scope.gridOption.refresh();
-            });
-    }
+
 }
 
 accModule.controller('chequeCategoriesController', chequeCategoriesController);

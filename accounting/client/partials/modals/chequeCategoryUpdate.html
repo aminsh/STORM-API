@@ -13,7 +13,7 @@
             <label class="label-control">{{'Bank' | translate}}</label>
             <dev-tag-combo-box
                     name="bankId"
-                    k-placeholder="'{{'Select ...'|translate}}'"
+                    k-placeholder="{{'Select ...'|translate}}"
                     k-data-value-field="id"
                     k-data-text-field="title"
                     k-data-source="bankDataSource"
@@ -28,7 +28,7 @@
             <label class="label-control">{{'Detail account' | translate}}</label>
             <dev-tag-combo-box
                     name="detailAccountId"
-                    k-placeholder="'{{'Select ...'|translate}}'"
+                    k-placeholder="{{'Select ...'|translate}}"
                     k-data-value-field="id"
                     k-data-text-field="display"
                     k-data-source="detailAccountDataSource"
@@ -48,13 +48,13 @@
                     required
                     not-zero></dev-tag-numeric>
 
-            <div ng-messages="form.firstNumber.$error" ng-if="form.firstNumber.$dirty">
+            <div ng-messages="form.firstPageNumber.$error" ng-if="form.firstPageNumber.$dirty">
                 <label ng-message="required" class="error">{{'This field is required'|translate}}</label>
                 <label ng-message="notZero" class="error">{{'This field should have a value not equal to zero'|translate}}</label>
             </div>
         </div>
         <div class="form-group">
-            <h4>{{'Last page number'|translate}} : {{lastPageNumber()}}</h4>
+            <h4>{{'Last page number' | translate}} : {{lastPageNumber()}}</h4>
         </div>
 
         <div class="form-group">
@@ -80,6 +80,5 @@
             ng-disabled="isSaving"
             is-waiting="isSaving"
             style-type="primary"
-            title="{{'Save' | translate}}"
-            ng-disabled="form.$invalid"></dev-tag-button>
+            title="{{'Save' | translate}}"></dev-tag-button>
 </div>

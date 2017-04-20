@@ -1,7 +1,13 @@
 import accModule from '../acc.module';
 
-function chequeCategoryCreateModalController($scope, $uibModalInstance, formService, chequeCategoryApi, logger, detailAccountApi, bankApi) {
-    "use strict";
+function chequeCategoryCreateModalController(
+    $scope,
+    $uibModalInstance,
+    formService,
+    chequeCategoryApi,
+    logger,
+    detailAccountApi,
+    bankApi) {
 
     $scope.errors = [];
     $scope.detailAccountDataSource = [];
