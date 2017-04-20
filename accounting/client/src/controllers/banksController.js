@@ -25,7 +25,7 @@ function banksController($scope, logger, confirm, bankApi, translate, devConstan
             },
             {
                 title: translate('Remove'),
-                icon: 'fa fa-trash',
+                icon: 'fa fa-trash text-danger',
                 canShow: current => !current.isEditing,
                 action: function (current) {
                     confirm(

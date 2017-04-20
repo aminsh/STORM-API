@@ -68,7 +68,7 @@ router.route('/:id')
             errors = [],
             cmd = req.body;
 
-        if (errors.errors.asEnumerable().any())
+        if (errors.asEnumerable().any())
             return res.json({
                 isValid: !errors.asEnumerable().any(),
                 errors: errors
