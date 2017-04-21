@@ -12,14 +12,15 @@
     <meta name="currentUserImage" content="<%- currentUserImage %>">
 
     <base href="/">
-    <link href="../../client/src/style/app.css" rel="stylesheet">
+    <link href="/public/css/storm.min.css" rel="stylesheet">
 </head>
+<body>
 <shell>
     <div layout="column"
          layout-fill=""
          layout-align="center center"
          class="layout-fill layout-align-center-center layout-column">
-        <img src="./img/storm-logo.png" style="width: 320px;height: 150px">
+        <img src="/public/imagesstorm-logo.png" style="width: 320px;height: 150px">
 
         <div class="md-preloader">
             <svg xmlns="http://www.w3.org/2000/svg" version="1.1" height="75" width="75" viewbox="0 0 75 75">
@@ -28,8 +29,9 @@
         </div>
     </div>
 </shell>
-<script src="/client/dist/app.bundle.js"></script>
-<script src="/client/dist/app.template.bundle.js"></script>
+</body>
+<script src="/public/js/storm.bundle.min.js"></script>
+<script src="/public/js/storm.template.bundle.js"></script>
 
 <% if(env !== 'development') { %>
 <script type="text/javascript">window.vasleSettings = {app_id: "xwiIitqQ"};</script>
