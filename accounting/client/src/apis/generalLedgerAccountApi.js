@@ -9,6 +9,9 @@ function generalLedgerAccountApi(apiPromise) {
             getAllActive: '{0}/general-ledger-accounts/active'
                 .format(urlPrefix)
         },
+        getAll(){
+            return apiPromise.get(`${urlPrefix}/general-ledger-accounts`);
+        },
         getById: function (id) {
             return apiPromise.get('{0}/general-ledger-accounts/{1}'
                 .format(urlPrefix, id));
