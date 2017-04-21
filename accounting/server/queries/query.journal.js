@@ -14,23 +14,24 @@ module.exports = class JournalQuery extends BaseQuery {
         this.getGroupedByMouth = async(this.getGroupedByMouth);
         this.getById = async(this.getById);
         this.getTotalInfo = async(this.getTotalInfo);
+        this.batchFindById = async(this.batchFindById)
     }
 
     batchFindById(journalId) {
         let knex = this.knex,
-        journalLines = knex.select('journalLines.*'
-            ,'subsidiaryLedgerAccounts.hasDetailAccount'
-            ,'subsidiaryLedgerAccounts.hasDimension1'
-            ,'subsidiaryLedgerAccounts.hasDimension2'
-            ,'subsidiaryLedgerAccounts.hasDimension3')
-            .from('journalLines')
-            .innerJoin('subsidiaryLedgerAccounts','subsidiaryLedgerAccounts.id','journalLines.subsidiaryLedgerAccountsId')
-            .where('journalLines.journalId', journalId)
-            .as('journalLinesWithDetail');
-
-        let journal = knex.select()
-            .form('journals')
-            .where('id', journalId);
+            journalLines = await(knex.select('journalLines.*'
+                , 'subsidiaryLedgerAccounts.hasDetailAccount'
+                , 'subsidiaryLedgerAccounts.hasDimension1'
+                , 'subsidiaryLedgerAccounts.hasDimension2'
+                , 'subsidiaryLedgerAccounts.hasDimension3')
+                .from('journalLines')
+                .innerJoin('subsidiaryLedgerAccounts', 'subsidiaryLedgerAccounts.id', 'journalLines.subsidiaryLedgerAccountId')
+                .where('journalLines.journalId', journalId)
+                .as('journalLinesWithDetail')),
+            journal = await(knex.select()
+                .from('journals')
+                .where('id', journalId)
+                .first());
 
         journal.journalLines = journalLines;
 
