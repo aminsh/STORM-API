@@ -26,30 +26,13 @@ export default class AboutUSController {
                 linkedin: ''
             },
             {
-                name: 'پیمان زهره وندی',
-                img: '/img/persons/Peyman_zohrevandi.jpg',
-                position: 'طراح رابط کاربری',
-                degree: ' مهندسی نرم افزار',
-                desc: '6سال سابقه ی طراحی و پیاده سازی رابط کاربر',
-                linkedin: ''
-            },
-            {
                 name: 'آذین امینی',
                 img: '/img/persons/Azin_Amini.jpg',
                 position: 'کارشناس تست نرم افزار',
                 degree: 'مهندسی شیمی',
                 desc: 'با سابقه ی تدریس و کمک حسابداری در شرکت مالی و حسابداری',
                 linkedin: ''
-            },
-
-            /*{
-             name: 'هما مقیاسی',
-             img: '/img/persons/Homa_Meghyasi1.jpg',
-             position: 'کارشناس مارکتینگ',
-             degree: 'مهندسی نرم افزار',
-             desc: 'با سابقه ی مشاوره در زمینه مارکتینگ در شرکت ایرانسل به مدت 4 سال می باشد.',
-             linkedin: ''
-             },*/
+            }
         ]
     }
 }
