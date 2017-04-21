@@ -42,11 +42,17 @@ function combo($parse) {
 
             return function link(scope, element, attrs, ctrls) {
                 scope.ngModel = ctrls[0];
+                scope.disabled = false;
+
                 scope.isMultiple = angular.isDefined(attrs.multiple);
                 scope.itemsGetter = $parse(attrs.kDataSource);
                 if (angular.isDefined(attrs.kDataValueField) && attrs.kDataValueField !== '') {
                     scope.valuePropGetter = $parse(attrs.kDataValueField);
                 }
+
+                scope.$watch(attrs.ngDisabled, newValue => {
+                   scope.disabled = newValue;
+                });
 
                 scope.getValueMapper = function (itemObject) {
                     return scope.valuePropGetter ? scope.valuePropGetter(itemObject) : itemObject;
