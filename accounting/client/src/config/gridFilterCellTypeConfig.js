@@ -3,7 +3,9 @@ import devConstants from '../localData/devConstants';
 
 accModule.config(function (gridFilterCellTypeProvider,
                            detailAccountApiProvider,
-                           bankApiProvider) {
+                           bankApiProvider,
+                           generalLedgerAccountApiProvider,
+                           subsidiaryLedgerAccountApiProvider) {
 
     let postingType = {
         data: devConstants.enums.AccountPostingType().data,
@@ -72,18 +74,7 @@ accModule.config(function (gridFilterCellTypeProvider,
     };
 
     let generalLedgerAccount = {
-        dataSource: {
-            type: "json",
-            serverFiltering: true,
-            transport: {
-                read: {
-                    url: devConstants.urls.generalLedgerAccount.all()
-                }
-            },
-            schema: {
-                data: 'data'
-            }
-        },
+        dataSource: generalLedgerAccountApiProvider.$get().getAll,
         template: `<li>
                <dev-tag-combo-box
                k-placeholder="{{'Select' | translate}}"
@@ -96,18 +87,7 @@ accModule.config(function (gridFilterCellTypeProvider,
     };
 
     let subsidiaryLedgerAccount = {
-        dataSource: {
-            type: "json",
-            serverFiltering: true,
-            transport: {
-                read: {
-                    url: devConstants.urls.subsidiaryLedgerAccount.all()
-                }
-            },
-            schema: {
-                data: 'data'
-            }
-        },
+        dataSource: subsidiaryLedgerAccountApiProvider.$get().getAll,
         template: `<li>
                <dev-tag-combo-box
                k-placeholder="{{'Select' | translate}}"
