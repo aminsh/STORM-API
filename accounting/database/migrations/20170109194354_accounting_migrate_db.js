@@ -125,8 +125,8 @@ exports.up = function(knex, Promise) {
             table.timestamp('updatedAt').defaultTo(knex.fn.now());
             table.increments('id').primary();
             table.integer('row');
-            table.float('debtor', 8);
-            table.float('creditor', 8);
+            table.float('debtor',8);
+            table.float('creditor',8);
             table.string('article');
         })
 

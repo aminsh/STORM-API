@@ -10,7 +10,10 @@ exports.up = function(knex, Promise) {
 
 exports.down = function(knex, Promise) {
     return knex.schema
-        .table('journalTags', table => {
+        .createTable('journalTags', table => {
+            table.timestamp('createdAt').defaultTo(knex.fn.now());
+            table.timestamp('updatedAt').defaultTo(knex.fn.now());
+            table.increments('id').primary();
             table.integer('journalId').unsigned();
             table
                 .foreign('journalId')

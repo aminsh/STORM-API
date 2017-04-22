@@ -11,12 +11,13 @@ export default class {
         return this.apiPromise.post(this.urlPrefix, data)
     }
 
-    generalLedgerAccounts() {
-        return this.apiPromise.get(`${this.urlPrefix}/general-ledger-accounts`);
+    generalLedgerAccounts(params) {
+        return this.apiPromise.get(`${this.urlPrefix}/general-ledger-accounts`,params);
     }
 
-    subsidiaryLedgerAccounts() {
-        let deferred = this.$q.defer();
+    subsidiaryLedgerAccounts(params) {
+        return this.apiPromise.get(`${this.urlPrefix}/subsidiary-ledger-accounts`,params);
+        /*let deferred = this.$q.defer();
 
         this.apiPromise.get(`${this.urlPrefix}/subsidiary-ledger-accounts`)
             .then(result => {
@@ -31,78 +32,78 @@ export default class {
 
                 deferred.resolve(result);
             });
-        return deferred.promise;
+        return deferred.promise;*/
     }
 
-    detailAccounts() {
-        return this.apiPromise.get(`${this.urlPrefix}/detail-accounts`);
+    detailAccounts(params) {
+        return this.apiPromise.get(`${this.urlPrefix}/detail-accounts`,params);
     }
 
-    generalBalance() {
-        return this.apiPromise.get(`${this.urlPrefix}/general-balance`);
+    generalBalance(params) {
+        return this.apiPromise.get(`${this.urlPrefix}/general-balance`,params);
     }
 
-    subsidiaryBalance() {
-        return this.apiPromise.get(`${this.urlPrefix}/subsidiary-balance`);
+    subsidiaryBalance(params) {
+        return this.apiPromise.get(`${this.urlPrefix}/subsidiary-balance`,params);
     }
 
-    subsidiaryDetailBalance() {
-        return this.apiPromise.get(`${this.urlPrefix}/subsidiary-detail-balance`);
+    subsidiaryDetailBalance(params) {
+        return this.apiPromise.get(`${this.urlPrefix}/subsidiary-detail-balance`,params);
     }
 
-    generalSubsidiaryDetailBalance() {
-        return this.apiPromise.get(`${this.urlPrefix}/general-subsidiary-detail-balance`);
+    generalSubsidiaryDetailBalance(params) {
+        return this.apiPromise.get(`${this.urlPrefix}/general-subsidiary-detail-balance`,params);
     }
 
-    journalOffice() {
-        return this.apiPromise.get(`${this.urlPrefix}/journal-office`);
+    journalOffice(params) {
+        return this.apiPromise.get(`${this.urlPrefix}/journal-office`,params);
     }
 
-    generalOffice() {
-        return this.apiPromise.get(`${this.urlPrefix}/general-office`);
+    generalOffice(params) {
+        return this.apiPromise.get(`${this.urlPrefix}/general-office`,params);
     }
 
-    subsidiaryOffice() {
-        return this.apiPromise.get(`${this.urlPrefix}/subsidiary-office`);
+    subsidiaryOffice(params) {
+        return this.apiPromise.get(`${this.urlPrefix}/subsidiary-office`,params);
     }
 
-    totalGeneralSubsidiaryTurnover() {
-        return this.apiPromise.get(`${this.urlPrefix}/total-general-subsidiary-turnover`);
+    totalGeneralSubsidiaryTurnover(params) {
+        return this.apiPromise.get(`${this.urlPrefix}/total-general-subsidiary-turnover`,params);
     }
 
-    totalSubsidiaryDetailTurnover() {
-        return this.apiPromise.get(`${this.urlPrefix}/total-subsidiary-detail-turnover`);
+    totalSubsidiaryDetailTurnover(params) {
+        return this.apiPromise.get(`${this.urlPrefix}/total-subsidiary-detail-turnover`,params);
     }
 
-    totalGeneralSubsidiaryDetailTurnover() {
-        return this.apiPromise.get(`${this.urlPrefix}/total-general-subsidiary-detail-turnover`);
+    totalGeneralSubsidiaryDetailTurnover(params) {
+        return this.apiPromise.get(`${this.urlPrefix}/total-general-subsidiary-detail-turnover`,params);
     }
 
-    detailGeneralSubsidiaryTurnover() {
-        return this.apiPromise.get(`${this.urlPrefix}/detail-general-subsidiary-turnover`);
+    detailGeneralSubsidiaryTurnover(params) {
+        return this.apiPromise.get(`${this.urlPrefix}/detail-general-subsidiary-turnover`,params);
     }
 
-    detailSubsidiaryDetailTurnover() {
-        return this.apiPromise.get(`${this.urlPrefix}/detail-subsidiary-detail-turnover`);
+    detailSubsidiaryDetailTurnover(params) {
+        return this.apiPromise.get(`${this.urlPrefix}/detail-subsidiary-detail-turnover`,params);
     }
 
-    detailGeneralSubsidiaryDetailTurnover() {
-        return this.apiPromise.get(`${this.urlPrefix}/detail-general-subsidiary-detail-turnover`);
+    detailGeneralSubsidiaryDetailTurnover(params) {
+        return this.apiPromise.get(`${this.urlPrefix}/detail-general-subsidiary-detail-turnover`,params);
     }
 
-    detailJournals() {
-        return this.apiPromise.get(`${this.urlPrefix}/detail-journal`);
+    detailJournals(params) {
+        return this.apiPromise.get(`${this.urlPrefix}/detail-journal`,params);
     }
 
-    detailGeneralJournal() {
-        return this.apiPromise.get(`${this.urlPrefix}/detail-general-journal`);
+    detailGeneralJournal(params) {
+        return this.apiPromise.get(`${this.urlPrefix}/detail-general-journal`,params);
     }
 
-    detailGeneralSubsidiaryJournal() {
-        return this.apiPromise.get(`${this.urlPrefix}/detail-general-subsidiary-journal`);
+    detailGeneralSubsidiaryJournal(params) {
+        return this.apiPromise.get(`${this.urlPrefix}/detail-general-subsidiary-journal`,params);
     }
 
-    detailSubsidiaryDetailJournal() {
-        return this.apiPromise.get(`${this.urlPrefix}/detail-subsidiary-detail-journal`);
+    detailSubsidiaryDetailJournal(params) {
+        return this.apiPromise.get(`${this.urlPrefix}/detail-subsidiary-detail-journal`,params);
     }
 }

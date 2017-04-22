@@ -5,5 +5,5 @@ const mssql = require('mssql'),
     
 module.exports = mssql.Request;
 
-module.exports.connect = mssql.connect(config.url)
+module.exports.connect = mssql.connect(config.url);
 

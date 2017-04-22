@@ -29,10 +29,15 @@ module.exports = class ReportQueryAccounts extends BaseQuery {
             "generalLedgerAccounts".title as "generalTitle",
              CASE WHEN "generalLedgerAccounts".code ISNULL THEN "generalLedgerAccounts".title 
                 ELSE "generalLedgerAccounts".title||' ${translate('Code')} ' ||"generalLedgerAccounts".code END AS generalDisplay,
-            "subsidiaryLedgerAccounts"."detailAccountAssignmentStatus" as "detailAccount",
-            "subsidiaryLedgerAccounts"."dimension1AssignmentStatus" as "dimension1",
-            "subsidiaryLedgerAccounts"."dimension2AssignmentStatus" as "dimension2",
-            "subsidiaryLedgerAccounts"."dimension3AssignmentStatus" as "dimension3"
+                
+             CASE WHEN "subsidiaryLedgerAccounts"."hasDetailAccount" ='f' THEN '${translate('Do not Have')}' 
+                ELSE '${translate('Have')}' END AS "hasDetailAccount", 
+             CASE WHEN "subsidiaryLedgerAccounts"."hasDimension1" ='f' THEN '${translate('Do not Have')}' 
+                ELSE '${translate('Have')}' END AS "hasDimension1", 
+             CASE WHEN "subsidiaryLedgerAccounts"."hasDimension2" ='f' THEN '${translate('Do not Have')}' 
+                ELSE '${translate('Have')}' END AS "hasDimension2", 
+             CASE WHEN "subsidiaryLedgerAccounts"."hasDimension3" ='f' THEN '${translate('Do not Have')}' 
+                ELSE '${translate('Have')}' END AS "hasDimension3"
             `;
 
         return knex.select().from(function () {
