@@ -43,7 +43,7 @@ app.use(function (req, res, next) {
 });
 
 app.use(compression());
-app.set('views', config.rootPath + '/server/public');
+app.set('views', config.rootPath + '/server/views');
 app.engine('html', require('ejs').renderFile);
 app.use('/public', express.static(config.rootPath + '../public'));
 app.use('/client', express.static(config.rootPath + '/client'));

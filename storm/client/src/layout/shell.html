@@ -1,0 +1,229 @@
+<div class="shell-cover height">
+
+    <md-toolbar class="storm-toolbar">
+        <div class="md-toolbar-tools">
+
+            <md-button class="md-icon-button " aria-label="Settings" ng-click="openMenu()" hide-gt-xs>
+                <md-icon>menu</md-icon>
+            </md-button>
+
+            <span hide-xs>
+        <md-button ui-sref="login" aria-label="Go Back" ng-hide="logined" class="storm-toolbar-button">
+    ورود
+  </md-button>
+        <md-menu>
+            <md-button aria-label="Go Back"
+                       ng-click="$mdMenu.open($event);"
+                       ng-show="logined"
+                       class="storm-toolbar-button">
+
+            <img ng-src="{{currentUserImage}}"
+                 class="img-circle"
+                 onerror="this.src='/public/images/user.png'"
+                 style="width: 50px">
+
+            <span class="user-text">{{currentUser}}</span>
+
+  </md-button>
+
+            <md-menu-content width="4">
+
+                <md-menu-item>
+                    <md-button>
+                        پروفایل
+                    </md-button>
+                </md-menu-item>
+                 <md-menu-item>
+                    <md-button>
+                        تغییر رمز عبور
+                    </md-button>
+                </md-menu-item>
+
+                <md-menu-item>
+                  <md-button>
+                        <i class="fa fa-sign-out"></i>
+
+                    خروج
+                  </md-button>
+                </md-menu-item>
+            </md-menu-content>
+        </md-menu>
+
+         <md-button ui-sref="pricing({type: 'luca'})" aria-label="Go Back" class="storm-toolbar-button">
+   لیست قیمت
+  </md-button>
+
+        <md-button ui-sref="aboutus" aria-label="Go Back" class="storm-toolbar-button">
+  تیم ما
+  </md-button>
+        <md-button aria-label="Go Back" ui-sref="contactUs" class="storm-toolbar-button">
+    ارتباط با ما
+  </md-button>
+
+  </span>
+
+
+            <span flex></span>
+
+
+            <a ui-sref="home">
+                <img src="/img/storm.logo.white.png" class="brands-img">
+            </a>
+
+        </div>
+    </md-toolbar>
+
+    <ui-view></ui-view>
+
+    <md-sidenav class="md-sidenav-right" md-component-id="right"
+                md-whiteframe="4" flex="50">
+
+        <md-toolbar class="md-theme-indigo" layout-align="center center">
+            <md-menu>
+                <md-button aria-label="Go Back"
+                           ng-click="$mdMenu.open($event);"
+                           ng-show="logined">
+
+                    <img ng-src="{{currentUserImage}}"
+                         class="img-circle"
+                         onerror="this.src='/public/images/user.png'"
+                         style="width: 50px">
+
+                    <span class="user-text">{{currentUser}}</span>
+
+                </md-button>
+
+                <md-menu-content width="4">
+
+                    <md-menu-item>
+                        <md-button>
+                            پروفایل
+                        </md-button>
+                    </md-menu-item>
+                    <md-menu-item>
+                        <md-button>
+                            تغییر رمز عبور
+                        </md-button>
+                    </md-menu-item>
+
+                    <md-menu-item>
+                        <md-button>
+                            <i class="fa fa-sign-out"></i>
+
+                            خروج
+                        </md-button>
+                    </md-menu-item>
+                </md-menu-content>
+
+            </md-menu>
+
+        </md-toolbar>
+
+        <!--<md-subheader class="md-no-sticky introduction" style="height: 200px">
+
+        </md-subheader>-->
+        <md-content layout-margin>
+            <md-list flex>
+
+                <md-list-item ui-sref="aboutus" ng-click="toggleSidenav()">
+                    درباره ما
+                </md-list-item>
+                <md-list-item ui-sref="contactUs" ng-click="toggleSidenav()">
+                    ارتباط با ما
+                </md-list-item>
+                <md-list-item ui-sref="login" ng-click="toggleSidenav()">
+                    عضویت / ورود
+                </md-list-item>
+
+                <md-list-item ui-sref="pricing({type: 'luca'})" ng-click="toggleSidenav()">
+                    لیست قیمت لوکا
+                </md-list-item>
+
+            </md-list>
+        </md-content>
+
+    </md-sidenav>
+
+
+    <section ng-hide="noFooter"
+             class="shell-footer"
+             layout-padding layout-wrap
+             layout="row" layout-xs="column"
+             layout-align="center center">
+
+        <div flex="33" flex-xs="100" style="color: white;text-align: center">
+            <i class="fa fa-phone fa-2x" flex></i>
+
+            <md-button href="tel:02144292601" layout="vertical" layout-align="center center">
+                021-44292601
+            </md-button>
+            <md-button href="tel:09396408566" layout="vertical" layout-align="center center">
+                0939-6408566
+            </md-button>
+        </div>
+        <div flex="33" flex-xs="100" style="color: white;text-align: center">
+            <i class="fa fa-map-marker fa-2x"></i>
+
+            <div>
+                تهران - خ کارگر (امیرآباد) شمالی - دانشکده فنی دانشگاه تهران - ساختمان انستیتوی مهندسی نفت - طبقه 5
+            </div>
+        </div>
+        <div flex="33" flex-xs="100" style="color: white;text-align: center">
+            <i class="fa fa-envelope fa-2x" flex></i>
+
+            <md-button href="mailto:info@storm-online.ir" layout="vertical" layout-align="center center">
+                info@storm-online.ir
+            </md-button>
+        </div>
+
+
+        <!--<p style="text-align: left">
+            <md-button href="mailto:info@storm-online.ir" class="md-primary">info@storm-online.ir
+                <md-icon>email</md-icon>
+            </md-button>
+            <md-button href="tel:09396408566" class="md-primary">
+                0939-6408566
+                <md-icon>call</md-icon>
+            </md-button>
+            <md-button href="tel:02144292601" class="md-primary">
+                021-44292601
+                <md-icon>call</md-icon>
+            </md-button>
+            <md-button href="https://www.linkedin.com/company-beta/13263871/" class="md-primary">
+                <md-icon md-svg-src="/img/icons/linkedin.svg"></md-icon>
+            </md-button>
+
+        </p>
+        <p style="text-align: right;font-size: 12px">
+            تهران، صادقیه، خیابان سازمان آب، نرسیده به چهارراه اشرفی اصفهانی،
+            خیابان صباح، خیابان کوهدشت، پلاک ۱۲، واحد پنجم غربی
+        </p>-->
+
+
+        <!--<md-list flex=20>
+
+
+        </md-list>
+        <md-list flex=20 flex-sm=60>
+            <md-subheader class="md-no-sticky">منو</md-subheader>
+            <md-list-item>
+                <div class="md-list-item-text" ng-click="null">
+                    <p> محصولات </p>
+                </div>
+            </md-list-item>
+            <md-list-item>
+                <div class="md-list-item-text">
+                    <p> درباره‌ما </p>
+                </div>
+            </md-list-item>
+        </md-list>
+        </md-subheader>-->
+
+    </section>
+
+    <!--<footer ng-hide="noFooter" layout layout-margin layout-padding style="border-top: 1px solid rgba(0,0,0,0.4)">
+        <md-content layout-padding layout-wrap>
+            تمامی حقوق این سایت مربوط به ...
+        </md-content>
+    </footer>-->
+</div>

@@ -1,24 +1,15 @@
 import accModule from '../acc.module';
 
-function accountReviewController($scope, navigate, dimensionCategoryApi, devConstants, formService, translate) {
+function accountReviewController($scope,
+                                 navigate,
+                                 detailAccountApi,
+                                 dimensionCategoryApi,
+                                 dimensionApi,
+                                 formService,
+                                 translate,
+                                 $q) {
 
-    $scope.parameters = localStorage.getItem('account-review-state')
-        ? JSON.parse(localStorage.getItem('account-review-state'))
-        : {
-            minDate: '',
-            maxDate: '',
-            minNumber: null,
-            maxNumber: null,
-            notShowZeroRemainder: false,
-            isNotPeriodIncluded: false,
-            detailAccount: null,
-            dimension1: null,
-            dimension2: null,
-            dimension3: null,
-            filterByDetailAccountOrDimension: false,
-            detailAccountOrDimension: 'detailAccount'
-        };
-
+    $scope.parameters = [];
     $scope.reportTypes = [
         {key: 'tiny', display: translate('Tiny turnover journals')},
         {key: 'generalLedgerAccount', display: translate('Total turnover general ledger account')},
@@ -40,38 +31,13 @@ function accountReviewController($scope, navigate, dimensionCategoryApi, devCons
         {key: 'dimension3', display: translate('Dimension3')}
     ];
 
-    $scope.detailAccountDataSource = {
-        type: "json",
-        serverFiltering: true,
-        transport: {
-            read: {
-                url: devConstants.urls.detailAccount.all()
-            }
-        },
-        schema: {
-            data: 'data'
-        }
-    };
-
+    $scope.detailAccountDataSource = false;
     $scope.dimensionCategories = dimensionCategoryApi.getAllLookupSync().data;
-    $scope.dimension1DataSource = dimensionDataSourceFactory($scope.dimensionCategories[0].id);
-    $scope.dimension2DataSource = dimensionDataSourceFactory($scope.dimensionCategories[1].id);
-    $scope.dimension3DataSource = dimensionDataSourceFactory($scope.dimensionCategories[2].id);
+    $scope.dimension1DataSource = [];
+    $scope.dimension2DataSource = [];
+    $scope.dimension3DataSource = [];
 
-    function dimensionDataSourceFactory(categoryId) {
-        return {
-            type: "json",
-            serverFiltering: true,
-            transport: {
-                read: {
-                    url: devConstants.urls.dimension.allByCategory(categoryId)
-                }
-            },
-            schema: {
-                data: 'data'
-            }
-        };
-    }
+    init();
 
     function saveState() {
         let state = JSON.stringify($scope.parameters);
@@ -138,6 +104,44 @@ function accountReviewController($scope, navigate, dimensionCategoryApi, devCons
 
         navigate('accountReviewTurnover', {name: reportName}, params);
     };
+
+    function init() {
+
+        let dimensionPromise = $scope.dimensionCategories
+            .asEnumerable()
+            .select(c => dimensionApi.getByCategory(c.id))
+            .toArray();
+
+        $q.all([
+            detailAccountApi.getAll(),
+            dimensionApi,
+            dimensionPromise[0],
+            dimensionPromise[1],
+            dimensionPromise[2]])
+            .then(result => {
+                $scope.detailAccountDataSource = result[0].data;
+                $scope.dimension1DataSource = result[1].data;
+                $scope.dimension2DataSource = result[2].data;
+                $scope.dimension3DataSource = result[3].data;
+
+                $scope.parameters = localStorage.getItem('account-review-state')
+                    ? JSON.parse(localStorage.getItem('account-review-state'))
+                    : {
+                        minDate: '',
+                        maxDate: '',
+                        minNumber: null,
+                        maxNumber: null,
+                        notShowZeroRemainder: false,
+                        isNotPeriodIncluded: false,
+                        detailAccount: null,
+                        dimension1: null,
+                        dimension2: null,
+                        dimension3: null,
+                        filterByDetailAccountOrDimension: false,
+                        detailAccountOrDimension: 'detailAccount'
+                    };
+            });
+    }
 }
 
 accModule.controller('accountReviewController', accountReviewController);
