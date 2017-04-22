@@ -16,7 +16,8 @@ export default class {
     }
 
     subsidiaryLedgerAccounts() {
-        let deferred = this.$q.defer();
+        return this.apiPromise.get(`${this.urlPrefix}/subsidiary-ledger-accounts`)
+        /*let deferred = this.$q.defer();
 
         this.apiPromise.get(`${this.urlPrefix}/subsidiary-ledger-accounts`)
             .then(result => {
@@ -31,7 +32,7 @@ export default class {
 
                 deferred.resolve(result);
             });
-        return deferred.promise;
+        return deferred.promise;*/
     }
 
     detailAccounts() {

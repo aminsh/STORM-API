@@ -213,6 +213,8 @@
   "Filter Number": "فیلتر شماره",
   "Close report list": "بستن لیست گزارشات",
   "Report list": "لیست گزارشات",
+  "Have": "دارد",
+  "Do not Have": "ندارد",
 
   "Debtor and creditor are not allowed to be zero , both of them":"بدهکار و بستانکار هر دو نباید صفر باشد",
   "Debtor and creditor are not allowed to have value , both of them": "بدهکار و بستانکار نباید هر دو دارای مقدار باشد"
