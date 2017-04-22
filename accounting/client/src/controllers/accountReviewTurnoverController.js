@@ -1,7 +1,11 @@
 import accModule from '../acc.module';
 
-function accountReviewTurnoverController($scope, navigate, $routeParams, $location, translate,
-                                         dimensionCategoryApi,
+function accountReviewTurnoverController($scope,
+                                         $state,
+                                         navigate,
+                                         $stateParams,
+                                         $location,
+                                         translate,
                                          accountReviewTurnoverGridOptionService,
                                          showJournalDetailModalService) {
     let titles = {
@@ -14,7 +18,7 @@ function accountReviewTurnoverController($scope, navigate, $routeParams, $locati
         tiny: translate('Tiny turnover journals')
     };
 
-    let reportName = $scope.reportName = $routeParams.name;
+    let reportName = $scope.reportName = $stateParams.name;
     let parameters = $location.search();
 
     $scope.commands = [
@@ -53,13 +57,16 @@ function accountReviewTurnoverController($scope, navigate, $routeParams, $locati
             key: 'dimension3',
             display: translate('Dimension3')
         }
-    ];
+    ]
+        .asEnumerable()
+        .where(c => c.key != reportName)
+        .toArray();
 
-    $scope.title = titles[$routeParams.name];
+    $scope.title = titles[$stateParams.name];
 
     $scope.titleParameters = getTitleParameters();
 
-    $scope.gridOption = accountReviewTurnoverGridOptionService[$routeParams.name];
+    $scope.gridOption = accountReviewTurnoverGridOptionService[$stateParams.name];
     $scope.gridOption.extra = {filter: getParameters()};
     $scope.current = false;
 
@@ -71,7 +78,7 @@ function accountReviewTurnoverController($scope, navigate, $routeParams, $locati
         params[`${reportName}Id`] = $scope.current[`${reportName}Id`];
         params[`${reportName}Display`] = `${$scope.current[`${reportName}Code`]} ${$scope.current[`${reportName}Title`]}`;
 
-        navigate('accountReviewTurnover', {name: key}, params);
+        navigate('account-review-turnover', {name: key}, params);
     };
 
     $scope.onCurrentChanged = (current) => {
@@ -265,7 +272,7 @@ function accountReviewTurnoverGridOptionService(translate, devConstants) {
                 name: 'generalLedgerAccountCode',
                 title: translate('General ledger account'),
                 type: 'string',
-                width: '5%'
+                width: '7%'
             },
             {name: 'subsidiaryLedgerAccountTitle', title: translate('Title'), type: 'string', width: '28%'},
             ...amountColumns
@@ -375,19 +382,19 @@ function accountReviewTurnoverGridOptionService(translate, devConstants) {
             },
             {
                 name: 'dimension3Code',
-                //headerTemplate: kendo.template('${kendo.dimensionCategories[2].title}'),
+                title: translate('Dimension3'),
                 type: 'string',
                 width: '70px'
             },
             {
                 name: 'dimension2Code',
-                //headerTemplate: kendo.template('${kendo.dimensionCategories[1].title}'),
+                title: translate('Dimension2'),
                 type: 'string',
                 width: '70px'
             },
             {
                 name: 'dimension1Code',
-                //headerTemplate: kendo.template('${kendo.dimensionCategories[0].title}'),
+                title: translate('Dimension1'),
                 type: 'string',
                 width: '70px'
             },
@@ -414,7 +421,7 @@ function accountReviewTurnoverGridOptionService(translate, devConstants) {
                 title: translate('Debtor'),
                 type: 'number',
                 width: '15%',
-                format: '{0:#,##}',
+                template: '{{item.sumDebtor|number}}',
                 aggregates: ['sum'],
                 footerTemplate: '{{aggregates.sumDebtor.sum | number}}'
             },
@@ -423,13 +430,13 @@ function accountReviewTurnoverGridOptionService(translate, devConstants) {
                 title: translate('Creditor'),
                 type: 'number',
                 width: '15%',
-                format: '{0:#,##}',
+                template: '{{item.sumCreditor|number}}',
                 aggregates: ['sum'],
                 footerTemplate: '{{aggregates.sumCreditor.sum | number}}'
             },
             {
                 name: 'article', title: translate('Article'), type: 'string', width: '10%',
-                template: '<span title="${data.article}">${data.article}</span>'
+                template: '<span title="{{item.article}}">{{item.article}}</span>'
             },
         ],
         commands: [],

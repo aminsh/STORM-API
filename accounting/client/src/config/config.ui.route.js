@@ -183,7 +183,8 @@ export default function ($stateProvider, $urlRouterProvider, $locationProvider) 
             controller: 'accountReviewController',
             templateUrl: 'partials/views/accountReview.html'
         })
-        .state('/account-review/turnover/:name', {
+        .state('account-review-turnover', {
+            url: '/account-review/turnover/:name',
             controller: 'accountReviewTurnoverController',
             templateUrl: 'partials/views/accountReviewTurnover.html'
         })
