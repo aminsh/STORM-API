@@ -41,20 +41,68 @@
         "key": "200",
         "text": "ریز گردش کل - معین",
         "func": "detailGeneralSubsidiaryTurnover",
-        "fileName": "detailGeneralSubsidiaryTurnoverList"
+        "fileName": "detailGeneralSubsidiaryTurnoverList",
+        "params": [
+          {
+            "name": "date",
+            "required": "false"
+          },
+          {
+            "name": "number",
+            "required": "false"
+          },
+          {
+            "name": "generalLedgerAccount",
+            "required": "true"
+          },
+          {
+            "name": "subsidiaryLedgerAccount",
+            "required": "false"
+          }
+        ]
       },
       {
         "key": "201",
         "text": "ریز گردش معین - تفصیل",
         "func": "detailSubsidiaryDetailTurnover",
-        "fileName": "detailSubsidiaryDetailTurnoverList"
+        "fileName": "detailSubsidiaryDetailTurnoverList",
+        "params": [
+          {
+            "name": "date",
+            "required": "false"
+          },
+          {
+            "name": "number",
+            "required": "false"
+          },
+          {
+            "name": "subsidiaryLedgerAccount",
+            "required": "true"
+          }
+        ]
       },
       {
         "key": "202",
         "text": "ریز گردش کل - معین - تفضیل",
         "func": "detailGeneralSubsidiaryDetailTurnover",
-        "fileName": "detailGeneralSubsidiaryDetailTurnoverList"
-      }
+        "fileName": "detailGeneralSubsidiaryDetailTurnoverList",
+        "params": [
+          {
+            "name": "date",
+            "required": "false"
+          },
+          {
+            "name": "number",
+            "required": "false"
+          },
+          {
+            "name": "generalLedgerAccount",
+            "required": "true"
+          },
+          {
+            "name": "subsidiaryLedgerAccount",
+            "required": "true"
+          }
     ]
   },
   {
@@ -66,19 +114,43 @@
         "text": "گردش کل - معین",
         "func": "totalGeneralSubsidiaryTurnover",
         "fileName": "totalGeneralSubsidiaryTurnoverList"
+        "params": [
+          {
+            "name": "generalLedgerAccount",
+            "required": "false"
+          },
+          {
+            "name": "subsidiaryLedgerAccount",
+            "required": "false"
+          }
+        ]
       },
       {
         "key": "301",
         "text": "گردش معین - تفصیل",
         "func": "totalSubsidiaryDetailTurnover",
         "fileName": "totalSubsidiaryDetailTurnoverList"
+        "params": [
+          {
+            "name": "subsidiaryLedgerAccount",
+            "required": "false"
+          }
+        ]
       },
       {
         "key": "302",
         "text": "گردش  کل - معین - تفضیل",
         "func": "totalGeneralSubsidiaryDetailTurnover",
-        "fileName": "totalGeneralSubsidiaryDetailTurnoverList"
-      }
+        "fileName": "totalGeneralSubsidiaryDetailTurnoverList",
+        "params": [
+          {
+            "name": "generalLedgerAccount",
+            "required": "false"
+          },
+          {
+            "name": "subsidiaryLedgerAccount",
+            "required": "false"
+          }
     ]
   },
   {
@@ -91,8 +163,14 @@
         "func": "journalOffice",
         "fileName": "journalOfficeList",
         "params": [
-          "generalLedgerAccount",
-          "date"
+          {
+            "name": "generalLedgerAccount",
+            "required": "false"
+          },
+          {
+            "name": "date",
+            "required": "false"
+          }
         ]
       },
       {
@@ -101,7 +179,10 @@
         "func": "generalOffice",
         "fileName": "generalOfficeList",
         "params": [
-          "date"
+          {
+            "name": "date",
+            "required": "false"
+          }
         ]
       },
       {
@@ -110,8 +191,14 @@
         "func": "subsidiaryOffice",
         "fileName": "subsidiaryOfficeList",
         "params": [
-          "generalLedgerAccount",
-          "date"
+          {
+            "name": "generalLedgerAccount",
+            "required": "false"
+          },
+          {
+            "name": "date",
+            "required": "false"
+          }
         ]
       }
     ]
@@ -125,27 +212,60 @@
         "text": "تراز کل",
         "func": "generalBalance",
         "fileName": "generalBalanceList",
-        "params":["generalLedgerAccount"]
+        "params":[
+          {
+            "name": "generalLedgerAccount",
+            "required": "false"
+          }
+        ]
       },
       {
         "key": "501",
         "text": "تراز کل - معین",
         "func": "subsidiaryBalance",
         "fileName": "subsidiaryBalanceList",
-        "params":["generalLedgerAccount"]
+        "params":[
+          {
+            "name": "generalLedgerAccount",
+            "required": "false"
+          },
+          {
+            "name": "subsidiaryLedgerAccount",
+            "required": "false"
+          }
+        ]
       },
       {
         "key": "502",
         "text": "تراز معین - تفصیل",
         "func": "subsidiaryDetailBalance",
         "fileName": "subsidiaryDetailBalanceList",
-        "params":["generalLedgerAccount", "subsidiaryLedgerAccount"]
+        "params": [
+          {
+            "name": "generalLedgerAccount",
+            "required": "false"
+          },
+          {
+            "name": "subsidiaryLedgerAccount",
+            "required": "false"
+          }
+        ]
       },
       {
         "key": "503",
         "text": "تراز 3 سطحی",
         "func": "generalSubsidiaryDetailBalance",
-        "fileName": "generalSubsidiaryDetailBalanceList"
+        "fileName": "generalSubsidiaryDetailBalanceList",
+        "params":[
+          {
+            "name": "generalLedgerAccount",
+            "required": "false"
+          },
+          {
+            "name": "subsidiaryLedgerAccount",
+            "required": "false"
+          }
+        ]
       }
     ]
   },
