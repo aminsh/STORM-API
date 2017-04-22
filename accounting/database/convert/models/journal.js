@@ -21,8 +21,8 @@ class Journal extends Base {
         this.isInComplete = isInComplete;
         this.createdById = userId;
         this.periodId = periodId;
-        
-        this.tagId = model.KindDocumentID;
+
+        this.tagId = [0,1].includes(model.KindDocumentID)? null : model.KindDocumentID;
     }
 
     getStatus(item) {

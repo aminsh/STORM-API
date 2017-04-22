@@ -14,8 +14,6 @@ exports.seed = async(function (knex, Promise) {
         .select(u=> ({id: u.id, name: u.name}))
         .toArray();
 
-    data.journals.forEach(j => delete j.tagId);
-
     modelOrdering.forEach(modelName => {
         let tableName = modelName.pluralize();
 

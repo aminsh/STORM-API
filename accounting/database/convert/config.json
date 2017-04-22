@@ -1,6 +1,6 @@
 {
     "source-db":{
-        "url": "mssql://sa:P@ssw0rd@192.168.1.101/mali"
+        "url": "mssql://sa:P@ssw0rd@storm-support/mali"
     },
     "execution-ordering": [
         "user",
@@ -14,7 +14,6 @@
         "chequeCategory",
         "tag",
         "journal",
-        "journalTag",
         "journalLine",
         "cheque"
     ],
