@@ -15,6 +15,7 @@ import  './config/translate.config';
 import './config/gridFilterCellTypeConfig';
 import './config/authConfig';
 import ADMdtpConfig from './config/ADMdtp.config';
+import routeSaveLocationSearch from './config/route.save.locationSearch';
 
 
 //load controllers
@@ -136,6 +137,8 @@ import './journal';
 accModule
     .config(uiRouteConfig)
     .config(ADMdtpConfig)
+
+    .run(routeSaveLocationSearch)
 
     .directive('shell', shell)
     .directive('shellHeader', shellHeader)

@@ -20,11 +20,12 @@ function gridFilterCellTypeProvider() {
                 <dev-tag-numeric ng-model="filter.value"></dev-tag-numeric>
             </li>
             <li>
-                <dev-tag-dropdownlist
-                    k-data-text-field="display"
-                    k-data-value-field="key"
-                    k-data-source="items"
-                    ng-model="filter.operator"></dev-tag-dropdownlist>
+                <select 
+                        ng-model="filter.operator"
+                        ng-options="p.key as p.display for p in items"
+                        class="form-control">
+                    <option value="">{{'Select ...'|translate}}</option>
+                </select>
             </li>`
         },
         date: {

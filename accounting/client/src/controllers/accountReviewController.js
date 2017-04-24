@@ -7,7 +7,9 @@ function accountReviewController($scope,
                                  dimensionApi,
                                  formService,
                                  translate,
-                                 $q) {
+                                 $q,
+                                 $location,
+                                 $state) {
 
     $scope.parameters = [];
     $scope.reportTypes = [
@@ -70,10 +72,11 @@ function accountReviewController($scope,
             return formService.setDirty(form);
 
         saveState();
+
         let parameters = $scope.parameters;
 
         if (parameters.filterByDetailAccountOrDimension == false)
-            return navigate('accountReviewTurnover', {name: reportName}, getParameters());
+            return navigate('account-review-turnover', {name: reportName}, getParameters());
 
         if (parameters.detailAccountOrDimension == 'detailAccount')
             return $scope.detailAccountExecuteTurnovers(reportName);
@@ -91,7 +94,7 @@ function accountReviewController($scope,
         params.detailAccountId = $scope.parameters.detailAccount.id;
         params.detailAccountDisplay = $scope.parameters.detailAccount.display;
 
-        navigate('accountReviewTurnover', {name: reportName}, params);
+        navigate('account-review-turnover', {name: reportName}, params);
     };
 
     $scope.dimensionExecuteTurnovers = (dimensionName, reportName, index) => {
@@ -102,7 +105,8 @@ function accountReviewController($scope,
         params[`${dimensionName}Display`] = $scope.parameters[dimensionName].display;
         params[`${dimensionName}Caption`] = $scope.dimensionCategories[index].title;
 
-        navigate('accountReviewTurnover', {name: reportName}, params);
+
+        //navigate('accountReviewTurnover', {name: reportName}, params);
     };
 
     function init() {
