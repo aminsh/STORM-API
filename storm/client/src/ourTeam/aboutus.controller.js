@@ -11,7 +11,7 @@ export default class AboutUSController {
             },
             {
                 name: 'ساناز سلیمانی',
-                img: '/img/persons/SanazSoleimani.jpg',
+                img: '/img/persons/Sanaz2.jpg',
                 position: 'بنیانگذار و مدیر محصول',
                 degree: 'مهندسی نرم افزار',
                 desc: 'با سابقه ی 2 سال در زمینه ی نرم افزارهای مالی و حسابداری، همچنین 3سال متخصص در زمینه ی هوش تجاری، گزارشات و داشبورد در صنعت بیمه',
