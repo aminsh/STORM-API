@@ -2,11 +2,13 @@
     <label class="label-control">{{'Detail account' | translate}}</label>
 </div>
 <div class="col-md-10">
-    <dev-tag-multi-select
-            ng-model="journal.detailAccounts"
-            k-data-source="detailAccountDataSource"
+    <dev-tag-combo-box
+            multiple
+            ng-model="model.parameters.detailAccounts"
+            k-data-source="model.detailAccountDataSource"
             k-placeholder="{{'Select ...'|translate}}"
             k-data-text-field="display"
-            k-data-value-field="id"></dev-tag-multi-select>
+            k-data-value-field="id"
+            ng-required="isRequired('detailAccount')"></dev-tag-combo-box>
 
 </div>

@@ -193,15 +193,32 @@ export default function ($stateProvider, $urlRouterProvider, $locationProvider) 
             controller: 'createFiscalPeriodController',
             templateUrl: 'partials/views/createFiscalPeriod.html'
         })
-        .state('reports', {
+        /*.state('reports', {
             url: '/reports',
             controller: 'reportController',
             templateUrl: 'partials/views/report.html'
+        })*/
+        .state('report', {
+            url: '/report',
+            template: '<ui-view></ui-view>'
         })
-        .state('reports.designer', {
-            url: '/reports/designer/:fileName?',
-            controller: 'reportDesignerController',
-            templateUrl: 'partials/views/reportDesigner.html'
+        .state('report.list', {
+            url: '/list',
+            controller: 'reportListController',
+            controllerAs: 'model',
+            templateUrl: 'partials/reportList.html'
+        })
+        .state('report.print', {
+            url: '/:key',
+            controller: 'ReportPrintController',
+            controllerAs: 'model',
+            templateUrl: 'partials/reportPrint.html'
+        })
+        .state('report.design', {
+            url: '/design/:key',
+            controller: 'reportDesignController',
+            controllerAs: 'model',
+            templateUrl: 'partials/reportDesign.html'
         })
         .state('not-found', {
             url: '/not-found',

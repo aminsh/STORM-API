@@ -2,10 +2,12 @@
     <label class="label-control">{{category.title}}</label>
 </div>
 <div class="col-md-10">
-    <dev-tag-multi-select
-            ng-model="journalSearch['dimension'+($index+1)+'s']"
-            k-data-source="{{'dimension'+($index+1)+'DataSource'}}"
+    <dev-tag-combo-box
+            multiple
+            ng-model="model.parameters['dimension'+($index+1)+'s']"
+            k-data-source="model.{{'dimension'+($index+1)+'DataSource'}}"
             k-placeholder="{{'Select ...'|translate}}"
             k-data-text-field="display"
-            k-data-value-field="id"></dev-tag-multi-select>
+            k-data-value-field="id"
+            ng-required="model.isRequired('dimension'+ ($index+1))"></dev-tag-combo-box>
 </div>

@@ -78,7 +78,7 @@ accModule.config(menuItemsProvider => {
                 },
                 {
                     title: 'گزارشات',
-                    url: 'reports',
+                    url: 'report/list',
                     icon: ''
                 }
             ]

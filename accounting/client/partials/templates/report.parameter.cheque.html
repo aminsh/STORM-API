@@ -2,10 +2,12 @@
     <label class="label-control">{{'Cheque number' | translate}}</label>
 </div>
 <div class="col-md-10">
-    <dev-tag-multi-select
-            ng-model="journalSearch.chequeNumbers"
+    <dev-tag-combo-box
+            multiple
+            ng-model="parameters.chequeNumbers"
             k-data-source="chequeDataSource"
             k-placeholder="{{'Select ...'|translate}}"
             k-data-text-field="number"
-            k-data-value-field="id"></dev-tag-multi-select>
+            k-data-value-field="id"
+            ng-required="isRequired('cheque')"></dev-tag-combo-box>
 </div>

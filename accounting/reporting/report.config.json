@@ -9,8 +9,12 @@
         "func": "detailJournals",
         "fileName": "detailJournalsList",
         "params": [
-          "date",
-          "number"
+          {
+            "name": "date","required":"true"
+          },
+          {
+            "name": "number"
+          }
         ]
       },
       {
@@ -19,8 +23,12 @@
         "func": "detailGeneralJournal",
         "fileName": "detailGeneralJournalList",
         "params": [
-          "date",
-          "number"
+          {
+            "name": "date"
+          },
+          {
+            "name": "number"
+          }
         ]
       },
       {
@@ -228,7 +236,7 @@
         "text": "تراز کل",
         "func": "generalBalance",
         "fileName": "generalBalanceList",
-        "params":[
+        "params": [
           {
             "name": "generalLedgerAccount",
             "required": "false"
@@ -240,7 +248,7 @@
         "text": "تراز کل - معین",
         "func": "subsidiaryBalance",
         "fileName": "subsidiaryBalanceList",
-        "params":[
+        "params": [
           {
             "name": "generalLedgerAccount",
             "required": "false"
@@ -272,7 +280,7 @@
         "text": "تراز 3 سطحی",
         "func": "generalSubsidiaryDetailBalance",
         "fileName": "generalSubsidiaryDetailBalanceList",
-        "params":[
+        "params": [
           {
             "name": "generalLedgerAccount",
             "required": "false"

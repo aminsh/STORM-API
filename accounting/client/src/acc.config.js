@@ -133,6 +133,7 @@ import $ModalFactory from './services/$modalFactory';
 import Promise from './services/promise';
 
 import './journal';
+import './report';
 
 accModule
     .config(uiRouteConfig)

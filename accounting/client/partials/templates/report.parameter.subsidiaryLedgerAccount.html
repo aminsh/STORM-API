@@ -3,10 +3,11 @@
 </div>
 <div class="col-md-10">
 
-    <dev-tag-multi-select
-            ng-model="journal.subsidiaryLedgerAccounts"
-            k-data-source="subsidiaryLedgerAccountDataSource"
+    <dev-tag-combo-box
+            multiple
+            ng-model="model.parameters.subsidiaryLedgerAccounts"
+            k-data-source="model.subsidiaryLedgerAccountDataSource"
             k-placeholder="{{'Select ...'|translate}}"
             k-data-text-field="account"
-            k-data-value-field="id"></dev-tag-multi-select>
+            k-data-value-field="id"></dev-tag-combo-box>
 </div>

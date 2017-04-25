@@ -2,7 +2,9 @@
     <label class="label-control">{{'From number' | translate}}</label>
 </div>
 <div class="col-md-4">
-    <dev-tag-numeric ng-model="journalSearch.minNumber" style="width: 100%"
+    <dev-tag-numeric ng-model="model.parameters.minNumber"
+                     ng-required=":: model.isRequired('number')"
+                     style="width: 100%"
                      name="minNumber" not-zero>
     </dev-tag-numeric>
 
@@ -14,7 +16,9 @@
     <label class="label-control">{{'To number' | translate}}</label>
 </div>
 <div class="col-md-4">
-    <dev-tag-numeric ng-model="journalSearch.maxNumber" style="width: 100%"
+    <dev-tag-numeric ng-model="model.parameters.maxNumber"
+                     ng-required=":: model.isRequired('number')"
+                     style="width: 100%"
                      name="maxNumber" not-zero>
     </dev-tag-numeric>
 
