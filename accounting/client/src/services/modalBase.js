@@ -9,6 +9,7 @@ function modalBase($uibModal, $q) {
             animation: true,
             templateUrl: option.templateUrl,
             controller: option.controller,
+            controllerAs: option.controllerAs,
             backdrop: true,
             keyboard: false,
             size: option.size, // nothing = normal , 'sm' = small , 'lg' = large
