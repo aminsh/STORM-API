@@ -9,6 +9,7 @@ const async = require('asyncawait/async'),
 module.exports.Insert = async((req, res) => {
         let branchId = req.cookies['branch-id'],
             currentFiscalPeriodId = req.cookies['current-period'],
+            fiscalPeriodRepository = new FiscalPeriodRepository(branchId),
             currentFiscalPeriod = await(fiscalPeriodRepository.findById(currentFiscalPeriodId)),
             cmd = req.body,
             journalRepository = new JournalRepository(branchId),

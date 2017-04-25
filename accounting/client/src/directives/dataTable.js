@@ -18,7 +18,7 @@ export default function($timeout) {
                 });
 
             scope.$on('grid-changed', ()=> {
-                $timeout(()=> table.DataTable());
+                //$timeout(()=> table.DataTable());
             });
 
             scope.$on('grid-scroll-down', ()=> {

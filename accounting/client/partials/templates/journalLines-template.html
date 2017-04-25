@@ -22,7 +22,7 @@
             <td style="text-align: center">{{item.row}}</td>
             <td>
                 <dev-tag-combo-box
-                        ng-if="item.canShowDetailAccount"
+                        ng-if="item.hasDetailAccount"
                         name="detailAccountId"
                         k-placeholder="{{'Select ...'|translate}}"
                         k-data-value-field="id"
@@ -105,10 +105,10 @@
                     </label>
                 </div>
             </td>
-            <td>
-                <button
+            <td style="text-align: center;vertical-align: middle">
+                <a
                         ng-disabled="!(item.canShowDimension1 || item.canShowDimension2 || item.canShowDimension3)"
-                        class="btn btn-outline "
+                        class=""
                         type="button"
                         title="{{'Dimensions (on journalLine)'|translate}}"
                         style="margin-top: 0;margin-bottom: 0"
@@ -118,21 +118,21 @@
                         popover-class="journal-lines-dimensions"
                         popover-trigger="'outsideClick'">
                     <i class="fa fa-ellipsis-h fa-lg text-navy"></i>
-                </button>
+                </a>
 
-                <button
+                <a
                         ng-click="removeJournalLine(item)"
-                        class="btn btn-outline "
+                        class=""
                         type="button"
                         title="{{'Remove'| translate}}"
                         style="margin-top: 0;margin-bottom: 0">
                     <i class="fa fa-trash fa-lg text-danger"></i>
-                </button>
+                </a>
 
             </td>
         </tr>
         </tbody>
-        <tfoot>
+        <tfoot style="background-color: #F9F8F8">
         <tr>
             <td></td>
             <td></td>

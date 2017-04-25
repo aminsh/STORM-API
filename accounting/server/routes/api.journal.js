@@ -24,6 +24,12 @@ router.route('/total-info').get((req, res) => {
     res.json(result);
 });
 
+router.route('/max-number').get(async((req, res) => {
+    let journalQuery = new JournalQuery(req.cookies['branch-id']),
+        result = await(journalQuery.getMaxNumber(req.cookies['current-period']));
+    res.json(result);
+}));
+
 router.route('/:id')
     .get(async((req, res) => {
         let journalQuery = new JournalQuery(req.cookies['branch-id']),
@@ -81,7 +87,7 @@ router.route('/:id/bookkeeping').put(async((req, res) => {
 
     await(journalRepository.update(entity));
 
-    return res.json({isValid: true});
+    return res.json({ isValid: true });
 
 }));
 
@@ -102,7 +108,7 @@ router.route('/:id/fix').put(async((req, res) => {
 
     await(journalRepository.update(journal));
 
-    return res.json({isValid: true});
+    return res.json({ isValid: true });
 }));
 
 router.route('/:id/attach-image').put(async((req, res) => {
@@ -113,7 +119,7 @@ router.route('/:id/attach-image').put(async((req, res) => {
 
     await(journalRepository.update(journal));
 
-    return res.json({isValid: true});
+    return res.json({ isValid: true });
 }));
 
 router.route('/:id/copy').post(async((req, res) => {
@@ -152,7 +158,7 @@ router.route('/:id/copy').post(async((req, res) => {
 
     return res.json({
         isValid: true,
-        returnValue: {id: entity.id}
+        returnValue: { id: entity.id }
     });
 }));
 

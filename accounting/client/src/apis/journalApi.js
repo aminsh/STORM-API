@@ -12,6 +12,9 @@ function journalApi(apiPromise) {
             return apiPromise.get('{0}/journals/{1}'.format(urlPrefix, id));
         },
         getByNumber:(number)=> apiPromise.get(`${urlPrefix}/journals/by-number/${number}`),
+        getMaxNumber(){
+            return apiPromise.get(`${urlPrefix}/journals/max-number`);
+        },
         getTotalInfo: () => apiPromise.get(`${urlPrefix}/journals/total-info`),
         getJournalReportJson: id => apiPromise.get(`/report/json/journal/${id}`),
         create: function (data) {

@@ -1,18 +1,28 @@
 import accModule from '../acc.module';
 import Guid from 'guid';
 
-export default function journalUpdateController($scope, logger, translate, navigate, $stateParams, $rootScope, devConstants, $timeout,
-                                 journalApi, journalLineApi, subsidiaryLedgerAccountApi, dimensionCategoryApi, dimensionApi, detailAccountApi,
-                                 journalAttachImageService,
-                                 writeChequeOnJournalLineEntryService,
-                                 tagApi,
-                                 formService) {
+export default function journalUpdateController(
+    $scope, 
+    logger, 
+    translate, 
+    navigate, 
+    $stateParams, 
+    $rootScope, 
+    devConstants, 
+    $timeout,
+    journalApi, journalLineApi, subsidiaryLedgerAccountApi, dimensionCategoryApi, dimensionApi, detailAccountApi,
+    journalAttachImageService,
+    writeChequeOnJournalLineEntryService,
+    tagApi,
+    formService) {
+
+    $scope.$emit('close-sidebar');
 
     let id = $stateParams.id,
         columnConfig = {
             subsidiaryLedgerAccount: {
                 dataSource: [],
-                onChanged(item, journalLine){
+                onChanged(item, journalLine) {
                     journalLine.canShowDetailAccount = item && item.hasDetailAccount;
                     journalLine.canShowDimension1 = item && item.hasDimension1;
                     journalLine.canShowDimension2 = item && item.hasDimension2;
@@ -143,14 +153,14 @@ export default function journalUpdateController($scope, logger, translate, navig
     };
 
     $scope.attachImage = () => {
-        journalAttachImageService.show({id: id})
+        journalAttachImageService.show({ id: id })
             .then(fileName => {
                 $scope.journal.attachmentFileName = fileName;
                 logger.success();
             });
     };
 
-    $scope.print = () => navigate('journalPrint', {id: id});//showReport(`/report/journal/${id}`);
+    $scope.print = () => navigate('journalPrint', { id: id });//showReport(`/report/journal/${id}`);
 
     $scope.writeCheque = () => {
         $rootScope.blockUi.block();
@@ -182,7 +192,7 @@ export default function journalUpdateController($scope, logger, translate, navig
     };
 
     $scope.onSaveTag = value => {
-        return tagApi.create({title: value});
+        return tagApi.create({ title: value });
     };
 
 }

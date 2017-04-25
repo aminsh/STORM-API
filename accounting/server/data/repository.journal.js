@@ -28,7 +28,7 @@ class JournalRepository extends BaseRepository {
     maxTemporaryNumber(periodId) {
         return this.knex.table('journals')
             .where('periodId', periodId)
-            .max();
+            .max('temporaryNumber');
     }
 
     create(entity) {

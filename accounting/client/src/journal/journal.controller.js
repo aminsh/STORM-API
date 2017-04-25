@@ -1,22 +1,37 @@
 import Guid from 'guid';
 
-export default function journalUpdateController($scope, logger, translate, navigate, $stateParams, $rootScope, devConstants, $timeout,
-                                                journalApi, journalLineApi, subsidiaryLedgerAccountApi, dimensionCategoryApi, dimensionApi, detailAccountApi,
-                                                journalAttachImageService,
-                                                writeChequeOnJournalLineEntryService,
-                                                tagApi,
-                                                formService) {
+export default function journalUpdateController(
+    $scope,
+    logger,
+    translate,
+    navigate,
+    $stateParams,
+    $rootScope,
+    devConstants,
+    $timeout,
+    journalApi,
+    journalLineApi,
+    subsidiaryLedgerAccountApi,
+    dimensionCategoryApi,
+    dimensionApi,
+    detailAccountApi,
+    journalAttachImageService,
+    writeChequeOnJournalLineEntryService,
+    tagApi,
+    formService) {
 
+    $scope.$emit('close-sidebar');
     let id = $stateParams.id,
         isNewJournal = $stateParams.id == null,
         columnConfig = {
             subsidiaryLedgerAccount: {
                 dataSource: [],
-                onChanged(item, journalLine){
-                    journalLine.canShowDetailAccount = item && item.hasDetailAccount;
-                    journalLine.canShowDimension1 = item && item.hasDimension1;
-                    journalLine.canShowDimension2 = item && item.hasDimension2;
-                    journalLine.canShowDimension3 = item && item.hasDimension3;
+                onChanged(item, journalLine) {
+                    journalLine.subsidiaryLedgerAccountId = item.id;
+                    journalLine.hasDetailAccount = item && item.hasDetailAccount;
+                    journalLine.hasDimension1 = item && item.hasDimension1;
+                    journalLine.hasDimension2 = item && item.hasDimension2;
+                    journalLine.hasDimension3 = item && item.hasDimension3;
                 }
             },
             detailAccount: {
@@ -56,7 +71,15 @@ export default function journalUpdateController($scope, logger, translate, navig
     function fetch() {
         $scope.$broadcast('grid-changed');
 
-        if (!isNewJournal){
+        if (isNewJournal) {
+            $scope.journal.temporaryDate = localStorage.getItem('today');
+            journalApi.getMaxNumber()
+                .then(result => $scope.journal.temporaryNumber = ++result);
+
+        }
+
+
+        if (!isNewJournal) {
             $scope.isJournalLineLoading = true;
 
             journalApi.getById(id)
@@ -68,31 +91,7 @@ export default function journalUpdateController($scope, logger, translate, navig
                 .finally(() => $scope.isJournalLineLoading = false);
         }
 
-        /*subsidiaryLedgerAccountApi.getAll()
-         .then(result => {
-         columnConfig.subsidiaryLedgerAccount.dataSource = result.data;
 
-         journalLineApi.getAll(id)
-         .then(result => {
-         let subsidiaryLedgerAccounts = columnConfig.subsidiaryLedgerAccount.dataSource;
-
-         result.data.forEach(item => {
-         let subsidiaryLedgerAccount = subsidiaryLedgerAccounts
-         .asEnumerable()
-         .single(s => s.id == item.subsidiaryLedgerAccountId);
-
-         item.canShowDetailAccount = subsidiaryLedgerAccount.hasDetailAccount;
-         item.canShowDimension1 = subsidiaryLedgerAccount.hasDimension1;
-         item.canShowDimension2 = subsidiaryLedgerAccount.hasDimension2;
-         item.canShowDimension3 = subsidiaryLedgerAccount.hasDimension3;
-         });
-
-         $scope.journalLines = result.data;
-         $scope.$emit('gird-changed');
-         })
-         .finally(() => $scope.isJournalLineLoading = false);
-         });
-         */
 
         subsidiaryLedgerAccountApi.getAll()
             .then(result => columnConfig.subsidiaryLedgerAccount.dataSource = result.data);
@@ -118,14 +117,21 @@ export default function journalUpdateController($scope, logger, translate, navig
             return;
         }
 
+        let lines = $scope.journalLines,
+            totalRemainder = lines.asEnumerable()
+                .sum(line => line.debtor - line.creditor);
+
+        if (totalRemainder != 0)
+            return logger.error(translate('Total of debtor and creditor is not equal'));
+
         $scope.errors.asEnumerable().removeAll();
 
         $scope.isSaving = true;
 
-        let cmd = Object.assign($scope.journal, {journalLines: $scope.journalLines});
+        let cmd = Object.assign($scope.journal, { journalLines: $scope.journalLines });
 
         if (isNewJournal)
-            return journalLineApi.create(cmd)
+            return journalApi.create(cmd)
                 .then(result => {
                     logger.success();
                     $scope.journal.id = result.id;
@@ -142,8 +148,8 @@ export default function journalUpdateController($scope, logger, translate, navig
     $scope.createJournalLine = () => {
 
         let maxRow = $scope.journalLines.length == 0
-                ? 0
-                : $scope.journalLines.asEnumerable().max(line => line.row),
+            ? 0
+            : $scope.journalLines.asEnumerable().max(line => line.row),
             newJournal = {
                 id: Guid.new(),
                 row: ++maxRow,
@@ -167,14 +173,14 @@ export default function journalUpdateController($scope, logger, translate, navig
     };
 
     $scope.attachImage = () => {
-        journalAttachImageService.show({id: id})
+        journalAttachImageService.show({ id: id })
             .then(fileName => {
                 $scope.journal.attachmentFileName = fileName;
                 logger.success();
             });
     };
 
-    $scope.print = () => navigate('journalPrint', {id: id});
+    $scope.print = () => navigate('journalPrint', { id: id });
 
     $scope.writeCheque = () => {
         $rootScope.blockUi.block();
@@ -204,7 +210,7 @@ export default function journalUpdateController($scope, logger, translate, navig
     };
 
     $scope.onSaveTag = value => {
-        return tagApi.create({title: value});
+        return tagApi.create({ title: value });
     };
 
 }

@@ -48,9 +48,9 @@ app.engine('html', require('ejs').renderFile);
 app.use('/public', express.static(config.rootPath + '../public'));
 app.use('/client', express.static(config.rootPath + '/client'));
 app.use('/content', express.static(config.rootPath + '/client/content'));
-app.use('/data', express.static(config.rootPath + '/data'));
+app.use('/data', express.static(config.rootPath + '../data'));
 app.use('/', express.static(config.rootPath + '/server/public'));
 
-app.use(multer({dest: './uploads/;'}));
+app.use(multer({dest: './data/uploads/;'}));
 
 module.exports.app = app;

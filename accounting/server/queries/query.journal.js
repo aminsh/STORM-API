@@ -14,7 +14,15 @@ module.exports = class JournalQuery extends BaseQuery {
         this.getGroupedByMouth = async(this.getGroupedByMouth);
         this.getById = async(this.getById);
         this.getTotalInfo = async(this.getTotalInfo);
-        this.batchFindById = async(this.batchFindById)
+        this.batchFindById = async(this.batchFindById);
+        this.getMaxNumber = async(this.getMaxNumber);
+    }
+
+    getMaxNumber(fiscalPeriodId) {
+        let maxNumber = await(this.knex.table('journals')
+            .where('periodId', fiscalPeriodId)
+            .max('temporaryNumber'))[0].max;
+        return maxNumber;
     }
 
     batchFindById(journalId) {
@@ -72,7 +80,7 @@ module.exports = class JournalQuery extends BaseQuery {
 
         result.forEach(item => item.monthName = enums.getMonth().getDisplay(item.month));
 
-        return {data: result};
+        return { data: result };
     }
 
     getJournalsByMonth(month, currentFiscalPeriod, parameters) {
@@ -134,7 +142,7 @@ module.exports = class JournalQuery extends BaseQuery {
             totalInComplete = await(base.where('isInComplete', true)
                 .select(knex.raw('count(*)')).first()).count;
 
-        return {lastNumber, totalFixed, totalInComplete};
+        return { lastNumber, totalFixed, totalInComplete };
     }
 };
 

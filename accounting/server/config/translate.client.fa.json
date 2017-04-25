@@ -218,5 +218,6 @@
   "Do not Have": "ندارد",
 
   "Debtor and creditor are not allowed to be zero , both of them":"بدهکار و بستانکار هر دو نباید صفر باشد",
-  "Debtor and creditor are not allowed to have value , both of them": "بدهکار و بستانکار نباید هر دو دارای مقدار باشد"
+  "Debtor and creditor are not allowed to have value , both of them": "بدهکار و بستانکار نباید هر دو دارای مقدار باشد",
+  "Total of debtor and creditor is not equal": "جمع بدهکار و بستانکار برابر نیست"
 }

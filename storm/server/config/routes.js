@@ -17,7 +17,7 @@ app.use('/', require('../features/luca/luca.controller'));
 app.use('/', require('../features/user/user.controller'));
 
 app.post('/upload', (req, res) => {
-    let file = req.files.userfile;
+    let file = req.files.file;
 
     res.send({
         name: file.name,
