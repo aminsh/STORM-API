@@ -1,5 +1,8 @@
 export default class HomeController {
   constructor() {
+    let translate = {
+      title: 'نرم‌افزار حسابداری آنلاین استورم'
+    };
     this.prices = [
       {
         name: 'رایگان',

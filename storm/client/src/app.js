@@ -7,10 +7,12 @@ import 'angular-aria';
 import 'angular-material';
 import 'angular-messages';
 import 'angular-ui-router';
+import 'angular-translate';
 
 
 import appRoute from './app.route';
 import shell from './layout/shell';
+import appTranslate from './app.translate';
 
 import setDirty from './shared/setDirty';
 import Promise from './shared/promise';
@@ -27,8 +29,9 @@ import UserApi from './authentication/api.user';
 import ContactUsController from './contactUs/contactUs.controller';
 import RequestLucaDemoController from './product/requestLucaDemo.controller';
 
-angular.module('app', ['ngMaterial', 'ngMessages', 'ui.router'])
+angular.module('app', ['ngMaterial', 'ngMessages', 'ui.router','pascalprecht.translate'])
     .config(appRoute)
+    .config(appTranslate)
 
     .directive('shell', shell)
     .factory('setDirty', setDirty)

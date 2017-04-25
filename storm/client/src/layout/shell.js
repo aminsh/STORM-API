@@ -5,8 +5,8 @@ function shell($mdSidenav, $rootScope, $window) {
         restrict: 'E',
         templateUrl: 'app/layout/shell.html',
         link: (scope, element, attrs) => {
-            scope.openMenu = () => $mdSidenav('right').toggle();//scope.$broadcast('toggle-sidenav');
 
+            scope.toggleSidenav = () => $mdSidenav('right').toggle();
             let currentUser = $window.document.getElementsByName("currentUser")[0].content;
 
             if (currentUser) {

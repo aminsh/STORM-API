@@ -13,22 +13,46 @@ $fa-font-path: $font-path;
 
 .shell-cover {
   background: url('#{$image-path}/storm-background2.jpg') no-repeat center center fixed;
+  //background-color: #1a2d40;
   background-size: cover;
   -o-background-size: cover;
+  //height: 100%;
 }
 
 .shell-footer {
-  background: url('#{$image-path}/bg-footer2.jpg') no-repeat center center fixed;
+  //background: url('#{$image-path}/bg-footer2.jpg') no-repeat center center fixed;
   background-size: cover;
   background-attachment: fixed;
+
+}
+
+.shell-container {
+  background-color: black;
+  background-size: cover;
+  box-sizing: border-box;
+  display: block;
+  left: 0 !important;
+  line-height: 1;
+  position: fixed;
+  top: 0 !important;
+  transition: background-color 0.5s linear 0s;
+  //vertical-align: middle;
+  width: 100%;
+  opacity: .6;
 }
 
 .storm-toolbar {
-  background-color: inherit !important;
+  background-color: #1a2d40 !important;
 }
 
 .storm-toolbar-button {
-  background-color: black !important;
+  font-size: larger;
+  //color: gold;
+  //background-color: black !important;
+}
+
+.md-toolbar-tools .md-button {
+  font-size: large;
 }
 
 .user-text {
@@ -152,11 +176,11 @@ body md-toolbar.toolbar {
   color: black;
 }
 
-.introduction {
+/*.introduction {
   background: url(/img/storm-background.jpg) no-repeat center center scroll;
   background-size: cover;
   -o-background-size: cover;
-}
+}*/
 
 .callout {
   background: url(/img/acconting-main.jpg) no-repeat center center scroll;
@@ -189,12 +213,25 @@ body .btn {
   padding: 3px 30px;
 }
 
+.md-raised .btn {
+  background-color: orange;
+  font-size: 20px;
+}
+
+.md-raised .btn1 {
+  background-color: orange;
+  font-size: 15px;
+}
+
 .product-box {
   position: relative;
   top: -87px;
   text-align: center;
   padding: 30px;
   color: white;
+  background-color: #1a2d40;
+  opacity: 0.77;
+
 }
 
 .md-card-image.team {
@@ -208,6 +245,16 @@ body .btn {
   position: relative;
   top: -45px;
   box-shadow: 0 -1px 15px rgba(0, 0, 0, .09);
+}
+
+.md-card-image.team.on-mobile {
+  width: 100px;
+  height: 100px;
+  position: inherit;
+}
+
+.md-headline.team, .md-subhead.team{
+  margin-right: 15px;
 }
 
 .md-preloader {
@@ -971,7 +1018,7 @@ button.md-button::-moz-focus-inner {
 }
 
 .md-button.md-raised:not([disabled]) {
-  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, .26)
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, .26);
 }
 
 .md-button.md-icon-button {
@@ -1126,6 +1173,20 @@ button.md-button::-moz-focus-inner {
   .md-button.md-fab, .md-button.md-raised {
     border: 1px solid #fff
   }
+}
+
+.md-button.md-raised {
+  background-color: orange;
+  font-size: 20px;
+}
+
+.md-button.md-primary.md-raised {
+  background-color: mediumblue;
+}
+
+.md-button.md-primary.md-raised.btn1 {
+  background-color: mediumblue;
+  font-size: 15px;
 }
 
 md-bottom-sheet {
@@ -4848,7 +4909,7 @@ md-sidenav {
   position: absolute;
   -ms-flex-direction: column;
   flex-direction: column;
-  z-index: 60;
+  z-index: 100;
   width: 320px;
   max-width: 320px;
   bottom: 0;
@@ -4878,7 +4939,7 @@ md-sidenav.md-closed.md-locked-open-add, md-sidenav.md-locked-open, md-sidenav.m
   position: static;
   display: -ms-flexbox;
   display: flex;
-  transform: translate3d(0, 0, 0)
+  transform: translate3d(0, 0, 0);
 }
 
 md-sidenav.md-closed.md-locked-open-add:not(.md-locked-open-add-active) {

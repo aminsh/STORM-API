@@ -26,10 +26,16 @@ export default function routing($stateProvider, $urlRouterProvider, $locationPro
             controllerAs: 'VM'
         })
         .state('pricing', {
-            url: '/product/:type/pricing',
+            url: '/product/pricing',
             templateUrl: 'app/product/pricing.html',//require('./home/pricing.html'),
             controller: 'PricingController',
             controllerAs: 'VM'
+        })
+        .state('order', {
+            url: '/order/:plan',
+            templateUrl: 'app/product/order.html',//require('./auth/register.html'),
+/*            controller: 'orderController',
+            controllerAs: 'vm'*/
         })
         .state('login', {
             url: '/login',
@@ -49,12 +55,7 @@ export default function routing($stateProvider, $urlRouterProvider, $locationPro
             controller: 'ContactUsController',
             controllerAs: 'vm'
         })
-        .state('requestLucaDemo', {
-            url: '/request-accounting-demo',
-            templateUrl: 'app/product/requestLucaDemo.html',//require('./auth/register.html'),
-            controller: 'RequestLucaDemoController',
-            controllerAs: 'vm'
-        })
+
         .state('/page-not-found', {
             template: '<h1>Page not found</h1>'
         });

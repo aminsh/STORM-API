@@ -1,13 +1,12 @@
 <div class="shell-cover height">
+        <md-toolbar class="storm-toolbar">
+            <div class="md-toolbar-tools">
 
-    <md-toolbar class="storm-toolbar">
-        <div class="md-toolbar-tools">
+                <md-button class="md-icon-button " aria-label="Settings" ng-click="toggleSidenav()" hide-gt-xs>
+                    <md-icon>menu</md-icon>
+                </md-button>
 
-            <md-button class="md-icon-button " aria-label="Settings" ng-click="openMenu()" hide-gt-xs>
-                <md-icon>menu</md-icon>
-            </md-button>
-
-            <span hide-xs>
+                <span hide-xs>
         <md-button ui-sref="login" aria-label="Go Back" ng-hide="logined" class="storm-toolbar-button">
     ورود
   </md-button>
@@ -26,7 +25,7 @@
 
   </md-button>
 
-            <md-menu-content width="4">
+<!--            <md-menu-content width="4">
 
                 <md-menu-item>
                     <md-button>
@@ -42,39 +41,38 @@
                 <md-menu-item>
                   <md-button>
                         <i class="fa fa-sign-out"></i>
-
-                    خروج
+                    {{'Exit'|translate}}
                   </md-button>
                 </md-menu-item>
-            </md-menu-content>
+            </md-menu-content>-->
         </md-menu>
 
-         <md-button ui-sref="pricing({type: 'luca'})" aria-label="Go Back" class="storm-toolbar-button">
-   لیست قیمت
-  </md-button>
+         <md-button ui-sref="pricing" aria-label="Go Back" class="storm-toolbar-button">
+             {{'menu-price'|translate}}
+         </md-button>
 
         <md-button ui-sref="aboutus" aria-label="Go Back" class="storm-toolbar-button">
-  تیم ما
-  </md-button>
+            {{'menu-ourTeam'|translate}}
+        </md-button>
         <md-button aria-label="Go Back" ui-sref="contactUs" class="storm-toolbar-button">
-    ارتباط با ما
-  </md-button>
+            {{'menu-contactUs'|translate}}
+        </md-button>
 
   </span>
 
 
-            <span flex></span>
+                <span flex></span>
 
 
-            <a ui-sref="home">
-                <img src="/img/storm.logo.white.png" class="brands-img">
-            </a>
+                <a ui-sref="home">
+                    <img src="/img/storm.logo.white.png" class="brands-img">
+                </a>
 
-        </div>
-    </md-toolbar>
-
-    <ui-view></ui-view>
-
+            </div>
+        </md-toolbar>
+    <div class="shell-cover height">
+        <ui-view></ui-view>
+    </div>
     <md-sidenav class="md-sidenav-right" md-component-id="right"
                 md-whiteframe="4" flex="50">
 
@@ -97,20 +95,19 @@
 
                     <md-menu-item>
                         <md-button>
-                            پروفایل
+                            {{'profile'|translate}}
                         </md-button>
                     </md-menu-item>
                     <md-menu-item>
                         <md-button>
-                            تغییر رمز عبور
+                            {{'changePassword'|translate}}
                         </md-button>
                     </md-menu-item>
 
                     <md-menu-item>
                         <md-button>
                             <i class="fa fa-sign-out"></i>
-
-                            خروج
+                            {{'Exit'|translate}}
                         </md-button>
                     </md-menu-item>
                 </md-menu-content>
@@ -126,17 +123,17 @@
             <md-list flex>
 
                 <md-list-item ui-sref="aboutus" ng-click="toggleSidenav()">
-                    درباره ما
+                    {{'menu-ourTeam'|translate}}
                 </md-list-item>
                 <md-list-item ui-sref="contactUs" ng-click="toggleSidenav()">
-                    ارتباط با ما
+                    {{'menu-contactUs'|translate}}
                 </md-list-item>
                 <md-list-item ui-sref="login" ng-click="toggleSidenav()">
-                    عضویت / ورود
+                    {{'menu-login'|translate}}
                 </md-list-item>
 
-                <md-list-item ui-sref="pricing({type: 'luca'})" ng-click="toggleSidenav()">
-                    لیست قیمت لوکا
+                <md-list-item ui-sref="pricing" ng-click="toggleSidenav()">
+                    {{'menu-price'|translate}}
                 </md-list-item>
 
             </md-list>
@@ -144,9 +141,9 @@
 
     </md-sidenav>
 
-
+<div>
     <section ng-hide="noFooter"
-             class="shell-footer"
+             class="shell-cover"
              layout-padding layout-wrap
              layout="row" layout-xs="column"
              layout-align="center center">
@@ -157,15 +154,15 @@
             <md-button href="tel:02144292601" layout="vertical" layout-align="center center">
                 021-44292601
             </md-button>
-            <md-button href="tel:09396408566" layout="vertical" layout-align="center center">
-                0939-6408566
+            <md-button href="tel:09396408566" layout="vertical" layout-align="center center" style="font-weight: bolder">
+                0939-6408566  ,  0903-9603096
             </md-button>
         </div>
-        <div flex="33" flex-xs="100" style="color: white;text-align: center">
+        <div flex="33" flex-xs="100" style="color: white;text-align: center; background-color: #1a2d40; opacity: 0.8">
             <i class="fa fa-map-marker fa-2x"></i>
 
             <div>
-                تهران - خ کارگر (امیرآباد) شمالی - دانشکده فنی دانشگاه تهران - ساختمان انستیتوی مهندسی نفت - طبقه 5
+                {{'address'|translate}}
             </div>
         </div>
         <div flex="33" flex-xs="100" style="color: white;text-align: center">
@@ -220,7 +217,7 @@
         </md-subheader>-->
 
     </section>
-
+</div>
     <!--<footer ng-hide="noFooter" layout layout-margin layout-padding style="border-top: 1px solid rgba(0,0,0,0.4)">
         <md-content layout-padding layout-wrap>
             تمامی حقوق این سایت مربوط به ...

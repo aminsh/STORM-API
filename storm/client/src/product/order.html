@@ -1,0 +1,40 @@
+<div layout="column" layout-align="start" layout-fill>
+
+    <div layout="row" layout-align="center center" layout-margin class="animated bounceInRight">
+        <md-whiteframe class="md-whiteframe-8dp" flex="100" flex-gt-sm="30">
+            <md-content class="md-padding" layout="column">
+                <form name="form">
+                     <md-input-container class="md-block" flex-gt-sm>
+                        <label>ایمیل</label>
+                        <md-icon>email</md-icon>
+                        <input ng-required="true" name="email"
+                               type="email" ng-model="vm.contactUsModel.email"/>
+
+                        <div ng-messages="form.email.$error" ng-if="form.email.$dirty">
+                            <div ng-message="required">وارد کردن ایمیل الزامیست.</div>
+                            <div ng-message="email">لطفا یک ایمیل مجاز وارد کنید.</div>
+                        </div>
+                    </md-input-container>
+
+                    <md-input-container class="md-block" flex-gt-sm>
+                        <label>شماره موبایل</label>
+                        <md-icon>phone</md-icon>
+                        <input ng-required="true" name="phone" type="text" ng-model="vm.contactUsModel.phone" />
+                        <div ng-messages="form.phone.$error" ng-if="form.phone.$dirty">
+                            <div ng-message="required">وارد کردن شماره موبایل الزامیست.</div>
+                            <div ng-message="email">لطفا یک شماره موبایل وارد کنید.</div>
+                        </div>
+                    </md-input-container>
+
+                    <md-input-container class="md-block" flex-gt-sm style="text-align: center;">
+
+                        <md-button ng-click="vm.send(form)" class="md-block md-raised md-primary">
+                            <md-icon size="20">send</md-icon>
+                            ثبت درخواست
+                        </md-button>
+                    </md-input-container>
+                </form>
+            </md-content>
+        </md-whiteframe>
+    </div>
+</div>
