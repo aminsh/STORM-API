@@ -107,16 +107,10 @@
             </td>
             <td style="text-align: center;vertical-align: middle">
                 <a
-                        ng-disabled="!(item.canShowDimension1 || item.canShowDimension2 || item.canShowDimension3)"
-                        class=""
+                        ng-click="additionalInfo(item)" class=""
                         type="button"
-                        title="{{'Dimensions (on journalLine)'|translate}}"
-                        style="margin-top: 0;margin-bottom: 0"
-                        uib-popover-template="'partials/templates/journalLines-dimension-template.html'"
-                        popover-title="{{'Dimensions (on journalLine)'|translate}}"
-                        popover-placement="right"
-                        popover-class="journal-lines-dimensions"
-                        popover-trigger="'outsideClick'">
+                        title="{{'Additional Information'|translate}}"
+                        style="margin-top: 0;margin-bottom: 0">
                     <i class="fa fa-ellipsis-h fa-lg text-navy"></i>
                 </a>
 

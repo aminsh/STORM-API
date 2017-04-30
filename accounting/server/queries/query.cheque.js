@@ -29,9 +29,22 @@ module.exports = class ChequeQuery extends BaseQuery {
         return view(cheque);
     }
 
-    getWhiteCheques(categoryId) {
-        let query = this.knex.select('*').from('cheques').where('chequeCategoryId', categoryId).andWhere('status', 'White');
-        return kendoQueryResolve(query, req.query, view);
+    getWhiteCheques() {
+        return this.knex.select(
+            'cheques.*',
+            'chequeCategories.totalPages',
+            'chequeCategories.receivedOn')
+            .from('cheques')
+            .leftJoin('chequeCategories', 'cheques.chequeCategoryId', 'chequeCategories.id')
+            .where('cheques.status', 'White')
+            .map(row => ({
+                id: row.id,
+                number: row.number,
+                category: {
+                    totalPages: row.totalPages,
+                    receivedOn: row.receivedOn
+                }
+            }));
     }
 
     getUsedCheques(paramters) {

@@ -1,24 +1,23 @@
 import Guid from 'guid';
 
-export default function journalUpdateController(
-    $scope,
-    logger,
-    translate,
-    navigate,
-    $stateParams,
-    $rootScope,
-    devConstants,
-    $timeout,
-    journalApi,
-    journalLineApi,
-    subsidiaryLedgerAccountApi,
-    dimensionCategoryApi,
-    dimensionApi,
-    detailAccountApi,
-    journalAttachImageService,
-    writeChequeOnJournalLineEntryService,
-    tagApi,
-    formService) {
+export default function journalUpdateController($scope,
+                                                logger,
+                                                translate,
+                                                navigate,
+                                                $stateParams,
+                                                $rootScope,
+                                                devConstants,
+                                                $timeout,
+                                                journalApi,
+                                                journalLineApi,
+                                                subsidiaryLedgerAccountApi,
+                                                dimensionCategoryApi,
+                                                dimensionApi,
+                                                detailAccountApi,
+                                                journalAttachImageService,
+                                                journalLineAdditionalInformation,
+                                                tagApi,
+                                                formService) {
 
     $scope.$emit('close-sidebar');
     let id = $stateParams.id,
@@ -32,6 +31,7 @@ export default function journalUpdateController(
                     journalLine.hasDimension1 = item && item.hasDimension1;
                     journalLine.hasDimension2 = item && item.hasDimension2;
                     journalLine.hasDimension3 = item && item.hasDimension3;
+                    journalLine.isBankAccount = item && item.isBankAccount;
                 }
             },
             detailAccount: {
@@ -76,6 +76,12 @@ export default function journalUpdateController(
             journalApi.getMaxNumber()
                 .then(result => $scope.journal.temporaryNumber = ++result);
 
+            /* added 2 row by default */
+
+            $timeout(() => {
+                $scope.createJournalLine();
+                $scope.createJournalLine();
+            });
         }
 
 
@@ -90,7 +96,6 @@ export default function journalUpdateController(
                 })
                 .finally(() => $scope.isJournalLineLoading = false);
         }
-
 
 
         subsidiaryLedgerAccountApi.getAll()
@@ -128,7 +133,7 @@ export default function journalUpdateController(
 
         $scope.isSaving = true;
 
-        let cmd = Object.assign($scope.journal, { journalLines: $scope.journalLines });
+        let cmd = Object.assign($scope.journal, {journalLines: $scope.journalLines});
 
         if (isNewJournal)
             return journalApi.create(cmd)
@@ -148,8 +153,8 @@ export default function journalUpdateController(
     $scope.createJournalLine = () => {
 
         let maxRow = $scope.journalLines.length == 0
-            ? 0
-            : $scope.journalLines.asEnumerable().max(line => line.row),
+                ? 0
+                : $scope.journalLines.asEnumerable().max(line => line.row),
             newJournal = {
                 id: Guid.new(),
                 row: ++maxRow,
@@ -173,44 +178,26 @@ export default function journalUpdateController(
     };
 
     $scope.attachImage = () => {
-        journalAttachImageService.show({ id: id })
+        journalAttachImageService.show({id: id})
             .then(fileName => {
                 $scope.journal.attachmentFileName = fileName;
                 logger.success();
             });
     };
 
-    $scope.print = () => navigate('journalPrint', { id: id });
+    $scope.print = () => navigate('journalPrint', {id: id});
 
-    $scope.writeCheque = () => {
-        $rootScope.blockUi.block();
-
-        let current = $scope.journalLineCurrent;
-        subsidiaryLedgerAccountApi.getById(current.subsidiaryLedgerAccountId)
-            .then((result) => {
-                $rootScope.blockUi.unBlock();
-
-                if (result.isBankAccount) {
-                    writeChequeOnJournalLineEntryService.show({
-                        journalLineId: current.id,
-                        detailAccountId: current.detailAccountId,
-                        detailAccountDisplay: current.detailAccountDisplay,
-                        amount: current.creditor,
-                        description: current.article,
-                        date: $scope.journal.date
-                    }).then(() => {
-                        $scope.gridOption.refresh();
-                        logger.success();
-                    });
-                }
-                else {
-                    logger.error(translate('The current subsidiaryLedgerAccount is not bank account'));
-                }
-            });
+    $scope.additionalInfo = journalLine => {
+        journalLineAdditionalInformation.show({
+            journal: $scope.journal,
+            journalLine
+        }).then(data => {
+            journalLine.additionalInformation = data;
+        });
     };
 
     $scope.onSaveTag = value => {
-        return tagApi.create({ title: value });
+        return tagApi.create({title: value});
     };
 
 }

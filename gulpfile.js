@@ -32,7 +32,7 @@ const path = require('path'),
     };
 
 gulp.task('build-template', function () {
-    return gulp.src([`${config.accSrcDir}/partials/**/*.html`, `${config.accSrcDir}/src/report/*.html`])
+    return gulp.src([`${config.accSrcDir}/partials/**/*.html`, `${config.accSrcDir}/src/**/*.html`])
         .pipe(templateCache(
             {
                 module: 'acc.module',

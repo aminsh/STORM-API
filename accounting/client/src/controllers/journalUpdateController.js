@@ -5,14 +5,19 @@ export default function journalUpdateController(
     $scope, 
     logger, 
     translate, 
-    navigate, 
+    navigate,
+    journalLineAdditionalInformation,
     $stateParams, 
     $rootScope, 
     devConstants, 
     $timeout,
-    journalApi, journalLineApi, subsidiaryLedgerAccountApi, dimensionCategoryApi, dimensionApi, detailAccountApi,
+    journalApi,
+    journalLineApi,
+    subsidiaryLedgerAccountApi,
+    dimensionCategoryApi,
+    dimensionApi,
+    detailAccountApi,
     journalAttachImageService,
-    writeChequeOnJournalLineEntryService,
     tagApi,
     formService) {
 
@@ -160,35 +165,15 @@ export default function journalUpdateController(
             });
     };
 
-    $scope.print = () => navigate('journalPrint', { id: id });//showReport(`/report/journal/${id}`);
+    $scope.print = () => navigate('journalPrint', { id: id });
 
-    $scope.writeCheque = () => {
-        $rootScope.blockUi.block();
-
-        let current = $scope.journalLineCurrent;
-        subsidiaryLedgerAccountApi.getById(current.subsidiaryLedgerAccountId)
-            .then((result) => {
-                $rootScope.blockUi.unBlock();
-
-                if (result.isBankAccount) {
-                    writeChequeOnJournalLineEntryService.show({
-                        journalLineId: current.id,
-                        detailAccountId: current.detailAccountId,
-                        detailAccountDisplay: current.detailAccountDisplay,
-                        amount: current.creditor,
-                        description: current.article,
-                        date: $scope.journal.date
-                    }).then(() => {
-                        $scope.gridOption.refresh();
-                        logger.success();
-                    });
-                }
-                else {
-                    logger.error(translate('The current subsidiaryLedgerAccount is not bank account'));
-                }
-            });
-
-
+    $scope.additionalInfo = journalLine => {
+        journalLineAdditionalInformation.show({
+            journal: $scope.journal,
+            journalLine
+        }).then(data => {
+            journalLine.additionalInformation = data;
+        });
     };
 
     $scope.onSaveTag = value => {

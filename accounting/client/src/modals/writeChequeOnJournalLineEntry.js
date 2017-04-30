@@ -1,8 +1,8 @@
 import accModule from '../acc.module';
 
 function writeChequeOnJournalLineEntryController($scope,
-                                                 chequeApi, chequeCategoryApi, data, $timeout,
-                                                 formService, $uibModalInstance, devConstants) {
+    chequeApi, chequeCategoryApi, data, $timeout,
+    formService, $uibModalInstance, devConstants) {
     $scope.errors = [];
     $scope.cheque = {
         journalLineId: data.journalLineId,
@@ -18,22 +18,19 @@ function writeChequeOnJournalLineEntryController($scope,
     $scope.hasOpenChequeCategories = true;
 
     chequeCategoryApi.getOpens(data.detailAccountId)
-        .then((result)=> {
+        .then(result => {
             $scope.openChequeCategories = result;
-            if (result.length == 0)
-                $scope.hasOpenChequeCategories = false;
+            $scope.hasOpenChequeCategories = result.length;
         });
 
-    $scope.selectChequeCategory = (cat)=> {
-        $scope.selectedChequeCategory = false;
-        $scope.whiteChequesDataSource.transport.read.url = devConstants.urls.cheque.allwhites(cat.id);
-
-        $timeout(()=> $scope.selectedChequeCategory = cat, 1);
+    $scope.selectChequeCategory = cat => {
+        $scope.selectedChequeCategory = cat;
+        setWhiteChanges(cat.id);
     };
 
     $scope.isSaving = false;
 
-    $scope.save = (form)=> {
+    $scope.save = (form) => {
         if (!$scope.hasOpenChequeCategories)
             return;
         if (form.$invalid)
@@ -41,25 +38,18 @@ function writeChequeOnJournalLineEntryController($scope,
 
         $scope.isSaving = true;
         chequeApi.write($scope.cheque.chequeId, $scope.cheque)
-            .then((result)=> $uibModalInstance.close(result))
-            .catch((result)=> $scope.errors = result)
-            .finally(()=> $scope.isSaving = false);
+            .then((result) => $uibModalInstance.close(result))
+            .catch((result) => $scope.errors = result)
+            .finally(() => $scope.isSaving = false);
     };
 
-    $scope.close = ()=> $uibModalInstance.dismiss();
+    $scope.close = () => $uibModalInstance.dismiss();
+    $scope.whiteCheques = [];
 
-    $scope.whiteChequesDataSource = {
-        type: "json",
-        serverFiltering: true,
-        transport: {
-            read: {
-                url: null
-            }
-        },
-        schema: {
-            data: 'data'
-        }
-    };
+    function setWhiteChanges(categoryId) {
+        chequeApi.getAllwhites(categoryId)
+            .then(result => $scope.whiteCheques = result.data);
+    }
 }
 
 function writeChequeOnJournalLineEntryService(modalBase) {
