@@ -15,6 +15,8 @@ module.exports = async((req, res, next) => {
         isAuthenticated: req.isAuthenticated(),
         currentUser: req.isAuthenticated() ? req.user.name : null,
         currentUserImage: req.isAuthenticated() ? req.user.image : '',
+        currentUserEmail: req.isAuthenticated() ? req.user.email : '',
+
         clientTranslation: clientTranslation,
         currentBranch: branchId
             ? await(branchQuery.getById(branchId))

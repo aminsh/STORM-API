@@ -30,7 +30,8 @@ const path = require('path'),
                 }
             },
             url: {
-                luca: 'http://localhost:2000/luca-demo'
+                luca: 'http://localhost:2000/luca-demo',
+                accounting: 'http://localhost:2000/acc'
             },
             auth: {
                 google: {
@@ -40,7 +41,8 @@ const path = require('path'),
                 }
             },
             branchId: 'c3339d0d-b4f7-4c96-b5c2-2d4376ceb9ea',
-            env
+            env,
+
 
         },
         test: {
@@ -68,7 +70,8 @@ const path = require('path'),
                 }
             },
             url: {
-                luca: 'https://storm-sandbox.herokuapp.com/luca-demo'
+                luca: 'https://storm-sandbox.herokuapp.com/luca-demo',
+                accounting: 'https://storm-sandbox.herokuapp.com/acc'
             },
             auth: {
                 google: {
@@ -103,7 +106,8 @@ const path = require('path'),
                 }
             },
             url: {
-                luca: 'https://www.storm-online.ir/luca-demo'
+                luca: 'https://www.storm-online.ir/luca-demo',
+                accounting: 'https://www.storm-online.ir/acc'
             },
             auth: {
                 google: {
