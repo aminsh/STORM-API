@@ -3,84 +3,68 @@ import accModule from '../acc.module';
 accModule.config(menuItemsProvider => {
     "use strict";
 
+    let chartOfAccount = [
+            {
+                title: 'حسابهای کل و معین',
+                url: 'general-ledger-accounts'
+            },
+            {
+                title: 'حساب تفصیل',
+                url: 'detail-accounts'
+            },
+            {
+                title: 'سطوح',
+                url: 'dimensions'
+            }
+        ],
+        journal = [
+            {
+                title: 'لیست اسناد حسابداری',
+                url: 'journals/list',
+                icon: ''
+            },
+            {
+                title: 'مدیریت اسناد',
+                url: 'journal-management',
+                icon: ''
+            }
+        ],
+        banking = [
+            {
+                title: 'دسته چک ها',
+                url: 'cheque-categories',
+                icon: ''
+            },
+            {
+                title: 'بانک ها',
+                url: 'banks',
+                icon: ''
+            }
+        ],
+        reporting = [
+            {
+                title: 'مرور حساب',
+                url: 'account-review',
+                icon: ''
+            },
+            {
+                title: 'گزارشات',
+                url: 'report/list',
+                icon: ''
+            }
+        ];
+
+
     menuItemsProvider
         .add({
-            title: 'سرفصل حسابها و سطوح',
+            title: 'حسابدار',
             url: '',
-            icon: 'fa fa-tasks',
+            icon: 'fa fa-user',
             children: [
-                {
-                    title: 'حسابهای کل و معین',
-                    url: 'general-ledger-accounts'
-                },
-                {
-                    title: 'حساب تفصیل',
-                    url: 'detail-accounts'
-                },
-                {
-                    title: 'سطوح',
-                    url: 'dimensions'
-                }
-            ]
-        })
-        .add({
-            title: 'سند حسابداری',
-            url: '',
-            icon: 'fa fa-book',
-            children: [
-                {
-                    title: 'لیست اسناد حسابداری',
-                    url: 'journals/list',
-                    icon: ''
-                },
-                {
-                    title: 'مدیریت اسناد',
-                    url: 'journal-management',
-                    icon: ''
-                },
-                {
-                    title: 'کپی سند',
-                    url: 'journal/copy',
-                    icon: 'glyphicon glyphicon-copy'
-                },
-                {
-                    title: 'سند استاندارد',
-                    url: 'journal-templates'
-                }
-            ]
-        })
-        .add({
-            title: 'خزانه داری',
-            url: '',
-            icon: 'fa fa-money',
-            children: [
-                {
-                    title: 'دسته چک ها',
-                    url: 'cheque-categories',
-                    icon: ''
-                },
-                {
-                    title: 'بانک ها',
-                    url: 'banks',
-                    icon: ''
-                }
-            ]
-        })
-        .add({
-            title: 'گزارشات',
-            url: '',
-            icon: 'fa fa-pie-chart',
-            children: [
-                {
-                    title: 'مرور حساب',
-                    url: 'account-review',
-                    icon: ''
-                },
-                {
-                    title: 'گزارشات',
-                    url: 'report/list',
-                    icon: ''
-                }
+                ...chartOfAccount,
+                ...journal,
+                ...banking,
+                ...reporting
             ]
         });
 });
