@@ -93,7 +93,7 @@ export function reportParametersModal(modalBase) {
     return modalBase({
         controller: 'reportParameterController',
         controllerAs: 'model',
-        templateUrl: 'partials/reportParameters.html'
+        templateUrl: 'partials/report/reportParameters.html'
     });
 }
 

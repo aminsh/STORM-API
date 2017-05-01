@@ -66,7 +66,6 @@ import './modals/journalBookkeeping';
 import './modals/journalAttachImage';
 import './modals/chequeCategroyCreate';
 import './modals/chequeCategroyUpdate';
-import './modals/writeChequeOnJournalLineEntry';
 import './modals/showJournalDetail';
 import './modals/journalAdvnacedSearch';
 import './modals/detailAccountCreate';
