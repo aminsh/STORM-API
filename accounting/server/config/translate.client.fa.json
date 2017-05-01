@@ -144,6 +144,7 @@
   "Description on cheque": "شرح روی چک",
   "Description cheque": "شرح چک",
   "Pages": "برگی",
+  "Received on": "تاریخ دریافت",
   "From": "از",
   "To": "تا",
   "Cheques": "چک ها",
@@ -216,6 +217,8 @@
   "Report list": "لیست گزارشات",
   "Have": "دارد",
   "Do not Have": "ندارد",
+  "Additional information": "اطلاعات بیشتر",
+
 
   "Debtor and creditor are not allowed to be zero , both of them":"بدهکار و بستانکار هر دو نباید صفر باشد",
   "Debtor and creditor are not allowed to have value , both of them": "بدهکار و بستانکار نباید هر دو دارای مقدار باشد",

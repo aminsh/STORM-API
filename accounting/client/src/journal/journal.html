@@ -1,0 +1,134 @@
+<dev-tag-content dev-attr-title="{{'Edit Journal'|translate}}">
+    <dev-tag-content-body>
+        <div class="row">
+            <form name="form" novalidate>
+                <div class="row col-md-12">
+                    <dev-tag-button
+                            ng-click="save(form)"
+                            icon="glyphicon glyphicon-floppy-disk"
+                            ng-disabled="isSaving"
+                            is-waiting="isSaving"
+                            style-type="primary"
+                            title="{{'Save' | translate}}"></dev-tag-button>
+
+                    <!--<dev-tag-button
+                            ng-click="bookkeeping()"
+                            style-type="white"
+                            title="{{'Record Bookkeeping' | translate}}"></dev-tag-button>-->
+
+                    <dev-tag-button
+                            ng-click="attachImage()"
+                            icon="glyphicon glyphicon-open"
+                            style-type="white"
+                            title="{{'Upload image' | translate}}"></dev-tag-button>
+
+                    <dev-tag-button
+                            ng-if="journal.attachmentFileName"
+                            href="/{{journal.attachmentFileName}}"
+                            target="_blank"
+                            icon="glyphicon glyphicon-paperclip"
+                            style-type="white"
+                            title="{{'Show attachment image' | translate}}"></dev-tag-button>
+
+                    <dev-tag-button
+                            ng-click="print()"
+                            title="{{'Print' | translate}}"
+                            icon="glyphicon glyphicon-print"
+                            style-type="white"></dev-tag-button>
+                </div>
+
+                <div class="row" style="margin-bottom: 20px;">
+
+                    <div class="col-md-6">
+                        <div class="row" style="margin-top: 20px">
+                            <div class="col-md-2" style="text-align: left;margin-top: 7px">
+                                <label class="label-control">{{'Temporary number' | translate}}</label>
+                            </div>
+                            <div class="col-md-4">
+                                <dev-tag-numeric
+                                        ng-model="journal.temporaryNumber"
+                                        style="width: 100%"
+                                        name="temporaryNumber"
+                                        required></dev-tag-numeric>
+
+                                <div ng-messages="form.temporaryNumber.$error" ng-if="form.temporaryNumber.$dirty">
+                                    <label ng-message="required" class="error">
+                                        {{'This field is required'|translate}}</label>
+                                </div>
+                            </div>
+                            <div class="col-md-2" style="text-align: left;margin-top: 7px">
+                                <label class="label-control">{{'Temporary date' | translate}}</label>
+                            </div>
+                            <div class="col-md-4">
+                                <dev-tag-datepicker
+                                        ng-model="journal.temporaryDate"
+                                        name="temporaryDate"
+                                        required></dev-tag-datepicker>
+
+                                <div ng-messages="form.temporaryDate.$error" ng-if="form.temporaryDate.$dirty">
+                                    <label ng-message="required" class="error">{{'This field is required'|translate}}</label>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="row" style="margin-top: 10px">
+                            <div class="col-md-2" style="text-align: left;margin-top: 7px">
+                                <i class="fa fa-tags" style="font-size: 18px"></i>
+                                <label class="label-control">{{'Tag' | translate}}</label>
+                            </div>
+                            <div class="col-md-4">
+                                <dev-tag-combo-box
+                                        ng-model="journal.tagId"
+                                        k-data-source="tags"
+                                        k-placeholder="{{'Select ...'|translate}}"
+                                        k-data-text-field="title"
+                                        k-data-value-field="id"></dev-tag-combo-box>
+                            </div>
+
+                            <div class="col-md-2" style="text-align: left;margin-top: 7px">
+                                <label class="label-control">{{'Journal type' | translate}}</label>
+                            </div>
+                            <div class="col-md-4">
+                                <select ng-model="journal.journalType"
+                                        ng-options="p.key as p.display for p in journalTypeData"
+                                        class="form-control">
+                                    <option value="">{{'Select ...'|translate}}</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row" style="margin-top: 10px">
+                            <div class="col-md-3" style="text-align: left;margin-top: 7px">
+                                <label class="label-control">{{'Description' | translate}}</label>
+                            </div>
+                            <div class="col-md-9">
+                        <textarea type="text" class="form-control" ng-model="journal.description"
+                                  name="description" style="width: 100%;height: 90px"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+
+                        <dev-tag-content-body is-loading="isJournalLineLoading">
+                            <div style="padding: 10px"
+                                 ng-include="'partials/journal/journalLines-template.html'"></div>
+                        </dev-tag-content-body>
+
+                    </div>
+
+
+                </div>
+            </form>
+        </div>
+    </dev-tag-content-body>
+</dev-tag-content>
+
+
+
+
+

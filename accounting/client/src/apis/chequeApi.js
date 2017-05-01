@@ -7,10 +7,11 @@ function chequeApi(apiPromise) {
         getById: function (id) {
             return apiPromise.get('{0}/cheques/{1}'.format(urlPrefix, id));
         },
-        write: (id, data)=> apiPromise.put('{0}/cheques/{1}/write'.format(urlPrefix, id), data)
+        getAllWhites: detailAccountId => apiPromise.get(`${urlPrefix}/cheques/detail-account/${detailAccountId}/whites/all`),
+        getAllUsed(){
+            return apiPromise.get(`${urlPrefix}/cheques/used/all`);
+        }
     };
-
-
 }
 
 accModule.factory('chequeApi', chequeApi);

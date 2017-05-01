@@ -120,12 +120,12 @@ export default function ($stateProvider, $urlRouterProvider, $locationProvider) 
         .state('journals.create', {
             url: '/create',
             controller: 'journalUpdateController',
-            templateUrl: 'partials/views/journalUpdate.html'
+            templateUrl: 'partials/journal/journal.html'
         })
         .state('journals.edit', {
             url: '/:id/edit',
             controller: 'journalUpdateController',
-            templateUrl: 'partials/views/journalUpdate.html'
+            templateUrl: 'partials/journal/journal.html'
         })
         .state('journalCopy', {
             url: 'journal/copy',
@@ -206,19 +206,19 @@ export default function ($stateProvider, $urlRouterProvider, $locationProvider) 
             url: '/list',
             controller: 'reportListController',
             controllerAs: 'model',
-            templateUrl: 'partials/reportList.html'
+            templateUrl: 'partials/report/reportList.html'
         })
         .state('report.print', {
             url: '/:key',
             controller: 'ReportPrintController',
             controllerAs: 'model',
-            templateUrl: 'partials/reportPrint.html'
+            templateUrl: 'partials/report/reportPrint.html'
         })
         .state('report.design', {
             url: '/design/:key',
             controller: 'reportDesignController',
             controllerAs: 'model',
-            templateUrl: 'partials/reportDesign.html'
+            templateUrl: 'partials/report/reportDesign.html'
         })
         .state('not-found', {
             url: '/not-found',

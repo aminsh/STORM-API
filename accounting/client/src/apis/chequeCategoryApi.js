@@ -4,9 +4,8 @@ function chequeCategoryApi(apiPromise) {
     var urlPrefix = '/acc/api';
 
     return {
-        getOpens: (detailAccountId)=>
-            apiPromise.get('{0}/cheque-categories/detail-account/{1}/opens'
-                .format(urlPrefix, detailAccountId)),
+        getOpens: detailAccountId =>
+            apiPromise.get(`${urlPrefix}/cheque-categories/detail-account/${detailAccountId}/opens`),
         getById: function (id) {
             return apiPromise.get('{0}/cheque-categories/{1}'.format(urlPrefix, id));
         },

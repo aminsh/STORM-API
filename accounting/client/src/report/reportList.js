@@ -1,11 +1,10 @@
 "use strict";
 
 export default class {
-    constructor(
-        $scope,
-        devConstants,
-        reportParameters,
-        navigate) {
+    constructor($scope,
+                devConstants,
+                reportParameters,
+                navigate) {
 
         $scope.$emit('close-sidebar');
 
@@ -16,29 +15,29 @@ export default class {
 
     show(report) {
         if (!report.params)
-            return this.navigate('^.print', { key: report.key });
+            return this.navigate('^.print', {key: report.key});
 
         if (report.params.lenght == 0)
-            return this.navigate('^.print', { key: report.key });
+            return this.navigate('^.print', {key: report.key});
 
         this.reportParameters.show(report.params)
             .then(params => this.navigate(
                 '^.print',
-                { key: report.key },
+                {key: report.key},
                 params));
     }
 
     design(report) {
-         if (!report.params)
-            return this.navigate('^.design', { key: report.key });
+        if (!report.params)
+            return this.navigate('^.design', {key: report.key});
 
         if (report.params.lenght == 0)
-            return this.navigate('^.design', { key: report.key });
+            return this.navigate('^.design', {key: report.key});
 
         this.reportParameters.show(report.params)
             .then(params => this.navigate(
                 '^.design',
-                { key: report.key },
+                {key: report.key},
                 params));
     }
 }

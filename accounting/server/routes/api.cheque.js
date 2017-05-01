@@ -13,17 +13,18 @@ router.route('/category/:categoryId')
         res.json(result);
     }));
 
-router.route('/category/:categoryId/whites').get(async((req, res) => {
+router.route('/detail-account/:detailAccountId/whites/all').get(async((req, res) => {
     let chequeQuery = new ChequeQuery(req.cookies['branch-id']),
-        result = await(chequeQuery.getWhiteCheques(req.params.categoryId));
-    res.json(result);
+        result = await(chequeQuery.getWhiteCheques(req.params.detailAccountId));
+     res.json(result);
 }));
 
-router.route('/cheques/used/all').get(async((req, res) => {
+router.route('/used/all').get(async((req, res) => {
     let chequeQuery = new ChequeQuery(req.cookies['branch-id']),
         result = await(chequeQuery.getUsedCheques(req.query));
     res.json(result);
 }));
+
 
 router.route('/:id').get(async((req, res) => {
     let chequeQuery = new ChequeQuery(req.cookies['branch-id']),

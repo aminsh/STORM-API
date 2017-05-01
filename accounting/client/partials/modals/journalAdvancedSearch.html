@@ -15,7 +15,7 @@
                 <div class="col-md-10">
                     <input type="text"
                            ng-model="journalSearch.title"
-                           popover="{{'Included journal description and article'|translate}}"
+                           uib-popover="{{'Included journal description and article'|translate}}"
                            popover-trigger="focus" class="form-control"
                            popover-placement="left"
                            name="title">
@@ -74,11 +74,12 @@
                     <label class="label-control">{{'General ledger account' | translate}}</label>
                 </div>
                 <div class="col-md-10">
-                    <dev-tag-multi-select
-                        ng-model="journalSearch.generalLedgerAccounts"
-                        k-data-source="generalLedgerAccountDataSource"
-                        k-data-text-field="display"
-                        k-data-value-field="id"></dev-tag-multi-select>
+                    <dev-tag-combo-box
+                            multiple
+                            ng-model="journalSearch.generalLedgerAccounts"
+                            k-data-source="generalLedgerAccountDataSource"
+                            k-data-text-field="display"
+                            k-data-value-field="id"></dev-tag-combo-box>
                 </div>
             </div>
             <div class="row" style="margin-top: 10px">
@@ -86,11 +87,12 @@
                     <label class="label-control">{{'Subsidiary ledger account' | translate}}</label>
                 </div>
                 <div class="col-md-10">
-                    <dev-tag-multi-select
+                    <dev-tag-combo-box
+                            multiple
                             ng-model="journalSearch.subsidiaryLedgerAccounts"
                             k-data-source="subsidiaryLedgerAccountDataSource"
                             k-data-text-field="account"
-                            k-data-value-field="id"></dev-tag-multi-select>
+                            k-data-value-field="id"></dev-tag-combo-box>
                 </div>
             </div>
             <div class="row" style="margin-top: 10px">
@@ -98,11 +100,12 @@
                     <label class="label-control">{{'Detail account' | translate}}</label>
                 </div>
                 <div class="col-md-10">
-                    <dev-tag-multi-select
+                    <dev-tag-combo-box
+                            multiple
                             ng-model="journalSearch.detailAccounts"
                             k-data-source="detailAccountDataSource"
                             k-data-text-field="display"
-                            k-data-value-field="id"></dev-tag-multi-select>
+                            k-data-value-field="id"></dev-tag-combo-box>
                 </div>
             </div>
 
@@ -112,11 +115,12 @@
                     <label class="label-control">{{category.title}}</label>
                 </div>
                 <div class="col-md-10">
-                    <dev-tag-multi-select
+                    <dev-tag-combo-box
+                            multiple
                             ng-model="journalSearch['dimension'+($index+1)+'s']"
                             k-data-source="{{'dimension'+($index+1)+'DataSource'}}"
                             k-data-text-field="display"
-                            k-data-value-field="id"></dev-tag-multi-select>
+                            k-data-value-field="id"></dev-tag-combo-box>
                 </div>
             </div>
 
@@ -125,11 +129,12 @@
                     <label class="label-control">{{'Cheque number' | translate}}</label>
                 </div>
                 <div class="col-md-10">
-                    <dev-tag-multi-select
+                    <dev-tag-combo-box
+                            multiple
                             ng-model="journalSearch.chequeNumbers"
                             k-data-source="chequeDataSource"
                             k-data-text-field="number"
-                            k-data-value-field="id"></dev-tag-multi-select>
+                            k-data-value-field="id"></dev-tag-combo-box>
                 </div>
             </div>
 
@@ -180,13 +185,11 @@
                     </div>
                 </div>
                 <div class="col-md-5" style="text-align: left;margin-top: 2px;text-align: right">
-                    <dev-tag-dropdownlist
-                            name="amountOperator"
-                            k-data-value-field="key"
-                            k-data-text-field="display"
-                            k-data-source="amountOperators"
-                            k-value-primitive="false"
-                            ng-model="journalSearch.amount.operator"></dev-tag-dropdownlist>
+                    <select name="amountOperator"
+                            ng-model="journalSearch.amount.operator"
+                            ng-options="p.key as p.display for p in amountOperators"
+                            class="form-control">
+                    </select>
                 </div>
             </div>
             <div class="row" style="margin-top: 10px">
