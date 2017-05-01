@@ -16,10 +16,10 @@ router.route('/category/:categoryId')
 router.route('/detail-account/:detailAccountId/whites/all').get(async((req, res) => {
     let chequeQuery = new ChequeQuery(req.cookies['branch-id']),
         result = await(chequeQuery.getWhiteCheques(req.params.detailAccountId));
-    res.json(result);
+     res.json(result);
 }));
 
-router.route('/cheques/used/all').get(async((req, res) => {
+router.route('/used/all').get(async((req, res) => {
     let chequeQuery = new ChequeQuery(req.cookies['branch-id']),
         result = await(chequeQuery.getUsedCheques(req.query));
     res.json(result);

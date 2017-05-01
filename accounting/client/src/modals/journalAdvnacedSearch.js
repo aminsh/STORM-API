@@ -1,6 +1,11 @@
 import accModule from '../acc.module';
 
-function journalAdvancedSearchModalController($scope, $uibModalInstance, translate, devConstants,
+function journalAdvancedSearchModalController($scope, $uibModalInstance, translate, devConstants, $q,
+                                              chequeApi,
+                                              dimensionApi,
+                                              generalLedgerAccountApi,
+                                              subsidiaryLedgerAccountApi,
+                                              detailAccountApi,
                                               dimensionCategoryApi) {
     $scope.journalSearch = {
         title: '',
@@ -21,7 +26,7 @@ function journalAdvancedSearchModalController($scope, $uibModalInstance, transla
         chequeDescription: '',
         amount: {
             value: null,
-            operator: null,
+            operator: 'eq',
         },
         isNotPeriodIncluded: false
     };
@@ -45,48 +50,41 @@ function journalAdvancedSearchModalController($scope, $uibModalInstance, transla
 
     $scope.close = () => $uibModalInstance.dismiss();
 
-    $scope.generalLedgerAccountDataSource = {
-        type: "json",
-        serverFiltering: true,
-        transport: {
-            read: {
-                url: devConstants.urls.generalLedgerAccount.all()
-            }
-        },
-        schema: {
-            data: 'data'
-        }
-    };
+    let dimensionCategories = dimensionCategoryApi.getAllLookupSync().data,
+        promises = [
+            {key: 'generalLedgerAccount', func: generalLedgerAccountApi.getAll()},
+            {key: 'subsidiaryLedgerAccount', func: subsidiaryLedgerAccountApi.getAll()},
+            {key: 'detailAccount', func: detailAccountApi.getAll()},
+            {key: 'dimension1', func: dimensionApi.getByCategory(dimensionCategories[0].id)},
+            {key: 'dimension2', func: dimensionApi.getByCategory(dimensionCategories[1].id)},
+            {key: 'dimension3', func: dimensionApi.getByCategory(dimensionCategories[2].id)},
+            {key: 'cheque', func: chequeApi.getAllUsed()}
+        ];
 
-    $scope.subsidiaryLedgerAccountDataSource = {
-        type: "json",
-        serverFiltering: true,
-        transport: {
-            read: {
-                url: devConstants.urls.subsidiaryLedgerAccount.all()
-            }
-        },
-        schema: {
-            data: 'data'
-        }
-    };
+    $q.all(
+        promises.asEnumerable()
+            .select(p => p.func)
+            .toArray())
+        .then(result => {
+            $scope.generalLedgerAccountDataSource = result[0].data;
+            $scope.subsidiaryLedgerAccountDataSource = result[1].data;
+            $scope.detailAccountDataSource = result[2].data;
+            $scope.dimension1DataSource = result[3].data;
+            $scope.dimension2DataSource = result[4].data;
+            $scope.dimension3DataSource = result[5].data;
+            $scope.chequeDataSource = result[6];
 
-    $scope.dimension1DataSource = {};
-    $scope.dimension2DataSource = {};
-    $scope.dimension3DataSource = {};
+            $scope.canShowContent = true;
 
-    $scope.detailAccountDataSource = {
-        type: "json",
-        serverFiltering: true,
-        transport: {
-            read: {
-                url: devConstants.urls.detailAccount.all()
-            }
-        },
-        schema: {
-            data: 'data'
-        }
-    };
+        });
+
+    $scope.generalLedgerAccountDataSource = [];
+    $scope.subsidiaryLedgerAccountDataSource = [];
+    $scope.dimension1DataSource = [];
+    $scope.dimension2DataSource = [];
+    $scope.dimension3DataSource = [];
+    $scope.chequeDataSource = [];
+
 
     dimensionCategoryApi.getAll()
         .then((result) => {
@@ -112,19 +110,6 @@ function journalAdvancedSearchModalController($scope, $uibModalInstance, transla
             }
         };
     }
-
-    $scope.chequeDataSource = {
-        type: "json",
-        serverFiltering: true,
-        transport: {
-            read: {
-                url: devConstants.urls.cheque.allUseds()
-            }
-        },
-        schema: {
-            data: 'data'
-        }
-    };
 
     function resolveFilter(filterData) {
 

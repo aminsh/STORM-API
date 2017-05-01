@@ -47,8 +47,7 @@ module.exports = class ChequeQuery extends BaseQuery {
             }));
     }
 
-    getUsedCheques(paramters) {
-        let query = this.knex.select('*').from('cheques').andWhere('status', 'Used');
-        return kendoQueryResolve(query, paramters, view);
+    getUsedCheques() {
+        return this.knex.select('*').from('cheques').andWhere('status', 'Used');
     }
 };
