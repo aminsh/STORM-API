@@ -7,9 +7,7 @@ function accountReviewController($scope,
                                  dimensionApi,
                                  formService,
                                  translate,
-                                 $q,
-                                 $location,
-                                 $state) {
+                                 $q) {
 
     $scope.parameters = [];
     $scope.reportTypes = [
