@@ -1,6 +1,6 @@
 <dev-tag-content dev-attr-title="{{'Edit Journal'|translate}}">
     <dev-tag-content-body>
-        <div class="row">
+        <div class="row" >
             <form name="form" novalidate>
                 <div class="row col-md-12">
                     <dev-tag-button
@@ -77,13 +77,19 @@
                                 <i class="fa fa-tags" style="font-size: 18px"></i>
                                 <label class="label-control">{{'Tag' | translate}}</label>
                             </div>
-                            <div class="col-md-4">
-                                <dev-tag-combo-box
-                                        ng-model="journal.tagId"
-                                        k-data-source="tags"
-                                        k-placeholder="{{'Select ...'|translate}}"
-                                        k-data-text-field="title"
-                                        k-data-value-field="id"></dev-tag-combo-box>
+                            <div class="col-md-4 form-group">
+                                <div class="input-group">
+                                    <dev-tag-combo-box
+                                            ng-model="journal.tagId"
+                                            k-data-source="tags"
+                                            k-placeholder="{{'Select ...'|translate}}"
+                                            k-data-text-field="title"
+                                            k-data-value-field="id"></dev-tag-combo-box>
+                                    <div class="input-group-addon" style="border: 0">
+                                        <a ng-click="createTag()"><i class="fa fa-plus"></i></a>
+                                    </div>
+                                </div>
+
                             </div>
 
                             <div class="col-md-2" style="text-align: left;margin-top: 7px">
