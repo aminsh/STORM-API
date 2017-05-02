@@ -10,7 +10,7 @@
         "fileName": "detailJournalsList",
         "params": [
           {
-            "name": "date","required":"true"
+            "name": "date"
           },
           {
             "name": "number"
@@ -37,8 +37,12 @@
         "func": "detailGeneralSubsidiaryJournal",
         "fileName": "detailGeneralSubsidiaryJournalList",
         "params": [
-          "date",
-          "number"
+          {
+            "name": "date"
+          },
+          {
+            "name": "number"
+          }
         ]
       },
       {
@@ -47,8 +51,12 @@
         "func": "detailSubsidiaryDetailJournal",
         "fileName": "detailSubsidiaryDetailJournalList",
         "params": [
-          "date",
-          "number"
+          {
+            "name": "date"
+          },
+          {
+            "name": "number"
+          }
         ]
       }
     ]
@@ -64,20 +72,16 @@
         "fileName": "detailGeneralSubsidiaryTurnoverList",
         "params": [
           {
-            "name": "date",
-            "required": "false"
+            "name": "date"
           },
           {
-            "name": "number",
-            "required": "false"
+            "name": "number"
           },
           {
-            "name": "generalLedgerAccount",
-            "required": "true"
+            "name": "generalLedgerAccount"
           },
           {
-            "name": "subsidiaryLedgerAccount",
-            "required": "false"
+            "name": "subsidiaryLedgerAccount"
           }
         ]
       },
@@ -88,16 +92,13 @@
         "fileName": "detailSubsidiaryDetailTurnoverList",
         "params": [
           {
-            "name": "date",
-            "required": "false"
+            "name": "date"
           },
           {
-            "name": "number",
-            "required": "false"
+            "name": "number"
           },
           {
-            "name": "subsidiaryLedgerAccount",
-            "required": "true"
+            "name": "subsidiaryLedgerAccount"
           }
         ]
       },
@@ -108,20 +109,16 @@
         "fileName": "detailGeneralSubsidiaryDetailTurnoverList",
         "params": [
           {
-            "name": "date",
-            "required": "false"
+            "name": "date"
           },
           {
-            "name": "number",
-            "required": "false"
+            "name": "number"
           },
           {
-            "name": "generalLedgerAccount",
-            "required": "true"
+            "name": "generalLedgerAccount"
           },
           {
-            "name": "subsidiaryLedgerAccount",
-            "required": "true"
+            "name": "subsidiaryLedgerAccount"
           }
         ]
       }
@@ -138,12 +135,10 @@
         "fileName": "totalGeneralSubsidiaryTurnoverList",
         "params": [
           {
-            "name": "generalLedgerAccount",
-            "required": "false"
+            "name": "generalLedgerAccount"
           },
           {
-            "name": "subsidiaryLedgerAccount",
-            "required": "false"
+            "name": "subsidiaryLedgerAccount"
           }
         ]
       },
@@ -154,8 +149,7 @@
         "fileName": "totalSubsidiaryDetailTurnoverList",
         "params": [
           {
-            "name": "subsidiaryLedgerAccount",
-            "required": "false"
+            "name": "subsidiaryLedgerAccount"
           }
         ]
       },
@@ -166,12 +160,10 @@
         "fileName": "totalGeneralSubsidiaryDetailTurnoverList",
         "params": [
           {
-            "name": "generalLedgerAccount",
-            "required": "false"
+            "name": "generalLedgerAccount"
           },
           {
-            "name": "subsidiaryLedgerAccount",
-            "required": "false"
+            "name": "subsidiaryLedgerAccount"
           }
         ]
       }
@@ -188,12 +180,10 @@
         "fileName": "journalOfficeList",
         "params": [
           {
-            "name": "generalLedgerAccount",
-            "required": "false"
+            "name": "generalLedgerAccount"
           },
           {
-            "name": "date",
-            "required": "false"
+            "name": "date"
           }
         ]
       },
@@ -204,8 +194,7 @@
         "fileName": "generalOfficeList",
         "params": [
           {
-            "name": "date",
-            "required": "false"
+            "name": "date"
           }
         ]
       },
@@ -216,12 +205,10 @@
         "fileName": "subsidiaryOfficeList",
         "params": [
           {
-            "name": "generalLedgerAccount",
-            "required": "false"
+            "name": "generalLedgerAccount"
           },
           {
-            "name": "date",
-            "required": "false"
+            "name": "date"
           }
         ]
       }
@@ -238,8 +225,7 @@
         "fileName": "generalBalanceList",
         "params": [
           {
-            "name": "generalLedgerAccount",
-            "required": "false"
+            "name": "generalLedgerAccount"
           }
         ]
       },
@@ -250,12 +236,10 @@
         "fileName": "subsidiaryBalanceList",
         "params": [
           {
-            "name": "generalLedgerAccount",
-            "required": "false"
+            "name": "generalLedgerAccount"
           },
           {
-            "name": "subsidiaryLedgerAccount",
-            "required": "false"
+            "name": "subsidiaryLedgerAccount"
           }
         ]
       },
@@ -266,12 +250,10 @@
         "fileName": "subsidiaryDetailBalanceList",
         "params": [
           {
-            "name": "generalLedgerAccount",
-            "required": "false"
+            "name": "generalLedgerAccount"
           },
           {
-            "name": "subsidiaryLedgerAccount",
-            "required": "false"
+            "name": "subsidiaryLedgerAccount"
           }
         ]
       },
@@ -282,12 +264,10 @@
         "fileName": "generalSubsidiaryDetailBalanceList",
         "params": [
           {
-            "name": "generalLedgerAccount",
-            "required": "false"
+            "name": "generalLedgerAccount"
           },
           {
-            "name": "subsidiaryLedgerAccount",
-            "required": "false"
+            "name": "subsidiaryLedgerAccount"
           }
         ]
       }
