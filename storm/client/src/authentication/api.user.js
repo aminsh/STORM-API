@@ -29,6 +29,7 @@ export default class UserApi {
     getAuthReturnUrl(){
         return this.Api.get(`${this.prefixUrl}/return-url`);
     }
+
 }
 
 UserApi.$inject = ['Api'];

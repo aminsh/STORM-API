@@ -41,4 +41,8 @@ module.exports = class{
     updateMember(memberId, member){
         return knex('userInBranches').where('id', memberId).update(member);
     }
+
+    getBranchId(userId){
+        return knex('userInBranches').where('userId', memberId).first();
+    }
 };

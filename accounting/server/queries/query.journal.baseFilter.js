@@ -22,10 +22,10 @@ module.exports = function (query, filter, currentFiscalPeriod,knex) {
     }
 
     if (filter.minNumber && filter.maxNumber)
-        query.andWhereBetween('temporaryNumber', [filter.minNumber, filter.maxNumber]);
+        query.andWhereBetween('number', [filter.minNumber, filter.maxNumber]);
 
     if (filter.minDate && filter.maxDate)
-        query.andWhereBetween('temporaryDate', [filter.minDate, filter.maxDate]);
+        query.andWhereBetween('date', [filter.minDate, filter.maxDate]);
 
     if (filter.generalLedgerAccounts && filter.generalLedgerAccounts.length > 0)
         query.whereIn('generalLedgerAccountId', filter.generalLedgerAccounts);
