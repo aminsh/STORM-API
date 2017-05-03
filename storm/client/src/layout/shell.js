@@ -21,6 +21,8 @@ function shell($mdSidenav, $rootScope, $window) {
                     scope.logined = true;
                 }
             }
+
+            scope.logout = () => $window.href = `${$window.origin}/logout`;
         }
     }
 }

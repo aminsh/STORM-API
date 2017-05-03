@@ -11,4 +11,11 @@ router.route('/google').get(googleAuthenticate);
 
 router.route('/google/callback').get(googleAuthenticateCallback);
 
+router.route('/logout').all((req, res) => {
+    if (req.isAuthenticated())
+        req.logout();
+    res.redirect('/login');
+});
+
+
 module.exports = router;
