@@ -1,7 +1,7 @@
 "use strict";
 
 export default class currentService {
-    constructor($cookies) {
+    constructor($cookies, $rootScope) {
         this.current = {
             today: null,
             fiscalPeriod: null,
@@ -11,15 +11,18 @@ export default class currentService {
         };
 
         this.$cookies = $cookies;
+        this.$rootScope = $rootScope;
     }
 
-    setToday(today){
+    setToday(today) {
         this.current.today = today;
     }
 
     setFiscalPeriod(fiscalPeriodId) {
         this.$cookies.put('current-period', fiscalPeriodId);
         this.current.fiscalPeriod = fiscalPeriodId == 0 ? null : fiscalPeriodId;
+
+        this.$rootScope.$broadcast('fiscal-period-changed', {fiscalPeriodId});
     }
 
     setMode(mode) {
