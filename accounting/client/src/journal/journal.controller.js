@@ -1,6 +1,7 @@
 import Guid from 'guid';
 
 export default function journalUpdateController($scope,
+                                                prompt,
                                                 logger,
                                                 translate,
                                                 navigate,
@@ -20,6 +21,46 @@ export default function journalUpdateController($scope,
                                                 formService) {
 
     $scope.$emit('close-sidebar');
+
+    $scope.keyUpGridRow = (e, item, field) => {
+        if (e.keyCode == 115)
+            return ['debtor', 'creditor'].includes(field) && exchangeDebtorAndCreditor(e, item);
+        if (e.keyCode == 113)
+            return copyFromUpperItem(e, item, field);
+    };
+
+    function exchangeDebtorAndCreditor(e, item) {
+        e.preventDefault();
+
+        let debtor = item.debtor,
+            creditor = item.creditor;
+
+        item.debtor = creditor;
+        item.creditor = debtor;
+    }
+
+    function copyFromUpperItem(e, item, field) {
+        e.preventDefault();
+
+        let currentIndex = $scope.journalLines.indexOf(item);
+
+        if (currentIndex == 0)
+            return;
+
+        let upperItem = $scope.journalLines[currentIndex - 1];
+
+        item[field] = upperItem[field];
+
+        if (['subsidiaryLedgerAccountId', 'detailAccountId'].includes(field)) {
+            let columnName = field.replace('Id', ''),
+                id = item[field],
+                model = $scope.columnConfig[columnName].dataSource.asEnumerable()
+                    .single(p => p.id == id);
+
+            $scope.columnConfig[columnName].onChanged(model, item);
+        }
+    }
+
     let id = $stateParams.id,
         isNewJournal = $stateParams.id == null,
         columnConfig = {
@@ -32,10 +73,20 @@ export default function journalUpdateController($scope,
                     journalLine.hasDimension2 = item && item.hasDimension2;
                     journalLine.hasDimension3 = item && item.hasDimension3;
                     journalLine.isBankAccount = item && item.isBankAccount;
+
+                    $timeout(() => {
+                        if (journalLine.hasDetailAccount)
+                            $scope.$broadcast(`detailAccount-focus-${journalLine.id}`);
+                    });
                 }
             },
             detailAccount: {
-                dataSource: []
+                dataSource: [],
+                onChanged(item, journalLine){
+                    $timeout(() => {
+                        $scope.$broadcast(`article-focus-${journalLine.id}`);
+                    });
+                }
             },
             dimension1: {
                 dataSource: []
@@ -169,9 +220,10 @@ export default function journalUpdateController($scope,
                 creditor: 0
             };
 
-        $scope.journalLines.unshift(newJournal);
+        $scope.journalLines.push(newJournal);
 
         $timeout(() => {
+            $scope.$broadcast('grid-scroll-to-row', {id: newJournal.id});
             $scope.$broadcast(`subsidiaryLedgerAccount-focus-${newJournal.id}`);
             $scope.$broadcast('grid-changed');
         });
@@ -196,8 +248,19 @@ export default function journalUpdateController($scope,
         });
     };
 
-    $scope.onSaveTag = value => {
-        return tagApi.create({title: value});
+    $scope.createTag = () => {
+        prompt({
+            title: translate('Create Tag'),
+            text: translate('Enter Tag Title'),
+        }).then(inputValue => {
+
+            tagApi.create({title: inputValue})
+                .then(result => {
+                    let tag = {id: result.id, title: inputValue};
+                    $scope.tags.push(tag);
+                    $scope.journal.tagId = tag.id;
+                });
+        });
     };
 
 }

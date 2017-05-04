@@ -2,7 +2,6 @@ import angular from 'angular';
 import 'angular-animate';
 import 'angular-ui-bootstrap';
 import 'angular-ui-router';
-//import 'angular-route';
 import 'angular-sanitize';
 import 'angular-translate';
 import 'angular-resource';
@@ -21,7 +20,6 @@ Object.defineProperty(Array.prototype, 'dtp_toDate', { enumerable: false });
 
 let accModule = angular.module('acc.module', [
     'ngAnimate',
-    //'ngRoute',
     'ngResource',
     'ngSanitize',
     'ui.bootstrap',

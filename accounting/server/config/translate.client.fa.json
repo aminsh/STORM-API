@@ -89,6 +89,8 @@
   "Journal type": "نوع سند",
   "Journal status": "وضعیت سند",
   "Tag": "تگ",
+  "Create Tag": "ایجاد تگ",
+  "Enter Tag Title": "عنوان تگ را وارد کنید",
   "Debtor": "بدهکار",
   "Creditor": "بستانکار",
   "Remainder": "مانده",

@@ -79,14 +79,11 @@ import './directives/subContent';
 import './directives/blockUi';
 import './directives/customValidator';
 import './directives/validationSummary';
-import './directives/focusMe';
 import './directives/uploader';
 import './directives/button';
 import './directives/combobox';
 import './directives/content';
 import './directives/datepicker';
-/*import './directives/dropdownlist';
-import './directives/multiSelect';*/
 import './directives/toolbar';
 import './directives/layout';
 import './directives/numeric';
@@ -109,6 +106,7 @@ import dataTable from './directives/dataTable';
 import paging from './directives/paging';
 import ngHtmlCompile from './directives/ngHtmlCompile';
 import doughnutChart from './directives/chart.doughnut';
+import focusMeOn from './directives/focusMeOn';
 
 //filter
 import './filters/amount';
@@ -154,6 +152,7 @@ accModule
     .directive('ngHtmlCompile', ngHtmlCompile)
     .directive('devTagChartDoughnut', doughnutChart)
     .directive('devDataTable', dataTable)
+    .directive('focusMeOn', focusMeOn)
 
     .service('$modelFactory', $ModalFactory)
     .service('promise', Promise)
@@ -166,6 +165,7 @@ accModule
     .controller('chequePrintController', chequePrintController)
     .controller('reportController', reportController)
     .controller('reportDesignerController', reportDesignerController)
+
     .filter('totalSum', totalSum);
 
 accModule.init();

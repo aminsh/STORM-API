@@ -1,67 +1,15 @@
 import accModule from '../acc.module';
 
-function homeController($scope, currentService, navigate, journalApi, translate,
-                        journalCreateModalControllerService,
-                        journalAdvancedSearchModalService) {
+function homeController($scope, currentService, navigate, journalApi, translate) {
 
     let current = currentService.get();
 
     if (!current.fiscalPeriod)
         return navigate('createFiscalPeriod');
 
-    $scope.select = c => {
-     /*   var x = c;
-        console.log(c);*/
-    };
+    fetch();
 
-    $scope.save = () => $scope.isWaiting = !$scope.isWaiting;
-
-    journalApi.getGroupedByMouth()
-        .then(result => {
-            let items = result.data.asEnumerable();
-
-            let colors = ['#803690', '#00ADF9', '#DCDCDC', '#46BFBD', '#FDB45C', '#949FB1', '#4D5360'];
-            $scope.labels = items.select(item => item.monthName).toArray();
-
-            $scope.labelForDisplay = colors.asEnumerable()
-                .take($scope.labels.length)
-                .select(c => ({color: c, label: $scope.labels[colors.indexOf(c)]}))
-                .toArray();
-
-            $scope.data = items.select(item => parseInt(item.count)).toArray();
-        });
-
-    journalApi.incomesAndOutcomes()
-        .then(result => {
-            let items = result.asEnumerable()
-
-            let incomes = items
-                .where(item => item.amountType == 'income')
-                .select(item => item.amount)
-                .toArray();
-
-            let outcomes = items
-                .where(item => item.amountType == 'outcome')
-                .select(item => item.amount)
-                .toArray();
-
-            $scope.incomeAndOutcomes = [
-                incomes, outcomes
-            ];
-
-            $scope.months = items
-                .distinct(item => item.monthName)
-                .select(item => item.monthName)
-                .toArray();
-
-            let income = incomes.asEnumerable().sum(),
-                outcome = outcomes.asEnumerable().sum(),
-                total = income + outcome,
-                incomePercent = (income * 100) / total,
-                outcomePercent = (outcome * 100) / total;
-
-            $scope.totalIncomeAndOutcome = {income, outcome, incomePercent, outcomePercent};
-        });
+    $scope.$on('fiscal-period-changed', fetch);
 
     $scope.incomeAndOutcomes = [];
     $scope.months = [];
@@ -92,140 +40,56 @@ function homeController($scope, currentService, navigate, journalApi, translate,
     $scope.data = [];
     $scope.labels = [];
 
-    journalApi.getTotalInfo().then(result => $scope.totalInfo = result);
+    function fetch() {
+        journalApi.getGroupedByMouth()
+            .then(result => {
+                let items = result.data.asEnumerable();
 
-    $scope.journalCreate = () => {
-        journalCreateModalControllerService.show()
-            .then((result) => {
-                logger.success();
-                navigate('journalUpdate', {
-                    id: result.id
-                });
+                let colors = ['#803690', '#00ADF9', '#DCDCDC', '#46BFBD', '#FDB45C', '#949FB1', '#4D5360'];
+                $scope.labels = items.select(item => item.monthName).toArray();
+
+                $scope.labelForDisplay = colors.asEnumerable()
+                    .take($scope.labels.length)
+                    .select(c => ({color: c, label: $scope.labels[colors.indexOf(c)]}))
+                    .toArray();
+
+                $scope.data = items.select(item => parseInt(item.count)).toArray();
             });
-    };
 
-    $scope.journalSearch = () => {
-        journalAdvancedSearchModalService.show()
-            .then((result) => {
-                navigate('journals', null, result);
+        journalApi.incomesAndOutcomes()
+            .then(result => {
+                let items = result.asEnumerable()
+
+                let incomes = items
+                    .where(item => item.amountType == 'income')
+                    .select(item => item.amount)
+                    .toArray();
+
+                let outcomes = items
+                    .where(item => item.amountType == 'outcome')
+                    .select(item => item.amount)
+                    .toArray();
+
+                $scope.incomeAndOutcomes = [
+                    incomes, outcomes
+                ];
+
+                $scope.months = items
+                    .distinct(item => item.monthName)
+                    .select(item => item.monthName)
+                    .toArray();
+
+                let income = incomes.asEnumerable().sum(),
+                    outcome = outcomes.asEnumerable().sum(),
+                    total = income + outcome,
+                    incomePercent = (income * 100) / total,
+                    outcomePercent = (outcome * 100) / total;
+
+                $scope.totalIncomeAndOutcome = {income, outcome, incomePercent, outcomePercent};
             });
-    };
 
-    $scope.goToJournal = () => {
-        if (!$scope.journalNumber) return;
-
-        journalApi.getByNumber($scope.journalNumber)
-            .then(result => navigate('journalUpdate', {id: result.id}));
-    };
-
-    /* $scope.data = [
-     {
-     row: 1,
-     da: 1,
-     sla: 100,
-     gla: 131,
-     article: 'بابت هزینه ایاب و ذهاب',
-     debtor: 10000,
-     creditor: 0
-     },
-     {
-     row: 1,
-     da: 2,
-     sla: 100,
-     gla: 131,
-     article: 'بابت هزینه ایاب و ذهاب',
-     debtor: 10000,
-     creditor: 0
-     },
-     {
-     row: 1,
-     da: 3,
-     sla: 100,
-     gla: 131,
-     article: 'بابت هزینه ایاب و ذهاب',
-     debtor: 10000,
-     creditor: 0
-     }
-     ];
-
-     let detailAccountDataSource = {
-     type: "json",
-     serverFiltering: true,
-     transport: {
-     read: {
-     url: devConstants.urls.detailAccount.all()
-     }
-     },
-     schema: {
-     data: 'data'
-     }
-     };
-
-     let articleEditor= `<dev-tag-editor ng-model="item.article"></dev-tag-editor>`;
-
-     $scope.columns = [
-     {name: 'row', title: '#', editTemplate: '{{item.row}}'},
-     {
-     name: 'da',
-     title: 'تفصیل',
-     editTemplate: `<dev-tag-combo-box
-     ng-change="changeValue(item.da)"
-     name="generalLedgerAccountId"
-     id="generalLedgerAccountId"
-     k-placeholder="{{'Select ...'|translate}}"
-     k-data-value-field="id"
-     k-data-text-field="display"
-     k-data-source="column.dataSource"
-     k-on-change="generalLedgerAccountOnChange"
-     ng-model="item.da"
-     required></dev-tag-combo-box>`,
-     dataSource: detailAccountDataSource
-     },
-     {name: 'sla', title: 'معین',
-     editTemplate: '<input style="height: 30px" type="text" class="form-control" ng-model="item.sla">'},
-     {name: 'gla', title: 'کل',
-     editTemplate: '<input style="height: 30px" type="text" class="form-control" ng-model="item.gla">'},
-     {name: 'article', title: 'آرتیکل',
-     editTemplate: `<input
-     type="text"
-     required
-     class="form-control"
-     name="article"
-     ng-model="item.article"
-     popover="{{item.article}}"
-     popover-trigger="focus"
-     popover-placement="bottom"
-     tooltip="{{'This field is required'| translate}}"
-     tooltip-placement="bottom"
-     tooltip-trigger="mouseenter"
-     tooltip-enable="subForm.article.$invalid"/>`
-     },
-     {name: 'debtor', title: 'بدهکار',
-     editTemplate: `<dev-tag-numeric
-     style="height: 30px"
-     ng-model="item.debtor"
-     popover="{{item.debtor|number}}"
-     popover-trigger="focus" class="form-control"
-     popover-placement="bottom"></dev-tag-numeric>`},
-     {name: 'creditor', title: 'بستانکار',
-     editTemplate: `<dev-tag-numeric
-     style="height: 30px"
-     ng-model="item.creditor"
-     popover="{{item.creditor|number}}"
-     popover-trigger="focus" class="form-control"
-     popover-placement="bottom"></dev-tag-numeric>`},
-
-     ];
-
-     $scope.defaultItem = {
-     row: 1,
-     da: null,
-     sla: null,
-     gla: null,
-     article: '',
-     debtor: 0,
-     creditor: 0
-     };*/
+        journalApi.getTotalInfo().then(result => $scope.totalInfo = result);
+    }
 }
 
 accModule.controller('homeController', homeController);
