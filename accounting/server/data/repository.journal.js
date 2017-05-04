@@ -115,12 +115,15 @@ class JournalRepository extends BaseRepository {
         return new Promise((resolve, reject) => {
             knex.transaction(async(function (trans) {
                 try {
-                    let id = await(kex('journal')
-                        .transaction(trans)
+                    let id = await(knex('journals')
+                        .transacting(trans)
                         .returning('id')
                         .insert(journal))[0];
 
+                    journalLines.forEach(jl => jl.journalId = id);
+
                     await(knex('journalLines')
+                        .transacting(trans)
                         .insert(journalLines));
 
                     trans.commit();
@@ -141,13 +144,14 @@ class JournalRepository extends BaseRepository {
         return new Promise((resolve, reject) => {
             knex.transaction(async(function (trx) {
                 try {
-                    let id = await(knex('journal')
+                    let id = await(knex('journals')
                         .transacting(trx)
                         .returning('id')
                         .insert(journal));
 
-                    await(knex('journalLines').tranacting(trx).insert(createJournalLines));
-                    await(knex('journalLines').tranacting(trx).update(updateJournalLine));
+                    createJournalLines.forEach(jl => jl.journalId = id);
+                    await(knex('journalLines').transacting(trx).insert(createJournalLines));
+                    await(knex('journalLines').transacting(trx).update(updateJournalLine));
                     await(knex('journalLines').transacting(trx)
                         .whereIn('id', deleteJournalLine)
                         .del());
