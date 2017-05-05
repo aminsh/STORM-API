@@ -1,37 +1,58 @@
-import accModule from '../acc.module';
+export default class {
 
-function detailAccountApi(apiPromise) {
-    var urlPrefix = '/acc/api';
+    constructor(apiPromise, localStorageService) {
+        this.apiPromise = apiPromise;
+        this.localStorageService = localStorageService;
 
-    return {
-        url: {
-            getAll: '{0}/detail-accounts'.format(urlPrefix),
-            getAllActive: '{0}/detail-accounts/active'.format(urlPrefix)
-        },
-        getAll(){
-            return apiPromise.get(`${urlPrefix}/detail-accounts`);
-        },
-        getById: function (id) {
-            return apiPromise.get('{0}/detail-accounts/{1}'.format(urlPrefix, id));
-        },
-        create: function (data) {
-            return apiPromise.post('{0}/detail-accounts'.format(urlPrefix), data);
-        },
-        update: function (id, data) {
-            return apiPromise.put('{0}/detail-accounts/{1}'.format(urlPrefix, id), data);
-        },
-        remove: function (id) {
-            return apiPromise.delete('{0}/detail-accounts/{1}'.format(urlPrefix, id));
-        },
-        activate: function (id) {
-            return apiPromise.put('{0}/detail-accounts/{1}/activate'.format(urlPrefix, id));
-        },
-        deactivate: function (id) {
-            return apiPromise.put('{0}/detail-accounts/{1}/deactivate'.format(urlPrefix, id));
-        }
-    };
+        this.urlPrefix = '/acc/api/detail-accounts';
+    }
 
+    get data() {
+        return JSON.parse(this.localStorageService.get('detail-accounts'));
+    }
 
+    set data(data) {
+        this.localStorageService.set('detail-accounts', JSON.stringify(data));
+    }
+
+    sync() {
+        let localStorageService = this.localStorageService;
+
+        if (localStorageService.keys().includes('detail-accounts'))
+            return;
+
+        let promise = this.apiPromise.get(this.urlPrefix);
+
+        promise.then(result => this.data = result.data);
+
+        return promise;
+    }
+
+    getAll() {
+        return this.data;
+    }
+
+    getById(id) {
+        return this.data.asEnumerable().single(e => e.id == id);
+    }
+
+    create(data) {
+        return this.apiPromise.post(this.urlPrefix, data);
+    }
+
+    update(id, data) {
+        return this.apiPromise.put(`${this.urlPrefix}/${id}`, data);
+    }
+
+    remove(id) {
+        return this.apiPromise.delete(`${this.urlPrefix}/${id}`);
+    }
+
+    activate(id) {
+        return this.apiPromise.put(`${this.urlPrefix}/${id}/activate`, data);
+    }
+
+    deactivate(id) {
+        return this.apiPromise.put(`${this.urlPrefix}/${id}/deactivate`, data);
+    }
 }
-
-accModule.factory('detailAccountApi', detailAccountApi);
