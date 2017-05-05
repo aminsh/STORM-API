@@ -61,7 +61,7 @@ export default class {
         this.isSaving = false;
 
         this.subsidiaryLedgerAccount = {
-            data: subsidiaryLedgerAccountApi.getAll(),
+            data: [],
             onChanged(item, journalLine) {
                 journalLine.subsidiaryLedgerAccountId = item.id;
                 journalLine.hasDetailAccount = item && item.hasDetailAccount;
@@ -78,7 +78,7 @@ export default class {
         };
 
         this.detailAccount = {
-            data: detailAccountApi.getAll(),
+            data: [],
             onChanged(item, journalLine){
                 $timeout(() => {
                     $scope.$broadcast(`article-focus-${journalLine.id}`);
@@ -86,9 +86,19 @@ export default class {
             }
         };
 
-        this.tags = this.tagApi.getAll();
+        this.tags = [];
 
-        this.fetch();
+        $q.all([
+            subsidiaryLedgerAccountApi.getAll(),
+            detailAccountApi.getAll(),
+            tagApi.getAll()
+        ]).then(result => {
+            this.subsidiaryLedgerAccount.data = result[0].data;
+            this.detailAccount.data = result[1].data;
+            this.tags = result[2].data;
+
+            this.fetch();
+        });
     }
 
     fetch() {

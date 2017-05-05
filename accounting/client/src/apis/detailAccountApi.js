@@ -1,39 +1,20 @@
+import io from 'socket.io-client';
+
 export default class {
 
-    constructor(apiPromise, localStorageService) {
+    constructor(apiPromise) {
         this.apiPromise = apiPromise;
-        this.localStorageService = localStorageService;
 
         this.urlPrefix = '/acc/api/detail-accounts';
     }
 
-    get data() {
-        return JSON.parse(this.localStorageService.get('detail-accounts'));
-    }
-
-    set data(data) {
-        this.localStorageService.set('detail-accounts', JSON.stringify(data));
-    }
-
-    sync() {
-        let localStorageService = this.localStorageService;
-
-        if (localStorageService.keys().includes('detail-accounts'))
-            return;
-
-        let promise = this.apiPromise.get(this.urlPrefix);
-
-        promise.then(result => this.data = result.data);
-
-        return promise;
-    }
 
     getAll() {
-        return this.data;
+        return this.apiPromise.get(this.urlPrefix);
     }
 
     getById(id) {
-        return this.data.asEnumerable().single(e => e.id == id);
+        return this.apiPromise.get(`${this.urlPrefix}/${id}`);
     }
 
     create(data) {
