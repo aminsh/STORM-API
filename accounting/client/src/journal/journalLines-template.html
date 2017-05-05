@@ -16,7 +16,7 @@
         <tr name="form-{{$index}}"
             id="{{item.id}}"
             ng-form
-            ng-repeat="item in journalLines"
+            ng-repeat="item in model.journalLines"
             ng-class-odd="'grid-row-striped'"
             style="height: 50px">
 
@@ -24,14 +24,14 @@
             <td>
                 <dev-tag-combo-box
                         ng-if="item.hasDetailAccount"
-                        ng-keyup="keyUpGridRow($event, item, 'detailAccountId')"
+                        ng-keyup="model.keyUpGridRow($event, item, 'detailAccountId')"
                         focus-on="detailAccount-focus-{{item.id}}"
                         name="detailAccountId"
                         k-placeholder="{{'Select ...'|translate}}"
                         k-data-value-field="id"
                         k-data-text-field="display"
-                        k-data-source="columnConfig.detailAccount.dataSource"
-                        on-changed="columnConfig.detailAccount.onChanged($item, item)"
+                        k-data-source="model.detailAccount.data"
+                        on-changed="model.detailAccount.onChanged($item, item)"
                         ng-model="item.detailAccountId"
                         required></dev-tag-combo-box>
 
@@ -44,15 +44,15 @@
             <td>
 
                 <dev-tag-combo-box
-                        ng-keyup="keyUpGridRow($event, item, 'subsidiaryLedgerAccountId')"
+                        ng-keyup="model.keyUpGridRow($event, item, 'subsidiaryLedgerAccountId')"
                         name="subsidiaryLedgerAccountId"
                         focus-on="subsidiaryLedgerAccount-focus-{{item.id}}"
                         k-placeholder="{{'Select ...'|translate}}"
                         k-data-value-field="id"
                         k-data-text-field="account"
-                        k-data-source="columnConfig.subsidiaryLedgerAccount.dataSource"
+                        k-data-source="model.subsidiaryLedgerAccount.data"
                         group-by="generalLedgerAccountDisplay"
-                        on-changed="columnConfig.subsidiaryLedgerAccount.onChanged($item, item)"
+                        on-changed="model.subsidiaryLedgerAccount.onChanged($item, item)"
                         ng-model="item.subsidiaryLedgerAccountId"
                         required></dev-tag-combo-box>
 
@@ -64,7 +64,7 @@
             </td>
             <td>
                 <dev-tag-text-box
-                        ng-keyup="keyUpGridRow($event, item, 'article')"
+                        ng-keyup="model.keyUpGridRow($event, item, 'article')"
                         focus-me-on="article-focus-{{item.id}}"
                         ng-model="item.article"
                         name="article"
@@ -80,7 +80,7 @@
                 <dev-tag-numeric
                         class="form-control"
                         ng-model="item.debtor"
-                        ng-keyup="keyUpGridRow($event, item, 'debtor')"
+                        ng-keyup="model.keyUpGridRow($event, item, 'debtor')"
                         name="debtor"
                         required
                         not-should-be-zero-both="item.creditor"
@@ -103,7 +103,7 @@
                         class="form-control"
                         ng-model="item.creditor"
                         name="creditor"
-                        ng-keyup="keyUpGridRow($event, item, 'creditor')"
+                        ng-keyup="model.keyUpGridRow($event, item, 'creditor')"
                         required
                         not-should-be-zero-both="item.debtor"
                         not-should-have-value-both="item.debtor"></dev-tag-numeric>
@@ -120,7 +120,7 @@
             </td>
             <td style="text-align: center;vertical-align: middle">
                 <a
-                        ng-click="additionalInfo(item)" class=""
+                        ng-click="model.additionalInfo(item)" class=""
                         type="button"
                         title="{{'Additional Information'|translate}}"
                         style="margin-top: 0;margin-bottom: 0">
@@ -128,7 +128,7 @@
                 </a>
 
                 <a
-                        ng-click="removeJournalLine(item)"
+                        ng-click="model.removeJournalLine(item)"
                         class=""
                         type="button"
                         title="{{'Remove'| translate}}"
@@ -145,22 +145,22 @@
             <td></td>
             <td></td>
             <td></td>
-            <td>{{journalLines | totalSum: ('debtor') | number}}</td>
-            <td>{{journalLines | totalSum: ('creditor') | number}}</td>
+            <td>{{model.journalLines | totalSum: ('debtor') | number}}</td>
+            <td>{{model.journalLines | totalSum: ('creditor') | number}}</td>
             <td></td>
         </tr>
 
         <tr>
             <td colspan="2">
                 <dev-tag-button
-                        ng-click="createJournalLine()"
+                        ng-click="model.createJournalLine()"
                         icon="glyphicon glyphicon-plus"
                         style-type="primary"
                         title="{{'New Journal line' | translate}}"></dev-tag-button>
             </td>
             <td></td>
             <td></td>
-            <td colspan="2" style="text-align: center">{{journalLines | remainder | number}}</td>
+            <td colspan="2" style="text-align: center">{{model.journalLines | remainder | number}}</td>
             <td></td>
         </tr>
         </tfoot>

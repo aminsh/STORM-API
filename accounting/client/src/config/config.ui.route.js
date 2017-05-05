@@ -120,11 +120,13 @@ export default function ($stateProvider, $urlRouterProvider, $locationProvider) 
         .state('journals.create', {
             url: '/create',
             controller: 'journalUpdateController',
+            controllerAs: 'model',
             templateUrl: 'partials/journal/journal.html'
         })
         .state('journals.edit', {
             url: '/:id/edit',
             controller: 'journalUpdateController',
+            controllerAs: 'model',
             templateUrl: 'partials/journal/journal.html'
         })
         .state('journalCopy', {

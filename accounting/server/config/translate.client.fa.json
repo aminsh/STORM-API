@@ -220,6 +220,8 @@
   "Have": "دارد",
   "Do not Have": "ندارد",
   "Additional information": "اطلاعات بیشتر",
+  "(F2) Copy from top cell": "برای کپی از سلول بالایی (F2)",
+  "(F4) Replace debtor and creditor": "(F4) جابجا کردن بدهکار و بستانکار",
 
 
   "Debtor and creditor are not allowed to be zero , both of them":"بدهکار و بستانکار هر دو نباید صفر باشد",
