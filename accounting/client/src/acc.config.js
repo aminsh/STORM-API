@@ -16,6 +16,11 @@ import './config/gridFilterCellTypeConfig';
 import './config/authConfig';
 import ADMdtpConfig from './config/ADMdtp.config';
 import routeSaveLocationSearch from './config/route.save.locationSearch';
+import localStorageConfig from './config/config.local.storage';
+
+//load initializer
+
+import loadsLookupData from './initializers/loads.lookup.data';
 
 
 //load controllers
@@ -40,8 +45,8 @@ import reportDesignerController from './controllers/reportDesignerController';
 
 // load apis
 import './apis/generalLedgerAccountApi';
-import './apis/subsidiaryLedgerAccountApi';
-import './apis/detailAccountApi';
+import subsidiaryLedgerAccountApi from './apis/subsidiaryLedgerAccountApi';
+import detailAccountApi from './apis/detailAccountApi';
 import './apis/dimensionCategoryApi';
 import './apis/dimensionApi';
 import './apis/journalApi';
@@ -135,8 +140,10 @@ import './report';
 accModule
     .config(uiRouteConfig)
     .config(ADMdtpConfig)
+    .config(localStorageConfig)
 
     .run(routeSaveLocationSearch)
+    .run(loadsLookupData)
 
     .directive('shell', shell)
     .directive('shellHeader', shellHeader)
@@ -157,6 +164,8 @@ accModule
     .service('$modelFactory', $ModalFactory)
     .service('promise', Promise)
     .service(currentService.name, currentService)
+    .service('detailAccountApi', detailAccountApi)
+    .service('subsidiaryLedgerAccountApi', subsidiaryLedgerAccountApi)
     .service('fiscalPeriodApi', FiscalPeriodApi)
     .service('reportApi', ReportApi)
     .service('tagApi', TagApi)
@@ -169,4 +178,5 @@ accModule
     .filter('totalSum', totalSum);
 
 accModule.init();
+
 
