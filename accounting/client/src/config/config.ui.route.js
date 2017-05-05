@@ -4,7 +4,9 @@ export default function ($stateProvider, $urlRouterProvider, $locationProvider) 
     $locationProvider.html5Mode(true);
     $locationProvider.hashPrefix('!');
 
-    $urlRouterProvider.otherwise('/not-found');
+    //$urlRouterProvider.otherwise('/not-found');
+
+    $urlRouterProvider.otherwise('/');
 
     $stateProvider
         .state('home', {
