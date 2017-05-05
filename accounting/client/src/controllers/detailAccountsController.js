@@ -1,7 +1,8 @@
 import accModule from '../acc.module';
 
 function detailAccountsController($scope, logger, translate, confirm,
-                                  detailAccountApi) {
+                                  detailAccountApi,
+                                  devConstants) {
     "use strict";
 
     $scope.gridOption = {
@@ -45,7 +46,7 @@ function detailAccountsController($scope, logger, translate, confirm,
                 }
             }
         ],
-        readUrl: detailAccountApi.url.getAll
+        readUrl: devConstants.urls.detailAccount.all()
     };
 }
 

@@ -20,8 +20,6 @@ import localStorageConfig from './config/config.local.storage';
 
 //load initializer
 
-import loadsLookupData from './initializers/loads.lookup.data';
-
 
 //load controllers
 import './controllers/homeController';
@@ -143,7 +141,6 @@ accModule
     .config(localStorageConfig)
 
     .run(routeSaveLocationSearch)
-    .run(loadsLookupData)
 
     .directive('shell', shell)
     .directive('shellHeader', shellHeader)

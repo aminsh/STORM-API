@@ -30,6 +30,7 @@ const path = require('path'),
                 }
             },
             url: {
+                origin: 'http://localhost:2000',
                 luca: 'http://localhost:2000/luca-demo',
                 accounting: 'http://localhost:2000/acc'
             },
@@ -70,6 +71,7 @@ const path = require('path'),
                 }
             },
             url: {
+                origin: 'https://storm-sandbox.herokuapp.com',
                 luca: 'https://storm-sandbox.herokuapp.com/luca-demo',
                 accounting: 'https://storm-sandbox.herokuapp.com/acc'
             },
@@ -106,6 +108,7 @@ const path = require('path'),
                 }
             },
             url: {
+                origin: 'https://www.storm-online.ir',
                 luca: 'https://www.storm-online.ir/luca-demo',
                 accounting: 'https://www.storm-online.ir/acc'
             },

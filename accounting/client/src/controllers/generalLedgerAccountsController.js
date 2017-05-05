@@ -1,6 +1,6 @@
 import accModule from '../acc.module';
 
-function generalLedgerAccountsController($scope, logger, translate, confirm, $state,
+function generalLedgerAccountsController($scope, logger, translate, confirm, devConstants,
                                          generalLedgerAccountApi,
                                          subsidiaryLedgerAccountApi,
                                          subsidiaryLedgerAccountEntryModalService,
@@ -72,14 +72,14 @@ function generalLedgerAccountsController($scope, logger, translate, confirm, $st
     $scope.gridOption = {
         columns: columns,
         commands: commands,
-        readUrl: generalLedgerAccountApi.url.getAll,
+        readUrl: devConstants.urls.generalLedgerAccount.all(),
         selectable: true,
         gridSize: '300px'
     };
 
     $scope.selectGeneralLedgerAccount = current => {
         $scope.gridOptionSubsidiaryLedgerAccount.readUrl =
-            subsidiaryLedgerAccountApi.url.getAll(current.id);
+            devConstants.urls.subsidiaryLedgerAccount.allByGeneralLedgerAccount(current.id);
         $scope.current = current;
     };
 

@@ -5,6 +5,7 @@ const express = require('express'),
     config = require('./'),
     app = express();
 
+
 module.exports = app;
 
 app.set('views', config.rootPath + '/server/views');
