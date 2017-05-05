@@ -7,7 +7,6 @@ import 'angular-translate';
 import 'angular-resource';
 import 'angular-messages';
 import 'angular-cookies';
-import 'angular-cookies';
 import 'angular-chart';
 import 'angular-ladda';
 import 'angular-ui-select';
