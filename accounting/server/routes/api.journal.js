@@ -79,7 +79,7 @@ router.route('/:id/bookkeeping').put(async((req, res) => {
     if (currentFiscalPeriod.isClosed)
         errors.push(translate('The current period is closed , You are not allowed to delete Journal'));
 
-    if (journal.journalStatue == 'Fixed')
+    if (journal.journalStatus == 'Fixed')
         errors.push(translate('This journal is already fixed'));
 
     journal.journalStatus = 'BookKeeped';
@@ -101,7 +101,7 @@ router.route('/:id/fix').put(async((req, res) => {
     if (currentFiscalPeriod.isClosed)
         errors.push(translate('The current period is closed , You are not allowed to delete Journal'));
 
-    if (journal.journalStatue == 'Fixed')
+    if (journal.journalStatus == 'Fixed')
         errors.push(translate('This journal is already fixed'));
 
     journal.journalStatus = 'Fixed';
