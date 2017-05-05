@@ -23,10 +23,11 @@ router.route('/profile').get(async((req, res) => {
     let branchRepository = new BranchRepository(),
         branchId = config.env == 'development'
             ? config.branchId
-            : await(branchRepository.getBranchId(req.user.id));
+            : await(branchRepository.getBranchId(req.user.id)),
+        returnUrl= req.cookies['return-url'];
 
     res.cookie('branch-id', branchId);
-    res.redirect((branchId) ? config.url.accounting : '/');
+    res.redirect(returnUrl || ((branchId) ? config.url.accounting : '/'));
 }));
 
 module.exports = router;

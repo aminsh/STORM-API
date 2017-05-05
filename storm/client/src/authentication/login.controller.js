@@ -8,7 +8,8 @@ export default class LoginController {
         $scope, 
         $state, 
         $location, 
-        $window) {
+        $window,
+        $cookies) {
         
         $rootScope.noFooter = true;
         $scope.$on('$destroy', () => {
@@ -25,8 +26,12 @@ export default class LoginController {
             password: ''
         };
 
+        this.$cookies = $cookies;
         this.$window = $window;
         this.returnUrl = $location.search().returnUrl;
+
+        if(this.returnUrl)
+            $cookies.put('return-url', this.returnUrl);
     }
 
     login(form) {
@@ -58,6 +63,7 @@ LoginController.$inject = [
     '$scope',
     '$state',
     '$location',
-    '$window'
+    '$window',
+    '$cookies'
 ];
 

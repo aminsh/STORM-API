@@ -8,6 +8,7 @@ import 'angular-material';
 import 'angular-messages';
 import 'angular-ui-router';
 import 'angular-translate';
+import 'angular-cookies';
 
 
 import appRoute from './app.route';
@@ -29,7 +30,13 @@ import UserApi from './authentication/api.user';
 import ContactUsController from './contactUs/contactUs.controller';
 import RequestLucaDemoController from './product/requestLucaDemo.controller';
 
-angular.module('app', ['ngMaterial', 'ngMessages', 'ui.router','pascalprecht.translate'])
+angular.module('app', [
+    'ngMaterial',
+    'ngMessages',
+    'ui.router',
+    'pascalprecht.translate',
+    'ngCookies'
+])
     .config(appRoute)
     .config(appTranslate)
 
