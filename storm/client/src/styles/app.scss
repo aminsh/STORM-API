@@ -3,9 +3,12 @@ $font-path: '/public/fonts';
 $fa-font-path: $font-path;
 
 @import "angular-material/angular-material.scss";
+@import "sweetalert/dev/sweetalert";
 @import "font-awesome/scss/font-awesome";
 @import "fonts";
 @import "animate";
+
+
 
 .height {
   height: 100%;

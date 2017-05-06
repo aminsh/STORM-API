@@ -10,8 +10,8 @@ export default function routing($stateProvider, $urlRouterProvider, $locationPro
     });
 
     $locationProvider.hashPrefix('!');
-
     $urlRouterProvider.otherwise('/page-not-found');
+
     $stateProvider
         .state('home', {
             url: '/',
@@ -48,6 +48,13 @@ export default function routing($stateProvider, $urlRouterProvider, $locationPro
             templateUrl: 'app/authentication/register.html',//require('./auth/register.html'),
             controller: 'RegisterController',
             controllerAs: 'registerVM'
+        })
+        .state('activateUser', {
+            url: '/activate/:token',
+            onEnter: (logger, translate , $state) => {
+                logger.success(translate('Your Account activated successfully'))
+                    .then(()=> $state.go('home'));
+            }
         })
         .state('contactUs', {
             url: '/contact-us',
