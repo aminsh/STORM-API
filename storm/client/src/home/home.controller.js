@@ -49,8 +49,9 @@ export default class HomeController {
     }
 
     goToStorm(){
-        this.$window.href = this.$window.origin + '/acc';
+        this.$window.location.href = this.$window.location.origin + '/acc';
     }
 }
+
 
 HomeController.inject = ['$window'];
