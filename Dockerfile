@@ -13,7 +13,7 @@ RUN gulp --production
 
 # Bundle app source
 COPY . /usr/src/app
-RUN chmod -R ug+rwx /usr/src/app
+RUN chmod -R ug+rwx /usr/src/app /usr/src/app/public
 
 EXPOSE 8080
 CMD [ "npm", "start" ]
