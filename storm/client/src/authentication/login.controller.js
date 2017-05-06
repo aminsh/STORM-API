@@ -43,7 +43,7 @@ export default class LoginController {
                 if (this.returnUrl)
                     this.$window.location = this.returnUrl;
                 else {
-                    this.$rootScope.currentUser = result.returnValue.currentUser;
+                    this.$rootScope.currentUser = result.currentUser;
                     this.$state.go('home');
                 }
             })

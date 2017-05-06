@@ -34,7 +34,7 @@ module.exports = class {
     getUserByEmailAndPassword(email, password){
         return knex.table('users')
             .where('email', 'ILIKE', email)
-            .andWhere('password', md5(password))
+            .andWhere('password', md5(password.toString()))
             .first();
     }
 };
