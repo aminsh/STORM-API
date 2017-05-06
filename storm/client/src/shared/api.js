@@ -32,7 +32,7 @@ export default class Api {
     }
 
     createWriteRequest(promise) {
-        return new this.Promise((resolve, reject) => {
+        return this.Promise.create((resolve, reject) => {
             promise.then(function (data) {
                 let result = data.data;
 
