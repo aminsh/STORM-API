@@ -1,6 +1,13 @@
 <dev-tag-content dev-attr-title="{{'Edit Journal'|translate}}">
     <dev-tag-content-body>
         <div class="row">
+
+            <div class="row">
+                <div class="col-md-2"></div>
+                <dev-tag-validation-summary errors="model.errors" class="col-md-8"></dev-tag-validation-summary>
+                <div class="col-md-2"></div>
+            </div>
+
             <form name="form" novalidate>
                 <div class="row col-md-12">
                     <dev-tag-button
