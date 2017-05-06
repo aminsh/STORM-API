@@ -172,7 +172,7 @@ export default class {
 
         let cmd = Object.assign(journal, {journalLines});
 
-        if (isNewJournal)
+        if (this.isNewJournal)
             return this.journalApi.create(cmd)
                 .then(result => {
                     logger.success();
