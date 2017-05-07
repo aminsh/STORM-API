@@ -18,6 +18,20 @@ enums.AccountBalanceType = function () {
     ]);
 };
 
+enums.PersonType=function(){
+    return new Enum([
+        {key: 'legal', display: 'حقوقی'},
+        {key: 'real', display: 'حقیقی'},
+    ]);
+};
+
+enums.InvoiceType=function(){
+    return new Enum([
+        {key: 'purchase', display: 'خرید'},
+        {key: 'sale', display: 'فروش'},
+    ]);
+};
+
 enums.JournalType = function () {
     return new Enum([
         {key: 'Opening', display: 'افتتاحیه'},

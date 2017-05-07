@@ -1,13 +1,19 @@
 import accModule from '../acc.module';
 
-function detailAccountCreateModalController($scope, $uibModalInstance, formService, detailAccountApi, logger) {
+function detailAccountCreateModalController($scope, $uibModalInstance, formService, detailAccountApi, logger, devConstants) {
     "use strict";
 
     $scope.errors = [];
+    $scope.personType = devConstants.enums.PersonType().data;
     $scope.detailAccount = {
         title: '',
         code: '',
-        description: ''
+        description: '',
+        address: '',
+        phone: '',
+        nationalCode: '',
+        email: '',
+        personType: 'Real'
     };
 
     $scope.isSaving = false;
@@ -25,11 +31,11 @@ function detailAccountCreateModalController($scope, $uibModalInstance, formServi
                 logger.success();
                 $uibModalInstance.close(result);
             })
-            .catch((errors)=> $scope.errors = errors)
-            .finally(()=> $scope.isSaving = false);
+            .catch((errors) => $scope.errors = errors)
+            .finally(() => $scope.isSaving = false);
     };
 
-    $scope.close = ()=> $uibModalInstance.dismiss();
+    $scope.close = () => $uibModalInstance.dismiss();
 }
 
 function detailAccountCreateModalService(modalBase) {

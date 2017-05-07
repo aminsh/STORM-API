@@ -129,7 +129,8 @@ module.exports.update = async((req, res) => {
         journalRepository = new JournalRepository(branchId),
         journalLineQuery = new JournalLineQuery(branchId),
         fiscalPeriodRepository = new FiscalPeriodRepository(branchId),
-        currentFiscalPeriod = await(fiscalPeriodRepository.findById(req.cookies['current-period'])),
+        currentPeriod = req.cookies['current-period'],
+        currentFiscalPeriod = await(fiscalPeriodRepository.findById(currentPeriod)),
         subsidiaryLedgerAccountRepository = new SubsidiaryLedgerAccountRepository(branchId),
         cmd = req.body,
         journalId = req.params.id,
@@ -138,9 +139,11 @@ module.exports.update = async((req, res) => {
     if (currentFiscalPeriod.isClosed)
         errors.push(translate('The current period is closed , You are not allowed to edit Journal'));
 
-    let checkExistsJournalByTemporaryNumber = await(journalRepository.findByTemporaryNumber(
+    let checkExistsJournalByTemporaryNumber = await(journalRepository.findByNumberExpectId(
+        cmd.id,
         cmd.temporaryNumber,
-        currentFiscalPeriod.id));
+        currentPeriod
+    ));
 
     if (checkExistsJournalByTemporaryNumber)
         errors.push(translate('The journal with this TemporaryNumber already created'));
@@ -170,8 +173,13 @@ module.exports.update = async((req, res) => {
     entity.number = cmd.number;
     entity.description = cmd.description;
 
+    let dbJournalLines = await(journalLineQuery.getAllByJournalId(entity.id));
+
     let cmdJournalLines = cmd.journalLines.asEnumerable()
         .select(journalLine => ({
+            id: journalLine.id,
+            journalId: journalLine.journalId,
+            generalLedgerAccountId: journalLine.generalLedgerAccountId,
             subsidiaryLedgerAccountId: journalLine.subsidiaryLedgerAccountId,
             detailAccountId: journalLine.detailAccountId,
             dimension1Id: journalLine.dimension1Id,
@@ -213,11 +221,9 @@ module.exports.update = async((req, res) => {
         }
     });
 
-    let dbJournalLines = await(journalLineQuery.getAllByJournalId(entity.id));
-
-    let createdLines = cmdJournalLines.asEnumerable().where(line => !dbJournalLines.any(p => p.id == line.id)).toArray(),
-        updatedLines = dbJournalLines.asEnumerable().where(line => cmdJournalLines.includes(line.id)).toArray(),
-        deletedLines = dbJournalLines.asEnumerable().where(line => !cmdJournalLines.includes(line.id)).toArray();
+    let createdLines = cmdJournalLines.asEnumerable().where(line => dbJournalLines.includes(line.id)).toArray(),
+        updatedLines = cmdJournalLines.asEnumerable().where(line => !dbJournalLines.includes(line.id)).toArray(),
+        deletedLines = dbJournalLines.asEnumerable().where(line => cmdJournalLines.includes(line.id)).toArray();
 
     await(journalRepository.batchUpdate(createdLines, updatedLines, deletedLines, entity));
 

@@ -16,7 +16,7 @@ const express = require('express'),
     app = express();
 
 app.use(compression());
-app.use(favicon(config.rootPath + 'client/content/images/favicon.ico'));
+app.use(favicon(config.rootPath + '/../public/images/favicon.ico'));
 app.use(cors());
 app.use(bodyParser.urlencoded({limit: '50mb', extended: false}));
 app.use(bodyParser.json({limit: '50mb'}));

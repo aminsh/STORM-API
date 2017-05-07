@@ -181,9 +181,12 @@ export default class {
                 .catch(err => errors = err)
                 .finally(() => isSaving = false);
 
-        this.journalApi.update(id, $scope.journal)
+        this.journalApi.update(this.id, this.journal)
             .then(() => logger.success())
-            .catch(err => errors = err)
+            .catch(err =>{
+                console.log(err);
+                errors = err;
+            })
             .finally(() => isSaving = false);
     }
 
