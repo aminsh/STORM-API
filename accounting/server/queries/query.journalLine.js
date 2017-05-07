@@ -37,11 +37,15 @@ module.exports = class JournalLineQuery extends BaseQuery {
     }
 
     getAllByJournalId(journalId) {
-        return this.knex.select()
+
+        let journalLine = await(this.knex.select().from('journalLines').where('journalId', journalId));
+        return journalLine;
+        /*let knex = this.knex;
+        return knex.select()
             .from(function () {
                 journalLineBase.call(this, knex);
             })
-            .where('journalId', journalId);
+            .where('journalId', journalId)*/
     }
 
     getById(id) {
