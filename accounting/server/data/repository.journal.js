@@ -12,6 +12,14 @@ class JournalRepository extends BaseRepository {
         this.checkIsComplete = async(this.checkIsComplete);
     }
 
+    findByNumberExpectId(notEqualId, number, periodId) {
+        return this.knex.table('journals')
+            .where('id', '!=', notEqualId)
+            .andWhere('periodId', periodId)
+            .andWhere('temporaryNumber', number)
+            .first();
+    }
+
     findByTemporaryNumber(number, periodId) {
         return this.knex.table('journals')
             .where('periodId', periodId)
@@ -144,17 +152,35 @@ class JournalRepository extends BaseRepository {
         return new Promise((resolve, reject) => {
             knex.transaction(async(function (trx) {
                 try {
-                    let id = await(knex('journals')
+                    await(knex('journals')
                         .transacting(trx)
-                        .returning('id')
-                        .insert(journal));
+                        .where('id', journal.id)
+                        .update(journal));
 
-                    createJournalLines.forEach(jl => jl.journalId = id);
-                    await(knex('journalLines').transacting(trx).insert(createJournalLines));
-                    await(knex('journalLines').transacting(trx).update(updateJournalLine));
-                    await(knex('journalLines').transacting(trx)
-                        .whereIn('id', deleteJournalLine)
-                        .del());
+                    if(createJournalLines.length != 0) {
+                        createJournalLines.forEach(jl => jl.journalId = id);
+                        await(knex('journalLines')
+                            .transacting(trx)
+                            .insert(createJournalLines));
+                    }
+
+                   if(updateJournalLine.length != 0) {
+                       updateJournalLine.forEach(
+                           journalLine => {
+                               await(knex('journalLines')
+                                   .transacting(trx)
+                                   .where('id', journalLine.id)
+                                   .update(journalLine))
+                           }
+                       );
+                   }
+
+                   if (deleteJournalLine.length != 0) {
+                       await(knex('journalLines')
+                           .transacting(trx)
+                           .whereIn('id', deleteJournalLine)
+                           .del());
+                   }
 
                     trx.commit();
                     resolve(id);
