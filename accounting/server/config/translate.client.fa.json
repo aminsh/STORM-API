@@ -226,5 +226,10 @@
 
   "Debtor and creditor are not allowed to be zero , both of them":"بدهکار و بستانکار هر دو نباید صفر باشد",
   "Debtor and creditor are not allowed to have value , both of them": "بدهکار و بستانکار نباید هر دو دارای مقدار باشد",
-  "Total of debtor and creditor is not equal": "جمع بدهکار و بستانکار برابر نیست"
+  "Total of debtor and creditor is not equal": "جمع بدهکار و بستانکار برابر نیست",
+  "NationalCode":"کد ملی / کد اقتصادی",
+  "Address":"آدرس",
+  "Phone":"تلفن",
+  "Email":"ایمیل"
+
 }
