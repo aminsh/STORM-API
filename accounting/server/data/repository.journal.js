@@ -183,7 +183,7 @@ class JournalRepository extends BaseRepository {
                    }
 
                     trx.commit();
-                    resolve(id);
+                    resolve();
                 }
                 catch (e) {
                     trx.rollback();

@@ -177,6 +177,7 @@ module.exports.update = async((req, res) => {
 
     let cmdJournalLines = cmd.journalLines.asEnumerable()
         .select(journalLine => ({
+            id: journalLine.id,
             journalId: journalLine.journalId,
             generalLedgerAccountId: journalLine.generalLedgerAccountId,
             subsidiaryLedgerAccountId: journalLine.subsidiaryLedgerAccountId,
