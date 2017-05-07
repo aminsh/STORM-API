@@ -13,10 +13,14 @@ router.route('/activate/:token').get(async((req, res) => {
         user = await(userRepository.getByToken(token));
 
     user.token = null;
+    user.state = 'active';
 
-    await(userRepository.update(user));
+    await(userRepository.update(user.id ,user));
 
-    res.render('index.ejs');
+    req.logIn(user, function (err) {
+        if (err) return next(err);
+        res.render('index.ejs');
+    });
 }));
 
 router.route('/profile').get(async((req, res) => {
@@ -24,7 +28,7 @@ router.route('/profile').get(async((req, res) => {
         branchId = config.env == 'development'
             ? config.branchId
             : await(branchRepository.getBranchId(req.user.id)),
-        returnUrl= req.cookies['return-url'];
+        returnUrl = req.cookies['return-url'];
 
     res.cookie('branch-id', branchId);
     res.redirect(returnUrl || ((branchId) ? config.url.accounting : '/'));

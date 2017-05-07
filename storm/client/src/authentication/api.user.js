@@ -7,11 +7,11 @@ export default class UserApi {
     }
 
     login(data) {
-        return this.Api.post(`${this.prefixUrl}/login`, data);
+        return this.Api.post(`/api/auth/login`, data);
     }
 
     logout() {
-        return this.Api.post(`${this.prefixUrl}/logout`);
+        return this.Api.post(`api/auth/logout`);
     }
 
     register(data) {

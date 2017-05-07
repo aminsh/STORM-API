@@ -1,5 +1,5 @@
 export default class RegisterController {
-    constructor(userApi, setDirty, $rootScope, $scope, $state) {
+    constructor(userApi, setDirty, $rootScope, $scope, $state, logger, translate, $timeout) {
 
         $rootScope.noFooter = true;
         $scope.$on('$destroy', () => {
@@ -9,13 +9,18 @@ export default class RegisterController {
         this.userApi = userApi;
         this.$rootScope = $rootScope;
         this.$state = $state;
+        this.logger = logger;
+        this.translate = translate;
+        this.$timeout = $timeout;
 
         this.setDirty = setDirty;
         this.isError = false;
         this.user = {
             email: '',
             password: ''
-        }
+        };
+
+        this.canShowForm = true;
     }
 
     check(form) {
@@ -40,7 +45,8 @@ export default class RegisterController {
     }
 
     register(form) {
-        let user = this.user;
+        let user = this.user,
+            translate = this.translate;
 
         if (form.$invalid)
             return this.setDirty(form);
@@ -54,7 +60,18 @@ export default class RegisterController {
         }
 
         this.userApi.register(user)
-            .then(result => this.$state.go('home'));
+            .then(result => {
+                this.canShowForm = false;
+
+                this.$timeout(() => {
+                    this.logger.success(
+                        translate('Your registration has been done successfully'),
+                        translate('For activation your account , check your Email')
+                    )
+                        .then(() => this.$state.go('home'));
+                });
+
+            });
     }
 }
 
@@ -63,5 +80,8 @@ RegisterController.$inject = [
     'setDirty',
     '$rootScope',
     '$scope',
-    '$state'
+    '$state',
+    'logger',
+    'translate',
+    '$timeout'
 ];

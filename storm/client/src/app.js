@@ -18,6 +18,8 @@ import appTranslate from './app.translate';
 import setDirty from './shared/setDirty';
 import Promise from './shared/promise';
 import Api from './shared/api';
+import Logger from './shared/logger';
+import translate from './shared/translate';
 
 import HomeController from './home/home.controller';
 import AboutUSController from './ourTeam/aboutus.controller';
@@ -42,8 +44,10 @@ angular.module('app', [
 
     .directive('shell', shell)
     .factory('setDirty', setDirty)
+    .factory('translate', translate)
     .service('Promise', Promise)
     .service('Api', Api)
+    .service('logger', Logger)
 
     .controller('HomeController', HomeController)
     .controller('HomeController', HomeController)
