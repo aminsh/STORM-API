@@ -38,6 +38,49 @@
         </div>
 
         <div class="form-group">
+            <span ng-repeat="item in personType" style="margin-left: 10px">
+               <dev-tag-radio
+                       ng-class="{'checked': item.key == detailAccount.personType}"
+
+                       k-value="{{item.key}}"
+                       ng-model="detailAccount.personType"></dev-tag-radio>
+                       {{item.display}}
+                </span>
+        </div>
+
+        <div class="form-group">
+            <label class="label-control">{{'NationalCode' | translate}}</label>
+            <input type="text"
+                   class="form-control"
+                   ng-model="detailAccount.nationalCode"
+                   name="nationalCode"/>
+        </div>
+
+        <div class="form-group">
+            <label class="label-control">{{'Address' | translate}}</label>
+            <input type="text"
+                   class="form-control"
+                   ng-model="detailAccount.address"
+                   name="address"/>
+        </div>
+
+        <div class="form-group">
+            <label class="label-control">{{'Phone' | translate}}</label>
+            <input type="text"
+                   class="form-control"
+                   ng-model="detailAccount.phone"
+                   name="phone"/>
+        </div>
+
+        <div class="form-group">
+            <label class="label-control">{{'Email' | translate}}</label>
+            <input type="email"
+                   class="form-control"
+                   ng-model="detailAccount.email"
+                   name="email"/>
+        </div>
+
+        <div class="form-group">
             <label class="label-control">{{'Description' | translate}}</label>
             <textarea class="form-control" ng-model="detailAccount.description"
                       name="description"></textarea>

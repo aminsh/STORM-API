@@ -1,9 +1,11 @@
 import accModule from '../acc.module';
 
-function detailAccountUpdateModalController($scope, $uibModalInstance, formService, detailAccountApi, logger, data) {
+function detailAccountUpdateModalController($scope, $uibModalInstance, formService, detailAccountApi, logger, data, devConstants) {
     "use strict";
 
     let id = data.id;
+
+    $scope.personType = devConstants.enums.PersonType().data;
 
     $scope.errors = [];
     detailAccountApi.getById(id)
