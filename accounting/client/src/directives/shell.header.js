@@ -1,4 +1,4 @@
-export default function (fiscalPeriodApi , currentService) {
+export default function (fiscalPeriodApi, $rootScope, $cookies) {
     return {
         restrict: 'E',
         templateUrl: 'partials/templates/shell.header-template.html',
@@ -6,16 +6,24 @@ export default function (fiscalPeriodApi , currentService) {
         link: (scope, element, attrs) => {
             scope.fiscalPeriods = [];
 
-            scope.toggleSidebar = () =>  scope.$emit('toggle-sidebar');
+            scope.toggleSidebar = () => scope.$emit('toggle-sidebar');
 
-            fiscalPeriodApi.getAll()
-                .then(result => scope.fiscalPeriods = result.data);
+            scope.$on('branch-changed', (e, branch) => {
+                if (branch)
+                    fetchFiscalPeriod();
+            });
 
-            scope.currentFiscalPeriod = currentService.get().fiscalPeriod;
+            if ($cookies.get('current-period'))
+                fetchFiscalPeriod();
+
+            function fetchFiscalPeriod() {
+                fiscalPeriodApi.getAll().then(result => scope.fiscalPeriods = result.data);
+            }
 
             scope.selectFiscalPeriod = current => {
-                currentService.setFiscalPeriod(current.id);
-                scope.currentFiscalPeriod = current.id;
+                $rootScope.fiscalPeriodId = current.id;
+                $cookies.put('current-period', current.id, {path: '/'});
+                scope.$broadcast('fiscal-period-changed');
             };
         }
     }

@@ -4,8 +4,7 @@ const app = require('../config/express').app,
     config = require('../config'),
     async = require('asyncawait/async'),
     await = require('asyncawait/await'),
-    BranchQuery = require('../features/branch/branch.query'),
-    branchQuery = new BranchQuery(),
+    branchQuery = require('../features/branch/branch.query'),
     clientTranslation = require('../config/translate.fa.json');
 
 module.exports = async((req, res, next) => {
@@ -21,10 +20,10 @@ module.exports = async((req, res, next) => {
         currentBranch: branchId
             ? await(branchQuery.getById(branchId))
             : false,
-        env: process.env.NODE_ENV,
+        env: config.env,
         version: config.version
     };
 
     next();
-})
+});
 

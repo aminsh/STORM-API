@@ -5,7 +5,7 @@ import {viewerConfig, addVariable, addTranslates} from '../utilities/stimulsoft'
 let config = viewerConfig();
 
 
-function reportViewer(currentService) {
+function reportViewer($rootScope) {
     return {
         restrict: 'E',
         template: '<div id="contentViewer" style="direction: ltr"></div>',
@@ -19,7 +19,6 @@ function reportViewer(currentService) {
         link: function (scope, element, attrs) {
             let id = Guid.new(),
                 data = {},
-                current = currentService.get(),
                 report = new Stimulsoft.Report.StiReport(),
                 viewer = new Stimulsoft.Viewer.StiViewer(config, "StiViewer" + id, false);
 
@@ -32,28 +31,28 @@ function reportViewer(currentService) {
                 name: 'today',
                 alias: 'Today',
                 category: "general",
-                value: current.today
+                value: $rootScope.today
             }));
 
             report.dictionary.variables.add(addVariable({
                 name: 'currentUser',
                 alias: 'Current user',
                 category: 'general',
-                value: current.user.name
+                value: $rootScope.user.name
             }));
 
             report.dictionary.variables.add(addVariable({
                 name: 'branchLogo',
                 alias: 'Branch Logo',
                 category: "general",
-                value: current.branch.logo
+                value: $rootScope.branch.logo
             }));
 
             report.dictionary.variables.add(addVariable({
                 name: 'branchTitle',
                 alias: 'Branch title',
                 category: "general",
-                value: current.branch.name
+                value: $rootScope.branch.name
             }));
 
             report.dictionary.variables.add(addVariable({

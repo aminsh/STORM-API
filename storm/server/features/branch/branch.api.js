@@ -5,7 +5,7 @@ const express = require('express'),
     async = require('asyncawait/async'),
     await = require('asyncawait/await'),
     branchRepository = new require('./branch.repository'),
-    branchQuery = new require('./branch.query');
+    branchQuery = require('./branch.query');
 
 
 router.route('/').post(async((req, res) => {
@@ -14,6 +14,16 @@ router.route('/').post(async((req, res) => {
     await(branchRepository.create(cmd));
 
     res.body({isValid: true});
+}));
+
+router.route('/current').get(async((req, res) => {
+    let currentBranch = await(branchQuery.getById(req.cookies['branch-ic']));
+    res.json(currentBranch);
+}));
+
+router.route('/my').get(async((req, res) => {
+    let branches = branchQuery.getBranchesByUser(req.user.id);
+    res.json(branches);
 }));
 
 module.exports = router;

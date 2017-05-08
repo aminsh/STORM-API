@@ -1,0 +1,19 @@
+<dev-tag-content-cover>
+    <div class="start-waiting-block"
+            ng-show="canShowLoading">
+        <div style="margin-bottom: 30px">
+            {{'Please wait ...' | translate}}
+        </div>
+        <div class="progress-line"></div>
+    </div>
+
+    <dev-tag-content-cover-from>
+        <div ng-repeat="branch in model.branches"
+             class="contact-box center-version">
+            <a ng-click="model.select(branch)">
+                <img alt="image" class="img-circle" ng-src="{{branch.logo}}" style="max-width: 200px">
+                <h3 class="m-b-xs"><strong>{{branch.name}}</strong></h3>
+            </a>
+        </div>
+    </dev-tag-content-cover-from>
+</dev-tag-content-cover>

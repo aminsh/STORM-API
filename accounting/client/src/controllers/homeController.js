@@ -1,11 +1,6 @@
 import accModule from '../acc.module';
 
-function homeController($scope, currentService, navigate, journalApi, translate) {
-
-    let current = currentService.get();
-
-    if (!current.fiscalPeriod)
-        return navigate('createFiscalPeriod');
+function homeController($scope, journalApi, translate) {
 
     fetch();
 

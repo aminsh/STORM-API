@@ -5,25 +5,26 @@ const knex = require('../../services/knex'),
     await = require('asyncawait/await'),
     Guid = require('../../services/shared').utility.Guid;
 
-module.exports = class{
-    constructor(){}
+module.exports = class {
+    constructor() {
+    }
 
-    create(branch){
-        if(!branch.id)
+    create(branch) {
+        if (!branch.id)
             branch.id = Guid.new();
 
         return knex('branches').insert(branch);
     }
 
-    update(id, branch){
+    update(id, branch) {
         return knex('branches').where('id', id).update(branch);
     }
 
-    remove(id){
+    remove(id) {
         return knex('branches').where('id', id).del();
     }
 
-    getMemeber(memberId){
+    getMemeber(memberId) {
         return knex.table('userInBranches').where('id', memberId).first();
     }
 
@@ -38,11 +39,11 @@ module.exports = class{
         return knex('userInBranches').insert(member);
     }
 
-    updateMember(memberId, member){
+    updateMember(memberId, member) {
         return knex('userInBranches').where('id', memberId).update(member);
     }
 
-    getBranchId(userId){
-        return knex('userInBranches').where('userId', memberId).first();
+    getBranchId(userId) {
+        return knex('userInBranches').where('userId', userId).first();
     }
 };

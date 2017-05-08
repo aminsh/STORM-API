@@ -1,34 +1,11 @@
 "use strict";
 
-export default function shell($rootScope, menuItems, translate, currentService, $cookies, devConstants, $timeout) {
+export default function shell($rootScope, menuItems, translate, $cookies, devConstants, $timeout) {
     return {
         restrict: 'E',
         templateUrl: 'partials/templates/shell.html',
         //scope: true,
         link: function (scope, element, attrs) {
-
-            let current = currentService.get();
-
-            scope.user = current.user;
-            scope.branch = current.branch;
-            scope.current = current;
-
-            scope.fiscalPeriodDataSource = {
-                type: "json",
-                serverFiltering: true,
-                transport: {
-                    read: {
-                        url: devConstants.urls.period.all()
-                    }
-                },
-                schema: {
-                    data: 'data'
-                }
-            };
-            scope.modes = devConstants.enums.AccMode().data;
-
-            scope.$watch('current.fiscalPeriod', newValue => currentService.setFiscalPeriod(newValue));
-            scope.$watch('current.mode', newValue => currentService.setMode(newValue));
 
             $timeout(() => $rootScope.canShowStatusSection = true);
 
