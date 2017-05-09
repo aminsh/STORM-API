@@ -220,7 +220,7 @@ export default class {
     }
 
     attachImage() {
-        this.journalAttachImageService.show({id: id})
+        this.journalAttachImageService.show({id: this.journal.id})
             .then(fileName => {
                 this.journal.attachmentFileName = fileName;
                 this.logger.success();
