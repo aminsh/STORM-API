@@ -41,6 +41,8 @@ import chequePrintController from './controllers/chequePrintController';
 import reportController from './controllers/reportController';
 import reportDesignerController from './controllers/reportDesignerController';
 
+import './sales';
+
 // load apis
 import './apis/generalLedgerAccountApi';
 import subsidiaryLedgerAccountApi from './apis/subsidiaryLedgerAccountApi';
