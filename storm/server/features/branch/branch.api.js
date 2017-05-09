@@ -17,7 +17,7 @@ router.route('/').post(async((req, res) => {
 }));
 
 router.route('/current').get(async((req, res) => {
-    let currentBranch = await(branchQuery.getById(req.cookies['branch-ic']));
+    let currentBranch = await(branchQuery.getById(req.cookies['branch-id']));
     res.json(currentBranch);
 }));
 
