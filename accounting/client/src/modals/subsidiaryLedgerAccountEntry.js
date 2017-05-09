@@ -14,7 +14,7 @@ function subsidiaryLedgerAccountEntryModalController($scope, $uibModalInstance, 
     $scope.isEditMode = isEditMode;
     $scope.editMode = data.editMode;
     $scope.generalLedgerAccount = data.generalLedgerAccount;
-    $scope.dimensionCategories = dimensionCategoryApi.getAllLookupSync().data;
+    $scope.dimensionCategories = dimensionCategoryApi.getAllLookupSync();
     $scope.isSaving = false;
 
     $scope.subsidiaryLedgerAccount = {

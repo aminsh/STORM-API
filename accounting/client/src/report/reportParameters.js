@@ -37,7 +37,7 @@ export class ReportParametersController {
     }
 
     fetch() {
-        let dimensionCategories = this.dimensionCategoryApi.getAllLookupSync().data,
+        let dimensionCategories = this.dimensionCategoryApi.getAllLookupSync(),
             promises = [
                 { key: 'generalLedgerAccount', func: this.generalLedgerAccountApi.getAll() },
                 { key: 'subsidiaryLedgerAccount', func: this.subsidiaryLedgerAccountApi.getAll() },

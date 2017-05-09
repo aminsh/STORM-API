@@ -50,7 +50,7 @@ function journalAdvancedSearchModalController($scope, $uibModalInstance, transla
 
     $scope.close = () => $uibModalInstance.dismiss();
 
-    let dimensionCategories = dimensionCategoryApi.getAllLookupSync().data,
+    let dimensionCategories = dimensionCategoryApi.getAllLookupSync(),
         promises = [
             {key: 'generalLedgerAccount', func: generalLedgerAccountApi.getAll()},
             {key: 'subsidiaryLedgerAccount', func: subsidiaryLedgerAccountApi.getAll()},
