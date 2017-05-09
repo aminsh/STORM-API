@@ -45,6 +45,11 @@ router.route('/')
             code: cmd.code,
             title: cmd.title,
             description: cmd.description,
+            address: cmd.address,
+            phone: cmd.phone,
+            nationalCode: cmd.nationalCode,
+            email: cmd.email,
+            personType: cmd.personType,
             isActive: true
         }));
 
@@ -91,8 +96,11 @@ router.route('/:id')
 
         entity.title = cmd.title;
         entity.code = cmd.code;
-        entity.potingType = cmd.postingType;
-        entity.balanceType = cmd.balanceType;
+        entity.address = cmd.address;
+        entity.phone = cmd.phone;
+        entity.nationalCode = cmd.nationalCode;
+        entity.email = cmd.email;
+        entity.personType = cmd.personType;
         entity.description = cmd.description;
 
         await(detailAccountRepository.update(entity));
