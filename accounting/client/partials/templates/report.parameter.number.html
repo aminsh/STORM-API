@@ -1,0 +1,28 @@
+<div class="col-md-2" style="text-align: left;margin-top: 7px">
+    <label class="label-control">{{'From number' | translate}}</label>
+</div>
+<div class="col-md-4">
+    <dev-tag-numeric ng-model="model.parameters.minNumber"
+                     ng-required=":: model.isRequired('number')"
+                     style="width: 100%"
+                     name="minNumber" not-zero>
+    </dev-tag-numeric>
+
+    <div ng-messages="form.minNumber.$error" ng-if="form.minNumber.$dirty">
+        <span ng-message="notZero" class="label label-danger">{{'This field should have a value not equal to zero'|translate}}</span>
+    </div>
+</div>
+<div class="col-md-2" style="text-align: left;margin-top: 7px">
+    <label class="label-control">{{'To number' | translate}}</label>
+</div>
+<div class="col-md-4">
+    <dev-tag-numeric ng-model="model.parameters.maxNumber"
+                     ng-required=":: model.isRequired('number')"
+                     style="width: 100%"
+                     name="maxNumber" not-zero>
+    </dev-tag-numeric>
+
+    <div ng-messages="form.maxNumber.$error" ng-if="form.maxNumber.$dirty">
+        <span ng-message="notZero" class="label label-danger">{{'This field should have a value not equal to zero'|translate}}</span>
+    </div>
+</div>

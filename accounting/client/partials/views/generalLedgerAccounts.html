@@ -1,0 +1,27 @@
+<dev-tag-content dev-attr-title="{{'General ledger accounts' | translate}}">
+    <dev-tag-button
+            ui-sref=".create"
+            style-type="primary"
+            icon="glyphicon glyphicon-plus"
+            title="{{'New General ledger accounts' | translate}}"></dev-tag-button>
+
+    <dev-tag-grid option="gridOption"
+                  detail-option="gridOptionSubsidiaryLedgerAccount"
+                  on-current-changed="selectGeneralLedgerAccount(current)">
+    </dev-tag-grid>
+
+</dev-tag-content>
+
+<dev-tag-content dev-attr-title="{{'Subsidiary ledger accounts' | translate}}">
+    <dev-tag-button
+            ui-sref=".subsidiary-ledger-accounts.create({generalLedgerAccountId: current.id})"
+            style-type="primary"
+            icon="glyphicon glyphicon-plus"
+            title="{{'New Subsidiary ledger account' | translate}}"
+            ng-disabled="!current"></dev-tag-button>
+
+    <dev-tag-grid option="gridOptionSubsidiaryLedgerAccount"></dev-tag-grid>
+
+</dev-tag-content>
+
+

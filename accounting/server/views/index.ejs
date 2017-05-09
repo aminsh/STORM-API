@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width"/>
+    <meta http-equiv="Content-Type" content="text/html" charset="utf-8"/>
+
+    <title>{{currentBranch}}</title>u
+
+    <link href="/public/css/acc.min.css" rel="stylesheet"/>
+
+    <base href="/acc/" >
+</head>
+<body class="rtls k-rtl ">
+<shell>
+    <div class="waiting-overley">
+        <div class="start-waiting-block">
+            <div style="margin-bottom: 30px">
+                <img src="/public/images/logo.white.png" style="height: 70px">
+            </div>
+            <div class="progress-line"></div>
+        </div>
+
+        <div class="start-waiting-block-accountant" >
+            <div class="middle-box text-center animated fadeInDown" style="margin-top: 250%;">
+                <img src="/public/images/account-symbol.jpg" style="border-radius:50%"
+                     class="img-responsive img-center">
+            </div>
+        </div>
+    </div>
+
+
+</shell>
+<% if(env != 'development') { %>
+<script type="text/javascript">
+    window.vasleSettings = {
+        app_id: "xwiIitqQ",
+        user_id: '<%- currentUser.id %>',
+        fullname: '<%- currentUser.name %>'
+    };
+</script>
+<script type="text/javascript"> !function () {
+        function t() {
+            var t = n.createElement("script");
+            t.type = "text/javascript", t.async = !0, t.src = "https://www.retain.ir/app/xwiIitqQ/widget/?" + Math.random().toString(34).slice(2);
+            var e = n.getElementsByTagName("script")[0];
+            e.parentNode.insertBefore(t, e)
+        }
+
+        var e = window, a = e.Vasle;
+        if ("function" == typeof a) a("reattach_activator"), a("update", e.vasleSettings); else {
+            var n = document, c = function () {
+                c.c(arguments)
+            };
+            c.q = [], c.c = function (t) {
+                c.q.push(t)
+            }, e.Vasle = c, e.attachEvent ? e.attachEvent("onload", t) : e.addEventListener("load", t, !1)
+        }
+    }();</script>
+<% } %>
+</body>
+
+</html>
+<script>
+    String.prototype.format = String.prototype.f = function () {
+        var s = this,
+            i = arguments.length;
+
+        while (i--) {
+            s = s.replace(new RegExp('\\{' + i + '\\}', 'gm'), arguments[i]);
+        }
+        return s;
+    };
+</script>
+
+<script src="/public/js/stimulsoft.all.min.js"></script>
+<script src="/public/js/acc.bundle.min.js"></script>
+<script src="/public/js/acc.template.bundle.js"></script>
+
+<script>
+
+    localStorage.setItem('today', '<%- today %>');
+    localStorage.setItem('translate', '<%- JSON.stringify(clientTranslation) %>');
+    localStorage.setItem('currentUser', '<%- JSON.stringify(currentUser) %>');
+    localStorage.setItem('reports', '<%- JSON.stringify(reports) %>');
+    localStorage.setItem('env', '<%- env %>')
+
+    <% if(env !== 'development') { %>
+    Stimulsoft.Base.Localization.StiLocalization.setLocalizationFile('/public/fa.xml', true);
+    <% } %>
+
+    let fonts = [
+        {"fileName": "BBadr.ttf", "name": "BBadr"},
+        {"fileName": "BBaran.ttf", "name": "BBaran"},
+        {"fileName": "BBardiya.ttf", "name": "BBardiya"},
+        {"fileName": "BCompset.ttf", "name": "BCompset"},
+        {"fileName": "BElham.ttf", "name": "BElham"},
+        {"fileName": "BKoodakBold.ttf", "name": "BKoodakBold"},
+        {"fileName": "BLotus.ttf", "name": "BLotus"},
+        {"fileName": "BTraffic.ttf", "name": "BTraffic"},
+        {"fileName": "BZar.ttf", "name": "BZar"}
+    ];
+
+    fonts.forEach(f => Stimulsoft
+        .Base
+        .StiFontCollection
+        .addOpentypeFontFile(`/public/fonts/${f.fileName}`, f.name));
+
+    Stimulsoft.Report.Dictionary.StiFunctions.addFunction(
+        "devFunction",
+        "digitToWord",
+        "digitToWord", "", "",
+        String, "", [Number], ["Amount"], [""],
+        window.digitToWord);
+
+    Stimulsoft.Report.Dictionary.StiFunctions.addFunction(
+        "devFunction",
+        "dateToWord",
+        "dateToWord", "", "",
+        String, "", [String], ["Date"], [""],
+        window.dateToWord);
+
+</script>
+

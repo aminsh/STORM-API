@@ -1,0 +1,68 @@
+<div class="row">
+    <div class="row"
+         ng-if="item.canShowDimension1">
+        <div class="col-md-3">
+            <label class="label-control">{{'Dimension1'|translate}}</label>
+        </div>
+        <div class="col-md-9">
+            <dev-tag-combo-box
+                    name="dimension1Id"
+                    k-placeholder="{{'Select ...'|translate}}"
+                    k-data-value-field="id"
+                    k-data-text-field="display"
+                    k-data-source="columnConfig.dimension1.dataSource"
+                    ng-model="item.dimension1Id"
+                    required></dev-tag-combo-box>
+
+            <div ng-messages="form['form-'+ $index].dimension1Id.$error"
+                 ng-if="form['form-'+ $index].dimension1Id.$dirty">
+                <label ng-message="required"
+                       class="error">{{'This field is required'|translate}}</label>
+            </div>
+        </div>
+    </div>
+    <div class="row"
+         ng-if="item.canShowDimension2">
+        <div class="col-md-3">
+            <label class="label-control">{{'Dimension2'|translate}}</label>
+        </div>
+        <div class="col-md-9">
+            <dev-tag-combo-box
+                    name="dimension2Id"
+                    k-placeholder="{{'Select ...'|translate}}"
+                    k-data-value-field="id"
+                    k-data-text-field="display"
+                    k-data-source="columnConfig.dimension2.dataSource"
+                    ng-model="item.dimension2Id"
+                    required></dev-tag-combo-box>
+
+            <div ng-messages="form['form-'+ $index].dimension2Id.$error"
+                 ng-if="form['form-'+ $index].dimension2Id.$dirty">
+                <label ng-message="required"
+                       class="error">{{'This field is required'|translate}}</label>
+            </div>
+        </div>
+    </div>
+    <div class="row"
+         ng-if="item.canShowDimension3">
+        <div class="col-md-3">
+            <label class="label-control">{{'Dimension3'|translate}}</label>
+        </div>
+        <div class="col-md-9">
+            <dev-tag-combo-box
+                    name="dimension3Id"
+                    k-placeholder="{{'Select ...'|translate}}"
+                    k-data-value-field="id"
+                    k-data-text-field="display"
+                    k-data-source="columnConfig.dimension3.dataSource"
+                    ng-model="item.dimension3Id"
+                    required></dev-tag-combo-box>
+
+            <div ng-messages="form['form-'+ $index].dimension3Id.$error"
+                 ng-if="form['form-'+ $index].dimension3Id.$dirty">
+                <label ng-message="required"
+                       class="error">{{'This field is required'|translate}}</label>
+            </div>
+        </div>
+    </div>
+</div>

@@ -35,6 +35,8 @@
   "Dear": "عزیز",
   "Your registration has been done successfully":"ثبت نام شما با موفقیت انجام شد",
   "For activation your account , check your Email":"یک ایمیل جهت فعالسازی حساب کاربری برای شما ارسال خواهد شد",
+  "Your Account activated successfully": "حساب شما با موفقیت فعال شد",
+  "Activation link":"لینک فعالسازی",
   "Drag your file here": "فایل خود را به این قسمت بکشید",
   "Drop here": "رها کنید",
   "Created successfully": "با موفقیت ایجاد شد",
@@ -48,6 +50,18 @@
 
   "Accounting application": "برنامه حسابداری",
 
-  "Luca demo link": "لینک دموی لوکا",
-  "Hello": "سلام"
+  "Accounting demo link": "نسخه ی نمایشی نرم افزار حسابداری آنلاین استورم",
+  "Hello": "سلام",
+  "stormTitle": "نرم‌افزار حسابداری آنلاین استورم",
+  "stormTitleP1": "نرم‌افزار حسابداری آنلاین",
+  "storm": "استورم",
+  "stormInput":"ورود به استورم",
+  "stormOrder":"با نسخه ی رایگان استورم شروع کنید",
+  "menu-login":"ورود/ عضویت",
+  "menu-price":"قیمت ها",
+  "menu-ourTeam":"تیم ما",
+  "menu-contactUs":"ارتباط با ما",
+  "address":"تهران - خ کارگر (امیرآباد) شمالی - دانشکده فنی دانشگاه تهران - ساختمان انستیتوی مهندسی نفت - طبقه5",
+  "changePassword":" تغییر رمز عبور",
+  "profile":"پروفایل"
 }

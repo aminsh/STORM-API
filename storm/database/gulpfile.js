@@ -1,7 +1,7 @@
 "use strict";
 
-require('../server/utilities/string.prototypes');
-require('../server/utilities/array.prototypes');
+require('../../shared/utilities/string.prototypes');
+require('../../shared/utilities/array.prototypes');
 
 const gulp = require('gulp'),
     path = require('path'),

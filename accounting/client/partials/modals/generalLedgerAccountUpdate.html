@@ -1,0 +1,92 @@
+<div class="modal-header">
+    <button type="button" ng-click="close()" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+    <h3 class="modal-title">{{'Edit General ledger accounts'| translate}}</h3>
+</div>
+<div class="modal-body k-rtl">
+    <dev-tag-validation-summary errors="errors"></dev-tag-validation-summary>
+
+    <form name="form">
+        <div class="form-group">
+            <label class="label-control">{{'Code' | translate}}</label>
+            <input type="text" class="form-control" ng-model="generalLedgerAccount.code" name="code"/>
+        </div>
+        <div class="form-group">
+            <label class="label-control">{{'Title' | translate}}</label>
+            <input type="text" class="form-control" required ng-model="generalLedgerAccount.title" name="title"/>
+
+            <div ng-messages="form.title.$error" ng-if="form.title.$dirty">
+                <label ng-message="required" class="error">{{'This field is required'|translate}}</label>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="label-control">{{'Posting type' | translate}}</label>
+            <select name="postingType"
+                    ng-model="generalLedgerAccount.postingType"
+                    ng-options="p.key as p.display for p in accountPostingType.data"
+                    class="form-control">
+                <option value="">{{'Select ...'|translate}}</option>
+            </select>
+
+            <div ng-messages="form.postingType.$error" ng-if="form.postingType.$dirty">
+                <label ng-message="required" class="error">{{'This field is required'|translate}}</label>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="label-control">{{'Balance type' | translate}}</label>
+
+            <select name="balanceType"
+                    ng-model="generalLedgerAccount.balanceType"
+                    ng-options="p.key as p.display for p in accountBalanceType.data"
+                    class="form-control">
+                <option value="">{{'Select ...'|translate}}</option>
+            </select>
+
+            <div ng-messages="form.balanceType.$error" ng-if="form.balanceType.$dirty">
+                <label ng-message="required" class="error">{{'This field is required'|translate}}</label>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="label-control">{{'Description' | translate}}</label>
+            <dev-tag-editor
+                    k-encoded="false"
+                    ng-model="generalLedgerAccount.description"
+                    ng-bind-html-unsafe="generalLedgerAccount.description"
+                    style="height: 50px"
+                    name="description"></dev-tag-editor>
+        </div>
+    </form>
+</div>
+<div class="modal-footer">
+    <dev-tag-button
+            ng-click="save(form)"
+            icon="glyphicon glyphicon-floppy-disk"
+            ng-disabled="isSaving"
+            is-waiting="isSaving"
+            style-type="primary"
+            title="{{'Save' | translate}}"></dev-tag-button>
+
+<span style="float: right">
+    <dev-tag-button
+            ng-click="activate()"
+            ng-if="!generalLedgerAccount.isActive"
+            icon="glyphicon glyphicon glyphicon-ok"
+            ng-disabled="isActivating"
+            is-waiting="isActivating"
+            style-type="primary"
+            title="{{'Activate' | translate}}"></dev-tag-button>
+
+    <dev-tag-button
+            ng-click="deactivate()"
+            ng-if="generalLedgerAccount.isActive"
+            icon="glyphicon glyphicon glyphicon-ok"
+            ng-disabled="isDeactivating"
+            is-waiting="isDeactivating"
+            style-type="primary"
+            title="{{'Deactivate' | translate}}"></dev-tag-button>
+</span>
+
+</div>

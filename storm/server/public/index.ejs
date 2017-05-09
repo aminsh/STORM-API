@@ -2,23 +2,25 @@
 <html ng-app="app" lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>Storm</title>
+    <title>STORM</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic">
     <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="currentUser" content="<%- currentUser %>">
+    <meta name="currentUserImage" content="<%- currentUserImage %>">
 
     <base href="/">
-    <link href="/css/app.css" rel="stylesheet">
+    <link href="/public/css/storm.min.css" rel="stylesheet">
 </head>
+<body>
 <shell>
     <div layout="column"
          layout-fill=""
          layout-align="center center"
          class="layout-fill layout-align-center-center layout-column">
-        <img src="./img/storm-logo.png" style="width: 320px;height: 150px">
+        <img src="/public/imagesstorm-logo.png" style="width: 320px;height: 150px">
 
         <div class="md-preloader">
             <svg xmlns="http://www.w3.org/2000/svg" version="1.1" height="75" width="75" viewbox="0 0 75 75">
@@ -27,8 +29,11 @@
         </div>
     </div>
 </shell>
-<script src="/client/dist/app.bundle.js"></script>
-<script src="/client/dist/app.template.bundle.js"></script>
+</body>
+<script src="/public/js/storm.bundle.min.js"></script>
+<script src="/public/js/storm.template.bundle.js"></script>
+
+<% if(env !== 'development') { %>
 <script type="text/javascript">window.vasleSettings = {app_id: "xwiIitqQ"};</script>
 <script type="text/javascript"> !function () {
         function t() {
@@ -47,5 +52,7 @@
                 c.q.push(t)
             }, e.Vasle = c, e.attachEvent ? e.attachEvent("onload", t) : e.addEventListener("load", t, !1)
         }
-    }();</script>
+    }();
+</script>
+<% } %>
 </html>

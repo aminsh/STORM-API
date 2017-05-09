@@ -1,0 +1,24 @@
+<div class="col-md-2" style="text-align: left;margin-top: 7px">
+    <label class="label-control">{{'From date' | translate}}</label>
+</div>
+<div class="col-md-4">
+    <dev-tag-datepicker ng-model="model.parameters.minDate"
+                        name="minDate"
+                        ng-required="model.isRequired('date')"></dev-tag-datepicker>
+
+    <div ng-messages="form.minDate.$error" ng-if="form.minDate.$dirty">
+        <label ng-message="required" class="error">{{'This field is required'|translate}}</label>
+    </div>
+</div>
+<div class="col-md-2" style="text-align: left;margin-top: 7px">
+    <label class="label-control">{{'To date' | translate}}</label>
+</div>
+<div class="col-md-4">
+    <dev-tag-datepicker ng-model="model.parameters.maxDate"
+                        name="maxDate"
+                        ng-required="model.isRequired('date')"></dev-tag-datepicker>
+
+    <div ng-messages="form.maxDate.$error" ng-if="form.maxDate.$dirty">
+        <label ng-message="required" class="error">{{'This field is required'|translate}}</label>
+    </div>
+</div>

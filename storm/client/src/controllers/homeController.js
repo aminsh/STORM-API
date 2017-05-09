@@ -5,6 +5,5 @@ export default function homeController($scope, branchStateService, authService) 
     this.isAuth = authService.isAuth();
 
     $scope.$on('login-changed', ()=> this.isAuth = authService.isAuth());
-
     $scope.$on('branch-changed', ()=> this.branch = branchStateService.get());
 }

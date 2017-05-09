@@ -1,0 +1,300 @@
+[
+  {
+    "key": "1",
+    "text": "صدور سند حسابداری",
+    "items": [
+      {
+        "key": "100",
+        "text": "سند حسابداری کل",
+        "func": "detailJournals",
+        "fileName": "detailJournalsList",
+        "params": [
+          {
+            "name": "date"
+          },
+          {
+            "name": "number"
+          }
+        ]
+      },
+      {
+        "key": "101",
+        "text": "سند حسابداری به تفکیک حساب کل",
+        "func": "detailGeneralJournal",
+        "fileName": "detailGeneralJournalList",
+        "params": [
+          {
+            "name": "date"
+          },
+          {
+            "name": "number"
+          }
+        ]
+      },
+      {
+        "key": "102",
+        "text": "سند حسابداری به تفکیک حساب کل - معین",
+        "func": "detailGeneralSubsidiaryJournal",
+        "fileName": "detailGeneralSubsidiaryJournalList",
+        "params": [
+          {
+            "name": "date"
+          },
+          {
+            "name": "number"
+          }
+        ]
+      },
+      {
+        "key": "103",
+        "text": "سند حسابداری به تفکیک حساب معین-تفضیل",
+        "func": "detailSubsidiaryDetailJournal",
+        "fileName": "detailSubsidiaryDetailJournalList",
+        "params": [
+          {
+            "name": "date"
+          },
+          {
+            "name": "number"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "key": "2",
+    "text": "ریز گردش حساب ها",
+    "items": [
+      {
+        "key": "200",
+        "text": "ریز گردش کل - معین",
+        "func": "detailGeneralSubsidiaryTurnover",
+        "fileName": "detailGeneralSubsidiaryTurnoverList",
+        "params": [
+          {
+            "name": "date"
+          },
+          {
+            "name": "number"
+          },
+          {
+            "name": "generalLedgerAccount"
+          },
+          {
+            "name": "subsidiaryLedgerAccount"
+          }
+        ]
+      },
+      {
+        "key": "201",
+        "text": "ریز گردش معین - تفصیل",
+        "func": "detailSubsidiaryDetailTurnover",
+        "fileName": "detailSubsidiaryDetailTurnoverList",
+        "params": [
+          {
+            "name": "date"
+          },
+          {
+            "name": "number"
+          },
+          {
+            "name": "subsidiaryLedgerAccount"
+          }
+        ]
+      },
+      {
+        "key": "202",
+        "text": "ریز گردش کل - معین - تفضیل",
+        "func": "detailGeneralSubsidiaryDetailTurnover",
+        "fileName": "detailGeneralSubsidiaryDetailTurnoverList",
+        "params": [
+          {
+            "name": "date"
+          },
+          {
+            "name": "number"
+          },
+          {
+            "name": "generalLedgerAccount"
+          },
+          {
+            "name": "subsidiaryLedgerAccount"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "key": "3",
+    "text": "جمع گردش حساب ها",
+    "items": [
+      {
+        "key": "300",
+        "text": "گردش کل - معین",
+        "func": "totalGeneralSubsidiaryTurnover",
+        "fileName": "totalGeneralSubsidiaryTurnoverList",
+        "params": [
+          {
+            "name": "generalLedgerAccount"
+          },
+          {
+            "name": "subsidiaryLedgerAccount"
+          }
+        ]
+      },
+      {
+        "key": "301",
+        "text": "گردش معین - تفصیل",
+        "func": "totalSubsidiaryDetailTurnover",
+        "fileName": "totalSubsidiaryDetailTurnoverList",
+        "params": [
+          {
+            "name": "subsidiaryLedgerAccount"
+          }
+        ]
+      },
+      {
+        "key": "302",
+        "text": "گردش  کل - معین - تفضیل",
+        "func": "totalGeneralSubsidiaryDetailTurnover",
+        "fileName": "totalGeneralSubsidiaryDetailTurnoverList",
+        "params": [
+          {
+            "name": "generalLedgerAccount"
+          },
+          {
+            "name": "subsidiaryLedgerAccount"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "key": "4",
+    "text": "دفاتر مالی",
+    "items": [
+      {
+        "key": "400",
+        "text": "دفتر روزنامه",
+        "func": "journalOffice",
+        "fileName": "journalOfficeList",
+        "params": [
+          {
+            "name": "generalLedgerAccount"
+          },
+          {
+            "name": "date"
+          }
+        ]
+      },
+      {
+        "key": "401",
+        "text": "دفتر کل",
+        "func": "generalOffice",
+        "fileName": "generalOfficeList",
+        "params": [
+          {
+            "name": "date"
+          }
+        ]
+      },
+      {
+        "key": "402",
+        "text": "دفتر معین",
+        "func": "subsidiaryOffice",
+        "fileName": "subsidiaryOfficeList",
+        "params": [
+          {
+            "name": "generalLedgerAccount"
+          },
+          {
+            "name": "date"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "key": "5",
+    "text": "گزارش های تراز",
+    "items": [
+      {
+        "key": "500",
+        "text": "تراز کل",
+        "func": "generalBalance",
+        "fileName": "generalBalanceList",
+        "params": [
+          {
+            "name": "generalLedgerAccount"
+          }
+        ]
+      },
+      {
+        "key": "501",
+        "text": "تراز کل - معین",
+        "func": "subsidiaryBalance",
+        "fileName": "subsidiaryBalanceList",
+        "params": [
+          {
+            "name": "generalLedgerAccount"
+          },
+          {
+            "name": "subsidiaryLedgerAccount"
+          }
+        ]
+      },
+      {
+        "key": "502",
+        "text": "تراز معین - تفصیل",
+        "func": "subsidiaryDetailBalance",
+        "fileName": "subsidiaryDetailBalanceList",
+        "params": [
+          {
+            "name": "generalLedgerAccount"
+          },
+          {
+            "name": "subsidiaryLedgerAccount"
+          }
+        ]
+      },
+      {
+        "key": "503",
+        "text": "تراز 3 سطحی",
+        "func": "generalSubsidiaryDetailBalance",
+        "fileName": "generalSubsidiaryDetailBalanceList",
+        "params": [
+          {
+            "name": "generalLedgerAccount"
+          },
+          {
+            "name": "subsidiaryLedgerAccount"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "key": "6",
+    "text": "فهرست حساب ها",
+    "items": [
+      {
+        "key": "600",
+        "text": "حساب های کل",
+        "func": "generalLedgerAccounts",
+        "fileName": "generalLedgerAccountList"
+      },
+      {
+        "key": "601",
+        "text": "حساب های معین",
+        "func": "subsidiaryLedgerAccounts",
+        "fileName": "subsidiaryLedgerAccountList"
+      },
+      {
+        "key": "602",
+        "text": "حساب های تفضیل",
+        "func": "detailAccounts",
+        "fileName": "detailAccountList"
+      }
+    ]
+  }
+]

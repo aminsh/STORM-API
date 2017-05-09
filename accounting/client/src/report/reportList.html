@@ -1,0 +1,27 @@
+
+<dev-tag-content dev-attr-title="{{'Reports' | translate}}">
+<div class="container-fluid">
+   <div class="row">
+        <div class="col-md-4" ng-repeat="r in model.reports">
+        <h5>{{r.text}}</h6>
+        <ul class="list-group">
+            <li class="list-group-item" 
+            style="cursor: pointer" 
+            ng-repeat="item in r.items">
+
+                <a ng-click="model.show(item)">{{item.text}}</a>
+
+                <a 
+                ng-if="isDevelopment" 
+                class="pull-left" 
+                style="cursor: pointer"
+                ng-click="model.design(item)">
+                <i class="fa fa-edit"></i>
+                </a>
+            </li>
+        </ul>
+    </div>
+   </div>
+</div>
+</dev-tag-content>
+
