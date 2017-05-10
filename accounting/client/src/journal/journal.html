@@ -5,6 +5,7 @@
   <div class="row">
                 <div class="col-md-2"></div>
                 <dev-tag-validation-summary errors="model.errors" class="col-md-8"></dev-tag-validation-summary>
+
                 <div class="col-md-2"></div>
             </div>            <form name="form" novalidate>
                 <div class="row col-md-12">
@@ -15,11 +16,6 @@
                             is-waiting="isSaving"
                             style-type="primary"
                             title="{{'Save' | translate}}"></dev-tag-button>
-
-                    <!--<dev-tag-button
-                            ng-click="bookkeeping()"
-                            style-type="white"
-                            title="{{'Record Bookkeeping' | translate}}"></dev-tag-button>-->
 
                     <dev-tag-button
                             ng-click="model.attachImage()"

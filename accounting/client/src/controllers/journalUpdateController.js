@@ -105,7 +105,7 @@ export default function journalUpdateController(
         detailAccountApi.getAll()
             .then(result => columnConfig.detailAccount.dataSource = result.data);
 
-        dimensionCategoryApi.getAllLookupSync().data.forEach((cat, i) => dimensionApi.getByCategory(cat.id)
+        dimensionCategoryApi.getAllLookupSync().forEach((cat, i) => dimensionApi.getByCategory(cat.id)
             .then(result => columnConfig[`dimension${i + 1}`].dataSource = result.data));
 
         tagApi.getAll().then(result => $scope.tags = result.data);

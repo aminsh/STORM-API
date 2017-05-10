@@ -31,7 +31,7 @@ module.exports.Insert = async((req, res) => {
             temporaryNumber = cmd.temporaryNumber;
     }
     else {
-        temporaryNumber = (await(journalRepository.maxTemporaryNumber(currentFiscalPeriodId)) || 0) + 1
+        temporaryNumber = (await(journalRepository.maxTemporaryNumber(currentFiscalPeriodId)) || 0) + 1;
     }
 
     let temporaryDateIsInPeriodRange =
@@ -66,7 +66,9 @@ module.exports.Insert = async((req, res) => {
                 article: journalLine.article,
                 debtor: journalLine.debtor,
                 creditor: journalLine.creditor,
-                row: journalLine.row
+                row: journalLine.row,
+                receiptNumber: journalLine.receipt ? journalLine.receipt.number : null,
+                receiptDate: journalLine.receipt ? journalLine.receipt.date : null,
             }))
         .toArray();
 
@@ -84,7 +86,7 @@ module.exports.Insert = async((req, res) => {
         let subsidiaryId = journalLine.subsidiaryLedgerAccountId,
             subsidiaryLedgerAccount = await(subsidiaryLedgerAccountRepository.findById(subsidiaryId));
 
-        if (!subsidiaryLedgerAccount.hasDetailAccount && journalLines[index].detailAccountId) {
+        if (!subsidiaryLedgerAccount.hasDetailAccount && journalLine.detailAccountId) {
             errors.push(translate('The detailAccount is not define'));
         }
         if (!subsidiaryLedgerAccount.hasDimension1 && journalLine.dimension1Id) {
@@ -127,14 +129,15 @@ module.exports.Insert = async((req, res) => {
 module.exports.update = async((req, res) => {
     let branchId = req.cookies['branch-id'],
         journalRepository = new JournalRepository(branchId),
-        journalLineQuery = new JournalLineQuery(branchId),
+        journalLineRepository = new JournalLineRepository(branchId),
         fiscalPeriodRepository = new FiscalPeriodRepository(branchId),
         currentPeriod = req.cookies['current-period'],
         currentFiscalPeriod = await(fiscalPeriodRepository.findById(currentPeriod)),
         subsidiaryLedgerAccountRepository = new SubsidiaryLedgerAccountRepository(branchId),
         cmd = req.body,
         journalId = req.params.id,
-        errors = [];
+        errors = [],
+        persistedIds = await(journalLineRepository.findByJournalId_ids(journalId));
 
     if (currentFiscalPeriod.isClosed)
         errors.push(translate('The current period is closed , You are not allowed to edit Journal'));
@@ -173,8 +176,6 @@ module.exports.update = async((req, res) => {
     entity.number = cmd.number;
     entity.description = cmd.description;
 
-    let dbJournalLines = await(journalLineQuery.getAllByJournalId(entity.id));
-
     let cmdJournalLines = cmd.journalLines.asEnumerable()
         .select(journalLine => ({
             id: journalLine.id,
@@ -188,7 +189,9 @@ module.exports.update = async((req, res) => {
             article: journalLine.article,
             debtor: journalLine.debtor,
             creditor: journalLine.creditor,
-            row: journalLine.row
+            row: journalLine.row,
+            receiptNumber: journalLine.receipt ? journalLine.receipt.number : null,
+            receiptDate: journalLine.receipt ? journalLine.receipt.date : null,
         }))
         .toArray();
 
@@ -221,12 +224,23 @@ module.exports.update = async((req, res) => {
         }
     });
 
-    let createdLines = cmdJournalLines.asEnumerable().where(line => dbJournalLines.includes(line.id)).toArray(),
-        updatedLines = cmdJournalLines.asEnumerable().where(line => !dbJournalLines.includes(line.id)).toArray(),
-        deletedLines = dbJournalLines.asEnumerable().where(line => cmdJournalLines.includes(line.id)).toArray();
+    let createdLines = cmdJournalLines.asEnumerable()
+            .where(line => !persistedIds.includes(line.id))
+            .toArray(),
+        updatedLines = cmdJournalLines.asEnumerable()
+            .where(line => persistedIds.includes(line.id))
+            .toArray(),
+        deletedLines = persistedIds.asEnumerable()
+            .where(id => !cmdJournalLines.asEnumerable().any(c => c.id == id))
+            .toArray();
 
-    await(journalRepository.batchUpdate(createdLines, updatedLines, deletedLines, entity));
+    await(journalRepository.batchUpdate(
+        createdLines,
+        updatedLines,
+        deletedLines,
+        entity));
 
+    res.json({isValid: true});
 });
 
 module.exports.delete = async((req, res) => {

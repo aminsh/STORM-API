@@ -21,13 +21,16 @@ class BranchQuery {
 
     getBranchesByUser(userId) {
         let branch = await(knex.select('id', 'name', 'logo', 'accConnection')
-            .from('branches')
-            .where('ownerId', userId)),
-        members = await(knex.select('*')
-            .from('userInBranches')
-            .where('userId', userId));
+                .from('branches')
+                .where('ownerId', userId)),
+            branchIds = await(knex.select('branchId')
+                .from('userInBranches')
+                .where('userId', userId)).asEnumerable().select(b => b.branchId).toArray(),
+            branches = await(knex.select('id', 'name', 'logo', 'accConnection')
+                .from('branches')
+                .whereIn('id', branchIds));
 
-        return branch.concat(members);
+        return branch.concat(branches);
     }
 }
 

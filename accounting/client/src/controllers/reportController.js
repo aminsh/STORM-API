@@ -127,7 +127,7 @@ export default function ($scope, devConstants, dimensionCategoryApi, reportApi, 
         }
     };
 
-    let cats = $scope.dimensionCategories = dimensionCategoryApi.getAllLookupSync().data;
+    let cats = $scope.dimensionCategories = dimensionCategoryApi.getAllLookupSync();
 
     $scope.dimension1DataSource = dimensionDataSourceFactory(cats[0].id);
     $scope.dimension2DataSource = dimensionDataSourceFactory(cats[1].id);

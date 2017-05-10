@@ -80,6 +80,8 @@ export default class {
         this.detailAccount = {
             data: [],
             onChanged(item, journalLine){
+                journalLine.detailAccountId = item.id;
+
                 $timeout(() => {
                     $scope.$broadcast(`article-focus-${journalLine.id}`);
                 });
@@ -124,7 +126,18 @@ export default class {
             this.journalApi.getById(this.id)
                 .then(result => {
                     this.journal = result;
+
+                    result.journalLines.forEach(line => {
+                        let subsidiaryLedgerAccount = this.subsidiaryLedgerAccount.data
+                            .asEnumerable().single(s => s.id == line.subsidiaryLedgerAccountId);
+
+                        line.hasDetailAccount = subsidiaryLedgerAccount.hasDetailAccount;
+                        line.hasDimension1 = subsidiaryLedgerAccount.hasDimension1;
+                        line.hasDimension2 = subsidiaryLedgerAccount.hasDimension2;
+                        line.hasDimension3 = subsidiaryLedgerAccount.hasDimension3;
+                    });
                     this.journalLines = result.journalLines;
+
                     this.$scope.$broadcast('grid-changed');
                 })
                 .finally(() => this.isJournalLineLoading = false);
@@ -146,7 +159,6 @@ export default class {
     save(form) {
         let logger = this.logger,
             formService = this.formService,
-            errors = this.errors,
             journal = this.journal,
             journalLines = this.journalLines,
             isSaving = this.isSaving;
@@ -167,7 +179,7 @@ export default class {
         if (totalRemainder != 0)
             return logger.error(this.translate('Total of debtor and creditor is not equal'));
 
-        errors.asEnumerable().removeAll();
+        this.errors.asEnumerable().removeAll();
         isSaving = true;
 
         let cmd = Object.assign(journal, {journalLines});
@@ -178,12 +190,14 @@ export default class {
                     logger.success();
                     journal.id = result.id;
                 })
-                .catch(err => errors = err)
+                .catch(err => {
+                    this.errors = err;
+                })
                 .finally(() => isSaving = false);
 
         this.journalApi.update(this.id, this.journal)
             .then(() => logger.success())
-            .catch(err =>{
+            .catch(err => {
                 console.log(err);
                 errors = err;
             })
@@ -220,7 +234,7 @@ export default class {
     }
 
     attachImage() {
-        this.journalAttachImageService.show({id: id})
+        this.journalAttachImageService.show({id: this.journal.id})
             .then(fileName => {
                 this.journal.attachmentFileName = fileName;
                 this.logger.success();
@@ -235,8 +249,8 @@ export default class {
         this.journalLineAdditionalInformation.show({
             journal: this.journal,
             journalLine
-        }).then(data => {
-            journalLine.additionalInformation = data;
+        }).then(journalLine => {
+            this.journalLine = journalLine;
         });
     }
 

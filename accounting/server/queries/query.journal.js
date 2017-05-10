@@ -27,15 +27,20 @@ module.exports = class JournalQuery extends BaseQuery {
 
     batchFindById(journalId) {
         let knex = this.knex,
-            journalLines = await(knex.select('journalLines.*'
-                , 'subsidiaryLedgerAccounts.hasDetailAccount'
-                , 'subsidiaryLedgerAccounts.hasDimension1'
-                , 'subsidiaryLedgerAccounts.hasDimension2'
-                , 'subsidiaryLedgerAccounts.hasDimension3')
+            journalLines = await(knex.select(
+                'id',
+                'row',
+                'creditor',
+                'debtor',
+                'article',
+                'subsidiaryLedgerAccountId',
+                'detailAccountId',
+                'dimension1Id',
+                'dimension2Id',
+                'dimension3Id'
+            )
                 .from('journalLines')
-                .innerJoin('subsidiaryLedgerAccounts', 'subsidiaryLedgerAccounts.id', 'journalLines.subsidiaryLedgerAccountId')
-                .where('journalLines.journalId', journalId)
-                .as('journalLinesWithDetail')),
+                .where('journalId', journalId)),
             journal = await(knex.select()
                 .from('journals')
                 .where('id', journalId)
@@ -80,7 +85,7 @@ module.exports = class JournalQuery extends BaseQuery {
 
         result.forEach(item => item.monthName = enums.getMonth().getDisplay(item.month));
 
-        return { data: result };
+        return {data: result};
     }
 
     getJournalsByMonth(month, currentFiscalPeriod, parameters) {
@@ -142,7 +147,7 @@ module.exports = class JournalQuery extends BaseQuery {
             totalInComplete = await(base.where('isInComplete', true)
                 .select(knex.raw('count(*)')).first()).count;
 
-        return { lastNumber, totalFixed, totalInComplete };
+        return {lastNumber, totalFixed, totalInComplete};
     }
 };
 
