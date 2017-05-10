@@ -32,7 +32,7 @@ function accountReviewController($scope,
     ];
 
     $scope.detailAccountDataSource = false;
-    $scope.dimensionCategories = dimensionCategoryApi.getAllLookupSync().data;
+    $scope.dimensionCategories = dimensionCategoryApi.getAllLookupSync();
     $scope.dimension1DataSource = [];
     $scope.dimension2DataSource = [];
     $scope.dimension3DataSource = [];

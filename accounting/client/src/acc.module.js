@@ -40,14 +40,4 @@ accModule.init = () => {
     });
 };
 
-accModule.run((currentService, $cookies, $rootScope) => {
-    currentService.setToday(localStorage.getItem('today'));
-    currentService.setFiscalPeriod(parseInt($cookies.get('current-period')));
-    currentService.setMode($cookies.get('current-mode'));
-    currentService.setBranch(JSON.parse(localStorage.getItem('currentBranch')));
-
-    $rootScope.canShowStatusSection = false;
-    $rootScope.isDevelopment = localStorage.getItem('env') == 'development';
-});
-
 export default accModule;

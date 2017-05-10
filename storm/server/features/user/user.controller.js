@@ -4,7 +4,8 @@ const express = require('express'),
     async = require('asyncawait/async'),
     await = require('asyncawait/await'),
     UserRepository = require('./user.repository'),
-    BranchRepository = require('../branch/branch.repository');
+    BranchRepository = require('../branch/branch.repository'),
+    branchQuery = require('../branch/branch.query');
 
 
 router.route('/activate/:token').get(async((req, res) => {
@@ -24,14 +25,9 @@ router.route('/activate/:token').get(async((req, res) => {
 }));
 
 router.route('/profile').get(async((req, res) => {
-    let branchRepository = new BranchRepository(),
-        branchId = config.env == 'development'
-            ? config.branchId
-            : await(branchRepository.getBranchId(req.user.id)),
-        returnUrl = req.cookies['return-url'];
+    let returnUrl = req.cookies['return-url'];
 
-    res.cookie('branch-id', branchId);
-    res.redirect(returnUrl || ((branchId) ? config.url.accounting : '/'));
+    res.redirect(returnUrl || '/');
 }));
 
 module.exports = router;

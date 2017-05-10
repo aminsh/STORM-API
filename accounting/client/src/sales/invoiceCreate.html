@@ -1,84 +1,6 @@
 <dev-tag-content dev-attr-title="{{'Edit Invoice'|translate}}">
     <dev-tag-content-body>
-        <div class="row"></div>
-
         <div class="row">
-            <div class="col-md-12">
-                <form role="form" name="form" class="form-inline" novalidate>
-
-                    <div class="col-md-2">
-                        <div class="form-group">
-                            <label class="label-control">{{'Temporary number' | translate}}</label>
-                            <dev-tag-numeric
-                                    ng-model="model.sales.temporaryNumber"
-                                    style="width: 100%"
-                                    name="temporaryNumber"
-                                    required></dev-tag-numeric>
-                        </div>
-                    </div>
-
-                    <div class="col-md-2">
-                        <div class="form-group">
-                            <label class="label-control">{{'Temporary date' | translate}}</label>
-                            <dev-tag-datepicker
-                                    ng-model="model.sales.temporaryDate"
-                                    name="temporaryDate"
-                                    required></dev-tag-datepicker>
-
-                            <div ng-messages="form.temporaryDate.$error" ng-if="form.temporaryDate.$dirty">
-                                <label ng-message="required" class="error">{{'This field is
-                                    required'|translate}}</label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="label-control">{{'Detail Account' | translate}}</label>
-                            <dev-tag-combo-box style="width: 100%"
-                                    name="detailAccountId"
-                                    k-placeholder="{{'Select ...'|translate}}"
-                                    k-data-value-field="id"
-                                    k-data-text-field="display"
-                                    k-data-source="model.detailAccount"
-                                    ng-model="item.detailAccountId"></dev-tag-combo-box>
-                        </div>
-                    </div>
-
-                    <div class="col-md-2">
-                        <div class="form-group">
-                            <label class="label-control">{{'Description' | translate}}</label>
-                            <textarea type="text" class="form-control" ng-model="model.invoice.description"
-                                      name="description" style="width: 100%;height: 90px"></textarea>
-                        </div>
-                    </div>
-
-                </form>
-            </div>
-        </div>
-
-
-        <form role="form" class="form-inline">
-            <div class="form-group">
-                <label for="exampleInputEmail2" class="sr-only">Email address</label>
-                <input type="email" placeholder="Enter email" id="exampleInputEmail2" class="form-control">
-            </div>
-            <div class="form-group">
-                <label for="exampleInputPassword2" class="sr-only">Password</label>
-                <input type="password" placeholder="Password" id="exampleInputPassword2" class="form-control">
-            </div>
-            <div class="checkbox m-r-xs">
-                <input type="checkbox" id="checkbox1">
-                <label for="checkbox1">
-                    Remember me
-                </label>
-            </div>
-            <button class="btn btn-white" type="submit">Sign in</button>
-        </form>
-
-
-        <div class="row">
-
             <div class="row">
                 <div class="col-md-2"></div>
                 <dev-tag-validation-summary errors="model.errors" class="col-md-8"></dev-tag-validation-summary>
@@ -87,7 +9,7 @@
             <form name="form" novalidate class="">
                 <div class="row col-md-12">
                     <dev-tag-button
-                            ng-click="model.save(form)"
+                            ng-click="model.saveInvoice(form)"
                             icon="glyphicon glyphicon-floppy-disk"
                             ng-disabled="model.isSaving"
                             is-waiting="isSaving"
@@ -98,7 +20,7 @@
                         <div class="form-group">
                             <label class="label-control">{{'Temporary number' | translate}}</label>
                             <dev-tag-numeric
-                                    ng-model="model.sales.temporaryNumber"
+                                    ng-model="model.invoice.temporaryNumber"
                                     style="width: 100%"
                                     name="temporaryNumber"
                                     required></dev-tag-numeric>
@@ -107,13 +29,12 @@
                         <div class="form-group">
                             <label class="label-control">{{'Temporary date' | translate}}</label>
                             <dev-tag-datepicker
-                                    ng-model="model.sales.temporaryDate"
+                                    ng-model="model.invoice.temporaryDate"
                                     name="temporaryDate"
                                     required></dev-tag-datepicker>
 
                             <div ng-messages="form.temporaryDate.$error" ng-if="form.temporaryDate.$dirty">
-                                <label ng-message="required" class="error">{{'This field is
-                                    required'|translate}}</label>
+                                <label ng-message="required" class="error">{{'This field is required'|translate}}</label>
                             </div>
                         </div>
 
@@ -125,7 +46,7 @@
                                     k-data-value-field="id"
                                     k-data-text-field="display"
                                     k-data-source="model.detailAccount"
-                                    ng-model="item.detailAccountId"></dev-tag-combo-box>
+                                    ng-model="model.invoice.detailAccountId"></dev-tag-combo-box>
                         </div>
 
                         <div class="form-group">
@@ -134,12 +55,25 @@
                                       name="description" style="width: 100%;height: 90px"></textarea>
                         </div>
 
+                        <div class="row">
+                            <div class="col-md-12">
+                                <i class="fa fa-info-circle fa-2x text-success"
+                                   tooltip-placement="left"></i>
+
+                                <dev-tag-content-body is-loading="model.isInvoiceSaleLoading">
+                                    <div style="padding: 10px"
+                                         ng-include="'partials/sales/invoiceLines-template.html'"></div>
+                                </dev-tag-content-body>
+
+                            </div>
+
+
+                        </div>
+
                     </div>
                 </div>
             </form>
         </div>
-
-
     </dev-tag-content-body>
 </dev-tag-content>
 

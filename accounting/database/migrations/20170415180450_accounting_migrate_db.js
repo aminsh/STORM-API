@@ -5,7 +5,7 @@ exports.up = function(knex, Promise) {
         .table('journals', table => {
             table.integer('tagId').unsigned();
             table.foreign('tagId').references('tags.id');
-        })
+        });
 };
 
 exports.down = function(knex, Promise) {

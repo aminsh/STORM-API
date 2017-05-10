@@ -13,13 +13,12 @@
                uib-dropdown-toggle
             title="{{'Select Period' | translate}}">
                 <i class="fa fa-history fa-2x"></i>
-                <!--<span class="label label-primary">8</span>-->
             </a>
             <ul class="dropdown-menu dropdown-alerts animated fadeInDown list-group"
                 uib-dropdown-menu>
                 <li class="list-group-item pointer"
                     ng-repeat="fp in fiscalPeriods"
-                    ng-class="{'active': fp.id == currentFiscalPeriod}"
+                    ng-class="{'active': fp.id == fiscalPeriodId}"
                     ng-click="selectFiscalPeriod(fp)"
                     style="margin-left: 0;">
                     {{fp.display}}
@@ -33,7 +32,7 @@
         </li>
         <li>
             <img alt="{{branch.title}}"
-                 src="{{branch.logo}}"
+                 ng-src="{{branch.logo}}"
                  title="{{branch.title}}"
                  style="height: 35px; margin: 8px;">
         </li>

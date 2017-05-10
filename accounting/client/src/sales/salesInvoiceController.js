@@ -1,91 +1,92 @@
 import accModule from '../acc.module';
-
+import Guid from 'guid';
 export default class SalesInvoiceController {
     constructor(navigate,
-                //salesInvoiceApi,
-                formService,
-                detailAccountApi,
+                salesInvoiceApi,
                 translate,
-                devConstants,
-                $q) {
+                detailAccountApi,
+                logger,
+                formService,
+                $timeout,
+                $scope,) {
 
-        this.gridOptions =
-            {
-                columns: [
-                    {name: 'number', title: translate('number'), type: 'number', width: '120px'},
-                    {name: 'date', title: translate('date'), type: 'date', width: '120px'},
-                    {name: 'customer', title: translate('customer'), type: 'string', width: '120px'},
-                    {
-                        name: 'invoiceType',
-                        title: translate('invoiceType'),
-                        type: 'invoiceType',
-                        width: '120px',
-                        template: '{{item.invoiceTypeDisplay}}'
-                    },
-                ],
-                commands: [
-                    {
-                        title: translate('Edit'),
-                        icon: 'fa fa-edit',
-                        canShow: current => !current.isEditing,
-                        action: current => {
-                            current.originalTitle = current.title;
-                            current.isEditing = true;
-                        }
-                    },
-                    {
-                        title: translate('Remove'),
-                        icon: 'fa fa-trash text-danger',
-                        canShow: current => !current.isEditing,
-                        action: function (current) {
-                            confirm(
-                                translate('Remove Bank'),
-                                translate('Are you sure ?'))
-                                .then(function () {
-                                    salesInvoiceApi.remove(current.id)
-                                        .then(() => {
-                                            $scope.gridOption.refresh();
-                                            //logger.success();
-                                        });
-                                });
-                        }
-                    },
-                    {
-                        title: translate('Save'),
-                        icon: 'fa fa-floppy-o',
-                        canShow: current => current.isEditing,
-                        action: current => {
-                            if (current.isNew)
-                                return bankApi.create(current)
-                                    .then(result => {
-                                        current.id = result.id;
-                                        current.isNew = false;
-                                        current.isEditing = false;
-                                    });
-                            salesInvoiceApi.update(current.id, current)
-                                .then(() => current.isEditing = false);
-                        }
-                    },
-                    {
-                        title: translate('Cancel'),
-                        icon: 'fa fa-times',
-                        canShow: current => current.isEditing,
-                        action: current => {
-                            if (current.isNew)
-                                return gridOption.removeItem(current);
+        this.$scope = $scope;
+        this.salesInvoiceApi = salesInvoiceApi;
+        this.$timeout = $timeout;
+        this.logger = logger;
+        this.translate = translate;
+        this.navigate = navigate;
+        this.formService = formService;
+        this.errors = [];
+        this.isSaving = false;
+        this.invoice = {
+            temporaryNumber: null,
+            temporaryDate: null,
+            number: null,
+            date: null,
+            description: '',
+            invoiceLines: []
+        };
 
-                            current.isEditing = false;
-                            current.title = current.originalTitle;
-                        }
-                    }
-                ],
-                //readUrl: devConstants.urls.salesInvoce.all()
-            };
-
-        detailAccountApi.getAll().then(result=>{
-            debugger;
-            this.detailAccount = result.data}
+        detailAccountApi.getAll().then(result => {
+                this.detailAccount = result.data
+            }
         );
+
     }
 
+    removeInvoiceLine(item) {
+        this.invoiceLines.asEnumerable().remove(item);
+    }
+
+    createInvoiceLine() {
+        let $scope = this.$scope;
+
+        let maxRow = this.invoice.invoiceLines.length == 0
+                ? 0
+                : this.invoice.invoiceLines.asEnumerable().max(line => line.row),
+            newInvoice = {
+                id: Guid.new(),
+                row: ++maxRow,
+                itemTitle: null,
+                quantity: 0,
+                tax: 0,
+                vat: 0,
+                discount: 0,
+                unitPrice: 0,
+                totalPrice: 0,
+            };
+
+        this.invoice.invoiceLines.push(newInvoice);
+    }
+
+    saveInvoice(form) {
+        let logger = this.logger,
+            formService = this.formService,
+            errors = this.errors,
+            invoice = this.invoice
+        //isSaving = this.isSaving;
+
+        if (form.$invalid) {
+            formService.setDirty(form);
+            Object.keys(form).asEnumerable()
+                .where(key => key.includes('form-'))
+                .toArray()
+                .forEach(key => formService.setDirty(form[key]));
+            return;
+        }
+
+        errors.asEnumerable().removeAll();
+        //  isSaving = true;
+
+        return this.salesInvoiceApi.create(invoice)
+            .then(result => {
+                logger.success();
+                invoice.id = result.id;
+            })
+            .catch(err => errors = err)
+        // .finally(() => isSaving = false);
+
+
+    }
 }

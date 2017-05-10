@@ -79,15 +79,16 @@ function authenticate(req, res, next) {
     let auth = passport.authenticate('local', function (err, user) {
         if (err) return next(err);
         if (!user)return res.send({isValid: false, errors: ['Username or password in incorrect']});
-        req.logIn(user, function (err) {
+        req.logIn(user, async(function (err) {
             if (err) return next(err);
+
             res.send({
                 isValid: true,
                 returnValue: {
                     currentUser: user.name
                 }
             });
-        });
+        }));
     });
 
     auth(req, res, next);

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width"/>
     <meta http-equiv="Content-Type" content="text/html" charset="utf-8"/>
 
-    <title><%- currentBranch.name %></title>
+    <title>{{currentBranch}}</title>u
 
     <link href="/public/css/acc.min.css" rel="stylesheet"/>
 
@@ -82,15 +82,11 @@
     localStorage.setItem('today', '<%- today %>');
     localStorage.setItem('translate', '<%- JSON.stringify(clientTranslation) %>');
     localStorage.setItem('currentUser', '<%- JSON.stringify(currentUser) %>');
-    localStorage.setItem('currentBranch', '<%- JSON.stringify(currentBranch) %>');
-    localStorage.setItem('dimensionCategories', '<%- JSON.stringify(dimensionCategories) %>');
     localStorage.setItem('reports', '<%- JSON.stringify(reports) %>');
     localStorage.setItem('env', '<%- env %>')
 
-
-
     <% if(env !== 'development') { %>
-    Stimulsoft.Base.Localization.StiLocalization.setLocalizationFile('/luca/client/content/fa.xml', true);
+    Stimulsoft.Base.Localization.StiLocalization.setLocalizationFile('/public/fa.xml', true);
     <% } %>
 
     let fonts = [
@@ -126,6 +122,3 @@
 
 </script>
 
-
-<!--<script src="/acc/client/dist/acc.bundle.js?v=<%- version.acc %>"></script>
-<script src="/acc/client/dist/acc.template.bundle.js?v=<%- version.template %>"></script>-->

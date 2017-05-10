@@ -2,7 +2,7 @@ import accModule from '../acc.module';
 import {addVariable} from '../utilities/stimulsoft';
 
 
-function reportDesigner(currentService, reportApi) {
+function reportDesigner(reportApi, $rootScope) {
     return {
         restrict: 'E',
         template: '<div id="contentDesigner" style="direction: ltr"></div>',
@@ -15,7 +15,6 @@ function reportDesigner(currentService, reportApi) {
         link: (scope, element, attrs) => {
             let report = new Stimulsoft.Report.StiReport(),
                 designer = new Stimulsoft.Designer.StiDesigner(null, 'StiDesigner', false),
-                current = currentService.get(),
                 data = {};
 
             if (scope.reportFileName)
@@ -42,21 +41,21 @@ function reportDesigner(currentService, reportApi) {
                 name: 'currentUser',
                 alias: 'Current user',
                 category: 'general',
-                value: current.user.name
+                value: $rootScope.user.name
             }));
 
             report.dictionary.variables.add(addVariable({
                 name: 'branchLogo',
                 alias: 'Branch Logo',
                 category: "general",
-                value: current.branch.logo
+                value: $rootScope.branch.logo
             }));
 
             report.dictionary.variables.add(addVariable({
                 name: 'branchTitle',
                 alias: 'Branch title',
                 category: "general",
-                value: current.branch.title
+                value: $rootScope.branch.title
             }));
 
             report.dictionary.variables.add(addVariable({

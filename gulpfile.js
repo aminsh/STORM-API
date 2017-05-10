@@ -144,6 +144,11 @@ gulp.task('copy-bootstrap-fonts', function () {
         .pipe(gulp.dest(`${config.publicDir}/fonts`));
 });
 
+gulp.task('copy-stimulsoft-files', function () {
+    return gulp.src(`${config.accSrcDir}/assets/fa.xml`)
+        .pipe(gulp.dest(`${config.publicDir}`));
+});
+
 gulp.task('watch', () => {
     gulp.watch(`${config.accSrcDir}/src/**/*.js`, ['build-acc']);
     gulp.watch(`${config.accSrcDir}/src/**/*.scss`, ['build-sass']);

@@ -5,16 +5,18 @@ const async = require('asyncawait/async'),
     FiscalPeriodQuery = require('../queries/query.fiscalPeriod'),
     EventEmitter = require('../services/shared').service.EventEmitter,
     Memory = require('../services/shared').service.Memory,
-    BranchQuery = require('../../../storm/server/features/branch/branch.query'),
-    branchQuery = new BranchQuery(),
+    branchQuery = require('../../../storm/server/features/branch/branch.query'),
     knex = require('knex'),
     config = require('../config');
 
 
 module.exports = async((req, res, next) => {
 
-    let branchId = req.cookies['branch-id'],
-        knexInstance = Memory.get(`context.${branchId}`);
+    let branchId = req.cookies['branch-id'];
+
+    if(!branchId) return next();
+
+    let knexInstance = Memory.get(`context.${branchId}`);
 
     if (!knexInstance) {
         let branch = await(branchQuery.getById(branchId)),
@@ -34,7 +36,7 @@ module.exports = async((req, res, next) => {
 
     EventEmitter.emit('on-user-created', {id: user.id, name: user.name}, req);
 
-    if (currentPeriod == null || currentPeriod == 0) {
+    if (currentPeriod == null || currentPeriod == 0 || isNaN(currentPeriod)) {
         let fiscalPeriodQuery = new FiscalPeriodQuery(req.cookies['branch-id']),
             maxId = await(fiscalPeriodQuery.getMaxId());
         maxId = maxId || 0;

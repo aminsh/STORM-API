@@ -17,6 +17,7 @@ import './config/authConfig';
 import ADMdtpConfig from './config/ADMdtp.config';
 import routeSaveLocationSearch from './config/route.save.locationSearch';
 import localStorageConfig from './config/config.local.storage';
+import setDefaults from './config/setDefaults';
 
 //load initializer
 
@@ -40,6 +41,7 @@ import createFiscalPeriodController from  './controllers/createFiscalPeriodContr
 import chequePrintController from './controllers/chequePrintController';
 import reportController from './controllers/reportController';
 import reportDesignerController from './controllers/reportDesignerController';
+import chooseBranchController from './branch/branch.choose.controller';
 
 import './sales';
 
@@ -58,6 +60,7 @@ import './apis/journalTemplateApi';
 import FiscalPeriodApi from './apis/fiscalPeriodApi';
 import ReportApi from './apis/reportApi';
 import TagApi from './apis/tagApi';
+import BranchApi from './branch/branchApi';
 
 // load modals
 import './modals/generalLedgerAccountCreate';
@@ -90,7 +93,6 @@ import './directives/combobox';
 import './directives/content';
 import './directives/datepicker';
 import './directives/toolbar';
-import './directives/layout';
 import './directives/numeric';
 import './directives/textEditor';
 import './directives/checkbox';
@@ -130,7 +132,6 @@ import './services/routeNavigatorService';
 import './services/translate';
 import './services/prompt';
 import './services/showReport';
-import  currentService from './services/currentService';
 import $ModalFactory from './services/$modalFactory';
 import Promise from './services/promise';
 
@@ -143,6 +144,7 @@ accModule
     .config(localStorageConfig)
 
     .run(routeSaveLocationSearch)
+    .run(setDefaults)
 
     .directive('shell', shell)
     .directive('shellHeader', shellHeader)
@@ -162,17 +164,18 @@ accModule
 
     .service('$modelFactory', $ModalFactory)
     .service('promise', Promise)
-    .service(currentService.name, currentService)
     .service('detailAccountApi', detailAccountApi)
     .service('subsidiaryLedgerAccountApi', subsidiaryLedgerAccountApi)
     .service('fiscalPeriodApi', FiscalPeriodApi)
     .service('reportApi', ReportApi)
     .service('tagApi', TagApi)
+    .service('branchApi', BranchApi)
 
     .controller(createFiscalPeriodController.name, createFiscalPeriodController)
     .controller('chequePrintController', chequePrintController)
     .controller('reportController', reportController)
     .controller('reportDesignerController', reportDesignerController)
+    .controller('chooseBranchController', chooseBranchController)
 
     .filter('totalSum', totalSum);
 
