@@ -199,7 +199,7 @@ export default class {
             .then(() => logger.success())
             .catch(err => {
                 console.log(err);
-                errors = err;
+                this.errors = err;
             })
             .finally(() => isSaving = false);
     }
