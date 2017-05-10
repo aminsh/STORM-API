@@ -1,17 +1,12 @@
 import accModule from '../acc.module';
 
-function journalAttachImageController($scope, $uibModalInstance, data, journalApi) {
+function journalAttachImageController($scope, $uibModalInstance) {
 
-    let journalId = data.id;
-    let errors = $scope.errors = [];
-
-    $scope.uploaded = (fileName)=> {
-        journalApi.attachImage(journalId, {fileName: fileName})
-            .then(()=> $uibModalInstance.close(fileName))
-            .catch((err)=> errors = err);
+    $scope.uploaded = fileName=> {
+        $uibModalInstance.close(fileName)
     };
 
-    $scope.close = ()=> $uibModalInstance.dismiss();
+    $scope.close = () => $uibModalInstance.dismiss();
 }
 
 function journalAttachImageService(modalBase) {

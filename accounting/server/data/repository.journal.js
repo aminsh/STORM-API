@@ -3,6 +3,7 @@
 let async = require('asyncawait/async'),
     await = require('asyncawait/await'),
     BaseRepository = require('./repository.base'),
+    JournalLineRepository = require('./repository.journalLine');
     Promise = require('promise');
 
 class JournalRepository extends BaseRepository {
@@ -118,7 +119,8 @@ class JournalRepository extends BaseRepository {
     }
 
     batchCreate(journalLines, journal) {
-        let knex = this.knex;
+        let knex = this.knex,
+            journalLineRepository = new JournalLineRepository(this.branchId);
 
         return new Promise((resolve, reject) => {
             knex.transaction(async(function (trans) {
@@ -128,11 +130,13 @@ class JournalRepository extends BaseRepository {
                         .returning('id')
                         .insert(journal))[0];
 
-                    journalLines.forEach(jl => jl.journalId = id);
+                    journalLines.forEach(line => {
+                        line.journalId = id;
+                        let cheque = line.cheque;
+                        delete  line.cheque;
 
-                    await(knex('journalLines')
-                        .transacting(trans)
-                        .insert(journalLines));
+                        journalLineRepository.create(line, trans, cheque);
+                    });
 
                     trans.commit();
                     resolve(id);
@@ -182,11 +186,11 @@ class JournalRepository extends BaseRepository {
                            .del());
                    }
 
-                    trx.commit();
+                   // trx.commit();
                     resolve();
                 }
                 catch (e) {
-                    trx.rollback();
+                    //trx.rollback();
                     reject(e);
                 }
             }))

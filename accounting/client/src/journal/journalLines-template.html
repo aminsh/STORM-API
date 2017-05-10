@@ -34,7 +34,6 @@
                         on-changed="model.detailAccount.onChanged($item, item)"
                         ng-model="item.detailAccountId"
                         required></dev-tag-combo-box>
-
                 <div ng-messages="form['form-'+$index].detailAccountId.$error"
                      ng-if="form['form-'+$index].detailAccountId.$dirty">
                     <label ng-message="required"

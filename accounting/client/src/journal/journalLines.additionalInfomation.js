@@ -11,22 +11,22 @@ export class JournalLineAdditionalInformation {
         this.journalLine = data.journalLine;
 
         this.additionalInfo = {
-            cheque: {
+            cheque: this.journalLine.cheque || {
                 id: null,
+                amount: this.journalLine.creditor,
                 date: data.journal.temporaryDate,
                 description: this.journalLine.article
             },
-            dimension1Id: null,
-            dimension2Id: null,
-            dimension3Id: null,
-            receipt: {
+            dimension1Id: this.journalLine.dimension1Id,
+            dimension2Id: this.journalLine.dimension2Id,
+            dimension3Id: this.journalLine.dimension3Id,
+            receipt: this.journalLine.receipt || {
                 number: null,
                 date: null
             }
         };
 
         this.fetch();
-
     }
 
     fetch() {
@@ -42,7 +42,10 @@ export class JournalLineAdditionalInformation {
     }
 
     save() {
-        this.$scope.$close(this.additionalInfo);
+        this.journalLine.cheque = this.additionalInfo.cheque;
+        this.journalLine.receipt = this.additionalInfo.receipt;
+
+        this.$scope.$close(this.journalLine);
     }
 
     close() {

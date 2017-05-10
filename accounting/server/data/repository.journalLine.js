@@ -16,6 +16,13 @@ class JournalLineRepository extends BaseRepository {
             .first();
     }
 
+    findByJournalId_ids(journalId){
+        return this.knex.select('id')
+            .from('journalLines')
+            .where('journalId', journalId)
+            .map(item => item.id);
+    }
+
     create(entity) {
         entity.id = await(this.knex('journalLines')
             .returning('id')
@@ -35,6 +42,7 @@ class JournalLineRepository extends BaseRepository {
             .where('id', id)
             .del();
     }
+
 }
 
 module.exports = JournalLineRepository;
