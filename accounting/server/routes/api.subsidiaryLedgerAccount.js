@@ -114,11 +114,19 @@ router.route('/:id')
     .delete(async((req, res) => {
         let subsidiaryLedgerAccountRepository = new SubsidiaryLedgerAccountRepository(req.cookies['branch-id']),
             errors = [],
-            cmd = req.body;
+            id = req.params.id,
+            isUsedOnJournalLines = await(subsidiaryLedgerAccountRepository.isUsedOnJournalLines(id));
 
-        // check has journalLine data
+        if (isUsedOnJournalLines)
+            errors.push(translate('The Subsidiary ledger account is used on journal'));
 
-        await(subsidiaryLedgerAccountRepository.remove(req.params.id));
+        if (errors.length)
+            return res.json({
+                isValid: false,
+                errors
+            });
+
+        await(subsidiaryLedgerAccountRepository.remove(id));
 
         return res.json({isValid: true});
     }));

@@ -4,6 +4,7 @@ function generalLedgerAccountsController($scope, logger, translate, confirm, dev
                                          generalLedgerAccountApi,
                                          subsidiaryLedgerAccountApi,
                                          subsidiaryLedgerAccountEntryModalService,
+                                         $timeout,
                                          generalLedgerAccountCreateModalService,
                                          generalLedgerAccountUpdateModalService) {
 
@@ -60,7 +61,9 @@ function generalLedgerAccountsController($scope, logger, translate, confirm, dev
                                     logger.success();
                                     $scope.gridOption.refresh();
                                 })
-                                .catch((errors) => $scope.errors = errors)
+                                .catch(errors => {
+                                    $timeout(() => logger.error(errors.join('<br/>')), 100);
+                                })
                                 .finally(() => $scope.isSaving = false);
                         })
 
@@ -117,7 +120,9 @@ function generalLedgerAccountsController($scope, logger, translate, confirm, dev
                                     logger.success();
                                     $scope.gridOptionSubsidiaryLedgerAccount.refresh();
                                 })
-                                .catch((errors) => $scope.errors = errors);
+                                .catch((errors) => {
+                                    $timeout(() => logger.error(errors.join('<br/>')), 100);
+                                });
                         });
 
                 }
