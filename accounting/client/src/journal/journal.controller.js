@@ -31,7 +31,6 @@ export default class {
         this.translate = translate;
         this.navigate = navigate;
         this.formService = formService;
-
         this.journalApi = journalApi;
         this.journalLineApi = journalLineApi;
         this.subsidiaryLedgerAccountApi = subsidiaryLedgerAccountApi;
@@ -242,7 +241,14 @@ export default class {
     }
 
     print() {
-        this.navigate('journalPrint', {id: id});
+        //report/100?minNumber=5&maxNumber=5
+
+            let reportParam={"minNumber":  this.journal.temporaryNumber,"maxNumber":  this.journal.temporaryNumber}
+            this.navigate(
+                'report.print',
+                {key: 100},
+                reportParam);
+      //  this.navigate('journalPrint', {id: id});
     }
 
     additionalInfo(journalLine) {
