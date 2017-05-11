@@ -1,6 +1,6 @@
 import accModule from '../acc.module';
 
-function banksController($scope, logger, confirm, bankApi, translate, devConstants) {
+function banksController($scope, logger, confirm, bankApi, translate, devConstants,$timeout) {
 
     let gridOption = $scope.gridOption = {
         columns: [
@@ -35,7 +35,7 @@ function banksController($scope, logger, confirm, bankApi, translate, devConstan
                             bankApi.remove(current.id)
                                 .then(()=> {
                                     $scope.gridOption.refresh();
-                                    logger.success();
+                                    $timeout(() => logger.success(),100);
                                 });
                         });
                 }

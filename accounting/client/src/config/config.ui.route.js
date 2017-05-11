@@ -204,10 +204,10 @@ export default function ($stateProvider, $urlRouterProvider, $locationProvider) 
             templateUrl: 'partials/views/createFiscalPeriod.html'
         })
         /*.state('reports', {
-            url: '/reports',
-            controller: 'reportController',
-            templateUrl: 'partials/views/report.html'
-        })*/
+         url: '/reports',
+         controller: 'reportController',
+         templateUrl: 'partials/views/report.html'
+         })*/
         .state('report', {
             url: '/report',
             template: '<ui-view></ui-view>'
@@ -229,6 +229,22 @@ export default function ($stateProvider, $urlRouterProvider, $locationProvider) 
             controller: 'reportDesignController',
             controllerAs: 'model',
             templateUrl: 'partials/report/reportDesign.html'
+        })
+        .state('sales', {
+            url: '/sales',
+            template: '<ui-view></ui-view>'
+        })
+        .state('sales.list', {
+            url: '/list',
+            controller: 'salesInvoiceController',
+            controllerAs:'model',
+            templateUrl: 'partials/sales/sales.html'
+        })
+        .state('sales.create', {
+            url: '/create',
+            controller: 'salesInvoiceController',
+            controllerAs: 'model',
+            templateUrl: 'partials/sales/invoiceCreate.html'
         })
         .state('not-found', {
             url: '/not-found',

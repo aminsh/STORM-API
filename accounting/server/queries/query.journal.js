@@ -53,7 +53,7 @@ module.exports = class JournalQuery extends BaseQuery {
 
     getAll(fiscalPeriodId, parameters) {
         let knex = this.knex;
-        let extra = (parameters.extra) ? parameters.extra.filter : undefined;
+        let extra = (parameters.extra) ? parameters.extra : undefined;
 
         let query = knex.select().from('journals').as('baseJournals');
 

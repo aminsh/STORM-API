@@ -18,6 +18,10 @@ export default function (apiPromise, $timeout) {
 
             scope.gridId = Guid.new();
 
+            scope.$on(`${option.name}/execute-advanced-search`, (e, extra)=> {
+                parameters.extra=extra ;
+                scope.pageOption.reset();
+            });
 
             scope.columns = [...scope.option.columns];
             scope.grid = {

@@ -31,7 +31,6 @@ export default class {
         this.translate = translate;
         this.navigate = navigate;
         this.formService = formService;
-
         this.journalApi = journalApi;
         this.journalLineApi = journalLineApi;
         this.subsidiaryLedgerAccountApi = subsidiaryLedgerAccountApi;
@@ -80,6 +79,8 @@ export default class {
         this.detailAccount = {
             data: [],
             onChanged(item, journalLine){
+                journalLine.detailAccountId = item.id;
+
                 $timeout(() => {
                     $scope.$broadcast(`article-focus-${journalLine.id}`);
                 });
@@ -157,7 +158,6 @@ export default class {
     save(form) {
         let logger = this.logger,
             formService = this.formService,
-            errors = this.errors,
             journal = this.journal,
             journalLines = this.journalLines,
             isSaving = this.isSaving;
@@ -178,7 +178,7 @@ export default class {
         if (totalRemainder != 0)
             return logger.error(this.translate('Total of debtor and creditor is not equal'));
 
-        errors.asEnumerable().removeAll();
+        this.errors.asEnumerable().removeAll();
         isSaving = true;
 
         let cmd = Object.assign(journal, {journalLines});
@@ -189,7 +189,9 @@ export default class {
                     logger.success();
                     journal.id = result.id;
                 })
-                .catch(err => errors = err)
+                .catch(err => {
+                    this.errors = err;
+                })
                 .finally(() => isSaving = false);
 
         this.journalApi.update(this.id, this.journal)
@@ -239,15 +241,22 @@ export default class {
     }
 
     print() {
-        this.navigate('journalPrint', {id: id});
+        //report/100?minNumber=5&maxNumber=5
+
+            let reportParam={"minNumber":  this.journal.temporaryNumber,"maxNumber":  this.journal.temporaryNumber}
+            this.navigate(
+                'report.print',
+                {key: 100},
+                reportParam);
+      //  this.navigate('journalPrint', {id: id});
     }
 
     additionalInfo(journalLine) {
         this.journalLineAdditionalInformation.show({
             journal: this.journal,
             journalLine
-        }).then(data => {
-            journalLine.additionalInformation = data;
+        }).then(journalLine => {
+            this.journalLine = journalLine;
         });
     }
 

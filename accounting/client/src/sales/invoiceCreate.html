@@ -1,0 +1,83 @@
+<dev-tag-content dev-attr-title="{{'Edit Invoice'|translate}}">
+    <dev-tag-content-body>
+        <div class="row">
+            <div class="row">
+                <div class="col-md-2"></div>
+                <dev-tag-validation-summary errors="model.errors" class="col-md-8"></dev-tag-validation-summary>
+                <div class="col-md-2"></div>
+            </div>
+            <form name="form" novalidate class="">
+                <div class="row col-md-12">
+                    <dev-tag-button
+                            ng-click="model.saveInvoice(form)"
+                            icon="glyphicon glyphicon-floppy-disk"
+                            ng-disabled="model.isSaving"
+                            is-waiting="isSaving"
+                            style-type="primary"
+                            title="{{'Save' | translate}}"></dev-tag-button>
+                    <div class="row" style="margin-bottom: 20px;">
+
+                        <div class="form-group">
+                            <label class="label-control">{{'Temporary number' | translate}}</label>
+                            <dev-tag-numeric
+                                    ng-model="model.invoice.temporaryNumber"
+                                    style="width: 100%"
+                                    name="temporaryNumber"
+                                    required></dev-tag-numeric>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="label-control">{{'Temporary date' | translate}}</label>
+                            <dev-tag-datepicker
+                                    ng-model="model.invoice.temporaryDate"
+                                    name="temporaryDate"
+                                    required></dev-tag-datepicker>
+
+                            <div ng-messages="form.temporaryDate.$error" ng-if="form.temporaryDate.$dirty">
+                                <label ng-message="required" class="error">{{'This field is required'|translate}}</label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="label-control">{{'Detail Account' | translate}}</label>
+                            <dev-tag-combo-box
+                                    name="detailAccountId"
+                                    k-placeholder="{{'Select ...'|translate}}"
+                                    k-data-value-field="id"
+                                    k-data-text-field="display"
+                                    k-data-source="model.detailAccount"
+                                    ng-model="model.invoice.detailAccountId"></dev-tag-combo-box>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="label-control">{{'Description' | translate}}</label>
+                            <textarea type="text" class="form-control" ng-model="model.invoice.description"
+                                      name="description" style="width: 100%;height: 90px"></textarea>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <i class="fa fa-info-circle fa-2x text-success"
+                                   tooltip-placement="left"></i>
+
+                                <dev-tag-content-body is-loading="model.isInvoiceSaleLoading">
+                                    <div style="padding: 10px"
+                                         ng-include="'partials/sales/invoiceLines-template.html'"></div>
+                                </dev-tag-content-body>
+
+                            </div>
+
+
+                        </div>
+
+                    </div>
+                </div>
+            </form>
+        </div>
+    </dev-tag-content-body>
+</dev-tag-content>
+
+
+
+
+

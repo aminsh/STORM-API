@@ -15,7 +15,11 @@ module.exports = async((req, res, next) => {
         currentUser: req.isAuthenticated() ? req.user.name : null,
         currentUserImage: req.isAuthenticated() ? req.user.image : '',
         currentUserEmail: req.isAuthenticated() ? req.user.email : '',
+
         clientTranslation: clientTranslation,
+        currentBranch: branchId
+            ? await(branchQuery.getById(branchId))
+            : false,
         env: config.env,
         version: config.version
     };

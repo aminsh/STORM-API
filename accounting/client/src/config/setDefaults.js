@@ -33,7 +33,8 @@ export default function ($rootScope,
             if (branchFromCurrent == null &&
                 branchIdCookie != null) {
 
-                branchApi.getCurrent().then(result => $rootScope.branch = result);
+                branchApi.getCurrent()
+                    .then(result => $rootScope.branch = result);
 
                 return;
             }

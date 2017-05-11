@@ -43,6 +43,8 @@ import reportController from './controllers/reportController';
 import reportDesignerController from './controllers/reportDesignerController';
 import chooseBranchController from './branch/branch.choose.controller';
 
+import './sales';
+
 // load apis
 import './apis/generalLedgerAccountApi';
 import subsidiaryLedgerAccountApi from './apis/subsidiaryLedgerAccountApi';
