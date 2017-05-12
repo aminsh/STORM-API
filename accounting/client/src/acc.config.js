@@ -137,6 +137,7 @@ import Promise from './services/promise';
 
 import './journal';
 import './report';
+import './cheque';
 
 accModule
     .config(uiRouteConfig)
