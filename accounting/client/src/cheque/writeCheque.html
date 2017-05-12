@@ -1,0 +1,56 @@
+<div class="modal-header">
+    <button type="button" ng-click="model.close()" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+    <h3 class="modal-title">{{'Write cheque'| translate}}</h3>
+</div>
+<div class="modal-body">
+
+    <form name="form" class="form-horizontal">
+
+        <dev-tag-grid option="model.gridOption"
+                      on-current-changed="model.selectJournalLine(current)"></dev-tag-grid>
+
+        <div class="form-group" >
+            <label class="label-control col-lg-2">{{'Amount'|translate}}</label>
+            <label class="label-control col-lg-2">{{model.cheque.amount|number}}</label>
+        </div>
+
+        <div class="form-group">
+            <label class="label-control col-lg-2">{{'Date'|translate}}</label>
+
+            <div class="col-lg-4">
+                <dev-tag-datepicker
+                       ng-model="model.cheque.date"
+                       name="date"
+                       required></dev-tag-datepicker>
+
+                <div ng-messages="form.date.$error" ng-if="form.date.$dirty">
+                    <label ng-message="required" class="error">{{'This field is required'|translate}}</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="label-control col-lg-2">{{'Description on cheque'|translate}}</label>
+
+            <div class="col-lg-10">
+                <input type="text"
+                       class="form-control"
+                       ng-model="model.cheque.description"
+                       name="description"
+                       required/>
+
+                <div ng-messages="form.description.$error" ng-if="form.description.$dirty">
+                    <label ng-message="required" class="error">{{'This field is required'|translate}}</label>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="modal-footer">
+    <dev-tag-button ng-click="model.save(form)"
+                    icon="glyphicon glyphicon-floppy-disk"
+                    style-type="primary"
+                    title="{{'Save' | translate}}"></dev-tag-button>
+</div>

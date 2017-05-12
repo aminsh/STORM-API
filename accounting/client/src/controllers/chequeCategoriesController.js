@@ -1,7 +1,9 @@
 import accModule from '../acc.module';
 
-function chequeCategoriesController($scope, logger, chequeCategoryApi, confirm, devConstants, translate, navigate,$state,
-                                    $q) {
+function chequeCategoriesController($scope, logger, chequeCategoryApi, confirm, devConstants, translate, $state,
+                                    writeCheque) {
+    $scope.currentCategory = false;
+
     $scope.gridOption = {
         columns: [
             {name: 'bankId', title: translate('Bank'), width: '20%', type: 'bank', template: '{{item.bank}}'},
@@ -62,18 +64,32 @@ function chequeCategoriesController($scope, logger, chequeCategoryApi, confirm, 
                 width: '10%',
                 format: '{0:#,##}',
                 template: '{{item.amount|number}}'
+            },
+            {
+                name: 'status',
+                title: translate('Status'),
+                type: 'number',
+                width: '10%',
+                template: '{{item.statusDisplay}}'
             }
         ],
         commands: [{
-            title: translate('Print'),
-            icon: 'fa fa-print',
-            action: current => navigate('chequePrint', {id: current.id})
+            title: translate('Create cheque'),
+            icon: 'fa fa-edit',
+            action: current => writeCheque.show({
+                detailAccountId:$scope.currentCategory.detailAccountId,
+                detailAccountDisplay: $scope.currentCategory.detailAccount,
+                chequeId: current.id,
+                chequeNumber: current.number
+            }),
+            canShow: item => item.status != 'Used'
         }],
         gridSize: '200px',
         readUrl: ''
     };
 
     $scope.onSelectCategory = current => {
+        $scope.currentCategory = current;
         $scope.chequeGridOption.readUrl = devConstants.urls.cheque.all(current.id);
     };
 
