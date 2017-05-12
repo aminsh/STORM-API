@@ -53,14 +53,16 @@ function subsidiaryLedgerAccountEntryModalController($scope, $uibModalInstance, 
                 })
                 .catch(errors => $scope.errors = errors)
                 .finally(() => $scope.isSaving = false);
+        else {
+            subsidiaryLedgerAccountApi.create(generalLedgerAccountId, $scope.subsidiaryLedgerAccount)
+                .then(result => {
+                    logger.success();
+                    $scope.$close(result);
+                })
+                .catch(errors => $scope.errors = errors)
+                .finally(() => $scope.isSaving = false);
+        }
 
-        subsidiaryLedgerAccountApi.create(generalLedgerAccountId, $scope.subsidiaryLedgerAccount)
-            .then(result => {
-                logger.success();
-                $scope.$close(result);
-            })
-            .catch(errors => $scope.errors = errors)
-            .finally(() => $scope.isSaving = false);
     };
 
     $scope.close = () => $scope.$dismiss();

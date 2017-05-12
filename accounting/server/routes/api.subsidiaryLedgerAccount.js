@@ -62,7 +62,7 @@ router.route('/general-ledger-account/:parentId')
         await(subsidiaryLedgerAccountRepository.create(entity));
 
         return res.json({isValid: true, returnValue: {id: entity.id}});
-    }));
+    }))
 
 router.route('/:id')
     .get(async((req, res) => {

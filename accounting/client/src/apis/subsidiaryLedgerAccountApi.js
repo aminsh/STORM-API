@@ -19,11 +19,11 @@ export default class {
     }
 
     update(id, data) {
-        return this.apiPromise.put(`${this.urlPrefix} / ${id}`, data);
+        return this.apiPromise.put(`${this.urlPrefix}/${id}`, data);
     }
 
     remove(id) {
-        return this.apiPromise.delete(`${this.urlPrefix} / ${id}`);
+        return this.apiPromise.delete(`${this.urlPrefix}/${id}`);
     }
 }
 
