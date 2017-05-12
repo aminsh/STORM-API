@@ -71,9 +71,9 @@ const path = require('path'),
                 }
             },
             url: {
-                origin: 'https://storm-sandbox.herokuapp.com',
-                luca: 'https://storm-sandbox.herokuapp.com/luca-demo',
-                accounting: 'https://storm-sandbox.herokuapp.com/acc'
+                origin: 'http://admin-sandbox-storm-admin.abar.cloud',
+                luca: 'http://admin-sandbox-storm-admin.abar.cloud/luca-demo',
+                accounting: 'http://admin-sandbox-storm-admin.abar.cloud/acc'
             },
             auth: {
                 google: {
