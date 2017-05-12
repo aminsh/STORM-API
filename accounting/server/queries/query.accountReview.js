@@ -34,17 +34,17 @@ module.exports = class AccountReview extends BaseQuery {
         let knex = this.knex;
         let aggregates = await(query
             .select(
-            knex.raw('SUM("sumBeforeRemainder") as "totalBeforeRemainder"'),
-            knex.raw('SUM("sumDebtor") as "totalDebtor"'),
-            knex.raw('SUM("sumCreditor") as "totalCreditor"'),
-            knex.raw('SUM("sumRemainder") as "totalRemainder"')
+                knex.raw('SUM("sumBeforeRemainder") as "totalBeforeRemainder"'),
+                knex.raw('SUM("sumDebtor") as "totalDebtor"'),
+                knex.raw('SUM("sumCreditor") as "totalCreditor"'),
+                knex.raw('SUM("sumRemainder") as "totalRemainder"')
             ).first());
 
         return {
-            sumBeforeRemainder: { sum: aggregates.totalBeforeRemainder },
-            sumDebtor: { sum: aggregates.totalDebtor },
-            sumCreditor: { sum: aggregates.totalCreditor },
-            sumRemainder: { sum: aggregates.totalRemainder }
+            sumBeforeRemainder: {sum: aggregates.totalBeforeRemainder},
+            sumDebtor: {sum: aggregates.totalDebtor},
+            sumCreditor: {sum: aggregates.totalCreditor},
+            sumRemainder: {sum: aggregates.totalRemainder}
         };
     }
 
@@ -195,6 +195,8 @@ module.exports = class AccountReview extends BaseQuery {
         let result = await(kendoQueryResolve(query, this.paramters, view));
 
         result.aggregates = await(this.aggregates(aggregatesQuery));
+
+        return result;
     }
 
     dimension1() {

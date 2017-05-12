@@ -1,10 +1,10 @@
 "use strict";
 
 export default class {
-    constructor($scope,branchApi, dimensionCategoryApi, $state, $timeout, $rootScope, $cookies) {
+    constructor($scope, branchApi, dimensionCategoryApi, $state, $timeout, $rootScope, $cookies) {
 
         this.dimensionCategoryApi = dimensionCategoryApi;
-        this.$scope =$scope;
+        this.$scope = $scope;
         this.$state = $state;
         this.$timeout = $timeout;
         this.$rootScope = $rootScope;
@@ -15,7 +15,7 @@ export default class {
 
         branchApi.getMyBranches().then(result => {
             this.branches = result;
-            if(result.length == 1)
+            if (result.length == 1)
                 this.select(result[0]);
         });
     }
@@ -34,6 +34,8 @@ export default class {
 
             let translate = JSON.parse(localStorage.getItem('translate'));
             result.data.forEach((c, i) => translate[`Dimension${i + 1}`] = c.title);
+
+            localStorage.setItem('translate', JSON.stringify(translate));
 
             this.canShowLoading = false;
 

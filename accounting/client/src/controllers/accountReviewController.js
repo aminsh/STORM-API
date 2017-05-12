@@ -32,6 +32,7 @@ function accountReviewController($scope,
     ];
 
     $scope.detailAccountDataSource = false;
+    debugger;
     $scope.dimensionCategories = dimensionCategoryApi.getAllLookupSync();
     $scope.dimension1DataSource = [];
     $scope.dimension2DataSource = [];
@@ -54,6 +55,20 @@ function accountReviewController($scope,
             params.maxNumber = parameters.maxNumber;
         }
 
+        if (parameters.detailAccount) {
+            params.detailAccountId = parameters.detailAccount;
+        }
+
+        if (parameters.dimension1) {
+            params.dimension1Id = parameters.dimension1;
+        }
+        if (parameters.dimension2) {
+            params.dimension2Id = parameters.dimension2;
+        }
+        if (parameters.dimension3) {
+            params.dimension3Id = parameters.dimension3;
+        }
+
         if (parameters.minDate) {
             params.minDate = parameters.minDate;
             params.maxDate = parameters.maxDate;
@@ -66,6 +81,7 @@ function accountReviewController($scope,
     }
 
     $scope.executeTurnover = (form, reportName) => {
+      debugger;
         if (form.$invalid)
             return formService.setDirty(form);
 
@@ -89,7 +105,7 @@ function accountReviewController($scope,
         saveState();
 
         let params = getParameters();
-        params.detailAccountId = $scope.parameters.detailAccount.id;
+        params.detailAccountId = $scope.parameters.detailAccount;
         params.detailAccountDisplay = $scope.parameters.detailAccount.display;
 
         navigate('account-review-turnover', {name: reportName}, params);
