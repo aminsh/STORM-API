@@ -8,7 +8,8 @@ const gulp = require('gulp'),
     Util = require('gulp-util'),
     knex = require('knex')({
         client: 'pg',
-        connection: 'postgres://postgres:P@ssw0rd@localhost:5432/dbAccFRK',
+        //connection: 'postgres://postgres:P@ssw0rd@localhost:5432/new-customer-db',
+        connection: 'postgres://scqngoshrpyzhp:5c14866b02c64204cfb3f9bab164d1af1223118bd3bb5a304129cd2c83cdc6e0@ec2-23-21-186-138.compute-1.amazonaws.com:5432/d1he0qgj4g1pvi?ssl=true',
         debug: true
     }),
     options = {
@@ -16,9 +17,11 @@ const gulp = require('gulp'),
         tableName: 'accounitng_schema_migrations',
         seeds: {directory: path.resolve(`${__dirname}/database/seeds`)}
     },
+    optionsForOldCustomers = {
+        seeds: {directory: path.resolve(`${__dirname}/database/seeds-for-old-customers`)}
+    },
     argv = require('yargs').argv,
     fs = require('fs'),
-    //mssql = require('./convert/connection/mssql'),
     convertConfig = require('./convert/config.json'),
     async = require('asyncawait/async'),
     await = require('asyncawait/await'),
@@ -98,9 +101,17 @@ gulp.task('run-seed', () => {
     });
 });
 
+gulp.task('run-seed-for-old-customers', ()=> {
+    knex.seed.run(optionsForOldCustomers).then(() => {
+        Util.log(Util.colors.green('seed ran successfully'));
+        process.exit();
+    });
+});
+
 gulp.task('make-json-converted', async(() => {
     const executionOrdering = convertConfig['execution-ordering'],
-        dataFileName = convertConfig['data-file-name'];
+        dataFileName = convertConfig['data-file-name'],
+        mssql = require('./convert/connection/mssql');
 
     Util.log(Util.colors.gray('source database started to connect'));
     await(mssql.connect);
