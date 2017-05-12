@@ -130,13 +130,8 @@ class JournalRepository extends BaseRepository {
                         .returning('id')
                         .insert(journal))[0];
 
-                    journalLines.forEach(line => {
-                        line.journalId = id;
-                        let cheque = line.cheque;
-                        delete  line.cheque;
-
-                        journalLineRepository.create(line, trans, cheque);
-                    });
+                    journalLines.forEach(line => line.journalId = id);
+                    await(knex('journalLines').transacting(trans).insert(journalLines));
 
                     trans.commit();
                     resolve(id);
@@ -162,7 +157,7 @@ class JournalRepository extends BaseRepository {
                         .update(journal));
 
                     if(createJournalLines.length != 0) {
-                        createJournalLines.forEach(jl => jl.journalId = id);
+                        createJournalLines.forEach(jl => jl.journalId = journal.id);
                         await(knex('journalLines')
                             .transacting(trx)
                             .insert(createJournalLines));
