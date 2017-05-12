@@ -6,10 +6,13 @@ require('./shared/utilities/function.prototypes');
 
 
 require('./accounting/server/config/route');
+require('./accounting/server/events/onUserCreated');
 
 const config = require('./storm/server/config'),
     accApp = require('./accounting/server/config/express'),
     app = require('./storm/server/config/express').app;
+
+
 
 app.use('/acc', accApp);
 
