@@ -71,15 +71,15 @@ const path = require('path'),
                 }
             },
             url: {
-                origin: 'https://storm-sandbox.herokuapp.com',
-                luca: 'https://storm-sandbox.herokuapp.com/luca-demo',
-                accounting: 'https://storm-sandbox.herokuapp.com/acc'
+                origin: 'http://admin-sandbox-storm-admin.abar.cloud',
+                luca: 'http://admin-sandbox-storm-admin.abar.cloud/luca-demo',
+                accounting: 'http://admin-sandbox-storm-admin.abar.cloud/acc'
             },
             auth: {
                 google: {
                     clientID: '44908669153-rgtap5scj693g240t9p3k69tplearpto.apps.googleusercontent.com',
                     clientSecret: 'ZAc3SYGLyKenCssgRzs0iY-1',
-                    callbackURL: 'https://storm-sandbox.herokuapp.com/auth/google/callback',
+                    callbackURL: 'http://admin-sandbox-storm-admin.abar.cloud/auth/google/callback',
                 }
             }
         },

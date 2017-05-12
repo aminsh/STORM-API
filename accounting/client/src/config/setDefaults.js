@@ -35,15 +35,18 @@ export default function ($rootScope,
 
                 branchApi.getCurrent()
                     .then(result => $rootScope.branch = result);
-
-                return;
             }
 
-            if (fiscalPeriodId == null)
+            if (!eval(fiscalPeriodId))
                 return toState.controller != 'createFiscalPeriodController'
-                    && $state.go('fiscal-period.new');
+                    && goToCreateFiscalPeriod();
             else
                 $rootScope.fiscalPeriodId = fiscalPeriodId;
+
+            function goToCreateFiscalPeriod() {
+                event.preventDefault();
+                $state.go('fiscal-period.new');
+            }
 
         });
 }

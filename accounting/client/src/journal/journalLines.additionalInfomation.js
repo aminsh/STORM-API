@@ -11,12 +11,12 @@ export class JournalLineAdditionalInformation {
         this.journalLine = data.journalLine;
 
         this.additionalInfo = {
-            cheque: this.journalLine.cheque || {
+            /*cheque: this.journalLine.cheque || {
                 id: null,
                 amount: this.journalLine.creditor,
                 date: data.journal.temporaryDate,
                 description: this.journalLine.article
-            },
+            },*/
             dimension1Id: this.journalLine.dimension1Id,
             dimension2Id: this.journalLine.dimension2Id,
             dimension3Id: this.journalLine.dimension3Id,

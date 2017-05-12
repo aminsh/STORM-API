@@ -149,6 +149,60 @@ module.exports = class JournalQuery extends BaseQuery {
 
         return {lastNumber, totalFixed, totalInComplete};
     }
+
+    getPayablesNotHaveChequeLines(currentFiscalPeriodId, detailAccountId, parameters) {
+        let knex = this.knex,
+            query = knex.select()
+                .from(function () {
+                    this.select(
+                        'journalBase.id',
+                        'temporaryNumber',
+                        'temporaryDate',
+                        'article',
+                        'debtor',
+                        'creditor',
+                        'subsidiaryLedgerAccounts.code',
+                        'subsidiaryLedgerAccounts.title'
+                    )
+                        .from(function () {
+                            base.call(this);
+                        })
+                        .leftJoin('subsidiaryLedgerAccounts', 'journalBase.subsidiaryLedgerAccountId', 'subsidiaryLedgerAccounts.id')
+                        .andWhere('subsidiaryLedgerAccounts.isBankAccount', true)
+                        .as('secondLevel')
+                });
+
+
+        function base() {
+            this.select(
+                'journalLines.id',
+                'temporaryNumber',
+                'temporaryDate',
+                'article',
+                'debtor',
+                'creditor',
+                'subsidiaryLedgerAccountId')
+                .from('journals')
+                .leftJoin('journalLines', 'journals.id', 'journalLines.journalId')
+                .leftJoin('cheques', 'journalLines.id', 'cheques.journalLineId')
+                .where('periodId', currentFiscalPeriodId)
+                .whereNull('cheques.journalLineId')
+                .andWhere('detailAccountId', detailAccountId)
+                .andWhere('creditor', '>', 0)
+                .as('journalBase')
+        }
+
+        return kendoQueryResolve(query, parameters, item => ({
+            id: item.id,
+            number: item.temporaryNumber,
+            date: item.temporaryDate,
+            article: item.article,
+            debtor: item.debtor,
+            creditor: item.creditor,
+            subsidiaryLedgerAccountDisplay: `${item.code} ${item.title}`
+        }));
+
+    }
 };
 
 

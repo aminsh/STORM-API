@@ -20,21 +20,21 @@ function showJournalDetailController($scope, translate, $uibModalInstance, journ
                 name: 'generalLedgerAccountId',
                 title: translate('General ledger account'),
                 type: 'generalLedgerAccount',
-                template: '{{item.generalLedgerAccountCode}}',
+                template: '<span title="{{item.generalLedgerAccountDisplay}}">{{item.generalLedgerAccountCode}}</span>',
                 width: '100px'
             },
             {
                 name: 'subsidiaryLedgerAccountId',
                 title: translate('Subsidiary ledger account'),
                 type: 'subsidiaryLedgerAccount',
-                template: '{{item.subsidiaryLedgerAccountCode}}',
+                template: '<span title="{{item.subsidiaryLedgerAccountDisplay}}">{{item.subsidiaryLedgerAccountCode}}</span>',
                 width: '100px'
             },
             {
                 name: 'detailAccountId',
                 title: translate('Detail account'),
                 type: 'detailAccount',
-                template: '{{item.detailAccountCode}}',
+                template: '<span title="{{item.detailAccountDisplay}}">{{item.detailAccountCode}}</span>',
                 width: '120px'
             },
             {

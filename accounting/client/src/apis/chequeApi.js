@@ -10,6 +10,9 @@ function chequeApi(apiPromise) {
         getAllWhites: detailAccountId => apiPromise.get(`${urlPrefix}/cheques/detail-account/${detailAccountId}/whites/all`),
         getAllUsed(){
             return apiPromise.get(`${urlPrefix}/cheques/used/all`);
+        },
+        write(id, data){
+            return apiPromise.put(`${urlPrefix}/cheques/${id}/write`, data);
         }
     };
 }

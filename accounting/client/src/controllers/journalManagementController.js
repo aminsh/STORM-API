@@ -1,8 +1,7 @@
 import accModule from '../acc.module';
 
 function journalManagementController($scope, logger, confirm, devConstants, translate, $timeout,
-                                     showJournalDetailModalService,
-                                     journalBookkeepingService) {
+                                     showJournalDetailModalService) {
     $scope.gridOption = {
         columns: [
             {name: 'monthName', title: translate('Month'), type: 'string'},
@@ -62,19 +61,6 @@ function journalManagementController($scope, logger, confirm, devConstants, tran
 
     $scope.onSelectJournal = current => {
         $scope.currentJournal = current;
-    };
-
-    $scope.bookkeeping = () => {
-        let current = $scope.currentJournal;
-
-        if (current.number)
-            return logger.error(translate('This journal already bookkeeped'));
-
-        journalBookkeepingService.show({id: current.id})
-            .then(()=> {
-                logger.success();
-                $scope.journalGridOption.refresh();
-            });
     };
 
     $scope.showJournal = ()=> {

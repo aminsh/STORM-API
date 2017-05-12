@@ -234,6 +234,8 @@ module.exports.update = async((req, res) => {
             .where(id => !cmdJournalLines.asEnumerable().any(c => c.id == id))
             .toArray();
 
+    createdLines && createdLines.forEach(line => delete line.id);
+
     await(journalRepository.batchUpdate(
         createdLines,
         updatedLines,

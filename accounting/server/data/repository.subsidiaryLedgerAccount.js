@@ -46,6 +46,10 @@ class SubsidiaryLedgerAccountRepository extends BaseRepository {
             .where('id', id)
             .del();
     }
+
+    isUsedOnJournalLines(id){
+        return this.knex.from('journalLines').where('subsidiaryLedgerAccountId', id).first();
+    }
 }
 
 module.exports = SubsidiaryLedgerAccountRepository;

@@ -198,16 +198,15 @@ export default function ($stateProvider, $urlRouterProvider, $locationProvider) 
             controller: 'accountReviewTurnoverController',
             templateUrl: 'partials/views/accountReviewTurnover.html'
         })
+        .state('fiscal-period', {
+            url: '/fiscal-period',
+            template: '<ui-view></ui-view>'
+        })
         .state('fiscal-period.new', {
             url: '/fiscal-period/new',
             controller: 'createFiscalPeriodController',
             templateUrl: 'partials/views/createFiscalPeriod.html'
         })
-        /*.state('reports', {
-         url: '/reports',
-         controller: 'reportController',
-         templateUrl: 'partials/views/report.html'
-         })*/
         .state('report', {
             url: '/report',
             template: '<ui-view></ui-view>'

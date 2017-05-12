@@ -10,11 +10,6 @@
             style-type="white"
             title="{{'Show journal detail' | translate}}"></dev-tag-button>
 
-    <dev-tag-button
-            ng-click="bookkeeping(journalGridOption.current)"
-            ng-disabled="!currentJournal"
-            style-type="white"
-            title="{{'Bookkeep' | translate}}"></dev-tag-button>
 
     <dev-tag-grid option="journalGridOption"
                   on-current-changed="onSelectJournal(current)"></dev-tag-grid>

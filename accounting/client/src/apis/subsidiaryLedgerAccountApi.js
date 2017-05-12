@@ -14,8 +14,8 @@ export default class {
         return this.apiPromise.get(`${this.urlPrefix}/${id}`);
     }
 
-    create(data) {
-        return this.apiPromise.post(this.urlPrefix, data);
+    create(id, data) {
+        return this.apiPromise.post(`${this.urlPrefix}/general-ledger-account/${id}`, data);
     }
 
     update(id, data) {

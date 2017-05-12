@@ -159,8 +159,7 @@ export default class {
         let logger = this.logger,
             formService = this.formService,
             journal = this.journal,
-            journalLines = this.journalLines,
-            isSaving = this.isSaving;
+            journalLines = this.journalLines;
 
         if (form.$invalid) {
             formService.setDirty(form);
@@ -179,7 +178,8 @@ export default class {
             return logger.error(this.translate('Total of debtor and creditor is not equal'));
 
         this.errors.asEnumerable().removeAll();
-        isSaving = true;
+
+        this.isSaving = true;
 
         let cmd = Object.assign(journal, {journalLines});
 
@@ -192,15 +192,15 @@ export default class {
                 .catch(err => {
                     this.errors = err;
                 })
-                .finally(() => isSaving = false);
+                .finally(() => this.isSaving = false);
 
         this.journalApi.update(this.id, this.journal)
             .then(() => logger.success())
             .catch(err => {
                 console.log(err);
-                errors = err;
+                this.errors = err;
             })
-            .finally(() => isSaving = false);
+            .finally(() => this.isSaving = false);
     }
 
     createJournalLine() {
