@@ -1,4 +1,4 @@
-var enums = require('../constants/enums');
+var enums = require('../../shared/enums');
 
 function generalLedgerAccountView(entity) {
     var viewModel = {
