@@ -47,6 +47,7 @@ router.route('/')
             postingType: cmd.postingType,
             balanceType: cmd.balanceType,
             description: cmd.description,
+            groupingType: cmd.groupingType,
             isActive: true
         };
 
@@ -99,6 +100,7 @@ router.route('/:id')
             postingType: cmd.postingType,
             balanceType: cmd.balanceType,
             description: cmd.description,
+            groupingType: cmd.groupingType
         };
 
         await(generalLedgerAccountRepository.update(entity));

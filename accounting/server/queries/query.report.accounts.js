@@ -1,7 +1,7 @@
 "use strict";
 
 const BaseQuery = require('./query.base'),
-    enums = require('../constants/enums'),
+    enums = require('../../shared/enums'),
     translate = require('../services/translateService');
 
 module.exports = class ReportQueryAccounts extends BaseQuery {
@@ -14,6 +14,7 @@ module.exports = class ReportQueryAccounts extends BaseQuery {
         return knex.select(knex.raw(`code, 
         title, 
         description,
+        groupingType,
         CASE WHEN code ISNULL THEN title ELSE title||' ${translate('Code')} ' ||code END AS display`))
             .from('generalLedgerAccounts');
     };
