@@ -25,6 +25,22 @@ enums.PersonType=function(){
     ]);
 };
 
+enums.AccountGroupingType=function(){
+    return new Enum([
+        {key: '1', display: 'دارایی های جاری'},
+        {key: '2', display: 'دارایی های ثابت(غیر جاری)'},
+        {key: '3', display: 'بدهی های جاری'},
+        {key: '4', display: 'بدهی های بلند مدت'},
+        {key: '5', display: 'حقوق صاحبان سهام'},
+        {key: '6', display: 'درآمد'},
+        {key: '7', display: 'بهای تمام شده کالای فروش رفته و خدمات ارائه شده'},
+        {key: '8', display: 'هزینه ها'},
+        {key: '9', display: 'خرید'},
+        {key: '10', display: 'فروش'},
+        {key: '11', display: 'سایر حساب ها'},
+    ]);
+};
+
 enums.InvoiceType=function(){
     return new Enum([
         {key: 'purchase', display: 'خرید'},

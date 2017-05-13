@@ -23,6 +23,13 @@ function generalLedgerAccountsController($scope, logger, translate, confirm, dev
                 template: `<a ui-sref=".edit({id: item.id})">{{item.title}}</a>`
             },
             {
+                name: 'groupingType',
+                title: translate('Grouping type'),
+                type: 'groupingType',
+                width: '150px',
+                template: '{{item.groupingTypeDisplay}}'
+            },
+            {
                 name: 'postingType',
                 title: translate('Posting type'),
                 type: 'postingType',
