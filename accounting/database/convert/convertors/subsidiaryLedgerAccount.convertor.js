@@ -30,8 +30,8 @@ class SubsidiaryLedgerAccountConvertor {
         let generalLedgerAccounts = data.generalLedgerAccounts;
 
         return generalLedgerAccounts.asEnumerable()
-            .first(g => g.code == code).id;
-    }
+.first(g => g.code == code).id;
+}
 }
 
 module.exports = SubsidiaryLedgerAccountConvertor;

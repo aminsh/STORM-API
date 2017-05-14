@@ -8,6 +8,7 @@ function generalLedgerAccountCreateModalController($scope, $uibModalInstance, ge
         title: '',
         code: '',
         postingType: null,
+        groupingType:null,
         balanceType: null,
         description: ''
     };
@@ -37,6 +38,7 @@ function generalLedgerAccountCreateModalController($scope, $uibModalInstance, ge
     };
 
     $scope.accountPostingType = devConstants.enums.AccountPostingType();
+    $scope.accountGroupingType = devConstants.enums.AccountGroupingType();
     $scope.accountBalanceType = devConstants.enums.AccountBalanceType();
 }
 

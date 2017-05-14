@@ -1,4 +1,4 @@
-var enums = require('../constants/enums');
+var enums = require('../../shared/enums');
 
 function generalLedgerAccountView(entity) {
     var viewModel = {
@@ -8,8 +8,10 @@ function generalLedgerAccountView(entity) {
         display: entity.display,
         postingType: entity.postingType,
         balanceType: entity.balanceType,
+        groupingType: entity.groupingType,
         postingTypeDisplay: entity.postingType ? enums.AccountPostingType().getDisplay(entity.postingType) : '',
         balanceTypeDisplay: entity.balanceType ? enums.AccountBalanceType().getDisplay(entity.balanceType) : '',
+        groupingTypeDisplay: entity.groupingType ? enums.AccountGroupingType().getDisplay(entity.groupingType) : '',
         description: entity.description,
         isActive: entity.isActive
     };
