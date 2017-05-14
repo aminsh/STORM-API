@@ -29,6 +29,17 @@ accModule.config(function (gridFilterCellTypeProvider,
         </li>`
     };
 
+    let groupingType = {
+        data: devConstants.enums.AccountGroupingType().data,
+        template: `<li ng-repeat="item in items">
+        <dev-tag-radio 
+            ng-class="{'checked': item.key == filter.value}"
+            ng-model="filter.value" 
+            k-value="{{item.key}}"></dev-tag-radio>
+        {{item.display}}
+        </li>`
+    };
+
     let activeType = {
         data: devConstants.enums.Active().data,
         template: `<li ng-repeat="item in items">
@@ -127,6 +138,7 @@ accModule.config(function (gridFilterCellTypeProvider,
 
     gridFilterCellTypeProvider.set({
         postingType: postingType,
+        groupingType: groupingType,
         balanceType: balanceType,
         activeType: activeType,
         bank: bank,

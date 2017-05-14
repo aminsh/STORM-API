@@ -13,6 +13,7 @@ function generalLedgerAccountUpdateModalController($scope,
         code: '',
         postingType: null,
         balanceType: null,
+        groupingType:null,
         description: ''
     };
 
@@ -76,6 +77,7 @@ function generalLedgerAccountUpdateModalController($scope,
 
     $scope.accountPostingType = devConstants.enums.AccountPostingType();
     $scope.accountBalanceType = devConstants.enums.AccountBalanceType();
+    $scope.accountGroupingType = devConstants.enums.AccountGroupingType();
 }
 
 function generalLedgerAccountUpdateModalService(modalBase) {

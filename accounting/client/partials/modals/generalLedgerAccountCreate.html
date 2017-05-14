@@ -21,6 +21,22 @@
                 <label ng-message="required" class="error">{{'This field is required'|translate}}</label>
             </div>
         </div>
+
+        <div class="form-group">
+            <label class="label-control">{{'Grouping type' | translate}}</label>
+
+            <select name="groupingType"
+                    ng-model="generalLedgerAccount.groupingType"
+                    ng-options="p.key as p.display for p in accountGroupingType.data"
+                    class="form-control">
+                <option value="">{{'Select ...'|translate}}</option>
+            </select>
+
+            <div ng-messages="form.groupingType.$error" ng-if="form.groupingType.$dirty">
+                <label ng-message="required" class="error">{{'This field is required'|translate}}</label>
+            </div>
+        </div>
+
         <div class="form-group">
             <label class="label-control">{{'Posting type' | translate}}</label>
 
@@ -35,6 +51,7 @@
                 <label ng-message="required" class="error">{{'This field is required'|translate}}</label>
             </div>
         </div>
+
 
         <div class="form-group">
             <label class="label-control">{{'Balance type' | translate}}</label>

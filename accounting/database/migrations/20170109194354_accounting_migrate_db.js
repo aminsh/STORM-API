@@ -100,7 +100,7 @@ exports.up = function(knex, Promise) {
             table.string('temporaryDate');
             table.integer('number');
             table.string('date');
-            table.string('description');
+            table.text('description');
             table.enu('journalStatus', enums.JournalStatus().getKeys());
             table.enu('journalType', enums.JournalType().getKeys());
             table.boolean('isInComplete');
