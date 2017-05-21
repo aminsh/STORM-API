@@ -3,25 +3,15 @@ export default class PricingController {
         $rootScope.noFooter = true;
         this.pricelist = [
             {
-                key: 'free',
-                name: 'رایگان',
-                cost: '۰',
-                features: [
-                    'تک کاربره',
-                    '30 روزه',
-                    'تمامی امکانات'
-                ],
-                color: 'lime'
-            },
-            {
                 key: 'economy',
                 name: 'اقتصادی',
                 cost: '50.000 تومان / ماهیانه',
                 features: [
                     '2 کاربره',
-                    'حسابداری دفترداری',
-                    'سیستم خرید و فروش',
+                    'دامنه اختصاصی ندارد',
+                    'پشتیبانی مالی ندارد',
                 ],
+                suggest:false,
                 color: 'green'
             },
             {
@@ -30,8 +20,10 @@ export default class PricingController {
                 cost: '200.000 تومان / ماهیانه',
                 features: [
                     'تعداد کاربر نامحدود',
-                    'تمامی امکانات'
+                    'دامنه اختصاصی ندارد',
+                    'پشتیبانی مالی دارد'
                 ],
+                suggest:true,
                 color: 'cyan'
             },
             {
@@ -39,10 +31,11 @@ export default class PricingController {
                 name: 'سرور اختصاصی ',
                 cost: 'تماس بگیرید',
                 features: [
-                    'دامین اختصاصی',
+                    'دامنه اختصاصی',
                     'کابران نامحدود',
-                    'تمامی امکانات',
+                    'پشتیبانی مالی دارد'
                 ],
+                suggest:false,
                 color: 'blue'
             },
         ];

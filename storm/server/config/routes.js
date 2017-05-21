@@ -25,6 +25,8 @@ app.post('/upload', (req, res) => {
     });
 });
 
+app.get('/', (req, res) => res.render('webSite/index.html'));
+
 /* rest of routes should handled by angular  */
 app.get('*', (req, res) => res.render('index.ejs'));
 

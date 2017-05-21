@@ -31,7 +31,7 @@ const path = require('path'),
         publicDir: './public'
     };
 
-gulp.task('build-template', function () {
+gulp.task('acc-build-template', function () {
     return gulp.src([`${config.accSrcDir}/partials/**/*.html`, `${config.accSrcDir}/src/**/*.html`])
         .pipe(templateCache(
             {
@@ -42,7 +42,7 @@ gulp.task('build-template', function () {
         .pipe(gulp.dest(`${config.publicDir}/js`));
 });
 
-gulp.task('build-acc', function () {
+gulp.task('acc-build-js', function () {
     const distPath = `${config.publicDir}/js`;
 
     mkdirp(`${config.publicDir}/js`, err => {
@@ -72,6 +72,19 @@ gulp.task('build-acc', function () {
     });
 });
 
+gulp.task('acc-build-sass', function () {
+    return gulp.src('./accounting/client/src/styles/acc.scss')
+        .pipe(sourcemaps.init())
+        .pipe(sass({
+            outputStyle: 'compressed',
+            includePaths: ['./node_modules']
+        }).on('error', sass.logError))
+        .pipe(gulpif(!config.isProduction, sourcemaps.write()))
+        .pipe(rename('acc.min.css'))
+        .pipe(gulp.dest(`${config.publicDir}/css`));
+
+});
+
 gulp.task('build-stimulsoft', function () {
     return gulp.src([
         './vendors/stimulsoft/stimulsoft.reports.js',
@@ -93,18 +106,7 @@ gulp.task('css-uncss', function () {
         .pipe(gulp.dest('dist'))
 });
 
-gulp.task('build-sass', function () {
-    return gulp.src('./accounting/client/src/styles/acc.scss')
-        .pipe(sourcemaps.init())
-        .pipe(sass({
-            outputStyle: 'compressed',
-            includePaths: ['./node_modules']
-        }).on('error', sass.logError))
-        .pipe(gulpif(!config.isProduction, sourcemaps.write()))
-        .pipe(rename('acc.min.css'))
-        .pipe(gulp.dest(`${config.publicDir}/css`));
 
-});
 
 gulp.task('copy-storm-fonts', function () {
     return gulp.src([
@@ -168,15 +170,21 @@ gulp.task('copy-assets', [
     'copy-kendo-images',
     'copy-kendo-fonts',
     'copy-bootstrap-fonts',
-    'copy-persian-fonts'
+    'copy-persian-fonts',
+    'copy-stimulsoft-files',
+    'storm-copy-images'
 ]);
 
 gulp.task('default', [
-    'build-acc',
-    'build-template',
-    'build-sass',
-    'build-stimulsoft',
-    'copy-assets'
+    'acc-build-js',
+    'acc-build-template',
+    'acc-build-sass',
+    'acc-build-stimulsoft',
+    'storm-build-sass',
+    'storm-build-template',
+    'storm-build-js',
+    'copy-assets',
+
 ]);
 
 gulp.task('storm-build-sass', () => {
