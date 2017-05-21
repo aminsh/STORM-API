@@ -15,9 +15,9 @@ export default function routing($stateProvider, $urlRouterProvider, $locationPro
     $stateProvider
         .state('home', {
             url: '/',
-            templateUrl: 'app/home/home.html',//require('./home/home.html'),
-            controller: 'HomeController',
-            controllerAs: 'home'
+            onEnter: ($window) => {
+               $window.location.href = $window.location.origin;
+            }
         })
         .state('aboutus', {
             url: '/about-us',
