@@ -14,11 +14,26 @@ $fa-font-path: $font-path;
   height: 100%;
 }
 
-.shell-cover {
-  background: url('#{$image-path}/storm-background2.jpg') no-repeat center center fixed;
-  //background-color: #1a2d40;
-  background-size: cover;
-  -o-background-size: cover;
+/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#1e5799+0,2989d8+50,207cca+51,7db9e8+100;Blue+Gloss+Default */
+
+
+
+body {
+
+  background: rgba(73,155,234,1);
+  background: -moz-linear-gradient(left, rgba(73,155,234,1) 0%, rgba(104,119,135,1) 0%, rgba(104,119,135,1) 67%, rgba(104,119,135,0.65) 100%);
+  background: -webkit-gradient(left top, right top, color-stop(0%, rgba(73,155,234,1)), color-stop(0%, rgba(104,119,135,1)), color-stop(67%, rgba(104,119,135,1)), color-stop(100%, rgba(104,119,135,0.65)));
+  background: -webkit-linear-gradient(left, rgba(73,155,234,1) 0%, rgba(104,119,135,1) 0%, rgba(104,119,135,1) 67%, rgba(104,119,135,0.65) 100%);
+  background: -o-linear-gradient(left, rgba(73,155,234,1) 0%, rgba(104,119,135,1) 0%, rgba(104,119,135,1) 67%, rgba(104,119,135,0.65) 100%);
+  background: -ms-linear-gradient(left, rgba(73,155,234,1) 0%, rgba(104,119,135,1) 0%, rgba(104,119,135,1) 67%, rgba(104,119,135,0.65) 100%);
+  background: linear-gradient(to right, rgba(73,155,234,1) 0%, rgba(104,119,135,1) 0%, rgba(104,119,135,1) 67%, rgba(104,119,135,0.65) 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#499bea', endColorstr='#687787', GradientType=1 );
+
+  //
+  ////background: url('#{$image-path}/bg.jpg') no-repeat center center fixed;
+  ////background-color: #1a2d40;
+  //background-size: cover;
+  //-o-background-size: cover;
   //height: 100%;
 }
 
