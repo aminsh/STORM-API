@@ -15,7 +15,7 @@ exports.up = function (knex, Promise) {
             table.string('description');
         })
 
-        .createTable('items', table => {
+        .createTable('products', table => {
             table.timestamp('createdAt').defaultTo(knex.fn.now());
             table.timestamp('updatedAt').defaultTo(knex.fn.now());
             table.increments('id').primary();
