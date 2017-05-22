@@ -1,6 +1,6 @@
 exports.up = function (knex, Promise) {
     return knex.schema
-        .createTable('saleInvoices', table => {
+        .createTable('sales', table => {
             table.timestamp('createdAt').defaultTo(knex.fn.now());
             table.timestamp('updatedAt').defaultTo(knex.fn.now());
             table.increments('id').primary();
@@ -22,16 +22,24 @@ exports.up = function (knex, Promise) {
             table.string('title');
         })
 
-        .createTable('saleInvoiceLines', table => {
+        .createTable('saleLines', table => {
             table.timestamp('createdAt').defaultTo(knex.fn.now());
             table.timestamp('updatedAt').defaultTo(knex.fn.now());
             table.increments('id').primary();
-            table.integer('itemId');
+            table.integer('productId');
 
             table
-                .foreign('itemId')
+                .foreign('productId')
                 .references('id')
-                .inTable('items')
+                .inTable('products')
+                .onDelete('CASCADE');
+
+            table.integer('saleId');
+
+            table
+                .foreign('saleId')
+                .references('id')
+                .inTable('sales')
                 .onDelete('CASCADE');
 
             table.float('quantity');
@@ -44,7 +52,7 @@ exports.up = function (knex, Promise) {
 
 exports.down = function (knex, Promise) {
     return knex.schema
-        .dropTable('saleInvoiceLines')
-        .dropTable('items')
-        .dropTable('saleInvoices');
+        .dropTable('saleLines')
+        .dropTable('products')
+        .dropTable('sales');
 };

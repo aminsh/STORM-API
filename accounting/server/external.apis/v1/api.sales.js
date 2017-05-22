@@ -1,7 +1,5 @@
 "use strict";
 
-"use strict";
-
 const async = require('asyncawait/async'),
     await = require('asyncawait/await'),
     router = require('express').Router(),
@@ -12,10 +10,13 @@ router.route('/')
     .post(async((req, res) => {
         let saleRepository = new SaleRepository(req.branchId),
             cmd = req.body,
+            //check not null customer
+
             entity = {
                 number: cmd.number,
                 date: cmd.date,
-                description: cmd.description
+                description: cmd.description,
+                customerId: cmd.customer.id
             };
 
         entity.lines = cmd.lines.asEnumerable()
@@ -25,7 +26,7 @@ router.route('/')
                 unitPrice: line.unitPrice,
                 discountAmount: line.discount.amount,
                 discountRate: line.discount.rate,
-                VAT: line.VAT
+                vat: line.vat
             }))
             .toArray();
 
