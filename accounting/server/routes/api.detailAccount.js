@@ -6,6 +6,7 @@ const async = require('asyncawait/async'),
     string = require('../utilities/string'),
     translate = require('../services/translateService'),
     DetailAccountRepository = require('../data/repository.detailAccount'),
+    DetailAccountCenterRepository = require('../data/repository.detailAccountCenter'),
     DetailAccountQuery = require('../queries/query.detailAccount');
 
 router.route('/')
@@ -145,5 +146,21 @@ router.route('/:id/deactivate').put(async((req, res) => {
     return res.json({isValid: true});
 }));
 
+router.route('/:id/center/:subsidiaryLedgerAccountId')
+    .post(async((req, res) => {
+        let detailAccountCenterRepository = new DetailAccountCenterRepository(req.cookies['branch-id']),
+            entity = {
+                detailAccountId: req.params.id,
+                subsidiaryLedgerAccountId: req.params.subsidiaryLedgerAccountId
+            };
+
+        entity = await(detailAccountCenterRepository.create(entity));
+
+        res.json({
+            isValid: true,
+            returnValue: {id: entity.id}
+        });
+
+    }));
 
 module.exports = router;
