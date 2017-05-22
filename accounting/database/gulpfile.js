@@ -8,8 +8,8 @@ const gulp = require('gulp'),
     Util = require('gulp-util'),
     knex = require('knex')({
         client: 'pg',
-        //connection: 'postgres://postgres:P@ssw0rd@localhost:5432/new-customer-db',
-        connection: 'postgres://scqngoshrpyzhp:5c14866b02c64204cfb3f9bab164d1af1223118bd3bb5a304129cd2c83cdc6e0@ec2-23-21-186-138.compute-1.amazonaws.com:5432/d1he0qgj4g1pvi?ssl=true',
+        connection: 'postgres://postgres:P@ssw0rd@localhost:5432/dbAccFRK',
+        //connection: 'postgres://khdntotyvarety:41cb005a1d3e157843239557043d5d7fcd992728b579f89ddea8cd1f986bf82e@ec2-54-235-247-224.compute-1.amazonaws.com:5432/d6ep66drpevbhr?ssl=true',
         debug: true
     }),
     options = {
@@ -141,11 +141,11 @@ gulp.task('make-json-converted', async(() => {
 
 gulp.task('rest-primary-key', () => {
     const config = {
-            user: 'khdntotyvarety',
-            password: '41cb005a1d3e157843239557043d5d7fcd992728b579f89ddea8cd1f986bf82e',
-            host: 'ec2-54-235-247-224.compute-1.amazonaws.com',
+            user: 'ukuytrbpzvscwl',
+            password: 'e5816959afad09d92a2985666589d9b84cc8a29b17b17898d03b95fb1aed12a1',
+            host: 'ec2-23-21-76-49.compute-1.amazonaws.com',
             port: '5432',
-            database: 'd6ep66drpevbhr',
+            database: 'dlhr7n2ot81ju',
             ssl: true
         }/*{
             user: 'postgres',

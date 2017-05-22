@@ -1,6 +1,6 @@
 {
     "source-db":{
-        "url": "mssql://sa:P@ssw0rd@storm-support/mali"
+        "url": "mssql://sa:P@ssw0rd@192.168.177.157/mali2"
     },
     "execution-ordering": [
         "user",
