@@ -11,8 +11,8 @@ module.exports = class ProductQuery extends BaseQuery {
         super(branchId);
     }
 
-    getAll(){
-        let query = this.knex.select().from('banks');
+    getAll(parameters){
+        let query = this.knex.select().from('products');
         return kendoQueryResolve(query, parameters, view);
     }
 };

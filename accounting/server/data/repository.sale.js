@@ -12,28 +12,28 @@ module.exports = class SaleRepository extends BaseRepository {
     }
 
     create(entity) {
-        let knex = this.knex,
+        this.entity = entity;
 
-            handler = (resolve, reject) => {
-                knex.transaction(async(trx => {
-                    try {
-                        let lines = entity.lines;
+        return new Promise((resolve, reject) => {
+            this.knex.transaction(async(trx => {
+                let entity=this.entity;
 
-                        delete  entity.lines;
+                try {
+                    let lines = this.entity.lines;
 
-                        this.createSale(entity , trx);
+                    delete  entity.lines;
 
-                        this.createSaleLines(lines,entity.id, trx);
+                    await(this.createSale(entity, trx));
 
-                        resolve(entity);
-                    }
-                    catch (e) {
-                        reject(e);
-                    }
-                }));
-            };
+                    await(this.createSaleLines(lines, entity.id, trx));
 
-        return new Promise(handler);
+                    resolve(entity);
+                }
+                catch (e) {
+                    reject(e);
+                }
+            }));
+        });
     }
 
     createSale(entity, trx) {
@@ -41,15 +41,17 @@ module.exports = class SaleRepository extends BaseRepository {
             .transacting(trx)
             .returning('id')
             .insert(entity))[0];
+
+        return entity;
     }
 
-    createSaleLines(lines, salesId, trx){
+    createSaleLines(lines, salesId, trx) {
 
         lines.forEach(line => {
             line.saleId = salesId;
         });
 
-        await(this.knex
+        await(this.knex('saleLines')
             .transacting(trx)
             .insert(lines));
     }

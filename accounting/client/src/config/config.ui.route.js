@@ -235,7 +235,7 @@ export default function ($stateProvider, $urlRouterProvider, $locationProvider) 
         })
         .state('sales.list', {
             url: '/list',
-            controller: 'salesInvoiceController',
+            controller: 'salesListController',
             controllerAs:'model',
             templateUrl: 'partials/sales/sales.html'
         })

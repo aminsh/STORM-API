@@ -16,10 +16,11 @@ module.exports = class SaleQuery extends BaseQuery {
     getAll(parameters) {
         let knex = this.knex,
 
-            query = knex.select('*').table(function () {
+            query = knex.select().table(function () {
                 this.select('*', knex.raw('"detailAccounts"."title" as "detailAccountDisplay"'))
                     .from('sales')
-                    .leftJoin('detailAccounts', 'sales.detailAccountId', 'detailAccounts.id');
+                    .leftJoin('detailAccounts', 'sales.detailAccountId', 'detailAccounts.id')
+                    .as('base');
             });
 
         return kendoQueryResolve(query, parameters, view);
