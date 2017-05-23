@@ -17,9 +17,9 @@ module.exports = class SaleRepository extends BaseRepository {
             handler = (resolve, reject) => {
                 knex.transaction(async(trx => {
                     try {
-                        let lines = entity.lines;
+                        let lines = entity.invoiceLines;
 
-                        delete  entity.lines;
+                        delete  entity.invoiceLines;
 
                         this.createSale(entity , trx);
 

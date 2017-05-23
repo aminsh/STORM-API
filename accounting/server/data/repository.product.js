@@ -16,11 +16,19 @@ module.exports = class ProductRepository extends BaseRepository {
             .first();
     }
 
+    findByReferenceId(referenceId){
+        return this.knex.table('products')
+            .where('referenceId', referenceId)
+            .first();
+    }
+
     create(entity){
         entity.id = await(
             this.knex('products')
                 .returning('id')
-                .insert(entity))[0].id
+                .insert(entity))[0].id;
+
+            return entity;
     }
 
     update(id, entity){

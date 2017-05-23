@@ -26,6 +26,12 @@ class DetailAccountRepository extends BaseRepository {
         return query.first();
     }
 
+    findByReferenceId(referenceId) {
+        return this.knex.table('detailAccounts')
+            .where('referenceId', referenceId)
+            .first();
+    }
+
     create(entity) {
         entity.id = await(this.knex('detailAccounts')
             .returning('id')
