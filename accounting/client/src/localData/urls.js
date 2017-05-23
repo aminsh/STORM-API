@@ -67,6 +67,10 @@ let tag = {
     getAll: ()=> `${rootUrl()}/tags`
 };
 
+let sales = {
+    getAll: ()=> `${rootUrl()}/sales`
+};
+
 let apiUrls = {
     generalLedgerAccount: generalLedgerAccount,
     subsidiaryLedgerAccount: subsidiaryLedgerAccount,
@@ -80,7 +84,8 @@ let apiUrls = {
     journal: journal,
     journalTemplate: journalTemplate,
     accountReview: accountReview,
-    tag: tag
+    tag: tag,
+    sales:sales
 };
 
 export default apiUrls;

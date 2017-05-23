@@ -11,14 +11,14 @@ const async = require('asyncawait/async'),
 router.route('/')
     .get(async((req, res) => {
         let saleQuery = new SaleQuery(req.cookies['branch-id']),
-            result = await(saleQuery.getAll(req.query)),
-            invoices = [
-                {id: 1, number: 1, date: '1395/01/01', description: 'test'},
-                {id: 2, number: 2, date: '1395/01/01', description: 'test'},
-                {id: 3, number: 3, date: '1395/01/01', description: 'test'}
-            ];
+            result = await(saleQuery.getAll(req.query));
+            // invoices = [
+            //     {id: 1, number: 1, date: '1395/01/01', description: 'test'},
+            //     {id: 2, number: 2, date: '1395/01/01', description: 'test'},
+            //     {id: 3, number: 3, date: '1395/01/01', description: 'test'}
+            // ];
 
-        res.send(invoices);
+       res.json(result);
     }))
     .post(async((req, res) => {
         let saleRepository = new SaleRepository(req.cookies['branch-id']),
@@ -31,13 +31,12 @@ router.route('/')
                 detailAccountId: cmd.detailAccountId
             };
 
-        entity.lines = cmd.lines.asEnumerable()
+        entity.lines = cmd.invoiceLines.asEnumerable()
             .select(line => ({
                 productId: line.productId,
                 quantity: line.quantity,
                 unitPrice: line.unitPrice,
-                discountAmount: line.discount.amount,
-                discountRate: line.discount.rate,
+                discount: line.discount,
                 vat: line.vat
             }))
             .toArray();

@@ -27,16 +27,17 @@
 
             <td>
 
-                <dev-tag-text-box
-                        ng-model="item.title"
-                        name="itemTitle"
-                        required
-                        minlength="3"></dev-tag-text-box>
-                <div ng-messages="form['form-'+ $index].itemTitle.$error"
+                <dev-tag-combo-box
+                        name="productId"
+                        k-placeholder="{{'Select ...'|translate}}"
+                        k-data-value-field="id"
+                        k-data-text-field="title"
+                        k-data-source="model.products"
+                        ng-model="item.productId" required></dev-tag-combo-box>
+
+                <div ng-messages="form['form-'+ $index].productId.$error"
                      ng-if="form['form-'+ $index].article.$dirty">
                     <label ng-message="required" class="error">{{'This field is required'|translate}}</label>
-                    <label ng-message="minlength" class="error">{{'This field should at least 3
-                        characters'|translate}}</label>
                 </div>
 
             </td>

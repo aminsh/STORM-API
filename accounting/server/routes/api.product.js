@@ -8,7 +8,7 @@ const async = require('asyncawait/async'),
 
 router.route('/').get(async((req, res) => {
     let productQuery = new ProductQuery(req.cookies['branch-id']),
-        result = await(productQuery.getAll());
+        result = await(productQuery.getAll(req.query));
 
     res.json(result);
 }));

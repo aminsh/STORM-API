@@ -6,19 +6,19 @@ function salesInvoiceApi(apiPromise) {
     return {
 
         getAll(){
-            return apiPromise.get(`${urlPrefix}/sale/invoices/`);
+            return apiPromise.get(`${urlPrefix}/sales/`);
         },
         getById: function (id) {
-            return apiPromise.get(`${urlPrefix}/sale/invoices/${id}`);
+            return apiPromise.get(`${urlPrefix}/sales/${id}`);
         },
         create: function (data) {
-            return apiPromise.post(`${urlPrefix}/sale/invoices`,data);
+            return apiPromise.post(`${urlPrefix}/sales`,data);
         },
         update: function (data) {
-            return apiPromise.put(`${urlPrefix}/sale/invoices/`,data);
+            return apiPromise.put(`${urlPrefix}/sales/`,data);
         },
         remove: function (id) {
-            return apiPromise.delete(`${urlPrefix}/sale/invoices/${id}`);
+            return apiPromise.delete(`${urlPrefix}/sales/${id}`);
         }
     };
 

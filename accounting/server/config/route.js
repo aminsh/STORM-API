@@ -19,7 +19,7 @@ app.use('/api/journal-templates', require('../routes/api.journalTemplate'));
 app.use('/api/subsidiary-ledger-accounts', require('../routes/api.subsidiaryLedgerAccount'));
 app.use('/api/tags', require('../routes/api.tag'));
 app.use('/api/reports', require('../routes/api.report'));
-app.use('/api/sales', require('../routes/api.invoice'));
+app.use('/api/sales', require('../routes/api.sale'));
 app.use('/api/products', require('../routes/api.product'));
 app.use('/upload', require('../routes/api.upload'));
 
