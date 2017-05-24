@@ -59,7 +59,6 @@ export default class SalesInvoiceController {
                 unitPrice: 0,
                 totalPrice: 0,
             };
-
         this.invoice.invoiceLines.push(newInvoice);
     }
 
@@ -82,7 +81,7 @@ export default class SalesInvoiceController {
         errors.asEnumerable().removeAll();
         //  isSaving = true;
 
-        return this.salesInvoiceApi.create(invoice)
+              return this.salesInvoiceApi.create(invoice)
             .then(result => {
                 logger.success();
                 invoice.id = result.id;
@@ -92,4 +91,7 @@ export default class SalesInvoiceController {
 
 
     }
+
+
+
 }
