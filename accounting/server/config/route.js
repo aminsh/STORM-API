@@ -24,7 +24,7 @@ app.use('/api/products', require('../routes/api.product'));
 app.use('/upload', require('../routes/api.upload'));
 
 
-app.use('/api/v1/sales', require('../external.apis/v1/api.sales'));
+app.use('/api/v1/sales', require('../external.apis/v1/v1.api.sale'));
 
 /* should handled angular routes */
 app.get('*', (req, res) => res.render('index.ejs'));
