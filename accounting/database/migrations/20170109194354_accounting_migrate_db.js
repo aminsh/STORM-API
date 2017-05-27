@@ -9,7 +9,7 @@ exports.up = function(knex, Promise) {
         .createTable('fiscalPeriods', table => {
             table.timestamp('createdAt').defaultTo(knex.fn.now());
             table.timestamp('updatedAt').defaultTo(knex.fn.now());
-            table.increments('id').primary();
+            table.string('id').primary();
             table.string('minDate');
             table.string('maxDate');
             table.boolean('isClosed');
@@ -23,14 +23,14 @@ exports.up = function(knex, Promise) {
         .createTable('banks', table => {
             table.timestamp('createdAt').defaultTo(knex.fn.now());
             table.timestamp('updatedAt').defaultTo(knex.fn.now());
-            table.increments('id').primary();
+            table.string('id').primary();
             table.string('title');
         })
 
         .createTable('detailAccounts', table => {
             table.timestamp('createdAt').defaultTo(knex.fn.now());
             table.timestamp('updatedAt').defaultTo(knex.fn.now());
-            table.increments('id').primary();
+            table.string('id').primary();
             table.string('code');
             table.string('title');
             table.string('description');
@@ -40,7 +40,7 @@ exports.up = function(knex, Promise) {
         .createTable('chequeCategories', table => {
             table.timestamp('createdAt').defaultTo(knex.fn.now());
             table.timestamp('updatedAt').defaultTo(knex.fn.now());
-            table.increments('id').primary();
+            table.string('id').primary();
             table.integer('totalPages');
             table.integer('firstPageNumber');
             table.integer('lastPageNumber');
@@ -51,7 +51,7 @@ exports.up = function(knex, Promise) {
         .createTable('generalLedgerAccounts', table => {
             table.timestamp('createdAt').defaultTo(knex.fn.now());
             table.timestamp('updatedAt').defaultTo(knex.fn.now());
-            table.increments('id').primary();
+            table.string('id').primary();
             table.string('code');
             table.string('title');
             table.string('description');
@@ -63,7 +63,7 @@ exports.up = function(knex, Promise) {
         .createTable('subsidiaryLedgerAccounts', table => {
             table.timestamp('createdAt').defaultTo(knex.fn.now());
             table.timestamp('updatedAt').defaultTo(knex.fn.now());
-            table.increments('id').primary();
+            table.string('id').primary();
             table.string('code');
             table.string('title');
             table.string('description');
@@ -78,14 +78,14 @@ exports.up = function(knex, Promise) {
         .createTable('dimensionCategories', table => {
             table.timestamp('createdAt').defaultTo(knex.fn.now());
             table.timestamp('updatedAt').defaultTo(knex.fn.now());
-            table.increments('id').primary();
+            table.string('id').primary();
             table.string('title');
         })
 
         .createTable('dimensions', table => {
             table.timestamp('createdAt').defaultTo(knex.fn.now());
             table.timestamp('updatedAt').defaultTo(knex.fn.now());
-            table.increments('id').primary();
+            table.string('id').primary();
             table.string('code');
             table.string('title');
             table.string('description');
@@ -95,7 +95,7 @@ exports.up = function(knex, Promise) {
         .createTable('journals', table => {
             table.timestamp('createdAt').defaultTo(knex.fn.now());
             table.timestamp('updatedAt').defaultTo(knex.fn.now());
-            table.increments('id').primary();
+            table.string('id').primary();
             table.integer('temporaryNumber');
             table.string('temporaryDate');
             table.integer('number');
@@ -110,20 +110,20 @@ exports.up = function(knex, Promise) {
         .createTable('tags', table => {
             table.timestamp('createdAt').defaultTo(knex.fn.now());
             table.timestamp('updatedAt').defaultTo(knex.fn.now());
-            table.increments('id').primary();
+            table.string('id').primary();
             table.string('title');
         })
 
         .createTable('journalTags', table => {
             table.timestamp('createdAt').defaultTo(knex.fn.now());
             table.timestamp('updatedAt').defaultTo(knex.fn.now());
-            table.increments('id').primary();
+            table.string('id').primary();
         })
 
         .createTable('journalLines', table => {
             table.timestamp('createdAt').defaultTo(knex.fn.now());
             table.timestamp('updatedAt').defaultTo(knex.fn.now());
-            table.increments('id').primary();
+            table.string('id').primary();
             table.integer('row');
             table.float('debtor',8);
             table.float('creditor',8);
@@ -133,7 +133,7 @@ exports.up = function(knex, Promise) {
         .createTable('journalTemplates', table => {
             table.timestamp('createdAt').defaultTo(knex.fn.now());
             table.timestamp('updatedAt').defaultTo(knex.fn.now());
-            table.increments('id').primary();
+            table.string('id').primary();
             table.string('title');
             table.json('data');
         })
@@ -141,7 +141,7 @@ exports.up = function(knex, Promise) {
         .createTable('cheques', table => {
             table.timestamp('createdAt').defaultTo(knex.fn.now());
             table.timestamp('updatedAt').defaultTo(knex.fn.now());
-            table.increments('id').primary();
+            table.string('id').primary();
             table.integer('number');
             table.string('date');
             table.string('description');

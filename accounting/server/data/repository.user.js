@@ -12,11 +12,14 @@ class UserRepository extends BaseRepository {
 
     findById(id) {
         return this.knex.table('users')
+            .modify(this.modify, this.branchId)
             .where('id', id)
             .first();
     }
 
     create(entity) {
+        super.create(entity);
+
         return this.knex('users').insert(entity);
     }
 }

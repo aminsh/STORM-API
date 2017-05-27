@@ -13,7 +13,9 @@ module.exports = class JournalTemplateQuery extends BaseQuery {
     }
 
     getAll(parameters) {
-        let query = this.knex.select().from('journalTemplates');
+        let query = this.knex.select()
+            .from('journalTemplates')
+            .where('branchId', this.branchId);
         return kendoQueryResolve(query, parameters, view);
     }
 };

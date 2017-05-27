@@ -23,14 +23,16 @@ class JournalConvertor {
                 t,
                 this.getUserId(t.LastUser),
                 this.getPeriodId(t.Year),
-                this.isCompleteJournal(t.ID)))
+                this.isCompleteJournal(t.ID),
+                this.getTagId(t.KindDocumentID)
+            ))
             .toArray();
     }
 
     getUserId(username) {
         let userEnumerable = data.users.asEnumerable();
 
-        return (userEnumerable.any(u=> u.oldUsername == username)
+        return (userEnumerable.any(u => u.oldUsername == username)
             ? data.users.asEnumerable().first(u => u.oldUsername == username)
             : data.users[0]).id;
     }
@@ -52,6 +54,14 @@ class JournalConvertor {
             .remainder;
 
         return remainder != 0;
+    }
+
+    getTagId(KindId) {
+        if ([0, 1].includes(KindId)) return null;
+
+        let tag = data.tags.asEnumerable().singleOrDefault(t => t.referenceId == KindId);
+
+        return (tag) ? tag.id : null;
     }
 }
 

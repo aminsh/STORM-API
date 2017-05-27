@@ -3,10 +3,10 @@ exports.up = function (knex, Promise) {
         .createTable('sales', table => {
             table.timestamp('createdAt').defaultTo(knex.fn.now());
             table.timestamp('updatedAt').defaultTo(knex.fn.now());
-            table.increments('id').primary();
+            table.string('id').primary();
             table.integer('number');
             table.string('date');
-            table.integer('detailAccountId');
+            table.string('detailAccountId');
             table
                 .foreign('detailAccountId')
                 .references('id')
@@ -19,7 +19,7 @@ exports.up = function (knex, Promise) {
         .createTable('products', table => {
             table.timestamp('createdAt').defaultTo(knex.fn.now());
             table.timestamp('updatedAt').defaultTo(knex.fn.now());
-            table.increments('id').primary();
+            table.string('id').primary();
             table.string('title');
             table.string('code');
             table.string('referenceId');
@@ -28,8 +28,8 @@ exports.up = function (knex, Promise) {
         .createTable('saleLines', table => {
             table.timestamp('createdAt').defaultTo(knex.fn.now());
             table.timestamp('updatedAt').defaultTo(knex.fn.now());
-            table.increments('id').primary();
-            table.integer('productId');
+            table.string('id').primary();
+            table.string('productId');
 
             table
                 .foreign('productId')
@@ -37,7 +37,7 @@ exports.up = function (knex, Promise) {
                 .inTable('products')
                 .onDelete('CASCADE');
 
-            table.integer('saleId');
+            table.string('saleId');
 
             table
                 .foreign('saleId')

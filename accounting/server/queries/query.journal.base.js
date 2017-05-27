@@ -30,6 +30,7 @@ module.exports = function (knex, options) {
         .leftJoin('journalLines', 'journals.id', 'journalLines.journalId')
         .leftJoin('cheques', 'journalLines.id', 'cheques.journalLineId')
         .leftJoin('users', 'journals.createdById', 'users.id')
+        .where('journals.branchId', options.branchId)
         .orderBy('number', 'DESC')
         .as('baseJournals');
 };

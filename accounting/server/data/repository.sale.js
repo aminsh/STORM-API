@@ -12,6 +12,7 @@ module.exports = class SaleRepository extends BaseRepository {
     }
 
     create(entity) {
+
         this.entity = entity;
 
         return new Promise((resolve, reject) => {
@@ -37,6 +38,8 @@ module.exports = class SaleRepository extends BaseRepository {
     }
 
     createSale(entity, trx) {
+        super.create(entity);
+
         entity.id = await(this.knex('sales')
             .transacting(trx)
             .returning('id')
@@ -48,6 +51,7 @@ module.exports = class SaleRepository extends BaseRepository {
     createSaleLines(lines, salesId, trx) {
 
         lines.forEach(line => {
+            super.create(line);
             line.saleId = salesId;
         });
 

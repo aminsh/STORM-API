@@ -4,15 +4,15 @@ exports.up = function(knex, Promise) {
       .createTable('detailAccountCenters', table => {
           table.timestamp('createdAt').defaultTo(knex.fn.now());
           table.timestamp('updatedAt').defaultTo(knex.fn.now());
-          table.increments('id').primary();
-          table.integer('subsidiaryLedgerAccountId');
+          table.string('id').primary();
+          table.string('subsidiaryLedgerAccountId');
           table
               .foreign('subsidiaryLedgerAccountId')
               .references('id')
               .inTable('subsidiaryLedgerAccounts')
               .onDelete('CASCADE');
 
-          table.integer('detailAccountId');
+          table.string('detailAccountId');
           table
               .foreign('detailAccountId')
               .references('id')

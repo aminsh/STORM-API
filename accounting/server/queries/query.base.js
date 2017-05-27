@@ -1,10 +1,15 @@
 "use strict";
 
-const knexFactory = require('../services/knex');
+const knex = require('../services/knex');
 
 class BaseQuery {
     constructor(branchId) {
-        this.knex = knexFactory(branchId);
+        this.knex = knex;
+        this.branchId = branchId;
+    }
+
+    modify(queryBuilder, branchId){
+        queryBuilder.where('branchId', branchId);
     }
 }
 

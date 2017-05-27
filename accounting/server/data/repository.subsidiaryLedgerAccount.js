@@ -12,6 +12,7 @@ class SubsidiaryLedgerAccountRepository extends BaseRepository {
 
     findById(id) {
         return this.knex.table('subsidiaryLedgerAccounts')
+            .modify(this.modify, this.branchId)
             .where('id', id)
             .first();
     }
@@ -28,6 +29,8 @@ class SubsidiaryLedgerAccountRepository extends BaseRepository {
     }
 
     create(entity) {
+        super.create(entity);
+
         entity.id = await(this.knex('subsidiaryLedgerAccounts')
             .returning('id')
             .insert(entity))[0];
@@ -37,18 +40,23 @@ class SubsidiaryLedgerAccountRepository extends BaseRepository {
 
     update(entity) {
         return this.knex('subsidiaryLedgerAccounts')
+            .modify(this.modify, this.branchId)
             .where('id', entity.id)
             .update(entity);
     }
 
     remove(id) {
         return this.knex('subsidiaryLedgerAccounts')
+            .modify(this.modify, this.branchId)
             .where('id', id)
             .del();
     }
 
     isUsedOnJournalLines(id){
-        return this.knex.from('journalLines').where('subsidiaryLedgerAccountId', id).first();
+        return this.knex.from('journalLines')
+            .modify(this.modify, this.branchId)
+            .where('subsidiaryLedgerAccountId', id)
+            .first();
     }
 }
 

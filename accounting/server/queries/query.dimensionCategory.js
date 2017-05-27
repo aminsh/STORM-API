@@ -13,12 +13,17 @@ module.exports = class DimensionCategoryQuery extends BaseQuery {
     }
 
     getAll(parameters) {
-        let query = this.knex.select().from('dimensionCategories');
+        let query = this.knex.select()
+            .from('dimensionCategories')
+            .where('branchId', this.branchId);
         return kendoQueryResolve(query, parameters, view);
     }
 
     getById(id) {
-        let category = await(this.knex.table('dimensionCategories').where('id', id).first());
+        let category = await(
+            this.knex.table('dimensionCategories')
+                .where('branchId', this.branchId)
+                .andWhere('id', id).first());
         return view(category);
     }
 };
