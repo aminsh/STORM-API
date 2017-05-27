@@ -7,6 +7,7 @@
                 <div class="col-md-2"></div>
             </div>
             <form name="form" novalidate class="">
+
                 <div class="row col-md-12">
                     <dev-tag-button
                             ng-click="model.saveInvoice(form)"
@@ -15,62 +16,85 @@
                             is-waiting="isSaving"
                             style-type="primary"
                             title="{{'Save' | translate}}"></dev-tag-button>
-                    <div class="row" style="margin-bottom: 20px;">
+                </div>
 
-                        <div class="form-group">
-                            <label class="label-control">{{'Temporary number' | translate}}</label>
-                            <dev-tag-numeric
-                                    ng-model="model.invoice.number"
-                                    style="width: 100%"
-                                    name="temporaryNumber"
-                                    required></dev-tag-numeric>
-                        </div>
+                <div class="row" style="margin-bottom: 20px;">
 
-                        <div class="form-group">
-                            <label class="label-control">{{'Temporary date' | translate}}</label>
-                            <dev-tag-datepicker
-                                    ng-model="model.invoice.date"
-                                    name="temporaryDate"
-                                    required></dev-tag-datepicker>
+                    <div class="col-md-6">
 
-                            <div ng-messages="form.temporaryDate.$error" ng-if="form.temporaryDate.$dirty">
-                                <label ng-message="required" class="error">{{'This field is required'|translate}}</label>
+                        <div class="row" style="margin-top: 20px">
+                            <div class="col-md-2" style="text-align: left;margin-top: 7px">
+                                <label class="label-control">{{'Temporary number' | translate}}</label>
+                            </div>
+                            <div class="col-md-4">
+                                <dev-tag-numeric
+                                        ng-model="model.invoice.number"
+                                        style="width: 100%"
+                                        name="temporaryNumber"
+                                        required></dev-tag-numeric>
+
+                                <div ng-messages="form.temporaryNumber.$error" ng-if="form.temporaryNumber.$dirty">
+                                    <label ng-message="required" class="error">
+                                        {{'This field is required'|translate}}</label>
+                                </div>
+                            </div>
+                            <div class="col-md-2" style="text-align: left;margin-top: 7px">
+                                <label class="label-control">{{'Temporary date' | translate}}</label>
+                            </div>
+                            <div class="col-md-4">
+                                <dev-tag-datepicker
+                                        ng-model="model.invoice.date"
+                                        name="temporaryDate"
+                                        required></dev-tag-datepicker>
+
+                                <div ng-messages="form.temporaryDate.$error" ng-if="form.temporaryDate.$dirty">
+                                    <label ng-message="required" class="error">{{'This field is
+                                        required'|translate}}</label>
+                                </div>
                             </div>
                         </div>
 
-                        <div class="form-group">
-                            <label class="label-control">{{'Detail Account' | translate}}</label>
-                            <dev-tag-combo-box
-                                    name="detailAccountId"
-                                    k-placeholder="{{'Select ...'|translate}}"
-                                    k-data-value-field="id"
-                                    k-data-text-field="display"
-                                    k-data-source="model.detailAccount"
-                                    ng-model="model.invoice.detailAccountId"></dev-tag-combo-box>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="label-control">{{'Description' | translate}}</label>
-                            <textarea type="text" class="form-control" ng-model="model.invoice.description"
-                                      name="description" style="width: 100%;height: 90px"></textarea>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-12">
-                                <i class="fa fa-info-circle fa-2x text-success"
-                                   tooltip-placement="left"></i>
-
-                                <dev-tag-content-body is-loading="model.isInvoiceSaleLoading">
-                                    <div style="padding: 10px"
-                                         ng-include="'partials/sales/invoiceLines-template.html'"></div>
-                                </dev-tag-content-body>
+                        <div class="row" style="margin-top: 10px">
+                            <div class="col-md-2" style="text-align: left;margin-top: 7px">
+                                <label class="label-control">{{'Detail account' | translate}}</label>
+                            </div>
+                            <div class="col-md-10">
+                                <dev-tag-combo-box
+                                        name="detailAccountId"
+                                        k-placeholder="{{'Select ...'|translate}}"
+                                        k-data-value-field="id"
+                                        k-data-text-field="display"
+                                        k-data-source="model.detailAccount"
+                                        ng-model="model.invoice.detailAccountId"></dev-tag-combo-box>
 
                             </div>
-
-
                         </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="row" style="margin-top: 10px">
+                            <div class="col-md-3" style="text-align: left;margin-top: 7px">
+                                <label class="label-control">{{'Description' | translate}}</label>
+                            </div>
+                            <div class="col-md-9">
+                         <textarea type="text" class="form-control" ng-model="model.invoice.description"
+                                   name="description" style="width: 100%;height: 90px"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                       <dev-tag-content-body is-loading="model.isInvoiceSaleLoading">
+                            <div style="padding: 10px"
+                                 ng-include="'partials/sales/invoiceLines-template.html'"></div>
+                        </dev-tag-content-body>
 
                     </div>
+
+
                 </div>
             </form>
         </div>
