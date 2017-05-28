@@ -5,9 +5,7 @@ const knex = require('../../services/knex'),
     await = require('asyncawait/await'),
     Guid = require('../../services/shared').utility.Guid;
 
-module.exports = class {
-    constructor() {
-    }
+class BranchRepository {
 
     create(branch) {
         if (!branch.id)
@@ -22,6 +20,10 @@ module.exports = class {
 
     remove(id) {
         return knex('branches').where('id', id).del();
+    }
+
+    getById(id){
+        return knex.select('*').from('branches').where('id',id).first();
     }
 
     getMemeber(memberId) {
@@ -46,4 +48,6 @@ module.exports = class {
     getBranchId(userId) {
         return knex('userInBranches').where('userId', userId).first();
     }
-};
+}
+
+module.exports = new BranchRepository();

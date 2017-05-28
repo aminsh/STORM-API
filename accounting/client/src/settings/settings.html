@@ -1,0 +1,15 @@
+<dev-tag-content dev-attr-title="{{'Settings'|translate}}">
+    <div class="row">
+        <div class="col-"></div>
+    </div>
+    <dev-tag-button
+            ng-click="model.getApiKey()"
+            style-type="success"
+            title="{{'Api key' | translate}}"></dev-tag-button>
+
+    <textarea ng-model="model.apiKey"
+              ng-show="model.apiKey != ''"
+              ng-disabled="true"
+              class="form-control"
+              style="width: 500px; height: 250px;cursor: text"></textarea>
+</dev-tag-content>

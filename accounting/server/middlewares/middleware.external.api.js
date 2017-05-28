@@ -1,7 +1,8 @@
 "use strict";
 
 const jwt = require('jsonwebtoken'),
-    app = require('../config/express');
+    app = require('../config/express'),
+    superSecret = require('../services/cryptoService').superSecret;
 
 module.exports = (req, res, next) => {
     const token = req.body.token || req.query.token || req.headers['x-access-token'],
@@ -14,7 +15,7 @@ module.exports = (req, res, next) => {
     if (!token)
         return res.status(403).send(noTokenProvidedMessage);
 
-    jwt.verify(token, app.get('superSecret'), (err, decode) => {
+    jwt.verify(token, superSecret, (err, decode) => {
         if(err)
             return res.status(403).send(noTokenProvidedMessage);
 

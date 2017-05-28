@@ -13,4 +13,8 @@ export default class {
     getCurrent(){
         return this.apiPromise.get('/api/branches/current');
     }
+
+    getApiKey(){
+        return this.apiPromise.get('/api/branches/current/api-key');
+    }
 }

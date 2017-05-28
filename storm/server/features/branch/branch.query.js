@@ -10,23 +10,23 @@ class BranchQuery {
     }
 
     getById(id) {
-        return knex.select('id', 'name', 'logo', 'accConnection')
+        return knex.select('id', 'name', 'logo', 'apiKey')
             .from('branches')
             .where('id', id).first();
     }
 
     getAll() {
-        return knex.select('id', 'name', 'logo', 'accConnection').from('branches');
+        return knex.select('id', 'name', 'logo', 'apiKey').from('branches');
     }
 
     getBranchesByUser(userId) {
-        let branch = await(knex.select('id', 'name', 'logo', 'accConnection')
+        let branch = await(knex.select('id', 'name', 'logo', 'apiKey')
                 .from('branches')
                 .where('ownerId', userId)),
             branchIds = await(knex.select('branchId')
                 .from('userInBranches')
                 .where('userId', userId)).asEnumerable().select(b => b.branchId).toArray(),
-            branches = await(knex.select('id', 'name', 'logo', 'accConnection')
+            branches = await(knex.select('id', 'name', 'logo', 'apiKey')
                 .from('branches')
                 .whereIn('id', branchIds));
 

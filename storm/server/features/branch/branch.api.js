@@ -4,8 +4,11 @@ const express = require('express'),
     router = express.Router(),
     async = require('asyncawait/async'),
     await = require('asyncawait/await'),
+    jwt = require('jsonwebtoken'),
     branchRepository = new require('./branch.repository'),
-    branchQuery = require('./branch.query');
+    userRepository = new (require('../user/user.repository')),
+    branchQuery = require('./branch.query'),
+    superSecret = require('../../../../shared/services/cryptoService').superSecret;
 
 
 router.route('/').post(async((req, res) => {
@@ -19,6 +22,22 @@ router.route('/').post(async((req, res) => {
 router.route('/current').get(async((req, res) => {
     let currentBranch = await(branchQuery.getById(req.cookies['branch-id']));
     res.json(currentBranch);
+}));
+
+router.route('/current/api-key').get(async((req, res) => {
+    let currentBranch = await(branchRepository.getById(req.cookies['branch-id'])),
+        apiKey;
+
+    if (currentBranch.apiKey)
+        apiKey = currentBranch.apiKey;
+    else {
+        let owner = await(userRepository.getById(currentBranch.ownerId));
+        apiKey = jwt.sign({branchId: currentBranch.id, user: {email: owner.email, id: owner.id}}, superSecret);
+
+        await(branchRepository.update(currentBranch.id, {apiKey}));
+    }
+
+    res.json({apiKey});
 }));
 
 router.route('/my').get(async((req, res) => {
