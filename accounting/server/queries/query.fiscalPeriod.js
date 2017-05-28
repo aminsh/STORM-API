@@ -14,12 +14,14 @@ module.exports = class FiscalPeriodQuery extends BaseQuery {
     }
 
     getAll(parameters) {
-        let knex = this.knex;
+        let knex = this.knex,
+            branchId = this.branchId;
 
         let query = knex.select().from(function () {
             this.select(knex.raw('*,\'{0} \' || "minDate" || \' {1} \' || "maxDate" as "display"'
                 .format(translateService('From'), translateService('To'))))
                 .from('fiscalPeriods')
+                .where('branchId', branchId)
                 .as('baseFiscalPeriod');
         });
 
@@ -27,7 +29,11 @@ module.exports = class FiscalPeriodQuery extends BaseQuery {
     }
 
     getMaxId() {
-        let result = await(this.knex.table('fiscalPeriods').max('id').first());
+        let result = await(
+            this.knex.table('fiscalPeriods')
+                .where('branchId', this.branchId)
+                .max('id')
+                .first());
         return result.max;
     }
 };

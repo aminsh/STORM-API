@@ -13,7 +13,9 @@ module.exports = class TagQuery extends BaseQuery {
     }
 
     getAll(parameters) {
-        let query = this.knex.select().from('tags');
+        let query = this.knex.select()
+            .from('tags')
+            .where('branchId', this.branchId);
         return kendoQueryResolve(query, parameters, view)
     }
 };

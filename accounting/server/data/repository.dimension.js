@@ -12,12 +12,14 @@ class DimensionRepository extends BaseRepository {
 
     findById(id) {
         return this.knex.table('dimensions')
+            .modify(this.modify, this.branchId)
             .where('id', id)
             .first();
     }
 
     findByCode(code, dimensionCategoryId, notEqualId) {
         let query = this.knex.table('dimensions')
+            .modify(this.modify, this.branchId)
             .where('code', code)
             .andWhere('dimensionCategoryId', dimensionCategoryId);
 
@@ -28,6 +30,8 @@ class DimensionRepository extends BaseRepository {
     }
 
     create(entity) {
+        super.create(entity);
+
         entity.id = await(this.knex('dimensions')
             .returning('id')
             .insert(entity))[0];
@@ -37,12 +41,14 @@ class DimensionRepository extends BaseRepository {
 
     update(entity) {
         return this.knex('dimensions')
+            .modify(this.modify, this.branchId)
             .where('id', entity.id)
             .update(entity);
     }
 
     remove(id) {
         return this.knex('dimensions')
+            .modify(this.modify, this.branchId)
             .where('id', id)
             .del();
     }

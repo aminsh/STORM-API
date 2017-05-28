@@ -4,7 +4,7 @@ let async = require('asyncawait/async'),
     await = require('asyncawait/await'),
     BaseRepository = require('./repository.base'),
     JournalLineRepository = require('./repository.journalLine');
-    Promise = require('promise');
+Promise = require('promise');
 
 class JournalRepository extends BaseRepository {
     constructor(branchId) {
@@ -15,6 +15,7 @@ class JournalRepository extends BaseRepository {
 
     findByNumberExpectId(notEqualId, number, periodId) {
         return this.knex.table('journals')
+            .modify(this.modify, this.branchId)
             .where('id', '!=', notEqualId)
             .andWhere('periodId', periodId)
             .andWhere('temporaryNumber', number)
@@ -23,6 +24,7 @@ class JournalRepository extends BaseRepository {
 
     findByTemporaryNumber(number, periodId) {
         return this.knex.table('journals')
+            .modify(this.modify, this.branchId)
             .where('periodId', periodId)
             .andWhere('temporaryNumber', number)
             .first();
@@ -30,17 +32,21 @@ class JournalRepository extends BaseRepository {
 
     findById(id) {
         return this.knex.table('journals')
+            .modify(this.modify, this.branchId)
             .where('id', id)
             .first();
     }
 
     maxTemporaryNumber(periodId) {
         return this.knex.table('journals')
+            .modify(this.modify, this.branchId)
             .where('periodId', periodId)
             .max('temporaryNumber');
     }
 
     create(entity) {
+        super.create(entity);
+
         entity.id = await(this.knex('journals')
             .returning('id')
             .insert(entity));
@@ -50,12 +56,14 @@ class JournalRepository extends BaseRepository {
 
     update(entity) {
         return this.knex('journals')
+            .modify(this.modify, this.branchId)
             .where('id', entity.id)
             .update(entity);
     }
 
     remove(id) {
         return this.knex('journals')
+            .modify(this.modify, this.branchId)
             .where('id', id)
             .del();
     }
@@ -65,6 +73,7 @@ class JournalRepository extends BaseRepository {
             isInComplete = false,
             hasAnyLines = await(knex
                 .from('journalLines')
+                .modify(this.modify, this.branchId)
                 .where('journalId', id)
                 .first());
 
@@ -74,6 +83,7 @@ class JournalRepository extends BaseRepository {
 
                 remainder = await(this.knex.table('journalLines')
                     .select(exp)
+                    .modify(this.modify, this.branchId)
                     .where('journalId', id)
                     .first()).remainder;
 
@@ -83,6 +93,7 @@ class JournalRepository extends BaseRepository {
         }
 
         await(knex('journals')
+            .modify(this.modify, this.branchId)
             .where('id', id)
             .update({isInComplete}));
 
@@ -90,10 +101,12 @@ class JournalRepository extends BaseRepository {
     }
 
     updateTags(id, tagIds) {
-        tagIds = tagIds.asEnumerable().select(t => parseInt(t)).toArray();
+        tagIds = tagIds.asEnumerable()
+            .select(t => parseInt(t)).toArray();
 
         let knex = this.knex,
             journalTagIds = (await(knex.select('tagId')
+                .modify(this.modify, this.branchId)
                 .from('journalTags')
                 .where('journalId', id)) || []).asEnumerable().select(t => t.tagId).toArray(),
             notExistInJournalTag = tagIds.asEnumerable()
@@ -104,7 +117,9 @@ class JournalRepository extends BaseRepository {
                 .toArray();
 
         if (notExistInTag.length)
-            await(knex.table('journalTags').whereIn('journalId', notExistInTag).del());
+            await(knex.table('journalTags')
+                .modify(this.modify, this.branchId)
+                .whereIn('journalId', notExistInTag).del());
 
         if (notExistInJournalTag.length) {
             let addedTags = notExistInJournalTag.asEnumerable()
@@ -114,12 +129,17 @@ class JournalRepository extends BaseRepository {
                 }))
                 .toArray();
 
+            addedTags.forEach(t => super.create(t));
+
             await(knex('journalTags').insert(addedTags));
         }
     }
 
     batchCreate(journalLines, journal) {
+        super.create(journal);
+
         let knex = this.knex,
+            baseCreate = super.create,
             journalLineRepository = new JournalLineRepository(this.branchId);
 
         return new Promise((resolve, reject) => {
@@ -130,8 +150,13 @@ class JournalRepository extends BaseRepository {
                         .returning('id')
                         .insert(journal))[0];
 
-                    journalLines.forEach(line => line.journalId = id);
-                    await(knex('journalLines').transacting(trans).insert(journalLines));
+                    journalLines.forEach(line => {
+                        baseCreate(line);
+                        line.journalId = id;
+                    });
+                    await(knex('journalLines')
+                        .transacting(trans)
+                        .insert(journalLines));
 
                     trans.commit();
                     resolve(id);
@@ -146,7 +171,8 @@ class JournalRepository extends BaseRepository {
     }
 
     batchUpdate(createJournalLines, updateJournalLine, deleteJournalLine, journal) {
-        let knex = this.knex;
+        let knex = this.knex,
+            baseCreate = super.create;
 
         return new Promise((resolve, reject) => {
             knex.transaction(async(function (trx) {
@@ -156,32 +182,35 @@ class JournalRepository extends BaseRepository {
                         .where('id', journal.id)
                         .update(journal));
 
-                    if(createJournalLines.length != 0) {
-                        createJournalLines.forEach(jl => jl.journalId = journal.id);
+                    if (createJournalLines.length != 0) {
+                        createJournalLines.forEach(jl => {
+                            baseCreate(jl);
+                            jl.journalId = journal.id
+                        });
                         await(knex('journalLines')
                             .transacting(trx)
                             .insert(createJournalLines));
                     }
 
-                   if(updateJournalLine.length != 0) {
-                       updateJournalLine.forEach(
-                           journalLine => {
-                               await(knex('journalLines')
-                                   .transacting(trx)
-                                   .where('id', journalLine.id)
-                                   .update(journalLine))
-                           }
-                       );
-                   }
+                    if (updateJournalLine.length != 0) {
+                        updateJournalLine.forEach(
+                            journalLine => {
+                                await(knex('journalLines')
+                                    .transacting(trx)
+                                    .where('id', journalLine.id)
+                                    .update(journalLine))
+                            }
+                        );
+                    }
 
-                   if (deleteJournalLine.length != 0) {
-                       await(knex('journalLines')
-                           .transacting(trx)
-                           .whereIn('id', deleteJournalLine)
-                           .del());
-                   }
+                    if (deleteJournalLine.length != 0) {
+                        await(knex('journalLines')
+                            .transacting(trx)
+                            .whereIn('id', deleteJournalLine)
+                            .del());
+                    }
 
-                   // trx.commit();
+                    // trx.commit();
                     resolve();
                 }
                 catch (e) {

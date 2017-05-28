@@ -12,18 +12,23 @@ class ChequeCategoryRepository extends BaseRepository {
 
     findById(id) {
         return this.knex.table('chequeCategories')
+            .modify(this.modify, this.branchId)
             .where('id', id)
             .first();
     }
 
     hasCheque(id){
         return  this.knex('cheques')
+            .modify(this.modify, this.branchId)
             .where('chequeCategoryId', id)
             .first();
     }
 
     create(entity) {
+        super.create(entity);
+
         let knex = this.knex,
+            createBase = super.create,
             handler = (resolve, reject) => {
                 knex.transaction(async(trx => {
                     try {
@@ -36,7 +41,10 @@ class ChequeCategoryRepository extends BaseRepository {
                             .returning('id')
                             .insert(entity));
 
-                        cheques.forEach(c => c.chequeCategoryId = ids[0]);
+                        cheques.forEach(c => {
+                            createBase(c);
+                            c.chequeCategoryId = ids[0];
+                        });
 
                         await(knex('cheques')
                             .transacting(trx)
@@ -60,12 +68,14 @@ class ChequeCategoryRepository extends BaseRepository {
 
     update(entity) {
         return this.knex('chequeCategories')
+            .modify(this.modify, this.branchId)
             .where('id', entity.id)
             .update(entity);
     }
 
     remove(id) {
         return this.knex('chequeCategories')
+            .modify(this.modify, this.branchId)
             .where('id', id)
             .del();
     }

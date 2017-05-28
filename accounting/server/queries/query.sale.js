@@ -15,11 +15,13 @@ module.exports = class SaleQuery extends BaseQuery {
 
     getAll(parameters) {
         let knex = this.knex,
+            branchId = this.branchId,
 
             query = knex.select().table(function () {
                 this.select('*', knex.raw('"detailAccounts"."title" as "detailAccountDisplay"'))
                     .from('sales')
                     .leftJoin('detailAccounts', 'sales.detailAccountId', 'detailAccounts.id')
+                    .where('sales.branchId', branchId)
                     .as('base');
             });
 
@@ -28,11 +30,13 @@ module.exports = class SaleQuery extends BaseQuery {
 
     getAllLines(saleId, parameters) {
         let knex = this.knex,
+            branchId = this.branchId,
 
             query = knex.select('*').table(function () {
                 this.select('*', knex.raw('"products"."title" as "productTitle"'))
                     .from('saleLines')
                     .leftJoin('products', 'saleLines.productId', 'products.id')
+                    .where('saleLines.branchId', this.branchId)
                     .where('saleId', saleId)
             });
 

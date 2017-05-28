@@ -4,13 +4,14 @@ const Base = require('./base'),
     _util = require('../_util');
 
 class Journal extends Base {
-    constructor(model, userId, periodId, isInComplete) {
+    constructor(model, userId, periodId, isInComplete, tagId) {
 
         if (!(userId && periodId && isInComplete))
             new Error('PeriodId or UserId or IsInComplete has no value');
         super();
 
-        this.id = model.ID;
+        this.id = _util.newGuid();
+        this.referenceId = model.ID;
         this.description = model.description;
         this.number = model.doc_no;
         this.date = _util.date(model.doc_date);
@@ -22,7 +23,7 @@ class Journal extends Base {
         this.createdById = userId;
         this.periodId = periodId;
 
-        this.tagId = [0,1].includes(model.KindDocumentID)? null : model.KindDocumentID;
+        this.tagId = tagId;
     }
 
     getStatus(item) {

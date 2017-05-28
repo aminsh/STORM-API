@@ -16,11 +16,13 @@ module.exports = class ReportQueryAccounts extends BaseQuery {
         description,
         groupingType,
         CASE WHEN code ISNULL THEN title ELSE title||' ${translate('Code')} ' ||code END AS display`))
-            .from('generalLedgerAccounts');
+            .from('generalLedgerAccounts')
+            .where('branchId', this.branchId);
     };
 
     getSubsidiaryLedgerAccounts() {
-        let knex = this.knex;
+        let knex = this.knex,
+            branchId = this.branchId;
 
         let subsidiaryLedgerAccountsValues = `"subsidiaryLedgerAccounts".code as "subsidiaryCode",
             "subsidiaryLedgerAccounts".title as "subsidiaryTitle",
@@ -44,6 +46,7 @@ module.exports = class ReportQueryAccounts extends BaseQuery {
         return knex.select().from(function () {
             this.select(knex.raw(subsidiaryLedgerAccountsValues))
                 .from('subsidiaryLedgerAccounts')
+                .where('subsidiaryLedgerAccounts.branchId', branchId)
                 .innerJoin('generalLedgerAccounts', 'generalLedgerAccounts.id', 'subsidiaryLedgerAccounts.generalLedgerAccountId')
                 .as('generalLedgerAccount')
         });
@@ -55,7 +58,8 @@ module.exports = class ReportQueryAccounts extends BaseQuery {
         title, 
         description,
         CASE WHEN code ISNULL THEN title ELSE title||' ${translate('Code')} ' ||code END AS display`))
-            .from('detailAccounts');
+            .from('detailAccounts')
+            .where('branchId', this.branchId);
     };
 
 }

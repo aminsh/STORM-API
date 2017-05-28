@@ -11,11 +11,15 @@ class GeneralLedgerAccountRepository extends BaseRepository {
     }
 
     findById(id) {
-        let generalLedgerAccount = await(this.knex.table('generalLedgerAccounts')
+        let generalLedgerAccount = await(
+            this.knex.table('generalLedgerAccounts')
+                .modify(this.modify, this.branchId)
                 .where('id', id)
                 .first()),
-            subsidiaryLedgerAccounts = await(this.knex.select().from('subsidiaryLedgerAccounts')
-                .where('generalLedgerAccountId', id));
+            subsidiaryLedgerAccounts = await(
+                this.knex.select().from('subsidiaryLedgerAccounts')
+                    .modify(this.modify, this.branchId)
+                    .where('generalLedgerAccountId', id));
 
         generalLedgerAccount.subsidiaryLedgerAccounts = subsidiaryLedgerAccounts;
 
@@ -24,6 +28,7 @@ class GeneralLedgerAccountRepository extends BaseRepository {
 
     findByCode(code, notEqualId) {
         let query = this.knex.table('generalLedgerAccounts')
+            .modify(this.modify, this.branchId)
             .where('code', code);
 
         if (notEqualId)
@@ -33,6 +38,8 @@ class GeneralLedgerAccountRepository extends BaseRepository {
     }
 
     create(entity) {
+        super.create(entity);
+
         entity.id = await(this.knex('generalLedgerAccounts')
             .returning('id')
             .insert(entity))[0];
@@ -42,12 +49,14 @@ class GeneralLedgerAccountRepository extends BaseRepository {
 
     update(entity) {
         return this.knex('generalLedgerAccounts')
+            .modify(this.modify, this.branchId)
             .where('id', entity.id)
             .update(entity);
     }
 
     remove(id) {
         return this.knex('generalLedgerAccounts')
+            .modify(this.modify, this.branchId)
             .where('id', id)
             .del();
     }

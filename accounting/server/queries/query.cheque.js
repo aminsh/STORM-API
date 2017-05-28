@@ -14,9 +14,11 @@ module.exports = class ChequeQuery extends BaseQuery {
     }
 
     getChequesByCategory(categoryId, parameters) {
-        let query = this.knex.select().from(function () {
+        let branchId = this.branchId,
+            query = this.knex.select().from(function () {
             this.select().from('cheques')
-                .where('chequeCategoryId', categoryId)
+                .where('branchId', branchId)
+                .andWhere('chequeCategoryId', categoryId)
                 .orderBy('number')
                 .as('baseCheques');
         }).as('baseCheques');
@@ -25,7 +27,10 @@ module.exports = class ChequeQuery extends BaseQuery {
     }
 
     getById(id) {
-        let cheque = await(this.knex.table('cheques').where('id', id).first());
+        let cheque = await(this.knex.table('cheques')
+            .where('branchId', this.branchId)
+            .where('id', id)
+            .first());
         return view(cheque);
     }
 
@@ -36,7 +41,8 @@ module.exports = class ChequeQuery extends BaseQuery {
             'chequeCategories.receivedOn')
             .from('cheques')
             .leftJoin('chequeCategories', 'cheques.chequeCategoryId', 'chequeCategories.id')
-            .where('cheques.status', 'White')
+            .where('cheques.branchId', this.branchId)
+            .andWhere('cheques.status', 'White')
             .map(row => ({
                 id: row.id,
                 number: row.number,
@@ -48,6 +54,9 @@ module.exports = class ChequeQuery extends BaseQuery {
     }
 
     getUsedCheques() {
-        return this.knex.select('*').from('cheques').andWhere('status', 'Used');
+        return this.knex.select('*')
+            .from('cheques')
+            .where('branchId', this.branchId)
+            .andWhere('status', 'Used');
     }
 };

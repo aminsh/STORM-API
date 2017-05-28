@@ -12,17 +12,21 @@ module.exports = class ProductRepository extends BaseRepository {
 
     findById(id){
         return this.knex.table('products')
+            .modify(this.modify, this.branchId)
             .where('id', id)
             .first();
     }
 
     findByReferenceId(referenceId){
         return this.knex.table('products')
+            .modify(this.modify, this.branchId)
             .where('referenceId', referenceId)
             .first();
     }
 
     create(entity){
+        super.create(entity);
+
         entity.id = await(
             this.knex('products')
                 .returning('id')
@@ -32,10 +36,14 @@ module.exports = class ProductRepository extends BaseRepository {
     }
 
     update(id, entity){
-        return this.knex('products').where('id', id).update(entity);
+        return this.knex('products')
+            .modify(this.modify, this.branchId)
+            .where('id', id).update(entity);
     }
 
     remove(id){
-        return this.knex('products').where('id', id).del();
+        return this.knex('products')
+            .modify(this.modify, this.branchId)
+            .where('id', id).del();
     }
 };

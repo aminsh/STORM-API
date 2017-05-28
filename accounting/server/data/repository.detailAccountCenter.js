@@ -11,7 +11,9 @@ class DetailAccountCenterRepository extends BaseRepository {
     }
 
     findById(id){
-        return this.knex.table('detailAccountCenters').where('id', id).first();
+        return this.knex.table('detailAccountCenters')
+            .modify(this.modify, this.branchId)
+            .where('id', id).first();
     }
 
     create(entity) {
@@ -26,12 +28,14 @@ class DetailAccountCenterRepository extends BaseRepository {
 
     update(entity) {
         return this.knex('detailAccountCenters')
+            .modify(this.modify, this.branchId)
             .where('id', entity.id)
             .update(entity);
     }
 
     remove(id) {
         return this.knex('detailAccountCenters')
+            .modify(this.modify, this.branchId)
             .where('id', id)
             .del();
     }

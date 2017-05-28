@@ -13,7 +13,8 @@ module.exports = class SubsidiaryLedgerAccountQuery extends BaseQuery {
     }
 
     getAll(parameters) {
-        let knex = this.knex;
+        let knex = this.knex,
+            branchId = this.branchId;
         let query = knex.select().from(function () {
             this.select(
                 knex.raw('"subsidiaryLedgerAccounts".*'),
@@ -23,6 +24,7 @@ module.exports = class SubsidiaryLedgerAccountQuery extends BaseQuery {
             )
                 .from('subsidiaryLedgerAccounts')
                 .leftJoin('generalLedgerAccounts', 'generalLedgerAccounts.id', 'subsidiaryLedgerAccounts.generalLedgerAccountId')
+                .where('branchId', branchId)
                 .as('baseSubsidiaryLedgerAccounts');
         }).as('baseSubsidiaryLedgerAccounts');
 
@@ -30,7 +32,9 @@ module.exports = class SubsidiaryLedgerAccountQuery extends BaseQuery {
     }
 
     getAllByGeneralLedgerAccount(generalLedgerAccountId, parameters) {
-        let knex = this.knex;
+        let knex = this.knex,
+            branchId = this.branchId;
+
         let query = knex.select().from(function () {
             let selectExp = '"subsidiaryLedgerAccounts".*,' +
                 '"subsidiaryLedgerAccounts".code || \' \' || "subsidiaryLedgerAccounts".title as "display"';
@@ -38,6 +42,7 @@ module.exports = class SubsidiaryLedgerAccountQuery extends BaseQuery {
             this.select(knex.raw(selectExp))
                 .from('subsidiaryLedgerAccounts')
                 .leftJoin('generalLedgerAccounts', 'generalLedgerAccounts.id', 'subsidiaryLedgerAccounts.generalLedgerAccountId')
+                .where('branchId', branchId)
                 .where('generalLedgerAccountId', generalLedgerAccountId)
                 .as('baseSubsidiaryLedgerAccounts');
         }).as('baseSubsidiaryLedgerAccounts');
@@ -46,7 +51,10 @@ module.exports = class SubsidiaryLedgerAccountQuery extends BaseQuery {
     }
 
     getById(id) {
-        let subsidiaryLedgerAccount = await(this.knex.table('subsidiaryLedgerAccounts').where('id', id).first());
+        let subsidiaryLedgerAccount = await(
+            this.knex.table('subsidiaryLedgerAccounts')
+                .where('branchId', this.branchId)
+                .where('id', id).first());
         return view(subsidiaryLedgerAccount);
     }
 };

@@ -13,17 +13,25 @@ module.exports = class GeneralLedgerAccountQuery extends BaseQuery {
     }
 
     getAll(parameters) {
-        let knex = this.knex;
+        let knex = this.knex,
+            branchId = this.branchId;
+
         let query = knex.select().from(function () {
             this.select(knex.raw("*,code || ' ' || title as display"))
-                .from('generalLedgerAccounts').as('baseGeneralLedgerAccounts');
+                .from('generalLedgerAccounts')
+                .where('branchId', branchId)
+                .as('baseGeneralLedgerAccounts');
         }).as('baseGeneralLedgerAccounts');
 
         return kendoQueryResolve(query, parameters, view);
     }
 
     getById(id) {
-        let generalLedgerAccount = await(this.knex.table('generalLedgerAccounts').where('id', id).first());
+        let generalLedgerAccount = await(
+            this.knex.table('generalLedgerAccounts')
+                .where('branchId', this.branchId)
+                .andWhere('id', id)
+                .first());
         return view(generalLedgerAccount);
     }
 };
