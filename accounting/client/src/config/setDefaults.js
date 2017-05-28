@@ -37,7 +37,7 @@ export default function ($rootScope,
                     .then(result => $rootScope.branch = result);
             }
 
-            if (!eval(fiscalPeriodId))
+            if (!fiscalPeriodId)
                 return toState.controller != 'createFiscalPeriodController'
                     && goToCreateFiscalPeriod();
             else

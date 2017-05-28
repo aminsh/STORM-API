@@ -13,7 +13,7 @@ const path = require('path'),
     db = env == 'development'
         ? {
             client: 'pg',
-            connection: 'postgres://postgres:P@ssw0rd@localhost:5432/dbAcc',
+            connection: 'postgres://postgres:P@ssw0rd@localhost:5432/dbAccounting',
             debug: true
         } : {
             client: 'pg',

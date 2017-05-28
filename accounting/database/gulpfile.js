@@ -184,4 +184,50 @@ gulp.task('rest-primary-key', () => {
 
 });
 
+gulp.task('set-branch-id', () => {
+    const config = {
+            user: 'postgres',
+            password: 'P@ssw0rd',
+            host: 'localhost',
+            port: '5432',
+            database: 'dbAcc',
+            ssl: true
+        },
+        tables = [
+            'chequeCategories',
+            'cheques',
+            'detailAccounts',
+            'dimensions',
+            'fiscalPeriods',
+            'generalLedgerAccounts',
+            'journalLines',
+            'journalTemplates',
+            'journals',
+            'subsidiaryLedgerAccounts',
+            'tags'
+        ],
+        pool = new pg.Pool(config);
+
+    pool.connect((err, client, done) => {
+        let command = tables.asEnumerable()
+            .select(t => `update "${t}" set "branchId" = '${argv.branchId}'`)
+            .toArray()
+            .join(';');
+
+        client.query(command, function (err, result) {
+            if (err)
+                Util.log(Util.colors.red(err.message));
+
+            Util.log(Util.colors.green('command ran successfully'));
+            process.exit();
+        });
+    });
+
+});
+
+
+
+
+
+
 

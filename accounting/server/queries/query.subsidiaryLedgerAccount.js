@@ -24,7 +24,7 @@ module.exports = class SubsidiaryLedgerAccountQuery extends BaseQuery {
             )
                 .from('subsidiaryLedgerAccounts')
                 .leftJoin('generalLedgerAccounts', 'generalLedgerAccounts.id', 'subsidiaryLedgerAccounts.generalLedgerAccountId')
-                .where('branchId', branchId)
+                .where('subsidiaryLedgerAccounts.branchId', branchId)
                 .as('baseSubsidiaryLedgerAccounts');
         }).as('baseSubsidiaryLedgerAccounts');
 
@@ -42,7 +42,7 @@ module.exports = class SubsidiaryLedgerAccountQuery extends BaseQuery {
             this.select(knex.raw(selectExp))
                 .from('subsidiaryLedgerAccounts')
                 .leftJoin('generalLedgerAccounts', 'generalLedgerAccounts.id', 'subsidiaryLedgerAccounts.generalLedgerAccountId')
-                .where('branchId', branchId)
+                .where('subsidiaryLedgerAccounts.branchId', branchId)
                 .where('generalLedgerAccountId', generalLedgerAccountId)
                 .as('baseSubsidiaryLedgerAccounts');
         }).as('baseSubsidiaryLedgerAccounts');
