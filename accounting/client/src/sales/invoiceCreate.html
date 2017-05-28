@@ -1,5 +1,112 @@
-<dev-tag-content dev-attr-title="{{'Edit Invoice'|translate}}">
-    <dev-tag-content-body>
+<!--<dev-tag-content dev-attr-title="{{'Edit Invoice'|translate}}">-->
+    <!--<dev-tag-content-body>-->
+        <!--<div class="row">-->
+            <!--<div class="row">-->
+                <!--<div class="col-md-2"></div>-->
+                <!--<dev-tag-validation-summary errors="model.errors" class="col-md-8"></dev-tag-validation-summary>-->
+                <!--<div class="col-md-2"></div>-->
+            <!--</div>-->
+            <!--<form name="form" novalidate class="">-->
+
+                <!--<div class="row col-md-12">-->
+                    <!--<dev-tag-button-->
+                            <!--ng-click="model.saveInvoice(form)"-->
+                            <!--icon="glyphicon glyphicon-floppy-disk"-->
+                            <!--ng-disabled="model.isSaving"-->
+                            <!--is-waiting="isSaving"-->
+                            <!--style-type="primary"-->
+                            <!--title="{{'Save' | translate}}"></dev-tag-button>-->
+                <!--</div>-->
+
+                <!--<div class="row" style="margin-bottom: 20px;">-->
+
+                    <!--<div class="col-md-6">-->
+
+                        <!--<div class="row" style="margin-top: 20px">-->
+                            <!--<div class="col-md-2" style="text-align: left;margin-top: 7px">-->
+                                <!--<label class="label-control">{{'Temporary number' | translate}}</label>-->
+                            <!--</div>-->
+                            <!--<div class="col-md-4">-->
+                                <!--<dev-tag-numeric-->
+                                        <!--ng-model="model.invoice.number"-->
+                                        <!--style="width: 100%"-->
+                                        <!--name="temporaryNumber"-->
+                                        <!--required></dev-tag-numeric>-->
+
+                                <!--<div ng-messages="form.temporaryNumber.$error" ng-if="form.temporaryNumber.$dirty">-->
+                                    <!--<label ng-message="required" class="error">-->
+                                        <!--{{'This field is required'|translate}}</label>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                            <!--<div class="col-md-2" style="text-align: left;margin-top: 7px">-->
+                                <!--<label class="label-control">{{'Temporary date' | translate}}</label>-->
+                            <!--</div>-->
+                            <!--<div class="col-md-4">-->
+                                <!--<dev-tag-datepicker-->
+                                        <!--ng-model="model.invoice.date"-->
+                                        <!--name="temporaryDate"-->
+                                        <!--required></dev-tag-datepicker>-->
+
+                                <!--<div ng-messages="form.temporaryDate.$error" ng-if="form.temporaryDate.$dirty">-->
+                                    <!--<label ng-message="required" class="error">{{'This field is-->
+                                        <!--required'|translate}}</label>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                        <!--</div>-->
+
+                        <!--<div class="row" style="margin-top: 10px">-->
+                            <!--<div class="col-md-2" style="text-align: left;margin-top: 7px">-->
+                                <!--<label class="label-control">{{'Detail account' | translate}}</label>-->
+                            <!--</div>-->
+                            <!--<div class="col-md-10">-->
+                                <!--<dev-tag-combo-box-->
+                                        <!--name="detailAccountId"-->
+                                        <!--k-placeholder="{{'Select ...'|translate}}"-->
+                                        <!--k-data-value-field="id"-->
+                                        <!--k-data-text-field="display"-->
+                                        <!--k-data-source="model.detailAccount"-->
+                                        <!--ng-model="model.invoice.detailAccountId"></dev-tag-combo-box>-->
+
+                            <!--</div>-->
+                        <!--</div>-->
+                    <!--</div>-->
+
+                    <!--<div class="col-md-6">-->
+                        <!--<div class="row" style="margin-top: 10px">-->
+                            <!--<div class="col-md-3" style="text-align: left;margin-top: 7px">-->
+                                <!--<label class="label-control">{{'Description' | translate}}</label>-->
+                            <!--</div>-->
+                            <!--<div class="col-md-9">-->
+                         <!--<textarea type="text" class="form-control" ng-model="model.invoice.description"-->
+                                   <!--name="description" style="width: 100%;height: 90px"></textarea>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                    <!--</div>-->
+
+                <!--</div>-->
+
+                <!--<div class="row">-->
+                    <!--<div class="col-md-12">-->
+                        <!--<dev-tag-content-body is-loading="model.isInvoiceSaleLoading">-->
+                            <!--<div style="padding: 10px"-->
+                                 <!--ng-include="'partials/sales/invoiceLines-template.html'"></div>-->
+                        <!--</dev-tag-content-body>-->
+
+                    <!--</div>-->
+
+
+                <!--</div>-->
+            <!--</form>-->
+        <!--</div>-->
+    <!--</dev-tag-content-body>-->
+<!--</dev-tag-content>-->
+
+<div class="panel panel-success center-block " style="max-width: none;">
+    <div class="panel-heading">
+        <span class="panel-title">{{'Edit Invoice'|translate}}</span>
+    </div>
+
+    <div class="panel-body">
         <div class="row">
             <div class="row">
                 <div class="col-md-2"></div>
@@ -7,99 +114,82 @@
                 <div class="col-md-2"></div>
             </div>
             <form name="form" novalidate class="">
+               <div class="row col-md-12">
+                   <dev-tag-button
+                           ng-click="model.saveInvoice(form)"
+                           icon="glyphicon glyphicon-floppy-disk"
+                           ng-disabled="model.isSaving"
+                           is-waiting="isSaving"
+                           style-type="primary"
+                           title="{{'Save' | translate}}"></dev-tag-button>
+               </div>
 
-                <div class="row col-md-12">
-                    <dev-tag-button
-                            ng-click="model.saveInvoice(form)"
-                            icon="glyphicon glyphicon-floppy-disk"
-                            ng-disabled="model.isSaving"
-                            is-waiting="isSaving"
-                            style-type="primary"
-                            title="{{'Save' | translate}}"></dev-tag-button>
-                </div>
-
-                <div class="row" style="margin-bottom: 20px;">
-
-                    <div class="col-md-6">
-
-                        <div class="row" style="margin-top: 20px">
-                            <div class="col-md-2" style="text-align: left;margin-top: 7px">
-                                <label class="label-control">{{'Temporary number' | translate}}</label>
-                            </div>
-                            <div class="col-md-4">
-                                <dev-tag-numeric
-                                        ng-model="model.invoice.number"
-                                        style="width: 100%"
-                                        name="temporaryNumber"
-                                        required></dev-tag-numeric>
-
-                                <div ng-messages="form.temporaryNumber.$error" ng-if="form.temporaryNumber.$dirty">
-                                    <label ng-message="required" class="error">
-                                        {{'This field is required'|translate}}</label>
-                                </div>
-                            </div>
-                            <div class="col-md-2" style="text-align: left;margin-top: 7px">
-                                <label class="label-control">{{'Temporary date' | translate}}</label>
-                            </div>
-                            <div class="col-md-4">
-                                <dev-tag-datepicker
-                                        ng-model="model.invoice.date"
-                                        name="temporaryDate"
-                                        required></dev-tag-datepicker>
-
-                                <div ng-messages="form.temporaryDate.$error" ng-if="form.temporaryDate.$dirty">
-                                    <label ng-message="required" class="error">{{'This field is
-                                        required'|translate}}</label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row" style="margin-top: 10px">
-                            <div class="col-md-2" style="text-align: left;margin-top: 7px">
-                                <label class="label-control">{{'Detail account' | translate}}</label>
-                            </div>
-                            <div class="col-md-10">
-                                <dev-tag-combo-box
-                                        name="detailAccountId"
-                                        k-placeholder="{{'Select ...'|translate}}"
-                                        k-data-value-field="id"
-                                        k-data-text-field="display"
-                                        k-data-source="model.detailAccount"
-                                        ng-model="model.invoice.detailAccountId"></dev-tag-combo-box>
-
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-6">
-                        <div class="row" style="margin-top: 10px">
-                            <div class="col-md-3" style="text-align: left;margin-top: 7px">
-                                <label class="label-control">{{'Description' | translate}}</label>
-                            </div>
-                            <div class="col-md-9">
-                         <textarea type="text" class="form-control" ng-model="model.invoice.description"
-                                   name="description" style="width: 100%;height: 90px"></textarea>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-
-                <div class="row">
-                    <div class="col-md-12">
-                       <dev-tag-content-body is-loading="model.isInvoiceSaleLoading">
-                            <div style="padding: 10px"
-                                 ng-include="'partials/sales/invoiceLines-template.html'"></div>
-                        </dev-tag-content-body>
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label for="detailAccountId" class="title1">مشتری</label>
+                        <dev-tag-combo-box id="detailAccountId"
+                                           name="detailAccountId"
+                                           k-placeholder="{{'Select ...'|translate}}"
+                                           k-data-value-field="id"
+                                           k-data-text-field="display"
+                                           k-data-source="model.detailAccount"
+                                           ng-model="model.invoice.detailAccountId"></dev-tag-combo-box>
 
                     </div>
-
-
                 </div>
+
+                <div class="col-sm-2">
+                    <div class="form-group">
+                        <label for="invoiceDate">تاریخ فاکتور</label>
+                        <dev-tag-datepicker id="invoiceDate"
+                                            ng-model="model.invoice.date"
+                                            name="temporaryDate"
+                                            required></dev-tag-datepicker>
+
+                        <div ng-messages="form.temporaryDate.$error" ng-if="form.temporaryDate.$dirty">
+                            <label ng-message="required" class="error">{{'This field is
+                                required'|translate}}</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-2">
+                    <div class="form-group">
+                        <label for="invoiceNumber" class="title1">شماره فاکتور</label>
+                        <dev-tag-numeric id="invoiceNumber"
+                                         ng-model="model.invoice.number"
+                                         style="width: 100%"
+                                         name="temporaryNumber"
+                                         required></dev-tag-numeric>
+
+                        <div ng-messages="form.temporaryNumber.$error" ng-if="form.temporaryNumber.$dirty">
+                            <label ng-message="required" class="error">
+                                {{'This field is required'|translate}}</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-2">
+                    <div class="form-group">
+                        <label for="invoiceReference" class="title1"> ارجاع
+                            <small class="hidden-md hidden-sm ng-hide">(شماره فاکتور فروش)</small>
+                        </label>
+                        <input class="form-control input-sm ng-pristine " type="text" id="invoiceReference"
+                               data-toggle="popover" data-placement="top" data-trigger="hover"
+                               data-content="شماره ارجاع" data-original-title="" title="">
+                    </div>
+                </div>
+
+                <dev-tag-content-body is-loading="model.isInvoiceSaleLoading">
+                    <div style="padding: 10px"
+                         ng-include="'partials/sales/invoiceLines-template.html'"></div>
+                </dev-tag-content-body>
+
             </form>
         </div>
-    </dev-tag-content-body>
-</dev-tag-content>
+    </div>
+
+</div>
 
 
 
