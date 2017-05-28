@@ -1,37 +1,48 @@
 exports.up = function (knex, Promise) {
     return knex.schema
-        .createTable('saleInvoices', table => {
+        .createTable('sales', table => {
             table.timestamp('createdAt').defaultTo(knex.fn.now());
             table.timestamp('updatedAt').defaultTo(knex.fn.now());
-            table.increments('id').primary();
+            table.string('id').primary();
             table.integer('number');
             table.string('date');
-            table.integer('detailAccountId');
+            table.string('detailAccountId');
             table
                 .foreign('detailAccountId')
                 .references('id')
                 .inTable('detailAccounts')
                 .onDelete('CASCADE');
             table.string('description');
+            table.string('referenceId');
         })
 
-        .createTable('items', table => {
+        .createTable('products', table => {
             table.timestamp('createdAt').defaultTo(knex.fn.now());
             table.timestamp('updatedAt').defaultTo(knex.fn.now());
-            table.increments('id').primary();
+            table.string('id').primary();
             table.string('title');
+            table.string('code');
+            table.string('referenceId');
         })
 
-        .createTable('saleInvoiceLines', table => {
+        .createTable('saleLines', table => {
             table.timestamp('createdAt').defaultTo(knex.fn.now());
             table.timestamp('updatedAt').defaultTo(knex.fn.now());
-            table.increments('id').primary();
-            table.integer('itemId');
+            table.string('id').primary();
+            table.string('productId');
 
             table
-                .foreign('itemId')
+                .foreign('productId')
                 .references('id')
-                .inTable('items')
+                .inTable('products')
+                .onDelete('CASCADE');
+
+            table.string('saleId');
+
+            table
+                .foreign('saleId')
+                .references('id')
+                .inTable('sales')
                 .onDelete('CASCADE');
 
             table.float('quantity');
@@ -39,12 +50,18 @@ exports.up = function (knex, Promise) {
             table.float('tax');
             table.float('vat');
             table.float('discount');
+        })
+
+        .table('detailAccounts', table => {
+            table.string('referenceId');
         });
 };
 
 exports.down = function (knex, Promise) {
     return knex.schema
-        .dropTable('saleInvoiceLines')
-        .dropTable('items')
-        .dropTable('saleInvoices');
+        .dropTable('saleLines')
+        .dropTable('products')
+        .dropTable('sales')
+
+        .table('detailAccounts', table => table.dropColumn('referenceId'));
 };

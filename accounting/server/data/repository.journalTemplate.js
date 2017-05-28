@@ -12,11 +12,14 @@ class JournalTemplateRepository extends BaseRepository {
 
     findById(id) {
         return this.knex.table('journalTemplates')
+            .modify(this.modify, this.branchId)
             .where('id', id)
             .first();
     }
 
     create(entity) {
+        super.create(entity);
+
         entity.id = await(this.knex('journalTemplates')
             .returning('id')
             .insert(entity))[0];
@@ -26,6 +29,7 @@ class JournalTemplateRepository extends BaseRepository {
 
     remove(id) {
         return this.knex('journalTemplates')
+            .modify(this.modify, this.branchId)
             .where('id', id)
             .del();
     }

@@ -12,12 +12,14 @@ class DetailAccountRepository extends BaseRepository {
 
     findById(id) {
         return this.knex.table('detailAccounts')
+            .modify(this.modify, this.branchId)
             .where('id', id)
             .first();
     }
 
     findByCode(code, notEqualId) {
         let query = this.knex.table('detailAccounts')
+            .modify(this.modify, this.branchId)
             .where('code', code);
 
         if (notEqualId)
@@ -26,7 +28,16 @@ class DetailAccountRepository extends BaseRepository {
         return query.first();
     }
 
+    findByReferenceId(referenceId) {
+        return this.knex.table('detailAccounts')
+            .modify(this.modify, this.branchId)
+            .where('referenceId', referenceId)
+            .first();
+    }
+
     create(entity) {
+        super.create(entity);
+
         entity.id = await(this.knex('detailAccounts')
             .returning('id')
             .insert(entity))[0];
@@ -36,12 +47,14 @@ class DetailAccountRepository extends BaseRepository {
 
     update(entity) {
         return this.knex('detailAccounts')
+            .modify(this.modify, this.branchId)
             .where('id', entity.id)
             .update(entity);
     }
 
     remove(id) {
         return this.knex('detailAccounts')
+            .modify(this.modify, this.branchId)
             .where('id', id)
             .del();
     }

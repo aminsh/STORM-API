@@ -17,22 +17,6 @@ export default class {
 
     subsidiaryLedgerAccounts(params) {
         return this.apiPromise.get(`${this.urlPrefix}/subsidiary-ledger-accounts`,params);
-        /*let deferred = this.$q.defer();
-
-        this.apiPromise.get(`${this.urlPrefix}/subsidiary-ledger-accounts`)
-            .then(result => {
-                let AssignmentStatus = this.constants.enums.AssignmentStatus();
-
-                result.forEach(item => {
-                    item.detailAccountAssignmentStatusDisplay = (item.detailAcc) ? AssignmentStatus.getDisplay(item.detailAcc) : '';
-                    item.dimension1AssignmentStatusDisplay = (item.dim1) ? AssignmentStatus.getDisplay(item.dim1) : '';
-                    item.dimension2AssignmentStatusDisplay = (item.dim2) ? AssignmentStatus.getDisplay(item.dim2) : '';
-                    item.dimension3AssignmentStatusDisplay = (item.dim3) ? AssignmentStatus.getDisplay(item.dim3) : '';
-                });
-
-                deferred.resolve(result);
-            });
-        return deferred.promise;*/
     }
 
     detailAccounts(params) {

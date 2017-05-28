@@ -3,8 +3,11 @@ exports.up = function(knex, Promise) {
     return knex.schema
         .dropTable('journalTags')
         .table('journals', table => {
-            table.integer('tagId').unsigned();
-            table.foreign('tagId').references('tags.id');
+            table.string('tagId');
+            table
+                .foreign('tagId')
+                .references('id')
+                .inTable('tags');
         });
 };
 
@@ -13,15 +16,15 @@ exports.down = function(knex, Promise) {
         .createTable('journalTags', table => {
             table.timestamp('createdAt').defaultTo(knex.fn.now());
             table.timestamp('updatedAt').defaultTo(knex.fn.now());
-            table.increments('id').primary();
-            table.integer('journalId').unsigned();
+            table.string('id').primary();
+            table.string('journalId');
             table
                 .foreign('journalId')
                 .references('id')
                 .inTable('journals')
                 .onDelete('CASCADE');
 
-            table.integer('tagId');
+            table.string('tagId');
             table
                 .foreign('tagId')
                 .references('id')

@@ -16,7 +16,7 @@ module.exports = async((req, res, next) => {
 
     if(!branchId) return next();
 
-    let knexInstance = Memory.get(`context.${branchId}`);
+    /*let knexInstance = Memory.get(`context.${branchId}`);
 
     if (!knexInstance) {
         let branch = await(branchQuery.getById(branchId)),
@@ -29,7 +29,7 @@ module.exports = async((req, res, next) => {
         knexInstance = knex(dbConnection);
 
         Memory.set(`context.${branchId}`, knexInstance);
-    }
+    }*/
 
     let user = req.user,
         currentPeriod = req.cookies['current-period'];

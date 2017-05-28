@@ -12,6 +12,7 @@ class JournalLineRepository extends BaseRepository {
 
     findById(id) {
         return this.knex.table('journalLines')
+            .modify(this.modify, this.branchId)
             .where('id', id)
             .first();
     }
@@ -19,11 +20,14 @@ class JournalLineRepository extends BaseRepository {
     findByJournalId_ids(journalId){
         return this.knex.select('id')
             .from('journalLines')
+            .modify(this.modify, this.branchId)
             .where('journalId', journalId)
             .map(item => item.id);
     }
 
     create(entity) {
+        super.create(entity);
+
         entity.id = await(this.knex('journalLines')
             .returning('id')
             .insert(entity))[0];
@@ -33,12 +37,14 @@ class JournalLineRepository extends BaseRepository {
 
     update(entity) {
         return this.knex('journalLines')
+            .modify(this.modify, this.branchId)
             .where('id', entity.id)
             .update(entity);
     }
 
     remove(id) {
         return this.knex('journalLines')
+            .modify(this.modify, this.branchId)
             .where('id', id)
             .del();
     }

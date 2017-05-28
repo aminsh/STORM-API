@@ -3,6 +3,7 @@ import Guid from 'guid';
 export default class SalesInvoiceController {
     constructor(navigate,
                 salesInvoiceApi,
+                inventoryApi,
                 translate,
                 detailAccountApi,
                 logger,
@@ -20,8 +21,6 @@ export default class SalesInvoiceController {
         this.errors = [];
         this.isSaving = false;
         this.invoice = {
-            temporaryNumber: null,
-            temporaryDate: null,
             number: null,
             date: null,
             description: '',
@@ -33,10 +32,14 @@ export default class SalesInvoiceController {
             }
         );
 
+        inventoryApi.getAll().then(result => {
+                this.products = result.data
+            }
+        );
     }
 
     removeInvoiceLine(item) {
-        this.invoiceLines.asEnumerable().remove(item);
+        this.invoice.invoiceLines.asEnumerable().remove(item);
     }
 
     createInvoiceLine() {
@@ -48,7 +51,7 @@ export default class SalesInvoiceController {
             newInvoice = {
                 id: Guid.new(),
                 row: ++maxRow,
-                itemTitle: null,
+                itemId: null,
                 quantity: 0,
                 tax: 0,
                 vat: 0,
@@ -56,7 +59,6 @@ export default class SalesInvoiceController {
                 unitPrice: 0,
                 totalPrice: 0,
             };
-
         this.invoice.invoiceLines.push(newInvoice);
     }
 
@@ -79,7 +81,7 @@ export default class SalesInvoiceController {
         errors.asEnumerable().removeAll();
         //  isSaving = true;
 
-        return this.salesInvoiceApi.create(invoice)
+              return this.salesInvoiceApi.create(invoice)
             .then(result => {
                 logger.success();
                 invoice.id = result.id;
@@ -89,4 +91,7 @@ export default class SalesInvoiceController {
 
 
     }
+
+
+
 }

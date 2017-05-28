@@ -230,6 +230,14 @@
   "NationalCode":"کد ملی / کد اقتصادی",
   "Address":"آدرس",
   "Phone":"تلفن",
-  "Email":"ایمیل"
+  "Email":"ایمیل",
+
+  "Sales invoice":"فاکتور فروش",
+  "Item title":"عنوان کالا",
+  "Quantity":"تعداد کالا",
+  "Unit price":"قیمت واحد",
+  "Discount":"مبلغ تخفیف",
+  "Tax":"مبلغ مالیات",
+  "Vat" : "مبلغ عوارض"
 
 }

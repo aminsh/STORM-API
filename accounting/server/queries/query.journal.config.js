@@ -24,7 +24,8 @@ module.exports = class JournalQueryConfig extends BaseQuery {
             fromMainDate: dateRange.fromMainDate,
             filter: this.filter,
             dateFieldName: mode == 'create' ? 'temporaryDate' : 'date',
-            numberFieldName: mode == 'create' ? 'temporaryNumber' : 'number'
+            numberFieldName: mode == 'create' ? 'temporaryNumber' : 'number',
+            branchId: this.branchId
         };
     }
 

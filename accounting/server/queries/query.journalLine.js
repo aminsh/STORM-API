@@ -15,10 +15,12 @@ module.exports = class JournalLineQuery extends BaseQuery {
     }
 
     getAll(journalId, parameters) {
-        let knex = this.knex;
+        let knex = this.knex,
+            branchId = this.branchId;
+
         let query = knex.select()
             .from(function () {
-                journalLineBase.call(this, knex);
+                journalLineBase.call(this, knex, branchId);
             })
             .where('journalId', journalId);
 
@@ -26,7 +28,8 @@ module.exports = class JournalLineQuery extends BaseQuery {
 
         var aggregates = await(knex.select(knex.raw('SUM("debtor") as "sumDebtor", SUM("creditor") as "sumCreditor"'))
             .from('journalLines')
-            .where('journalId', journalId).first());
+            .where('branchId', this.branchId)
+            .andWhere('journalId', journalId).first());
 
         result.aggregates = {
             debtor: { sum: aggregates.sumDebtor },
@@ -38,7 +41,10 @@ module.exports = class JournalLineQuery extends BaseQuery {
 
     getAllByJournalId(journalId) {
 
-        let journalLine = await(this.knex.select().from('journalLines').where('journalId', journalId));
+        let journalLine = await(this.knex.select()
+            .from('journalLines')
+            .where('branchId', this.branchId)
+            .andWhere('journalId', journalId));
         return journalLine;
         /*let knex = this.knex;
         return knex.select()
@@ -49,7 +55,11 @@ module.exports = class JournalLineQuery extends BaseQuery {
     }
 
     getById(id) {
-        let journalLine = await(this.knex.select().from('journalLines').where('id', id).first());
+        let journalLine = await(
+            this.knex.select()
+                .from('journalLines')
+                .where('branchId', this.branchId)
+                .andWhere('id', id).first());
         return view(journalLine);
     }
 };

@@ -2,7 +2,7 @@ import accModule from '../acc.module';
 import Guid from 'guid';
 import {viewerConfig, addVariable, addTranslates} from '../utilities/stimulsoft';
 
-let config = viewerConfig();
+//
 
 
 function reportViewer($rootScope) {
@@ -18,6 +18,7 @@ function reportViewer($rootScope) {
         },
         link: function (scope, element, attrs) {
             let id = Guid.new(),
+                config = viewerConfig(),
                 data = {},
                 report = new Stimulsoft.Report.StiReport(),
                 viewer = new Stimulsoft.Viewer.StiViewer(config, "StiViewer" + id, false);

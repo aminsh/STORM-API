@@ -1,6 +1,6 @@
 "use strict";
 
-module.exports = function(knex) {
+module.exports = function(knex, branchId) {
     this.select(
         'journalLines.id',
         'journalLines.journalId',
@@ -36,6 +36,7 @@ module.exports = function(knex) {
         .leftJoin(knex.raw('"dimensions" as "dimension2s"'), 'journalLines.dimension2Id', 'dimension2s.id')
         .leftJoin(knex.raw('"dimensions" as "dimension3s"'), 'journalLines.dimension3Id', 'dimension3s.id')
         .leftJoin('cheques', 'journalLines.id', 'cheques.journalLineId')
+        .where('journalLines.branchId', branchId)
         .orderBy('journalLines.row')
         .as('baseJournalLines');
 };

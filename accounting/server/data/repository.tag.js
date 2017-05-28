@@ -12,10 +12,14 @@ module.exports = class TagRepository extends BaseRepository {
     }
 
     findById(id) {
-        return this.knex.table('tags').where('id', id).first();
+        return this.knex.table('tags')
+            .modify(this.modify, this.branchId)
+            .where('id', id).first();
     }
 
     create(entity) {
+        super.create(entity);
+
         entity.id = await(this.knex('tags').returning('id').insert(entity))[0];
 
         if(Array.isArray(entity.id))
@@ -25,10 +29,14 @@ module.exports = class TagRepository extends BaseRepository {
     }
 
     update(entity) {
-        return this.knex('tags').where('id', entity.id).update(entity);
+        return this.knex('tags')
+            .modify(this.modify, this.branchId)
+            .where('id', entity.id).update(entity);
     }
 
     remove(id) {
-        return this.knex('tags').where('id', id).del();
+        return this.knex('tags')
+            .modify(this.modify, this.branchId)
+            .where('id', id).del();
     }
 };

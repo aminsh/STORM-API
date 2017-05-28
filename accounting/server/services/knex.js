@@ -1,6 +1,7 @@
 "use strict";
 
-const Memory = require('../services/shared').service.Memory;
+const config = require('../config'),
+    knex = require('knex')(config.db);
 
-module.exports = (branchId) => Memory.get(`context.${branchId}`);
+module.exports = knex;
 

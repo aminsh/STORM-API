@@ -6,21 +6,19 @@ require('../server/utilities/array.prototypes');
 const gulp = require('gulp'),
     path = require('path'),
     Util = require('gulp-util'),
-    knex = require('knex')({
-        client: 'pg',
-        //connection: 'postgres://postgres:P@ssw0rd@localhost:5432/new-customer-db',
-        connection: 'postgres://scqngoshrpyzhp:5c14866b02c64204cfb3f9bab164d1af1223118bd3bb5a304129cd2c83cdc6e0@ec2-23-21-186-138.compute-1.amazonaws.com:5432/d1he0qgj4g1pvi?ssl=true',
-        debug: true
-    }),
     options = {
-        migrations: path.resolve(`${__dirname}/database/migrations`),
+        migrations: path.resolve(`${__dirname}/migrations`),
         tableName: 'accounitng_schema_migrations',
-        seeds: {directory: path.resolve(`${__dirname}/database/seeds`)}
+        seeds: {directory: path.resolve(`${__dirname}/seeds`)}
     },
     optionsForOldCustomers = {
-        seeds: {directory: path.resolve(`${__dirname}/database/seeds-for-old-customers`)}
+        seeds: {directory: path.resolve(`${__dirname}/seeds-for-old-customers`)}
     },
+    dbConfig = Object.assign(require('../server/config').db, options),
     argv = require('yargs').argv,
+    Kenx = require('knex'),
+    knex = Kenx(dbConfig),
+    knexForFrkCustomer = Kenx(Object.assign(dbConfig, optionsForOldCustomers)),
     fs = require('fs'),
     convertConfig = require('./convert/config.json'),
     async = require('asyncawait/async'),
@@ -29,11 +27,12 @@ const gulp = require('gulp'),
     pg = require('pg');
 
 gulp.task('make-migrate', () => {
-    let filename = (argv.filename)
-        ? `accounting_migrate_db_${argv.filename}`
-        : 'accounting_migrate_db';
+    let
+        filename = (argv.filename)
+            ? `accounting_migrate_db_${argv.filename}`
+            : 'accounting_migrate_db';
 
-    knex.migrate.make(filename, options)
+    knex.migrate.make(filename)
         .then(migration_path => {
             Util.log('Created new migration',
                 Util.colors.green(migration_path.replace(options.directory, '')));
@@ -63,7 +62,7 @@ gulp.task('migrate-latest', () => {
 });
 
 gulp.task('migrate-rollback', () => {
-    knex.migrate.rollback(options)
+    knex.migrate.rollback()
         .then(() => process.exit())
         .catch((err) => {
             Util.log(Util.colors.red(err));
@@ -87,7 +86,7 @@ gulp.task('make-seed', () => {
         ? `accounting_seed_${argv.name}`
         : 'accounting_seed';
 
-    knex.seed.make(seedname, options)
+    knex.seed.make(seedname)
         .then(() => {
             Util.log(Util.colors.green('seed file created successfully'));
             process.exit();
@@ -101,8 +100,9 @@ gulp.task('run-seed', () => {
     });
 });
 
-gulp.task('run-seed-for-old-customers', ()=> {
-    knex.seed.run(optionsForOldCustomers).then(() => {
+gulp.task('run-seed-for-old-customers', () => {
+    (argv.customer == 'frk' ? knexForFrkCustomer : knex)
+        .seed.run().then(() => {
         Util.log(Util.colors.green('seed ran successfully'));
         process.exit();
     });
@@ -124,6 +124,9 @@ gulp.task('make-json-converted', async(() => {
         Util.log(Util.colors.gray(`${modelName} converting is finished `));
     });
 
+    data.journals.forEach(j => delete j.referenceId);
+    data.tags.forEach(t => delete t.referenceId);
+
     Util.log(Util.colors.green('Data are read from source successfully '));
 
     fs.writeFile(
@@ -141,20 +144,13 @@ gulp.task('make-json-converted', async(() => {
 
 gulp.task('rest-primary-key', () => {
     const config = {
-            user: 'khdntotyvarety',
-            password: '41cb005a1d3e157843239557043d5d7fcd992728b579f89ddea8cd1f986bf82e',
-            host: 'ec2-54-235-247-224.compute-1.amazonaws.com',
-            port: '5432',
-            database: 'd6ep66drpevbhr',
-            ssl: true
-        }/*{
             user: 'postgres',
             password: 'P@ssw0rd',
             host: 'localhost',
             port: '5432',
-            database: 'dbAccFRK',
+            database: 'dbAcc',
             ssl: true
-        }*/,
+        },
         tables = [
             'banks',
             'chequeCategories',
@@ -173,12 +169,12 @@ gulp.task('rest-primary-key', () => {
 
     pool.connect((err, client, done) => {
         let command = tables.asEnumerable()
-            .select(t=> `SELECT setval('"${t}_id_seq"', (SELECT MAX(id) FROM "${t}")+1);`)
+            .select(t => `SELECT setval('"${t}_id_seq"', (SELECT MAX(id) FROM "${t}")+1);`)
             .toArray()
             .join(';');
 
         client.query(command, function (err, result) {
-            if(err)
+            if (err)
                 Util.log(Util.colors.red(err.message));
 
             Util.log(Util.colors.green('command ran successfully'));
@@ -187,4 +183,51 @@ gulp.task('rest-primary-key', () => {
     });
 
 });
+
+gulp.task('set-branch-id', () => {
+    const config = {
+            user: 'postgres',
+            password: 'P@ssw0rd',
+            host: 'localhost',
+            port: '5432',
+            database: 'dbAcc',
+            ssl: true
+        },
+        tables = [
+            'chequeCategories',
+            'cheques',
+            'detailAccounts',
+            'dimensions',
+            'fiscalPeriods',
+            'generalLedgerAccounts',
+            'journalLines',
+            'journalTemplates',
+            'journals',
+            'subsidiaryLedgerAccounts',
+            'tags'
+        ],
+        pool = new pg.Pool(config);
+
+    pool.connect((err, client, done) => {
+        let command = tables.asEnumerable()
+            .select(t => `update "${t}" set "branchId" = '${argv.branchId}'`)
+            .toArray()
+            .join(';');
+
+        client.query(command, function (err, result) {
+            if (err)
+                Util.log(Util.colors.red(err.message));
+
+            Util.log(Util.colors.green('command ran successfully'));
+            process.exit();
+        });
+    });
+
+});
+
+
+
+
+
+
 

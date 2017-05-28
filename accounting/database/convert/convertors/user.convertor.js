@@ -20,7 +20,7 @@ class UserConvertor {
             .select(t => new User(t))
             .toArray();
 
-        data.users.unshift(new User(this.publicUser));
+        //data.users.unshift(new User(this.publicUser));
     }
 
     get publicUser() {

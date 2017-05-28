@@ -21,7 +21,7 @@ class JournalLineConvertor {
         journals.forEach(j => {
             let documents = await(this.sql
                 .query(`select *,ROW_NUMBER() OVER(ORDER BY radif) as row
-                from document where id = ${j.id}`));
+                from document where id = ${j.referenceId}`));
 
 
             data.journalLines = (data.journalLines || []).concat(documents.asEnumerable()

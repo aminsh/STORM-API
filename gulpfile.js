@@ -89,7 +89,7 @@ gulp.task('build-stimulsoft', function () {
     return gulp.src([
         './vendors/stimulsoft/stimulsoft.reports.js',
         './vendors/stimulsoft/stimulsoft.viewer.js',
-        './vendors/stimulsoft/stimulsoft.designer.js'
+        //'./vendors/stimulsoft/stimulsoft.designer.js'
     ])
         .pipe(beautify({indent_size: 2}))
         .pipe(gulpif(!config.isProduction, sourcemaps.init()))

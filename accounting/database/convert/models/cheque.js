@@ -7,6 +7,7 @@ class Cheque extends Base {
     constructor(number, categoryId, document) {
         super();
 
+        this.id = _util.newGuid();
         this.chequeCategoryId = categoryId;
         this.number = number;
         this.status = 'White';

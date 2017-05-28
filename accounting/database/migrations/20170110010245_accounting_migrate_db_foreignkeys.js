@@ -1,7 +1,7 @@
 exports.up = function (knex, Promise) {
     return knex.schema
         .table('subsidiaryLedgerAccounts', table => {
-            table.integer('generalLedgerAccountId');
+            table.string('generalLedgerAccountId');
             table
                 .foreign('generalLedgerAccountId')
                 .references('id')
@@ -9,14 +9,14 @@ exports.up = function (knex, Promise) {
                 .onDelete('RESTRICT');
         })
         .table('chequeCategories', table => {
-            table.integer('bankId');
+            table.string('bankId');
             table
                 .foreign('bankId')
                 .references('id')
                 .inTable('banks')
                 .onDelete('SET NULL');
 
-            table.integer('detailAccountId');
+            table.string('detailAccountId');
             table
                 .foreign('detailAccountId')
                 .references('id')
@@ -24,7 +24,7 @@ exports.up = function (knex, Promise) {
                 .onDelete('SET NULL');
         })
         .table('dimensions', table => {
-            table.integer('dimensionCategoryId');
+            table.string('dimensionCategoryId');
             table
                 .foreign('dimensionCategoryId')
                 .references('id')
@@ -39,7 +39,7 @@ exports.up = function (knex, Promise) {
                 .inTable('users')
                 .onDelete('RESTRICT');
 
-            table.integer('periodId');
+            table.string('periodId');
             table
                 .foreign('periodId')
                 .references('id')
@@ -47,14 +47,14 @@ exports.up = function (knex, Promise) {
                 .onDelete('RESTRICT');
         })
         .table('journalTags', table => {
-            table.integer('journalId');
+            table.string('journalId');
             table
                 .foreign('journalId')
                 .references('id')
                 .inTable('journals')
                 .onDelete('CASCADE');
 
-            table.integer('tagId');
+            table.string('tagId');
             table
                 .foreign('tagId')
                 .references('id')
@@ -62,48 +62,48 @@ exports.up = function (knex, Promise) {
                 .onDelete('CASCADE');
         })
         .table('journalLines', table => {
-            table.integer('journalId');
+            table.string('journalId');
             table
                 .foreign('journalId')
                 .references('id')
                 .inTable('journals')
                 .onDelete('CASCADE');
 
-            table.integer('generalLedgerAccountId');
+            table.string('generalLedgerAccountId');
             table
                 .foreign('generalLedgerAccountId')
                 .references('id')
                 .inTable('generalLedgerAccounts')
                 .onDelete('RESTRICT');
-            table.integer('subsidiaryLedgerAccountId');
+            table.string('subsidiaryLedgerAccountId');
             table
                 .foreign('subsidiaryLedgerAccountId')
                 .references('id')
                 .inTable('subsidiaryLedgerAccounts')
                 .onDelete('RESTRICT');
 
-            table.integer('detailAccountId');
+            table.string('detailAccountId');
             table
                 .foreign('detailAccountId')
                 .references('id')
                 .inTable('detailAccounts')
                 .onDelete('RESTRICT');
 
-            table.integer('dimension1Id');
+            table.string('dimension1Id');
             table
                 .foreign('dimension1Id')
                 .references('id')
                 .inTable('dimensions')
                 .onDelete('RESTRICT');
 
-            table.integer('dimension2Id');
+            table.string('dimension2Id');
             table
                 .foreign('dimension2Id')
                 .references('id')
                 .inTable('dimensions')
                 .onDelete('RESTRICT');
 
-            table.integer('dimension3Id');
+            table.string('dimension3Id');
             table
                 .foreign('dimension3Id')
                 .references('id')
@@ -111,14 +111,14 @@ exports.up = function (knex, Promise) {
                 .onDelete('RESTRICT');
         })
         .table('cheques', table => {
-            table.integer('journalLineId');
+            table.string('journalLineId');
             table
                 .foreign('journalLineId')
                 .references('id')
                 .inTable('journalLines')
                 .onDelete('SET NULL');
 
-            table.integer('chequeCategoryId');
+            table.string('chequeCategoryId');
             table
                 .foreign('chequeCategoryId')
                 .references('id')
