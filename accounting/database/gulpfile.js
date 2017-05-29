@@ -148,7 +148,7 @@ gulp.task('rest-primary-key', () => {
             password: 'P@ssw0rd',
             host: 'localhost',
             port: '5432',
-            database: 'dbAcc',
+            database: 'dbAccFRK',
             ssl: true
         },
         tables = [
