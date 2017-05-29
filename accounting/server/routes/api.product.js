@@ -6,6 +6,7 @@ const async = require('asyncawait/async'),
     ProductQuery = require('../queries/query.product'),
     ProductRepository = require('../data/repository.product');
 
+
 router.route('/')
     .get(async((req, res) => {
         let productQuery = new ProductQuery(req.cookies['branch-id']),
@@ -13,7 +14,6 @@ router.route('/')
 
         res.json(result);
     }))
-
     .post(async((req, res) => {
         let productRepository = new ProductRepository(req.cookies['branch-id']),
             cmd = req.body,
@@ -25,12 +25,5 @@ router.route('/')
 
         res.json({isValid: true, returnValue: {id: entity.id}});
     }));
-
-router.route('/:id').get(async((req, res) => {
-    let productQuery = new ProductQuery(req.cookies['branch-id']),
-        result = await(productQuery.getById(req.params.id));
-
-    res.json(result);
-}));
 
 module.exports = router;
