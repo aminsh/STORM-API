@@ -13,7 +13,7 @@ function detailAccountCreateModalController($scope, $uibModalInstance, formServi
         phone: '',
         nationalCode: '',
         email: '',
-        personType: 'Real'
+        personType: null
     };
 
     $scope.isSaving = false;
@@ -29,7 +29,9 @@ function detailAccountCreateModalController($scope, $uibModalInstance, formServi
         detailAccountApi.create($scope.detailAccount)
             .then((result) => {
                 logger.success();
+                $scope.$broadcast('on-customer-created',result)
                 $uibModalInstance.close(result);
+
             })
             .catch((errors) => $scope.errors = errors)
             .finally(() => $scope.isSaving = false);

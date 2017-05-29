@@ -11,10 +11,18 @@ module.exports = class ProductQuery extends BaseQuery {
         super(branchId);
     }
 
-    getAll(parameters){
+    getAll(parameters) {
         let query = this.knex.select()
             .from('products')
             .where('branchId', this.branchId);
         return kendoQueryResolve(query, parameters, view);
+    }
+
+    getById(id) {
+        return this.knex.select()
+            .from('products')
+            .where('branchId', this.branchId)
+            .andWhere('id', id)
+            .first();
     }
 };

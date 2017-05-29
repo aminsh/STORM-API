@@ -90,16 +90,51 @@ export default class {
         this.tags = [];
 
         $q.all([
-            subsidiaryLedgerAccountApi.getAll(),
-            detailAccountApi.getAll(),
-            tagApi.getAll()
-        ]).then(result => {
-            this.subsidiaryLedgerAccount.data = result[0].data;
-            this.detailAccount.data = result[1].data;
-            this.tags = result[2].data;
 
+            this.detailAccount = new kendo.data.DataSource({
+                serverFiltering: true,
+                transport: {
+                    read: {
+                        url: devConstants.urls.detailAccount.all(),
+                        dataType: "json"
+                    },
+                },
+                schema: {
+                    data: "data",
+                    total: 'total'
+                }
+            }),
+            this.subsidiaryLedgerAccount = new kendo.data.DataSource({
+                serverFiltering: true,
+                transport: {
+                    read: {
+                        url: devConstants.urls.subsidiaryLedgerAccount.all(),
+                        dataType: "json"
+                    },
+                },
+                schema: {
+                    data: "data",
+                    total: 'total'
+                }
+            })
+
+
+        ]).then(result => {
             this.fetch();
         });
+
+
+        // $q.all([
+        //     subsidiaryLedgerAccountApi.getAll(),
+        //     detailAccountApi.getAll(),
+        //     tagApi.getAll()
+        // ]).then(result => {
+        //     this.subsidiaryLedgerAccount.data = result[0].data;
+        //     //this.detailAccount.data = result[1].data;
+        //     this.tags = result[2].data;
+        //
+        //     this.fetch();
+        // });
     }
 
     fetch() {
@@ -243,12 +278,12 @@ export default class {
     print() {
         //report/100?minNumber=5&maxNumber=5
 
-            let reportParam={"minNumber":  this.journal.temporaryNumber,"maxNumber":  this.journal.temporaryNumber}
-            this.navigate(
-                'report.print',
-                {key: 100},
-                reportParam);
-      //  this.navigate('journalPrint', {id: id});
+        let reportParam = {"minNumber": this.journal.temporaryNumber, "maxNumber": this.journal.temporaryNumber}
+        this.navigate(
+            'report.print',
+            {key: 100},
+            reportParam);
+        //  this.navigate('journalPrint', {id: id});
     }
 
     additionalInfo(journalLine) {
