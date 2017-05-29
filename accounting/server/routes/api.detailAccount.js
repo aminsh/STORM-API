@@ -20,10 +20,8 @@ router.route('/')
             errors = [],
             cmd = req.body;
 
-        if (string.isNullOrEmpty(cmd.code))
-            errors.push(translate('The code is required'));
-        else {
-            var gla = await(detailAccountRepository.findByCode(cmd.code));
+        if (!string.isNullOrEmpty(cmd.code)){
+            let gla = await(detailAccountRepository.findByCode(cmd.code));
 
             if (gla)
                 errors.push(translate('The code is duplicated'));
