@@ -13,7 +13,10 @@ const tables = [
     'journals',
     'subsidiaryLedgerAccounts',
     'tags',
-    'users'
+    'users',
+    'sales',
+    'saleLines',
+    'products'
 ];
 
 exports.up = function (knex, Promise) {
