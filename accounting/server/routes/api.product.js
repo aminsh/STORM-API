@@ -26,4 +26,11 @@ router.route('/')
         res.json({isValid: true, returnValue: {id: entity.id}});
     }));
 
+router.route('/:id').get(async((req,res)=> {
+    let productQuery = new ProductQuery(req.cookies['branch-id']),
+        result = await(productQuery.getById(req.params.id));
+
+    res.json(result);
+}));
+
 module.exports = router;
