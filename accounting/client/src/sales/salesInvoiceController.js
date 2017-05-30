@@ -6,12 +6,16 @@ export default class SalesInvoiceController {
                 inventoryApi,
                 translate,
                 detailAccountApi,
+                devConstants,
                 logger,
                 formService,
                 $timeout,
                 $scope,) {
 
         this.$scope = $scope;
+        this.logger = logger;
+        this.detailAccountApi = detailAccountApi;
+        this.inventoryApi = inventoryApi;
         this.salesInvoiceApi = salesInvoiceApi;
         this.$timeout = $timeout;
         this.logger = logger;
@@ -26,20 +30,100 @@ export default class SalesInvoiceController {
             description: '',
             invoiceLines: []
         };
+        this.isLoading = false;
+        this.detailAccount = new kendo.data.DataSource({
+            serverFiltering: true,
+            //serverPaging: true,
+           // pageSize: 10,
+            transport: {
+                read: {
+                    url: devConstants.urls.detailAccount.all(),
+                    dataType: "json"
+                },
+            },
+            schema: {
+                data: function (data) {
 
-        detailAccountApi.getAll().then(result => {
-                this.detailAccount = result.data
-            }
-        );
+                    if (data.data !== undefined) {
+                        return data.data;
+                    } else {
+                        return data;
+                    }
 
-        inventoryApi.getAll().then(result => {
-                this.products = result.data
+                },
+                total: function (data) {
+                    if (data.data    !== undefined) {
+                        return data.total;
+                    } else {
+                        return data.length;
+                    }
+                }
             }
-        );
+        });
+
+        this.products = new kendo.data.DataSource({
+            serverFiltering: true,
+            //serverPaging: true,
+            //pageSize: 5,
+            transport: {
+                read: {
+                    url: devConstants.urls.products.getAll(),
+                    dataType: "json"
+                },
+            },
+            schema: {
+                data: function (data) {
+                    return data.data;
+                },
+                total: function (data) {
+                    return data.total;
+                }
+            }
+        });
+
+        this.productVirtual = {
+            itemHeight: 26,
+            mapValueTo: "dataItem",
+            valueMapper: function (options) {
+                console.log('sheihan')
+                console.log (options);
+                if (options.value !== "") {
+                    console.log('sheihan2')
+                    console.log (options);
+                    inventoryApi.getById(options.value).then(result=>{
+                        options.success([result]);
+                    })
+                }
+            }
+        }
+
+
+        $scope.$on('on-customer-created', (e, customer) => {
+            this.detailAccount.push(customer);
+        });
     }
+
 
     removeInvoiceLine(item) {
         this.invoice.invoiceLines.asEnumerable().remove(item);
+    }
+
+
+    createNewProduct(product) {
+        var data = {title: product};
+        this.inventoryApi.create(data)
+            .then((result) => {
+            })
+            .catch((errors) => this.errors = errors)
+    }
+
+    createNewCustomer(customer) {
+        var data = {title: customer};
+        this.detailAccountApi.create(data)
+            .then((result) => {
+                $scope.$broadcast('on-customer-created', result)
+            })
+            .catch((errors) => this.errors = errors)
     }
 
     createInvoiceLine() {
@@ -62,6 +146,15 @@ export default class SalesInvoiceController {
         this.invoice.invoiceLines.push(newInvoice);
     }
 
+    newInvoice(){
+        this.isLoading = false;
+        this.invoice = {
+            number: null,
+            date: null,
+            description: '',
+            invoiceLines: []
+        };
+    }
     saveInvoice(form) {
         let logger = this.logger,
             formService = this.formService,
@@ -81,17 +174,15 @@ export default class SalesInvoiceController {
         errors.asEnumerable().removeAll();
         //  isSaving = true;
 
-              return this.salesInvoiceApi.create(invoice)
+        return this.salesInvoiceApi.create(invoice)
             .then(result => {
                 logger.success();
                 invoice.id = result.id;
+                this.isLoading = true;
             })
             .catch(err => errors = err)
         // .finally(() => isSaving = false);
 
 
     }
-
-
-
 }

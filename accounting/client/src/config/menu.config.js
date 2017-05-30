@@ -17,6 +17,14 @@ accModule.config(menuItemsProvider => {
                 url: 'dimensions'
             }
         ],
+
+        sales = [
+            {
+                title: 'لیست فروش ها',
+                url: 'sales/list',
+                icon: ''
+            }
+        ],
         journal = [
             {
                 title: 'لیست اسناد حسابداری',

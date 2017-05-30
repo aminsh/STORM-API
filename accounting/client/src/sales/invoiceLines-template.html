@@ -213,29 +213,30 @@
             <td style="width: 30px; padding: 0px; vertical-align: middle; text-align: center;">{{item.row}}</td>
 
 
-            <td style="width: 220px; padding: 0px;" class="invoice-td">
-
-                <dev-tag-combo-box
-                        name="productId"
+            <td style="width: 500px; padding: 0px;" class="invoice-td">
+               <dev-tag-combo-box style="width: 500px;"
+                        name="product"
                         k-placeholder="{{'Select ...'|translate}}"
                         k-data-value-field="id"
                         k-data-text-field="title"
                         k-data-source="model.products"
+                        on-created="model.createNewProduct"
+                        show-no-data-template
                         ng-model="item.productId" required></dev-tag-combo-box>
 
-                <div ng-messages="form['form-'+ $index].productId.$error"
-                     ng-if="form['form-'+ $index].productId.$dy">
+                <div ng-messages="form['form-'+ $index].product.$error"
+                     ng-if="form['form-'+ $index].product.$dirty">
                     <label ng-message="required" class="error">{{'This field is required'|translate}}</label>
                 </div>
             </td>
 
-            <td style="width: 60px; padding: 0px;" class="invoice-td">
+            <td style="width: 120px; padding: 0px;" class="invoice-td">
                 <dev-tag-numeric
                         class="form-control input-grid-factor input-sm"
                         ng-model="item.quantity"
                         name="quantity"
                         required
-                        not-zero="item.quantity"></dev-tag-numeric>
+                        not-should-be-zero="item.quantity"></dev-tag-numeric>
 
                 <div ng-messages="form['form-'+ $index].quantity.$error" ng-if="form['form-'+ $index].quantity.$dirty">
                     <label ng-message="required" class="error">
@@ -253,7 +254,7 @@
                         ng-model="item.unitPrice"
                         name="unitPrice"
                         required
-                        not-zero="item.unitPrice"></dev-tag-numeric>
+                        not-should-be-zero="item.unitPrice"></dev-tag-numeric>
 
                 <div ng-messages="form['form-'+ $index].unitPrice.$error"
                      ng-if="form['form-'+ $index].unitPrice.$dirty">
@@ -297,7 +298,7 @@
             </td>
 
             <td style="padding: 0px; vertical-align: middle; text-align: center;">
-                {{(item.unitPrice *item.quantity)-(item.tax+item.vat+item.discount)}}
+                 {{(item.unitPrice *item.quantity)-(item.tax+item.vat+item.discount)}}
             </td>
 
             <td style="width: 20px; padding: 0px; vertical-align: middle; text-align: center;">
@@ -322,33 +323,62 @@
         </tr>
 
         </tbody>
-        <tfoot style="background-color: #F9F8F8">
-
-        <tr class="active" style="font-size: 9pt; font-weight: bold;">
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td>{{model.invoice.invoiceLines | totalSum: ('totalPrice') | number}} <span style="font-weight: normal">(ریال)</span></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td colspan="2">
-                <dev-tag-button
-                        ng-click="model.createInvoiceLine()"
-                        icon="glyphicon glyphicon-plus"
-                        style-type="primary"
-                        title="{{'New Invoice line' | translate}}"></dev-tag-button>
-            </td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        </tfoot>
     </table>
+
+    <div class="row" style="padding-left: 15px;">
+        <div class="col-md-8">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="btn-group">
+                        <button type="button" ng-click="model.createInvoiceLine()"  class="btn btn-default btn-sm">
+                            <span class="fa fa-plus" aria-hidden="true"></span>&nbsp;
+                            {{'New Invoice line' | translate}}
+                        </button>
+                    </div>
+                </div>
+                <div class="col-md-9 text-right">
+                    <form class="form-inline ng-pristine ng-valid">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <div class="input-group-addon hand" ng-click="openBarcodeList()" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="ورود گروهی توسط بارکد" data-original-title="" title="">
+                                    <span class="fa fa-barcode" aria-hidden="true"></span>
+                                </div>
+                                <input type="text" id="barcodeScan" class="form-control input-sm ng-pristine ng-untouched ng-valid" ng-model="barcode" placeholder="ورود توسط بارکدخوان" select-on-click="">
+                            </div>
+                            <div class="input-group" id="barcodeOK" style="display: none;">
+                                <span class="fa fa-check text-success form-inline" aria-hidden="true"></span>
+                            </div>
+                            <div class="input-group" id="barcodeNoOK" style="display: none;">
+                                <span class="fa fa-remove text-danger form-inline" aria-hidden="true"></span>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div  class="form-group">
+                <label class="label-control" for="description">{{'Description' | translate}}</label>-
+                <textarea class="form-control" rows="4" id="description" ng-model="model.invoice.description"></textarea>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="row text-left">
+                <div class="col-xs-5 title1">جمع <span style="font-weight: normal">(ریال)</span></div>
+                <div class="col-xs-7 title1">{{model.invoice.invoiceLines | totalPrice | number}}</div>
+            </div>
+            <div class="row text-left">
+                <div class="col-xs-5 title1">جمع تخفیف <span style="font-weight: normal" >(ریال)</span></div>
+                <div class="col-xs-7 title1 text-danger">({{model.invoice.invoiceLines | totalSum: ('discount') | number}})</div>
+            </div>
+            <div class="row text-left">
+                <div class="col-xs-5 title1">جمع مالیات <span style="font-weight: normal">(ریال)</span></div>
+                <div class="col-xs-7 title1 ">{{model.invoice.invoiceLines | totalSum: ('tax') | number}}</div>
+            </div>
+            <div class="row" style="border-top: 1px solid rgb(69, 69, 69); margin-top: 1px; margin-bottom: 1px;"></div>
+            <div class="row text-left" style="border-bottom: 1px solid rgb(69, 69, 69)">
+                <div class="col-xs-5 h5 txt-bold">مبلغ کل <span style="font-weight: normal">(ریال)</span></div>
+                <div class="col-xs-7 h5 txt-bold ">{{model.invoice.invoiceLines | sumTotalPrice | number}}</div>
+            </div>
+            <div class="row" style="border-top: 1px solid rgb(69, 69, 69); margin-top: 1px; margin-bottom: 10px;"></div>
+        </div>
+    </div>
 </div>

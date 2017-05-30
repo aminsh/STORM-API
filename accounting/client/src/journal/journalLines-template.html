@@ -30,7 +30,8 @@
                         k-placeholder="{{'Select ...'|translate}}"
                         k-data-value-field="id"
                         k-data-text-field="display"
-                        k-data-source="model.detailAccount.data"
+                        k-data-source="model.detailAccount"
+                        k-filter="'contains'"
                         on-changed="model.detailAccount.onChanged($item, item)"
                         ng-model="item.detailAccountId"
                         required></dev-tag-combo-box>
@@ -49,7 +50,7 @@
                         k-placeholder="{{'Select ...'|translate}}"
                         k-data-value-field="id"
                         k-data-text-field="account"
-                        k-data-source="model.subsidiaryLedgerAccount.data"
+                        k-data-source="model.subsidiaryLedgerAccount"
                         group-by="generalLedgerAccountDisplay"
                         on-changed="model.subsidiaryLedgerAccount.onChanged($item, item)"
                         ng-model="item.subsidiaryLedgerAccountId"

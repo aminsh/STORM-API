@@ -238,6 +238,8 @@
   "Unit price":"قیمت واحد",
   "Discount":"مبلغ تخفیف",
   "Tax":"مبلغ مالیات",
-  "Vat" : "مبلغ عوارض"
+  "Vat" : "مبلغ عوارض",
+  "UntiPrice is not allowed to be zero":"مبلغ کالا نمیتواند صفر باشد",
+  "Item quantity is not allowed to be zero":"تعداد کالا نمیتواند صفر باشد"
 
 }
