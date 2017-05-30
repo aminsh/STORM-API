@@ -20,7 +20,7 @@ accModule.config(menuItemsProvider => {
 
         sales = [
             {
-                title: 'لیست فروش ها',
+                title: 'فروش',
                 url: 'sales/list',
                 icon: ''
             }
@@ -70,10 +70,19 @@ accModule.config(menuItemsProvider => {
             icon: 'fa fa-user',
             children: [
                 ...chartOfAccount,
-                ...sales,
                 ...journal,
                 ...banking,
                 ...reporting
+            ]
+        });
+
+    menuItemsProvider
+        .add({
+            title: 'درآمد',
+            url: '',
+            icon: 'fa fa-user',
+            children: [
+                ...sales
             ]
         });
 });

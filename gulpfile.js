@@ -91,10 +91,10 @@ gulp.task('build-stimulsoft', function () {
         './vendors/stimulsoft/stimulsoft.viewer.js',
         //'./vendors/stimulsoft/stimulsoft.designer.js'
     ])
-        .pipe(beautify({indent_size: 2}))
-        .pipe(gulpif(!config.isProduction, sourcemaps.init()))
+        //.pipe(beautify({indent_size: 2}))
+        //.pipe(gulpif(!config.isProduction, sourcemaps.init()))
         .pipe(concat(`stimulsoft.all.min.js`))
-        .pipe(gulpif(!config.isProduction, sourcemaps.write()))
+        //.pipe(gulpif(!config.isProduction, sourcemaps.write()))
         .pipe(gulp.dest(`${config.publicDir}/js`))
 });
 

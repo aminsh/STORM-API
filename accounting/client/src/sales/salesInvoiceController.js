@@ -1,5 +1,5 @@
-import accModule from '../acc.module';
 import Guid from 'guid';
+
 export default class SalesInvoiceController {
     constructor(navigate,
                 salesInvoiceApi,
@@ -10,7 +10,7 @@ export default class SalesInvoiceController {
                 logger,
                 formService,
                 $timeout,
-                $scope,) {
+                $scope) {
 
         this.$scope = $scope;
         this.logger = logger;
@@ -34,7 +34,7 @@ export default class SalesInvoiceController {
         this.detailAccount = new kendo.data.DataSource({
             serverFiltering: true,
             //serverPaging: true,
-           // pageSize: 10,
+            // pageSize: 10,
             transport: {
                 read: {
                     url: devConstants.urls.detailAccount.all(),
@@ -52,7 +52,7 @@ export default class SalesInvoiceController {
 
                 },
                 total: function (data) {
-                    if (data.data    !== undefined) {
+                    if (data.data !== undefined) {
                         return data.total;
                     } else {
                         return data.length;
@@ -85,18 +85,19 @@ export default class SalesInvoiceController {
             itemHeight: 26,
             mapValueTo: "dataItem",
             valueMapper: function (options) {
-                console.log('sheihan')
-                console.log (options);
+                console.log('sheihan');
+                console.log(options);
                 if (options.value !== "") {
-                    console.log('sheihan2')
-                    console.log (options);
-                    inventoryApi.getById(options.value).then(result=>{
+                    console.log('sheihan2');
+                    console.log(options);
+                    inventoryApi.getById(options.value).then(result => {
                         options.success([result]);
                     })
                 }
             }
-        }
+        };
 
+        this.newInvoice();
 
         $scope.$on('on-customer-created', (e, customer) => {
             this.detailAccount.push(customer);
@@ -127,7 +128,6 @@ export default class SalesInvoiceController {
     }
 
     createInvoiceLine() {
-        let $scope = this.$scope;
 
         let maxRow = this.invoice.invoiceLines.length == 0
                 ? 0
@@ -146,7 +146,7 @@ export default class SalesInvoiceController {
         this.invoice.invoiceLines.push(newInvoice);
     }
 
-    newInvoice(){
+    newInvoice() {
         this.isLoading = false;
         this.invoice = {
             number: null,
@@ -154,12 +154,19 @@ export default class SalesInvoiceController {
             description: '',
             invoiceLines: []
         };
+
+        for (let i = 1; i <= 4; i++) this.createInvoiceLine();
     }
+
     saveInvoice(form) {
         let logger = this.logger,
             formService = this.formService,
             errors = this.errors,
-            invoice = this.invoice
+            invoice = this.invoice;
+
+        invoice.invoiceLines = invoice.invoiceLines.asEnumerable()
+            .where(il => il.unitPrice > 0)
+            .toArray()
         //isSaving = this.isSaving;
 
         if (form.$invalid) {
@@ -182,7 +189,6 @@ export default class SalesInvoiceController {
             })
             .catch(err => errors = err)
         // .finally(() => isSaving = false);
-
 
     }
 }

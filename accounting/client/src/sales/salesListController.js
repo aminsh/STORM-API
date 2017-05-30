@@ -1,4 +1,4 @@
-import accModule from '../acc.module';
+
 export default class salesListController {
     constructor(
                 translate,
