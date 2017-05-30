@@ -70,6 +70,7 @@ accModule.config(menuItemsProvider => {
             icon: 'fa fa-user',
             children: [
                 ...chartOfAccount,
+                ...sales,
                 ...journal,
                 ...banking,
                 ...reporting
