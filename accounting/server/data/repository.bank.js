@@ -2,7 +2,8 @@
 
 const async = require('asyncawait/async'),
     await = require('asyncawait/await'),
-    BaseRepository = require('./repository.base');
+    BaseRepository = require('./repository.base'),
+    Guid = require('../services/shared').utility.Guid;
 
 class BankRepository extends BaseRepository{
     constructor(branchId) {
@@ -18,12 +19,8 @@ class BankRepository extends BaseRepository{
     }
 
     create(entity) {
-        let id = await(this.knex('banks')
-            .returning('id')
-            .insert(entity))[0];
-
-        entity.id = id;
-        return entity;
+        entity.id = Guid.new();
+        return this.knex('banks').insert(entity);
     }
 
     update(entity) {

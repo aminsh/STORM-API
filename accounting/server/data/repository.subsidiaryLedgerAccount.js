@@ -30,12 +30,7 @@ class SubsidiaryLedgerAccountRepository extends BaseRepository {
 
     create(entity) {
         super.create(entity);
-
-        entity.id = await(this.knex('subsidiaryLedgerAccounts')
-            .returning('id')
-            .insert(entity))[0];
-
-        return entity;
+        return this.knex('subsidiaryLedgerAccounts').insert(entity);
     }
 
     update(entity) {

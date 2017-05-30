@@ -19,12 +19,7 @@ class FiscalPeriodRepository extends BaseRepository {
 
     create(entity) {
         super.create(entity);
-
-        entity.id = await(this.knex('fiscalPeriods')
-            .returning('id')
-            .insert(entity))[0];
-
-        return entity;
+        return this.knex('fiscalPeriods').insert(entity);
     }
 }
 

@@ -39,12 +39,7 @@ class GeneralLedgerAccountRepository extends BaseRepository {
 
     create(entity) {
         super.create(entity);
-
-        entity.id = await(this.knex('generalLedgerAccounts')
-            .returning('id')
-            .insert(entity))[0];
-
-        return entity;
+        return this.knex('generalLedgerAccounts').insert(entity);
     }
 
     update(entity) {

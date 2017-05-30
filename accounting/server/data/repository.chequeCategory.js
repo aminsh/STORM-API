@@ -3,7 +3,8 @@
 let async = require('asyncawait/async'),
     await = require('asyncawait/await'),
     BaseRepository = require('./repository.base'),
-    Promise = require('promise');
+    Promise = require('promise'),
+    Guid = require('../services/shared').utility.Guid;
 
 class ChequeCategoryRepository extends BaseRepository {
     constructor(branchId) {
@@ -36,14 +37,14 @@ class ChequeCategoryRepository extends BaseRepository {
 
                         delete entity.cheques;
 
-                        let ids = await(knex('chequeCategories')
+                        await(knex('chequeCategories')
                             .transacting(trx)
-                            .returning('id')
                             .insert(entity));
 
                         cheques.forEach(c => {
                             createBase(c);
-                            c.chequeCategoryId = ids[0];
+                            c.id = Guid.new();
+                            c.chequeCategoryId = entity.id;
                         });
 
                         await(knex('cheques')
@@ -51,8 +52,6 @@ class ChequeCategoryRepository extends BaseRepository {
                             .insert(cheques));
 
                         trx.commit();
-
-                        entity.id = ids[0];
 
                         resolve(entity);
                     }
