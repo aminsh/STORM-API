@@ -161,7 +161,7 @@ export default class {
                 .then(result => {
                     this.journal = result;
 
-                    result.journalLines.forEach(line => {
+                    /*result.journalLines.forEach(line => {
                         let subsidiaryLedgerAccount = this.subsidiaryLedgerAccount.data
                             .asEnumerable().single(s => s.id == line.subsidiaryLedgerAccountId);
 
@@ -169,7 +169,7 @@ export default class {
                         line.hasDimension1 = subsidiaryLedgerAccount.hasDimension1;
                         line.hasDimension2 = subsidiaryLedgerAccount.hasDimension2;
                         line.hasDimension3 = subsidiaryLedgerAccount.hasDimension3;
-                    });
+                    });*/
                     this.journalLines = result.journalLines;
 
                     this.$scope.$broadcast('grid-changed');
