@@ -18,13 +18,23 @@ accModule.config(menuItemsProvider => {
             }
         ],
 
-        sales = [
+        overcome = [
             {
-                title: 'فروش',
+                title: 'فاکتور فروش',
                 url: 'sales/list',
                 icon: ''
             }
         ],
+
+        cost = [
+            {
+                title: 'فاکتور خرید',
+                url: 'purchases/list',
+                icon: ''
+            }
+        ],
+
+
         journal = [
             {
                 title: 'لیست اسناد حسابداری',
@@ -78,11 +88,21 @@ accModule.config(menuItemsProvider => {
 
     menuItemsProvider
         .add({
-            title: 'درآمد',
+            title: 'فروش',
             url: '',
-            icon: 'fa fa-user',
+            icon: 'fa fa-shopping-cart',
             children: [
-                ...sales
+                ...overcome
+            ]
+        });
+
+    menuItemsProvider
+        .add({
+            title: 'خرید',
+            url: '',
+            icon: 'fa fa-shopping-basket',
+            children: [
+                ...cost
             ]
         });
 });

@@ -5,7 +5,7 @@ export default class salesListController {
                 devConstants,
                 logger,
                 $timeout,
-                $scope,) {
+                $scope) {
 
         this.$scope = $scope;
         this.$timeout = $timeout;
@@ -17,7 +17,7 @@ export default class salesListController {
                 {name: 'number', title: translate('Number'), width: '120px', type: 'number'},
                 {name: 'date', title: translate('Date'), type: 'date', width: '120px',},
                 {
-                name: 'description', title: translate('description'), type: 'string', width: '30%',
+                name: 'description', title: translate('Description'), type: 'string', width: '30%',
                 },
             ],
             readUrl: devConstants.urls.sales.getAll(),

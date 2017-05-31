@@ -1,5 +1,5 @@
-import accModule from '../acc.module';
 import Guid from 'guid';
+
 export default class purchaseController {
     constructor(navigate,
                 purchaseApi,
@@ -10,7 +10,7 @@ export default class purchaseController {
                 logger,
                 formService,
                 $timeout,
-                $scope,) {
+                $scope) {
 
         this.$scope = $scope;
         this.logger = logger;
@@ -95,7 +95,7 @@ export default class purchaseController {
                     })
                 }
             }
-        }
+        };
 
 
         $scope.$on('on-customer-created', (e, customer) => {
@@ -127,7 +127,6 @@ export default class purchaseController {
     }
 
     createInvoiceLine() {
-        let $scope = this.$scope;
 
         let maxRow = this.invoice.invoiceLines.length == 0
                 ? 0
@@ -154,12 +153,19 @@ export default class purchaseController {
             description: '',
             invoiceLines: []
         };
+
+        for (let i = 1; i <= 4; i++) this.createInvoiceLine();
     }
+
     saveInvoice(form) {
         let logger = this.logger,
             formService = this.formService,
             errors = this.errors,
-            invoice = this.invoice
+            invoice = this.invoice;
+
+        invoice.invoiceLines = invoice.invoiceLines.asEnumerable()
+            .where(il => il.unitPrice > 0)
+            .toArray()
         //isSaving = this.isSaving;
 
         if (form.$invalid) {
@@ -174,7 +180,7 @@ export default class purchaseController {
         errors.asEnumerable().removeAll();
         //  isSaving = true;
 
-        return this.salesInvoiceApi.create(invoice)
+        return this.purchaseApi.create(invoice)
             .then(result => {
                 logger.success();
                 invoice.id = result.id;

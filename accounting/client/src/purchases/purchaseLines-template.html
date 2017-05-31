@@ -298,7 +298,7 @@
             </td>
 
             <td style="padding: 0px; vertical-align: middle; text-align: center;">
-                 {{(item.unitPrice *item.quantity)-(item.tax+item.vat+item.discount)}}
+                 {{(item.unitPrice *item.quantity)-(item.tax+item.vat+item.discount) | number}}
             </td>
 
             <td style="width: 20px; padding: 0px; vertical-align: middle; text-align: center;">
@@ -330,17 +330,21 @@
             <div class="row">
                 <div class="col-md-3">
                     <div class="btn-group">
-                        <button type="button" ng-click="model.createInvoiceLine()"  class="btn btn-default btn-sm">
-                            <span class="fa fa-plus" aria-hidden="true"></span>&nbsp;
-                            {{'New Invoice line' | translate}}
-                        </button>
+                        <dev-tag-button
+                                ng-click="model.createInvoiceLine()"
+                                icon="glyphicon glyphicon-plus"
+                                style-type="primary"
+                                title="{{'New Journal line' | translate}}"></dev-tag-button>
                     </div>
                 </div>
                 <div class="col-md-9 text-right">
                     <form class="form-inline ng-pristine ng-valid">
                         <div class="form-group">
                             <div class="input-group">
-                                <div class="input-group-addon hand" ng-click="openBarcodeList()" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="ورود گروهی توسط بارکد" data-original-title="" title="">
+                                <div class="input-group-addon hand"
+                                     ng-click="openBarcodeList()"
+                                     data-toggle="popover" data-trigger="hover"
+                                     data-placement="top" data-content="ورود گروهی توسط بارکد" data-original-title="" title="">
                                     <span class="fa fa-barcode" aria-hidden="true"></span>
                                 </div>
                                 <input type="text" id="barcodeScan" class="form-control input-sm ng-pristine ng-untouched ng-valid" ng-model="barcode" placeholder="ورود توسط بارکدخوان" select-on-click="">

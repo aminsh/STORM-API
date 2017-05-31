@@ -70,6 +70,11 @@ let tag = {
 let sales = {
     getAll: ()=> `${rootUrl()}/sales`
 };
+
+let purchase = {
+    getAll: ()=> `${rootUrl()}/purchases`
+};
+
 let products = {
     getAll: ()=> `${rootUrl()}/products`
 };
@@ -89,7 +94,8 @@ let apiUrls = {
     accountReview: accountReview,
     tag: tag,
     sales:sales,
-    products:products
+    purchase,
+    products
 };
 
 export default apiUrls;

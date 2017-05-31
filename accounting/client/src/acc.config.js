@@ -140,6 +140,7 @@ import './journal';
 import './report';
 import './cheque';
 import './sales';
+import './purchases';
 import './inventory';
 
 accModule

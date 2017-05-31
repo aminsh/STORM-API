@@ -234,5 +234,7 @@
   "Vat": "مبلغ عوارض",
   "UntiPrice is not allowed to be zero": "مبلغ کالا نمیتواند صفر باشد",
   "Item quantity is not allowed to be zero": "تعداد کالا نمیتواند صفر باشد",
-  "Create invoice": "ایجاد فاکتور"
+  "Create invoice": "ایجاد فاکتور",
+  "Purchase invoice": "فاکتور خرید",
+  "New purchase": "خرید جدید"
 }

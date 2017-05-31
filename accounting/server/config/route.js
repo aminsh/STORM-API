@@ -20,6 +20,7 @@ app.use('/api/subsidiary-ledger-accounts', require('../routes/api.subsidiaryLedg
 app.use('/api/tags', require('../routes/api.tag'));
 app.use('/api/reports', require('../routes/api.report'));
 app.use('/api/sales', require('../routes/api.sale'));
+app.use('/api/purchases', require('../routes/api.purchase'));
 app.use('/api/products', require('../routes/api.product'));
 app.use('/upload', require('../routes/api.upload'));
 

@@ -25,4 +25,4 @@ function purchaseApi(apiPromise) {
 
 }
 
-accModule.factory('purchasesApi', purchaseApi);
+accModule.factory('purchaseApi', purchaseApi);
