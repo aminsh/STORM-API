@@ -4,8 +4,8 @@ import accModule from '../acc.module';
 import {notShouldBeZero} from './invoiceLines.validations';
 import salesInvoiceController from './salesInvoiceController';
 import salesListController from './salesListController';
-import {totalPrice,sumTotalPrice} from  './saleInvoice.filter';
-import './saleInvoiceApi';
+import {totalPrice,sumTotalPrice} from  './salesInvoice.filter';
+import './salesInvoiceApi';
 
 accModule
 
