@@ -35,4 +35,46 @@ module.exports = class DetailAccountQuery extends BaseQuery {
                 .first());
         return view(detailAccount);
     }
+
+    getAllPeople(parameters){
+        return this.getAllByDetailAccountType(parameters, 'person');
+    }
+
+    getAllBanks(parameters){
+        return this.getAllByDetailAccountType(parameters, 'bank');
+    }
+
+    getAllFunds(parameters){
+        return this.getAllByDetailAccountType(parameters, 'fund');
+    }
+
+    getAllOthers(parameter){
+        let knex = this.knex,
+            branchId = this.branchId;
+
+        let query = knex.select().from(function () {
+            this.select(knex.raw("*,code || ' ' || title as display"))
+                .from('detailAccounts').as('baseDetailAccounts')
+                .where('branchId', branchId)
+                .whereNull('detailAccountType')
+                .as('baseDetailAccounts');
+        }).as('baseDetailAccounts');
+
+        return kendoQueryResolve(query, parameter, view);
+    }
+
+    getAllByDetailAccountType(parameters, type){
+        let knex = this.knex,
+            branchId = this.branchId;
+
+        let query = knex.select().from(function () {
+            this.select(knex.raw("*,code || ' ' || title as display"))
+                .from('detailAccounts').as('baseDetailAccounts')
+                .where('branchId', branchId)
+                .andWhere('detailAccountType', type)
+                .as('baseDetailAccounts');
+        }).as('baseDetailAccounts');
+
+        return kendoQueryResolve(query, parameters, view);
+    }
 };

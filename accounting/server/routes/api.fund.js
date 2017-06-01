@@ -3,58 +3,50 @@
 const async = require('asyncawait/async'),
     await = require('asyncawait/await'),
     router = require('express').Router(),
+    string = require('../utilities/string'),
     translate = require('../services/translateService'),
-    PersianDate = require('../services/persianDateService'),
-    DetailAccountCenterRepository = require('../data/repository.detailAccountCenter'),
-    JournalRepository = require('../data/repository.journal'),
-    FundQuery = require('../queries/query.fund');
+    DetailAccountRepository = require('../data/repository.detailAccount'),
+    DetailAccountQuery = require('../queries/query.detailAccount');
 
-router.route('/', async((req, res) => {
-    let fundQuery = new FundQuery(req.cookies['branch-id']),
-        result = await(fundQuery.getTotalFunds());
+router.route('/')
+    .get(async((req, res) => {
+        let detailAccountQuery = new DetailAccountQuery(req.cookies['branch-id']),
+            result = detailAccountQuery.getAllFunds(req.query);
+        res.json(result);
+    }))
+    .post(async((req, res) => {
+        let detailAccountRepository = new DetailAccountRepository(req.cookies['branch-id']),
+            cmd = req.body,
+            entity = {
+                code: cmd.code,
+                title: cmd.title,
+                detailAccountType: 'fund'
+            };
 
-    res.json(result);
-}));
+        entity = await(detailAccountRepository.create(entity));
 
-router.route('/charge', async((req, res) => {
-    let journalRepository = new JournalRepository(req.cookies['branch-id']),
-        detailAccountCenterRepository = new DetailAccountCenterRepository(req.cookies['branch-id']),
-        cmd = req.body,
-        revolvingFund = await(detailAccountCenterRepository.findById(cmd.revolvingFundId)),
-        bank = await(detailAccountCenterRepository.findById(cmd.bankId)),
+        res.json({isValid: true, returnValue: {id: entity.id}});
 
-        journal = {
-            temporaryNumber: journalRepository.maxTemporaryNumber(req.cookies['current-period']),
-            temporaryDate: PersianDate.current(),
-            description: cmd.article
-        },
+    }));
 
-        journalLines = [
-            {
-                row: 1,
-                subsidiaryLedgerAccountId: revolvingFund.subsidiaryLedgerAccountId,
-                detailAccountId: revolvingFund.detailAccountId,
-                article: cmd.article,
-                debtor: cmd.amount,
-                creditor: 0,
-            },
-            {
-                row: 2,
-                subsidiaryLedgerAccountId: bank.subsidiaryLedgerAccountId,
-                detailAccountId: bank.detailAccountId,
-                article: cmd.article,
-                debtor: 0,
-                creditor: cmd.amount,
-            }
-        ];
+router.route('/:id')
+    .get(async((req, res) => {
+        let detailAccountQuery = new DetailAccountQuery(req.cookies['branch-id']),
+            result = detailAccountQuery.getById(req.params.id);
+        res.json(result);
+    }))
+    .put(async((req, res) => {
+        let detailAccountRepository = new DetailAccountRepository(req.cookies['branch-id']),
+            cmd = req.body,
+            entity = await(detailAccountRepository.findById(req.params.id));
 
-    await(journalRepository.batchCreate(journalLines, journal));
+        entity.code = cmd.code;
+        entity.title = cmd.title;
 
-    res.json({isValid: true});
-}));
+        await(detailAccountRepository.update(entity));
 
-router.route('/spend', async((req, res) => {
+        res.json({isValid: true});
+    }));
 
-}));
 
 module.exports = router;

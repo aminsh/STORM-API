@@ -18,6 +18,14 @@ enums.AccountBalanceType = function () {
     ]);
 };
 
+enums.DetailAccountType = function () {
+    return new Enum([
+        {key: 'person', display: 'شخص'},
+        {key: 'bank', display: 'بانک'},
+        {key: 'fund', display: 'صندوق'}
+    ]);
+};
+
 enums.PersonType=function(){
     return new Enum([
         {key: 'legal', display: 'حقوقی'},

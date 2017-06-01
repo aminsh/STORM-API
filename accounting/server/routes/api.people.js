@@ -11,7 +11,7 @@ const async = require('asyncawait/async'),
 router.route('/')
     .get(async((req, res) => {
         let detailAccountQuery = new DetailAccountQuery(req.cookies['branch-id']),
-            result = detailAccountQuery.getAllBanks(req.query);
+            result = detailAccountQuery.getAllPeople(req.query);
         res.json(result);
     }))
     .post(async((req, res) => {
@@ -20,10 +20,14 @@ router.route('/')
             entity = {
                 code: cmd.code,
                 title: cmd.title,
-                bank: cmd.bank,
-                bankBranch: cmd.bankBranch,
-                bankAccountNumber: cmd.bankAccountNumber,
-                detailAccountType: 'bank'
+                address: cmd.address,
+                phone: cmd.phone,
+                nationalCode: cmd.nationalCode,
+                email: cmd.email,
+                personType: cmd.personType,
+                detailAccountType: 'person',
+                economyCode: cmd.economyCode,
+                bank: cmd.bank
             };
 
         entity = await(detailAccountRepository.create(entity));
@@ -45,9 +49,12 @@ router.route('/:id')
 
         entity.code = cmd.code;
         entity.title = cmd.title;
-        entity.bank= cmd.bank;
-        entity.bankBranch= cmd.bankBranch;
-        entity.bankAccountNumber= cmd.bankAccountNumber;
+        entity.address = cmd.address;
+        entity.phone = cmd.phone;
+        entity.nationalCode = cmd.nationalCode;
+        entity.email = cmd.email;
+        entity.personType = cmd.personType;
+        entity.economyCode = cmd.economyCode;
 
         await(detailAccountRepository.update(entity));
 

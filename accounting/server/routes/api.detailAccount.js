@@ -6,13 +6,12 @@ const async = require('asyncawait/async'),
     string = require('../utilities/string'),
     translate = require('../services/translateService'),
     DetailAccountRepository = require('../data/repository.detailAccount'),
-    DetailAccountCenterRepository = require('../data/repository.detailAccountCenter'),
     DetailAccountQuery = require('../queries/query.detailAccount');
 
 router.route('/')
     .get(async((req, res) => {
         let detailAccountQuery = new DetailAccountQuery(req.cookies['branch-id']),
-            result = await(detailAccountQuery.getAll(req.query));
+            result = await(detailAccountQuery.getAllOthers(req.query));
         res.json(result);
     }))
     .post(async((req, res) => {
@@ -42,14 +41,7 @@ router.route('/')
 
         let entity = await(detailAccountRepository.create({
             code: cmd.code,
-            title: cmd.title,
-            description: cmd.description,
-            address: cmd.address,
-            phone: cmd.phone,
-            nationalCode: cmd.nationalCode,
-            email: cmd.email,
-            personType: cmd.personType,
-            isActive: true
+            title: cmd.title
         }));
 
         return res.json({
@@ -95,12 +87,6 @@ router.route('/:id')
 
         entity.title = cmd.title;
         entity.code = cmd.code;
-        entity.address = cmd.address;
-        entity.phone = cmd.phone;
-        entity.nationalCode = cmd.nationalCode;
-        entity.email = cmd.email;
-        entity.personType = cmd.personType;
-        entity.description = cmd.description;
 
         await(detailAccountRepository.update(entity));
 
@@ -143,22 +129,5 @@ router.route('/:id/deactivate').put(async((req, res) => {
 
     return res.json({isValid: true});
 }));
-
-router.route('/:id/center/:subsidiaryLedgerAccountId')
-    .post(async((req, res) => {
-        let detailAccountCenterRepository = new DetailAccountCenterRepository(req.cookies['branch-id']),
-            entity = {
-                detailAccountId: req.params.id,
-                subsidiaryLedgerAccountId: req.params.subsidiaryLedgerAccountId
-            };
-
-        entity = await(detailAccountCenterRepository.create(entity));
-
-        res.json({
-            isValid: true,
-            returnValue: {id: entity.id}
-        });
-
-    }));
 
 module.exports = router;
