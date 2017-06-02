@@ -5,6 +5,7 @@ const async = require('asyncawait/async'),
     JournalRepository = require('../data/repository.journal'),
     EventEmitter = require('../services/shared').service.EventEmitter;
 
-EventEmitter.on('on-sale-created', async((sale, req) => {
-    let journalRepository = new JournalRepository(req.branchId);
+EventEmitter.on('on-sale-created', async((sale, branchId) => {
+    let journalRepository = new JournalRepository(branchId);
+
 }));

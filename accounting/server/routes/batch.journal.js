@@ -47,7 +47,7 @@ module.exports.Insert = async((req, res) => {
         createdById: req.user.id,
         journalStatus: 'Temporary',
         temporaryNumber: temporaryNumber,
-        temporaryDate: cmd.temporaryDate || persianDateSerivce.current(),
+        temporaryDate: persianDateSerivce.current(),
         description: cmd.description,
         isInComplete: false,
         attachmentFileName: cmd.attachmentFileName,
