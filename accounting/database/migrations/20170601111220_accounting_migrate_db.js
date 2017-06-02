@@ -9,6 +9,8 @@ exports.up = function (knex, Promise) {
             table.string('bank');
             table.string('bankBranch');
             table.string('bankAccountNumber');
+            table.boolean('thisIsDefaultBankAccount');
+            table.boolean('thisIsDefaultFund');
             table.enu('detailAccountType', enums.DetailAccountType().getKeys());
         })
         .createTable('subLedgerGroup', table => {
@@ -25,6 +27,9 @@ exports.down = function (knex, Promise) {
             table.dropColumn('bank');
             table.dropColumn('bankBranch');
             table.dropColumn('bankAccountNumber');
+            table.dropColumn('thisIsDefaultBankAccount');
+            table.dropColumn('thisIsDefaultFund');
+            table.dropColumn('detailAccountType');
         })
         .dropTable('subLedgerGroup')
         .createTable('detailAccountCenters', table => {
