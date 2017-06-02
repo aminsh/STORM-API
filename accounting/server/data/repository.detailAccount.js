@@ -6,7 +6,7 @@ let async = require('asyncawait/async'),
 
 class DetailAccountRepository extends BaseRepository {
     constructor(branchId) {
-        super(branchId)
+        super(branchId);
         this.create = async(this.create);
     }
 
@@ -24,6 +24,30 @@ class DetailAccountRepository extends BaseRepository {
 
         if (notEqualId)
             query.andWhere('id', '!=', notEqualId);
+
+        return query.first();
+    }
+
+    findBankAccountNumber(bankAccountNumber) {
+        let query = this.knex.table('detailAccounts')
+            .modify(this.modify, this.branchId)
+            .where('detailAccountType', 'bank');
+
+        if (bankAccountNumber)
+            query.andWhere('bankAccountNumber', bankAccountNumber);
+        else query.andWhere('thisIsDefaultBankAccount', true);
+
+        return query.first();
+    }
+
+    findFund(fundCode) {
+        let query = this.knex.table('detailAccounts')
+            .modify(this.modify, this.branchId)
+            .where('detailAccountType', 'bank');
+
+        if (fundCode)
+            query.andWhere('code', fundCode);
+        else query.andWhere('thisIsDefaultFund', true);
 
         return query.first();
     }
