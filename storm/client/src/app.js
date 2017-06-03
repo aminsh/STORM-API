@@ -4,7 +4,6 @@ import angular from 'angular';
 
 //import 'angular-animate';
 import 'angular-aria';
-import 'angular-material';
 import 'angular-messages';
 import 'angular-ui-router';
 import 'angular-translate';
@@ -29,11 +28,12 @@ import LoginController from './authentication/login.controller';
 import RegisterController from './authentication/register.controller';
 import UserApi from './authentication/api.user';
 
+import ProfileController from './profile/profile.controller';
+
 import ContactUsController from './contactUs/contactUs.controller';
 import RequestLucaDemoController from './product/requestLucaDemo.controller';
 
 angular.module('app', [
-    'ngMaterial',
     'ngMessages',
     'ui.router',
     'pascalprecht.translate',
@@ -57,6 +57,8 @@ angular.module('app', [
     .controller('LoginController', LoginController)
     .controller('RegisterController', RegisterController)
     .service('userApi', UserApi)
+
+    .controller('ProfileController', ProfileController)
 
     .controller('ContactUsController', ContactUsController)
     .controller('RequestLucaDemoController', RequestLucaDemoController);

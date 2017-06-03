@@ -7,8 +7,8 @@ export default class Api {
     }
 
     get(url, data) {
-        return new this.Promise((resolve, reject) => {
-            $http.get(url, {params: data, paramSerializer: '$httpParamSerializerJQLike'})
+        return this.Promise.create((resolve, reject) => {
+            this.$http.get(url, {params: data, paramSerializer: '$httpParamSerializerJQLike'})
                 .then(function (result) {
                     resolve(result.data);
                 })

@@ -1,4 +1,4 @@
-function shell($mdSidenav, $rootScope, $window) {
+function shell($rootScope, $window) {
     "use strict";
 
     return {
@@ -27,6 +27,6 @@ function shell($mdSidenav, $rootScope, $window) {
     }
 }
 
-shell.$inject = ['$mdSidenav', '$rootScope', '$window'];
+shell.$inject = ['$rootScope', '$window'];
 
 export default shell;

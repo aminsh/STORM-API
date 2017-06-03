@@ -51,8 +51,8 @@ export default class RegisterController {
         if (form.$invalid)
             return this.setDirty(form);
 
-        if (user.password !== user.confirm_password) {
-            form.confirm_password.$error.match = true;
+        if (user.password !== user.confirmPassword) {
+            form.confirmPassword.$error.match = true;
             return this.setDirty(form)
         }
         if (form.email.$error.check === true) {
