@@ -53,6 +53,14 @@ enums.InvoiceType=function(){
     ]);
 };
 
+enums.InvoiceStatus = function () {
+    return new Enum([
+        {key: 'draft', display: 'پیش نویس'},
+        {key: 'waitForPayment', display: 'منتظر برای پرداخت'},
+        {key: 'paid', display: 'پراخت شده'},
+    ]);
+};
+
 enums.JournalType = function () {
     return new Enum([
         {key: 'Opening', display: 'افتتاحیه'},
@@ -116,5 +124,13 @@ enums.Active = () => {
         {key: 'false', name: 'showInactiveItems', display: 'نمایش غیر فعال ها'}
     ]);
 };
+enums.ReceivableType = function () {
+    return new Enum([
+        {key: 'cheque', display: 'چک'},
+        {key: 'receipt', display: 'فیش واریزی'},
+        {key: 'cash', display: 'نقدی'}
+    ])
+};
+
 
 module.exports = enums;
