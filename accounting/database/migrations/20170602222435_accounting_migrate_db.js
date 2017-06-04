@@ -81,7 +81,7 @@ exports.up = function (knex, Promise) {
                 .onDelete('CASCADE');
 
             table.float('amount');
-            table.enu('receivableType', enums.ReceivableType().getKeys());
+            table.enu('paymentType', enums.ReceivableType().getKeys());
             table.string('bankName');
             table.string('bankBranch');
 

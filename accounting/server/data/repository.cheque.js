@@ -1,6 +1,6 @@
 "use strict";
 
-let async = require('asyncawait/async'),
+const async = require('asyncawait/async'),
     await = require('asyncawait/await'),
     BaseRepository = require('./repository.base');
 

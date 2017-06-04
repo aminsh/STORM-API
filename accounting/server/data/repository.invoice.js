@@ -35,6 +35,8 @@ module.exports = class InvoiceRepository extends BaseRepository {
 
                     await(this.createInvoiceLines(lines, entity.id, trx));
 
+                    entity.lines = lines;
+                    
                     resolve(entity);
                 }
                 catch (e) {
