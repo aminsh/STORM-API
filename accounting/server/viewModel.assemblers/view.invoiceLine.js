@@ -1,18 +1,14 @@
 "use strict";
 
-function saleLineAssembler(entity) {
-
-    var viewModel = {
+module.exports = function (entity) {
+    return {
         id: entity.id,
         productId: entity.productId,
-        productDisplay: entity.productDisplay,
+        description: entity.description,
         quantity: entity.quantity,
         unitPrice: entity.unitPrice,
         vat: entity.vat,
         discount: entity.discount
     };
+};
 
-    return viewModel;
-}
-
-module.exports = saleLineAssembler;

@@ -6,19 +6,21 @@ const async = require('asyncawait/async'),
     string = require('../utilities/string'),
     translate = require('../services/translateService'),
     InvoiceRepository = require('../data/repository.invoice'),
-    SaleQuery = require('../queries/query.sale');
+    ProductRepository = require('../data/repository.product'),
+    InvoiceQuery = require('../queries/query.invoice');
 
 router.route('/')
     .get(async((req, res) => {
-        let saleQuery = new SaleQuery(req.cookies['branch-id']),
-            result = await(saleQuery.getAll(req.query));
+        let invoiceQuery = new InvoiceQuery(req.cookies['branch-id']),
+            result = await(invoiceQuery.getAll(req.query, 'sale'));
 
-       res.json(result);
+        res.json(result);
     }));
 
 router.route('/:type')
     .post(async((req, res) => {
         let invoiceRepository = new InvoiceRepository(req.cookies['branch-id']),
+            productRepository = new ProductRepository(req.cookies['branch-id']),
             cmd = req.body,
             status = req.params.type,
 
@@ -34,7 +36,9 @@ router.route('/:type')
         entity.lines = cmd.invoiceLines.asEnumerable()
             .select(line => ({
                 productId: line.productId,
-                description: line.description,
+                description: (line.productId)
+                    ? await(productRepository.findById(line.productId)).title
+                    : line.description,
                 quantity: line.quantity,
                 unitPrice: line.unitPrice,
                 discount: line.discount,
@@ -47,9 +51,9 @@ router.route('/:type')
         res.json({isValid: true, returnValue: {id: result.id}});
     }));
 
-router.route('/:id/lines').get(async((req, res)=>{
-    let saleQuery = new SaleQuery(req.cookies['branch-id']),
-        result = await(saleQuery.getAllLines(req.params.id,req.query));
+router.route('/:id/lines').get(async((req, res) => {
+    let invoiceQuery = new InvoiceQuery(req.cookies['branch-id']),
+        result = await(invoiceQuery.getAllLines(req.params.id, req.query));
 
     res.json(result);
 }));
