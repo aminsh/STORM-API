@@ -4,11 +4,19 @@ let async = require('asyncawait/async'),
     await = require('asyncawait/await'),
     BaseRepository = require('./repository.base');
 
-module.exports = class SaleRepository extends BaseRepository {
+module.exports = class InvoiceRepository extends BaseRepository {
     constructor(branchId) {
         super(branchId);
         this.create = async(this.create);
-        this.createSale = async(this.createSale);
+        this.createInvoice = async(this.createInvoice);
+        this.createInvoiceLines = async(this.createInvoiceLines);
+    }
+
+    saleMaxNumber() {
+        return this.knex.table('invoices')
+            .modify(this.modify, this.branchId)
+            .where('invoiceType', 'sale')
+            .max('number');
     }
 
     create(entity) {
@@ -16,16 +24,16 @@ module.exports = class SaleRepository extends BaseRepository {
 
         return new Promise((resolve, reject) => {
             this.knex.transaction(async(trx => {
-                let entity=this.entity;
+                let entity = this.entity;
 
                 try {
                     let lines = this.entity.lines;
 
                     delete  entity.lines;
 
-                    await(this.createSale(entity, trx));
+                    await(this.createInvoice(entity, trx));
 
-                    await(this.createSaleLines(lines, entity.id, trx));
+                    await(this.createInvoiceLines(lines, entity.id, trx));
 
                     resolve(entity);
                 }
@@ -36,7 +44,7 @@ module.exports = class SaleRepository extends BaseRepository {
         });
     }
 
-    createSale(entity, trx) {
+    createInvoice(entity, trx) {
         super.create(entity);
 
         entity.id = await(this.knex('sales')
@@ -47,7 +55,7 @@ module.exports = class SaleRepository extends BaseRepository {
         return entity;
     }
 
-    createSaleLines(lines, salesId, trx) {
+    createInvoiceLines(lines, salesId, trx) {
         lines.forEach(line => {
             super.create(line);
             line.saleId = salesId;
