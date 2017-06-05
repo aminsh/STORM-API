@@ -12,6 +12,10 @@ module.exports = class InvoiceRepository extends BaseRepository {
         this.createInvoiceLines = async(this.createInvoiceLines);
     }
 
+    findById(id){
+        return this.knex.table('invoices').where('id',id).first();
+    }
+
     saleMaxNumber() {
         return this.knex.table('invoices')
             .modify(this.modify, this.branchId)
