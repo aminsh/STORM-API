@@ -5,7 +5,7 @@ const enums = require('../../shared/enums');
 exports.up = function (knex, Promise) {
     return knex.schema
         .table('detailAccounts', table => {
-            table.string('economyCode');
+            table.string('economicCode');
             table.string('registrationNumber');
             table.string('bank');
             table.string('bankBranch');

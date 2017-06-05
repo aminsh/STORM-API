@@ -27,7 +27,7 @@ router.route('/')
                 email: cmd.email,
                 personType: cmd.personType,
                 detailAccountType: 'person',
-                economyCode: cmd.economyCode
+                economicCode: cmd.economicCode
             };
 
         entity = await(detailAccountRepository.create(entity));

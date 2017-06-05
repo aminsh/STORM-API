@@ -12,7 +12,7 @@ export default class SetupFirstPeriodController {
         };
     }
 
-    createFiscalPeriod(form) {
+    save(form) {
         if (form.$invalid)
             return this.setDirty(form);
 
@@ -23,4 +23,4 @@ export default class SetupFirstPeriodController {
     }
 }
 
-SetupFirstPeriodController.$inject = ['firstPeriodApi', '$state', 'setDirty'];
+SetupFirstPeriodController.$inject = ['fiscalPeriodApi', '$state', 'setDirty'];

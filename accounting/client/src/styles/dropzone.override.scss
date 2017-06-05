@@ -5,3 +5,7 @@ dropzone {
   background: white;
   padding: 20px 20px;
 }
+
+.dropzone .dz-preview .dz-image{
+  width: inherit;
+}

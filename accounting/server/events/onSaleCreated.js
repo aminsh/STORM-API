@@ -6,9 +6,10 @@ const async = require('asyncawait/async'),
     EventEmitter = require('../services/shared').service.EventEmitter;
 
 EventEmitter.on('on-sale-created', async((sale, current) => {
-    let journalService = new JournalService(current.branchId, current.fiscalPeriodId, current.userId);
+    let journalService = new JournalService(
+        current.branchId,
+        current.fiscalPeriodId,
+        current.userId);
 
-    if (sale.status == 'waitForPayment')
-        journalService.createBySaleNotPaid(sale);
-
+    journalService.createBySaleNotPaid(sale);
 }));
