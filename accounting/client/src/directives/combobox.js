@@ -13,9 +13,10 @@ function combobox($window) {
         template: '<input  style="width: 100%;" />',
 
         link: function (scope, element, attrs, ngModel) {
-            let hasNoDataTemplate = attrs.hasOwnProperty('showNoDataTemplate');
+            let hasNoDataTemplate = attrs.hasOwnProperty('showNoDataTemplate'),
+                onCreatedName = attrs.onCreated.split('.').asEnumerable().last();
 
-            $window.addValue = function (widgetId, value) {
+            $window[onCreatedName] = function (widgetId, value) {
 
                 var dataSource = eval(`scope.${attrs.kDataSource}`);
                 dataSource.add({title: value});
@@ -28,7 +29,7 @@ function combobox($window) {
 
             let template = `<div>
                 <button class="btn btn-primary" 
-                onclick="addValue('#: instance.element[0].id #', '#: instance.input.val() #')">
+                onclick="${onCreatedName}('#: instance.element[0].id #', '#: instance.input.val() #')">
                     <i class="fa fa-plus"></i>
                     ${create} "#: instance.input.val() #"
                 </button>
