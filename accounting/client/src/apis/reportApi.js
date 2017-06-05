@@ -90,4 +90,9 @@ export default class {
     detailSubsidiaryDetailJournal(params) {
         return this.apiPromise.get(`${this.urlPrefix}/detail-subsidiary-detail-journal`,params);
     }
+
+    invoice(invoiceId){
+        return this.apiPromise.get(`${this.urlPrefix}/journal-lines/${invoiceId}`);
+    }
+
 }
