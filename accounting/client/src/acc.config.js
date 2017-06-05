@@ -91,6 +91,7 @@ import './directives/validationSummary';
 import './directives/uploader';
 import './directives/button';
 import './directives/combobox';
+import './directives/uiSelectCombobox';
 import './directives/content';
 import './directives/datepicker';
 import './directives/toolbar';

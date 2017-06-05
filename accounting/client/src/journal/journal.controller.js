@@ -90,51 +90,16 @@ export default class {
         this.tags = [];
 
         $q.all([
-
-            this.detailAccount = new kendo.data.DataSource({
-                serverFiltering: true,
-                transport: {
-                    read: {
-                        url: devConstants.urls.detailAccount.all(),
-                        dataType: "json"
-                    },
-                },
-                schema: {
-                    data: "data",
-                    total: 'total'
-                }
-            }),
-            this.subsidiaryLedgerAccount = new kendo.data.DataSource({
-                serverFiltering: true,
-                transport: {
-                    read: {
-                        url: devConstants.urls.subsidiaryLedgerAccount.all(),
-                        dataType: "json"
-                    },
-                },
-                schema: {
-                    data: "data",
-                    total: 'total'
-                }
-            })
-
-
+            subsidiaryLedgerAccountApi.getAll(),
+            detailAccountApi.getAll(),
+            tagApi.getAll()
         ]).then(result => {
+            this.subsidiaryLedgerAccount.data = result[0].data;
+            this.detailAccount.data = result[1].data;
+            this.tags = result[2].data;
+
             this.fetch();
         });
-
-
-        // $q.all([
-        //     subsidiaryLedgerAccountApi.getAll(),
-        //     detailAccountApi.getAll(),
-        //     tagApi.getAll()
-        // ]).then(result => {
-        //     this.subsidiaryLedgerAccount.data = result[0].data;
-        //     //this.detailAccount.data = result[1].data;
-        //     this.tags = result[2].data;
-        //
-        //     this.fetch();
-        // });
     }
 
     fetch() {
@@ -161,7 +126,7 @@ export default class {
                 .then(result => {
                     this.journal = result;
 
-                    /*result.journalLines.forEach(line => {
+                    result.journalLines.forEach(line => {
                         let subsidiaryLedgerAccount = this.subsidiaryLedgerAccount.data
                             .asEnumerable().single(s => s.id == line.subsidiaryLedgerAccountId);
 
@@ -169,7 +134,7 @@ export default class {
                         line.hasDimension1 = subsidiaryLedgerAccount.hasDimension1;
                         line.hasDimension2 = subsidiaryLedgerAccount.hasDimension2;
                         line.hasDimension3 = subsidiaryLedgerAccount.hasDimension3;
-                    });*/
+                    });
                     this.journalLines = result.journalLines;
 
                     this.$scope.$broadcast('grid-changed');
@@ -278,7 +243,7 @@ export default class {
     print() {
         //report/100?minNumber=5&maxNumber=5
 
-        let reportParam = {"minNumber": this.journal.temporaryNumber, "maxNumber": this.journal.temporaryNumber}
+        let reportParam={"minNumber":  this.journal.temporaryNumber,"maxNumber":  this.journal.temporaryNumber}
         this.navigate(
             'report.print',
             {key: 100},
