@@ -1,14 +1,20 @@
 "use strict";
 
+import moment from 'moment-jalaali';
+
 export default class SetupFirstPeriodController {
     constructor(fiscalPeriodApi, $state, setDirty) {
         this.fiscalPeriodApi = fiscalPeriodApi;
         this.$state = $state;
         this.setDirty = setDirty;
 
+        let date = moment(),
+            year = date.jYear(),
+            isLeap = moment.jIsLeapYear(year);
+
         this.fiscalPeriod = {
-            minDate: '',
-            maxDate: ''
+            minDate: `${year}/01/01`,
+            maxDate: `${year}/12/${isLeap ? '30' : '29'}`
         };
     }
 

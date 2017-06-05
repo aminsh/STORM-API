@@ -19,7 +19,7 @@ module.exports = class DetailAccountQuery extends BaseQuery {
             branchId = this.branchId;
 
         let query = knex.select().from(function () {
-            this.select(knex.raw("*,code || ' ' || title as display"))
+            this.select(knex.raw(`*,coalesce("code", '') || ' ' || title as display`))
                 .from('detailAccounts').as('baseDetailAccounts')
                 .where('branchId', branchId);
         }).as('baseDetailAccounts');
@@ -53,7 +53,7 @@ module.exports = class DetailAccountQuery extends BaseQuery {
             branchId = this.branchId;
 
         let query = knex.select().from(function () {
-            this.select(knex.raw("*,code || ' ' || title as display"))
+            this.select(knex.raw(`*,coalesce("code", '') || ' ' || title as display`))
                 .from('detailAccounts').as('baseDetailAccounts')
                 .where('branchId', branchId)
                 .whereNull('detailAccountType')
@@ -68,7 +68,7 @@ module.exports = class DetailAccountQuery extends BaseQuery {
             branchId = this.branchId;
 
         let query = knex.select().from(function () {
-            this.select(knex.raw("*,code || ' ' || title as display"))
+            this.select(knex.raw(`*,coalesce("code", '') || ' ' || title as display`))
                 .from('detailAccounts').as('baseDetailAccounts')
                 .where('branchId', branchId)
                 .andWhere('detailAccountType', type)

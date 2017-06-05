@@ -91,6 +91,7 @@ import './directives/validationSummary';
 import './directives/uploader';
 import './directives/button';
 import './directives/combobox';
+import './directives/uiSelectCombobox';
 import './directives/content';
 import './directives/datepicker';
 import './directives/toolbar';
@@ -142,7 +143,8 @@ import './cheque';
 import './sales';
 import './purchases';
 import './inventory';
-
+import './people';
+import './fund';
 accModule
     .config(uiRouteConfig)
     .config(ADMdtpConfig)

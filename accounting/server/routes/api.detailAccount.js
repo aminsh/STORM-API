@@ -11,7 +11,7 @@ const async = require('asyncawait/async'),
 router.route('/')
     .get(async((req, res) => {
         let detailAccountQuery = new DetailAccountQuery(req.cookies['branch-id']),
-            result = await(detailAccountQuery.getAllOthers(req.query));
+            result = await(detailAccountQuery.getAll(req.query));
         res.json(result);
     }))
     .post(async((req, res) => {

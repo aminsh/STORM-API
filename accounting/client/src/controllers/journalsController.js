@@ -57,6 +57,9 @@ function journalsController($scope, translate, journalApi, $state, logger,
                 }
             }
         },
+        sort: [
+            {dir: 'desc', field: 'temporaryNumber'}
+        ],
         resolveExtraFilter: journalsExtraFilterResolve,
         setExtraFilter: (extra) => {
             $scope.searchParameters = extra;

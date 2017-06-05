@@ -47,7 +47,10 @@ function journalManagementController($scope, logger, confirm, devConstants, tran
         commands: [],
         selectable: true,
         readUrl: '',
-        gridSize: '200px'
+        gridSize: '200px',
+        sort: [
+            {dir: 'desc', field: 'temporaryNumber'}
+        ]
     };
 
     $scope.current = false;

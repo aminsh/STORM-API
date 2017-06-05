@@ -25,7 +25,7 @@ export default class SetupInfoController {
 
         this.branchApi.create(this.branch)
             .then(result => {
-                this.$state.go('^.firstPeriod');
+                this.$state.go('^.fiscalPeriod');
             })
             .finally(() => this.isWaiting = false);
     }
