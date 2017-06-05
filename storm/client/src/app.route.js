@@ -47,20 +47,43 @@ export default function routing($stateProvider, $urlRouterProvider, $locationPro
             url: '/register',
             templateUrl: 'app/authentication/register.html',//require('./auth/register.html'),
             controller: 'RegisterController',
-            controllerAs: 'registerVM'
+            controllerAs: 'model'
         })
         .state('activateUser', {
             url: '/activate/:token',
             onEnter: (logger, translate , $state) => {
                 logger.success(translate('Your Account activated successfully'))
-                    .then(()=> $state.go('home'));
+                    .then(()=> $state.go('profile'));
             }
+        })
+        .state('profile', {
+            url: '/profile',
+            templateUrl: 'app/profile/profile.html',//require('./auth/register.html'),
+            controller: 'ProfileController',
+            controllerAs: 'model'
         })
         .state('contactUs', {
             url: '/contact-us',
             templateUrl: 'app/contactUs/contactUs.html',//require('./auth/register.html'),
             controller: 'ContactUsController',
             controllerAs: 'vm'
+        })
+
+        .state('setup', {
+            url: '/setup',
+            template: '<ui-view></ui-view>'
+        })
+        .state('setup.info', {
+            url: '/info',
+            templateUrl: 'app/branch/setupInfo.html',
+            controller: 'SetupInfoController',
+            controllerAs: 'model'
+        })
+        .state('setup.fiscalPeriod', {
+            url: '/fiscal-period',
+            templateUrl: 'app/branch/setupFiscalPeriod.html',
+            controller: 'SetupFiscalPeriodController',
+            controllerAs: 'model'
         })
 
         .state('/page-not-found', {

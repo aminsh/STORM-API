@@ -3,8 +3,6 @@
 const async = require('asyncawait/async'),
     await = require('asyncawait/await'),
     JournalRepository = require('../data/repository.journal'),
-    JournalLineRepository = require('../data/repository.journalLine'),
-    JournalLineQuery = require('../queries/query.journalLine'),
     SubsidiaryLedgerAccountRepository = require('../data/repository.subsidiaryLedgerAccount'),
     DetailAccountRepository = require('../data/repository.detailAccount'),
     FiscalPeriodRepository = require('../data/repository.fiscalPeriod'),
@@ -18,8 +16,8 @@ module.exports = class JournalService {
         this.journalRepository = new JournalRepository(branchId);
         this.fiscalPeriodRepository = new FiscalPeriodRepository(branchId);
         this.subsidiaryLedgerAccountRepository = new SubsidiaryLedgerAccountRepository(branchId);
-        this.detailAccountRepository = new DetailAccountRepository(branchId),
-            this.currentFiscalPeriod = await(this.fiscalPeriodRepository.findById(currentFiscalPeriodId));
+        this.detailAccountRepository = new DetailAccountRepository(branchId);
+        this.currentFiscalPeriod = await(this.fiscalPeriodRepository.findById(currentFiscalPeriodId));
         this.userId = userId;
 
         this.create = async(this.create);

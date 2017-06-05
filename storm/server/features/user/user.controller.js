@@ -16,7 +16,7 @@ router.route('/activate/:token').get(async((req, res) => {
     user.token = null;
     user.state = 'active';
 
-    await(userRepository.update(user.id ,user));
+    await(userRepository.update(user.id, user));
 
     req.logIn(user, function (err) {
         if (err) return next(err);
@@ -27,7 +27,10 @@ router.route('/activate/:token').get(async((req, res) => {
 router.route('/profile').get(async((req, res) => {
     let returnUrl = req.cookies['return-url'];
 
-    res.redirect(returnUrl || '/');
+    if (returnUrl)
+        res.redirect(returnUrl);
+
+    res.render(res.render('index.ejs'));
 }));
 
 module.exports = router;

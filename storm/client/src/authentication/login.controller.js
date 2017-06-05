@@ -44,7 +44,7 @@ export default class LoginController {
                     this.$window.location = this.returnUrl;
                 else {
                     this.$rootScope.currentUser = result.currentUser;
-                    this.$state.go('home');
+                    this.$state.go('profile');
                 }
             })
             .catch(err => this.isError = true);

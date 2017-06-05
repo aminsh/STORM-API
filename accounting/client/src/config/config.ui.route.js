@@ -267,13 +267,13 @@ export default function ($stateProvider, $urlRouterProvider, $locationProvider) 
             url: '/list',
             controller: 'purchasesListController',
             controllerAs: 'model',
-            templateUrl: 'partials/purchases/purchases.html'
+            templateUrl: 'partials/purchase/purchases.html'
         })
         .state('purchases.create', {
             url: '/create',
             controller: 'purchaseController',
             controllerAs: 'model',
-            templateUrl: 'partials/purchases/purchaseCreate.html'
+            templateUrl: 'partials/purchase/invoiceCreate.html'
         })
         .state('not-found', {
             url: '/not-found',

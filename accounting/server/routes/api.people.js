@@ -23,11 +23,11 @@ router.route('/')
                 address: cmd.address,
                 phone: cmd.phone,
                 nationalCode: cmd.nationalCode,
+                registrationNumber: cmd.registrationNumber,
                 email: cmd.email,
                 personType: cmd.personType,
                 detailAccountType: 'person',
-                economyCode: cmd.economyCode,
-                bank: cmd.bank
+                economyCode: cmd.economyCode
             };
 
         entity = await(detailAccountRepository.create(entity));
@@ -52,6 +52,7 @@ router.route('/:id')
         entity.address = cmd.address;
         entity.phone = cmd.phone;
         entity.nationalCode = cmd.nationalCode;
+        entity.registrationNumber = cmd.registrationNumber;
         entity.email = cmd.email;
         entity.personType = cmd.personType;
         entity.economyCode = cmd.economyCode;
