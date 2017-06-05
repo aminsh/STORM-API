@@ -1,13 +1,17 @@
-import accModule from '../acc.module';
-//import $ from 'jquery';
-//import 'jquery.filedrop';
+"use strict";
 
 import Dropzone from 'dropzone';
 
-function uploader() {
+export default function uploader() {
     return {
         restrict: 'E',
-        templateUrl: 'partials/templates/uploader.html',
+        template: `<form action="#" class="dropzone dz-clickable" id="upload">
+
+    <div class="dz-default dz-message"><span>
+        <strong>برای آپلود لوگو فایل خود را به این قسمت بکشید یا همینجا کلیک کنید</strong>
+    </span>
+    </div>
+</form>`,
         replace: true,
         scope: {
             before: '&',
@@ -18,7 +22,7 @@ function uploader() {
                     url: '/upload',
                     method: 'post',
                     maxFilesize: 2,
-                    clickable: '#upload',
+                    clickable: '#upload'
 
                 },
                 dropzone = new Dropzone(element[0], config);
@@ -34,5 +38,3 @@ function uploader() {
         }
     };
 }
-
-accModule.directive('devTagUploader', uploader);

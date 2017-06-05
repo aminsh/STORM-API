@@ -71,19 +71,22 @@ export default function routing($stateProvider, $urlRouterProvider, $locationPro
 
         .state('setup', {
             url: '/setup',
-            template: '<ui-view></ui-view>'
+            template: '<ui-view></ui-view>',
+            shouldAuthenticate: true
         })
         .state('setup.info', {
             url: '/info',
-            templateUrl: 'app/branch/setupInfo.html',
+            templateUrl: 'app/branch/setup-info.html',
             controller: 'SetupInfoController',
-            controllerAs: 'model'
+            controllerAs: 'model',
+            shouldAuthenticate: true
         })
         .state('setup.fiscalPeriod', {
-            url: '/fiscal-period',
-            templateUrl: 'app/branch/setupFiscalPeriod.html',
-            controller: 'SetupFiscalPeriodController',
-            controllerAs: 'model'
+            url: '/first-fiscal-period',
+            templateUrl: 'app/branch/setup-firstFiscalPeriod.html',
+            controller: 'SetupFirstPeriodController',
+            controllerAs: 'model',
+            shouldAuthenticate: true
         })
 
         .state('/page-not-found', {

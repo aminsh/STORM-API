@@ -1,22 +1,34 @@
 "use strict";
 
 const express = require('express'),
+    config= require('../../config'),
     router = express.Router(),
     async = require('asyncawait/async'),
     await = require('asyncawait/await'),
     jwt = require('jsonwebtoken'),
-    branchRepository = new require('./branch.repository'),
+    branchRepository = require('./branch.repository'),
     userRepository = new (require('../user/user.repository')),
     branchQuery = require('./branch.query'),
-    superSecret = require('../../../../shared/services/cryptoService').superSecret;
+    superSecret = require('../../../../shared/services/cryptoService').superSecret,
+    Image = require('../../services/shared').utility.Image;
 
 
 router.route('/').post(async((req, res) => {
-    let cmd = req.body;
+    let cmd = req.body,
+        entity = {
+            name: cmd.name,
+            logo: cmd.logo
+                ? Image.toBase64(`${config.rootPath}/../${cmd.logo}`)
+                : config.logo,
+            phone: cmd.phone,
+            address: cmd.address
+        };
 
-    await(branchRepository.create(cmd));
+    await(branchRepository.create(entity));
 
-    res.body({isValid: true});
+    res.cookie('branch-id', entity.id);
+
+    res.json({isValid: true});
 }));
 
 router.route('/current').get(async((req, res) => {

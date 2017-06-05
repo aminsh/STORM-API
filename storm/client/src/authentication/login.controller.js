@@ -35,7 +35,7 @@ export default class LoginController {
     }
 
     login(form) {
-        if (form.$invalid) 
+        if (form.$invalid)
             return this.setDirty(form);
         
         this.userApi.login(this.user)
@@ -44,6 +44,7 @@ export default class LoginController {
                     this.$window.location = this.returnUrl;
                 else {
                     this.$rootScope.currentUser = result.currentUser;
+                    this.$rootScope.isAuthenticated = true;
                     this.$state.go('profile');
                 }
             })

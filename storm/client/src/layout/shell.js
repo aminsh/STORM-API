@@ -13,12 +13,14 @@ function shell($rootScope, $window) {
                 scope.currentUser = currentUser;
                 scope.currentUserImage = $window.document.getElementsByName("currentUserImage")[0].content;
                 scope.logined = true;
+                $rootScope.isAuthenticated = true;
             } else {
                 currentUser = $rootScope.currentUser;
 
                 if (currentUser) {
                     scope.currentUser = currentUser;
                     scope.logined = true;
+                    $rootScope.isAuthenticated = true;
                 }
             }
 
