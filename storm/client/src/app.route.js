@@ -60,7 +60,8 @@ export default function routing($stateProvider, $urlRouterProvider, $locationPro
             url: '/profile',
             templateUrl: 'app/profile/profile.html',//require('./auth/register.html'),
             controller: 'ProfileController',
-            controllerAs: 'model'
+            controllerAs: 'model',
+            shouldAuthenticate: true
         })
         .state('contactUs', {
             url: '/contact-us',

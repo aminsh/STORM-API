@@ -9,6 +9,10 @@ export default class BranchApi {
     create(data){
         return this.Api.post(`${this.prefixUrl}`, data);
     }
+
+    getMyBranches(){
+        return this.Api.get(`${this.prefixUrl}/my`);
+    }
 }
 
 BranchApi.$inject = ['Api'];

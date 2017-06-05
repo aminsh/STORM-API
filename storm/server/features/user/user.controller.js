@@ -27,10 +27,10 @@ router.route('/activate/:token').get(async((req, res) => {
 router.route('/profile').get(async((req, res) => {
     let returnUrl = req.cookies['return-url'];
 
-    if (returnUrl)
-        res.redirect(returnUrl);
+    if (returnUrl && returnUrl != '/profile')
+        return res.redirect(returnUrl);
 
-    res.render(res.render('index.ejs'));
+    res.render('index.ejs');
 }));
 
 module.exports = router;

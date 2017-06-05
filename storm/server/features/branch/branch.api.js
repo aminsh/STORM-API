@@ -21,7 +21,8 @@ router.route('/').post(async((req, res) => {
                 ? Image.toBase64(`${config.rootPath}/../${cmd.logo}`)
                 : config.logo,
             phone: cmd.phone,
-            address: cmd.address
+            address: cmd.address,
+            ownerId: req.user.id
         };
 
     await(branchRepository.create(entity));
