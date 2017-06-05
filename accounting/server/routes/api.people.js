@@ -11,7 +11,7 @@ const async = require('asyncawait/async'),
 router.route('/')
     .get(async((req, res) => {
         let detailAccountQuery = new DetailAccountQuery(req.cookies['branch-id']),
-            result = detailAccountQuery.getAllPeople(req.query);
+            result = await(detailAccountQuery.getAllPeople(req.query));
         res.json(result);
     }))
     .post(async((req, res) => {
@@ -39,7 +39,7 @@ router.route('/')
 router.route('/:id')
     .get(async((req, res) => {
         let detailAccountQuery = new DetailAccountQuery(req.cookies['branch-id']),
-            result = detailAccountQuery.getById(req.params.id);
+            result = await(detailAccountQuery.getById(req.params.id));
         res.json(result);
     }))
     .put(async((req, res) => {
@@ -55,7 +55,7 @@ router.route('/:id')
         entity.registrationNumber = cmd.registrationNumber;
         entity.email = cmd.email;
         entity.personType = cmd.personType;
-        entity.economyCode = cmd.economyCode;
+        entity.economicCode = cmd.economicCode;
 
         await(detailAccountRepository.update(entity));
 

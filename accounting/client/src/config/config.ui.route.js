@@ -275,6 +275,60 @@ export default function ($stateProvider, $urlRouterProvider, $locationProvider) 
             controllerAs: 'model',
             templateUrl: 'partials/purchase/invoiceCreate.html'
         })
+
+        .state('people', {
+            url: '/people',
+            controller: 'peopleListController',
+            controllerAs: 'model',
+            templateUrl: 'partials/people/peopleList.html'
+        })
+        .state('people.create', {
+            url: '/create',
+            onEnter: $modelFactory => {
+                $modelFactory.create({
+                    controller: 'peopleCreateController',
+                    controllerAs: 'model',
+                    templateUrl: 'partials/people/peopleCreate.html'
+                });
+            }
+        })
+        .state('people.edit', {
+            url: '/:id/edit',
+            onEnter: $modelFactory => {
+                $modelFactory.create({
+                    controller: 'peopleCreateController',
+                    controllerAs: 'model',
+                    templateUrl: 'partials/people/peopleCreate.html',
+                });
+            }
+        })
+
+        .state('fund', {
+            url: '/fund',
+            controller: 'fundListController',
+            controllerAs: 'model',
+            templateUrl: 'partials/fund/fundList.html'
+        })
+        .state('fund.create', {
+            url: '/create',
+            onEnter: $modelFactory => {
+                $modelFactory.create({
+                    controller: 'fundCreateController',
+                    controllerAs: 'model',
+                    templateUrl: 'partials/fund/fundCreate.html'
+                });
+            }
+        })
+        .state('fund.edit', {
+            url: '/:id/edit',
+            onEnter: $modelFactory => {
+                $modelFactory.create({
+                    controller: 'fundCreateController',
+                    controllerAs: 'model',
+                    templateUrl: 'partials/fund/fundCreate.html',
+                });
+            }
+        })
         .state('not-found', {
             url: '/not-found',
             templateUrl: 'partials/views/notFound.html'

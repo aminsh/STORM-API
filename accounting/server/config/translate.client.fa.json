@@ -221,7 +221,7 @@
   "Debtor and creditor are not allowed to be zero , both of them": "بدهکار و بستانکار هر دو نباید صفر باشد",
   "Debtor and creditor are not allowed to have value , both of them": "بدهکار و بستانکار نباید هر دو دارای مقدار باشد",
   "Total of debtor and creditor is not equal": "جمع بدهکار و بستانکار برابر نیست",
-  "NationalCode": "کد ملی / کد اقتصادی",
+  "NationalCode": "کد  / شناسه ملی",
   "Address": "آدرس",
   "Phone": "تلفن",
   "Email": "ایمیل",
@@ -236,5 +236,11 @@
   "Item quantity is not allowed to be zero": "تعداد کالا نمیتواند صفر باشد",
   "Create invoice": "ایجاد فاکتور",
   "Purchase invoice": "فاکتور خرید",
-  "New purchase": "خرید جدید"
+  "New purchase": "خرید جدید",
+  "New People":"شخص جدید",
+  "name":"نام",
+  "person,company,...":"به عنوان مثال : نام شخص , شرکت یا ...",
+  "Person Type":"نوع شخص",
+  "RegistrationNumber":"شماره ثبت",
+  "Economic Code":"کد اقتصادی"
 }

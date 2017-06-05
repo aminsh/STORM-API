@@ -142,7 +142,8 @@ import './cheque';
 import './sales';
 import './purchases';
 import './inventory';
-
+import './people';
+import './fund';
 accModule
     .config(uiRouteConfig)
     .config(ADMdtpConfig)
