@@ -6,22 +6,32 @@ export default class SetupInfoController {
         this.setDirty = setDirty;
         this.$state = $state;
 
+        this.isWaiting = false;
+
         this.branch = {
             name: '',
             logo: '',
             phone: '',
-            address: ''
+            address: '',
+            registrationNumber: ''
         };
     }
 
-    createBranch(form) {
+    save(form) {
         if (form.$invalid)
             return this.setDirty(form);
+
+        this.isWaiting = true;
 
         this.branchApi.create(this.branch)
             .then(result => {
                 this.$state.go('^.firstPeriod');
-            });
+            })
+            .finally(() => this.isWaiting = false);
+    }
+
+    logoUploaded(fileName) {
+        this.branch.logo = fileName;
     }
 }
 

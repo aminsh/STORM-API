@@ -2,17 +2,19 @@
 
 import angular from 'angular';
 
-//import 'angular-animate';
 import 'angular-aria';
 import 'angular-messages';
 import 'angular-ui-router';
 import 'angular-translate';
 import 'angular-cookies';
 
+import 'adm-dtp';
 
 import appRoute from './app.route';
 import shell from './layout/shell';
 import appTranslate from './app.translate';
+
+import authInit from './authentication/init';
 
 import setDirty from './shared/setDirty';
 import Promise from './shared/promise';
@@ -33,14 +35,32 @@ import ProfileController from './profile/profile.controller';
 import ContactUsController from './contactUs/contactUs.controller';
 import RequestLucaDemoController from './product/requestLucaDemo.controller';
 
+import SetupInfoController from './branch/setup-info';
+import SetupFirstPeriodController from './branch/setup-firstPeriod';
+import BranchApi from './branch/api.branch';
+import FiscalPeriodApi from './branch/api.fiscalPeriod';
+import uploader from './branch/logo.upload';
+
 angular.module('app', [
     'ngMessages',
     'ui.router',
     'pascalprecht.translate',
-    'ngCookies'
+    'ngCookies',
+    'ADM-dateTimePicker',
 ])
     .config(appRoute)
     .config(appTranslate)
+    .config(function (ADMdtpProvider) {
+        ADMdtpProvider.setOptions({
+            calType: 'jalali',
+            dtpType: 'date',
+            format: 'YYYY/MM/DD',
+            //default: 'today',
+            autoClose: true
+        });
+    })
+
+    .run(authInit)
 
     .directive('shell', shell)
     .factory('setDirty', setDirty)
@@ -59,6 +79,12 @@ angular.module('app', [
     .service('userApi', UserApi)
 
     .controller('ProfileController', ProfileController)
+
+    .controller('SetupInfoController', SetupInfoController)
+    .controller('SetupFirstPeriodController', SetupFirstPeriodController)
+    .service('branchApi', BranchApi)
+    .service('fiscalPeriodApi', FiscalPeriodApi)
+    .directive('logoUploader', uploader)
 
     .controller('ContactUsController', ContactUsController)
     .controller('RequestLucaDemoController', RequestLucaDemoController);

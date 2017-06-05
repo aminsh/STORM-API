@@ -31,7 +31,7 @@ router.route('/')
             });
         }
 
-        entity = await(fiscalPeriodRepository.create(entity));
+        await(fiscalPeriodRepository.create(entity));
 
         res.cookie('current-period', entity.id);
 
@@ -39,7 +39,7 @@ router.route('/')
             isValid: true
         });
 
-    }))
+    }));
 
 
 module.exports = router;
