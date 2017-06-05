@@ -5,7 +5,7 @@ export default class SalesInvoiceController {
                 salesInvoiceApi,
                 inventoryApi,
                 translate,
-                detailAccountApi,
+                peopleApi,
                 devConstants,
                 logger,
                 formService,
@@ -14,7 +14,7 @@ export default class SalesInvoiceController {
 
         this.$scope = $scope;
         this.logger = logger;
-        this.detailAccountApi = detailAccountApi;
+        this.peopleApi = peopleApi;
         this.inventoryApi = inventoryApi;
         this.salesInvoiceApi = salesInvoiceApi;
         this.$timeout = $timeout;
@@ -31,13 +31,14 @@ export default class SalesInvoiceController {
             invoiceLines: []
         };
         this.isLoading = false;
+
         this.detailAccount = new kendo.data.DataSource({
             serverFiltering: true,
             //serverPaging: true,
             // pageSize: 10,
             transport: {
                 read: {
-                    url: devConstants.urls.detailAccount.all(),
+                    url: devConstants.urls.people.getAll(),
                     dataType: "json"
                 },
             },
@@ -81,21 +82,6 @@ export default class SalesInvoiceController {
             }
         });
 
-        this.productVirtual = {
-            itemHeight: 26,
-            mapValueTo: "dataItem",
-            valueMapper: function (options) {
-                console.log('sheihan');
-                console.log(options);
-                if (options.value !== "") {
-                    console.log('sheihan2');
-                    console.log(options);
-                    inventoryApi.getById(options.value).then(result => {
-                        options.success([result]);
-                    })
-                }
-            }
-        };
 
         this.newInvoice();
 
@@ -120,7 +106,7 @@ export default class SalesInvoiceController {
 
     createNewCustomer(customer) {
         var data = {title: customer};
-        this.detailAccountApi.create(data)
+        this.peopleApi.create(data)
             .then((result) => {
                 $scope.$broadcast('on-customer-created', result)
             })
