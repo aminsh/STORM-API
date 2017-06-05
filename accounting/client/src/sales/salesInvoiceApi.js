@@ -14,8 +14,8 @@ function salesInvoiceApi(apiPromise) {
         create: function (data) {
             return apiPromise.post(`${urlPrefix}/sales`,data);
         },
-        update: function (data) {
-            return apiPromise.put(`${urlPrefix}/sales/`,data);
+        update: function (id,data) {
+            return apiPromise.put(`${urlPrefix}/sales/${id}/`,data);
         },
         remove: function (id) {
             return apiPromise.delete(`${urlPrefix}/sales/${id}`);

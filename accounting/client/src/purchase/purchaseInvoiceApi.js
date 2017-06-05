@@ -14,8 +14,8 @@ function purchasesInvoiceApi(apiPromise) {
         create: function (data) {
             return apiPromise.post(`${urlPrefix}/purchases`,data);
         },
-        update: function (data) {
-            return apiPromise.put(`${urlPrefix}/purchases/`,data);
+        update: function (id,data) {
+            return apiPromise.put(`${urlPrefix}/purchases/${id}/`,data);
         },
         remove: function (id) {
             return apiPromise.delete(`${urlPrefix}/purchases/${id}`);
