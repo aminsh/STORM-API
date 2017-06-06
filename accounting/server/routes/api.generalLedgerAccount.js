@@ -6,7 +6,11 @@ const async = require('asyncawait/async'),
     router = require('express').Router(),
     GeneralLedgerAccountRepository = require('../data/repository.generalLedgerAccount'),
     GeneralLedgerAccountQuery = require('../queries/query.generalLedgerAccount'),
-    translate = require('../services/translateService');
+    translate = require('../services/translateService'),
+    enums = require('../../shared/enums'),
+    defaultGeneralLedgerAccounts = require('../config/generalLedgerAccounts.json').RECORDS,
+    defaultSubsidiaryLedgerAccounts = require('../config/subsidiaryLedgerAccounts.json').RECORDS;
+
 
 router.route('/')
     .get(async((req, res) => {
@@ -58,6 +62,29 @@ router.route('/')
             returnValue: {id: entity.id}
         });
     }));
+
+router.route('/default/chart-of-accounts')
+    .get((req, res) => {
+        defaultGeneralLedgerAccounts.forEach(gla => {
+            let subs = defaultSubsidiaryLedgerAccounts
+                .asEnumerable()
+                .where(sla => sla.generalLedgerAccountId == parseInt(gla.code))
+                .toArray();
+            gla.subsidiaryLedgerAccounts = subs;
+        });
+
+        let groups = enums.AccountGroupingType().data;
+
+        groups.forEach(g => {
+            let generals = defaultGeneralLedgerAccounts
+                .asEnumerable()
+                .where(gla => gla.groupLedgerAccountId == parseInt(g.key))
+                .toArray();
+            g.generalLedgerAccounts = generals;
+        });
+
+        res.json(groups);
+    });
 
 router.route('/:id')
     .get(async((req, res) => {

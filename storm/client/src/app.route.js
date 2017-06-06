@@ -89,6 +89,13 @@ export default function routing($stateProvider, $urlRouterProvider, $locationPro
             controllerAs: 'model',
             shouldAuthenticate: true
         })
+        .state('setup.chartOfAccounts', {
+            url: '/chart-of-accounts',
+            templateUrl: 'app/branch/setup-chartOfAccounts.html',
+            controller: 'SetupChartOfAccountsController',
+            controllerAs: 'model',
+            shouldAuthenticate: true
+        })
 
         .state('/page-not-found', {
             template: '<h1>Page not found</h1>'

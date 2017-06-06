@@ -37,8 +37,10 @@ import RequestLucaDemoController from './product/requestLucaDemo.controller';
 
 import SetupInfoController from './branch/setup-info';
 import SetupFirstPeriodController from './branch/setup-firstPeriod';
+import SetupChartOfAccountsController from './branch/setup-chartOfAccounts';
 import BranchApi from './branch/api.branch';
 import FiscalPeriodApi from './branch/api.fiscalPeriod';
+import ChartOfAccounts from './branch/api.chartOfAccount';
 import uploader from './branch/logo.upload';
 
 angular.module('app', [
@@ -82,8 +84,10 @@ angular.module('app', [
 
     .controller('SetupInfoController', SetupInfoController)
     .controller('SetupFirstPeriodController', SetupFirstPeriodController)
+    .controller('SetupChartOfAccountsController', SetupChartOfAccountsController)
     .service('branchApi', BranchApi)
     .service('fiscalPeriodApi', FiscalPeriodApi)
+    .service('chartOfAccountApi', ChartOfAccounts)
     .directive('logoUploader', uploader)
 
     .controller('ContactUsController', ContactUsController)
