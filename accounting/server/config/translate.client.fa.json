@@ -226,6 +226,7 @@
   "Phone": "تلفن",
   "Email": "ایمیل",
   "Sales invoice": "فاکتور فروش",
+  "Purchase invoice":"فاکتور خرید",
   "Item title": "عنوان کالا",
   "Quantity": "تعداد کالا",
   "Unit price": "قیمت واحد",
