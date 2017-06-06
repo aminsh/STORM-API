@@ -1,0 +1,45 @@
+<div class="modal-header">
+    <button type="button" ng-click="close()" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+    <h3 class="modal-title">
+        {{'Cash Payment'| translate}}
+    </h3>
+</div>
+<div class="modal-body k-rtl row">
+        <div class="col-sm-6">
+            <label class="col-sm-1 text-left">مبلغ:</label>
+            <dev-tag-numeric
+                    class="form-control input-grid-factor input-sm"
+                    ng-model="item.tax"
+                    name="tax"
+                    required></dev-tag-numeric>
+            <div ng-messages="form['form-'+ $index].tax.$error"
+                 ng-if="form['form-'+ $index].tax.$dirty">
+                <label ng-message="required" class="error">
+                    {{'This field is required'|translate}}
+                </label>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <label class="col-sm-1 text-left">صندوق:</label>
+            <dev-tag-combo-box
+                    name="fundId"
+                    k-placeholder="{{'Select ...'|translate}}"
+                    k-data-value-field="id"
+                    k-data-text-field="title"
+                    k-data-source="fundDataSource"
+                    k-suggest="true"
+                    k-minLength="0"
+                    k-filter="'contains'"
+                    on-created="createNewfund"
+                    show-no-data-template
+                    ng-model="payment.fundId"
+                    required></dev-tag-combo-box>
+
+            <div ng-messages="form.fundId.$error" ng-if="form.fundId.$dirty">
+                <label ng-message="required" class="error">{{'This field is
+                    required'|translate}}</label>
+            </div>
+        </div>
+</div>

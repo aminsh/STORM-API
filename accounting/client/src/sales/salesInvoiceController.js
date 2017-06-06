@@ -10,6 +10,7 @@ export default class SalesInvoiceController {
                 logger,
                 formService,
                 $timeout,
+                cashPaymentService,
                 $scope) {
 
         this.$scope = $scope;
@@ -22,6 +23,7 @@ export default class SalesInvoiceController {
         this.translate = translate;
         this.navigate = navigate;
         this.formService = formService;
+        this.cashPaymentService=cashPaymentService;
         this.errors = [];
         this.isSaving = false;
         this.invoice = {
@@ -43,29 +45,13 @@ export default class SalesInvoiceController {
                 },
             },
             schema: {
-                data: function (data) {
-
-                    if (data.data !== undefined) {
-                        return data.data;
-                    } else {
-                        return data;
-                    }
-
-                },
-                total: function (data) {
-                    if (data.data !== undefined) {
-                        return data.total;
-                    } else {
-                        return data.length;
-                    }
-                }
+                data:'data',
+                total:'total'
             }
         });
 
         this.products = new kendo.data.DataSource({
             serverFiltering: true,
-            //serverPaging: true,
-            //pageSize: 5,
             transport: {
                 read: {
                     url: devConstants.urls.products.getAll(),
@@ -85,9 +71,6 @@ export default class SalesInvoiceController {
 
         this.newInvoice();
 
-        $scope.$on('on-customer-created', (e, customer) => {
-            this.detailAccount.push(customer);
-        });
     }
 
 
@@ -108,7 +91,6 @@ export default class SalesInvoiceController {
         var data = {title: customer};
         this.peopleApi.create(data)
             .then((result) => {
-                $scope.$broadcast('on-customer-created', result)
             })
             .catch((errors) => this.errors = errors)
     }
@@ -176,5 +158,18 @@ export default class SalesInvoiceController {
             .catch(err => errors = err)
         // .finally(() => isSaving = false);
 
+    }
+
+    cashPaymentShow() {
+        this.cashPaymentService.show();
+    }
+
+    print(){
+        let invoice = this.invoice;
+        let reportParam={"id": invoice.id}
+        this.navigate(
+            'report.print',
+            {key: 700},
+            reportParam);
     }
 }
