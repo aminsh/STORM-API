@@ -37,7 +37,6 @@ import './controllers/journalTemplatesController';
 import './controllers/accountReviewController';
 import './controllers/accountReviewTurnoverController';
 import './controllers/journalPrintController';
-import createFiscalPeriodController from  './controllers/createFiscalPeriodController';
 import chequePrintController from './controllers/chequePrintController';
 import reportController from './controllers/reportController';
 import reportDesignerController from './controllers/reportDesignerController';
@@ -145,6 +144,8 @@ import './purchases';
 import './inventory';
 import './people';
 import './fund';
+import './fiscalPeriod';
+
 accModule
     .config(uiRouteConfig)
     .config(ADMdtpConfig)
@@ -178,7 +179,6 @@ accModule
     .service('tagApi', TagApi)
     .service('branchApi', BranchApi)
 
-    .controller(createFiscalPeriodController.name, createFiscalPeriodController)
     .controller('chequePrintController', chequePrintController)
     .controller('reportController', reportController)
     .controller('reportDesignerController', reportDesignerController)
