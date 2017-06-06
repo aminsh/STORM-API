@@ -31,6 +31,25 @@ module.exports = class SubsidiaryLedgerAccountQuery extends BaseQuery {
         return kendoQueryResolve(query, parameters, view);
     }
 
+    getAccountById(id){
+        let knex = this.knex,
+            branchId = this.branchId;
+        let firstSubsidiaryLedgerAccount = await(knex.select().from(function () {
+            this.select(
+                knex.raw('"subsidiaryLedgerAccounts".*'),
+                knex.raw('"subsidiaryLedgerAccounts".code || \' \' || "subsidiaryLedgerAccounts".title as "display"'),
+                knex.raw('"generalLedgerAccounts".code || \' \' || "generalLedgerAccounts".title as "generalLedgerAccountDisplay"'),
+                knex.raw('"generalLedgerAccounts".code || \'-\' || "subsidiaryLedgerAccounts".code || \' \' || "subsidiaryLedgerAccounts".title as "account"')
+            )
+                .from('subsidiaryLedgerAccounts')
+                .leftJoin('generalLedgerAccounts', 'generalLedgerAccounts.id', 'subsidiaryLedgerAccounts.generalLedgerAccountId')
+                .andWhere('subsidiaryLedgerAccounts.id', id)
+                .as('baseSubsidiaryLedgerAccounts');
+        }).first());
+
+        return view(firstSubsidiaryLedgerAccount);
+    }
+
     getAllByGeneralLedgerAccount(generalLedgerAccountId, parameters) {
         let knex = this.knex,
             branchId = this.branchId;
