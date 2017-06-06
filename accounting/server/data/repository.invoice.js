@@ -53,7 +53,7 @@ module.exports = class InvoiceRepository extends BaseRepository {
     createInvoice(entity, trx) {
         super.create(entity);
 
-        entity.id = await(this.knex('sales')
+        entity.id = await(this.knex('invoices')
             .transacting(trx)
             .returning('id')
             .insert(entity))[0];
@@ -64,10 +64,10 @@ module.exports = class InvoiceRepository extends BaseRepository {
     createInvoiceLines(lines, salesId, trx) {
         lines.forEach(line => {
             super.create(line);
-            line.saleId = salesId;
+            line.invoiceId = salesId;
         });
 
-        await(this.knex('saleLines')
+        await(this.knex('invoiceLines')
             .transacting(trx)
             .insert(lines));
     }

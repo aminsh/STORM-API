@@ -248,7 +248,12 @@ export default function ($stateProvider, $urlRouterProvider, $locationProvider) 
             url: '/design/:key',
             controller: 'reportDesignController',
             controllerAs: 'model',
-            templateUrl: 'partials/report/reportDesign.html'
+            templateUrl: 'partials/report/reportDesign.html',
+            resolve: {
+                loadingStimulScript: (reportLoaderService) => {
+                    return reportLoaderService.loadIfNot()
+                }
+            }
         })
         .state('sales', {
             url: '/sales',

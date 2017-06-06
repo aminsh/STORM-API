@@ -12,7 +12,8 @@ const fs = require('fs'),
     ReportQueryBalance = require('../queries/query.report.balance'),
     ReportQueryFinancialOffices = require('../queries/query.report.financialOffices'),
     ReportQueryTurnover = require('../queries/query.report.turnover'),
-    ReportQueryJournal = require('../queries/query.report.journal');
+    ReportQueryJournal = require('../queries/query.report.journal'),
+    ReportQueryInvoice = require('../queries/query.report.invoices');
 
 function getReport(fileName) {
     return JSON.parse(
@@ -29,9 +30,9 @@ router.route('/')
             report.data,
             err => {
                 if (err)
-                    return res.status(500).send({ isValid: false, error: err });
+                    return res.status(500).send({isValid: false, error: err});
 
-                res.json({ isValid: true });
+                res.json({isValid: true});
             }
         );
     });
@@ -40,9 +41,9 @@ router.route('/file/:fileName').get((req, res) => {
     let report = getReport(req.params.fileName),
         reportComponents = report.Pages[0].Components,
         reportComponentsMaxKeys = (Object.keys(reportComponents)
-            .asEnumerable()
-            .select(c => parseInt(c))
-            .max() || 0) + 1,
+                .asEnumerable()
+                .select(c => parseInt(c))
+                .max() || 0) + 1,
         layoutComponents = layout.Pages[0].Components,
         header = layoutComponents[0],
         footer = layoutComponents[1];
@@ -245,6 +246,33 @@ router.route('/detail-subsidiary-detail-journal')
             req.cookies['current-mode'],
             req.query),
             result = await(ins.getDetailJournals());
+        res.json(result);
+    }));
+
+router.route('/invoices/:id')
+    .get(async((req, res) => {
+        let ins = new ReportQueryInvoice(req.cookies['branch-id']),
+            result = await(ins.Invoice(req.params.id));
+/*            result = [
+                {
+                    number: 0,
+                    date: '',
+                    invoiceDescription: '',
+                    invoiceType: '',
+                    quantity: 0,
+                    unitPrice: 0,
+                    vat: 0,
+                    discount: 0,
+                    grossPrice: 0,
+                    vatPrice: 0,
+                    netPrice: 0,
+                    invoiceLineDescription: '',
+                    productName: '',
+                    customerName:'',
+                    customerAddress: '',
+                    personCode: ''
+                }
+            ];*/
         res.json(result);
     }));
 

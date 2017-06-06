@@ -38,7 +38,6 @@ export default class peopleListController {
             },
             reorderable: true,
             resizable: true,
-            columnMenu: true,
             groupable: true,
             sortable: true,
             scrollable: {
@@ -54,20 +53,23 @@ export default class peopleListController {
                 {
                     field: "title", title: translate('name'), width: '120px',
                     filterable: {
-                        multi: true,
+                        extra: false,
                         cell: {
                             operator: "contains",
                             suggestionOperator: "contains"
                         }
                     }
                 },
-                {field: "phone", title: translate('Phone'), width: '120px'},
+                {field: "phone", title: translate('Phone'), width: '120px', filterable: {
+                    extra:false
+                }},
                 {
                     template: "#: personTypeDisplay #",
                     field: "personType",
                     title: translate('Person Type'),
                     width: '120px',
                     filterable: {
+                        extra:false,
                         ui: function (element) {
                             element.kendoDropDownList({
                                 dataSource: devConstants.enums.PersonType().data,

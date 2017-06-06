@@ -5,7 +5,7 @@ export default class purchaseController {
                 purchaseApi,
                 inventoryApi,
                 translate,
-                detailAccountApi,
+                peopleApi,
                 devConstants,
                 logger,
                 formService,
@@ -14,7 +14,7 @@ export default class purchaseController {
 
         this.$scope = $scope;
         this.logger = logger;
-        this.detailAccountApi = detailAccountApi;
+        this.peopleApi = peopleApi;
         this.inventoryApi = inventoryApi;
         this.purchaseApi = purchaseApi;
         this.$timeout = $timeout;
@@ -37,7 +37,7 @@ export default class purchaseController {
            // pageSize: 10,
             transport: {
                 read: {
-                    url: devConstants.urls.detailAccount.all(),
+                    url: devConstants.urls.people.getAll(),
                     dataType: "json"
                 },
             },
@@ -81,23 +81,6 @@ export default class purchaseController {
             }
         });
 
-        this.productVirtual = {
-            itemHeight: 26,
-            mapValueTo: "dataItem",
-            valueMapper: function (options) {
-                console.log('sheihan')
-                console.log (options);
-                if (options.value !== "") {
-                    console.log('sheihan2')
-                    console.log (options);
-                    inventoryApi.getById(options.value).then(result=>{
-                        options.success([result]);
-                    })
-                }
-            }
-        };
-
-
         $scope.$on('on-customer-created', (e, customer) => {
             this.detailAccount.push(customer);
         });
@@ -119,7 +102,7 @@ export default class purchaseController {
 
     createNewCustomer(customer) {
         var data = {title: customer};
-        this.detailAccountApi.create(data)
+        this.peopleApi.create(data)
             .then((result) => {
                 $scope.$broadcast('on-customer-created', result)
             })
