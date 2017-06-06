@@ -105,8 +105,7 @@ export default class SalesInvoiceController {
                 row: ++maxRow,
                 itemId: null,
                 quantity: 0,
-                tax: 9,
-                vat: 0,
+                vat: 9,
                 discount: 0,
                 unitPrice: 0,
                 totalPrice: 0,
@@ -135,7 +134,7 @@ export default class SalesInvoiceController {
         invoice.invoiceLines = invoice.invoiceLines.asEnumerable()
             .where(il => il.unitPrice > 0)
             .toArray()
-        //isSaving = this.isSaving;
+
 
         if (form.$invalid) {
             formService.setDirty(form);
@@ -147,8 +146,6 @@ export default class SalesInvoiceController {
         }
 
         errors.asEnumerable().removeAll();
-        //  isSaving = true;
-
         return this.salesInvoiceApi.create(invoice)
             .then(result => {
                 logger.success();
@@ -156,7 +153,7 @@ export default class SalesInvoiceController {
                 this.isLoading = true;
             })
             .catch(err => errors = err)
-        // .finally(() => isSaving = false);
+           .finally(() => this.isSaving = true);
 
     }
 

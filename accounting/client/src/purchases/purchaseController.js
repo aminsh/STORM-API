@@ -170,8 +170,17 @@ export default class purchaseController {
                 this.isLoading = true;
             })
             .catch(err => errors = err)
-        // .finally(() => isSaving = false);
+            .finally(() => this.isSaving = true);
 
 
+    }
+
+    print(){
+        let invoice = this.invoice;
+        let reportParam={"id": invoice.id}
+        this.navigate(
+            'report.print',
+            {key: 701},
+            reportParam);
     }
 }

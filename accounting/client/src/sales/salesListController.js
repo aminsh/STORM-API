@@ -5,6 +5,7 @@ export default class salesListController {
                 devConstants,
                 logger,
                 $timeout,
+                navigate,
                 $scope) {
 
         this.$scope = $scope;
@@ -20,6 +21,19 @@ export default class salesListController {
                 name: 'description', title: translate('Description'), type: 'string', width: '30%',
                 },
             ],
+            commands: [
+                {
+                    title: translate('Print'),
+                    name: 'print',
+                    action: (current) => {
+                        let reportParam={"id": current.id}
+                        navigate(
+                            'report.print',
+                            {key: 700},
+                            reportParam);
+                    }
+                }
+                ],
             readUrl: devConstants.urls.sales.getAll(),
         };
 

@@ -285,7 +285,7 @@
             <td style="width: 120px; padding: 0px;" class="invoice-td">
                 <dev-tag-numeric
                         class="form-control input-grid-factor input-sm"
-                        ng-model="item.tax"
+                        ng-model="item.vat"
                         name="tax"
                         required></dev-tag-numeric>
 
@@ -298,7 +298,7 @@
             </td>
 
             <td style="padding: 0px; vertical-align: middle; text-align: center;">
-                 {{(item.unitPrice *item.quantity)-(item.tax+item.vat+item.discount) | number}}
+                ((item.unitPrice * item.quantity)-item.discount) + ((item.unitPrice * item.quantity)-item.discount)*(item.vat/100)">{{((item.unitPrice * item.quantity)-item.discount) + ((item.unitPrice * item.quantity)-item.discount)*(item.vat/100) | number}}
             </td>
 
             <td style="width: 20px; padding: 0px; vertical-align: middle; text-align: center;">
@@ -350,7 +350,7 @@
             </div>
             <div class="row text-left">
                 <div class="col-xs-5 title1">جمع مالیات <span style="font-weight: normal">(ریال)</span></div>
-                <div class="col-xs-7 title1 ">{{model.invoice.invoiceLines | totalSum: ('tax') | number}}</div>
+                <div class="col-xs-7 title1 ">{{model.invoice.invoiceLines | sumTotalTaxPrice | number}}</div>
             </div>
             <div class="row" style="border-top: 1px solid rgb(69, 69, 69); margin-top: 1px; margin-bottom: 1px;"></div>
             <div class="row text-left" style="border-bottom: 1px solid rgb(69, 69, 69)">

@@ -249,11 +249,11 @@ router.route('/detail-subsidiary-detail-journal')
         res.json(result);
     }));
 
-router.route('/invoices/:id')
+router.route('/invoices')
     .get(async((req, res) => {
         let ins = new ReportQueryInvoice(req.cookies['branch-id']),
-            //result = await(ins.Invoice(req.params.id));
-            result = [
+            result = await(ins.Invoice(req.query.id));
+/*            result = [
                 {
                     number: 0,
                     date: '',
@@ -272,7 +272,7 @@ router.route('/invoices/:id')
                     customerAddress: '',
                     personCode: ''
                 }
-            ];
+            ];*/
         res.json(result);
     }));
 
