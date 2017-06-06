@@ -12,7 +12,7 @@ const async = require('asyncawait/async'),
 router.route('/')
     .get(async((req, res) => {
         let invoiceQuery = new InvoiceQuery(req.cookies['branch-id']),
-            result = await(invoiceQuery.getAll(req.query));
+            result = await(invoiceQuery.getAll(req.query,'purchase'));
 
         res.json(result);
     }))
@@ -27,7 +27,7 @@ router.route('/')
                 description: cmd.description,
                 detailAccountId: cmd.detailAccountId,
                 invoiceType: 'purchase',
-                invoiceStatus: status
+                invoiceStatus: 'draft'
             };
 
         entity.lines = cmd.invoiceLines.asEnumerable()
