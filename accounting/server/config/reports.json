@@ -1,59 +1,177 @@
 [
-    {
-        "key":"1","text": "صدور سند حسابداری",
-        "items":[
-            {"key":"100","text": "سند حسابداری کل", "func": "detailJournals", "fileName":"detailJournalsList"},
-            {"key":"101","text": "سند حسابداری به تفکیک حساب کل", "func":"detailGeneralJournal", "fileName":"detailGeneralJournalList"},
-            {"key":"102","text": "سند حسابداری به تفکیک حساب کل - معین", "func":"detailGeneralSubsidiaryJournal", "fileName":"detailGeneralSubsidiaryJournalList"},
-            {"key":"103","text": "سند حسابداری به تفکیک حساب معین-تفضیل", "func":"detailSubsidiaryDetailJournal", "fileName":"detailSubsidiaryDetailJournalList"}
-        ]
-    },
-    {
-        "key":"2","text": "ریز گردش حساب ها",
-        "items":[
-            {"key":"200","text": "ریز گردش کل - معین","func": "detailGeneralSubsidiaryTurnover", "fileName":"detailGeneralSubsidiaryTurnoverList"},
-            {"key":"201","text": "ریز گردش معین - تفصیل","func": "detailSubsidiaryDetailTurnover", "fileName":"detailSubsidiaryDetailTurnoverList"},
-            {"key":"202","text": "ریز گردش کل - معین - تفضیل","func": "detailGeneralSubsidiaryDetailTurnover", "fileName":"detailGeneralSubsidiaryDetailTurnoverList"}
-        ]
-    },
-    {
-        "key":"3","text": "جمع گردش حساب ها",
-        "items":[
-            {"key":"300","text": "گردش کل - معین","func": "totalGeneralSubsidiaryTurnover", "fileName":"totalGeneralSubsidiaryTurnoverList"},
-            {"key":"301","text": "گردش معین - تفصیل","func": "totalSubsidiaryDetailTurnover", "fileName":"totalSubsidiaryDetailTurnoverList"},
-            {"key":"302","text": "گردش  کل - معین - تفضیل","func": "totalGeneralSubsidiaryDetailTurnover", "fileName":"totalGeneralSubsidiaryDetailTurnoverList"}
-        ]
-    },
-    {
-        "key":"4","text": "دفاتر مالی",
-        "items":[
-            {"key":"400","text": "دفتر روزنامه","func": "journalOffice", "fileName":"journalOfficeList"},
-            {"key":"401","text": "دفتر کل","func": "generalOffice", "fileName":"generalOfficeList"},
-            {"key":"402","text": "دفتر معین","func": "subsidiaryOffice", "fileName":"subsidiaryOfficeList"}
-        ]
-    },
-    {
-        "key":"5","text": "گزارش های تراز",
-        "items":[
-            {"key":"500","text": "تراز کل","func": "generalBalance", "fileName":"generalBalanceList"},
-            {"key":"501","text": "تراز کل - معین","func": "subsidiaryBalance", "fileName":"subsidiaryBalanceList"},
-            {"key":"502","text": "تراز معین - تفصیل","func": "subsidiaryDetailBalance", "fileName":"subsidiaryDetailBalanceList"},
-            {"key":"503","text": "تراز سه سطحی","func": "generalSubsidiaryDetailBalance", "fileName":"generalSubsidiaryDetailBalanceList"}
-        ]
-    },
-    {
-        "key":"6","text": "فهرست حساب ها",
-        "items":[
-            {"key":"600","text": "حساب های کل", "func": "generalLedgerAccounts", "fileName": "generalLedgerAccountList"},
-            {"key":"601","text": "حساب های معین", "func": "subsidiaryLedgerAccounts", "fileName": "subsidiaryLedgerAccountList"},
-            {"key":"602","text": "حساب های تفضیل", "func": "detailAccounts", "fileName": "detailAccountList"}
-        ]
-    },
-    {
-        "key":"7","text": "خرید و فروش",
-        "items":[
-            {"key":"700","text": "فاکتور فروش", "func": "invoice", "fileName": ""},
-            {"key":"701","text": "فاکتور خرید", "func": "invoice", "fileName": ""}
-        ]
-    }
+  {
+    "key": "1",
+    "text": "صدور سند حسابداری",
+    "items": [
+      {
+        "key": "100",
+        "text": "سند حسابداری کل",
+        "func": "detailJournals",
+        "fileName": "detailJournalsList"
+      },
+      {
+        "key": "101",
+        "text": "سند حسابداری به تفکیک حساب کل",
+        "func": "detailGeneralJournal",
+        "fileName": "detailGeneralJournalList"
+      },
+      {
+        "key": "102",
+        "text": "سند حسابداری به تفکیک حساب کل - معین",
+        "func": "detailGeneralSubsidiaryJournal",
+        "fileName": "detailGeneralSubsidiaryJournalList"
+      },
+      {
+        "key": "103",
+        "text": "سند حسابداری به تفکیک حساب معین-تفضیل",
+        "func": "detailSubsidiaryDetailJournal",
+        "fileName": "detailSubsidiaryDetailJournalList"
+      }
+    ]
+  },
+  {
+    "key": "2",
+    "text": "ریز گردش حساب ها",
+    "items": [
+      {
+        "key": "200",
+        "text": "ریز گردش کل - معین",
+        "func": "detailGeneralSubsidiaryTurnover",
+        "fileName": "detailGeneralSubsidiaryTurnoverList"
+      },
+      {
+        "key": "201",
+        "text": "ریز گردش معین - تفصیل",
+        "func": "detailSubsidiaryDetailTurnover",
+        "fileName": "detailSubsidiaryDetailTurnoverList"
+      },
+      {
+        "key": "202",
+        "text": "ریز گردش کل - معین - تفضیل",
+        "func": "detailGeneralSubsidiaryDetailTurnover",
+        "fileName": "detailGeneralSubsidiaryDetailTurnoverList"
+      }
+    ]
+  },
+  {
+    "key": "3",
+    "text": "جمع گردش حساب ها",
+    "items": [
+      {
+        "key": "300",
+        "text": "گردش کل - معین",
+        "func": "totalGeneralSubsidiaryTurnover",
+        "fileName": "totalGeneralSubsidiaryTurnoverList"
+      },
+      {
+        "key": "301",
+        "text": "گردش معین - تفصیل",
+        "func": "totalSubsidiaryDetailTurnover",
+        "fileName": "totalSubsidiaryDetailTurnoverList"
+      },
+      {
+        "key": "302",
+        "text": "گردش  کل - معین - تفضیل",
+        "func": "totalGeneralSubsidiaryDetailTurnover",
+        "fileName": "totalGeneralSubsidiaryDetailTurnoverList"
+      }
+    ]
+  },
+  {
+    "key": "4",
+    "text": "دفاتر مالی",
+    "items": [
+      {
+        "key": "400",
+        "text": "دفتر روزنامه",
+        "func": "journalOffice",
+        "fileName": "journalOfficeList"
+      },
+      {
+        "key": "401",
+        "text": "دفتر کل",
+        "func": "generalOffice",
+        "fileName": "generalOfficeList"
+      },
+      {
+        "key": "402",
+        "text": "دفتر معین",
+        "func": "subsidiaryOffice",
+        "fileName": "subsidiaryOfficeList"
+      }
+    ]
+  },
+  {
+    "key": "5",
+    "text": "گزارش های تراز",
+    "items": [
+      {
+        "key": "500",
+        "text": "تراز کل",
+        "func": "generalBalance",
+        "fileName": "generalBalanceList"
+      },
+      {
+        "key": "501",
+        "text": "تراز کل - معین",
+        "func": "subsidiaryBalance",
+        "fileName": "subsidiaryBalanceList"
+      },
+      {
+        "key": "502",
+        "text": "تراز معین - تفصیل",
+        "func": "subsidiaryDetailBalance",
+        "fileName": "subsidiaryDetailBalanceList"
+      },
+      {
+        "key": "503",
+        "text": "تراز سه سطحی",
+        "func": "generalSubsidiaryDetailBalance",
+        "fileName": "generalSubsidiaryDetailBalanceList"
+      }
+    ]
+  },
+  {
+    "key": "6",
+    "text": "فهرست حساب ها",
+    "items": [
+      {
+        "key": "600",
+        "text": "حساب های کل",
+        "func": "generalLedgerAccounts",
+        "fileName": "generalLedgerAccountList"
+      },
+      {
+        "key": "601",
+        "text": "حساب های معین",
+        "func": "subsidiaryLedgerAccounts",
+        "fileName": "subsidiaryLedgerAccountList"
+      },
+      {
+        "key": "602",
+        "text": "حساب های تفضیل",
+        "func": "detailAccounts",
+        "fileName": "detailAccountList"
+      }
+    ]
+  }
+/*,
+  {
+    "key": "7",
+    "text": "خرید و فروش",
+    "items": [
+      {
+        "key": "700",
+        "text": "فاکتور فروش",
+        "func": "invoice",
+        "fileName": "saleInvoice"
+      },
+      {
+        "key": "701",
+        "text": "فاکتور خرید",
+        "func": "invoice",
+        "fileName": "purchaseInvoice"
+      }
+    ]
+  }*/
 ]

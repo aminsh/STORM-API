@@ -252,7 +252,27 @@ router.route('/detail-subsidiary-detail-journal')
 router.route('/invoices/:id')
     .get(async((req, res) => {
         let ins = new ReportQueryInvoice(req.cookies['branch-id']),
-            result = await(ins.Invoice(req.params.id));
+            //result = await(ins.Invoice(req.params.id));
+            result = [
+                {
+                    number: 0,
+                    date: '',
+                    invoiceDescription: '',
+                    invoiceType: '',
+                    quantity: 0,
+                    unitPrice: 0,
+                    vat: 0,
+                    discount: 0,
+                    grossPrice: 0,
+                    vatPrice: 0,
+                    netPrice: 0,
+                    invoiceLineDescription: '',
+                    productName: '',
+                    customerName:'',
+                    customerAddress: '',
+                    personCode: ''
+                }
+            ];
         res.json(result);
     }));
 

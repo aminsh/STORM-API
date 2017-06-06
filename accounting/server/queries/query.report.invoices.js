@@ -14,25 +14,25 @@ module.exports = class InvoicesQuery extends BaseQuery {
         let knex = this.knex,
             branchId = this.branchId;
 
-        return knex.select(`"invoices".number as number, "invoices".date as date,
-        "invoices".description as "invoiceDescription",
-        "invoices"."invoicesType" as "invoicesType",
+        return knex.select(knex.raw(`invoices."number" as "number", invoices."date" as "date",
+        invoices.description as "invoiceDescription",
+        invoices."invoiceType" as "invoiceType",
         "invoiceLines".quantity as quantity, "invoiceLines"."unitPrice" as "unitPrice",
         "invoiceLines".vat as vat,"invoiceLines".discount as discount,
         (("invoiceLines"."unitPrice" * "invoiceLines".quantity)-"invoiceLines".discount) as "grossPrice",
         (("invoiceLines"."unitPrice" * "invoiceLines".quantity)-"invoiceLines".discount)*0.09 as "vatPrice",
         (("invoiceLines"."unitPrice" * "invoiceLines".quantity)-"invoiceLines".discount) 
             + (("invoiceLines"."unitPrice" * "invoiceLines".quantity)-"invoiceLines".discount)*0.09 as "netPrice",
-        "invoiceLines".description as "saleLineDescription",
+        "invoiceLines".description as "invoiceLineDescription",
         "products".title as "productName",
-        "detailAccount".title as "customerName", "detailAccount".address as "customerAddress",
+        "detailAccounts".title as "customerName", "detailAccounts".address as "customerAddress",
         CASE WHEN "detailAccounts"."personType" = 'legal' THEN "detailAccounts"."economyCode" 
-             WHEN "detailAccounts"."personType" = 'real' THEN "detailAccounts"."nationalCode" END as "personCode"`)
+             WHEN "detailAccounts"."personType" = 'real' THEN "detailAccounts"."nationalCode" END as "personCode"`))
             .from('invoices')
             .where('invoices.branchId', branchId)
             .andWhere('invoices.id',id)
             .innerJoin('invoiceLines', 'invoices.id', 'invoiceLines.invoiceId')
-            .innerJoin('detailAccount', 'detailAccount.id', 'invoices.detailAccountId')
+            .innerJoin('detailAccounts', 'detailAccounts.id', 'invoices.detailAccountId')
             .innerJoin('products', 'products.id', 'invoiceLines.productId')
             .as('Invoice');
     }

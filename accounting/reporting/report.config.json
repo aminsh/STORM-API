@@ -297,4 +297,33 @@
       }
     ]
   }
+/*,
+  {
+    "key": "7",
+    "text": "خرید و فروش",
+    "items": [
+      {
+        "key": "700",
+        "text": "فاکتور فروش",
+        "func": "invoice",
+        "fileName": "saleInvoice",
+        "params": [
+          {
+            "name": "id"
+          }
+        ]
+      },
+      {
+        "key": "701",
+        "text": "فاکتور خرید",
+        "func": "invoice",
+        "fileName": "purchaseInvoice",
+        "params": [
+          {
+            "name": "id"
+          }
+        ]
+      }
+    ]
+  }*/
 ]

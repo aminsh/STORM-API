@@ -91,8 +91,8 @@ export default class {
         return this.apiPromise.get(`${this.urlPrefix}/detail-subsidiary-detail-journal`,params);
     }
 
-    invoice(invoiceId){
-        return this.apiPromise.get(`${this.urlPrefix}/journal-lines/${invoiceId}`);
+    invoice(id){
+        return this.apiPromise.get(`${this.urlPrefix}/invoices/${id}`);
     }
 
 }
