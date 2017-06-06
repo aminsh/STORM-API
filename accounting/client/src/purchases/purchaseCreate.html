@@ -76,11 +76,22 @@
                 </div>
             </div>
 
+            <div class="col-sm-2">
+                <div  class="form-group">
+                    <label class="label-control" for="description">{{'Description' | translate}}</label>
+                    <textarea class="form-control" rows="4" id="description" ng-model="model.invoice.description"></textarea>
+                </div>
+            </div>
+
+
             <dev-tag-content-body is-loading="model.isInvoiceSaleLoading">
                 <div style="padding: 10px"
                      ng-include="'partials/purchases/purchaseLines-template.html'"></div>
+
             </dev-tag-content-body>
+
         </div>
+
     </dev-tag-content-body>
 
     <dev-tag-content-footer>
