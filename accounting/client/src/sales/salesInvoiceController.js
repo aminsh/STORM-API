@@ -123,7 +123,7 @@ export default class SalesInvoiceController {
                 row: ++maxRow,
                 itemId: null,
                 quantity: 0,
-                tax: 0,
+                tax: 9,
                 vat: 0,
                 discount: 0,
                 unitPrice: 0,

@@ -64,7 +64,7 @@ router.route('/as-draft')
 
 function createInvoice(status, cmd, invoiceRepository, productRepository) {
     let entity = {
-        number: await(invoiceRepository.saleMaxNumber()),
+        number: (await(invoiceRepository.saleMaxNumber()).max || 0) + 1,
         date: cmd.date,
         description: cmd.description,
         detailAccountId: cmd.detailAccountId,
