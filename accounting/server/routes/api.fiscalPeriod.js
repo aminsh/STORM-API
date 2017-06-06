@@ -18,6 +18,7 @@ router.route('/')
             cmd = req.body,
             errors = [],
             entity = {
+                title: cmd.title,
                 minDate: cmd.minDate,
                 maxDate: cmd.maxDate,
                 isClosed: false
@@ -25,7 +26,7 @@ router.route('/')
 
         if (entity.minDate > entity.maxDate) {
             errors.push(translate('From date can not be greater than to date'));
-           return res.json({
+            return res.json({
                 errors,
                 isValid: false
             });

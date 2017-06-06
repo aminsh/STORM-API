@@ -1,3 +1,4 @@
+<script src="../../../../accounting/database/migrations/20170526023232_accounting_migrate_db.js"></script>
 <form name="form" ng-submit="model.save(form)" novalidate>
 
     <div class="ibox loginColumns float-e-margins animated bounceInRight">
@@ -14,6 +15,21 @@
                 <div class="sk-rect3"></div>
                 <div class="sk-rect4"></div>
                 <div class="sk-rect5"></div>
+            </div>
+
+            <div class="form-group">
+                <label class="label-control">عنوان سال مالی</label>
+                <input type="text"
+                       class="form-control"
+                       required
+                       minlength="3"
+                       name="title"
+                       ng-model="model.fiscalPeriod.title">
+
+                <div ng-messages="form.title.$error" ng-if="form.title.$dirty">
+                    <div ng-message="required" class="text-danger">وارد کردن عنوان سال مالی الزامی است</div>
+                    <div ng-message="minlength" class="text-danger">عنوان سال مالی باید حداقل 3 کاراکتر باشد</div>
+                </div>
             </div>
 
             <div class="row">

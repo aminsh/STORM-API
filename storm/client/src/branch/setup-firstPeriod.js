@@ -10,9 +10,11 @@ export default class SetupFirstPeriodController {
 
         let date = moment(),
             year = date.jYear(),
-            isLeap = moment.jIsLeapYear(year);
+            isLeap = moment.jIsLeapYear(year),
+            maxDate = `${year}/12/${isLeap ? '30' : '29'}`;
 
         this.fiscalPeriod = {
+            title: `سال مالی منتهی به ${maxDate}`,
             minDate: `${year}/01/01`,
             maxDate: `${year}/12/${isLeap ? '30' : '29'}`
         };
