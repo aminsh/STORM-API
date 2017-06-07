@@ -4,6 +4,7 @@
 const fs = require('fs'),
     path = require('path'),
     config = require('../config'),
+    reportConfig = require('../../reporting/report.config.json'),
     async = require('asyncawait/async'),
     await = require('asyncawait/await'),
     router = require('express').Router(),
@@ -38,18 +39,24 @@ router.route('/')
     });
 
 router.route('/file/:fileName').get((req, res) => {
-    let report = getReport(req.params.fileName),
-        reportComponents = report.Pages[0].Components,
-        reportComponentsMaxKeys = (Object.keys(reportComponents)
-                .asEnumerable()
-                .select(c => parseInt(c))
-                .max() || 0) + 1,
-        layoutComponents = layout.Pages[0].Components,
-        header = layoutComponents[0],
-        footer = layoutComponents[1];
+    let withLayout = reportConfig.asEnumerable()
+            .selectMany(rc=> rc.items)
+            .any(rc => rc.useLayout && rc.fileName ==  req.params.fileName),
+        report = getReport(req.params.fileName);
 
-    reportComponents[++reportComponentsMaxKeys] = header;
-    reportComponents[++reportComponentsMaxKeys] = footer;
+    if (withLayout) {
+      let reportComponents = report.Pages[0].Components,
+            reportComponentsMaxKeys = (Object.keys(reportComponents)
+                    .asEnumerable()
+                    .select(c => parseInt(c))
+                    .max() || 0) + 1,
+            layoutComponents = layout.Pages[0].Components,
+            header = layoutComponents[0],
+            footer = layoutComponents[1];
+
+        reportComponents[++reportComponentsMaxKeys] = header;
+        reportComponents[++reportComponentsMaxKeys] = footer;
+    }
 
     res.json(report);
 
@@ -253,26 +260,26 @@ router.route('/invoices/:id')
     .get(async((req, res) => {
         let ins = new ReportQueryInvoice(req.cookies['branch-id']),
             result = await(ins.Invoice(req.params.id));
-/*            result = [
-                {
-                    number: 0,
-                    date: '',
-                    invoiceDescription: '',
-                    invoiceType: '',
-                    quantity: 0,
-                    unitPrice: 0,
-                    vat: 0,
-                    discount: 0,
-                    grossPrice: 0,
-                    vatPrice: 0,
-                    netPrice: 0,
-                    invoiceLineDescription: '',
-                    productName: '',
-                    customerName:'',
-                    customerAddress: '',
-                    personCode: ''
-                }
-            ];*/
+        /*            result = [
+         {
+         number: 0,
+         date: '',
+         invoiceDescription: '',
+         invoiceType: '',
+         quantity: 0,
+         unitPrice: 0,
+         vat: 0,
+         discount: 0,
+         grossPrice: 0,
+         vatPrice: 0,
+         netPrice: 0,
+         invoiceLineDescription: '',
+         productName: '',
+         customerName:'',
+         customerAddress: '',
+         personCode: ''
+         }
+         ];*/
         res.json(result);
     }));
 

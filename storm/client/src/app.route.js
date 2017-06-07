@@ -1,4 +1,4 @@
-"use strict";
+
 
 routing.$inject = ['$stateProvider', '$urlRouterProvider', '$locationProvider'];
 

@@ -1,4 +1,4 @@
-"use strict";
+
 
 export default function ($translateProvider) {
     let translate = JSON.parse(localStorage.getItem('translate'));
