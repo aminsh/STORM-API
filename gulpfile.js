@@ -94,16 +94,10 @@ gulp.task('build-stimulsoft', function () {
 
     let reports = [
         './vendors/stimulsoft/stimulsoft.reports.js',
-        './vendors/stimulsoft/stimulsoft.viewer.js',
-<<<<<<< HEAD
+        './vendors/stimulsoft/stimulsoft.viewer.js'
     ],
         designer = ['./vendors/stimulsoft/stimulsoft.designer.js']
     return gulp.src(config.isProduction ? reports : reports.concat(designer))
-
-=======
-        './vendors/stimulsoft/stimulsoft.designer.js'
-    ])
->>>>>>> origin/master
         .pipe(beautify({indent_size: 2}))
         .pipe(gulpif(!config.isProduction, sourcemaps.init()))
         .pipe(concat(`stimulsoft.all.min.js`))
