@@ -38,7 +38,6 @@ jspm_packages
 /database/convert/data.json
 /.idea
 /.vscode
-/luca/database/convert/data.json
 /data
 /.sass-cache
 /public
