@@ -159,7 +159,7 @@
     "persian-date": "./shared/utilities/persianDate.js",
     "acc-enums": "./acconting/shared/enumns.js",
     "jquery-global-resolve": "./vendors/jquery.global.resolve.js",
-    "kendo-web":"./vendors/kendo/kendo.web.js",
+    "kendo-web":"./vendors/kendo/kendo.web.min.js",
     "kendo-angular":"./vendors/kendo/kendo.angular.js",
     "bootstrap": "./node_modules/bootstrap-sass-directional/assets/javascripts/bootstrap.js",
     "metisMenu": "./vendors/jquery.metisMenu.js",

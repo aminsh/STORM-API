@@ -41,7 +41,12 @@ gulp.task('acc-build-template', function () {
             }))
         .pipe(gulp.dest(`${config.publicDir}/js`));
 });
-
+gulp.task('minfy', function () {
+    return gulp.src('./vendors/kendo/kendo.web.js')
+        .pipe(uglify())
+        .pipe(rename({extname: '.min.js'}))
+        .pipe(gulp.dest('./vendors/kendo'));
+});
 gulp.task('acc-build-js', function () {
     const distPath = `${config.publicDir}/js`;
 
