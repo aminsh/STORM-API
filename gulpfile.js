@@ -59,7 +59,7 @@ gulp.task('acc-build-js', function () {
         return browserify(
             {
                 entries: `${config.accSrcDir}/src/acc.config.js`,
-                debug: !config.isProduction
+                debug: true
             })
             .transform({
                 global: true,
@@ -226,7 +226,7 @@ gulp.task('storm-build-js', function () {
         return browserify(
             {
                 entries: `${config.stormSrcDir}/src/app.js`,
-                debug: true//!config.isProduction
+                debug: true
             })
             .transform({
                 global: true,
