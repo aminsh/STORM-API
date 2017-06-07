@@ -26,7 +26,7 @@ export default class SetupFirstPeriodController {
 
         this.fiscalPeriodApi.create(this.fiscalPeriod)
             .then(() => {
-                this.$state.go('^.chartOfAccount');
+                this.$state.go('^.chartOfAccounts');
             });
     }
 }

@@ -41,7 +41,7 @@ router.route('/')
 router.route('/file/:fileName').get((req, res) => {
     let withLayout = reportConfig.asEnumerable()
             .selectMany(rc=> rc.items)
-            .any(rc => rc.useLayout && rc.fileName ==  req.params.fileName),
+            .any(rc => [undefined, true].includes(rc.useLayout) && rc.fileName == req.params.fileName),
         report = getReport(req.params.fileName);
 
     if (withLayout) {

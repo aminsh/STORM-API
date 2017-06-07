@@ -96,6 +96,13 @@ export default function routing($stateProvider, $urlRouterProvider, $locationPro
             controllerAs: 'model',
             shouldAuthenticate: true
         })
+        .state('setup.final', {
+            url: '/final',
+            onEnter: ($window) => {
+                $window.location.href = `${$window.location.origin}/acc`;
+            },
+            shouldAuthenticate: true
+        })
 
         .state('/page-not-found', {
             template: '<h1>Page not found</h1>'
