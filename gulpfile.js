@@ -65,8 +65,8 @@ gulp.task('acc-build-js', function () {
                 }
             }, 'uglifyify')
             .bundle()
-            .pipe(exorcist(path.join(distPath, `acc.bundle.min.map`)))
-            .pipe(fs.createWriteStream(path.join(distPath, 'acc.bundle.min.js'), 'utf8'));
+            .pipe(gulpif(!config.isProduction, exorcist(path.join(distPath, `acc.bundle.min.map`)))
+            .pipe(fs.createWriteStream(path.join(distPath, 'acc.bundle.min.js'), 'utf8')));
 
         process.exit();
     });
@@ -86,15 +86,18 @@ gulp.task('acc-build-sass', function () {
 });
 
 gulp.task('build-stimulsoft', function () {
-    return gulp.src([
+
+    let reports = [
         './vendors/stimulsoft/stimulsoft.reports.js',
         './vendors/stimulsoft/stimulsoft.viewer.js',
-        './vendors/stimulsoft/stimulsoft.designer.js'
-    ])
-        //.pipe(beautify({indent_size: 2}))
-        //.pipe(gulpif(!config.isProduction, sourcemaps.init()))
+    ],
+        designer = ['./vendors/stimulsoft/stimulsoft.designer.js']
+    return gulp.src(config.isProduction ? reports : reports.concat(designer))
+
+        .pipe(beautify({indent_size: 2}))
+        .pipe(gulpif(!config.isProduction, sourcemaps.init()))
         .pipe(concat(`stimulsoft.all.min.js`))
-        //.pipe(gulpif(!config.isProduction, sourcemaps.write()))
+        .pipe(gulpif(!config.isProduction, sourcemaps.write()))
         .pipe(gulp.dest(`${config.publicDir}/js`))
 });
 
@@ -105,8 +108,6 @@ gulp.task('css-uncss', function () {
         }))
         .pipe(gulp.dest('dist'))
 });
-
-
 
 gulp.task('copy-storm-fonts', function () {
     return gulp.src([
@@ -179,8 +180,7 @@ gulp.task('default', [
     'acc-build-js',
     'acc-build-template',
     'acc-build-sass',
-    'acc-build-stimulsoft',
-    'storm-build-sass',
+    'build-stimulsoft',
     'storm-build-template',
     'storm-build-js',
     'copy-assets',
@@ -222,7 +222,7 @@ gulp.task('storm-build-js', function () {
         return browserify(
             {
                 entries: `${config.stormSrcDir}/src/app.js`,
-                debug: !config.isProduction
+                debug: true//!config.isProduction
             })
             .transform({
                 global: true,
@@ -233,7 +233,7 @@ gulp.task('storm-build-js', function () {
                 }
             }, 'uglifyify')
             .bundle()
-            .pipe(exorcist(path.join(distPath, `storm.bundle.min.map`)))
+            .pipe(gulpif(!config.isProduction, exorcist(path.join(distPath, `storm.bundle.min.map`))))
             .pipe(fs.createWriteStream(path.join(distPath, 'storm.bundle.min.js'), 'utf8'));
 
         process.exit();
