@@ -42,11 +42,7 @@ enums.AccountGroupingType=function(){
         {key: '6', display: 'فروش'},
         {key: '7', display: 'درآمدها'},
         {key: '8', display: 'هزینه ها'},
-<<<<<<< HEAD
-        {key: '9', display: 'سایر حساب ها'},
-=======
         {key: '9', display: 'سایر حساب ها'}
->>>>>>> origin/master
     ]);
 };
 
