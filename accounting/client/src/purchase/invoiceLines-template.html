@@ -337,32 +337,8 @@
                                 title="{{'New Journal line' | translate}}"></dev-tag-button>
                     </div>
                 </div>
-                <div class="col-md-9 text-right">
-                    <form class="form-inline ng-pristine ng-valid">
-                        <div class="form-group">
-                            <div class="input-group">
-                                <div class="input-group-addon hand"
-                                     ng-click="openBarcodeList()"
-                                     data-toggle="popover" data-trigger="hover"
-                                     data-placement="top" data-content="ورود گروهی توسط بارکد" data-original-title="" title="">
-                                    <span class="fa fa-barcode" aria-hidden="true"></span>
-                                </div>
-                                <input type="text" id="barcodeScan" class="form-control input-sm ng-pristine ng-untouched ng-valid" ng-model="barcode" placeholder="ورود توسط بارکدخوان" select-on-click="">
-                            </div>
-                            <div class="input-group" id="barcodeOK" style="display: none;">
-                                <span class="fa fa-check text-success form-inline" aria-hidden="true"></span>
-                            </div>
-                            <div class="input-group" id="barcodeNoOK" style="display: none;">
-                                <span class="fa fa-remove text-danger form-inline" aria-hidden="true"></span>
-                            </div>
-                        </div>
-                    </form>
-                </div>
             </div>
-            <div  class="form-group">
-                <label class="label-control" for="description">{{'Description' | translate}}</label>-
-                <textarea class="form-control" rows="4" id="description" ng-model="model.invoice.description"></textarea>
-            </div>
+
         </div>
         <div class="col-md-4">
             <div class="row text-left">
