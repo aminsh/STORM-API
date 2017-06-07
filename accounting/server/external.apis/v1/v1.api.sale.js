@@ -3,14 +3,14 @@
 const async = require('asyncawait/async'),
     await = require('asyncawait/await'),
     router = require('express').Router(),
-    SaleRepository = require('../../data/repository.sale'),
+    InvoiceRepository = require('../../data/repository.invoice'),
     ProductRepository = require('../../data/repository.product'),
     DetailAccountRepository = require('../../data/repository.detailAccount'),
     EventEmitter = require('../../services/shared').service.EventEmitter;
 
 router.route('/')
     .post(async((req, res) => {
-        let saleRepository = new SaleRepository(req.branchId),
+        let invoiceRepository = new InvoiceRepository(req.branchId),
             productRepository = new ProductRepository(req.branchId),
             detailAccountRepository = new DetailAccountRepository(req.branchId),
             cmd = req.body,
@@ -52,7 +52,7 @@ router.route('/')
             })
             .toArray();
 
-        let result = await(saleRepository.create(entity));
+        let result = await(invoiceRepository.create(entity));
 
         EventEmitter.emit('on-sale-created', result);
 

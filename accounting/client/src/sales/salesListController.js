@@ -1,11 +1,12 @@
-import accModule from '../acc.module';
+
 export default class salesListController {
     constructor(
                 translate,
                 devConstants,
                 logger,
                 $timeout,
-                $scope,) {
+                navigate,
+                $scope) {
 
         this.$scope = $scope;
         this.$timeout = $timeout;
@@ -17,9 +18,22 @@ export default class salesListController {
                 {name: 'number', title: translate('Number'), width: '120px', type: 'number'},
                 {name: 'date', title: translate('Date'), type: 'date', width: '120px',},
                 {
-                name: 'description', title: translate('description'), type: 'string', width: '30%',
+                name: 'description', title: translate('Description'), type: 'string', width: '30%',
                 },
             ],
+            commands: [
+                {
+                    title: translate('Print'),
+                    name: 'print',
+                    action: (current) => {
+                        let reportParam={"id": current.id}
+                        navigate(
+                            'report.print',
+                            {key: 700},
+                            reportParam);
+                    }
+                }
+                ],
             readUrl: devConstants.urls.sales.getAll(),
         };
 

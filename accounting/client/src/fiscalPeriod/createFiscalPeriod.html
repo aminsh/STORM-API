@@ -1,0 +1,61 @@
+<form name="form" novalidate>
+    <div class="modal-header">
+        <button type="button" ng-click="model.close()" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        <h3 class="modal-title">{{'New fiscal period'| translate}}</h3>
+    </div>
+    <div class="modal-body">
+
+        <dev-tag-validation-summary errors="model.errors"></dev-tag-validation-summary>
+        <div class="form-group">
+            <label class="label-control">{{'Title' | translate}}</label>
+            <dev-tag-text-box
+                    class="form-control"
+                    required
+                    minlength="3"
+                    name="title"
+                    ng-model="model.fiscalPeriod.title"></dev-tag-text-box>
+
+            <div ng-messages="form.title.$error" ng-if="form.title.$dirty">
+                <label ng-message="required" class="error">{{'This field is required'|translate}}</label>
+                <label ng-message="minlength" class="error">{{'This field should at least 3 characters'|translate}}</label>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group col-md-6">
+                <label class="label-control">{{'From date'|translate}}</label>
+                <dev-tag-datepicker name="minDate"
+                                    ng-model="model.fiscalPeriod.minDate"
+                                    required></dev-tag-datepicker>
+
+                <div ng-messages="form.minDate.$error" ng-if="form.minDate.$dirty">
+                    <label ng-message="required" class="error">{{'This field is required'|translate}}</label>
+                </div>
+            </div>
+
+            <div class="form-group col-md-6">
+                <label class="label-control">{{'To date'|translate}}</label>
+                <dev-tag-datepicker name="maxDate"
+                                    ng-model="model.fiscalPeriod.maxDate"
+                                    required></dev-tag-datepicker>
+
+                <div ng-messages="form.maxDate.$error" ng-if="form.maxDate.$dirty">
+                    <label ng-message="required" class="error">{{'This field is required'|translate}}</label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <dev-tag-button
+                ng-click="model.save(form)"
+                icon="glyphicon glyphicon-floppy-disk"
+                ng-disabled="isSaving"
+                is-waiting="isSaving"
+                style-type="primary"
+                title="{{'Save' | translate}}"
+                ng-disabled="form.$invalid"></dev-tag-button>
+    </div>
+</form>
+

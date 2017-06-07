@@ -19,13 +19,7 @@ module.exports = class TagRepository extends BaseRepository {
 
     create(entity) {
         super.create(entity);
-
-        entity.id = await(this.knex('tags').returning('id').insert(entity))[0];
-
-        if(Array.isArray(entity.id))
-            entity.id = entity.id[0];
-
-        return entity;
+        return this.knex('tags').insert(entity);
     }
 
     update(entity) {

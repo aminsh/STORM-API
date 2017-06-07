@@ -207,14 +207,21 @@ export default function ($stateProvider, $urlRouterProvider, $locationProvider) 
             controller: 'accountReviewTurnoverController',
             templateUrl: 'partials/views/accountReviewTurnover.html'
         })
-        .state('fiscal-period', {
-            url: '/fiscal-period',
-            template: '<ui-view></ui-view>'
+        .state('fiscal-periods', {
+            url: '/fiscal-periods',
+            controller: 'fiscalPeriodController',
+            controllerAs: 'model',
+            templateUrl: 'partials/fiscalPeriod/fiscalPeriods.html'
         })
-        .state('fiscal-period.new', {
-            url: '/fiscal-period/new',
-            controller: 'createFiscalPeriodController',
-            templateUrl: 'partials/views/createFiscalPeriod.html'
+        .state('fiscal-periods.new', {
+            url: '/new',
+            onEnter: $modelFactory => {
+                $modelFactory.create({
+                    controller: 'createFiscalPeriodController',
+                    controllerAs: 'model',
+                    templateUrl: 'partials/fiscalPeriod/createFiscalPeriod.html'
+                });
+            }
         })
         .state('report', {
             url: '/report',
@@ -241,7 +248,12 @@ export default function ($stateProvider, $urlRouterProvider, $locationProvider) 
             url: '/design/:key',
             controller: 'reportDesignController',
             controllerAs: 'model',
-            templateUrl: 'partials/report/reportDesign.html'
+            templateUrl: 'partials/report/reportDesign.html',
+            resolve: {
+                loadingStimulScript: (reportLoaderService) => {
+                    return reportLoaderService.loadIfNot()
+                }
+            }
         })
         .state('sales', {
             url: '/sales',
@@ -258,6 +270,76 @@ export default function ($stateProvider, $urlRouterProvider, $locationProvider) 
             controller: 'salesInvoiceController',
             controllerAs: 'model',
             templateUrl: 'partials/sales/invoiceCreate.html'
+        })
+        .state('purchases', {
+            url: '/purchases',
+            template: '<ui-view></ui-view>'
+        })
+        .state('purchases.list', {
+            url: '/list',
+            controller: 'purchasesListController',
+            controllerAs: 'model',
+            templateUrl: 'partials/purchase/purchases.html'
+        })
+        .state('purchases.create', {
+            url: '/create',
+            controller: 'purchaseController',
+            controllerAs: 'model',
+            templateUrl: 'partials/purchase/invoiceCreate.html'
+        })
+
+        .state('people', {
+            url: '/people',
+            controller: 'peopleListController',
+            controllerAs: 'model',
+            templateUrl: 'partials/people/peopleList.html'
+        })
+        .state('people.create', {
+            url: '/create',
+            onEnter: $modelFactory => {
+                $modelFactory.create({
+                    controller: 'peopleCreateController',
+                    controllerAs: 'model',
+                    templateUrl: 'partials/people/peopleCreate.html'
+                });
+            }
+        })
+        .state('people.edit', {
+            url: '/:id/edit',
+            onEnter: $modelFactory => {
+                $modelFactory.create({
+                    controller: 'peopleCreateController',
+                    controllerAs: 'model',
+                    templateUrl: 'partials/people/peopleCreate.html',
+                });
+            }
+        })
+
+        .state('fund', {
+            url: '/fund',
+            controller: 'fundListController',
+            controllerAs: 'model',
+            templateUrl: 'partials/fund/fundList.html'
+        })
+        .state('fund.create', {
+            url: '/create',
+            onEnter: $modelFactory => {
+                $modelFactory.create({
+                    controller: 'fundCreateController',
+                    controllerAs: 'model',
+                    templateUrl: 'partials/fund/fundCreate.html'
+                });
+            }
+        })
+        .state('fund.edit', {
+            url: '/:id/edit',
+            onEnter: $modelFactory => {
+                $modelFactory.create({
+                    controller: 'fundCreateController',
+                    controllerAs: 'model',
+                    templateUrl: 'partials/fund/fundCreate.html',
+                });
+            }
         })
         .state('not-found', {
             url: '/not-found',

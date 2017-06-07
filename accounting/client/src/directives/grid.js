@@ -14,7 +14,8 @@ export default function (apiPromise, $timeout) {
         },
         link: (scope, element, attrs) => {
             let extra = scope.option.extra || null,
-                option = scope.option;
+                option = scope.option,
+                defaultSort = option.sort || [];
 
             scope.gridId = Guid.new();
 
@@ -120,7 +121,7 @@ export default function (apiPromise, $timeout) {
             scope.removeSort = removeSort;
 
             let filter = {logic: 'and', filters: []},
-                sort = [],
+                sort = [...defaultSort],
                 parameters = {filter, sort, extra};
 
             function addFilter(filterParam) {

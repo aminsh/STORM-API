@@ -10,38 +10,32 @@ module.exports = class ProductRepository extends BaseRepository {
         super(branchId)
     }
 
-    findById(id){
+    findById(id) {
         return this.knex.table('products')
             .modify(this.modify, this.branchId)
             .where('id', id)
             .first();
     }
 
-    findByReferenceId(referenceId){
+    findByReferenceId(referenceId) {
         return this.knex.table('products')
             .modify(this.modify, this.branchId)
             .where('referenceId', referenceId)
             .first();
     }
 
-    create(entity){
+    create(entity) {
         super.create(entity);
-
-        entity.id = await(
-            this.knex('products')
-                .returning('id')
-                .insert(entity))[0].id;
-
-            return entity;
+        return this.knex('products').insert(entity);
     }
 
-    update(id, entity){
+    update(id, entity) {
         return this.knex('products')
             .modify(this.modify, this.branchId)
             .where('id', id).update(entity);
     }
 
-    remove(id){
+    remove(id) {
         return this.knex('products')
             .modify(this.modify, this.branchId)
             .where('id', id).del();

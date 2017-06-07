@@ -147,7 +147,6 @@ class JournalRepository extends BaseRepository {
                 try {
                     let id = await(knex('journals')
                         .transacting(trans)
-                        .returning('id')
                         .insert(journal))[0];
 
                     journalLines.forEach(line => {

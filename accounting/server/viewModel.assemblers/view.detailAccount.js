@@ -13,6 +13,8 @@ function detailAccountAssembler(entity) {
         address: entity.address,
         phone: entity.phone,
         nationalCode: entity.nationalCode,
+        economicCode: entity.economicCode,
+        bank: entity.bank,
         email: entity.email,
         personType: entity.personType,
         personTypeDisplay: entity.personType ? enums.PersonType().getDisplay(entity.personType) : ''

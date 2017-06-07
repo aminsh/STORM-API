@@ -27,12 +27,7 @@ class JournalLineRepository extends BaseRepository {
 
     create(entity) {
         super.create(entity);
-
-        entity.id = await(this.knex('journalLines')
-            .returning('id')
-            .insert(entity))[0];
-
-        return entity;
+        return this.knex('journalLines').insert(entity);
     }
 
     update(entity) {

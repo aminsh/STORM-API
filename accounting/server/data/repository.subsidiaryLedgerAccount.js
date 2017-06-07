@@ -19,8 +19,10 @@ class SubsidiaryLedgerAccountRepository extends BaseRepository {
 
     findByCode(code, generalLedgerAccountId, notEqualId) {
         let query = this.knex.table('subsidiaryLedgerAccounts')
-            .where('code', code)
-            .andWhere('generalLedgerAccountId', generalLedgerAccountId);
+            .where('code', code);
+
+        if(generalLedgerAccountId)
+            query.andWhere('generalLedgerAccountId', generalLedgerAccountId);
 
         if (notEqualId)
             query.andWhere('id', '!=', notEqualId);
@@ -30,12 +32,7 @@ class SubsidiaryLedgerAccountRepository extends BaseRepository {
 
     create(entity) {
         super.create(entity);
-
-        entity.id = await(this.knex('subsidiaryLedgerAccounts')
-            .returning('id')
-            .insert(entity))[0];
-
-        return entity;
+        return this.knex('subsidiaryLedgerAccounts').insert(entity);
     }
 
     update(entity) {

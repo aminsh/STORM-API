@@ -67,8 +67,24 @@ let tag = {
     getAll: ()=> `${rootUrl()}/tags`
 };
 
+let people = {
+    getAll: ()=> `${rootUrl()}/people`
+};
+
+let fund = {
+    getAll: ()=> `${rootUrl()}/funds`
+};
+
 let sales = {
     getAll: ()=> `${rootUrl()}/sales`
+};
+
+let purchase = {
+    getAll: ()=> `${rootUrl()}/purchases`
+};
+
+let products = {
+    getAll: ()=> `${rootUrl()}/products`
 };
 
 let apiUrls = {
@@ -85,7 +101,11 @@ let apiUrls = {
     journalTemplate: journalTemplate,
     accountReview: accountReview,
     tag: tag,
-    sales:sales
+    sales:sales,
+    purchase:purchase,
+    products:products,
+    people:people,
+    fund:fund
 };
 
 export default apiUrls;

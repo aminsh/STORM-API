@@ -22,7 +22,7 @@
 
             <td style="text-align: center">{{item.row}}</td>
             <td>
-                <dev-tag-combo-box
+                <dev-tag-ui-select-combo-box
                         ng-if="item.hasDetailAccount"
                         ng-keyup="model.keyUpGridRow($event, item, 'detailAccountId')"
                         focus-on="detailAccount-focus-{{item.id}}"
@@ -33,7 +33,7 @@
                         k-data-source="model.detailAccount.data"
                         on-changed="model.detailAccount.onChanged($item, item)"
                         ng-model="item.detailAccountId"
-                        required></dev-tag-combo-box>
+                        required></dev-tag-ui-select-combo-box>
                 <div ng-messages="form['form-'+$index].detailAccountId.$error"
                      ng-if="form['form-'+$index].detailAccountId.$dirty">
                     <label ng-message="required"
@@ -42,7 +42,7 @@
             </td>
             <td>
 
-                <dev-tag-combo-box
+                <dev-tag-ui-select-combo-box
                         ng-keyup="model.keyUpGridRow($event, item, 'subsidiaryLedgerAccountId')"
                         name="subsidiaryLedgerAccountId"
                         focus-on="subsidiaryLedgerAccount-focus-{{item.id}}"
@@ -53,7 +53,7 @@
                         group-by="generalLedgerAccountDisplay"
                         on-changed="model.subsidiaryLedgerAccount.onChanged($item, item)"
                         ng-model="item.subsidiaryLedgerAccountId"
-                        required></dev-tag-combo-box>
+                        required></dev-tag-ui-select-combo-box>
 
                 <div ng-messages="form['form-'+$index].subsidiaryLedgerAccountId.$error"
                      ng-if="form['form-'+$index].subsidiaryLedgerAccountId.$dirty">

@@ -3147,6 +3147,15 @@ table.table-mail tr td {
 .unread td {
   background-color: #f9f8f8;
 }
+
+.ibox-footer {
+  color: inherit;
+  border-top: 1px solid #e7eaec;
+  font-size: 90%;
+  background: #ffffff;
+  padding: 10px 15px;
+}
+
 .ibox-content {
   clear: both;
 }

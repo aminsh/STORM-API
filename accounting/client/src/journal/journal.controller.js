@@ -243,12 +243,12 @@ export default class {
     print() {
         //report/100?minNumber=5&maxNumber=5
 
-            let reportParam={"minNumber":  this.journal.temporaryNumber,"maxNumber":  this.journal.temporaryNumber}
-            this.navigate(
-                'report.print',
-                {key: 100},
-                reportParam);
-      //  this.navigate('journalPrint', {id: id});
+        let reportParam={"minNumber":  this.journal.temporaryNumber,"maxNumber":  this.journal.temporaryNumber}
+        this.navigate(
+            'report.print',
+            {key: 100},
+            reportParam);
+        //  this.navigate('journalPrint', {id: id});
     }
 
     additionalInfo(journalLine) {

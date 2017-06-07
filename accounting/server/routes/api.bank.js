@@ -2,93 +2,57 @@
 
 const async = require('asyncawait/async'),
     await = require('asyncawait/await'),
+    router = require('express').Router(),
     string = require('../utilities/string'),
     translate = require('../services/translateService'),
-    router = require('express').Router(),
-    BankRepository = require('../data/repository.bank'),
-    BankQuery = require('../queries/query.bank');
+    DetailAccountRepository = require('../data/repository.detailAccount'),
+    DetailAccountQuery = require('../queries/query.detailAccount');
 
 router.route('/')
     .get(async((req, res) => {
-        let bankQuery = new BankQuery(req.cookies['branch-id']),
-            result = await(bankQuery.getAll(req.query));
+        let detailAccountQuery = new DetailAccountQuery(req.cookies['branch-id']),
+            result = detailAccountQuery.getAllBanks(req.query);
         res.json(result);
     }))
-
     .post(async((req, res) => {
-        let bankRepository = new BankRepository(req.cookies['branch-id']),
-            errors = [],
-            cmd = req.body;
+        let detailAccountRepository = new DetailAccountRepository(req.cookies['branch-id']),
+            cmd = req.body,
+            entity = {
+                code: cmd.code,
+                title: cmd.title,
+                bank: cmd.bank,
+                bankBranch: cmd.bankBranch,
+                bankAccountNumber: cmd.bankAccountNumber,
+                detailAccountType: 'bank'
+            };
 
-        if (string.isNullOrEmpty(cmd.title))
-            errors.push(translate('The title is required'));
-        else {
-            if (cmd.title.length < 3)
-                errors.push(translate('The title should have at least 3 character'));
-        }
+        entity = await(detailAccountRepository.create(entity));
 
-        if (errors.asEnumerable().any())
-            return res.json({
-                isValid: !errors.asEnumerable().any(),
-                errors: errors
-            });
-
-        let entity = await(bankRepository.create({title: cmd.title}));
-
-        return res.json({
-            isValid: true,
-            returnValue: {id: entity.id}
-        });
+        res.json({isValid: true, returnValue: {id: entity.id}});
 
     }));
 
 router.route('/:id')
     .get(async((req, res) => {
-        let bankQuery = new BankQuery(req.cookies['branch-id']),
-            result = bankQuery.getById(req.params.id);
+        let detailAccountQuery = new DetailAccountQuery(req.cookies['branch-id']),
+            result = detailAccountQuery.getById(req.params.id);
         res.json(result);
     }))
-
     .put(async((req, res) => {
-        let bankRepository = new BankRepository(req.cookies['branch-id']),
-            errors = [],
-            cmd = req.body;
+        let detailAccountRepository = new DetailAccountRepository(req.cookies['branch-id']),
+            cmd = req.body,
+            entity = await(detailAccountRepository.findById(req.params.id));
 
-        if (string.isNullOrEmpty(cmd.title))
-            errors.push(translate('The title is required'));
-        else {
-            if (cmd.title.length < 3)
-                errors.push(translate('The title should have at least 3 character'));
-        }
-
-        if (errors.asEnumerable().any())
-            return res.json({
-                isValid: !errors.asEnumerable().any(),
-                errors: errors
-            });
-
-        let entity = await(bankRepository.findById(req.params.id));
-
+        entity.code = cmd.code;
         entity.title = cmd.title;
+        entity.bank= cmd.bank;
+        entity.bankBranch= cmd.bankBranch;
+        entity.bankAccountNumber= cmd.bankAccountNumber;
 
-        await(bankRepository.update(entity));
-
-        res.json({isValid: true});
-    }))
-
-    .delete(async((req, res) => {
-        let bankRepository = new BankRepository(req.cookies['branch-id']),
-            errors = [];
-
-        if (errors.asEnumerable().any())
-            return res.json({
-                isValid: !errors.asEnumerable().any(),
-                errors: errors
-            });
-
-        await(bankRepository.remove(req.params.id));
+        await(detailAccountRepository.update(entity));
 
         res.json({isValid: true});
     }));
+
 
 module.exports = router;

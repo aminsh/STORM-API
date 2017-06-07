@@ -15,6 +15,12 @@ router.route('/').get(async((req, res) => {
     res.json(result);
 }));
 
+router.route('/account/:id').get(async((req, res) => {
+    let subsidiaryLedgerAccountQuery = new SubsidiaryLedgerAccountQuery(req.cookies['branch-id']),
+        result = await(subsidiaryLedgerAccountQuery.getAll(req.params.id));
+    res.json(result);
+}));
+
 router.route('/general-ledger-account/:parentId')
     .get(async((req, res) => {
         let subsidiaryLedgerAccountQuery = new SubsidiaryLedgerAccountQuery(req.cookies['branch-id']),

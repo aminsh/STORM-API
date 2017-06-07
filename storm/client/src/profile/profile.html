@@ -1,0 +1,17 @@
+<div class="loginColumns float-e-margins text-center animated fadeInDown">
+    <a ui-sref="setup.info" class="btn btn-primary block btn-lg text-center" >
+        ایجاد کسب و کار جدید
+        <i class="fa fa-plus"></i>
+    </a>
+
+
+    <div ng-repeat="branch in model.branches"
+         class="contact-box center-version col-md-6"
+    style="margin-top: 100px">
+        <a ng-click="model.select(branch)">
+            <img alt="image"  style="height: 100px" ng-src="{{branch.logo}}" style="max-width: 200px">
+            <h3 class="m-b-xs"><strong>{{branch.name}}</strong></h3>
+        </a>
+    </div>
+
+</div>

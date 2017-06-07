@@ -1,0 +1,60 @@
+<form name="form" ng-submit="model.save(form)" novalidate>
+
+    <div class="ibox loginColumns float-e-margins animated bounceInRight">
+        <div class="ibox-title panel-primary">
+            <h5 style="float: right;">سرفصل حسابها</h5>
+        </div>
+
+        <div class="ibox-content"
+             ng-class="{'sk-loading': model.isWaiting}">
+
+            <div class="sk-spinner sk-spinner-wave" ng-if="model.isWaiting">
+                <div class="sk-rect1"></div>
+                <div class="sk-rect2"></div>
+                <div class="sk-rect3"></div>
+                <div class="sk-rect4"></div>
+                <div class="sk-rect5"></div>
+            </div>
+
+            <table class="table">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>نام</th>
+                    <th>کدینگ</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat-start="g in model.accounts">
+                    <td>گروه حساب</td>
+                    <td>{{g.display}}</td>
+                    <td>{{g.key}}</td>
+                </tr>
+
+                <tr ng-repeat-start="gla in g.generalLedgerAccounts">
+                    <td>کل</td>
+                    <td style="padding-right: 40px">{{gla.title}}</td>
+                    <td>{{gla.code}}</td>
+                </tr>
+
+                <tr ng-repeat-end ng-repeat="sla in gla.subsidiaryLedgerAccounts">
+                    <td>معین</td>
+                    <td style="padding-right: 80px">{{sla.title}}</td>
+                    <td>{{sla.code}}</td>
+                </tr>
+
+                <tr ng-repeat-end>
+
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="ibox-footer">
+            <button type="submit"
+                    class="btn btn-primary btn-block btn-lg">
+                ذخیره
+            </button>
+        </div>
+    </div>
+</form>

@@ -19,7 +19,6 @@ class UserRepository extends BaseRepository {
 
     create(entity) {
         super.create(entity);
-
         return this.knex('users').insert(entity);
     }
 }

@@ -1,4 +1,4 @@
-"use strict";
+
 
 routing.$inject = ['$stateProvider', '$urlRouterProvider', '$locationProvider'];
 
@@ -47,20 +47,54 @@ export default function routing($stateProvider, $urlRouterProvider, $locationPro
             url: '/register',
             templateUrl: 'app/authentication/register.html',//require('./auth/register.html'),
             controller: 'RegisterController',
-            controllerAs: 'registerVM'
+            controllerAs: 'model'
         })
         .state('activateUser', {
             url: '/activate/:token',
             onEnter: (logger, translate , $state) => {
                 logger.success(translate('Your Account activated successfully'))
-                    .then(()=> $state.go('home'));
+                    .then(()=> $state.go('profile'));
             }
+        })
+        .state('profile', {
+            url: '/profile',
+            templateUrl: 'app/profile/profile.html',//require('./auth/register.html'),
+            controller: 'ProfileController',
+            controllerAs: 'model',
+            shouldAuthenticate: true
         })
         .state('contactUs', {
             url: '/contact-us',
             templateUrl: 'app/contactUs/contactUs.html',//require('./auth/register.html'),
             controller: 'ContactUsController',
             controllerAs: 'vm'
+        })
+
+        .state('setup', {
+            url: '/setup',
+            template: '<ui-view></ui-view>',
+            shouldAuthenticate: true
+        })
+        .state('setup.info', {
+            url: '/info',
+            templateUrl: 'app/branch/setup-info.html',
+            controller: 'SetupInfoController',
+            controllerAs: 'model',
+            shouldAuthenticate: true
+        })
+        .state('setup.fiscalPeriod', {
+            url: '/first-fiscal-period',
+            templateUrl: 'app/branch/setup-firstFiscalPeriod.html',
+            controller: 'SetupFirstPeriodController',
+            controllerAs: 'model',
+            shouldAuthenticate: true
+        })
+        .state('setup.chartOfAccounts', {
+            url: '/chart-of-accounts',
+            templateUrl: 'app/branch/setup-chartOfAccounts.html',
+            controller: 'SetupChartOfAccountsController',
+            controllerAs: 'model',
+            shouldAuthenticate: true
         })
 
         .state('/page-not-found', {

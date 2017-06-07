@@ -67,8 +67,7 @@
                                         required></dev-tag-datepicker>
 
                                 <div ng-messages="form.temporaryDate.$error" ng-if="form.temporaryDate.$dirty">
-                                    <label ng-message="required" class="error">{{'This field is
-                                        required'|translate}}</label>
+                                    <label ng-message="required" class="error">{{'This field is required'|translate}}</label>
                                 </div>
                             </div>
                         </div>
@@ -81,12 +80,12 @@
                             </div>
                             <div class="col-md-4 form-group">
                                 <div class="input-group">
-                                    <dev-tag-combo-box
+                                    <dev-tag-ui-select-combo-box
                                             ng-model="model.journal.tagId"
                                             k-data-source="model.tags"
                                             k-placeholder="{{'Select ...'|translate}}"
                                             k-data-text-field="title"
-                                            k-data-value-field="id"></dev-tag-combo-box>
+                                            k-data-value-field="id"></dev-tag-ui-select-combo-box>
                                     <div class="input-group-addon" style="border: 0">
                                         <a ng-click="model.createTag()"><i class="fa fa-plus"></i></a>
                                     </div>

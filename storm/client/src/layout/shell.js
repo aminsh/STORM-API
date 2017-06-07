@@ -1,4 +1,4 @@
-function shell($mdSidenav, $rootScope, $window) {
+function shell($rootScope, $window) {
     "use strict";
 
     return {
@@ -13,12 +13,14 @@ function shell($mdSidenav, $rootScope, $window) {
                 scope.currentUser = currentUser;
                 scope.currentUserImage = $window.document.getElementsByName("currentUserImage")[0].content;
                 scope.logined = true;
+                $rootScope.isAuthenticated = true;
             } else {
                 currentUser = $rootScope.currentUser;
 
                 if (currentUser) {
                     scope.currentUser = currentUser;
                     scope.logined = true;
+                    $rootScope.isAuthenticated = true;
                 }
             }
 
@@ -27,6 +29,6 @@ function shell($mdSidenav, $rootScope, $window) {
     }
 }
 
-shell.$inject = ['$mdSidenav', '$rootScope', '$window'];
+shell.$inject = ['$rootScope', '$window'];
 
 export default shell;

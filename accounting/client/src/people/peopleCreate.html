@@ -1,0 +1,88 @@
+<div class="modal-header">
+    <button type="button" ng-click="model.close()" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+    <h3 class="modal-title">{{'New People'| translate}}</h3>
+</div>
+<div class="modal-body k-rtl">
+    <form name="form">
+        <dev-tag-validation-summary errors="model.errors" class="col-md-8"></dev-tag-validation-summary>
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="form-group">
+                    <label for="inputName" class="title1">{{'name'| translate}}</label>
+                    <input type="text" class="form-control input-sm" id="inputName" ng-model="model.people.title" name="title" required
+                           aria-describedby="inputNamehelp">
+                    <span id="inputNamehelp" class="help-block small">{{'person,company,...'| translate}}</span>
+                    <div ng-messages="form.title.$error" ng-if="form.title.$dirty">
+                        <label ng-message="required" class="error">{{'This field is required'|translate}}</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <label for="inputName" class="title1">{{'Person Type'| translate}}</label>
+                <select ng-model="model.people.personType"
+                        ng-options="p.key as p.display for p in model.personType"
+                        class="form-control">
+                    <option value="">{{'Select ...'|translate}}</option>
+                </select>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label for="inputNationalCode" class="title1">{{'NationalCode'| translate}}</label>
+                    <input type="text" class="form-control input-sm" id="inputNationalCode"
+                           ng-model="model.people.nationalCode">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label for="inputRegistrationNumber" class="title1">{{'RegistrationNumber'| translate}}</label>
+                    <input type="text"
+                           class="form-control input-sm"
+                           id="inputRegistrationNumber" ng-model="model.people.registrationNumber">
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label for="inputEconomicCode" class="title1">{{'Economic Code'| translate}}</label>
+                    <input type="text" class="form-control input-sm" id="inputEconomicCode" ng-model="model.people.economicCode">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label for="inputPhone" class="title1">{{'Phone'| translate}}</label>
+                    <input type="text" class="form-control input-sm" id="inputPhone" ng-model="model.people.phone">
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label for="inputContactEmail" class="title1">{{'Email'| translate}}</label>
+                    <input type="email" class="form-control input-sm " id="inputContactEmail" ng-model="model.people.email">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="form-group">
+                    <label for="inputAddress" class="title1">{{'Address'| translate}}</label>
+                    <textarea class="form-control input-sm" rows="2" id="inputAddress" ng-model="model.people.address"></textarea>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="modal-footer">
+    <dev-tag-button
+            ng-click="model.save(form)"
+            icon="glyphicon glyphicon-floppy-disk"
+            ng-disabled="isSaving"
+            is-waiting="isSaving"
+            style-type="primary"
+            title="{{'Save' | translate}}"></dev-tag-button>
+</div>

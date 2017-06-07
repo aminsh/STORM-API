@@ -20,7 +20,7 @@ export default class {
     }
 
     init(){
-        let Stimulsoft = this.$window;
+        let Stimulsoft = this.$window.Stimulsoft;
 
         Stimulsoft.Base.Localization.StiLocalization.setLocalizationFile('/public/fa.xml', true);
 

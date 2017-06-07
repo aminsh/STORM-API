@@ -17,6 +17,24 @@ accModule.config(menuItemsProvider => {
                 url: 'dimensions'
             }
         ],
+
+        overcome = [
+            {
+                title: 'فاکتور فروش',
+                url: 'sales/list',
+                icon: ''
+            }
+        ],
+
+        cost = [
+            {
+                title: 'فاکتور خرید',
+                url: 'purchases/list',
+                icon: ''
+            }
+        ],
+
+
         journal = [
             {
                 title: 'لیست اسناد حسابداری',
@@ -55,6 +73,8 @@ accModule.config(menuItemsProvider => {
         ];
 
 
+
+
     menuItemsProvider
         .add({
             title: 'حسابدار',
@@ -67,4 +87,40 @@ accModule.config(menuItemsProvider => {
                 ...reporting
             ]
         });
+
+    menuItemsProvider
+        .add({
+            title: 'تنظیمات',
+            url: '',
+            icon: 'fa fa-gear',
+            children: [
+                {
+                    title: 'دوره های مالی',
+                    url: 'fiscal-periods',
+                    icon: ''
+                }
+            ]
+        });
+
+    menuItemsProvider
+        .add({
+            title: 'فروش',
+            url: '',
+            icon: 'fa fa-shopping-cart',
+            children: [
+                ...overcome
+            ]
+        });
+
+    menuItemsProvider
+        .add({
+            title: 'خرید',
+            url: '',
+            icon: 'fa fa-shopping-basket',
+            children: [
+                ...cost
+            ]
+        });
+
+
 });

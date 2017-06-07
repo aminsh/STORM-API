@@ -14,8 +14,8 @@ function inventoryApi(apiPromise) {
         create: function (data) {
             return apiPromise.post(`${urlPrefix}/products`,data);
         },
-        update: function (data) {
-            return apiPromise.put(`${urlPrefix}/products/`,data);
+        update: function (id,data) {
+            return apiPromise.put(`${urlPrefix}/${id}/products/`,data);
         },
         remove: function (id) {
             return apiPromise.delete(`${urlPrefix}/products/${id}`);

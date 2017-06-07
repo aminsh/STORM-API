@@ -18,6 +18,14 @@ enums.AccountBalanceType = function () {
     ]);
 };
 
+enums.DetailAccountType = function () {
+    return new Enum([
+        {key: 'person', display: 'شخص'},
+        {key: 'bank', display: 'بانک'},
+        {key: 'fund', display: 'صندوق'}
+    ]);
+};
+
 enums.PersonType=function(){
     return new Enum([
         {key: 'legal', display: 'حقوقی'},
@@ -34,7 +42,11 @@ enums.AccountGroupingType=function(){
         {key: '6', display: 'فروش'},
         {key: '7', display: 'درآمدها'},
         {key: '8', display: 'هزینه ها'},
+<<<<<<< HEAD
+        {key: '9', display: 'سایر حساب ها'},
+=======
         {key: '9', display: 'سایر حساب ها'}
+>>>>>>> origin/master
     ]);
 };
 
@@ -42,6 +54,14 @@ enums.InvoiceType=function(){
     return new Enum([
         {key: 'purchase', display: 'خرید'},
         {key: 'sale', display: 'فروش'},
+    ]);
+};
+
+enums.InvoiceStatus = function () {
+    return new Enum([
+        {key: 'draft', display: 'پیش نویس'},
+        {key: 'waitForPayment', display: 'منتظر برای پرداخت'},
+        {key: 'paid', display: 'پراخت شده'},
     ]);
 };
 
@@ -108,5 +128,13 @@ enums.Active = () => {
         {key: 'false', name: 'showInactiveItems', display: 'نمایش غیر فعال ها'}
     ]);
 };
+enums.ReceivableType = function () {
+    return new Enum([
+        {key: 'cheque', display: 'چک'},
+        {key: 'receipt', display: 'فیش واریزی'},
+        {key: 'cash', display: 'نقدی'}
+    ])
+};
+
 
 module.exports = enums;

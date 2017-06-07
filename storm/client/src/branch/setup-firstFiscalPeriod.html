@@ -1,0 +1,67 @@
+<script src="../../../../accounting/database/migrations/20170526023232_accounting_migrate_db.js"></script>
+<form name="form" ng-submit="model.save(form)" novalidate>
+
+    <div class="ibox loginColumns float-e-margins animated bounceInRight">
+        <div class="ibox-title panel-primary">
+            <h5 style="float: right;">سال اول مالی</h5>
+        </div>
+
+        <div class="ibox-content"
+             ng-class="{'sk-loading': model.isWaiting}">
+
+            <div class="sk-spinner sk-spinner-wave" ng-if="model.isWaiting">
+                <div class="sk-rect1"></div>
+                <div class="sk-rect2"></div>
+                <div class="sk-rect3"></div>
+                <div class="sk-rect4"></div>
+                <div class="sk-rect5"></div>
+            </div>
+
+            <div class="form-group">
+                <label class="label-control">عنوان سال مالی</label>
+                <input type="text"
+                       class="form-control"
+                       required
+                       minlength="3"
+                       name="title"
+                       ng-model="model.fiscalPeriod.title">
+
+                <div ng-messages="form.title.$error" ng-if="form.title.$dirty">
+                    <div ng-message="required" class="text-danger">وارد کردن عنوان سال مالی الزامی است</div>
+                    <div ng-message="minlength" class="text-danger">عنوان سال مالی باید حداقل 3 کاراکتر باشد</div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="form-group col-md-6">
+                    <label class="label-control">تاریخ شروع</label>
+                    <adm-dtp name="minDate"
+                             ng-model="model.fiscalPeriod.minDate"
+                             required></adm-dtp>
+
+                    <div ng-messages="form.minDate.$error" ng-if="form.minDate.$dirty">
+                        <div ng-message="required" class="text-danger">تاریخ شروع دوره الزامی است</div>
+                    </div>
+                </div>
+
+                <div class="form-group col-md-6">
+                    <label class="label-control">تاریخ پایان</label>
+                    <adm-dtp name="maxDate"
+                             ng-model="model.fiscalPeriod.maxDate"
+                             required></adm-dtp>
+
+                    <div ng-messages="form.maxDate.$error" ng-if="form.maxDate.$dirty">
+                        <div ng-message="required" class="text-danger">تاریخ پایان دوره الزامی است</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ibox-footer">
+            <button type="submit"
+                    class="btn btn-primary btn-block btn-lg">
+                ذخیره
+            </button>
+        </div>
+    </div>
+</form>

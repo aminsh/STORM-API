@@ -37,7 +37,6 @@ import './controllers/journalTemplatesController';
 import './controllers/accountReviewController';
 import './controllers/accountReviewTurnoverController';
 import './controllers/journalPrintController';
-import createFiscalPeriodController from  './controllers/createFiscalPeriodController';
 import chequePrintController from './controllers/chequePrintController';
 import reportController from './controllers/reportController';
 import reportDesignerController from './controllers/reportDesignerController';
@@ -91,6 +90,7 @@ import './directives/validationSummary';
 import './directives/uploader';
 import './directives/button';
 import './directives/combobox';
+import './directives/uiSelectCombobox';
 import './directives/content';
 import './directives/datepicker';
 import './directives/toolbar';
@@ -140,7 +140,11 @@ import './journal';
 import './report';
 import './cheque';
 import './sales';
+import './purchases';
 import './inventory';
+import './people';
+import './fund';
+import './fiscalPeriod';
 
 accModule
     .config(uiRouteConfig)
@@ -175,7 +179,6 @@ accModule
     .service('tagApi', TagApi)
     .service('branchApi', BranchApi)
 
-    .controller(createFiscalPeriodController.name, createFiscalPeriodController)
     .controller('chequePrintController', chequePrintController)
     .controller('reportController', reportController)
     .controller('reportDesignerController', reportDesignerController)

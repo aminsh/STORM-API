@@ -7,13 +7,19 @@ const tables = [
     'dimensionCategories',
     'dimensions',
     'fiscalPeriods',
+    //'sales',
     'generalLedgerAccounts',
+    //'products',
+    //"saleLines",
     'journalLines',
     'journalTemplates',
     'journals',
     'subsidiaryLedgerAccounts',
     'tags',
-    'users'
+    'users',
+    'sales',
+    'saleLines',
+    'products'
 ];
 
 exports.up = function (knex, Promise) {
