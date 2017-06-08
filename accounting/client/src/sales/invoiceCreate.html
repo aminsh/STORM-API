@@ -17,7 +17,7 @@
                     <div class="form-group">
                         <label for="detailAccountId" class="title1">مشتری</label>
                         <div class="input-group">
-                            <dev-tag-combo-box id="detailAccountId"
+                            <dev-tag-combo-box id="detailAccountId" style="width: 100%"
                                                name="detailAccountId"
                                                k-placeholder="{{'Select ...'|translate}}"
                                                k-data-value-field="id"
@@ -78,16 +78,18 @@
                     </div>
                 </div>
 
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div  class="form-group">
+                            <label class="label-control" for="description">{{'Description' | translate}}</label>
+                            <textarea class="form-control" rows="4" id="description" ng-model="model.invoice.description"></textarea>
+                        </div>
+                    </div>
+                </div>
+
                 <dev-tag-content-body is-loading="model.isInvoiceSaleLoading">
                     <div style="padding: 10px"
                          ng-include="'partials/sales/invoiceLines-template.html'"></div>
-                    <div class="row">
-                        <div class="form-group">
-                            <label class="label-control" for="description">{{'Description' | translate}}</label>-
-                            <textarea class="form-control" rows="4" id="description"
-                                      ng-model="item.invoice.description"></textarea>
-                        </div>
-                    </div>
                 </dev-tag-content-body>
             </div>
         </dev-tag-content-body>
