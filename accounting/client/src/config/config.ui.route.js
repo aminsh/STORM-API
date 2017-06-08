@@ -341,6 +341,35 @@ export default function ($stateProvider, $urlRouterProvider, $locationProvider) 
                 });
             }
         })
+
+        .state('products', {
+            url: '/products',
+            controller: 'productsController',
+            controllerAs: 'model',
+            templateUrl: 'partials/product/products.html'
+        })
+        .state('products.create',{
+            url: '/create',
+            onEnter: $modelFactory => {
+                $modelFactory.create({
+                    controller: 'productEntryController',
+                    controllerAs: 'model',
+                    templateUrl: 'partials/product/product.entry.html',
+                    resolve: {data: {}}
+                });
+            }
+        })
+        .state('products.edit',{
+            url: '/:id/edit',
+            onEnter: ($modelFactory, $stateParams) => {
+                $modelFactory.create({
+                    controller: 'productEntryController',
+                    controllerAs: 'model',
+                    templateUrl: 'partials/product/product.entry.html',
+                    resolve: {data: {id: $stateParams.id}}
+                });
+            }
+        })
         .state('not-found', {
             url: '/not-found',
             templateUrl: 'partials/views/notFound.html'

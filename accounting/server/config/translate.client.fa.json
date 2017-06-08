@@ -245,5 +245,11 @@
   "person,company,...":"به عنوان مثال : نام شخص , شرکت یا ...",
   "Person Type":"نوع شخص",
   "RegistrationNumber":"شماره ثبت",
-  "Economic Code":"کد اقتصادی"
+  "Economic Code":"کد اقتصادی",
+  "Products": "کالا / خدمات",
+  "New product": "کالا / خدمات جدید",
+  "Edit product": "ویرایش کالا / خدمات",
+  "Reorder point": "نقطه سفارش مجدد",
+  "Sale price": "قیمت فروش",
+  "Type": "نوع"
 }

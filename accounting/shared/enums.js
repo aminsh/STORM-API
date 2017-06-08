@@ -26,14 +26,14 @@ enums.DetailAccountType = function () {
     ]);
 };
 
-enums.PersonType=function(){
+enums.PersonType = function () {
     return new Enum([
         {key: 'legal', display: 'حقوقی'},
         {key: 'real', display: 'حقیقی'},
     ]);
 };
 
-enums.AccountGroupingType=function(){
+enums.AccountGroupingType = function () {
     return new Enum([
         {key: '1', display: 'دارایی ها'},
         {key: '2', display: 'بدهی ها'},
@@ -46,7 +46,7 @@ enums.AccountGroupingType=function(){
     ]);
 };
 
-enums.InvoiceType=function(){
+enums.InvoiceType = function () {
     return new Enum([
         {key: 'purchase', display: 'خرید'},
         {key: 'sale', display: 'فروش'},
@@ -130,6 +130,13 @@ enums.ReceivableType = function () {
         {key: 'receipt', display: 'فیش واریزی'},
         {key: 'cash', display: 'نقدی'}
     ])
+};
+
+enums.ProductType = function () {
+    return new Enum([
+        {key: 'good', display: 'کالا'},
+        {key: 'service', display: 'خدمات'}
+    ]);
 };
 
 

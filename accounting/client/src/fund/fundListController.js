@@ -9,7 +9,7 @@ export default class peopleListController {
                 $scope) {
 
         this.$scope = $scope;
-        this.navigate=navigate,
+        this.navigate=navigate;
         this.$timeout = $timeout;
         this.logger = logger;
         this.translate = translate;

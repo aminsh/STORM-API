@@ -145,6 +145,7 @@ import './inventory';
 import './people';
 import './fund';
 import './fiscalPeriod';
+import './product';
 
 accModule
     .config(uiRouteConfig)

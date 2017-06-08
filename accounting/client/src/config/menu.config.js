@@ -72,22 +72,6 @@ accModule.config(menuItemsProvider => {
             }
         ];
 
-
-
-
-    menuItemsProvider
-        .add({
-            title: 'حسابدار',
-            url: '',
-            icon: 'fa fa-user',
-            children: [
-                ...chartOfAccount,
-                ...journal,
-                ...banking,
-                ...reporting
-            ]
-        });
-
     menuItemsProvider
         .add({
             title: 'تنظیمات',
@@ -100,6 +84,13 @@ accModule.config(menuItemsProvider => {
                     icon: ''
                 }
             ]
+        });
+
+    menuItemsProvider
+        .add({
+            title: 'کالا / خدمات',
+            url: 'products',
+            icon: ''
         });
 
     menuItemsProvider
@@ -122,5 +113,17 @@ accModule.config(menuItemsProvider => {
             ]
         });
 
+    menuItemsProvider
+        .add({
+            title: 'حسابدار',
+            url: '',
+            icon: 'fa fa-calculator',
+            children: [
+                ...chartOfAccount,
+                ...journal,
+                ...banking,
+                ...reporting
+            ]
+        });
 
 });
