@@ -38,7 +38,11 @@ class GeneralLedgerAccountRepository extends BaseRepository {
     }
 
     create(entity) {
-        super.create(entity);
+        if (Array.isArray(entity))
+            entity.forEach(e => super.create(e));
+        else
+            super.create(entity);
+
         return this.knex('generalLedgerAccounts').insert(entity);
     }
 

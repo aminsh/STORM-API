@@ -1,4 +1,4 @@
-"use strict";
+
 
 routing.$inject = ['$stateProvider', '$urlRouterProvider', '$locationProvider'];
 
@@ -87,6 +87,20 @@ export default function routing($stateProvider, $urlRouterProvider, $locationPro
             templateUrl: 'app/branch/setup-firstFiscalPeriod.html',
             controller: 'SetupFirstPeriodController',
             controllerAs: 'model',
+            shouldAuthenticate: true
+        })
+        .state('setup.chartOfAccounts', {
+            url: '/chart-of-accounts',
+            templateUrl: 'app/branch/setup-chartOfAccounts.html',
+            controller: 'SetupChartOfAccountsController',
+            controllerAs: 'model',
+            shouldAuthenticate: true
+        })
+        .state('setup.final', {
+            url: '/final',
+            onEnter: ($window) => {
+                $window.location.href = `${$window.location.origin}/acc`;
+            },
             shouldAuthenticate: true
         })
 

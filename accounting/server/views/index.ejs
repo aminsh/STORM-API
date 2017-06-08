@@ -7,7 +7,7 @@
 
     <title ng-bind="branch.name">STORM</title>
 
-    <link href="/public/css/acc.min.css" rel="stylesheet"/>
+    <link href="/public/css/acc.min.css?v=<%- version.app %>" rel="stylesheet"/>
 
     <base href="/acc/" >
 </head>
@@ -16,19 +16,11 @@
     <div class="waiting-overley">
         <div class="start-waiting-block">
             <div style="margin-bottom: 30px">
-                <img src="/public/images/logo.white.png" style="height: 70px">
+                <img src="/public/images/logo.png" style="height: 70px">
             </div>
             <div class="progress-line"></div>
         </div>
-
-        <div class="start-waiting-block-accountant" >
-            <div class="middle-box text-center animated fadeInDown" style="margin-top: 250%;">
-                <img src="/public/images/account-symbol.jpg" style="border-radius:50%"
-                     class="img-responsive img-center">
-            </div>
-        </div>
     </div>
-
 
 </shell>
 
@@ -47,11 +39,8 @@
     };
 </script>
 
-<script src="/public/js/jquery.js"></script>
-<script src="/public/js/kendo.web.js"></script>
-<script src="/public/js/kendo.angular.js"></script>
-<script src="/public/js/acc.bundle.min.js"></script>
-<script src="/public/js/acc.template.bundle.js"></script>
+<script src="/public/js/acc.bundle.min.js?v=<%- version.app %>"></script>
+<script src="/public/js/acc.template.bundle.js?v=<%- version.app %>"></script>
 
 <script>
 
@@ -61,5 +50,31 @@
     localStorage.setItem('reports', '<%- JSON.stringify(reports) %>');
     localStorage.setItem('env', '<%- env %>')
 
+</script>
+
+<script type="text/javascript">window.vasleSettings = {
+    app_id: "xwiIitqQ",
+        user_id: '<%- currentUser.id %>',
+        fullname:'<%- currentUser.name %>',
+        email: '<%- currentUser.email %>',
+};</script>
+<script type="text/javascript"> !function () {
+        function t() {
+            var t = n.createElement("script");
+            t.type = "text/javascript", t.async = !0, t.src = "https://www.retain.ir/app/xwiIitqQ/widget/?" + Math.random().toString(34).slice(2);
+            var e = n.getElementsByTagName("script")[0];
+            e.parentNode.insertBefore(t, e)
+        }
+
+        var e = window, a = e.Vasle;
+        if ("function" == typeof a) a("reattach_activator"), a("update", e.vasleSettings); else {
+            var n = document, c = function () {
+                c.c(arguments)
+            };
+            c.q = [], c.c = function (t) {
+                c.q.push(t)
+            }, e.Vasle = c, e.attachEvent ? e.attachEvent("onload", t) : e.addEventListener("load", t, !1)
+        }
+    }();
 </script>
 

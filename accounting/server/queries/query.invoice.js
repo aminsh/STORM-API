@@ -13,12 +13,26 @@ module.exports = class InvoiceQuery extends BaseQuery {
         super(branchId);
     }
 
+    getById(id) {
+        let knex = this.knex,
+            branchId = this.branchId,
+            invoice = await(knex.select('invoices.*',
+                knex.raw('"detailAccounts"."title" as "detailAccountDisplay"'))
+                .from('invoices')
+                .leftJoin('detailAccounts', 'invoices.detailAccountId', 'detailAccounts.id')
+                .where('invoices.branchId', branchId)
+                .andWhere('invoices.id', id)
+                .first());
+
+        return view(invoice);
+    }
+
     getAll(parameters, invoiceType) {
         let knex = this.knex,
             branchId = this.branchId,
 
             query = knex.select().table(function () {
-                this.select('*', knex.raw('"detailAccounts"."title" as "detailAccountDisplay"'))
+                this.select('invoices.*', knex.raw('"detailAccounts"."title" as "detailAccountDisplay"'))
                     .from('invoices')
                     .leftJoin('detailAccounts', 'invoices.detailAccountId', 'detailAccounts.id')
                     .where('invoices.branchId', branchId)

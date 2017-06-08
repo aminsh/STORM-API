@@ -73,6 +73,8 @@ accModule.config(menuItemsProvider => {
         ];
 
 
+
+
     menuItemsProvider
         .add({
             title: 'حسابدار',
@@ -83,6 +85,20 @@ accModule.config(menuItemsProvider => {
                 ...journal,
                 ...banking,
                 ...reporting
+            ]
+        });
+
+    menuItemsProvider
+        .add({
+            title: 'تنظیمات',
+            url: '',
+            icon: 'fa fa-gear',
+            children: [
+                {
+                    title: 'دوره های مالی',
+                    url: 'fiscal-periods',
+                    icon: ''
+                }
             ]
         });
 
@@ -105,4 +121,6 @@ accModule.config(menuItemsProvider => {
                 ...cost
             ]
         });
+
+
 });

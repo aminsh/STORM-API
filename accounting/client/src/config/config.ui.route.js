@@ -207,14 +207,21 @@ export default function ($stateProvider, $urlRouterProvider, $locationProvider) 
             controller: 'accountReviewTurnoverController',
             templateUrl: 'partials/views/accountReviewTurnover.html'
         })
-        .state('fiscal-period', {
-            url: '/fiscal-period',
-            template: '<ui-view></ui-view>'
+        .state('fiscal-periods', {
+            url: '/fiscal-periods',
+            controller: 'fiscalPeriodController',
+            controllerAs: 'model',
+            templateUrl: 'partials/fiscalPeriod/fiscalPeriods.html'
         })
-        .state('fiscal-period.new', {
-            url: '/fiscal-period/new',
-            controller: 'createFiscalPeriodController',
-            templateUrl: 'partials/views/createFiscalPeriod.html'
+        .state('fiscal-periods.new', {
+            url: '/new',
+            onEnter: $modelFactory => {
+                $modelFactory.create({
+                    controller: 'createFiscalPeriodController',
+                    controllerAs: 'model',
+                    templateUrl: 'partials/fiscalPeriod/createFiscalPeriod.html'
+                });
+            }
         })
         .state('report', {
             url: '/report',

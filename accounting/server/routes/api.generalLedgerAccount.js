@@ -5,8 +5,14 @@ const async = require('asyncawait/async'),
     string = require('../utilities/string'),
     router = require('express').Router(),
     GeneralLedgerAccountRepository = require('../data/repository.generalLedgerAccount'),
+    SubsidiaryLedgerAccountRepository = require('../data/repository.subsidiaryLedgerAccount'),
     GeneralLedgerAccountQuery = require('../queries/query.generalLedgerAccount'),
-    translate = require('../services/translateService');
+    translate = require('../services/translateService'),
+    enums = require('../../shared/enums'),
+    defaultGeneralLedgerAccounts = require('../config/generalLedgerAccounts.json').RECORDS,
+    defaultSubsidiaryLedgerAccounts = require('../config/subsidiaryLedgerAccounts.json').RECORDS,
+    groups = getChartOfAccount();
+
 
 router.route('/')
     .get(async((req, res) => {
@@ -57,6 +63,45 @@ router.route('/')
             isValid: true,
             returnValue: {id: entity.id}
         });
+    }));
+
+router.route('/default/chart-of-accounts')
+    .get((req, res) => {
+        res.json(groups);
+    })
+    .post(async((req, res) => {
+        let branchId = req.cookies['branch-id'],
+            generalLedgerAccountRepository = new GeneralLedgerAccountRepository(branchId),
+            subsidiaryLedgerAccountRepository = new SubsidiaryLedgerAccountRepository(branchId);
+
+
+        groups.forEach(g => {
+            g.generalLedgerAccounts.forEach(async(gla => {
+                let newGla = {
+                    title: gla.title,
+                    code: gla.code,
+                    groupingType: g.key,
+                    balanceType: gla.balanceType,
+                    postingType: gla.postingType,
+                    branchId
+                };
+
+                await(generalLedgerAccountRepository.create(newGla));
+
+                gla.subsidiaryLedgerAccounts.forEach(async(sla => {
+                    let entity = {
+                        title: sla.title,
+                        code: sla.code,
+                        generalLedgerAccountId: newGla.id,
+                        branchId
+                    };
+
+                    await(subsidiaryLedgerAccountRepository.create(entity));
+                }));
+            }));
+        });
+
+        res.json({isValid: true});
     }));
 
 router.route('/:id')
@@ -154,3 +199,25 @@ router.route('/:id/deactivate').put(async((req, res) => {
 
 
 module.exports = router;
+
+function getChartOfAccount() {
+    defaultGeneralLedgerAccounts.forEach(gla => {
+        let subs = defaultSubsidiaryLedgerAccounts
+            .asEnumerable()
+            .where(sla => sla.generalLedgerAccountId == parseInt(gla.code))
+            .toArray();
+        gla.subsidiaryLedgerAccounts = subs;
+    });
+
+    let groups = enums.AccountGroupingType().data;
+
+    groups.forEach(g => {
+        let generals = defaultGeneralLedgerAccounts
+            .asEnumerable()
+            .where(gla => gla.groupLedgerAccountId == parseInt(g.key))
+            .toArray();
+        g.generalLedgerAccounts = generals;
+    });
+
+    return groups;
+}
