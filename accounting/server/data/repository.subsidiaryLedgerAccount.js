@@ -19,7 +19,8 @@ class SubsidiaryLedgerAccountRepository extends BaseRepository {
 
     findByCode(code, generalLedgerAccountId, notEqualId) {
         let query = this.knex.table('subsidiaryLedgerAccounts')
-            .where('code', code);
+            .where('branchId', this.branchId)
+            .andWhere('code', code);
 
         if(generalLedgerAccountId)
             query.andWhere('generalLedgerAccountId', generalLedgerAccountId);
