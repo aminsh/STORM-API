@@ -7,7 +7,7 @@
 "code":"11",
 "title":"دارایی های جاری",
 "description":null,
-"balanceType":"(NULL)",
+"balanceType":null,
 "postingType":"balanceSheet",
 "isActive":"t",
 "groupLedgerAccountId":1

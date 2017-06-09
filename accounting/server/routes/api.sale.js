@@ -19,7 +19,6 @@ router.route('/')
         res.json(result);
     }))
 
-    //confirm invoice
     .post(async((req, res) => {
         let branchId = req.cookies['branch-id'],
             invoiceRepository = new InvoiceRepository(branchId),
@@ -32,8 +31,10 @@ router.route('/')
                 userId: req.user.id
             },
 
+            status = cmd.status == 'confirm' ? 'waitForPayment' : 'draft',
+
             entity = createInvoice(
-                'waitForPayment',
+                status,
                 cmd,
                 invoiceRepository,
                 productRepository),
@@ -45,21 +46,30 @@ router.route('/')
         EventEmitter.emit('on-sale-created', result, current);
     }));
 
-// saved as draft invoice
-router.route('/as-draft')
+router.route('/:id/confirm')
     .post(async((req, res) => {
-        let invoiceRepository = new InvoiceRepository(req.cookies['branch-id']),
-            productRepository = new ProductRepository(req.cookies['branch-id']),
-            cmd = req.body,
 
-            entity = createInvoice('draft',
-                cmd,
-                invoiceRepository,
-                productRepository),
+        let branchId = req.cookies['branch-id'],
+            invoiceRepository = new InvoiceRepository(branchId),
+            entity = {statue: 'waitForPayment'},
+            id = req.params.id,
 
-            result = await(invoiceRepository.create(entity));
+            current = {
+                branchId,
+                fiscalPeriodId: req.cookies['current-period'],
+                userId: req.user.id
+            };
 
-        res.json({isValid: true, returnValue: {id: result.id}});
+        await(invoiceRepository.update(id, entity));
+
+        let sale = await(invoiceRepository.findById(id)),
+            saleLines = await(invoiceRepository.findInvoiceLinesByInvoiceId(id));
+
+        sale.invoiceLines = saleLines;
+
+        res.json({isValid: true});
+
+        EventEmitter.emit('on-sale-created', sale, current);
     }));
 
 router.route('/:id')
@@ -95,7 +105,7 @@ router.route('/:id')
             }))
             .toArray();
 
-        await(invoiceRepository.update(req.params.id, entity));
+        await(invoiceRepository.updateBatch(req.params.id, entity));
 
         res.json({isValid: true});
 
@@ -118,7 +128,7 @@ function createInvoice(status, cmd, invoiceRepository, productRepository) {
         invoiceStatus: status
     };
 
-    entity.lines = cmd.invoiceLines.asEnumerable()
+    entity.invoiceLines = cmd.invoiceLines.asEnumerable()
         .select(line => ({
             productId: line.productId,
             description: (line.productId)
@@ -136,14 +146,11 @@ function createInvoice(status, cmd, invoiceRepository, productRepository) {
 
 router.route('/:id/pay')
     .post(async((req, res) => {
-        let payment = new Payment(req.cookies['branch-id']);
+        let payment = new Payment(req.cookies['branch-id'], req.cookies['current-period']);
 
-        payment.create(req.body);
-        await(payment.save());
+        await(payment.save(req.params.id, req.body));
 
         res.json({isValid: true});
-
-        payment.generateJournal();
     }));
 
 router.route('/:id/lines').get(async((req, res) => {

@@ -42,5 +42,10 @@
   "Debtor and creditor are not allowed to be zero , both of them":"بدهکار و بستانکار هر دو نباید صفر باشد",
   "The Subsidiary ledger account is used on journal": "معین جاری در اسناد حسابداری استفاده شده ",
   "Debtor and creditor are not allowed to have value , both of them": "بدهکار و بستانکار نباید هر دو دارای مقدار باشد",
-  "From date can not be greater than to date":"تاریخ پایان دوره نمیتواند از تاریخ آغاز دوره کوچکتر باشد"
+  "From date can not be greater than to date":"تاریخ پایان دوره نمیتواند از تاریخ آغاز دوره کوچکتر باشد",
+  "For Cash invoice number ...":"بابت فاکتور شماره {0}",
+  "received payment for invoice number ... ": "دریافت وجه بابت فاکتور شماره {0}",
+  "received cash for invoice number ... ": "دریافت وجه نقد بابت فاکتور شماره {0}",
+  "received receipt number ... for invoice number ... ": "دریافت فیش / رسید شماره {0} بابت فاکتور شماره {1}",
+  "received cheque number ... date ... bank ... branch ... for invoice number ... ": "دریافت چک شماره {0} سررسید {1} بانک {2} شعبه {3} بابت فاکتور شماره {4}"
 }

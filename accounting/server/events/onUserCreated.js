@@ -8,6 +8,8 @@ const async = require('asyncawait/async'),
 EventEmitter.on('on-user-created', async((user, req) => {
     let userRepository = new UserRepository(req.cookies['branch-id']);
 
+    user.branchId = req.cookies['branch-id'];
+
     let isUserExists = await(userRepository.findById(user.id));
     if (isUserExists)
         return;

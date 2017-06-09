@@ -18,11 +18,16 @@ module.exports = class InvoiceRepository extends BaseRepository {
         return this.knex.table('invoices').where('id', id).first();
     }
 
+    findInvoiceLinesByInvoiceId(id){
+        return this.knex.table('invoiceLines').where('invoiceId', id);
+    }
+
     saleMaxNumber() {
         return this.knex.table('invoices')
             .modify(this.modify, this.branchId)
             .where('invoiceType', 'sale')
-            .max('number');
+            .max('number')
+            .first();
     }
 
     create(entity) {
@@ -33,15 +38,15 @@ module.exports = class InvoiceRepository extends BaseRepository {
                 let entity = this.entity;
 
                 try {
-                    let lines = this.entity.lines;
+                    let lines = this.entity.invoiceLines;
 
-                    delete  entity.lines;
+                    delete  entity.invoiceLines;
 
                     await(this.createInvoice(entity, trx));
 
                     await(this.createInvoiceLines(lines, entity.id, trx));
 
-                    entity.lines = lines;
+                    entity.invoiceLines = lines;
 
                     resolve(entity);
                 }
@@ -53,6 +58,10 @@ module.exports = class InvoiceRepository extends BaseRepository {
     }
 
     update(id, entity) {
+        return this.knex('invoices').where('id', id).update(entity);
+    }
+
+    updateBatch(id, entity) {
         this.entity = entity;
 
         return new Promise((resolve, reject) => {
@@ -60,15 +69,15 @@ module.exports = class InvoiceRepository extends BaseRepository {
                 let entity = this.entity;
 
                 try {
-                    let lines = this.entity.lines;
+                    let lines = this.entity.invoiceLines;
 
-                    delete  entity.lines;
+                    delete  entity.invoiceLines;
 
-                    await(this.updateInvoice(id ,entity, trx));
+                    await(this.updateInvoice(id, entity, trx));
 
-                    await(this.updateInvoiceLines(lines, id, trx));
+                    await(this.updateInvoiceLines(id, lines, trx));
 
-                    entity.lines = lines;
+                    entity.invoiceLines = lines;
 
                     resolve(entity);
                 }
@@ -119,11 +128,14 @@ module.exports = class InvoiceRepository extends BaseRepository {
         let persistedLines = await(this.knex.table('invoiceLines').where('invoiceId', id)),
 
             shouldDeletedLines = persistedLines.asEnumerable()
-                .where(e => !lines.asEnumerable().any(p => p.id == e.id)),
+                .where(e => !lines.asEnumerable().any(p => p.id == e.id))
+                .toArray(),
             shouldAddedLines = lines.asEnumerable()
-                .where(e => !persistedLines.asEnumerable().any(p => p.id == e.id)),
+                .where(e => !persistedLines.asEnumerable().any(p => p.id == e.id))
+                .toArray(),
             shouldUpdatedLines = persistedLines.asEnumerable()
-                .where(e => lines.asEnumerable().any(p => p.id == e.id));
+                .where(e => lines.asEnumerable().any(p => p.id == e.id))
+                .toArray();
 
         shouldAddedLines.forEach(line => {
             super.create(line);

@@ -119,21 +119,25 @@ export default class SalesInvoiceController {
             number: null,
             date: null,
             description: '',
-            invoiceLines: []
+            invoiceLines: [],
+            status: 'confirm'
         };
 
         for (let i = 1; i <= 4; i++) this.createInvoiceLine();
     }
 
-    saveInvoice(form) {
+    saveInvoice(form, status) {
         let logger = this.logger,
             formService = this.formService,
             errors = this.errors,
             invoice = this.invoice;
 
+        if(status)
+            invoice.status = status;
+
         invoice.invoiceLines = invoice.invoiceLines.asEnumerable()
             .where(il => il.unitPrice > 0)
-            .toArray()
+            .toArray();
 
 
         if (form.$invalid) {
