@@ -12,32 +12,17 @@
             </div>
             <div class="col-sm-4">
                 <div class="form-group">
-                    <label for="detailAccountId" class="title1">فروشنده</label>
-                    <div class="input-group">
-                        <dev-tag-combo-box id="detailAccountId"
-                                           name="detailAccountId"
-                                           k-placeholder="{{'Select ...'|translate}}"
-                                           k-data-value-field="id"
-                                           k-data-text-field="display"
-                                           k-data-source="model.detailAccount"
-                                           k-suggest="true"
-                                           k-minLength="0"
-                                           k-filter="'contains'"
-                                           on-created="model.createNewCustomer"
-                                           show-no-data-template
-                                           ng-model="model.invoice.detailAccountId"
-                                           required></dev-tag-combo-box>
+                    <label for="detailAccountId" class="title1">{{'Vendor'|translate}}</label>
+                        <kendo-combo-box   name="detailAccountId"  k-options="detailAccountOptions" style="width: 100%"  ng-moded="model.invoice.detailAccountId" required />
 
                         <div ng-messages="form.detailAccountId.$error" ng-if="form.detailAccountId.$dirty">
                             <label ng-message="required" class="error">{{'This field is required'|translate}}</label>
                         </div>
-                    </div>
                 </div>
             </div>
-
             <div class="col-sm-2">
                 <div class="form-group">
-                    <label for="invoiceDate">تاریخ فاکتور</label>
+                    <label for="invoiceDate">{{'Invoice Date'|translate}}</label>
                     <dev-tag-datepicker id="invoiceDate"
                                         ng-model="model.invoice.date"
                                         name="invoiceDate"
@@ -51,7 +36,7 @@
 
             <div class="col-sm-2">
                 <div class="form-group">
-                    <label for="invoiceNumber" class="title1">شماره فاکتور</label>
+                    <label for="invoiceNumber" class="title1">{{'Invoice Number'|translate}}</label>
                     <dev-tag-numeric id="invoiceNumber"
                                      ng-model="model.invoice.number"
                                      style="width: 100%"
@@ -67,21 +52,21 @@
 
             <div class="col-sm-2">
                 <div class="form-group">
-                    <label for="invoiceReference" class="title1"> ارجاع
-                        <small class="hidden-md hidden-sm ng-hide">(شماره فاکتور خرید)</small>
+                    <label for="invoiceReference" class="title1"> {{'Reference Number'|translate}}
                     </label>
-                    <input class="form-control input-sm ng-pristine " type="text" id="invoiceReference"
-                           data-toggle="popover" data-placement="top" data-trigger="hover"
-                           data-content="شماره ارجاع" data-original-title="" title="">
+                    <input class="form-control input-sm " type="text" id="invoiceReference"
+                           data-toggle="popover" data-placement="top" data-trigger="hover">
                 </div>
             </div>
 
-            <div class="col-sm-2">
-                <div  class="form-group">
-                    <label class="label-control" for="description">{{'Description' | translate}}</label>
-                    <textarea class="form-control" rows="4" id="description" ng-model="model.invoice.description"></textarea>
-                </div>
-            </div>
+           <div class="row">
+               <div class="col-sm-12">
+                   <div  class="form-group">
+                       <label class="label-control" for="description">{{'Description' | translate}}</label>
+                       <textarea class="form-control" rows="4" id="description" ng-model="model.invoice.description"></textarea>
+                   </div>
+               </div>
+           </div>
 
 
             <dev-tag-content-body is-loading="model.isInvoiceSaleLoading">

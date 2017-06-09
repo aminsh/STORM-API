@@ -214,15 +214,15 @@
 
 
             <td style="width: 500px; padding: 0px;" class="invoice-td">
-               <dev-tag-combo-box style="width: 500px;"
-                        name="product"
-                        k-placeholder="{{'Select ...'|translate}}"
-                        k-data-value-field="id"
-                        k-data-text-field="title"
-                        k-data-source="model.products"
-                        on-created="model.createNewProduct"
-                        show-no-data-template
-                        ng-model="item.productId" required></dev-tag-combo-box>
+                <dev-tag-combo-box style="width: 500px;"
+                                   name="product"
+                                   k-placeholder="{{'Select ...'|translate}}"
+                                   k-data-value-field="id"
+                                   k-data-text-field="title"
+                                   k-data-source="model.products"
+                                   on-created="model.createNewProduct"
+                                   show-no-data-template
+                                   ng-model="item.productId" required></dev-tag-combo-box>
 
                 <div ng-messages="form['form-'+ $index].product.$error"
                      ng-if="form['form-'+ $index].product.$dirty">
@@ -298,7 +298,7 @@
             </td>
 
             <td style="padding: 0px; vertical-align: middle; text-align: center;">
-                ((item.unitPrice * item.quantity)-item.discount) + ((item.unitPrice * item.quantity)-item.discount)*(item.vat/100)">{{((item.unitPrice * item.quantity)-item.discount) + ((item.unitPrice * item.quantity)-item.discount)*(item.vat/100) | number}}
+                <span ng-model="item.totalPrice" ng-init="((item.unitPrice * item.quantity)-item.discount) + ((item.unitPrice * item.quantity)-item.discount)*(item.vat/100)">{{((item.unitPrice * item.quantity)-item.discount) + ((item.unitPrice * item.quantity)-item.discount)*(item.vat/100) | number}}</span>
             </td>
 
             <td style="width: 20px; padding: 0px; vertical-align: middle; text-align: center;">
@@ -338,6 +338,7 @@
                     </div>
                 </div>
             </div>
+
         </div>
         <div class="col-md-4">
             <div class="row text-left">

@@ -10,6 +10,7 @@ export default class purchaseController {
                 logger,
                 formService,
                 $timeout,
+                $state,
                 $scope) {
 
         this.$scope = $scope;
@@ -22,15 +23,81 @@ export default class purchaseController {
         this.translate = translate;
         this.navigate = navigate;
         this.formService = formService;
+        this.$state=$state;
         this.errors = [];
         this.isSaving = false;
         this.invoice = {
             number: null,
+            detailAccountId:null,
             date: null,
             description: '',
             invoiceLines: []
         };
         this.isLoading = false;
+
+        this.id = this.$state.params.id;
+
+        if(this.id!=undefined)
+            $scope.editMode=true;
+
+        if($scope.editMode){
+            this.purchaseApi.getById(this.id)
+                .then(result => this.invoice= result);
+        }
+
+        let scope=this;
+
+        $scope.detailAccountOptions={
+            dataSource:new kendo.data.DataSource({
+                serverFiltering: true,
+                //serverPaging: true,
+                // pageSize: 10,
+                transport: {
+                    read: {
+                        url: devConstants.urls.people.getAll(),
+                        dataType: "json"
+                    },
+                },
+                schema: {
+                    data: function (data) {
+
+                        if (data.data !== undefined) {
+                            return data.data;
+                        } else {
+                            return data;
+                        }
+
+                    },
+                    total: function (data) {
+                        if (data.data    !== undefined) {
+                            return data.total;
+                        } else {
+                            return data.length;
+                        }
+                    }
+                }
+            }),
+            placeholder:translate('Select ...'),
+            filter: "contains",
+            dataTextField: "display",
+            dataValueField: "id",
+            suggest:"true",
+            minLength:"0",
+            change:e=>{
+                let dataItem =e.sender.dataItem();
+                if(dataItem==undefined)
+                    scope.invoice.detailAccountId=null;
+                scope.invoice.detailAccountId=dataItem.id
+                console.log(scope.invoice.detailAccountId)
+                console.log(e)
+            },
+            noDataTemplate:e=>{
+                $scope.newDetailAccountValue=e;
+                return " <div> ردیفی با این مشخصات یافت نشد . آیا مایل به اضافه کردن آن هستید ؟ </div> <br /> <button class='k-button' ng-click='model.createNewCustomer(newDetailAccountValue)'>بله</button>"
+            }
+        }
+
+
         this.detailAccount = new kendo.data.DataSource({
             serverFiltering: true,
             //serverPaging: true,
@@ -91,7 +158,6 @@ export default class purchaseController {
         this.invoice.invoiceLines.asEnumerable().remove(item);
     }
 
-
     createNewProduct(product) {
         var data = {title: product};
         this.inventoryApi.create(data)
@@ -101,12 +167,19 @@ export default class purchaseController {
     }
 
     createNewCustomer(customer) {
-        var data = {title: customer};
+        let dataSource = customer.instance.dataSource;
+
+        let data = {title: customer.instance.input.val()};
+
         this.peopleApi.create(data)
             .then((result) => {
-                $scope.$broadcast('on-customer-created', result)
+                dataSource.add({
+                    display: customer.instance.input.val()
+                });
+                dataSource.sync();
             })
             .catch((errors) => this.errors = errors)
+
     }
 
     createInvoiceLine() {
@@ -119,8 +192,7 @@ export default class purchaseController {
                 row: ++maxRow,
                 itemId: null,
                 quantity: 0,
-                tax: 0,
-                vat: 0,
+                vat: 9,
                 discount: 0,
                 unitPrice: 0,
                 totalPrice: 0,
@@ -163,16 +235,25 @@ export default class purchaseController {
         errors.asEnumerable().removeAll();
         //  isSaving = true;
 
-        return this.purchaseApi.create(invoice)
-            .then(result => {
-                logger.success();
-                invoice.id = result.id;
-                this.isLoading = true;
-            })
-            .catch(err => errors = err)
-            .finally(() => this.isSaving = true);
-
-
+        // if($scope.editMode==true){
+        //     return this.purchaseApi.update(invoice.id,invoice)
+        //         .then(result => {
+        //             logger.success();
+        //             this.isLoading = true;
+        //         })
+        //         .catch(err => errors = err)
+        //         .finally(() => this.isSaving = true);
+        //
+        // }else{
+            return this.purchaseApi.create(invoice)
+                .then(result => {
+                    logger.success();
+                    invoice.id = result.id;
+                    this.isLoading = true;
+                })
+                .catch(err => errors = err)
+                .finally(() => this.isSaving = true);
+        // }
     }
 
     print(){
@@ -183,4 +264,5 @@ export default class purchaseController {
             {key: 701},
             reportParam);
     }
+
 }

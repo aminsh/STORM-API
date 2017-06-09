@@ -9,11 +9,12 @@ export default class SalesInvoiceController {
                 devConstants,
                 logger,
                 formService,
+                $state,
                 $timeout,
-                cashPaymentService,
                 $scope) {
 
         this.$scope = $scope;
+        this.$state = $state;
         this.logger = logger;
         this.peopleApi = peopleApi;
         this.inventoryApi = inventoryApi;
@@ -23,7 +24,6 @@ export default class SalesInvoiceController {
         this.translate = translate;
         this.navigate = navigate;
         this.formService = formService;
-        this.cashPaymentService=cashPaymentService;
         this.errors = [];
         this.isSaving = false;
         this.invoice = {
@@ -33,6 +33,17 @@ export default class SalesInvoiceController {
             invoiceLines: []
         };
         this.isLoading = false;
+
+        this.id = this.$state.params.id;
+
+        if (this.id != undefined)
+            this.editMode = true;
+
+        if (this.editMode) {
+            this.salesInvoiceApi.getById(this.id)
+                .then(result => this.invoice = result);
+        }
+
 
         this.detailAccount = new kendo.data.DataSource({
             serverFiltering: true,
@@ -45,8 +56,8 @@ export default class SalesInvoiceController {
                 },
             },
             schema: {
-                data:'data',
-                total:'total'
+                data: 'data',
+                total: 'total'
             }
         });
 
@@ -150,24 +161,35 @@ export default class SalesInvoiceController {
         }
 
         errors.asEnumerable().removeAll();
-        return this.salesInvoiceApi.create(invoice)
-            .then(result => {
-                logger.success();
-                invoice.id = result.id;
-                this.isLoading = true;
-            })
-            .catch(err => errors = err)
-           .finally(() => this.isSaving = true);
 
+        if (this.editMode == true) {
+            return this.salesInvoiceApi.update(invoice.id, invoice)
+                .then(result => {
+                    logger.success();
+                    this.isLoading = true;
+                })
+                .catch(err => errors = err)
+                .finally(() => this.isSaving = true);
+        } else {
+
+            return this.salesInvoiceApi.create(invoice)
+                .then(result => {
+                    logger.success();
+                    invoice.id = result.id;
+                    this.isLoading = true;
+                })
+                .catch(err => errors = err)
+                .finally(() => this.isSaving = true);
+        }
     }
 
     cashPaymentShow() {
-        this.cashPaymentService.show();
+        // this.cashPaymentService.show();
     }
 
-    print(){
+    print() {
         let invoice = this.invoice;
-        let reportParam={"id": invoice.id}
+        let reportParam = {"id": invoice.id}
         this.navigate(
             'report.print',
             {key: 700},

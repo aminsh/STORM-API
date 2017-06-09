@@ -271,6 +271,13 @@ export default function ($stateProvider, $urlRouterProvider, $locationProvider) 
             controllerAs: 'model',
             templateUrl: 'partials/sales/invoiceCreate.html'
         })
+        .state('sales.edit', {
+            url: '/:id/edit',
+            controller: 'salesInvoiceController',
+            controllerAs: 'model',
+            templateUrl: 'partials/sales/invoiceCreate.html'
+        })
+
         .state('purchases', {
             url: '/purchases',
             template: '<ui-view></ui-view>'
@@ -279,13 +286,19 @@ export default function ($stateProvider, $urlRouterProvider, $locationProvider) 
             url: '/list',
             controller: 'purchasesListController',
             controllerAs: 'model',
-            templateUrl: 'partials/purchase/purchases.html'
+            templateUrl: 'partials/purchases/purchases.html'
         })
         .state('purchases.create', {
             url: '/create',
             controller: 'purchaseController',
             controllerAs: 'model',
-            templateUrl: 'partials/purchase/invoiceCreate.html'
+            templateUrl: 'partials/purchases/purchaseCreate.html'
+        })
+        .state('purchases.edit', {
+            url: '/:id/edit',
+            controller: 'purchaseController',
+            controllerAs: 'model',
+            templateUrl: 'partials/purchases/purchaseCreate.html'
         })
 
         .state('people', {
