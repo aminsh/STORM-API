@@ -12,7 +12,9 @@ export default class SetupInfoController {
             name: '',
             logo: '',
             phone: '',
+            mobile: '',
             address: '',
+            webSite: '',
             registrationNumber: ''
         };
     }
@@ -25,7 +27,7 @@ export default class SetupInfoController {
 
         this.branchApi.create(this.branch)
             .then(result => {
-                this.$state.go('^.fiscalPeriod');
+                this.$state.go('^.infoSuccess');
             })
             .finally(() => this.isWaiting = false);
     }

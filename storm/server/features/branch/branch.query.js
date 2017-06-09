@@ -20,14 +20,16 @@ class BranchQuery {
     }
 
     getBranchesByUser(userId) {
-        let branch = await(knex.select('id', 'name', 'logo', 'apiKey')
+        let branch = await(knex.select('id', 'name', 'logo', 'apiKey', 'status')
                 .from('branches')
-                .where('ownerId', userId)),
+                .where('ownerId', userId)
+                .andWhere('status', 'active')),
             branchIds = await(knex.select('branchId')
                 .from('userInBranches')
                 .where('userId', userId)).asEnumerable().select(b => b.branchId).toArray(),
-            branches = await(knex.select('id', 'name', 'logo', 'apiKey')
+            branches = await(knex.select('id', 'name', 'logo', 'apiKey', 'status')
                 .from('branches')
+                .where('status', 'active')
                 .whereIn('id', branchIds));
 
         return branch.concat(branches);

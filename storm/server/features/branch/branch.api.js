@@ -1,7 +1,7 @@
 "use strict";
 
 const express = require('express'),
-    config= require('../../config'),
+    config = require('../../config'),
     router = express.Router(),
     async = require('asyncawait/async'),
     await = require('asyncawait/await'),
@@ -21,8 +21,10 @@ router.route('/').post(async((req, res) => {
                 ? Image.toBase64(`${config.rootPath}/../${cmd.logo}`)
                 : config.logo,
             phone: cmd.phone,
+            mobile: cmd.mobile,
             address: cmd.address,
-            ownerId: req.user.id
+            ownerId: req.user.id,
+            status: 'pending'
         };
 
     await(branchRepository.create(entity));
