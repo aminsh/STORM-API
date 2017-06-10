@@ -4,7 +4,6 @@ export default class ProfileController {
     constructor(branchApi, $window, $cookies) {
         this.$window = $window;
         this.$cookies = $cookies;
-        this.logger= logger;
 
         branchApi.getMyBranches().then(result => {
             this.branches = result;
