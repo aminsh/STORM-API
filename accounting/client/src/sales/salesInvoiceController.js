@@ -1,4 +1,4 @@
-import Guid from 'guid';
+import Guid from "guid";
 
 export default class SalesInvoiceController {
     constructor(navigate,
@@ -11,12 +11,18 @@ export default class SalesInvoiceController {
                 formService,
                 $state,
                 $timeout,
-                $scope) {
+                $scope,
+                promise,
+                createPersonService,
+                productCreateService) {
 
         this.$scope = $scope;
+        this.promise = promise;
         this.$state = $state;
         this.logger = logger;
         this.peopleApi = peopleApi;
+        this.createPersonService = createPersonService;
+        this.productCreateService = productCreateService;
         this.inventoryApi = inventoryApi;
         this.salesInvoiceApi = salesInvoiceApi;
         this.$timeout = $timeout;
@@ -30,7 +36,8 @@ export default class SalesInvoiceController {
             number: null,
             date: null,
             description: '',
-            invoiceLines: []
+            invoiceLines: [],
+            detailAccountId: null
         };
         this.isLoading = false;
 
@@ -81,7 +88,6 @@ export default class SalesInvoiceController {
 
 
         this.newInvoice();
-
     }
 
 
@@ -90,20 +96,29 @@ export default class SalesInvoiceController {
     }
 
 
-    createNewProduct(product) {
-        var data = {title: product};
-        this.inventoryApi.create(data)
-            .then((result) => {
-            })
-            .catch((errors) => this.errors = errors)
+    createNewProduct(item, title) {
+        return this.promise.create((resolve, reject) => {
+            this.productCreateService.show({title})
+                .then(result => {
+                    item.productId = result.id;
+                    item.description = title;
+                    resolve({id: result.id, title});
+                });
+        });
     }
 
-    createNewCustomer(customer) {
-        var data = {title: customer};
-        this.peopleApi.create(data)
-            .then((result) => {
-            })
-            .catch((errors) => this.errors = errors)
+    onProductChanged(item, product){
+        item.description = product.title;
+    }
+
+    createNewCustomer(title) {
+        return this.promise.create((resolve, reject) => {
+            this.createPersonService.show({title})
+                .then(result => {
+                    this.invoice.detailAccountId = result.id;
+                    resolve({id: result.id, title})
+                });
+        });
     }
 
     createInvoiceLine() {
@@ -115,12 +130,14 @@ export default class SalesInvoiceController {
                 id: Guid.new(),
                 row: ++maxRow,
                 itemId: null,
+                description: '',
                 quantity: 0,
-                vat: 9,
+                vat: 0,
                 discount: 0,
                 unitPrice: 0,
                 totalPrice: 0,
             };
+
         this.invoice.invoiceLines.push(newInvoice);
     }
 
@@ -128,13 +145,16 @@ export default class SalesInvoiceController {
         this.isLoading = false;
         this.invoice = {
             number: null,
-            date: null,
+            date: localStorage.getItem('today'),
             description: '',
             invoiceLines: [],
-            status: 'confirm'
+            status: 'confirm',
+            detailAccountId: null
         };
 
-        for (let i = 1; i <= 4; i++) this.createInvoiceLine();
+        this.salesInvoiceApi.getMaxNumber().then(result => this.invoice.number = result);
+
+        this.createInvoiceLine();
     }
 
     saveInvoice(form, status) {
@@ -143,13 +163,8 @@ export default class SalesInvoiceController {
             errors = this.errors,
             invoice = this.invoice;
 
-        if(status)
+        if (status)
             invoice.status = status;
-
-        invoice.invoiceLines = invoice.invoiceLines.asEnumerable()
-            .where(il => il.unitPrice > 0)
-            .toArray();
-
 
         if (form.$invalid) {
             formService.setDirty(form);
@@ -189,10 +204,14 @@ export default class SalesInvoiceController {
 
     print() {
         let invoice = this.invoice;
-        let reportParam = {"id": invoice.id}
+        let reportParam = {"id": invoice.id};
         this.navigate(
             'report.print',
             {key: 700},
             reportParam);
+    }
+
+    onItemPropertyChanged(item) {
+        item.vat = ((item.unitPrice * item.quantity) - item.discount) * 9 / 100;
     }
 }

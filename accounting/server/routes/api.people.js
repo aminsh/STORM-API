@@ -30,7 +30,7 @@ router.route('/')
                 economicCode: cmd.economicCode
             };
 
-        entity = await(detailAccountRepository.create(entity));
+        await(detailAccountRepository.create(entity));
 
         res.json({isValid: true, returnValue: {id: entity.id}});
 

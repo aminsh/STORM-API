@@ -8,6 +8,9 @@ function salesInvoiceApi(apiPromise) {
         getAll(){
             return apiPromise.get(`${urlPrefix}/sales/`);
         },
+        getMaxNumber(){
+            return apiPromise.get(`${urlPrefix}/sales/max/number`);
+        },
         getById: function (id) {
             return apiPromise.get(`${urlPrefix}/sales/${id}`);
         },

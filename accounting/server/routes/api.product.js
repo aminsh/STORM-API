@@ -25,7 +25,7 @@ router.route('/')
                 salePrice: cmd.salePrice
             };
 
-        entity = await(productRepository.create(entity));
+        await(productRepository.create(entity));
 
         res.json({isValid: true, returnValue: {id: entity.id}});
     }));

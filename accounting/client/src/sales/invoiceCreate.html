@@ -16,7 +16,7 @@
                 <div class="col-sm-4">
                     <div class="form-group">
                         <label for="detailAccountId" class="title1">مشتری</label>
-                        <div class="input-group">
+                        <div class="input-group" style="width: 100%">
                             <dev-tag-combo-box id="detailAccountId" style="width: 100%"
                                                name="detailAccountId"
                                                k-placeholder="{{'Select ...'|translate}}"
@@ -26,7 +26,7 @@
                                                k-suggest="true"
                                                k-minLength="0"
                                                k-filter="'contains'"
-                                               on-created="model.createNewCustomer"
+                                               k-on-created="model.createNewCustomer(value)"
                                                show-no-data-template
                                                ng-model="model.invoice.detailAccountId"
                                                required></dev-tag-combo-box>

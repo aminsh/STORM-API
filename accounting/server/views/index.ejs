@@ -52,6 +52,7 @@
 
 </script>
 
+<% if (env == 'development') {%>
 <script type="text/javascript">window.vasleSettings = {
     app_id: "xwiIitqQ",
         user_id: '<%- currentUser.id %>',
@@ -77,4 +78,5 @@
         }
     }();
 </script>
+<% } %>
 

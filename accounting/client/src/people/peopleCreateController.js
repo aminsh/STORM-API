@@ -1,7 +1,12 @@
-
-
 export default class peopleCreateController {
-    constructor($scope, $uibModalInstance, formService, peopleApi, logger, devConstants,$state) {
+    constructor($scope,
+                $uibModalInstance,
+                formService,
+                peopleApi,
+                logger,
+                devConstants,
+                $state,
+                data) {
 
         this.$scope = $scope;
         this.logger = logger;
@@ -14,26 +19,26 @@ export default class peopleCreateController {
         this.errors = [];
         this.isSaving = false;
         this.people = {
-            title: '',
+            title: data.title || '',
             address: '',
             phone: '',
-            registrationNumber:'',
+            registrationNumber: '',
             nationalCode: '',
-            economicCode:'',
+            economicCode: '',
             email: '',
             personType: null
         };
         this.personType = devConstants.enums.PersonType().data;
-        this.editMode=false;
+        this.editMode = false;
 
         this.id = $state.params.id;
 
-        if(this.id!=undefined)
-            this.editMode=true;
+        if (this.id != undefined)
+            this.editMode = true;
 
-        if(this.editMode){
+        if (this.editMode) {
             peopleApi.getById(this.id)
-                .then(result => this.people= result);
+                .then(result => this.people = result);
         }
     }
 
@@ -44,34 +49,34 @@ export default class peopleCreateController {
             people = this.people;
 
         if (form.$invalid) {
-            return  formService.setDirty(form);
+            return formService.setDirty(form);
         }
 
         this.errors.asEnumerable().removeAll();
-          this.isSaving = true;
+        this.isSaving = true;
 
-        if(this.editMode){
-            return this.peopleApi.update(this.id,people)
+        if (this.editMode) {
+            return this.peopleApi.update(this.id, people)
                 .then(result => {
                     logger.success();
-                    this.close();
+                    this.$scope.$close();
                 })
-                .catch(err => errors = err)
+                .catch(err => this.errors = err)
                 .finally(() => this.isSaving = false);
-        }else{
+        } else {
             return this.peopleApi.create(people)
                 .then(result => {
                     logger.success();
-                    people.id = result.id;
-                    this.close();
+                    this.$scope.$close(result);
                 })
-                .catch(err => errors = err)
+                .catch(err => this.errors = err)
                 .finally(() => this.isSaving = false);
         }
 
 
     }
-    close(){
+
+    close() {
         this.$uibModalInstance.dismiss()
     }
 }

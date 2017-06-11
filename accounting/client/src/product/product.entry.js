@@ -16,7 +16,7 @@ export default class ProductEntryController {
         else
             this.product = {
                 code: '',
-                title: '',
+                title: data.title || '',
                 reorderPoint: 0,
                 productType: 'good',
                 salePrice: 0

@@ -8,7 +8,7 @@ import ProductApi from "./productApi";
 function productEntryService(modalBase) {
     return modalBase({
         controller: ProductEntry,
-        controllerAs: 'models',
+        controllerAs: 'model',
         templateUrl: 'partials/product/product.entry.html'
     });
 }
@@ -16,7 +16,7 @@ function productEntryService(modalBase) {
 accModule
     .controller('productsController', ProductsController)
     .controller('productEntryController', ProductEntry)
-    .factory('chequeCategoryCreateModalService', productEntryService)
+    .factory('productCreateService', productEntryService)
     .service('productApi', ProductApi);
 
 

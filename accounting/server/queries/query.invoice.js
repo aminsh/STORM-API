@@ -56,4 +56,12 @@ module.exports = class InvoiceQuery extends BaseQuery {
 
         return kendoQueryResolve(query, parameters, lineView);
     }
+
+    maxNumber(invoiceType) {
+        return this.knex.table('invoices')
+            .modify(this.modify, this.branchId)
+            .where('invoiceType', invoiceType)
+            .max('number')
+            .first();
+    }
 };
