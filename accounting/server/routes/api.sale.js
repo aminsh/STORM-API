@@ -118,7 +118,7 @@ router.route('/:id')
         res.json({isValid: true});
     }));
 
-function createInvoice(status, cmd, invoiceRepository, productRepository) {
+function createInvoice(status, cmd, invoiceRepository) {
     let entity = {
         number: (await(invoiceRepository.saleMaxNumber()).max || 0) + 1,
         date: cmd.date,
@@ -131,9 +131,7 @@ function createInvoice(status, cmd, invoiceRepository, productRepository) {
     entity.invoiceLines = cmd.invoiceLines.asEnumerable()
         .select(line => ({
             productId: line.productId,
-            description: (line.productId)
-                ? await(productRepository.findById(line.productId)).title
-                : line.description,
+            description: line.description,
             quantity: line.quantity,
             unitPrice: line.unitPrice,
             discount: line.discount,

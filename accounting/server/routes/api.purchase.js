@@ -6,8 +6,10 @@ const async = require('asyncawait/async'),
     string = require('../utilities/string'),
     translate = require('../services/translateService'),
     InvoiceRepository = require('../data/repository.invoice'),
+    ProductRepository = require('../data/repository.product'),
     InvoiceQuery = require('../queries/query.invoice'),
-    ProductRepository = require('../data/repository.product');
+    EventEmitter = require('../services/shared').service.EventEmitter,
+    Payment = require('../domain/payment');
 
 router.route('/')
     .get(async((req, res) => {
@@ -17,35 +19,51 @@ router.route('/')
         res.json(result);
     }))
     .post(async((req, res) => {
-        let invoiceRepository = new InvoiceRepository(req.cookies['branch-id']),
-            productRepository = new ProductRepository(req.cookies['branch-id']),
+        let branchId = req.cookies['branch-id'],
+            invoiceRepository = new InvoiceRepository(branchId),
             cmd = req.body,
 
-            entity = {
-                number: cmd.number,
-                date: cmd.date,
-                description: cmd.description,
-                detailAccountId: cmd.detailAccountId,
-                invoiceType: 'purchase',
-                invoiceStatus: 'draft'
-            };
+            current = {
+                branchId,
+                fiscalPeriodId: req.cookies['current-period'],
+                userId: req.user.id
+            },
 
-        entity.lines = cmd.invoiceLines.asEnumerable()
-            .select(line => ({
-                productId: line.productId,
-                description: (line.productId)
-                    ? await(productRepository.findById(line.productId)).title
-                    : line.description,
-                quantity: line.quantity,
-                unitPrice: line.unitPrice,
-                discount: line.discount,
-                vat: line.vat
-            }))
-            .toArray();
+            status = cmd.status == 'confirm' ? 'waitForPayment' : 'draft',
 
-        let result = await(invoiceRepository.create(entity));
+            entity = createInvoice(status, cmd),
+
+            result = await(invoiceRepository.create(entity));
 
         res.json({isValid: true, returnValue: {id: result.id}});
+
+        EventEmitter.emit('on-purchase-created', result, current);
+    }));
+
+router.route('/:id/confirm')
+    .post(async((req, res) => {
+
+        let branchId = req.cookies['branch-id'],
+            invoiceRepository = new InvoiceRepository(branchId),
+            entity = {statue: 'waitForPayment'},
+            id = req.params.id,
+
+            current = {
+                branchId,
+                fiscalPeriodId: req.cookies['current-period'],
+                userId: req.user.id
+            };
+
+        await(invoiceRepository.update(id, entity));
+
+        let purchase = await(invoiceRepository.findById(id)),
+            purchaseLines = await(invoiceRepository.findInvoiceLinesByInvoiceId(id));
+
+        purchase.invoiceLines = purchaseLines;
+
+        res.json({isValid: true});
+
+        EventEmitter.emit('on-purchase-created', purchase, current);
     }));
 
 router.route('/:id')
@@ -56,8 +74,9 @@ router.route('/:id')
         res.json(result);
     }))
     .put(async((req, res) => {
-        let invoiceRepository = new InvoiceRepository(req.cookies['branch-id']),
-            productRepository = new ProductRepository(req.cookies['branch-id']),
+        let branchId = req.cookies['branch-id'],
+            invoiceRepository = new InvoiceRepository(branchId),
+            productRepository = new ProductRepository(branchId),
 
             cmd = req.body;
 
@@ -81,7 +100,7 @@ router.route('/:id')
             }))
             .toArray();
 
-        await(invoiceRepository.update(req.params.id, entity));
+        await(invoiceRepository.updateBatch(req.params.id, entity));
 
         res.json({isValid: true});
 
@@ -102,6 +121,31 @@ router.route('/:id/lines').get(async((req, res) => {
 }));
 
 module.exports = router;
+
+
+function createInvoice(status, cmd) {
+    let entity = {
+        number: cmd.number,
+        date: cmd.date,
+        description: cmd.description,
+        detailAccountId: cmd.detailAccountId,
+        invoiceType: 'purchase',
+        invoiceStatus: status
+    };
+
+    entity.invoiceLines = cmd.invoiceLines.asEnumerable()
+        .select(line => ({
+            productId: line.productId,
+            description: line.description,
+            quantity: line.quantity,
+            unitPrice: line.unitPrice,
+            discount: line.discount,
+            vat: line.vat
+        }))
+        .toArray();
+
+    return entity;
+}
 
 
 
