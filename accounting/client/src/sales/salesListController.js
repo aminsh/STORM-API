@@ -41,7 +41,7 @@ export default class salesListController {
             reorderable: true,
             resizable: true,
             columnMenu: true,
-            groupable: true,
+            groupable: false,
             sortable: true,
             scrollable: {
                 virtual: true
@@ -54,7 +54,7 @@ export default class salesListController {
             },
             columns: [
                 {
-                    field: "number", title: translate('number'), width: '120px',
+                    field: "number", title: translate('Number'), width: '120px',
                     filterable: {
                         extra: false,
                         cell: {
@@ -64,7 +64,7 @@ export default class salesListController {
                     }
                 },
                 {
-                    field: "date", title: translate('date'), width: '120px',
+                    field: "date", title: translate('Date'), width: '120px',
                     filterable: {
                         extra: false,
                         cell: {
@@ -74,7 +74,7 @@ export default class salesListController {
                     }
                 },
                 {
-                    field: "description", title: translate('description'), width: '120px',
+                    field: "description", title: translate('Description'), width: '30%',
                     filterable: {
                         extra: false,
                         cell: {

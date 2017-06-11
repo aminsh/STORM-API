@@ -37,7 +37,8 @@ export default class SalesInvoiceController {
             date: null,
             description: '',
             invoiceLines: [],
-            detailAccountId: null
+            detailAccountId: null,
+            referenceId: null
         };
         this.isLoading = false;
 
@@ -51,11 +52,8 @@ export default class SalesInvoiceController {
                 .then(result => this.invoice = result);
         }
 
-
         this.detailAccount = new kendo.data.DataSource({
             serverFiltering: true,
-            //serverPaging: true,
-            // pageSize: 10,
             transport: {
                 read: {
                     url: devConstants.urls.people.getAll(),
@@ -196,10 +194,6 @@ export default class SalesInvoiceController {
                 .catch(err => errors = err)
                 .finally(() => this.isSaving = true);
         }
-    }
-
-    cashPaymentShow() {
-        // this.cashPaymentService.show();
     }
 
     print() {

@@ -1,107 +1,58 @@
-import Guid from 'guid';
+import Guid from "guid";
 
 export default class purchaseController {
     constructor(navigate,
                 purchaseApi,
-                inventoryApi,
                 translate,
                 peopleApi,
                 devConstants,
                 logger,
                 formService,
                 $timeout,
+                $scope,
                 $state,
-                $scope) {
+                promise,
+                createPersonService,
+                productCreateService) {
 
         this.$scope = $scope;
+        this.promise = promise;
+        this.$state = $state;
         this.logger = logger;
         this.peopleApi = peopleApi;
-        this.inventoryApi = inventoryApi;
+        this.createPersonService = createPersonService;
+        this.productCreateService = productCreateService;
         this.purchaseApi = purchaseApi;
         this.$timeout = $timeout;
         this.logger = logger;
         this.translate = translate;
         this.navigate = navigate;
         this.formService = formService;
-        this.$state=$state;
         this.errors = [];
         this.isSaving = false;
         this.invoice = {
             number: null,
-            detailAccountId:null,
             date: null,
             description: '',
-            invoiceLines: []
+            invoiceLines: [],
+            detailAccountId: null,
+            referenceId: null
         };
         this.isLoading = false;
 
         this.id = this.$state.params.id;
 
-        if(this.id!=undefined)
-            $scope.editMode=true;
+        if (this.id != undefined)
+            $scope.editMode = true;
 
-        if($scope.editMode){
+        if ($scope.editMode) {
             this.purchaseApi.getById(this.id)
-                .then(result => this.invoice= result);
+                .then(result => this.invoice = result);
         }
-
-        let scope=this;
-
-        $scope.detailAccountOptions={
-            dataSource:new kendo.data.DataSource({
-                serverFiltering: true,
-                //serverPaging: true,
-                // pageSize: 10,
-                transport: {
-                    read: {
-                        url: devConstants.urls.people.getAll(),
-                        dataType: "json"
-                    },
-                },
-                schema: {
-                    data: function (data) {
-
-                        if (data.data !== undefined) {
-                            return data.data;
-                        } else {
-                            return data;
-                        }
-
-                    },
-                    total: function (data) {
-                        if (data.data    !== undefined) {
-                            return data.total;
-                        } else {
-                            return data.length;
-                        }
-                    }
-                }
-            }),
-            placeholder:translate('Select ...'),
-            filter: "contains",
-            dataTextField: "display",
-            dataValueField: "id",
-            suggest:"true",
-            minLength:"0",
-            change:e=>{
-                let dataItem =e.sender.dataItem();
-                if(dataItem==undefined)
-                    scope.invoice.detailAccountId=null;
-                scope.invoice.detailAccountId=dataItem.id
-                console.log(scope.invoice.detailAccountId)
-                console.log(e)
-            },
-            noDataTemplate:e=>{
-                $scope.newDetailAccountValue=e;
-                return " <div> ردیفی با این مشخصات یافت نشد . آیا مایل به اضافه کردن آن هستید ؟ </div> <br /> <button class='k-button' ng-click='model.createNewCustomer(newDetailAccountValue)'>بله</button>"
-            }
-        }
-
 
         this.detailAccount = new kendo.data.DataSource({
             serverFiltering: true,
-            //serverPaging: true,
-           // pageSize: 10,
+
             transport: {
                 read: {
                     url: devConstants.urls.people.getAll(),
@@ -109,29 +60,13 @@ export default class purchaseController {
                 },
             },
             schema: {
-                data: function (data) {
-
-                    if (data.data !== undefined) {
-                        return data.data;
-                    } else {
-                        return data;
-                    }
-
-                },
-                total: function (data) {
-                    if (data.data    !== undefined) {
-                        return data.total;
-                    } else {
-                        return data.length;
-                    }
-                }
+                data: 'data',
+                total: 'total'
             }
         });
 
         this.products = new kendo.data.DataSource({
             serverFiltering: true,
-            //serverPaging: true,
-            //pageSize: 5,
             transport: {
                 read: {
                     url: devConstants.urls.products.getAll(),
@@ -148,9 +83,8 @@ export default class purchaseController {
             }
         });
 
-        $scope.$on('on-customer-created', (e, customer) => {
-            this.detailAccount.push(customer);
-        });
+
+        this.newInvoice();
     }
 
 
@@ -158,28 +92,30 @@ export default class purchaseController {
         this.invoice.invoiceLines.asEnumerable().remove(item);
     }
 
-    createNewProduct(product) {
-        var data = {title: product};
-        this.inventoryApi.create(data)
-            .then((result) => {
-            })
-            .catch((errors) => this.errors = errors)
+
+    createNewProduct(item, title) {
+        return this.promise.create((resolve, reject) => {
+            this.productCreateService.show({title})
+                .then(result => {
+                    item.productId = result.id;
+                    item.description = title;
+                    resolve({id: result.id, title});
+                });
+        });
     }
 
-    createNewCustomer(customer) {
-        let dataSource = customer.instance.dataSource;
+    onProductChanged(item, product){
+        item.description = product.title;
+    }
 
-        let data = {title: customer.instance.input.val()};
-
-        this.peopleApi.create(data)
-            .then((result) => {
-                dataSource.add({
-                    display: customer.instance.input.val()
+    createNewCustomer(title) {
+        return this.promise.create((resolve, reject) => {
+            this.createPersonService.show({title})
+                .then(result => {
+                    this.invoice.detailAccountId = result.id;
+                    resolve({id: result.id, title})
                 });
-                dataSource.sync();
-            })
-            .catch((errors) => this.errors = errors)
-
+        });
     }
 
     createInvoiceLine() {
@@ -191,25 +127,29 @@ export default class purchaseController {
                 id: Guid.new(),
                 row: ++maxRow,
                 itemId: null,
+                description: '',
                 quantity: 0,
-                vat: 9,
+                vat: 0,
                 discount: 0,
                 unitPrice: 0,
                 totalPrice: 0,
             };
+
         this.invoice.invoiceLines.push(newInvoice);
     }
 
-    newInvoice(){
+    newInvoice() {
         this.isLoading = false;
         this.invoice = {
             number: null,
-            date: null,
+            date: localStorage.getItem('today'),
             description: '',
-            invoiceLines: []
+            invoiceLines: [],
+            status: 'confirm',
+            detailAccountId: null
         };
 
-        for (let i = 1; i <= 4; i++) this.createInvoiceLine();
+        this.createInvoiceLine();
     }
 
     saveInvoice(form) {
@@ -218,10 +158,8 @@ export default class purchaseController {
             errors = this.errors,
             invoice = this.invoice;
 
-        invoice.invoiceLines = invoice.invoiceLines.asEnumerable()
-            .where(il => il.unitPrice > 0)
-            .toArray()
-        //isSaving = this.isSaving;
+        if (status)
+            invoice.status = status;
 
         if (form.$invalid) {
             formService.setDirty(form);
@@ -233,18 +171,16 @@ export default class purchaseController {
         }
 
         errors.asEnumerable().removeAll();
-        //  isSaving = true;
+        if (this.editMode == true) {
+            return this.purchaseApi.update(invoice.id, invoice)
+                .then(result => {
+                    logger.success();
+                    this.isLoading = true;
+                })
+                .catch(err => errors = err)
+                .finally(() => this.isSaving = true);
+        } else {
 
-        // if($scope.editMode==true){
-        //     return this.purchaseApi.update(invoice.id,invoice)
-        //         .then(result => {
-        //             logger.success();
-        //             this.isLoading = true;
-        //         })
-        //         .catch(err => errors = err)
-        //         .finally(() => this.isSaving = true);
-        //
-        // }else{
             return this.purchaseApi.create(invoice)
                 .then(result => {
                     logger.success();
@@ -253,16 +189,19 @@ export default class purchaseController {
                 })
                 .catch(err => errors = err)
                 .finally(() => this.isSaving = true);
-        // }
+        }
     }
 
-    print(){
+    print() {
         let invoice = this.invoice;
-        let reportParam={"id": invoice.id}
+        let reportParam = {"id": invoice.id};
         this.navigate(
             'report.print',
             {key: 701},
             reportParam);
     }
 
+    onItemPropertyChanged(item) {
+        item.vat = ((item.unitPrice * item.quantity) - item.discount) * 9 / 100;
+    }
 }
