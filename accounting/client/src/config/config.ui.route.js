@@ -277,6 +277,17 @@ export default function ($stateProvider, $urlRouterProvider, $locationProvider) 
             controllerAs: 'model',
             templateUrl: 'partials/sales/invoiceCreate.html'
         })
+        .state('payment', {
+            url: '/payment',
+            onEnter: $modelFactory => {
+                $modelFactory.create({
+                    controller: 'paymentController',
+                    controllerAs: 'model',
+                    size:'lg',
+                    templateUrl: 'partials/payment/payment.html'
+                });
+            }
+        })
 
         .state('purchases', {
             url: '/purchases',
@@ -354,6 +365,8 @@ export default function ($stateProvider, $urlRouterProvider, $locationProvider) 
                 });
             }
         })
+
+
 
         .state('products', {
             url: '/products',

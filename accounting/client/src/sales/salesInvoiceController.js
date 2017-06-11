@@ -13,6 +13,7 @@ export default class SalesInvoiceController {
                 $timeout,
                 $scope,
                 promise,
+                createPaymentService,
                 createPersonService,
                 productCreateService) {
 
@@ -29,6 +30,7 @@ export default class SalesInvoiceController {
         this.logger = logger;
         this.translate = translate;
         this.navigate = navigate;
+        this.createPaymentService=createPaymentService;
         this.formService = formService;
         this.errors = [];
         this.isSaving = false;
@@ -199,7 +201,15 @@ export default class SalesInvoiceController {
     }
 
     cashPaymentShow() {
-        // this.cashPaymentService.show();
+        this.createPaymentService.show({amount:50000}).then(result =>{
+            return this.salesInvoiceApi.pay(this.invoice.id,result)
+                .then(result => {
+                    this.logger.success();
+                    this.isLoading = true;
+                })
+                .catch(err => errors = err)
+                .finally(() => this.isSaving = true);
+        });
     }
 
     print() {

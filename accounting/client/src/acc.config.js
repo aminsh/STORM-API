@@ -146,6 +146,7 @@ import './people';
 import './fund';
 import './fiscalPeriod';
 import './product';
+import './payment';
 
 accModule
     .config(uiRouteConfig)

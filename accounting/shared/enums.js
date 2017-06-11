@@ -61,6 +61,15 @@ enums.InvoiceStatus = function () {
     ]);
 };
 
+enums.paymentType = function () {
+    return new Enum([
+        {key: 'cheque', display: 'چک'},
+        {key: 'receipt', display: 'رسید بانکی'},
+        {key: 'cash', display: 'نقدی'},
+    ]);
+};
+
+
 enums.JournalType = function () {
     return new Enum([
         {key: 'Opening', display: 'افتتاحیه'},
