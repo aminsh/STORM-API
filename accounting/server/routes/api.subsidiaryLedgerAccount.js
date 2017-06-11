@@ -103,17 +103,16 @@ router.route('/:id')
             });
 
         let entity = {
-            id,
             code: cmd.code,
             title: cmd.title,
             isBankAccount: cmd.isBankAccount,
-            detailAccountAssignmentStatus: cmd.detailAccountAssignmentStatus,
-            dimension1AssignmentStatus: cmd.dimension1AssignmentStatus,
-            dimension2AssignmentStatus: cmd.dimension2AssignmentStatus,
-            dimension3AssignmentStatus: cmd.dimension3AssignmentStatus
+            hasDetailAccount: cmd.hasDetailAccount,
+            hasDimension1: cmd.hasDimension1,
+            hasDimension2: cmd.hasDimension2,
+            hasDimension3: cmd.hasDimension3
         };
 
-        await(subsidiaryLedgerAccountRepository.update(entity));
+        await(subsidiaryLedgerAccountRepository.update(id, entity));
 
         return res.json({isValid: true});
     }))

@@ -41,10 +41,10 @@ class SubsidiaryLedgerAccountRepository extends BaseRepository {
         return this.knex('subsidiaryLedgerAccounts').insert(entity);
     }
 
-    update(entity) {
+    update(id,entity) {
         return this.knex('subsidiaryLedgerAccounts')
             .modify(this.modify, this.branchId)
-            .where('id', entity.id)
+            .where('id', id)
             .update(entity);
     }
 
