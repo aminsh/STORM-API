@@ -18,30 +18,36 @@ function combobox($window) {
             onCreated: '&kOnCreated'
         },
         link: function (scope, element, attrs, ngModel) {
-            let hasNoDataTemplate = attrs.hasOwnProperty('showNoDataTemplate'),
-                onCreatedName = attrs.kOnCreated.substring(0, attrs.kOnCreated.indexOf('('))
-                    .split('.')
-                    .asEnumerable().last();
+            let template="";
+            let hasNoDataTemplate = attrs.hasOwnProperty('showNoDataTemplate');
 
-            $window[onCreatedName] = function (widgetId, value) {
-                let dataSource = scope.dataSource;
+            if (angular.isDefined(attrs.kOnCreated)) {
 
-                scope.onCreated({value})
-                    .then(result => {
-                        let item = {};
-                        item[attrs.kDataTextField] = result[attrs.kDataTextField];
-                        item[attrs.kDataValueField] = result[attrs.kDataValueField];
-                        dataSource.add(item);
-                    });
-            };
+                   let onCreatedName = attrs.kOnCreated.substring(0, attrs.kOnCreated.indexOf('('))
+                        .split('.')
+                        .asEnumerable().last();
 
-            let template = `<div>
+                $window[onCreatedName] = function (widgetId, value) {
+                    let dataSource = scope.dataSource;
+
+                    scope.onCreated({value})
+                        .then(result => {
+                            let item = {};
+                            item[attrs.kDataTextField] = result[attrs.kDataTextField];
+                            item[attrs.kDataValueField] = result[attrs.kDataValueField];
+                            dataSource.add(item);
+                        });
+                };
+
+                template = `<div>
                 <button class="btn btn-primary" 
                 onclick="${onCreatedName}('#: instance.element[0].id #', '#: instance.input.val() #')">
                     <i class="fa fa-plus"></i>
                     ${create} "#: instance.input.val() #"
                 </button>
                 </div>`;
+
+            }
 
             let options = {
                 placeholder: attrs.kPlaceholder,
