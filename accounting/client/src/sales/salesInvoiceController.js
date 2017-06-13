@@ -131,7 +131,7 @@ export default class SalesInvoiceController {
             newInvoice = {
                 id: Guid.new(),
                 row: ++maxRow,
-                itemId: null,
+                productId: null,
                 description: '',
                 quantity: 0,
                 vat: 0,
