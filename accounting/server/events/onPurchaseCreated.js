@@ -25,7 +25,7 @@ EventEmitter.on('on-purchase-created', async((purchase, current) => {
         sumAmount = invoiceLines.asEnumerable().sum(line => line.unitPrice * line.quantity),
         sumDiscount = invoiceLines.asEnumerable().sum(line => line.discount),
         sumVat = invoiceLines.asEnumerable().sum(line => line.vat),
-        description = translate('For Cash invoice number ...').format(purchase.number),
+        description = translate('For Cash purchase invoice number ...').format(purchase.number),
         maxNumber = await(journalRepository.maxTemporaryNumber(current.fiscalPeriodId)).max || 0,
         journal = {
             periodId: current.fiscalPeriodId,

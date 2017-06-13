@@ -18,7 +18,7 @@ EventEmitter.on('on-sale-created', async((sale, current) => {
         sumAmount = invoiceLines.asEnumerable().sum(line => line.unitPrice * line.quantity),
         sumDiscount = invoiceLines.asEnumerable().sum(line => line.discount),
         sumVat = invoiceLines.asEnumerable().sum(line => line.vat),
-        description = translate('For Cash invoice number ...').format(sale.number),
+        description = translate('For Cash sale invoice number ...').format(sale.number),
         maxNumber = await(journalRepository.maxTemporaryNumber(current.fiscalPeriodId)).max || 0,
         journal = {
             periodId: current.fiscalPeriodId,
@@ -54,7 +54,7 @@ EventEmitter.on('on-sale-created', async((sale, current) => {
         let discountSubLedgerAccount = await(subsidiaryLedgerAccountRepository.findByCode('8305'));
 
         journalLines.push({
-            generalLedgerAccountId: discountSubLedgerAccount,
+            generalLedgerAccountId: discountSubLedgerAccount.generalLedgerAccountId,
             subsidiaryLedgerAccountId: discountSubLedgerAccount.id,
             debtor: sumDiscount,
             creditor: 0,
