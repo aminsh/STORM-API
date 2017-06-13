@@ -192,11 +192,7 @@ export default function ($stateProvider, $urlRouterProvider, $locationProvider) 
             controller: 'chequePrintController',
             templateUrl: 'partials/views/chequePrint.html'
         })
-        .state('banks', {
-            url: '/banks',
-            controller: 'banksController',
-            templateUrl: 'partials/views/banks.html'
-        })
+
         .state('account-review', {
             url: '/account-review',
             controller: 'accountReviewController',
@@ -277,6 +273,17 @@ export default function ($stateProvider, $urlRouterProvider, $locationProvider) 
             controllerAs: 'model',
             templateUrl: 'partials/sales/invoiceCreate.html'
         })
+        .state('payment', {
+            url: '/payment',
+            onEnter: $modelFactory => {
+                $modelFactory.create({
+                    controller: 'paymentController',
+                    controllerAs: 'model',
+                    size:'lg',
+                    templateUrl: 'partials/payment/payment.html'
+                });
+            }
+        })
 
         .state('purchases', {
             url: '/purchases',
@@ -313,7 +320,8 @@ export default function ($stateProvider, $urlRouterProvider, $locationProvider) 
                 $modelFactory.create({
                     controller: 'peopleCreateController',
                     controllerAs: 'model',
-                    templateUrl: 'partials/people/peopleCreate.html'
+                    templateUrl: 'partials/people/peopleCreate.html',
+                    //resolve: {data: () => $stateParams}
                 });
             }
         })
@@ -324,6 +332,7 @@ export default function ($stateProvider, $urlRouterProvider, $locationProvider) 
                     controller: 'peopleCreateController',
                     controllerAs: 'model',
                     templateUrl: 'partials/people/peopleCreate.html',
+                    //resolve: {data: () => $stateParams}
                 });
             }
         })
@@ -354,7 +363,32 @@ export default function ($stateProvider, $urlRouterProvider, $locationProvider) 
                 });
             }
         })
-
+        .state('bank', {
+            url: '/bank',
+            controller: 'bankListController',
+            controllerAs: 'model',
+            templateUrl: 'partials/bank/bankList.html'
+        })
+        .state('bank.create', {
+            url: '/create',
+            onEnter: $modelFactory => {
+                $modelFactory.create({
+                    controller: 'bankCreateController',
+                    controllerAs: 'model',
+                    templateUrl: 'partials/bank/bankCreate.html'
+                });
+            }
+        })
+        .state('bank.edit', {
+            url: '/:id/edit',
+            onEnter: $modelFactory => {
+                $modelFactory.create({
+                    controller: 'bankCreateController',
+                    controllerAs: 'model',
+                    templateUrl: 'partials/bank/bankCreate.html',
+                });
+            }
+        })
         .state('products', {
             url: '/products',
             controller: 'productsController',
