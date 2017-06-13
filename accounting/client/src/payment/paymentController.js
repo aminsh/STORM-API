@@ -1,5 +1,5 @@
 export default class paymentController {
-    constructor($scope, $uibModalInstance, formService, logger,  devConstants) {
+    constructor($scope, $uibModalInstance, formService, logger,  devConstants,data) {
 
         this.$scope = $scope;
         this.logger = logger;
@@ -10,6 +10,7 @@ export default class paymentController {
         this.isSaving = false;
         this.devConstants = devConstants;
         this.payment = [];
+        this.totalPrice=data;
 
         this.fundDataSource= new kendo.data.DataSource({
             serverFiltering: true,
@@ -94,6 +95,11 @@ export default class paymentController {
         }
 
         this.errors.asEnumerable().removeAll();
+
+        if(payment.asEnumerable().sum(item=>item.ammount)>this.totalPrice.amount){
+            logger.error('مقدار وارد شده بیشتر از مبلغ فاکتور میباشد');
+            return;
+        }
 
         this.$scope.$close(payment);
 

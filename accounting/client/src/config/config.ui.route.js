@@ -273,7 +273,8 @@ export default function ($stateProvider, $urlRouterProvider, $locationProvider) 
                     controller: 'paymentController',
                     controllerAs: 'model',
                     size:'lg',
-                    templateUrl: 'partials/payment/payment.html'
+                    templateUrl: 'partials/payment/payment.html',
+                    resolve: {data: {amount: $stateParams.amount}}
                 });
             }
         })
