@@ -39,18 +39,9 @@ export default class SalesInvoiceController {
             date: null,
             description: '',
             invoiceLines: [],
-            detailAccountId: null,
-            status:'confirm',
-            totalPrice: null,
-            detailAccountId: null,
-            referenceId: null
+            detailAccountId: null
         };
-
-        this.items = [];
-
         this.isLoading = false;
-
-        this.isPayment = false;
 
         this.id = this.$state.params.id;
 
@@ -61,11 +52,12 @@ export default class SalesInvoiceController {
             this.salesInvoiceApi.getById(this.id)
                 .then(result => this.invoice = result);
         }
-        else
-            this.newInvoice();
+
 
         this.detailAccount = new kendo.data.DataSource({
             serverFiltering: true,
+            //serverPaging: true,
+            // pageSize: 10,
             transport: {
                 read: {
                     url: devConstants.urls.people.getAll(),
@@ -96,19 +88,9 @@ export default class SalesInvoiceController {
             }
         });
 
-        if (this.editMode) {
-            this.salesInvoiceApi.getById(this.id)
-                .then(result => {
-                        this.invoice = result
-                        this.invoice.totalPrice = result.invoiceLines.asEnumerable().sum(item => (item.unitPrice * item.quantity) - item.discount + item.vat);
-                        if (this.invoice.status == "waitForPayment")
-                            this.isPayment = true;
-                    }
-                );
-        }
 
+        this.newInvoice();
     }
-
 
 
     removeInvoiceLine(item) {
@@ -162,14 +144,19 @@ export default class SalesInvoiceController {
     }
 
     newInvoice() {
-        this.$state.go('sales.create');
-    }
+        this.isLoading = false;
+        this.invoice = {
+            number: null,
+            date: localStorage.getItem('today'),
+            description: '',
+            invoiceLines: [],
+            status: 'confirm',
+            detailAccountId: null
+        };
 
-    onSearchCustomer(item) {
-        return this.promise.create((resolve, reject) => {
-            let filters = [item];
-            this.peopleApi.getAll({filters}).then(result => resolve(result.data));
-        });
+        this.salesInvoiceApi.getMaxNumber().then(result => this.invoice.number = result);
+
+        this.createInvoiceLine();
     }
 
     saveInvoice(form, status) {
@@ -192,7 +179,7 @@ export default class SalesInvoiceController {
 
         errors.asEnumerable().removeAll();
 
-        if (this.editMode == true && this.isPayment == false) {
+        if (this.editMode == true) {
             return this.salesInvoiceApi.update(invoice.id, invoice)
                 .then(result => {
                     logger.success();
@@ -206,13 +193,6 @@ export default class SalesInvoiceController {
                 .then(result => {
                     logger.success();
                     invoice.id = result.id;
-                    this.salesInvoiceApi.getById(invoice.id).then(result=>{
-                       if(result.status=="waitForPayment"){
-                           this.isPayment = true;
-                       }else {
-                           this.isPayment = false;
-                       }
-                    });
                     this.isLoading = true;
                 })
                 .catch(err => errors = err)

@@ -56,8 +56,8 @@ module.exports = class InvoiceQuery extends BaseQuery {
             query = knex.select('*').table(function () {
                 this.select('*')
                     .from('invoiceLines')
-                    .where('branchId', this.branchId)
-                    .andWhere('invoiceId', invoiceId)
+                    .where('branchId', branchId)
+                    .andWhere('invoiceId', invoiceId).as('invoiceLines')
             });
 
         return kendoQueryResolve(query, parameters, lineView);
