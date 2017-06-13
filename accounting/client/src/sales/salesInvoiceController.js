@@ -39,9 +39,10 @@ export default class SalesInvoiceController {
             date: null,
             description: '',
             invoiceLines: [],
-            detailAccountId: null
+            detailAccountId: null,
         };
         this.isLoading = false;
+        this.isPayment=false;
 
         this.id = this.$state.params.id;
 
@@ -50,7 +51,13 @@ export default class SalesInvoiceController {
 
         if (this.editMode) {
             this.salesInvoiceApi.getById(this.id)
-                .then(result => this.invoice = result);
+                .then(result => {
+                    this.invoice = result
+                    if(result.status=='waitForPayment'){
+                        this.isPayment=true;
+                        this.invoice.totalPrice=result.invoiceLines.asEnumerable().sum(item => (item.unitPrice * item.quantity) - item.discount + item.vat)
+                    }
+                });
         }
 
 
@@ -188,6 +195,11 @@ export default class SalesInvoiceController {
                 .then(result => {
                     logger.success();
                     this.isLoading = true;
+                    this.salesInvoiceApi.getById(invoice.id).then(result=>{
+                        if(result.status=='waitForPayment'){
+                            this.isPayment=true;
+                        }
+                    })
                 })
                 .catch(err => errors = err)
                 .finally(() => this.isSaving = true);
@@ -198,6 +210,12 @@ export default class SalesInvoiceController {
                     logger.success();
                     invoice.id = result.id;
                     this.isLoading = true;
+                    this.salesInvoiceApi.getById(invoice.id).then(result=>{
+                        if(result.status=='waitForPayment'){
+                            this.isPayment=true;
+                            invoice.totalPrice=invoice.invoiceLines.sum(item => (item.unitPrice * item.quantity) - item.discount + item.vat)
+                        }
+                    })
                 })
                 .catch(err => errors = err)
                 .finally(() => this.isSaving = true);
