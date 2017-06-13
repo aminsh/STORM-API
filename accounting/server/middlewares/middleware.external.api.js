@@ -20,7 +20,7 @@ module.exports = (req, res, next) => {
             return res.status(403).send(noTokenProvidedMessage);
 
         req.branchId = decode.branchId;
-        req.user = decode.user;
+        req.userId = decode.userId;
 
         next();
     });

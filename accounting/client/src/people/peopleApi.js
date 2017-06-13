@@ -1,7 +1,7 @@
 import accModule from '../acc.module';
 
 function peopleApi(apiPromise) {
-    var urlPrefix = '/acc/api';
+    var urlPrefix = '/api/v1';
 
     return {
 

@@ -10,7 +10,7 @@ const async = require('asyncawait/async'),
 
 router.route('/')
     .get(async((req, res) => {
-        let detailAccountQuery = new DetailAccountQuery(req.cookies['branch-id']),
+        let detailAccountQuery = new DetailAccountQuery(req.branchId),
             result = await(detailAccountQuery.getAllPeople(req.query));
         res.json(result);
     }))
@@ -38,7 +38,7 @@ router.route('/')
 
 router.route('/:id')
     .get(async((req, res) => {
-        let detailAccountQuery = new DetailAccountQuery(req.cookies['branch-id']),
+        let detailAccountQuery = new DetailAccountQuery(req.branchId),
             result = await(detailAccountQuery.getById(req.params.id));
         res.json(result);
     }))

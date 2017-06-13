@@ -15,8 +15,8 @@ const config = require('./storm/server/config'),
     app = require('./storm/server/config/express').app;
 
 
-
 app.use('/acc', accApp);
+app.use('/api/v1', require('./api/api.config'));
 
 require('./storm');
 

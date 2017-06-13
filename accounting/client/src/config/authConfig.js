@@ -25,6 +25,7 @@ accModule
     })
     .config($httpProvider => {
         $httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+        $httpProvider.defaults.headers.common['x-access-token'] = localStorage.getItem('token');
 
         $httpProvider.interceptors.push('authInterceptor');
     });
@@ -33,4 +34,8 @@ accModule
 $(document).ajaxError((e, response) => {
     if (response.status == 401 && response.responseText == 'user is not authenticated')
         return location.reload();
+});
+
+$.ajaxSetup({
+    headers: { 'x-access-token': localStorage.getItem('token') }
 });
