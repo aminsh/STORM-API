@@ -39,10 +39,8 @@ export default class SalesInvoiceController {
             date: null,
             description: '',
             invoiceLines: [],
-            detailAccountId: null,
-            referenceId: null
+            detailAccountId: null
         };
-
         this.isLoading = false;
 
         this.id = this.$state.params.id;
@@ -54,11 +52,12 @@ export default class SalesInvoiceController {
             this.salesInvoiceApi.getById(this.id)
                 .then(result => this.invoice = result);
         }
-        else
-            this.newInvoice();
+
 
         this.detailAccount = new kendo.data.DataSource({
             serverFiltering: true,
+            //serverPaging: true,
+            // pageSize: 10,
             transport: {
                 read: {
                     url: devConstants.urls.people.getAll(),
@@ -90,7 +89,7 @@ export default class SalesInvoiceController {
         });
 
 
-
+        this.newInvoice();
     }
 
 
@@ -110,7 +109,7 @@ export default class SalesInvoiceController {
         });
     }
 
-    onProductChanged(item, product) {
+    onProductChanged(item, product){
         item.description = product.title;
     }
 
@@ -160,13 +159,6 @@ export default class SalesInvoiceController {
         this.createInvoiceLine();
     }
 
-    onSearchCustomer(item) {
-        return this.promise.create((resolve, reject) => {
-            let filters = [item];
-            this.peopleApi.getAll({filters}).then(result => resolve(result.data));
-        });
-    }
-
     saveInvoice(form, status) {
         let logger = this.logger,
             formService = this.formService,
@@ -209,8 +201,8 @@ export default class SalesInvoiceController {
     }
 
     cashPaymentShow() {
-        this.createPaymentService.show({amount:50000}).then(result =>{
-            return this.salesInvoiceApi.pay(this.invoice.id,result)
+        this.createPaymentService.show({amount: this.invoice.totalPrice}).then(result => {
+            return this.salesInvoiceApi.pay(this.invoice.id, result)
                 .then(result => {
                     this.logger.success();
                     this.isLoading = true;

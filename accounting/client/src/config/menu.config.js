@@ -103,14 +103,14 @@ accModule.config(menuItemsProvider => {
     menuItemsProvider
         .add({
             title: 'بانک',
-            url: 'banks',
+            url: 'bank',
             icon: 'fa fa-bank'
         });
 
     menuItemsProvider
         .add({
             title: 'صندوق',
-            url: 'funds',
+            url: 'fund',
             icon: 'fa fa-archive'
         });
 

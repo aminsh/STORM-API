@@ -157,7 +157,7 @@ router.route('/:id/lines').get(async((req, res) => {
 }));
 
 router.route('/max/number')
-    .get(async((req, res)=> {
+    .get(async((req, res) => {
         let invoiceQuery = new InvoiceQuery(req.cookies['branch-id']),
             result = await(invoiceQuery.maxNumber('sale'));
 

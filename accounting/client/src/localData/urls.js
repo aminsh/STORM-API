@@ -32,10 +32,6 @@ let chequeCategory = {
     allOpens: (detailAccountId)=> '{0}/cheque-categories/detail-account/{1}/opens'.format(rootUrl(), detailAccountId)
 };
 
-let bank = {
-    all: ()=> '{0}/banks'.format(rootUrl())
-};
-
 let cheque = {
     all: (categoryId)=> '{0}/cheques/category/{1}'.format(rootUrl(), categoryId),
     allwhites: (categoryId)=> '{0}/cheques/category/{1}/whites'.format(rootUrl(), categoryId),
@@ -74,6 +70,11 @@ let people = {
 let fund = {
     getAll: ()=> `${rootUrl()}/funds`
 };
+
+let bank = {
+    getAll: ()=> `${rootUrl()}/banks`
+};
+
 
 let sales = {
     getAll: ()=> `${rootUrl()}/sales`
