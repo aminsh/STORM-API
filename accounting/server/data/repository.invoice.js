@@ -69,9 +69,9 @@ module.exports = class InvoiceRepository extends BaseRepository {
                 let entity = this.entity;
 
                 try {
-                    let lines = this.entity.invoiceLines;
+                    let lines = this.entity.lines;
 
-                    delete  entity.invoiceLines;
+                    delete  entity.lines;
 
                     await(this.updateInvoice(id, entity, trx));
 

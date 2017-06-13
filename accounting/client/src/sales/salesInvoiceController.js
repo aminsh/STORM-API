@@ -40,10 +40,17 @@ export default class SalesInvoiceController {
             description: '',
             invoiceLines: [],
             detailAccountId: null,
+            status:'confirm',
+            totalPrice: null,
+            detailAccountId: null,
             referenceId: null
         };
 
+        this.items = [];
+
         this.isLoading = false;
+
+        this.isPayment = false;
 
         this.id = this.$state.params.id;
 
@@ -89,9 +96,19 @@ export default class SalesInvoiceController {
             }
         });
 
-
+        if (this.editMode) {
+            this.salesInvoiceApi.getById(this.id)
+                .then(result => {
+                        this.invoice = result
+                        this.invoice.totalPrice = result.invoiceLines.asEnumerable().sum(item => (item.unitPrice * item.quantity) - item.discount + item.vat);
+                        if (this.invoice.status == "waitForPayment")
+                            this.isPayment = true;
+                    }
+                );
+        }
 
     }
+
 
 
     removeInvoiceLine(item) {
@@ -110,7 +127,7 @@ export default class SalesInvoiceController {
         });
     }
 
-    onProductChanged(item, product) {
+    onProductChanged(item, product){
         item.description = product.title;
     }
 
@@ -145,19 +162,7 @@ export default class SalesInvoiceController {
     }
 
     newInvoice() {
-        this.isLoading = false;
-        this.invoice = {
-            number: null,
-            date: localStorage.getItem('today'),
-            description: '',
-            invoiceLines: [],
-            status: 'confirm',
-            detailAccountId: null
-        };
-
-        this.salesInvoiceApi.getMaxNumber().then(result => this.invoice.number = result);
-
-        this.createInvoiceLine();
+        this.$state.go('sales.create');
     }
 
     onSearchCustomer(item) {
@@ -187,7 +192,7 @@ export default class SalesInvoiceController {
 
         errors.asEnumerable().removeAll();
 
-        if (this.editMode == true) {
+        if (this.editMode == true && this.isPayment == false) {
             return this.salesInvoiceApi.update(invoice.id, invoice)
                 .then(result => {
                     logger.success();
@@ -201,6 +206,13 @@ export default class SalesInvoiceController {
                 .then(result => {
                     logger.success();
                     invoice.id = result.id;
+                    this.salesInvoiceApi.getById(invoice.id).then(result=>{
+                       if(result.status=="waitForPayment"){
+                           this.isPayment = true;
+                       }else {
+                           this.isPayment = false;
+                       }
+                    });
                     this.isLoading = true;
                 })
                 .catch(err => errors = err)
@@ -209,8 +221,8 @@ export default class SalesInvoiceController {
     }
 
     cashPaymentShow() {
-        this.createPaymentService.show({amount:50000}).then(result =>{
-            return this.salesInvoiceApi.pay(this.invoice.id,result)
+        this.createPaymentService.show({amount: this.invoice.totalPrice}).then(result => {
+            return this.salesInvoiceApi.pay(this.invoice.id, result)
                 .then(result => {
                     this.logger.success();
                     this.isLoading = true;
