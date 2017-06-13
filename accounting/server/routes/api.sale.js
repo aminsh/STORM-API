@@ -91,13 +91,11 @@ router.route('/:id')
             detailAccountId: cmd.detailAccountId
         };
 
-        entity.lines = cmd.invoiceLines.asEnumerable()
+        entity.invoiceLines = cmd.invoiceLines.asEnumerable()
             .select(line => ({
                 id: line.id,
                 productId: line.productId,
-                description: (line.productId)
-                    ? await(productRepository.findById(line.productId)).title
-                    : line.description,
+                description: line.description,
                 quantity: line.quantity,
                 unitPrice: line.unitPrice,
                 discount: line.discount,

@@ -13,6 +13,7 @@ export default class SalesInvoiceController {
                 $timeout,
                 $scope,
                 promise,
+                createPaymentService,
                 createPersonService,
                 productCreateService) {
 
@@ -29,6 +30,7 @@ export default class SalesInvoiceController {
         this.logger = logger;
         this.translate = translate;
         this.navigate = navigate;
+        this.createPaymentService=createPaymentService;
         this.formService = formService;
         this.errors = [];
         this.isSaving = false;
@@ -40,6 +42,7 @@ export default class SalesInvoiceController {
             detailAccountId: null,
             referenceId: null
         };
+
         this.isLoading = false;
 
         this.id = this.$state.params.id;
@@ -51,6 +54,8 @@ export default class SalesInvoiceController {
             this.salesInvoiceApi.getById(this.id)
                 .then(result => this.invoice = result);
         }
+        else
+            this.newInvoice();
 
         this.detailAccount = new kendo.data.DataSource({
             serverFiltering: true,
@@ -85,7 +90,7 @@ export default class SalesInvoiceController {
         });
 
 
-        this.newInvoice();
+
     }
 
 
@@ -105,7 +110,7 @@ export default class SalesInvoiceController {
         });
     }
 
-    onProductChanged(item, product){
+    onProductChanged(item, product) {
         item.description = product.title;
     }
 
@@ -155,6 +160,13 @@ export default class SalesInvoiceController {
         this.createInvoiceLine();
     }
 
+    onSearchCustomer(item) {
+        return this.promise.create((resolve, reject) => {
+            let filters = [item];
+            this.peopleApi.getAll({filters}).then(result => resolve(result.data));
+        });
+    }
+
     saveInvoice(form, status) {
         let logger = this.logger,
             formService = this.formService,
@@ -194,6 +206,18 @@ export default class SalesInvoiceController {
                 .catch(err => errors = err)
                 .finally(() => this.isSaving = true);
         }
+    }
+
+    cashPaymentShow() {
+        this.createPaymentService.show({amount:50000}).then(result =>{
+            return this.salesInvoiceApi.pay(this.invoice.id,result)
+                .then(result => {
+                    this.logger.success();
+                    this.isLoading = true;
+                })
+                .catch(err => errors = err)
+                .finally(() => this.isSaving = true);
+        });
     }
 
     print() {

@@ -29,6 +29,7 @@
                                                k-on-created="model.createNewCustomer(value)"
                                                show-no-data-template
                                                ng-model="model.invoice.detailAccountId"
+                                               url="/acc/api/people"
                                                required></dev-tag-combo-box>
 
                             <div ng-messages="form.detailAccountId.$error" ng-if="form.detailAccountId.$dirty">
@@ -116,6 +117,14 @@
                                         is-waiting="model.isLoading"
                                         title="{{'Save as draft' | translate}}"
                                         ng-click="model.saveInvoice(form, 'draft')" style="width: 100px;"></dev-tag-button>
+
+                        <dev-tag-button style-type="primary" style="width: 100px;"
+                                        ng-click="model.cashPaymentShow()"
+                                        ng-if="model.isSaving" title="{{'Payment ' | translate}}">
+
+                            <span class="fa fa-mony"></span></dev-tag-button>
+
+
                     </div>&nbsp;
                 </div>
                 <div class="col-sm-4"></div>

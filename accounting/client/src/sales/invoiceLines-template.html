@@ -33,9 +33,10 @@
                                    k-data-text-field="title"
                                    k-data-source="model.products"
                                    k-on-created="model.createNewProduct(item,value)"
-                                   k-on-changed="model.onProductChanged(item, $item)"
+                                   on-changed="model.onProductChanged(item, $item)"
                                    show-no-data-template
-                                   ng-model="item.productId" required></dev-tag-combo-box>
+                                   url="/acc/api/products"
+                                   ng-model="item.productId"></dev-tag-combo-box>
             </td>
 
             <td style="width: 30%; padding: 0px;">

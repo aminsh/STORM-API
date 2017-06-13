@@ -18,7 +18,7 @@ module.exports = class InvoiceRepository extends BaseRepository {
         return this.knex.table('invoices').where('id', id).first();
     }
 
-    findInvoiceLinesByInvoiceId(id){
+    findInvoiceLinesByInvoiceId(id) {
         return this.knex.table('invoiceLines').where('invoiceId', id);
     }
 
@@ -117,6 +117,7 @@ module.exports = class InvoiceRepository extends BaseRepository {
         lines.forEach(line => {
             super.create(line);
             line.invoiceId = id;
+
         });
 
         await(this.knex('invoiceLines')
@@ -133,27 +134,27 @@ module.exports = class InvoiceRepository extends BaseRepository {
             shouldAddedLines = lines.asEnumerable()
                 .where(e => !persistedLines.asEnumerable().any(p => p.id == e.id))
                 .toArray(),
-            shouldUpdatedLines = persistedLines.asEnumerable()
-                .where(e => lines.asEnumerable().any(p => p.id == e.id))
+            shouldUpdatedLines = lines.asEnumerable()
+                .where(e => persistedLines.asEnumerable().any(p => p.id == e.id))
                 .toArray();
 
-        shouldAddedLines.forEach(line => {
-            super.create(line);
-            line.invoiceId = id;
-        });
+        if (shouldAddedLines.asEnumerable().any()) {
+            shouldAddedLines.forEach(line => {
+                super.create(line);
+                line.invoiceId = id;
+            });
 
-        await(this.knex('invoiceLines')
-            .transacting(trx)
-            .insert(shouldAddedLines));
+            await(this.knex('invoiceLines')
+                .transacting(trx)
+                .insert(shouldAddedLines));
+        }
 
-        shouldDeletedLines.forEach(e => this.knex('invoiceLines')
-            .transacting(trx).where('id', e.id).del(e));
-        shouldUpdatedLines.forEach(e => this.knex('invoiceLines')
-            .transacting(trx).where('id', e.id).update(e));
+        if (shouldDeletedLines.asEnumerable().any())
+            shouldDeletedLines.forEach(e => await(this.knex('invoiceLines')
+                .transacting(trx).where('id', e.id).del(e)));
 
-        lines.forEach(line => await(this.knex('invoiceLines')
-            .transacting(trx)
-            .where('id', line.id)
-            .update(line)));
+        if (shouldUpdatedLines.asEnumerable().any())
+            shouldUpdatedLines.forEach(e => await(this.knex('invoiceLines')
+                .transacting(trx).where('id', e.id).update(e)));
     }
 };

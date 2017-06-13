@@ -40,43 +40,89 @@ module.exports = class Payment {
         this.journal = {
             number: (await(this.journalRepository.maxTemporaryNumber(this.fiscalPeriodId)).max || 0) + 1,
             date: invoice.date,
-            description: this.getJournalDescription(invoice)
+            description: invoice.invoiceType == 'sale'
+                ? this.getReceiveJournalDescription(invoice)
+                : this.getPayJournalDescription(invoice)
         };
 
         this.journalLines = [];
 
-        list.forEach(e => {
-            let debtorSubsidiaryLedgerAccount = await(this.getDebtorSubsidiaryLedgerAccount(e.paymentType)),
-                creditorSubsidiaryLedgerAccount = await(this.getDebtorSubsidiaryLedgerAccount('1104')),
-                detailAccountId = this.getDebtorDetailAccount(invoice, e),
-                article = this.getJournalLineArticle(invoice, e);
+        let journalLineGenerator = invoice.invoiceType == 'sale'
+            ? async(this.receivableJournalLine)
+            : async(this.payableJournalLine);
 
-            this.journalLines.push({
-                id: e.journalLineId,
-                generalLedgerAccountId: debtorSubsidiaryLedgerAccount.generalLedgerAccountId,
-                subsidiaryLedgerAccountId: debtorSubsidiaryLedgerAccount.id,
-                detailAccountId: detailAccountId,
-                article,
-                debtor: e.amount,
-                creditor: 0
-            });
-
-            this.journalLines.push({
-                generalLedgerAccountId: creditorSubsidiaryLedgerAccount.generalLedgerAccountId,
-                subsidiaryLedgerAccountId: creditorSubsidiaryLedgerAccount.id,
-                detailAccountId: invoice.detailAccountId,
-                article,
-                debtor: 0,
-                creditor: e.amount
-            });
-        });
+        list.forEach(e => journalLineGenerator(e, invoice));
 
         await(this.journalRepository.create(this.journal, this.journalLines));
         await(this.paymentRepository.create(this.payments));
     }
 
+    receivableJournalLine(e, invoice) {
+        let debtorSubsidiaryLedgerAccount = await(this.getDebtorSubsidiaryLedgerAccount(e.paymentType)),
+
+            // حسابهای دریافتنی
+            creditorSubsidiaryLedgerAccount = await(this.subsidiaryLedgerAccountRepository.findByCode('1104')),
+            detailAccountId = this.getDebtorDetailAccount(invoice, e),
+            article = this.getReceiveJournalLineArticle(invoice, e);
+
+        this.journalLines.push({
+            id: e.journalLineId,
+            generalLedgerAccountId: debtorSubsidiaryLedgerAccount.generalLedgerAccountId,
+            subsidiaryLedgerAccountId: debtorSubsidiaryLedgerAccount.id,
+            detailAccountId: detailAccountId,
+            article,
+            debtor: e.amount,
+            creditor: 0
+        });
+
+        this.journalLines.push({
+            generalLedgerAccountId: creditorSubsidiaryLedgerAccount.generalLedgerAccountId,
+            subsidiaryLedgerAccountId: creditorSubsidiaryLedgerAccount.id,
+            detailAccountId: invoice.detailAccountId,
+            article,
+            debtor: 0,
+            creditor: e.amount
+        });
+    }
+
+    payableJournalLine(e, invoice) {
+        let
+            // حسابهای پرداختنی
+            debtorSubsidiaryLedgerAccount = await(this.subsidiaryLedgerAccountRepository.findByCode('2101')),
+            creditorSubsidiaryLedgerAccount = await(this.getCreditorSubsidiaryLedgerAccount(e.paymentType)),
+            detailAccountId = this.getCreditorDetailAccount(invoice, e),
+            article = this.getPayJournalLineArticle(invoice, e);
+
+        this.journalLines.push({
+            id: e.journalLineId,
+            generalLedgerAccountId: debtorSubsidiaryLedgerAccount.generalLedgerAccountId,
+            subsidiaryLedgerAccountId: debtorSubsidiaryLedgerAccount.id,
+            detailAccountId: detailAccountId,
+            article,
+            debtor: e.amount,
+            creditor: 0
+        });
+
+        this.journalLines.push({
+            generalLedgerAccountId: creditorSubsidiaryLedgerAccount.generalLedgerAccountId,
+            subsidiaryLedgerAccountId: creditorSubsidiaryLedgerAccount.id,
+            detailAccountId: invoice.detailAccountId,
+            article,
+            debtor: 0,
+            creditor: e.amount
+        });
+    }
+
     getDebtorSubsidiaryLedgerAccount(paymentType) {
-        let subLedgerCodes = {cheque: '1104', receipt: '1103', cash: '1101'},
+        let subLedgerCodes = {cheque: '1105', receipt: '1103', cash: '1101'},
+            code = subLedgerCodes[paymentType],
+            subsidiaryLedgerAccount = await(this.subsidiaryLedgerAccountRepository.findByCode(code));
+
+        return subsidiaryLedgerAccount;
+    }
+
+    getCreditorSubsidiaryLedgerAccount(paymentType) {
+        let subLedgerCodes = {cheque: '2102', receipt: '1103', cash: '1101'},
             code = subLedgerCodes[paymentType],
             subsidiaryLedgerAccount = await(this.subsidiaryLedgerAccountRepository.findByCode(code));
 
@@ -92,17 +138,40 @@ module.exports = class Payment {
             return invoice.detailAccountId;
     }
 
-    getJournalDescription(invoice) {
-        return translate('received payment for invoice number ... ').format(invoice.number);
+    getCreditorDetailAccount(invoice, payment) {
+        if (payment.paymentType == 'receipt')
+            return payment.bankId;
+        if (payment.paymentType == 'cach')
+            return payment.fundId;
+        if (payment.paymentType == 'cheque')
+            return payment.bankId;
     }
 
-    getJournalLineArticle(invoice, payment) {
+    getReceiveJournalDescription(invoice) {
+        return translate('For Cash sale invoice number ...').format(invoice.number);
+    }
+
+    getReceiveJournalLineArticle(invoice, payment) {
         if (payment.paymentType == 'cash')
             return translate('received cash for invoice number ... ').format(invoice.number);
         if (payment.paymentType == 'receipt')
             return translate('received receipt number ... for invoice number ... ').format(payment.number, invoice.number);
         if (payment.paymentType == 'cheque')
             return translate('received cheque number ... date ... bank ... branch ... for invoice number ... ')
+                .format(payment.number, payment.date, payment.bankName, payment.bankBranch, invoice.number);
+    }
+
+    getPayJournalDescription(invoice) {
+        return translate('For Cash purchase invoice number ...').format(invoice.number);
+    }
+
+    getPayJournalLineArticle(invoice, payment) {
+        if (payment.paymentType == 'cash')
+            return translate('paid cash for invoice number ... ').format(invoice.number);
+        if (payment.paymentType == 'receipt')
+            return translate('paid receipt number ... for invoice number ... ').format(payment.number, invoice.number);
+        if (payment.paymentType == 'cheque')
+            return translate('paid cheque number ... date ... bank ... branch ... for invoice number ... ')
                 .format(payment.number, payment.date, payment.bankName, payment.bankBranch, invoice.number);
     }
 };

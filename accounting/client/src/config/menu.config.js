@@ -90,7 +90,28 @@ accModule.config(menuItemsProvider => {
         .add({
             title: 'کالا / خدمات',
             url: 'products',
-            icon: ''
+            icon: 'fa fa-star'
+        });
+
+    menuItemsProvider
+        .add({
+            title: 'اشخاص',
+            url: 'people',
+            icon: 'fa fa-user'
+        });
+
+    menuItemsProvider
+        .add({
+            title: 'بانک',
+            url: 'banks',
+            icon: 'fa fa-bank'
+        });
+
+    menuItemsProvider
+        .add({
+            title: 'صندوق',
+            url: 'funds',
+            icon: 'fa fa-archive'
         });
 
     menuItemsProvider

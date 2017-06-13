@@ -22,7 +22,13 @@ module.exports = class InvoiceQuery extends BaseQuery {
                 .leftJoin('detailAccounts', 'invoices.detailAccountId', 'detailAccounts.id')
                 .where('invoices.branchId', branchId)
                 .andWhere('invoices.id', id)
-                .first());
+                .first()),
+            invoiceLines = await(knex.select('*')
+                .from('invoiceLines')
+                .where('branchId', branchId)
+                .andWhere('invoiceId', id));
+
+        invoice.invoiceLines = invoiceLines.asEnumerable().select(lineView).toArray();
 
         return view(invoice);
     }

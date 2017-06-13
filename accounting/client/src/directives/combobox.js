@@ -1,89 +1,186 @@
+"use strict";
+
 import accModule from "../acc.module";
-import "kendo-web";
+import angular from "angular";
 
-let translate = JSON.parse(localStorage.getItem('translate')),
-    create = translate['Create'],
-    tag = translate['Tag'];
-
-function combobox($window) {
+function combo($parse, apiPromise) {
     return {
-        require: 'ngModel',
         restrict: 'E',
-        replace: true,
-        template: '<input  style="width: 100%;" />',
-        scope: {
-            dataSource: '=kDataSource',
-            onChanged: '&kOnChanged',
-            onDataBound: '&kOnDataBound',
-            onCreated: '&kOnCreated'
+        require: ['ngModel'],
+        scope: true,
+        templateUrl: function (tElement, tAttrs) {
+            return '/global/dg-ui/dg-select' + ((angular.isDefined(tAttrs.multiple) ? '-multi' : '') + '.tpl.html');
         },
-        link: function (scope, element, attrs, ngModel) {
-            let hasNoDataTemplate = attrs.hasOwnProperty('showNoDataTemplate'),
-                onCreatedName = attrs.kOnCreated.substring(0, attrs.kOnCreated.indexOf('('))
-                    .split('.')
-                    .asEnumerable().last();
+        compile(tElement, tAttrs){
+            let displayPropSufix = tAttrs.kDataTextField ? '.' + tAttrs.kDataTextField : '',
+                isMultiple = angular.isDefined(tAttrs.multiple);
 
-            $window[onCreatedName] = function (widgetId, value) {
-                let dataSource = scope.dataSource;
+            if (tAttrs.onChanged)
+                $('ui-select', tElement).attr('on-select', tAttrs.onChanged);
 
-                scope.onCreated({value})
-                    .then(result => {
-                        let item = {};
-                        item[attrs.kDataTextField] = result[attrs.kDataTextField];
-                        item[attrs.kDataValueField] = result[attrs.kDataValueField];
-                        dataSource.add(item);
-                    });
-            };
+            if (tAttrs.searchEnabled)
+                $('ui-select', tElement).attr('search-enabled', tAttrs.searchEnabled);
 
-            let template = `<div>
-                <button class="btn btn-primary" 
-                onclick="${onCreatedName}('#: instance.element[0].id #', '#: instance.input.val() #')">
-                    <i class="fa fa-plus"></i>
-                    ${create} "#: instance.input.val() #"
-                </button>
-                </div>`;
+            if (tAttrs.focusOn)
+                $('ui-select', tElement).attr('focus-on', tAttrs.focusOn);
 
-            let options = {
-                placeholder: attrs.kPlaceholder,
-                dataTextField: attrs.kDataTextField,
-                dataValueField: attrs.kDataValueField,
-                valuePrimitive: true,
-                filter: "contains",
-                autoBind: true,
-                minLength: 3,
-                virtual: eval(`scope.${attrs.kVirtual}`),
-                dataSource: scope.dataSource,
-                noDataTemplate: hasNoDataTemplate ? template : null,
-                select: function (e) {
-                    let dataItem = this.dataItem(e.item.index());
-                    ngModel.$setViewValue(dataItem[attrs.kDataValueField]);
-                    if (scope.onChanged)
-                        scope.onChanged({$item: dataItem});
-
-                    scope.$apply();
-                },
-                dataBound: function (e) {
-                    if (scope.onDataBound)
-                        scope.onDataBound(e);
-                }
-            };
-
-            if (attrs.kCascadeFrom) {
-                options.cascadeFrom = attrs.kCascadeFrom;
-                options.cascadeFromField = attrs.kCascadeFrom;
+            if (tAttrs.kPlaceholder) {
+                $('ui-select-match, *[ui-select-match]', tElement).attr('placeholder', tAttrs.kPlaceholder);
             }
 
-            let combo = $(element).kendoComboBox(options).data("kendoComboBox");
+            if (isMultiple) {
+                $('ui-select-match, *[ui-select-match]', tElement).html('{{$item' + displayPropSufix + '}}');
+            } else {
+                $('ui-select-match, *[ui-select-match]', tElement).html('{{$select.selected' + displayPropSufix + '}}');
+            }
 
-            scope.$watch(attrs.ngModel, newValue => {
-                combo.value(newValue);
-            });
+            let uiSelectChoices = $('ui-select-choices, *[ui-select-choices]', tElement);
+            uiSelectChoices.attr('repeat', 'item in items | filter:$select.search');
 
-            scope.$watch(attrs.ngDisabled, newValue => {
-                combo.enable(!newValue);
-            });
+            uiSelectChoices.attr('refresh', 'onSearch($select)');
+            uiSelectChoices.attr('refresh-delay', '300');
+
+            uiSelectChoices.html('<div ng-bind-html="item' + displayPropSufix + ' | highlight: $select.search"></div>');
+
+            if (angular.isDefined(tAttrs.groupBy)) {
+                uiSelectChoices.attr('group-by', `'${tAttrs.groupBy}'`);
+            }
+
+            return function link(scope, element, attrs, ctrls) {
+                scope.ngModel = ctrls[0];
+                scope.disabled = false;
+                scope.items = [];
+
+                scope.isMultiple = angular.isDefined(attrs.multiple);
+                scope.itemsGetter = $parse(attrs.kDataSource);
+                if (angular.isDefined(attrs.kDataValueField) && attrs.kDataValueField !== '') {
+                    scope.valuePropGetter = $parse(attrs.kDataValueField);
+                }
+
+                scope.$watch(attrs.ngDisabled, newValue => {
+                    scope.disabled = newValue;
+                });
+
+                scope.getValueMapper = function (itemObject) {
+                    return scope.valuePropGetter ? scope.valuePropGetter(itemObject) : itemObject;
+                };
+
+                scope.updateValueFromModel = function (modelValue) {
+                    if (scope.isMultiple) {
+                        var selectionArray = [];
+                        angular.forEach(modelValue, function (modelItem, key) {
+                            var modelItemValue = scope.getValueMapper(modelItem);
+                            selectionArray.push(modelItemValue);
+                        });
+                        scope.selectionModel = selectionArray;
+                    } else {
+
+                        if(!modelValue)
+                            return;
+
+                        getData(getParameters(attrs.kDataValueField, modelValue))
+                            .then(result => {
+                                let item = result.data[0];
+
+                                if (item) {
+                                    scope.selectionModel = item;
+
+                                    if (angular.isDefined(attrs.onBound)) {
+                                        eval(`scope.${attrs.onBound}`)(item);
+                                    }
+                                }
+                            });
+                    }
+                };
+
+                scope.onSearch = $select => {
+                    let parameters = getParameters(attrs.kDataTextField, $select.search);
+
+                    getData(parameters)
+                        .then(result =>  scope.items = result.data.length ? result.data : ['noData']);
+                };
+
+                if (scope.isMultiple) {
+                    scope.$watchCollection(attrs.ngModel, function (modelValue, oldValue) {
+                        scope.updateValueFromModel(modelValue);
+                    });
+                } else {
+                    scope.$watch(attrs.ngModel, function (modelValue) {
+                        scope.updateValueFromModel(modelValue);
+                    });
+                }
+
+                //watch the items in case of async loading
+                //scope.$watch(attrs.items, function(){
+                //	scope.updateValueFromModel(scope.ngModel.$modelValue);
+                //});
+
+                scope.onItemSelect = function (item, model) {
+                    var modelValue = scope.getValueMapper(item);
+                    if (scope.isMultiple) {
+                        scope.ngModel.$viewValue.push(modelValue);
+                    } else {
+                        scope.ngModel.$setViewValue(modelValue);
+
+                        if (angular.isDefined(attrs.onChanged))
+                            eval(`scope.${attrs.onChanged}`)(item);
+                    }
+                };
+
+                scope.onItemRemove = function (item, model) {
+                    var removedModelValue = scope.getValueMapper(item);
+                    if (scope.isMultiple) {
+                        var removeIndex = null;
+                        angular.forEach(scope.ngModel.$viewValue, function (itemValue, index) {
+                            if (itemValue == removedModelValue) {
+                                removeIndex = index;
+                                return false;
+                            }
+                        });
+                        if (removeIndex) {
+                            scope.ngModel.$viewValue.splice(removeIndex, 1);
+                        }
+                    } else {
+                        scope.ngModel.$setViewValue(removedModelValue);
+                    }
+                };
+
+                scope.onSearch = $select => {
+                    let parameters= getParameters(attrs.kDataTextField,$select.search);
+                    getData(parameters)
+                        .then(result => {
+                            scope.items = result.data.length ? result.data : ['noData'];
+                        });
+                };
+
+                function getParameters(dataTextField, search) {
+                    let parameters = {
+                        skip: 0,
+                        take: 20,
+                        filter: {logic: 'and'}
+                    };
+
+                    if (search)
+                        parameters.filter.filters = [{field: dataTextField, operator: 'contains', value: search}];
+
+                    return parameters;
+                }
+
+                function getData(parameters) {
+                    return apiPromise.get(attrs.url, parameters);
+                }
+            }
         }
-    };
+    }
 }
 
-accModule.directive('devTagComboBox', combobox);
+accModule.directive('devTagComboBox', combo)
+    .run(['$templateCache', function ($templateCache) {
+        $templateCache.put('/global/dg-ui/dg-select.tpl.html',
+            `<ui-select class="ui-select" 
+ng-model="selectionModel" 
+on-select="onItemSelect($item, $model)" 
+on-remove="onItemRemove($item, $model)" 
+ng-disabled="disabled"><ui-select-match></ui-select-match><ui-select-choices refrech="onSearch($select)" ></div></ui-select-choices></ui-select>`);
+        $templateCache.put('/global/dg-ui/dg-select-multi.tpl.html', '<ui-select class="ui-select" multiple ng-model="selectionModel" on-select="onItemSelect($item, $model)" on-remove="onItemRemove($item, $model)" ng-disabled="disabled"><ui-select-match></ui-select-match><ui-select-choices></ui-select-choices></ui-select>');
+    }]);
