@@ -15,6 +15,8 @@ function detailAccountAssembler(entity) {
         nationalCode: entity.nationalCode,
         economicCode: entity.economicCode,
         bank: entity.bank,
+        bankAccountNumber: entity.bankAccountNumber,
+        bankBranch: entity.bankBranch,
         email: entity.email,
         personType: entity.personType,
         personTypeDisplay: entity.personType ? enums.PersonType().getDisplay(entity.personType) : ''

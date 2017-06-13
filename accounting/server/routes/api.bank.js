@@ -45,9 +45,9 @@ router.route('/:id')
 
         entity.code = cmd.code;
         entity.title = cmd.title;
-        entity.bank= cmd.bank;
-        entity.bankBranch= cmd.bankBranch;
-        entity.bankAccountNumber= cmd.bankAccountNumber;
+        entity.bank = cmd.bank;
+        entity.bankBranch = cmd.bankBranch;
+        entity.bankAccountNumber = cmd.bankAccountNumber;
 
         await(detailAccountRepository.update(entity));
 
