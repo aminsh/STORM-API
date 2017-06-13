@@ -8,6 +8,10 @@ export default class Logger {
         this.Promise = Promise;
     }
 
+    alert(item){
+        swal(item);
+    }
+
     success(title, message) {
         return this.Promise.create((resolve, reject) => {
             let translate = this.translate;

@@ -1,8 +1,14 @@
-import swal from 'sweetalert';
-import accModule from '../acc.module';
+import swal from "sweetalert";
+import accModule from "../acc.module";
 
 function logger(translate) {
     return {
+        alert(item){
+            swal(item);
+        },
+        close(){
+            swal.close();
+        },
         success: function (message) {
             swal({
                 title: translate('Successful'),
