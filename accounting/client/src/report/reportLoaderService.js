@@ -1,9 +1,10 @@
 "use strict";
 
 export default class {
-    constructor(promise, $window) {
+    constructor(promise, $window, logger) {
         this.promise = promise;
         this.$window = $window;
+        this.logger = logger;
     }
 
     loadIfNot() {
@@ -11,10 +12,24 @@ export default class {
            if(this.$window.hasOwnProperty('Stimulsoft'))
                return resolve();
 
+           this.logger.alert({
+               title: 'بارگزاری گزارشات',
+               text: `<div class="sk-spinner sk-spinner-wave">
+                                <div class="sk-rect1"></div>
+                                <div class="sk-rect2"></div>
+                                <div class="sk-rect3"></div>
+                                <div class="sk-rect4"></div>
+                                <div class="sk-rect5"></div>
+                            </div>`,
+               html: true,
+               showConfirmButton: false
+           });
+
             $.getScript('/public/js/stimulsoft.all.min.js')
                 .then(() => {
                     resolve();
                     this.init();
+                    this.logger.close();
                 });
         });
     }
