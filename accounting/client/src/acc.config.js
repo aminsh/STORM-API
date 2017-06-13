@@ -143,7 +143,9 @@ import './sales';
 import './purchases';
 import './inventory';
 import './people';
+import './payment';
 import './fund';
+import './bank';
 import './fiscalPeriod';
 import './product';
 
