@@ -131,7 +131,7 @@ export default class SalesInvoiceController {
             newInvoice = {
                 id: Guid.new(),
                 row: ++maxRow,
-                itemId: null,
+                productId: null,
                 description: '',
                 quantity: 0,
                 vat: 0,
@@ -154,7 +154,11 @@ export default class SalesInvoiceController {
             detailAccountId: null
         };
 
-        this.salesInvoiceApi.getMaxNumber().then(result => this.invoice.number = result);
+        this.salesInvoiceApi.getMaxNumber().then(result =>{
+            if(result==null)
+                result=0;
+            this.invoice.number = result+1;
+        });
 
         this.createInvoiceLine();
     }
