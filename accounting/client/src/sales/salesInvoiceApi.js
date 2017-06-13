@@ -22,7 +22,10 @@ function salesInvoiceApi(apiPromise) {
         },
         remove: function (id) {
             return apiPromise.delete(`${urlPrefix}/sales/${id}`);
-        }
+        },
+        pay: function (id,data) {
+            return apiPromise.post(`${urlPrefix}/sales/${id}/pay`,data);
+        },
     };
 
 
