@@ -15,13 +15,6 @@ export default function ($stateProvider, $urlRouterProvider, $locationProvider) 
             templateUrl: 'partials/views/home.html'
         })
 
-        .state('settings', {
-            url: '/settings',
-            controller: 'settingsController',
-            controllerAs: 'model',
-            templateUrl: 'partials/settings/settings.html'
-        })
-
         .state('chooseBranch', {
             url: '/branch/choose',
             controller: 'chooseBranchController',
