@@ -6,9 +6,9 @@ const async = require('asyncawait/async'),
     EventEmitter = require('../services/shared').service.EventEmitter;
 
 EventEmitter.on('on-user-created', async((user, req) => {
-    let userRepository = new UserRepository(req.cookies['branch-id']);
+    let userRepository = new UserRepository(req.branchId);
 
-    user.branchId = req.cookies['branch-id'];
+    user.branchId = req.branchId;
 
     let isUserExists = await(userRepository.findById(user.id));
     if (isUserExists)
