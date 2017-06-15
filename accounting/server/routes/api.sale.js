@@ -43,7 +43,8 @@ router.route('/')
 
         res.json({isValid: true, returnValue: {id: result.id}});
 
-        EventEmitter.emit('on-sale-created', result, current);
+        if (status == 'waitForPayment')
+            EventEmitter.emit('on-sale-created', result, current);
     }));
 
 router.route('/:id/confirm')
@@ -78,7 +79,7 @@ router.route('/:id')
     }))
     .put(async((req, res) => {
         let invoiceRepository = new InvoiceRepository(req.branchId),
-            id= req.params.id,
+            id = req.params.id,
             cmd = req.body,
             status = cmd.status == 'confirm' ? 'waitForPayment' : 'draft',
 
@@ -109,7 +110,7 @@ router.route('/:id')
 
         await(invoiceRepository.updateBatch(id, entity));
 
-        if(status == 'waitForPayment')
+        if (status == 'waitForPayment')
             EventEmitter.emit('on-sale-created', await(invoiceRepository.findById(id)), current);
 
         res.json({isValid: true});
