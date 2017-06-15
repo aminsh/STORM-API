@@ -259,8 +259,8 @@ router.route('/detail-subsidiary-detail-journal')
 router.route('/invoices')
     .get(async((req, res) => {
         let ins = new ReportQueryInvoice(req.branchId),
-            //result = await(ins.invoice(req.query.id));
-        result = [
+            result = await(ins.invoice(req.query.id));
+        /*result = [
                 {
                     number: 0,
                     date: '',
@@ -280,7 +280,7 @@ router.route('/invoices')
                     customerAddress: '',
                     personCode: ''
                 }
-            ];
+            ];*/
         res.json(result);
     }));
 

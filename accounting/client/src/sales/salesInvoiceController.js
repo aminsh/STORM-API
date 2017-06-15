@@ -43,8 +43,10 @@ export default class SalesInvoiceController {
             invoiceLines: [],
             detailAccountId: '',
         };
+
         this.isLoading = false;
         this.isPayment = false;
+        this.isSaving=false;
 
         this.id = this.$state.params.id;
 
@@ -72,6 +74,7 @@ export default class SalesInvoiceController {
 
 
         if (this.editMode) {
+            this.isSaving=true;
             this.salesInvoiceApi.getById(this.id)
                 .then(result => {
                     this.invoice = result
@@ -184,6 +187,7 @@ export default class SalesInvoiceController {
                     logger.success();
                     invoice.id = result.id;
                     this.isLoading = true;
+                    this.isSaving = true;
                     this.salesInvoiceApi.getById(invoice.id).then(result => {
                         if (result.status == 'waitForPayment') {
                             this.isPayment = true;
