@@ -15,6 +15,10 @@ export default class purchaseController {
                 createPersonService,
                 productCreateService) {
 
+        this.urls = {
+            getAllPeople: devConstants.urls.people.getAll(),
+            getAllProduct: devConstants.urls.product.getAll()
+        };
         this.$scope = $scope;
         this.promise = promise;
         this.$state = $state;

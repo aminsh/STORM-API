@@ -31,9 +31,9 @@
                                    k-placeholder="{{'Select ...'|translate}}"
                                    k-data-value-field="id"
                                    k-data-text-field="title"
-                                   k-data-source="model.products"
-                                   k-on-created="model.createNewProduct(item,value)"
+                                   k-on-created="model.createNewProduct(item,$search)"
                                    k-on-changed="model.onProductChanged(item, $item)"
+                                   url="{{model.urls.getAllProduct}}"
                                    show-no-data-template
                                    ng-model="item.productId" required></dev-tag-combo-box>
             </td>
