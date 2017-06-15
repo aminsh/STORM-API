@@ -26,7 +26,6 @@ router.route('/')
                 city: cmd.city,
                 phone: cmd.phone,
                 nationalCode: cmd.nationalCode,
-                registrationNumber: cmd.registrationNumber,
                 email: cmd.email,
                 personType: cmd.personType,
                 detailAccountType: 'person',
@@ -58,7 +57,6 @@ router.route('/:id')
         entity.city = cmd.city;
         entity.phone = cmd.phone;
         entity.nationalCode = cmd.nationalCode;
-        entity.registrationNumber = cmd.registrationNumber;
         entity.email = cmd.email;
         entity.personType = cmd.personType;
         entity.economicCode = cmd.economicCode;

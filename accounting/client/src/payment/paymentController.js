@@ -1,7 +1,9 @@
 export default class paymentController {
-    constructor($scope, $uibModalInstance, formService, logger,  devConstants,data) {
+    constructor($scope, $uibModalInstance, formService, logger,promise,  devConstants,data,createFundService) {
 
         this.$scope = $scope;
+        this.promise=promise;
+        this.createFundService=createFundService,
         this.logger = logger;
         this.$uibModalInstance = $uibModalInstance;
         this.logger = logger;
@@ -11,6 +13,10 @@ export default class paymentController {
         this.devConstants = devConstants;
         this.payment = [];
         this.totalPrice=data;
+
+        this.urls = {
+            getAllFunds: devConstants.urls.fund.getAll(),
+        };
 
         this.fundDataSource= new kendo.data.DataSource({
             serverFiltering: true,
@@ -46,6 +52,15 @@ export default class paymentController {
         this.payment.asEnumerable().remove(item);
     }
 
+    createNewFund(title) {
+        return this.promise.create((resolve, reject) => {
+            this.createFundService.show({title})
+                .then(result => {
+
+                    resolve({id: result.id, title})
+                });
+        });
+    }
 
     newCashPayment() {
         let newPayment = {

@@ -73,7 +73,9 @@
                                            k-minLength="0"
                                            k-filter="'contains'"
                                            ng-model="item.fundId"
-                                           url="/acc/api/funds"
+                                           k-on-created="model.createNewFund($search)"
+                                           show-no-data-template
+                                           url="{{model.urls.getAllFunds}}"
                                            required></dev-tag-combo-box>
                     </div>
                     <!--<div ng-messages="form.fundId.$error" ng-if="form.fundId.$dirty">-->

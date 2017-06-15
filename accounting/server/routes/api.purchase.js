@@ -107,9 +107,14 @@ router.route('/:id')
         await(invoiceRepository.updateBatch(id, entity));
 
         if(status == 'waitForPayment')
+            EventEmitter.emit('on-sale-created', await(invoiceRepository.findById(id)), current);
+        await(invoiceRepository.updateBatch(id, entity));
+
+        if(status == 'waitForPayment')
             EventEmitter.emit('on-purchase-created', await(invoiceRepository.findById(id)), current);
 
         res.json({isValid: true});
+
     }))
     .delete(async((req, res) => {
         let invoiceRepository = new InvoiceRepository(req.cookies['branch-id']);
