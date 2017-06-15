@@ -2,7 +2,7 @@
     <dev-tag-content>
         <dev-tag-content-heading>
             <h5 class="panel-title">
-                {{'New purchase'|translate}}
+                {{'Create invoice'|translate}}
             </h5>
         </dev-tag-content-heading>
         <dev-tag-content-body>
@@ -14,10 +14,12 @@
                 </div>
 
                 <div class="col-sm-4">
-                    <div class="form-group">
-                        <label for="detailAccountId" class="title1">{{'Customer'|translate}}</label>
+
+                    <div ng-if="!model.isPayment" class="form-group">
+                        <label for="detailAccountId" class="title1">مشتری</label>
                         <div class="input-group" style="width: 100%">
-                            <dev-tag-combo-box id="detailAccountId" style="width: 100%"
+
+                            <dev-tag-combo-box id="detailAccountId" style="width: 100%" ng-disabled="model.isPayment"
                                                name="detailAccountId"
                                                k-placeholder="{{'Select ...'|translate}}"
                                                k-data-value-field="id"
@@ -30,6 +32,7 @@
                                                show-no-data-template
                                                url="{{model.urls.getAllPeople}}"
                                                ng-model="model.invoice.detailAccountId"
+                                               url="/acc/api/people"
                                                required></dev-tag-combo-box>
 
                             <div ng-messages="form.detailAccountId.$error" ng-if="form.detailAccountId.$dirty">
@@ -37,12 +40,19 @@
                             </div>
                         </div>
                     </div>
+
+                    <div ng-if="model.isPayment" class="form-group">
+                        <label for="detailAccountId" class="title1">مشتری</label>
+                        <div class="input-group" style="width: 100%">
+                            <span style="width: 100%">{{model.invoice.detailAccountId}}</span>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="col-sm-2">
-                    <div class="form-group">
-                        <label for="invoiceDate">{{'Date'|translate}}</label>
-                        <dev-tag-datepicker id="invoiceDate"
+                    <div ng-if="!model.isPayment" class="form-group">
+                        <label for="invoiceDate">تاریخ فاکتور</label>
+                        <dev-tag-datepicker id="invoiceDate" ng-disabled="model.isPayment"
                                             ng-model="model.invoice.date"
                                             name="invoiceDate"
                                             required></dev-tag-datepicker>
@@ -51,12 +61,17 @@
                             <label ng-message="required" class="error">{{'This field is required'|translate}}</label>
                         </div>
                     </div>
+
+                    <div ng-if="model.isPayment" class="form-group">
+                        <label for="invoiceDate">تاریخ فاکتور</label>
+                        <span>{{model.invoice.date}}</span>
+                    </div>
                 </div>
 
                 <div class="col-sm-2">
-                    <div class="form-group">
-                        <label for="invoiceNumber" class="title1">{{'Number'|translate}}</label>
-                        <dev-tag-numeric id="invoiceNumber"
+                    <div ng-if="!model.isPayment" class="form-group">
+                        <label for="invoiceNumber" class="title1">شماره فاکتور</label>
+                        <dev-tag-numeric id="invoiceNumber" ng-disabled="model.isPayment"
                                          ng-model="model.invoice.number"
                                          style="width: 100%"
                                          name="invoiceNumber"
@@ -67,22 +82,25 @@
                                 {{'This field is required'|translate}}</label>
                         </div>
                     </div>
-                </div>
 
-                <div class="col-sm-2">
-                    <div class="form-group">
-                        <label class="title1"> ارجاع
-                            <small class="hidden-md hidden-sm ng-hide">(شماره فاکتور فروش)</small>
-                        </label>
-                        <input class="form-control" type="text">
+                    <div ng-if="model.isPayment" class="form-group">
+                        <label for="invoiceNumber" class="title1">شماره فاکتور</label>
+                        <span  style="width: 100%">{{model.invoice.number}}</span>
                     </div>
                 </div>
 
                 <div class="row">
-                    <div class="col-sm-12">
+                    <div ng-if="!model.isPayment" class="col-sm-12">
                         <div  class="form-group">
                             <label class="label-control" for="description">{{'Description' | translate}}</label>
                             <textarea class="form-control" rows="4" id="description" ng-model="model.invoice.description"></textarea>
+                        </div>
+                    </div>
+
+                    <div ng-if="model.isPayment" class="col-sm-12">
+                        <div  class="form-group">
+                            <label class="label-control" for="description">{{'Description' | translate}}</label>
+                            <span class="form-control">{{model.invoice.description}}</span>
                         </div>
                     </div>
                 </div>
@@ -103,25 +121,43 @@
                                         ng-click="model.newInvoice(form)"></dev-tag-button>
 
                         <dev-tag-button style-type="primary" style="width: 100px;"
+                                        ng-if="model.isSaving"
                                         ng-click="model.print()"
-                                        ng-if="model.isSaving" title="{{'Print ' | translate}}">
+                                        title="{{'Print ' | translate}}">
 
                             <span class="fa fa-print"></span></dev-tag-button>
 
                         <dev-tag-button style-type="success"
-                                        is-waiting="model.isLoading"
                                         title="{{'Confirm' | translate}}"
                                         ng-click="model.saveInvoice(form)" style="width: 100px;"></dev-tag-button>
 
                         <dev-tag-button style-type="success"
-                                        is-waiting="model.isLoading"
                                         title="{{'Save as draft' | translate}}"
                                         ng-click="model.saveInvoice(form, 'draft')" style="width: 100px;"></dev-tag-button>
+
+                        <dev-tag-button style-type="primary" style="width: 100px;"
+                                        ng-if="model.isPayment"
+                                        ng-click="model.cashPaymentShow()"
+                                        title="{{'Payment ' | translate}}">
+                            <span class="fa  fa-money"></span></dev-tag-button>
+
+
                     </div>&nbsp;
                 </div>
                 <div class="col-sm-4"></div>
                 <div class="col-sm-4 text-left">
-
+                    <!--<dev-tag-button-->
+                    <!--ng-click="model.cashPaymentShow()"-->
+                    <!--title="{{'Add cash'| translate}}"-->
+                    <!--style-type="info"></dev-tag-button>-->
+                    <!--<dev-tag-button-->
+                    <!--ng-click="model.attachImage()"-->
+                    <!--title="{{'Add Bank Receipt'| translate}}"-->
+                    <!--style-type="primary"></dev-tag-button>-->
+                    <!--<dev-tag-button-->
+                    <!--ng-click="model.attachImage()"-->
+                    <!--title="{{'Add Cheque'| translate}}"-->
+                    <!--style-type="warning"></dev-tag-button>-->
                 </div>
             </div>
 

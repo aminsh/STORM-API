@@ -183,6 +183,9 @@ export default class SalesInvoiceController {
         if (status)
             invoice.status = status;
 
+        if (status==undefined){}
+            invoice.status = 'confirm';
+
         if (form.$invalid) {
             formService.setDirty(form);
             Object.keys(form).asEnumerable()
@@ -218,6 +221,11 @@ export default class SalesInvoiceController {
                         if (result.status == 'waitForPayment') {
                             this.isPayment = true;
                             invoice.totalPrice = invoice.invoiceLines.sum(item => (item.unitPrice * item.quantity) - item.discount + item.vat)
+                        }
+                        if(result.status=='draft'){
+                            this.$state.go('^.edit', {
+                                id: invoice.id
+                            });
                         }
                     })
                 })

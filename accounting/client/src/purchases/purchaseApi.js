@@ -8,6 +8,9 @@ function purchaseApi(apiPromise,devConstants) {
         getAll(){
             return apiPromise.get(`${urlPrefix}/purchases/`);
         },
+        getMaxNumber(){
+            return apiPromise.get(`${urlPrefix}/purchases/max/number`);
+        },
         getById: function (id) {
             return apiPromise.get(`${urlPrefix}/purchases/${id}`);
         },

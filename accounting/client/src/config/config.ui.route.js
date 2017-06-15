@@ -229,7 +229,7 @@ export default function ($stateProvider, $urlRouterProvider, $locationProvider) 
             templateUrl: 'partials/report/reportPrint.html',
             resolve: {
                 loadingStimulScript: (reportLoaderService) => {
-                   return reportLoaderService.loadIfNot()
+                    return reportLoaderService.loadIfNot()
                 }
             }
         })
@@ -268,11 +268,11 @@ export default function ($stateProvider, $urlRouterProvider, $locationProvider) 
         })
         .state('payment', {
             url: '/payment',
-            onEnter: $modelFactory => {
+            onEnter: ($modelFactory, $stateParams) => {
                 $modelFactory.create({
                     controller: 'paymentController',
                     controllerAs: 'model',
-                    size:'lg',
+                    size: 'lg',
                     templateUrl: 'partials/payment/payment.html',
                     resolve: {data: {amount: $stateParams.amount}}
                 });
@@ -389,7 +389,7 @@ export default function ($stateProvider, $urlRouterProvider, $locationProvider) 
             controllerAs: 'model',
             templateUrl: 'partials/product/products.html'
         })
-        .state('products.create',{
+        .state('products.create', {
             url: '/create',
             onEnter: $modelFactory => {
                 $modelFactory.create({
@@ -400,7 +400,7 @@ export default function ($stateProvider, $urlRouterProvider, $locationProvider) 
                 });
             }
         })
-        .state('products.edit',{
+        .state('products.edit', {
             url: '/:id/edit',
             onEnter: ($modelFactory, $stateParams) => {
                 $modelFactory.create({
