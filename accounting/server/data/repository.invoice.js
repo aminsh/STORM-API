@@ -30,6 +30,14 @@ module.exports = class InvoiceRepository extends BaseRepository {
             .first();
     }
 
+    purchaseMaxNumber() {
+        return this.knex.table('invoices')
+            .modify(this.modify, this.branchId)
+            .where('invoiceType', 'purchase')
+            .max('number')
+            .first();
+    }
+
     create(entity) {
         this.entity = entity;
 

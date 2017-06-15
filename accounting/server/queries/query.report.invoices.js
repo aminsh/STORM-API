@@ -10,7 +10,7 @@ module.exports = class InvoicesQuery extends BaseQuery {
         super(branchId);
     };
 
-    Invoice(id) {
+    invoice(id) {
         let knex = this.knex,
             branchId = this.branchId;
 
@@ -25,6 +25,7 @@ module.exports = class InvoicesQuery extends BaseQuery {
             + (("invoiceLines"."unitPrice" * "invoiceLines".quantity)-"invoiceLines".discount)*("invoiceLines".vat*0.01) as "netPrice",
         "invoiceLines".description as "invoiceLineDescription",
         "products".title as "productName",
+        "detailAccounts"."postalCode" as "postalCode",
         "detailAccounts".title as "customerName", "detailAccounts".address as "customerAddress",
         CASE WHEN "detailAccounts"."personType" = 'legal' THEN "detailAccounts"."economicCode" 
              WHEN "detailAccounts"."personType" = 'real' THEN "detailAccounts"."nationalCode" END as "personCode"`))
