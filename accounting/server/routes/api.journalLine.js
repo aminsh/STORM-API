@@ -11,14 +11,14 @@ const async = require('asyncawait/async'),
 
 router.route('/journal/:journalId')
     .get(async((req, res) => {
-        let journalLineQuery = new JournalLineQuery(req.cookies['branch-id']),
+        let journalLineQuery = new JournalLineQuery(req.branchId),
             result = await(journalLineQuery.getAll(req.params.journalId, req.query));
         res.json(result);
     }))
 
     .post(async((req, res) => {
-        let journalRepository = new JournalRepository(req.cookies['branch-id']),
-            journalLineRepository = new JournalLineRepository(req.cookies['branch-id']),
+        let journalRepository = new JournalRepository(req.branchId),
+            journalLineRepository = new JournalLineRepository(req.branchId),
             errors = [],
             cmd = req.body,
             journalId = req.params.journalId;
@@ -59,13 +59,13 @@ router.route('/journal/:journalId')
 
 router.route('/:id')
     .get(async((req, res) => {
-        let journalLineQuery = new JournalLineQuery(req.cookies['branch-id']),
+        let journalLineQuery = new JournalLineQuery(req.branchId),
             result = await(journalLineQuery.getById(req.params.id));
         res.json(result);
     }))
     .put(async((req, res) => {
-        let journalRepository = new JournalRepository(req.cookies['branch-id']),
-            journalLineRepository = new JournalLineRepository(req.cookies['branch-id']),
+        let journalRepository = new JournalRepository(req.branchId),
+            journalLineRepository = new JournalLineRepository(req.branchId),
             errors = [],
             cmd = req.body;
 
@@ -98,8 +98,8 @@ router.route('/:id')
         return res.json({ isValid: true, returnValue: {isInComplete} });
     }))
     .delete(async((req, res) => {
-        let journalRepository = new JournalRepository(req.cookies['branch-id']),
-            journalLineRepository = new JournalLineRepository(req.cookies['branch-id']),
+        let journalRepository = new JournalRepository(req.branchId),
+            journalLineRepository = new JournalLineRepository(req.branchId),
             errors = [],
             id = req.params.id,
             journalLine = await(journalLineRepository.findById(id));

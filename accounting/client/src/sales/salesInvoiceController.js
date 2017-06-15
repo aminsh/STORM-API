@@ -2,11 +2,11 @@ import Guid from "guid";
 
 export default class SalesInvoiceController {
     constructor(navigate,
+                devConstants,
                 salesInvoiceApi,
                 inventoryApi,
                 translate,
                 peopleApi,
-                devConstants,
                 logger,
                 formService,
                 $state,
@@ -17,6 +17,10 @@ export default class SalesInvoiceController {
                 createPersonService,
                 productCreateService) {
 
+        this.urls = {
+            getAllPeople: devConstants.urls.people.getAll(),
+            getAllProduct: devConstants.urls.product.getAll()
+        };
         this.$scope = $scope;
         this.promise = promise;
         this.$state = $state;
@@ -30,7 +34,7 @@ export default class SalesInvoiceController {
         this.logger = logger;
         this.translate = translate;
         this.navigate = navigate;
-        this.createPaymentService=createPaymentService;
+        this.createPaymentService = createPaymentService;
         this.formService = formService;
         this.errors = [];
         this.isSaving = false;
@@ -42,7 +46,7 @@ export default class SalesInvoiceController {
             detailAccountId: null,
         };
         this.isLoading = false;
-        this.isPayment=false;
+        this.isPayment = false;
 
         this.id = this.$state.params.id;
 
@@ -53,9 +57,9 @@ export default class SalesInvoiceController {
             this.salesInvoiceApi.getById(this.id)
                 .then(result => {
                     this.invoice = result
-                    if(result.status=='waitForPayment'){
-                        this.isPayment=true;
-                        this.invoice.totalPrice=result.invoiceLines.asEnumerable().sum(item => (item.unitPrice * item.quantity) - item.discount + item.vat)
+                    if (result.status == 'waitForPayment') {
+                        this.isPayment = true;
+                        this.invoice.totalPrice = result.invoiceLines.asEnumerable().sum(item => (item.unitPrice * item.quantity) - item.discount + item.vat)
                     }
                 });
         }
@@ -116,7 +120,7 @@ export default class SalesInvoiceController {
         });
     }
 
-    onProductChanged(item, product){
+    onProductChanged(item, product) {
         item.description = product.title;
     }
 
@@ -161,10 +165,10 @@ export default class SalesInvoiceController {
             detailAccountId: null
         };
 
-        this.salesInvoiceApi.getMaxNumber().then(result =>{
-            if(result==null)
-                result=0;
-            this.invoice.number = result+1;
+        this.salesInvoiceApi.getMaxNumber().then(result => {
+            if (result == null)
+                result = 0;
+            this.invoice.number = result + 1;
         });
 
         this.createInvoiceLine();
@@ -198,9 +202,9 @@ export default class SalesInvoiceController {
                 .then(result => {
                     logger.success();
                     this.isLoading = true;
-                    this.salesInvoiceApi.getById(invoice.id).then(result=>{
-                        if(result.status=='waitForPayment'){
-                            this.isPayment=true;
+                    this.salesInvoiceApi.getById(invoice.id).then(result => {
+                        if (result.status == 'waitForPayment') {
+                            this.isPayment = true;
                         }
                     })
                 })
@@ -213,10 +217,10 @@ export default class SalesInvoiceController {
                     logger.success();
                     invoice.id = result.id;
                     this.isLoading = true;
-                    this.salesInvoiceApi.getById(invoice.id).then(result=>{
-                        if(result.status=='waitForPayment'){
-                            this.isPayment=true;
-                            invoice.totalPrice=invoice.invoiceLines.sum(item => (item.unitPrice * item.quantity) - item.discount + item.vat)
+                    this.salesInvoiceApi.getById(invoice.id).then(result => {
+                        if (result.status == 'waitForPayment') {
+                            this.isPayment = true;
+                            invoice.totalPrice = invoice.invoiceLines.sum(item => (item.unitPrice * item.quantity) - item.discount + item.vat)
                         }
                         if(result.status=='draft'){
                             this.$state.go('^.edit', {

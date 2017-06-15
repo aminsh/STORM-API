@@ -15,7 +15,7 @@ router.route('/')
         res.json(result);
     }))
     .post(async((req, res) => {
-        let detailAccountRepository = new DetailAccountRepository(req.cookies['branch-id']),
+        let detailAccountRepository = new DetailAccountRepository(req.branchId),
             cmd = req.body,
             entity = {
                 code: cmd.code,
@@ -43,7 +43,7 @@ router.route('/:id')
         res.json(result);
     }))
     .put(async((req, res) => {
-        let detailAccountRepository = new DetailAccountRepository(req.cookies['branch-id']),
+        let detailAccountRepository = new DetailAccountRepository(req.branchId),
             cmd = req.body,
             entity = await(detailAccountRepository.findById(req.params.id));
 

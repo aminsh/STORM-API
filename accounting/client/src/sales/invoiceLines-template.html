@@ -78,7 +78,7 @@
                                    k-on-created="model.createNewProduct(item,value)"
                                    on-changed="model.onProductChanged(item, $item)"
                                    show-no-data-template
-                                   url="/acc/api/products"
+                                   url="{{model.urls.getAllProduct}}"
                                    ng-model="item.productId"></dev-tag-combo-box>
             </td>
 

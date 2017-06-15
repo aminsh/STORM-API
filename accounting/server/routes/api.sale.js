@@ -13,14 +13,14 @@ const async = require('asyncawait/async'),
 
 router.route('/')
     .get(async((req, res) => {
-        let invoiceQuery = new InvoiceQuery(req.cookies['branch-id']),
+        let invoiceQuery = new InvoiceQuery(req.branchId),
             result = await(invoiceQuery.getAll(req.query, 'sale'));
 
         res.json(result);
     }))
-    .post(async((req, res) => {
 
-        let branchId = req.cookies['branch-id'],
+    .post(async((req, res) => {
+        let branchId = req.branchId,
             invoiceRepository = new InvoiceRepository(branchId),
             productRepository = new ProductRepository(branchId),
             cmd = req.body,
@@ -49,7 +49,7 @@ router.route('/')
 router.route('/:id/confirm')
     .post(async((req, res) => {
 
-        let branchId = req.cookies['branch-id'],
+        let branchId = req.branchId,
             invoiceRepository = new InvoiceRepository(branchId),
             entity = {statue: 'waitForPayment'},
             id = req.params.id,
@@ -74,14 +74,14 @@ router.route('/:id/confirm')
 
 router.route('/:id')
     .get(async((req, res) => {
-        let invoiceQuery = new InvoiceQuery(req.cookies['branch-id']),
+        let invoiceQuery = new InvoiceQuery(req.branchId),
             result = await(invoiceQuery.getById(req.params.id));
 
         res.json(result);
     }))
     .put(async((req, res) => {
-        let invoiceRepository = new InvoiceRepository(req.cookies['branch-id']),
-            productRepository = new ProductRepository(req.cookies['branch-id']),
+        let invoiceRepository = new InvoiceRepository(req.branchId),
+            productRepository = new ProductRepository(req.branchId),
 
             cmd = req.body;
 
@@ -109,7 +109,7 @@ router.route('/:id')
 
     }))
     .delete(async((req, res) => {
-        let invoiceRepository = new InvoiceRepository(req.cookies['branch-id']);
+        let invoiceRepository = new InvoiceRepository(req.branchId);
 
         await(invoiceRepository.remove(req.params.id));
 
@@ -142,7 +142,7 @@ function createInvoice(status, cmd, invoiceRepository) {
 
 router.route('/:id/pay')
     .post(async((req, res) => {
-        let payment = new Payment(req.cookies['branch-id'], req.cookies['current-period']);
+        let payment = new Payment(req.branchId, req.cookies['current-period']);
 
         await(payment.save(req.params.id, req.body));
 
@@ -150,7 +150,7 @@ router.route('/:id/pay')
     }));
 
 router.route('/:id/lines').get(async((req, res) => {
-    let invoiceQuery = new InvoiceQuery(req.cookies['branch-id']),
+    let invoiceQuery = new InvoiceQuery(req.branchId),
         result = await(invoiceQuery.getAllLines(req.params.id, req.query));
 
     res.json(result);
@@ -158,7 +158,7 @@ router.route('/:id/lines').get(async((req, res) => {
 
 router.route('/max/number')
     .get(async((req, res) => {
-        let invoiceQuery = new InvoiceQuery(req.cookies['branch-id']),
+        let invoiceQuery = new InvoiceQuery(req.branchId),
             result = await(invoiceQuery.maxNumber('sale'));
 
         res.json(result.max);

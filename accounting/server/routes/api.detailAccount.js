@@ -10,12 +10,12 @@ const async = require('asyncawait/async'),
 
 router.route('/')
     .get(async((req, res) => {
-        let detailAccountQuery = new DetailAccountQuery(req.cookies['branch-id']),
+        let detailAccountQuery = new DetailAccountQuery(req.branchId),
             result = await(detailAccountQuery.getAll(req.query));
         res.json(result);
     }))
     .post(async((req, res) => {
-        let detailAccountRepository = new DetailAccountRepository(req.cookies['branch-id']),
+        let detailAccountRepository = new DetailAccountRepository(req.branchId),
             errors = [],
             cmd = req.body;
 
@@ -52,12 +52,12 @@ router.route('/')
 
 router.route('/:id')
     .get(async((req, res) => {
-        let detailAccountQuery = new DetailAccountQuery(req.cookies['branch-id']),
+        let detailAccountQuery = new DetailAccountQuery(req.branchId),
             result = await(detailAccountQuery.getById(req.params.id));
         res.json(result);
     }))
     .put(async((req, res) => {
-        let detailAccountRepository = new DetailAccountRepository(req.cookies['branch-id']),
+        let detailAccountRepository = new DetailAccountRepository(req.branchId),
             errors = [],
             cmd = req.body;
 
@@ -93,7 +93,7 @@ router.route('/:id')
         return res.json({isValid: true});
     }))
     .delete(async((req, res) => {
-        let detailAccountRepository = new DetailAccountRepository(req.cookies['branch-id']),
+        let detailAccountRepository = new DetailAccountRepository(req.branchId),
             errors = [];
 
         //check for journal line
@@ -109,7 +109,7 @@ router.route('/:id')
     }));
 
 router.route('/:id/activate').put(async((req, res) => {
-    let detailAccountRepository = new DetailAccountRepository(req.cookies['branch-id']),
+    let detailAccountRepository = new DetailAccountRepository(req.branchId),
         entity = await(detailAccountRepository.findById(req.params.id));
 
     entity.isActive = true;
@@ -120,7 +120,7 @@ router.route('/:id/activate').put(async((req, res) => {
 }));
 
 router.route('/:id/deactivate').put(async((req, res) => {
-    let detailAccountRepository = new DetailAccountRepository(req.cookies['branch-id']),
+    let detailAccountRepository = new DetailAccountRepository(req.branchId),
         entity = await(detailAccountRepository.findById(req.params.id));
 
     entity.isActive = false;

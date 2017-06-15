@@ -9,12 +9,12 @@ const async = require('asyncawait/async'),
 
 router.route('/')
     .get(async((req, res) => {
-        let fiscalPeriodQuery = new FiscalPeriodQuery(req.cookies['branch-id']),
+        let fiscalPeriodQuery = new FiscalPeriodQuery(req.branchId),
             result = await(fiscalPeriodQuery.getAll(req.query));
         res.json(result);
     }))
     .post(async((req, res) => {
-        let fiscalPeriodRepository = new FiscalPeriodRepository(req.cookies['branch-id']),
+        let fiscalPeriodRepository = new FiscalPeriodRepository(req.branchId),
             cmd = req.body,
             errors = [],
             entity = {

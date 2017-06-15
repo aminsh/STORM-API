@@ -10,12 +10,12 @@ const async = require('asyncawait/async'),
 
 router.route('/')
     .get(async((req, res) => {
-        let detailAccountQuery = new DetailAccountQuery(req.cookies['branch-id']),
+        let detailAccountQuery = new DetailAccountQuery(req.branchId),
             result = await(detailAccountQuery.getAllBanks(req.query));
         res.json(result);
     }))
     .post(async((req, res) => {
-        let detailAccountRepository = new DetailAccountRepository(req.cookies['branch-id']),
+        let detailAccountRepository = new DetailAccountRepository(req.branchId),
             cmd = req.body,
             entity = {
                 code: cmd.code,
@@ -34,12 +34,12 @@ router.route('/')
 
 router.route('/:id')
     .get(async((req, res) => {
-        let detailAccountQuery = new DetailAccountQuery(req.cookies['branch-id']),
+        let detailAccountQuery = new DetailAccountQuery(req.branchId),
             result = await(detailAccountQuery.getById(req.params.id));
         res.json(result);
     }))
     .put(async((req, res) => {
-        let detailAccountRepository = new DetailAccountRepository(req.cookies['branch-id']),
+        let detailAccountRepository = new DetailAccountRepository(req.branchId),
             cmd = req.body,
             entity = await(detailAccountRepository.findById(req.params.id));
 

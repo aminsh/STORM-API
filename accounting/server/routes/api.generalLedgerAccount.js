@@ -16,12 +16,12 @@ const async = require('asyncawait/async'),
 
 router.route('/')
     .get(async((req, res) => {
-        let generalLedgerAccountQuery = new GeneralLedgerAccountQuery(req.cookies['branch-id']),
+        let generalLedgerAccountQuery = new GeneralLedgerAccountQuery(req.branchId),
             result = await(generalLedgerAccountQuery.getAll(req.query));
         res.json(result);
     }))
     .post(async((req, res) => {
-        let generalLedgerAccountRepository = new GeneralLedgerAccountRepository(req.cookies['branch-id']),
+        let generalLedgerAccountRepository = new GeneralLedgerAccountRepository(req.branchId),
             errors = [],
             cmd = req.body;
 
@@ -70,7 +70,7 @@ router.route('/default/chart-of-accounts')
         res.json(groups);
     })
     .post(async((req, res) => {
-        let branchId = req.cookies['branch-id'],
+        let branchId = req.branchId,
             generalLedgerAccountRepository = new GeneralLedgerAccountRepository(branchId),
             subsidiaryLedgerAccountRepository = new SubsidiaryLedgerAccountRepository(branchId);
 
@@ -106,12 +106,12 @@ router.route('/default/chart-of-accounts')
 
 router.route('/:id')
     .get(async((req, res) => {
-        let generalLedgerAccountQuery = new GeneralLedgerAccountQuery(req.cookies['branch-id']),
+        let generalLedgerAccountQuery = new GeneralLedgerAccountQuery(req.branchId),
             result = await(generalLedgerAccountQuery.getById(req.params.id));
         res.json(result);
     }))
     .put(async((req, res) => {
-        let generalLedgerAccountRepository = new GeneralLedgerAccountRepository(req.cookies['branch-id']),
+        let generalLedgerAccountRepository = new GeneralLedgerAccountRepository(req.branchId),
             errors = [],
             cmd = req.body,
             id = req.params.id;
@@ -153,7 +153,7 @@ router.route('/:id')
         return res.json({isValid: true});
     }))
     .delete(async((req, res) => {
-        let generalLedgerAccountRepository = new GeneralLedgerAccountRepository(req.cookies['branch-id']),
+        let generalLedgerAccountRepository = new GeneralLedgerAccountRepository(req.branchId),
             errors = [],
             cmd = req.body,
             gla = await(generalLedgerAccountRepository.findById(req.params.id));
@@ -176,7 +176,7 @@ router.route('/:id')
     }));
 
 router.route('/:id/activate').put(async((req, res) => {
-    let generalLedgerAccountRepository = new GeneralLedgerAccountRepository(req.cookies['branch-id']),
+    let generalLedgerAccountRepository = new GeneralLedgerAccountRepository(req.branchId),
         entity = await(generalLedgerAccountRepository.findById(req.params.id));
 
     entity.isActive = true;
@@ -187,7 +187,7 @@ router.route('/:id/activate').put(async((req, res) => {
 }));
 
 router.route('/:id/deactivate').put(async((req, res) => {
-    let generalLedgerAccountRepository = new GeneralLedgerAccountRepository(req.cookies['branch-id']),
+    let generalLedgerAccountRepository = new GeneralLedgerAccountRepository(req.branchId),
         entity = await(generalLedgerAccountRepository.findById(req.params.id));
 
     entity.isActive = false;

@@ -1,7 +1,7 @@
-import accModule from '../acc.module';
+import accModule from "../acc.module";
 
-function chequeCategoryApi(apiPromise) {
-    var urlPrefix = '/acc/api';
+function chequeCategoryApi(apiPromise, devConstants) {
+    let urlPrefix = devConstants.urls.rootUrl;
 
     return {
         getOpens: detailAccountId =>

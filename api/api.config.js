@@ -1,8 +1,11 @@
 "use strict";
 
-const express = require('express'),
+const async = require('asyncawait/async'),
+    await = require('asyncawait/await'),
+    express = require('express'),
     app = express(),
     jwt = require('jsonwebtoken'),
+    FiscalPeriodQuery = require('../accounting/server/queries/query.fiscalPeriod'),
     superSecret = require('../accounting/server/services/cryptoService').superSecret;
 
 
@@ -19,15 +22,28 @@ app.use((req, res, next) => {
     if (!token)
         return res.status(403).send(noTokenProvidedMessage);
 
-    jwt.verify(token, superSecret, (err, decode) => {
+    jwt.verify(token, superSecret, async((err, decode) => {
         if(err)
             return res.status(403).send(noTokenProvidedMessage);
 
         req.branchId = decode.branchId;
-        req.userId = decode.userId;
+        req.user = {id: decode.userId};
+
+        let currentPeriod = req.cookies['current-period'];
+
+        if (currentPeriod == null || currentPeriod == 0 || isNaN(currentPeriod)) {
+            let fiscalPeriodQuery = new FiscalPeriodQuery(req.branchId),
+                maxId = await(fiscalPeriodQuery.getMaxId());
+            maxId = maxId || 0;
+
+            res.cookie('current-period', maxId);
+        }
+
+        if (!req.cookies['current-mode'])
+            res.cookie('current-mode', 'create');
 
         next();
-    });
+    }));
 });
 
 app.use('/account-review', require('../accounting/server/routes/api.accountReview'));

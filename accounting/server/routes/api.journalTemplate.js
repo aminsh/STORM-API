@@ -9,14 +9,14 @@ const async = require('asyncawait/async'),
     persianDateService = require('../services/persianDateService');
 
 router.route('/').get(async((req, res) => {
-    let journalTemplateQuery = new JournalTemplateQuery(req.cookies['branch-id']),
+    let journalTemplateQuery = new JournalTemplateQuery(req.branchId),
         result = journalTemplateQuery.getAll(req.query);
     res.json(result);
 }));
 
 router.route('/journal/:journalId').post(async((req, res) => {
-    let journalTemplateRepository = new JournalTemplateRepository(req.cookies['branch-id']),
-        journalRepository = new JournalRepository(req.cookies['branch-id']),
+    let journalTemplateRepository = new JournalTemplateRepository(req.branchId),
+        journalRepository = new JournalRepository(req.branchId),
         journalId = req.params.journalId,
         cmd = req.body,
         journal = await(journalRepository.findById(journalId)),
@@ -50,8 +50,8 @@ router.route('/journal/:journalId').post(async((req, res) => {
 }));
 
 router.route('/:id/journal/create').post(async((req, res) => {
-    let journalRepository = new JournalRepository(req.cookies['branch-id']),
-        journalTemplateRepository = new JournalTemplateRepository(req.cookies['branch-id']),
+    let journalRepository = new JournalRepository(req.branchId),
+        journalTemplateRepository = new JournalTemplateRepository(req.branchId),
         id = req.params.id,
         periodId = req.cookies['current-period'],
         template = await(journalTemplateRepository.findById(id)),
@@ -72,7 +72,7 @@ router.route('/:id/journal/create').post(async((req, res) => {
 }));
 
 router.route('/journal-templates/:id').delete(async((req, res) => {
-    let journalTemplateRepository = new JournalTemplateRepository(req.cookies['branch-id']);
+    let journalTemplateRepository = new JournalTemplateRepository(req.branchId);
     await(journalTemplateRepository.remove(req.params.id));
     res.json({isValid: true});
 }));

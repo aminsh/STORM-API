@@ -31,7 +31,7 @@
                                                k-on-created="model.createNewCustomer(value)"
                                                show-no-data-template
                                                ng-model="model.invoice.detailAccountId"
-                                               url="/acc/api/people"
+                                               url="{{model.urls.getAllPeople}}"
                                                required></dev-tag-combo-box>
 
                             <div ng-messages="form.detailAccountId.$error" ng-if="form.detailAccountId.$dirty">

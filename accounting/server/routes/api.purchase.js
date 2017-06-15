@@ -76,7 +76,6 @@ router.route('/:id')
     .put(async((req, res) => {
         let branchId = req.cookies['branch-id'],
             invoiceRepository = new InvoiceRepository(branchId),
-            productRepository = new ProductRepository(branchId),
 
             cmd = req.body;
 
@@ -91,9 +90,7 @@ router.route('/:id')
             .select(line => ({
                 id: line.id,
                 productId: line.productId,
-                description: (line.productId)
-                    ? await(productRepository.findById(line.productId)).title
-                    : line.description,
+                description: line.description,
                 quantity: line.quantity,
                 unitPrice: line.unitPrice,
                 discount: line.discount,

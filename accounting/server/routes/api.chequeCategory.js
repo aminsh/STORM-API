@@ -8,12 +8,12 @@ const async = require('asyncawait/async'),
 
 router.route('/')
     .get(async((req, res) => {
-        let chequeCategoryQuery = new ChequeCategoryQuery(req.cookies['branch-id']),
+        let chequeCategoryQuery = new ChequeCategoryQuery(req.branchId),
             result = await(chequeCategoryQuery.getAll(req.query));
         res.json(result);
     }))
     .post(async((req, res) => {
-        let chequeCategoryRepository = new ChequeCategoryRepository(req.cookies['branch-id']),
+        let chequeCategoryRepository = new ChequeCategoryRepository(req.branchId),
             errors = [],
             cmd = req.body;
 
@@ -52,19 +52,19 @@ router.route('/')
 
 router.route('/detail-account/:detailAccountId/opens')
     .get(async((req, res) => {
-        let chequeCategoryQuery = new ChequeCategoryQuery(req.cookies['branch-id']),
+        let chequeCategoryQuery = new ChequeCategoryQuery(req.branchId),
             result = await(chequeCategoryQuery.getOpens(req.params.detailAccountId));
         res.json(result);
     }));
 
 router.route('/:id')
     .get(async((req, res) => {
-        let chequeCategoryQuery = new ChequeCategoryQuery(req.cookies['branch-id']),
+        let chequeCategoryQuery = new ChequeCategoryQuery(req.branchId),
             result = await(chequeCategoryQuery.getById(req.params.id));
         res.json(result);
     }))
     .put(async((req, res) => {
-        let chequeCategoryRepository = new ChequeCategoryRepository(req.cookies['branch-id']),
+        let chequeCategoryRepository = new ChequeCategoryRepository(req.branchId),
             errors = [],
             cmd = req.body;
 
@@ -84,7 +84,7 @@ router.route('/:id')
         res.json({isValid: true});
     }))
     .delete(async((req, res) => {
-        let chequeCategoryRepository = new ChequeCategoryRepository(req.cookies['branch-id']),
+        let chequeCategoryRepository = new ChequeCategoryRepository(req.branchId),
             errors = [],
             id = req.params.id,
             hasCheque = await(chequeCategoryRepository.hasCheque(id));

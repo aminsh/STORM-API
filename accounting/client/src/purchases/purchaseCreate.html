@@ -28,8 +28,9 @@
                                                k-suggest="true"
                                                k-minLength="0"
                                                k-filter="'contains'"
-                                               k-on-created="model.createNewCustomer(value)"
+                                               k-on-created="model.createNewCustomer($search)"
                                                show-no-data-template
+                                               url="{{model.urls.getAllPeople}}"
                                                ng-model="model.invoice.detailAccountId"
                                                url="/acc/api/people"
                                                required></dev-tag-combo-box>
@@ -106,7 +107,7 @@
 
                 <dev-tag-content-body is-loading="model.isInvoiceSaleLoading">
                     <div style="padding: 10px"
-                         ng-include="'partials/sales/invoiceLines-template.html'"></div>
+                         ng-include="'partials/purchases/purchaseLines-template.html'"></div>
                 </dev-tag-content-body>
             </div>
         </dev-tag-content-body>

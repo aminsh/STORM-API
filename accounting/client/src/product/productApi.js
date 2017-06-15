@@ -2,16 +2,16 @@
 
 export default class {
 
-    constructor(apiPromise) {
+    constructor(apiPromise, devConstants) {
         this.apiPromise = apiPromise;
-        this.baseUrl = '/acc/api/products'
+        this.baseUrl = `${devConstants.urls.rootUrl}/products`
     }
 
     getAll() {
         return this.apiPromise.get(this.baseUrl);
     }
 
-    getById(id){
+    getById(id) {
         return this.apiPromise.get(`${this.baseUrl}/${id}`);
     }
 
