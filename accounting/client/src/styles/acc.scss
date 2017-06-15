@@ -695,6 +695,11 @@ h1.head-current {
 
 .modal-backdrop.in {
   background-color: $primary-color;
+  z-index: 10003 !important;
+}
+
+.modal{
+  z-index: 10004 !important;
 }
 
 .waiting-block {

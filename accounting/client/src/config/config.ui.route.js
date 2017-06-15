@@ -15,13 +15,6 @@ export default function ($stateProvider, $urlRouterProvider, $locationProvider) 
             templateUrl: 'partials/views/home.html'
         })
 
-        .state('settings', {
-            url: '/settings',
-            controller: 'settingsController',
-            controllerAs: 'model',
-            templateUrl: 'partials/settings/settings.html'
-        })
-
         .state('chooseBranch', {
             url: '/branch/choose',
             controller: 'chooseBranchController',
@@ -192,11 +185,7 @@ export default function ($stateProvider, $urlRouterProvider, $locationProvider) 
             controller: 'chequePrintController',
             templateUrl: 'partials/views/chequePrint.html'
         })
-        .state('banks', {
-            url: '/banks',
-            controller: 'banksController',
-            templateUrl: 'partials/views/banks.html'
-        })
+
         .state('account-review', {
             url: '/account-review',
             controller: 'accountReviewController',
@@ -240,7 +229,7 @@ export default function ($stateProvider, $urlRouterProvider, $locationProvider) 
             templateUrl: 'partials/report/reportPrint.html',
             resolve: {
                 loadingStimulScript: (reportLoaderService) => {
-                   return reportLoaderService.loadIfNot()
+                    return reportLoaderService.loadIfNot()
                 }
             }
         })
@@ -271,6 +260,25 @@ export default function ($stateProvider, $urlRouterProvider, $locationProvider) 
             controllerAs: 'model',
             templateUrl: 'partials/sales/invoiceCreate.html'
         })
+        .state('sales.edit', {
+            url: '/:id/edit',
+            controller: 'salesInvoiceController',
+            controllerAs: 'model',
+            templateUrl: 'partials/sales/invoiceCreate.html'
+        })
+        .state('payment', {
+            url: '/payment',
+            onEnter: ($modelFactory, $stateParams) => {
+                $modelFactory.create({
+                    controller: 'paymentController',
+                    controllerAs: 'model',
+                    size: 'lg',
+                    templateUrl: 'partials/payment/payment.html',
+                    resolve: {data: {amount: $stateParams.amount}}
+                });
+            }
+        })
+
         .state('purchases', {
             url: '/purchases',
             template: '<ui-view></ui-view>'
@@ -279,13 +287,19 @@ export default function ($stateProvider, $urlRouterProvider, $locationProvider) 
             url: '/list',
             controller: 'purchasesListController',
             controllerAs: 'model',
-            templateUrl: 'partials/purchase/purchases.html'
+            templateUrl: 'partials/purchases/purchases.html'
         })
         .state('purchases.create', {
             url: '/create',
             controller: 'purchaseController',
             controllerAs: 'model',
-            templateUrl: 'partials/purchase/invoiceCreate.html'
+            templateUrl: 'partials/purchases/purchaseCreate.html'
+        })
+        .state('purchases.edit', {
+            url: '/:id/edit',
+            controller: 'purchaseController',
+            controllerAs: 'model',
+            templateUrl: 'partials/purchases/purchaseCreate.html'
         })
 
         .state('people', {
@@ -300,17 +314,19 @@ export default function ($stateProvider, $urlRouterProvider, $locationProvider) 
                 $modelFactory.create({
                     controller: 'peopleCreateController',
                     controllerAs: 'model',
-                    templateUrl: 'partials/people/peopleCreate.html'
+                    templateUrl: 'partials/people/peopleCreate.html',
+                    resolve: {data: () => ({})}
                 });
             }
         })
         .state('people.edit', {
             url: '/:id/edit',
-            onEnter: $modelFactory => {
+            onEnter: ($modelFactory, $stateParams) => {
                 $modelFactory.create({
                     controller: 'peopleCreateController',
                     controllerAs: 'model',
                     templateUrl: 'partials/people/peopleCreate.html',
+                    resolve: {data: () => $stateParams}
                 });
             }
         })
@@ -338,6 +354,60 @@ export default function ($stateProvider, $urlRouterProvider, $locationProvider) 
                     controller: 'fundCreateController',
                     controllerAs: 'model',
                     templateUrl: 'partials/fund/fundCreate.html',
+                });
+            }
+        })
+        .state('bank', {
+            url: '/bank',
+            controller: 'bankListController',
+            controllerAs: 'model',
+            templateUrl: 'partials/bank/bankList.html'
+        })
+        .state('bank.create', {
+            url: '/create',
+            onEnter: $modelFactory => {
+                $modelFactory.create({
+                    controller: 'bankCreateController',
+                    controllerAs: 'model',
+                    templateUrl: 'partials/bank/bankCreate.html'
+                });
+            }
+        })
+        .state('bank.edit', {
+            url: '/:id/edit',
+            onEnter: $modelFactory => {
+                $modelFactory.create({
+                    controller: 'bankCreateController',
+                    controllerAs: 'model',
+                    templateUrl: 'partials/bank/bankCreate.html',
+                });
+            }
+        })
+        .state('products', {
+            url: '/products',
+            controller: 'productsController',
+            controllerAs: 'model',
+            templateUrl: 'partials/product/products.html'
+        })
+        .state('products.create', {
+            url: '/create',
+            onEnter: $modelFactory => {
+                $modelFactory.create({
+                    controller: 'productEntryController',
+                    controllerAs: 'model',
+                    templateUrl: 'partials/product/product.entry.html',
+                    resolve: {data: {}}
+                });
+            }
+        })
+        .state('products.edit', {
+            url: '/:id/edit',
+            onEnter: ($modelFactory, $stateParams) => {
+                $modelFactory.create({
+                    controller: 'productEntryController',
+                    controllerAs: 'model',
+                    templateUrl: 'partials/product/product.entry.html',
+                    resolve: {data: {id: $stateParams.id}}
                 });
             }
         })

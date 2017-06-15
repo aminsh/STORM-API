@@ -1,33 +1,41 @@
-import accModule from '../acc.module';
-import $ from 'jquery';
+import accModule from "../acc.module";
+import $ from "jquery";
 
-accModule.config($httpProvider=> {
-    $httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-
-    $httpProvider.interceptors.push(()=> {
+accModule
+    .factory('authInterceptor', ($window) => {
         return {
-            'request': (config)=> {
+            'request': (config) => {
                 return config;
             },
-            'response': (response)=> {
+            'response': (response) => {
 
 
                 return response;
             },
-            'requestError': (rejection)=> {
+            'requestError': (rejection) => {
                 return rejection;
             },
-            'responseError': (rejection)=> {
+            'responseError': (rejection) => {
                 if (rejection.status == 401 && rejection.data == 'user is not authenticated')
-                    return location.reload();
+                    return $window.location.reload();
 
                 return rejection;
             }
         }
-    });
-});
+    })
+    .config($httpProvider => {
+        $httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+        $httpProvider.defaults.headers.common['x-access-token'] = localStorage.getItem('token');
 
-$(document).ajaxError((e, response)=> {
+        $httpProvider.interceptors.push('authInterceptor');
+    });
+
+
+$(document).ajaxError((e, response) => {
     if (response.status == 401 && response.responseText == 'user is not authenticated')
         return location.reload();
+});
+
+$.ajaxSetup({
+    headers: { 'x-access-token': localStorage.getItem('token') }
 });

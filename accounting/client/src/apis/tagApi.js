@@ -1,7 +1,7 @@
 
 export default class {
-    constructor(apiPromise) {
-        this.urlPrefix = '/acc/api/tags';
+    constructor(apiPromise,devConstants) {
+        this.urlPrefix = `${devConstants.urls.rootUrl}/tags`;
         this.apiPromise = apiPromise;
     }
 

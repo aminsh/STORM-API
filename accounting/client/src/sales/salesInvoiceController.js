@@ -1,76 +1,91 @@
-import Guid from 'guid';
+import Guid from "guid";
 
 export default class SalesInvoiceController {
     constructor(navigate,
+                devConstants,
                 salesInvoiceApi,
-                inventoryApi,
                 translate,
                 peopleApi,
-                devConstants,
                 logger,
                 formService,
+                $state,
                 $timeout,
-                cashPaymentService,
-                $scope) {
+                $scope,
+                promise,
+                createPaymentService,
+                createPersonService,
+                productCreateService) {
 
+        this.urls = {
+            getAllPeople: devConstants.urls.people.getAll(),
+            getAllProduct: devConstants.urls.products.getAll()
+        };
         this.$scope = $scope;
+        this.promise = promise;
+        this.$state = $state;
         this.logger = logger;
         this.peopleApi = peopleApi;
-        this.inventoryApi = inventoryApi;
+        this.createPersonService = createPersonService;
+        this.productCreateService = productCreateService;
         this.salesInvoiceApi = salesInvoiceApi;
         this.$timeout = $timeout;
         this.logger = logger;
         this.translate = translate;
         this.navigate = navigate;
+        this.createPaymentService = createPaymentService;
         this.formService = formService;
-        this.cashPaymentService=cashPaymentService;
         this.errors = [];
         this.isSaving = false;
         this.invoice = {
             number: null,
             date: null,
             description: '',
-            invoiceLines: []
+            invoiceLines: [],
+            detailAccountId: '',
         };
+
         this.isLoading = false;
+        this.isPayment = false;
+        this.isSaving=false;
 
-        this.detailAccount = new kendo.data.DataSource({
-            serverFiltering: true,
-            //serverPaging: true,
-            // pageSize: 10,
-            transport: {
-                read: {
-                    url: devConstants.urls.people.getAll(),
-                    dataType: "json"
-                },
-            },
-            schema: {
-                data:'data',
-                total:'total'
-            }
-        });
+        this.id = this.$state.params.id;
 
-        this.products = new kendo.data.DataSource({
-            serverFiltering: true,
-            transport: {
-                read: {
-                    url: devConstants.urls.products.getAll(),
-                    dataType: "json"
-                },
-            },
-            schema: {
-                data: function (data) {
-                    return data.data;
-                },
-                total: function (data) {
-                    return data.total;
-                }
-            }
-        });
+        if (this.id != undefined) {
+            this.editMode = true;
+        } else {
+
+            this.isLoading = false;
+            this.invoice = {
+                number: null,
+                date: localStorage.getItem('today'),
+                description: '',
+                invoiceLines: [],
+                status: 'confirm',
+                detailAccountId: ''
+            };
+            this.salesInvoiceApi.getMaxNumber().then(result => {
+                if (result == null)
+                    result = 0;
+                this.invoice.number = result + 1;
+            });
+
+            this.createInvoiceLine();
+        }
 
 
-        this.newInvoice();
-
+        if (this.editMode) {
+            this.isSaving=true;
+            this.salesInvoiceApi.getById(this.id)
+                .then(result => {
+                    this.invoice = result
+                    if (result.status == 'waitForPayment') {
+                        this.isPayment = true;
+                        this.invoice.totalPrice = result.invoiceLines
+                            .asEnumerable()
+                            .sum(item => (item.unitPrice * item.quantity) - item.discount + item.vat)
+                    }
+                });
+        }
     }
 
 
@@ -79,20 +94,29 @@ export default class SalesInvoiceController {
     }
 
 
-    createNewProduct(product) {
-        var data = {title: product};
-        this.inventoryApi.create(data)
-            .then((result) => {
-            })
-            .catch((errors) => this.errors = errors)
+    createNewProduct(item, title) {
+        return this.promise.create((resolve, reject) => {
+            this.productCreateService.show({title})
+                .then(result => {
+                    item.productId = result.id;
+                    item.description = title;
+                    resolve({id: result.id, title});
+                });
+        });
     }
 
-    createNewCustomer(customer) {
-        var data = {title: customer};
-        this.peopleApi.create(data)
-            .then((result) => {
-            })
-            .catch((errors) => this.errors = errors)
+    onProductChanged(item, product) {
+        item.description = product.title;
+    }
+
+    createNewCustomer(title) {
+        return this.promise.create((resolve, reject) => {
+            this.createPersonService.show({title})
+                .then(result => {
+                    this.invoice.detailAccountId = result.id;
+                    resolve({id: result.id, title})
+                });
+        });
     }
 
     createInvoiceLine() {
@@ -103,38 +127,34 @@ export default class SalesInvoiceController {
             newInvoice = {
                 id: Guid.new(),
                 row: ++maxRow,
-                itemId: null,
+                productId: null,
+                description: '',
                 quantity: 0,
-                vat: 9,
+                vat: 0,
                 discount: 0,
                 unitPrice: 0,
                 totalPrice: 0,
             };
+
         this.invoice.invoiceLines.push(newInvoice);
     }
 
     newInvoice() {
-        this.isLoading = false;
-        this.invoice = {
-            number: null,
-            date: null,
-            description: '',
-            invoiceLines: []
-        };
-
-        for (let i = 1; i <= 4; i++) this.createInvoiceLine();
+        this.$state.go('^.create')
     }
 
-    saveInvoice(form) {
+    saveInvoice(form, status) {
         let logger = this.logger,
             formService = this.formService,
             errors = this.errors,
             invoice = this.invoice;
 
-        invoice.invoiceLines = invoice.invoiceLines.asEnumerable()
-            .where(il => il.unitPrice > 0)
-            .toArray()
+        if (status)
+            invoice.status = status;
 
+        if (status == undefined) {
+            invoice.status = 'confirm';
+        }
 
         if (form.$invalid) {
             formService.setDirty(form);
@@ -146,27 +166,68 @@ export default class SalesInvoiceController {
         }
 
         errors.asEnumerable().removeAll();
-        return this.salesInvoiceApi.create(invoice)
-            .then(result => {
-                logger.success();
-                invoice.id = result.id;
-                this.isLoading = true;
-            })
-            .catch(err => errors = err)
-           .finally(() => this.isSaving = true);
 
+        if (this.editMode == true) {
+            return this.salesInvoiceApi.update(invoice.id, invoice)
+                .then(result => {
+                    logger.success();
+                    this.isLoading = true;
+                    this.salesInvoiceApi.getById(invoice.id).then(result => {
+                        if (result.status == 'waitForPayment') {
+                            this.isPayment = true;
+                        }
+                    })
+                })
+                .catch(err => errors = err)
+                .finally(() => this.isSaving = true);
+        } else {
+
+            return this.salesInvoiceApi.create(invoice)
+                .then(result => {
+                    logger.success();
+                    invoice.id = result.id;
+                    this.isLoading = true;
+                    this.isSaving = true;
+                    this.salesInvoiceApi.getById(invoice.id).then(result => {
+                        if (result.status == 'waitForPayment') {
+                            this.isPayment = true;
+                            invoice.totalPrice = invoice.invoiceLines.asEnumerable()
+                                .sum(item => (item.unitPrice * item.quantity) - item.discount + item.vat);
+                        }
+                        if(result.status=='draft'){
+                            this.$state.go('^.edit', {
+                                id: invoice.id
+                            });
+                        }
+                    })
+                })
+                .catch(err => errors = err)
+                .finally(() => this.isSaving = true);
+        }
     }
 
     cashPaymentShow() {
-        this.cashPaymentService.show();
+        this.createPaymentService.show({amount: this.invoice.totalPrice}).then(result => {
+            return this.salesInvoiceApi.pay(this.invoice.id, result)
+                .then(result => {
+                    this.logger.success();
+                    this.isLoading = true;
+                })
+                .catch(err => errors = err)
+                .finally(() => this.isSaving = true);
+        });
     }
 
-    print(){
+    print() {
         let invoice = this.invoice;
-        let reportParam={"id": invoice.id}
+        let reportParam = {"id": invoice.id};
         this.navigate(
             'report.print',
             {key: 700},
             reportParam);
+    }
+
+    onItemPropertyChanged(item) {
+        item.vat = ((item.unitPrice * item.quantity) - item.discount) * 9 / 100;
     }
 }

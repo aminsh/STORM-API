@@ -1,4 +1,4 @@
-let rootUrl = ()=> '/acc/api';
+let rootUrl = ()=> '/api/v1';
 
 let generalLedgerAccount = {
     all: ()=> '{0}/general-ledger-accounts'.format(rootUrl())
@@ -30,10 +30,6 @@ let period = {
 let chequeCategory = {
     all: ()=> '{0}/cheque-categories'.format(rootUrl()),
     allOpens: (detailAccountId)=> '{0}/cheque-categories/detail-account/{1}/opens'.format(rootUrl(), detailAccountId)
-};
-
-let bank = {
-    all: ()=> '{0}/banks'.format(rootUrl())
 };
 
 let cheque = {
@@ -75,6 +71,11 @@ let fund = {
     getAll: ()=> `${rootUrl()}/funds`
 };
 
+let bank = {
+    getAll: ()=> `${rootUrl()}/banks`
+};
+
+
 let sales = {
     getAll: ()=> `${rootUrl()}/sales`
 };
@@ -88,6 +89,7 @@ let products = {
 };
 
 let apiUrls = {
+    rootUrl: rootUrl(),
     generalLedgerAccount: generalLedgerAccount,
     subsidiaryLedgerAccount: subsidiaryLedgerAccount,
     detailAccount: detailAccount,
@@ -103,9 +105,9 @@ let apiUrls = {
     tag: tag,
     sales:sales,
     purchase:purchase,
-    products:products,
-    people:people,
-    fund:fund
+    products,
+    people,
+    fund
 };
 
 export default apiUrls;

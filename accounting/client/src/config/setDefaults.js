@@ -3,7 +3,8 @@
 export default function ($rootScope,
                          $state,
                          $cookies,
-                         branchApi) {
+                         branchApi,
+                         dimensionCategoryApi) {
 
     $rootScope.user = JSON.parse(localStorage.getItem('currentUser'));
     $rootScope.today = localStorage.getItem('today');
@@ -23,6 +24,11 @@ export default function ($rootScope,
 
                 return toState.controller != 'chooseBranchController' &&
                     goToBranchChooser();
+            }
+            else{
+                dimensionCategoryApi.getAll().then(result => {
+                    localStorage.setItem('dimensionCategories', JSON.stringify(result.data));
+                });
             }
 
             function goToBranchChooser() {

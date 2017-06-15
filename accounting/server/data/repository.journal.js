@@ -2,9 +2,10 @@
 
 let async = require('asyncawait/async'),
     await = require('asyncawait/await'),
+    Guid = require('../services/shared').utility.Guid,
     BaseRepository = require('./repository.base'),
-    JournalLineRepository = require('./repository.journalLine');
-Promise = require('promise');
+    JournalLineRepository = require('./repository.journalLine'),
+    Promise = require('promise');
 
 class JournalRepository extends BaseRepository {
     constructor(branchId) {
@@ -41,7 +42,8 @@ class JournalRepository extends BaseRepository {
         return this.knex.table('journals')
             .modify(this.modify, this.branchId)
             .where('periodId', periodId)
-            .max('temporaryNumber');
+            .max('temporaryNumber')
+            .first();
     }
 
     create(entity) {
@@ -140,28 +142,30 @@ class JournalRepository extends BaseRepository {
 
         let knex = this.knex,
             baseCreate = super.create,
+            branchId = this.branchId,
             journalLineRepository = new JournalLineRepository(this.branchId);
 
         return new Promise((resolve, reject) => {
             knex.transaction(async(function (trans) {
                 try {
-                    let id = await(knex('journals')
+                    await(knex('journals')
                         .transacting(trans)
-                        .insert(journal))[0];
+                        .insert(journal));
 
                     journalLines.forEach(line => {
-                        baseCreate(line);
-                        line.journalId = id;
+                        line.branchId = branchId;
+                        if (!line.id) line.id = Guid.new();
+                        line.journalId = journal.id;
                     });
                     await(knex('journalLines')
                         .transacting(trans)
                         .insert(journalLines));
 
-                    trans.commit();
-                    resolve(id);
+                    //trans.commit();
+                    resolve(journal.id);
                 }
                 catch (e) {
-                    trans.rollback();
+                    //trans.rollback();
                     reject(e);
                 }
 

@@ -1,0 +1,149 @@
+<div class="modal-header">
+    <button type="button" ng-click="close()" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+    <h3 class="modal-title">
+        {{'Payment'| translate}}
+    </h3>
+</div>
+<div class="modal-body k-rtl">
+
+    <div class="row">
+
+        <div class="btn-group" role="group">
+            <button type="button" ng-click="model.newReceiptPayment()" class="btn btn-white">{{'New
+                Receipt'|translate}}
+            </button>
+            <button type="button" ng-click="model.newChequePayment()" class="btn btn-white">{{'New Cheque'|translate}}
+            </button>
+            <button type="button" ng-click="model.newCashPayment()" class="btn btn-white">{{'New Cash'|translate}}
+            </button>
+        </div>
+    </div>
+    <br>
+
+    <form name="form" class="form-horizontal">
+        <dev-tag-validation-summary errors="model.errors" class="col-md-8"></dev-tag-validation-summary>
+
+        <div class="panel float" ng-class="item.style" ng-repeat="item in model.payment">
+            <div class="panel-header">
+                <h5>{{item.paymentDisplay}}</h5>
+                <div class="panel-tools">
+                    <button class="close-link" ng-click="model.removePayment(item)">
+                        <i class="fa fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="panel-body">
+                <div class="form-group row col-lg-12">
+                    <label class="col-lg-2 control-label" for="date">{{'Date'|translate}}</label>
+                    <div class="col-lg-10">
+                        <dev-tag-datepicker
+                                id="date"
+                                ng-model="item.date"
+                                name="paymentDate"
+                                required></dev-tag-datepicker>
+                    </div>
+                    <!--<div ng-messages="form.paymentDate.$error" ng-if="form.paymentDate.$dirty">-->
+                    <!--<label ng-message="required" class="error">{{'This field is required'|translate}}</label>-->
+                    <!--</div>-->
+                </div>
+
+                <div class="form-group row col-lg-12">
+                    <label class="col-lg-2 control-label">{{'Ammount'|translate}}</label>
+                    <div class="col-lg-10">
+                        <dev-tag-numeric
+                                class="form-control"
+                                name="ammount"
+                                ng-model="item.ammount"
+                                required></dev-tag-numeric>
+                    </div>
+                </div>
+
+                <div class="form-group row col-lg-12" ng-if="item.paymentType=='cash'">
+                    <label class="col-lg-2 control-label">{{'Fund'|translate}}</label>
+                    <div class="col-lg-10">
+                        <dev-tag-combo-box id="fundId"
+                                           name="fundId"
+                                           k-placeholder="{{'Select ...'|translate}}"
+                                           k-data-value-field="id"
+                                           k-data-text-field="title"
+                                           k-data-source="model.fundDataSource"
+                                           k-suggest="true"
+                                           k-minLength="0"
+                                           k-filter="'contains'"
+                                           ng-model="item.fundId"
+                                           k-on-created="model.createNewFund($search)"
+                                           show-no-data-template
+                                           url="{{model.urls.getAllFunds}}"
+                                           required></dev-tag-combo-box>
+                    </div>
+                    <!--<div ng-messages="form.fundId.$error" ng-if="form.fundId.$dirty">-->
+                    <!--<label ng-message="required" class="error">{{'This field is required'|translate}}</label>-->
+                    <!--</div>-->
+                </div>
+
+                <div class="form-group row col-lg-12" ng-if="item.paymentType=='receipt'">
+                    <label class="col-lg-2 control-label">{{'Bank'|translate}}</label>
+                    <div class="col-lg-10">
+                        <dev-tag-combo-box id="bankId"
+                                           name="bankId"
+                                           k-placeholder="{{'Select ...'|translate}}"
+                                           k-data-value-field="id"
+                                           k-data-text-field="title"
+                                           k-data-source="model.bankdDataSource"
+                                           k-suggest="true"
+                                           k-minLength="0"
+                                           k-filter="'contains'"
+                                           ng-model="item.bankId"
+                                           url="/acc/api/banks"
+                                           required></dev-tag-combo-box>
+                    </div>
+                    <!--<div ng-messages="form.bankId.$error" ng-if="form.bankId.$dirty">-->
+                    <!--<label ng-message="required" class="error">{{'This field is required'|translate}}</label>-->
+                    <!--</div>-->
+                </div>
+
+                <div class="form-group row col-lg-12" ng-if="['receipt', 'cheque'].includes(item.paymentType)">
+                    <label class="col-lg-2 control-label">{{'Number'|translate}}</label>
+                    <div class="col-lg-10">
+                        <dev-tag-text-box
+                                class="form-control"
+                                ng-model="item.numbaer"
+                                required></dev-tag-text-box>
+                    </div>
+                </div>
+
+                <div class="form-group row col-lg-12" ng-if="item.paymentType=='cheque'">
+                    <label class="col-lg-2 control-label">{{'Bank Name'|translate}}</label>
+                    <div class="col-lg-10">
+                        <dev-tag-text-box
+                                class="form-control"
+                                ng-model="item.bankName"
+                                required></dev-tag-text-box>
+                    </div>
+                </div>
+
+                <div class="form-group row col-lg-12" ng-if="item.paymentType=='cheque'">
+                    <label class="col-lg-2 control-label">{{'Bank Branch'|translate}}</label>
+                    <div class="col-lg-10">
+                        <dev-tag-text-box
+                                class="form-control"
+                                ng-model="item.bankBranch"
+                                required></dev-tag-text-box>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+</div>
+<div class="modal-footer">
+    <dev-tag-button
+            ng-click="model.save(form)"
+            icon="glyphicon glyphicon-floppy-disk"
+            ng-disabled="isSaving"
+            is-waiting="isSaving"
+            style-type="primary"
+            title="{{'Save' | translate}}"></dev-tag-button>
+</div>

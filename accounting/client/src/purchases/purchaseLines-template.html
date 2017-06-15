@@ -1,204 +1,17 @@
-<!--<div class="row">-->
-<!--<table class="table table-hover">-->
-<!--<thead>-->
-<!--<tr>-->
-<!--<th>#</th>-->
-<!--<th style="width: 25%;text-align: left">{{'Item title'|translate}}</th>-->
-<!--<th style="width: 10%;text-align: left">{{'Quantity'|translate}}</th>-->
-<!--<th style="width: 10%;text-align: left">{{'Unit price'|translate}}</th>-->
-<!--<th style="width: 10%;text-align: left">{{'Discount'|translate}}</th>-->
-<!--<th style="width: 10%;text-align: left">{{'Tax'|translate}}</th>-->
-<!--<th style="width: 10%;text-align: left">{{'Vat'|translate}}</th>-->
-<!--<th style="width: 10%;text-align: left">{{'Total Price'|translate}}</th>-->
-<!--<th style="text-align: left;width: 15%"></th>-->
-<!--</tr>-->
-<!--</thead>-->
-<!--<tbody>-->
-<!--<tr name="form-{{$index}}"-->
-<!--id="{{item.id}}"-->
-<!--ng-form-->
-<!--ng-repeat="item in model.invoice.invoiceLines"-->
-<!--ng-class-odd="'grid-row-striped'"-->
-<!--style="height: 50px">-->
-
-<!--<td style="text-align: center">{{item.row}}</td>-->
-
-<!--<td style="width: 25%">-->
-
-<!--<dev-tag-combo-box-->
-<!--name="productId"-->
-<!--k-placeholder="{{'Select ...'|translate}}"-->
-<!--k-data-value-field="id"-->
-<!--k-data-text-field="title"-->
-<!--k-data-source="model.products"-->
-<!--ng-model="item.productId" required></dev-tag-combo-box>-->
-
-<!--<div ng-messages="form['form-'+ $index].productId.$error"-->
-<!--ng-if="form['form-'+ $index].productId.$dy">-->
-<!--<label ng-message="required" class="error">{{'This field is required'|translate}}</label>-->
-<!--</div>-->
-
-<!--</td>-->
-
-<!--<td style="width: 10%">-->
-
-<!--<dev-tag-numeric-->
-<!--class="form-control"-->
-<!--ng-model="item.quantity"-->
-<!--name="quantity"-->
-<!--required-->
-<!--not-zero="item.quantity"></dev-tag-numeric>-->
-
-<!--<div ng-messages="form['form-'+ $index].quantity.$error" ng-if="form['form-'+ $index].quantity.$dirty">-->
-<!--<label ng-message="required" class="error">-->
-<!--{{'This field is required'|translate}}-->
-<!--</label>-->
-<!--<label ng-message="notShouldBeZero" class="error">-->
-<!--{{'Item quantity is not allowed to be zero'|translate}}-->
-<!--</label>-->
-<!--</div>-->
-
-<!--</td>-->
-
-<!--<td style="width: 10%">-->
-<!--<dev-tag-numeric-->
-<!--class="form-control"-->
-<!--ng-model="item.unitPrice"-->
-<!--name="unitPrice"-->
-<!--required-->
-<!--not-zero="item.unitPrice"></dev-tag-numeric>-->
-
-<!--<div ng-messages="form['form-'+ $index].unitPrice.$error"-->
-<!--ng-if="form['form-'+ $index].unitPrice.$dirty">-->
-<!--<label ng-message="required" class="error">-->
-<!--{{'This field is required'|translate}}-->
-<!--</label>-->
-<!--<label ng-message="notShouldBeZero" class="error">-->
-<!--{{'UntiPrice is not allowed to be zero'|translate}}-->
-<!--</label>-->
-<!--</div>-->
-<!--</td>-->
-
-<!--<td style="width: 10%">-->
-<!--<dev-tag-numeric-->
-<!--class="form-control"-->
-<!--ng-model="item.discount"-->
-<!--name="tax"-->
-<!--required></dev-tag-numeric>-->
-
-<!--<div ng-messages="form['form-'+ $index].tax.$error"-->
-<!--ng-if="form['form-'+ $index].tax.$dirty">-->
-<!--<label ng-message="required" class="error">-->
-<!--{{'This field is required'|translate}}-->
-<!--</label>-->
-<!--</div>-->
-<!--</td>-->
-
-<!--<td style="width: 10%">-->
-<!--<dev-tag-numeric-->
-<!--class="form-control"-->
-<!--ng-model="item.tax"-->
-<!--name="tax"-->
-<!--required></dev-tag-numeric>-->
-
-<!--<div ng-messages="form['form-'+ $index].tax.$error"-->
-<!--ng-if="form['form-'+ $index].tax.$dirty">-->
-<!--<label ng-message="required" class="error">-->
-<!--{{'This field is required'|translate}}-->
-<!--</label>-->
-<!--</div>-->
-<!--</td>-->
-
-<!--<td style="width: 10%">-->
-<!--<dev-tag-numeric-->
-<!--class="form-control"-->
-<!--ng-model="item.vat"-->
-<!--name="vat"-->
-<!--required></dev-tag-numeric>-->
-
-<!--<div ng-messages="form['form-'+ $index].tax.$error"-->
-<!--ng-if="form['form-'+ $index].tax.$dirty">-->
-<!--<label ng-message="required" class="error">-->
-<!--{{'This field is required'|translate}}-->
-<!--</label>-->
-<!--</div>-->
-<!--</td>-->
-
-<!--<td>-->
-<!--<label class="label label-default" ng-model="item.totalPrice">{{(item.unitPrice *-->
-<!--item.quantity)-(item.tax+item.vat+item.discount)}}</label>-->
-<!--</td>-->
-
-<!--<td>-->
-<!--<a ng-if="false"-->
-<!--ng-click="model.additionalInfo(item)" class=""-->
-<!--type="button"-->
-<!--title="{{'Additional Information'|translate}}"-->
-<!--style="margin-top: 0;margin-bottom: 0">-->
-<!--<i class="fa fa-ellipsis-h fa-lg text-navy"></i>-->
-<!--</a>-->
-
-<!--<a-->
-<!--ng-click="model.removeInvoiceLine(item)"-->
-<!--class=""-->
-<!--type="button"-->
-<!--title="{{'Remove'| translate}}"-->
-<!--style="margin-top: 0;margin-bottom: 0">-->
-<!--<i class="fa fa-trash fa-lg text-danger"></i>-->
-<!--</a>-->
-
-<!--</td>-->
-
-<!--</tr>-->
-<!--</tbody>-->
-<!--<tfoot style="background-color: #F9F8F8">-->
-<!--<tr>-->
-<!--<td></td>-->
-<!--<td></td>-->
-<!--<td></td>-->
-<!--<td></td>-->
-<!--<td></td>-->
-<!--<td></td>-->
-<!--<td style="text-align: left">{{model.invoice.invoiceLines | totalSum: ('totalPrice') | number}}</td>-->
-<!--<td></td>-->
-<!--<td></td>-->
-<!--<td></td>-->
-
-<!--</tr>-->
-<!--<tr>-->
-<!--<td colspan="2">-->
-<!--<dev-tag-button-->
-<!--ng-click="model.createInvoiceLine()"-->
-<!--icon="glyphicon glyphicon-plus"-->
-<!--style-type="primary"-->
-<!--title="{{'New Invoice line' | translate}}"></dev-tag-button>-->
-<!--</td>-->
-<!--<td></td>-->
-<!--<td></td>-->
-<!--<td></td>-->
-<!--<td></td>-->
-<!--<td></td>-->
-<!--<td></td>-->
-<!--<td></td>-->
-<!--<td></td>-->
-<!--</tr>-->
-<!--</tfoot>-->
-<!--</table>-->
-<!--</div>-->
-
 <div class="row">
     <table class="table table-bordered table-hover">
         <thead>
         <tr class="active" style="font-size: 9pt; font-weight: bold;">
             <td>#</td>
-            <td>آیتم</td>
+            <td>کالا / خدمات</td>
+            <td>شرح</td>
             <td>
             <span data-toggle="popover" data-placement="top" data-trigger="hover"
-                  data-original-title="" title="">تعداد</span>
+                  data-original-title="" title="">مقدار</span>
             </td>
             <td>مبلغ واحد <span style="font-weight: normal">(ریال)</span></td>
             <td>تخفیف</td>
-            <td>مالیات</td>
+            <td>مالیات (9 درصد)</td>
             <td>مبلغ کل <span style="font-weight: normal">(ریال)</span></td>
             <td></td>
         </tr>
@@ -212,20 +25,27 @@
 
             <td style="width: 30px; padding: 0px; vertical-align: middle; text-align: center;">{{item.row}}</td>
 
+            <td style="width: 20%; padding: 0px;" class="invoice-td">
+                <dev-tag-combo-box style="width: 500px;"
+                                   name="product"
+                                   k-placeholder="{{'Select ...'|translate}}"
+                                   k-data-value-field="id"
+                                   k-data-text-field="title"
+                                   k-on-created="model.createNewProduct(item,$search)"
+                                   k-on-changed="model.onProductChanged(item, $item)"
+                                   url="{{model.urls.getAllProduct}}"
+                                   show-no-data-template
+                                   ng-model="item.productId" required></dev-tag-combo-box>
+            </td>
 
-            <td style="width: 500px; padding: 0px;" class="invoice-td">
-               <dev-tag-combo-box style="width: 500px;"
-                        name="product"
-                        k-placeholder="{{'Select ...'|translate}}"
-                        k-data-value-field="id"
-                        k-data-text-field="title"
-                        k-data-source="model.products"
-                        on-created="model.createNewProduct"
-                        show-no-data-template
-                        ng-model="item.productId" required></dev-tag-combo-box>
+            <td style="width: 30%; padding: 0px;">
+                <dev-tag-text-box
+                        style="height: 30px"
+                        ng-model="item.description"
+                        name="description"></dev-tag-text-box>
 
-                <div ng-messages="form['form-'+ $index].product.$error"
-                     ng-if="form['form-'+ $index].product.$dirty">
+                <div ng-messages="form['form-'+ $index].description.$error"
+                     ng-if="form['form-'+ $index].description.$dirty">
                     <label ng-message="required" class="error">{{'This field is required'|translate}}</label>
                 </div>
             </td>
@@ -235,6 +55,7 @@
                         class="form-control input-grid-factor input-sm"
                         ng-model="item.quantity"
                         name="quantity"
+                        ng-change="model.onItemPropertyChanged(item)"
                         required
                         not-should-be-zero="item.quantity"></dev-tag-numeric>
 
@@ -254,6 +75,7 @@
                         ng-model="item.unitPrice"
                         name="unitPrice"
                         required
+                        ng-change="model.onItemPropertyChanged(item)"
                         not-should-be-zero="item.unitPrice"></dev-tag-numeric>
 
                 <div ng-messages="form['form-'+ $index].unitPrice.$error"
@@ -271,6 +93,7 @@
                 <dev-tag-numeric
                         class="form-control input-grid-factor input-sm"
                         ng-model="item.discount"
+                        ng-change="model.onItemPropertyChanged(item)"
                         name="discount"
                         required></dev-tag-numeric>
 
@@ -297,8 +120,8 @@
                 </div>
             </td>
 
-            <td style="padding: 0px; vertical-align: middle; text-align: center;">
-                ((item.unitPrice * item.quantity)-item.discount) + ((item.unitPrice * item.quantity)-item.discount)*(item.vat/100)">{{((item.unitPrice * item.quantity)-item.discount) + ((item.unitPrice * item.quantity)-item.discount)*(item.vat/100) | number}}
+            <td style="width: 120px;padding: 0px; vertical-align: middle; text-align: center;">
+                <span>{{(item.quantity * item.unitPrice) - item.discount + item.vat | number}}</span>
             </td>
 
             <td style="width: 20px; padding: 0px; vertical-align: middle; text-align: center;">
@@ -338,6 +161,7 @@
                     </div>
                 </div>
             </div>
+
         </div>
         <div class="col-md-4">
             <div class="row text-left">
@@ -345,17 +169,21 @@
                 <div class="col-xs-7 title1">{{model.invoice.invoiceLines | totalPrice | number}}</div>
             </div>
             <div class="row text-left">
-                <div class="col-xs-5 title1">جمع تخفیف <span style="font-weight: normal" >(ریال)</span></div>
-                <div class="col-xs-7 title1 text-danger">({{model.invoice.invoiceLines | totalSum: ('discount') | number}})</div>
+                <div class="col-xs-5 title1">جمع تخفیف <span style="font-weight: normal">(ریال)</span></div>
+                <div class="col-xs-7 title1">
+                    {{model.invoice.invoiceLines | totalSum: ('discount') | number}}
+                </div>
             </div>
             <div class="row text-left">
                 <div class="col-xs-5 title1">جمع مالیات <span style="font-weight: normal">(ریال)</span></div>
-                <div class="col-xs-7 title1 ">{{model.invoice.invoiceLines | sumTotalTaxPrice | number}}</div>
+                <div class="col-xs-7 title1">
+                    {{model.invoice.invoiceLines | totalSum: ('vat') | number}}
+                </div>
             </div>
             <div class="row" style="border-top: 1px solid rgb(69, 69, 69); margin-top: 1px; margin-bottom: 1px;"></div>
             <div class="row text-left" style="border-bottom: 1px solid rgb(69, 69, 69)">
                 <div class="col-xs-5 h5 txt-bold">مبلغ کل <span style="font-weight: normal">(ریال)</span></div>
-                <div class="col-xs-7 h5 txt-bold ">{{model.invoice.invoiceLines | sumTotalPrice | number}}</div>
+                <div class="col-xs-7 h5 txt-bold ">{{model.invoice.invoiceLines | sumTotalPrice| number}}</div>
             </div>
             <div class="row" style="border-top: 1px solid rgb(69, 69, 69); margin-top: 1px; margin-bottom: 10px;"></div>
         </div>

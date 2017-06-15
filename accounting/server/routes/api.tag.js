@@ -9,13 +9,13 @@ const async = require('asyncawait/async'),
 
 router.route('/')
     .get(async((req, res) => {
-        let tagQuery = new TagQuery(req.cookies['branch-id']),
+        let tagQuery = new TagQuery(req.branchId),
             result = await(tagQuery.getAll(req.query));
         res.json(result);
     }))
     .post(async((req, res) => {
         let tag = req.body,
-            tagRepository = new TagRepository(req.cookies['branch-id']);
+            tagRepository = new TagRepository(req.branchId);
 
         tag = await(tagRepository.create(tag));
 

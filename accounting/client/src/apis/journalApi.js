@@ -1,7 +1,7 @@
-import accModule from '../acc.module';
+import accModule from "../acc.module";
 
-function journalApi(apiPromise) {
-    var urlPrefix = '/acc/api';
+function journalApi(apiPromise, devConstants) {
+    var urlPrefix = devConstants.urls.rootUrl;
 
     return {
         url: {
@@ -11,7 +11,7 @@ function journalApi(apiPromise) {
         getById: function (id) {
             return apiPromise.get('{0}/journals/{1}'.format(urlPrefix, id));
         },
-        getByNumber:(number)=> apiPromise.get(`${urlPrefix}/journals/by-number/${number}`),
+        getByNumber: (number) => apiPromise.get(`${urlPrefix}/journals/by-number/${number}`),
         getMaxNumber(){
             return apiPromise.get(`${urlPrefix}/journals/max-number`);
         },

@@ -299,6 +299,7 @@
   },
   {
     "key": "7",
+    "showOnAccounting": false,
     "text": "خرید و فروش",
     "items": [
       {
@@ -306,6 +307,8 @@
         "text": "فاکتور فروش",
         "func": "invoice",
         "fileName": "saleInvoice",
+        "useLayout": false,
+        "showOnAccounting": false,
         "params": [
           {
             "name": "id"
@@ -317,6 +320,8 @@
         "text": "فاکتور خرید",
         "func": "invoice",
         "fileName": "purchaseInvoice",
+        "useLayout": false,
+        "showOnAccounting": false,
         "params": [
           {
             "name": "id"

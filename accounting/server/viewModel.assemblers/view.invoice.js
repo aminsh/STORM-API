@@ -12,7 +12,8 @@ module.exports = function(entity) {
         detailAccountId: entity.detailAccountId,
         detailAccountDisplay: entity.detailAccountDisplay,
         status: entity.invoiceStatus,
-        statusDisplay: enums.InvoiceStatus().getDisplay(entity.invoiceStatus)
+        statusDisplay: enums.InvoiceStatus().getDisplay(entity.invoiceStatus),
+        invoiceLines: entity.invoiceLines
     };
 };
 

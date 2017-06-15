@@ -10,12 +10,12 @@ const async = require('asyncawait/async'),
 
 router.route('/category/:categoryId')
     .get(async((req, res) => {
-        let dimensionQuery = new DimensionQuery(req.cookies['branch-id']),
+        let dimensionQuery = new DimensionQuery(req.branchId),
             result = await(dimensionQuery.getAll(req.params.categoryId, req.query));
         res.json(result);
     }))
     .post(async((req, res) => {
-        let dimensionRepository = new DimensionRepository(req.cookies['branch-id']),
+        let dimensionRepository = new DimensionRepository(req.branchId),
             errors = [],
             cmd = req.body,
             categoryId = req.params.categoryId;
@@ -56,12 +56,12 @@ router.route('/category/:categoryId')
 
 router.route('/:id')
     .get(async((req, res) => {
-        let dimensionQuery = new DimensionQuery(req.cookies['branch-id']),
+        let dimensionQuery = new DimensionQuery(req.branchId),
             result = await(dimensionQuery.getById(req.params.id));
         res.json(result);
     }))
     .put(async((req, res) => {
-        let dimensionRepository = new DimensionRepository(req.cookies['branch-id']),
+        let dimensionRepository = new DimensionRepository(req.branchId),
             errors = [],
             cmd = req.body;
 
@@ -96,14 +96,14 @@ router.route('/:id')
         return res.json({ isValid: true });
     }))
     .delete(async((req, res) => {
-        let dimensionRepository = new DimensionRepository(req.cookies['branch-id']);
+        let dimensionRepository = new DimensionRepository(req.branchId);
         await(dimensionRepository.remove(req.params.id));
 
         return res.json({ isValid: true });
     }));
 
 router.route('/:id/activate').put(async((req, res) => {
-    let dimensionRepository = new DimensionRepository(req.cookies['branch-id']),
+    let dimensionRepository = new DimensionRepository(req.branchId),
         entity = await(dimensionRepository.findById(req.params.id));
 
     entity.isActive = true;
@@ -113,7 +113,7 @@ router.route('/:id/activate').put(async((req, res) => {
     return res.json({ isValid: true });
 }));
 router.route('/:id/deactivate').put(async((req, res) => {
-    let dimensionRepository = new DimensionRepository(req.cookies['branch-id']),
+    let dimensionRepository = new DimensionRepository(req.branchId),
         entity = await(dimensionRepository.findById(req.params.id));
 
     entity.isActive = false;

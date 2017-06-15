@@ -8,7 +8,9 @@ export default class {
 
         $scope.$emit('close-sidebar');
 
-        this.reports = devConstants.reports;
+        this.reports = devConstants.reports.asEnumerable()
+            .where(r => [undefined, true].includes(r.showOnAccounting))
+            .toArray();
         this.reportParameters = reportParameters;
         this.navigate = navigate;
     }

@@ -11,6 +11,10 @@ export default class ChartOfAccountApi {
     get(){
         return this.Api.get(`${this.prefixUrl}/default/chart-of-accounts`);
     }
+
+    create(){
+        return this.Api.post(`${this.prefixUrl}/default/chart-of-accounts`);
+    }
 }
 
 ChartOfAccountApi.$inject = ['Api'];

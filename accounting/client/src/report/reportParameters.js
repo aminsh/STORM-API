@@ -1,17 +1,22 @@
 "use strict";
 
 export class ReportParametersController {
-    constructor(
-        data,
-        formService,
-        $uibModalInstance,
-        generalLedgerAccountApi,
-        subsidiaryLedgerAccountApi,
-        detailAccountApi,
-        dimensionCategoryApi,
-        dimensionApi,
-        $q) {
+    constructor(data,
+                formService,
+                $uibModalInstance,
+                generalLedgerAccountApi,
+                subsidiaryLedgerAccountApi,
+                detailAccountApi,
+                dimensionCategoryApi,
+                dimensionApi,
+                $q,
+                devConstants) {
 
+        this.urls = {
+            getAllGeneralLedgerAccount: devConstants.urls.generalLedgerAccount.all(),
+            getAllSubsidiaryLedgerAccount: devConstants.urls.subsidiaryLedgerAccount.all(),
+            getAllDetailAccount: devConstants.urls.detailAccount.all()
+        };
         this.paramsConfig = data;
         this.parameters = {
             generalLedgerAccounts: [],
@@ -31,20 +36,20 @@ export class ReportParametersController {
         this.dimensionApi = dimensionApi;
         this.dimensionCategoryApi = dimensionCategoryApi;
 
-        this.canShowContent = false;
+        this.canShowContent = true;
 
-        this.fetch();
+        //this.fetch();
     }
 
     fetch() {
         let dimensionCategories = this.dimensionCategoryApi.getAllLookupSync(),
             promises = [
-                { key: 'generalLedgerAccount', func: this.generalLedgerAccountApi.getAll() },
-                { key: 'subsidiaryLedgerAccount', func: this.subsidiaryLedgerAccountApi.getAll() },
-                { key: 'detailAccount', func: this.detailAccountApi.getAll() },
-                { key: 'dimension1', func: this.dimensionApi.getByCategory(dimensionCategories[0].id) },
-                { key: 'dimension2', func: this.dimensionApi.getByCategory(dimensionCategories[1].id) },
-                { key: 'dimension3', func: this.dimensionApi.getByCategory(dimensionCategories[2].id) },
+                {key: 'generalLedgerAccount', func: this.generalLedgerAccountApi.getAll()},
+                {key: 'subsidiaryLedgerAccount', func: this.subsidiaryLedgerAccountApi.getAll()},
+                {key: 'detailAccount', func: this.detailAccountApi.getAll()},
+                {key: 'dimension1', func: this.dimensionApi.getByCategory(dimensionCategories[0].id)},
+                {key: 'dimension2', func: this.dimensionApi.getByCategory(dimensionCategories[1].id)},
+                {key: 'dimension3', func: this.dimensionApi.getByCategory(dimensionCategories[2].id)},
             ];
 
         this.$q.all(

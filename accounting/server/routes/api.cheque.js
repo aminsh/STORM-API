@@ -8,32 +8,32 @@ const async = require('asyncawait/async'),
 
 router.route('/category/:categoryId')
     .get(async((req, res) => {
-        let chequeQuery = new ChequeQuery(req.cookies['branch-id']),
+        let chequeQuery = new ChequeQuery(req.branchId),
             result = await(chequeQuery.getChequesByCategory(req.params.categoryId, req.query));
         res.json(result);
     }));
 
 router.route('/detail-account/:detailAccountId/whites/all').get(async((req, res) => {
-    let chequeQuery = new ChequeQuery(req.cookies['branch-id']),
+    let chequeQuery = new ChequeQuery(req.branchId),
         result = await(chequeQuery.getWhiteCheques(req.params.detailAccountId));
      res.json(result);
 }));
 
 router.route('/used/all').get(async((req, res) => {
-    let chequeQuery = new ChequeQuery(req.cookies['branch-id']),
+    let chequeQuery = new ChequeQuery(req.branchId),
         result = await(chequeQuery.getUsedCheques(req.query));
     res.json(result);
 }));
 
 
 router.route('/:id').get(async((req, res) => {
-    let chequeQuery = new ChequeQuery(req.cookies['branch-id']),
+    let chequeQuery = new ChequeQuery(req.branchId),
         result = await(chequeQuery.getById(req.params.id));
     res.json(result);
 }));
 
 router.route('/:id/write').put(async((req, res) => {
-    let chequeRepository = new ChequeRepository(req.cookies['branch-id']),
+    let chequeRepository = new ChequeRepository(req.branchId),
         errors = [],
         cmd = req.body;
 

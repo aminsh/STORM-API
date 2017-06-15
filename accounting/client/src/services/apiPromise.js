@@ -1,6 +1,6 @@
 import accModule from '../acc.module';
 
-function apiPromise($http, $q) {
+function apiPromise($http, $q, $window) {
 
     function promise($httpPromise) {
         var deferred = $q.defer();
@@ -17,6 +17,8 @@ function apiPromise($http, $q) {
                 }
             })
             .catch(function (error) {
+                if (error.status == 401 && error.data == 'user is not authenticated')
+                    return $window.location.reload();
                 console.error(error);
                 deferred.reject(['Internal Error']);
             });
@@ -33,6 +35,8 @@ function apiPromise($http, $q) {
                     deferred.resolve(result.data);
                 })
                 .catch(function (error) {
+                    if (error.status == 401 && error.data == 'user is not authenticated')
+                        return $window.location.reload();
                     console.error(error);
                     deferred.reject(['Internal Error']);
                 });

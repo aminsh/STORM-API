@@ -1,8 +1,15 @@
-﻿var Enum = require('../.././Enum');
+﻿var Enum = require('../../../shared/utilities/Enum');
 
 var enums = {};
 
 enums.UserState = function () {
+    return new Enum([
+        { key: 'pending', display: 'انتظار' },
+        { key: 'active', display: 'فعال' }
+    ]);
+};
+
+enums.BranchStatus = function () {
     return new Enum([
         { key: 'pending', display: 'انتظار' },
         { key: 'active', display: 'فعال' }

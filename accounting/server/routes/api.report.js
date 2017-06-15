@@ -41,7 +41,7 @@ router.route('/')
 router.route('/file/:fileName').get((req, res) => {
     let withLayout = reportConfig.asEnumerable()
             .selectMany(rc=> rc.items)
-            .any(rc => rc.useLayout && rc.fileName ==  req.params.fileName),
+            .any(rc => [undefined, true].includes(rc.useLayout) && rc.fileName == req.params.fileName),
         report = getReport(req.params.fileName);
 
     if (withLayout) {
@@ -64,7 +64,7 @@ router.route('/file/:fileName').get((req, res) => {
 
 router.route('/general-ledger-accounts')
     .get(async((req, res) => {
-        let ins = new ReportQueryAccounts(req.cookies['branch-id']),
+        let ins = new ReportQueryAccounts(req.branchId),
             result = await(ins.getGeneralLedgerAccounts());
         res.json(result);
 
@@ -72,14 +72,14 @@ router.route('/general-ledger-accounts')
 
 router.route('/subsidiary-ledger-accounts')
     .get(async((req, res) => {
-        let ins = new ReportQueryAccounts(req.cookies['branch-id']),
+        let ins = new ReportQueryAccounts(req.branchId),
             result = await(ins.getSubsidiaryLedgerAccounts());
         res.json(result);
     }));
 
 router.route('/detail-accounts')
     .get(async((req, res) => {
-        let ins = new ReportQueryAccounts(req.cookies['branch-id']),
+        let ins = new ReportQueryAccounts(req.branchId),
             result = await(ins.getDetailAccounts());
         res.json(result);
 
@@ -88,7 +88,7 @@ router.route('/detail-accounts')
 router.route('/general-balance')
     .get(async((req, res) => {
         let ins = new ReportQueryBalance(
-            req.cookies['branch-id'],
+            req.branchId,
             req.cookies['current-period'],
             req.cookies['current-mode'],
             req.query),
@@ -98,7 +98,7 @@ router.route('/general-balance')
 
 router.route('/subsidiary-balance')
     .get(async((req, res) => {
-        let ins = new ReportQueryBalance(req.cookies['branch-id'],
+        let ins = new ReportQueryBalance(req.branchId,
             req.cookies['current-period'],
             req.cookies['current-mode'],
             req.query),
@@ -108,7 +108,7 @@ router.route('/subsidiary-balance')
 
 router.route('/subsidiary-detail-balance')
     .get(async((req, res) => {
-        let ins = new ReportQueryBalance(req.cookies['branch-id'],
+        let ins = new ReportQueryBalance(req.branchId,
             req.cookies['current-period'],
             req.cookies['current-mode'],
             req.query),
@@ -118,7 +118,7 @@ router.route('/subsidiary-detail-balance')
 
 router.route('/general-subsidiary-detail-balance')
     .get(async((req, res) => {
-        let ins = new ReportQueryBalance(req.cookies['branch-id'],
+        let ins = new ReportQueryBalance(req.branchId,
             req.cookies['current-period'],
             req.cookies['current-mode'],
             req.query),
@@ -128,7 +128,7 @@ router.route('/general-subsidiary-detail-balance')
 
 router.route('/journal-office')
     .get(async((req, res) => {
-        let ins = new ReportQueryFinancialOffices(req.cookies['branch-id'],
+        let ins = new ReportQueryFinancialOffices(req.branchId,
             req.cookies['current-period'],
             req.cookies['current-mode'],
             req.query),
@@ -138,7 +138,7 @@ router.route('/journal-office')
 
 router.route('/general-office')
     .get(async((req, res) => {
-        let ins = new ReportQueryFinancialOffices(req.cookies['branch-id'],
+        let ins = new ReportQueryFinancialOffices(req.branchId,
             req.cookies['current-period'],
             req.cookies['current-mode'],
             req.query),
@@ -148,7 +148,7 @@ router.route('/general-office')
 
 router.route('/subsidiary-office')
     .get(async((req, res) => {
-        let ins = new ReportQueryFinancialOffices(req.cookies['branch-id'],
+        let ins = new ReportQueryFinancialOffices(req.branchId,
             req.cookies['current-period'],
             req.cookies['current-mode'],
             req.query),
@@ -158,7 +158,7 @@ router.route('/subsidiary-office')
 
 router.route('/total-general-subsidiary-turnover')
     .get(async((req, res) => {
-        let ins = new ReportQueryTurnover(req.cookies['branch-id'],
+        let ins = new ReportQueryTurnover(req.branchId,
             req.cookies['current-period'],
             req.cookies['current-mode'],
             req.query),
@@ -168,7 +168,7 @@ router.route('/total-general-subsidiary-turnover')
 
 router.route('/total-subsidiary-detail-turnover')
     .get(async((req, res) => {
-        let ins = new ReportQueryTurnover(req.cookies['branch-id'],
+        let ins = new ReportQueryTurnover(req.branchId,
             req.cookies['current-period'],
             req.cookies['current-mode'],
             req.query),
@@ -178,7 +178,7 @@ router.route('/total-subsidiary-detail-turnover')
 
 router.route('/total-general-subsidiary-detail-turnover')
     .get(async((req, res) => {
-        let ins = new ReportQueryTurnover(req.cookies['branch-id'],
+        let ins = new ReportQueryTurnover(req.branchId,
             req.cookies['current-period'],
             req.cookies['current-mode'],
             req.query),
@@ -188,7 +188,7 @@ router.route('/total-general-subsidiary-detail-turnover')
 
 router.route('/detail-general-subsidiary-turnover')
     .get(async((req, res) => {
-        let ins = new ReportQueryTurnover(req.cookies['branch-id'],
+        let ins = new ReportQueryTurnover(req.branchId,
             req.cookies['current-period'],
             req.cookies['current-mode'],
             req.query),
@@ -198,7 +198,7 @@ router.route('/detail-general-subsidiary-turnover')
 
 router.route('/detail-subsidiary-detail-turnover')
     .get(async((req, res) => {
-        let ins = new ReportQueryTurnover(req.cookies['branch-id'],
+        let ins = new ReportQueryTurnover(req.branchId,
             req.cookies['current-period'],
             req.cookies['current-mode'],
             req.query),
@@ -208,7 +208,7 @@ router.route('/detail-subsidiary-detail-turnover')
 
 router.route('/detail-general-subsidiary-detail-turnover')
     .get(async((req, res) => {
-        let ins = new ReportQueryTurnover(req.cookies['branch-id'],
+        let ins = new ReportQueryTurnover(req.branchId,
             req.cookies['current-period'],
             req.cookies['current-mode'],
             req.query),
@@ -218,7 +218,7 @@ router.route('/detail-general-subsidiary-detail-turnover')
 
 router.route('/detail-journal')
     .get(async((req, res) => {
-        let ins = new ReportQueryJournal(req.cookies['branch-id'],
+        let ins = new ReportQueryJournal(req.branchId,
             req.cookies['current-period'],
             req.cookies['current-mode'],
             req.query),
@@ -228,7 +228,7 @@ router.route('/detail-journal')
 
 router.route('/detail-general-journal')
     .get(async((req, res) => {
-        let ins = new ReportQueryJournal(req.cookies['branch-id'],
+        let ins = new ReportQueryJournal(req.branchId,
             req.cookies['current-period'],
             req.cookies['current-mode'],
             req.query),
@@ -238,7 +238,7 @@ router.route('/detail-general-journal')
 
 router.route('/detail-general-subsidiary-journal')
     .get(async((req, res) => {
-        let ins = new ReportQueryJournal(req.cookies['branch-id'],
+        let ins = new ReportQueryJournal(req.branchId,
             req.cookies['current-period'],
             req.cookies['current-mode'],
             req.query),
@@ -248,7 +248,7 @@ router.route('/detail-general-subsidiary-journal')
 
 router.route('/detail-subsidiary-detail-journal')
     .get(async((req, res) => {
-        let ins = new ReportQueryJournal(req.cookies['branch-id'],
+        let ins = new ReportQueryJournal(req.branchId,
             req.cookies['current-period'],
             req.cookies['current-mode'],
             req.query),
@@ -258,9 +258,9 @@ router.route('/detail-subsidiary-detail-journal')
 
 router.route('/invoices')
     .get(async((req, res) => {
-        let ins = new ReportQueryInvoice(req.cookies['branch-id']),
-            result = await(ins.Invoice(req.query.id));
-/*            result = [
+        let ins = new ReportQueryInvoice(req.branchId),
+            result = await(ins.invoice(req.query.id));
+        /*result = [
                 {
                     number: 0,
                     date: '',
@@ -275,6 +275,7 @@ router.route('/invoices')
                     netPrice: 0,
                     invoiceLineDescription: '',
                     productName: '',
+                    postalCode: '',
                     customerName:'',
                     customerAddress: '',
                     personCode: ''

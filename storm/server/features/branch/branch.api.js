@@ -1,7 +1,7 @@
 "use strict";
 
 const express = require('express'),
-    config= require('../../config'),
+    config = require('../../config'),
     router = express.Router(),
     async = require('asyncawait/async'),
     await = require('asyncawait/await'),
@@ -17,12 +17,17 @@ router.route('/').post(async((req, res) => {
     let cmd = req.body,
         entity = {
             name: cmd.name,
+            ownerName: cmd.ownerName,
             logo: cmd.logo
                 ? Image.toBase64(`${config.rootPath}/../${cmd.logo}`)
                 : config.logo,
             phone: cmd.phone,
+            mobile: cmd.mobile,
             address: cmd.address,
-            ownerId: req.user.id
+            postalCode: cmd.postalCode,
+            nationalCode: cmd.nationalCode,
+            ownerId: req.user.id,
+            status: 'pending'
         };
 
     await(branchRepository.create(entity));
@@ -45,7 +50,7 @@ router.route('/current/api-key').get(async((req, res) => {
         apiKey = currentBranch.apiKey;
     else {
         let owner = await(userRepository.getById(currentBranch.ownerId));
-        apiKey = jwt.sign({branchId: currentBranch.id, user: {email: owner.email, id: owner.id}}, superSecret);
+        apiKey = jwt.sign({branchId: currentBranch.id, userId: req.user.id}, superSecret);
 
         await(branchRepository.update(currentBranch.id, {apiKey}));
     }

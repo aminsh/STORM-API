@@ -13,15 +13,14 @@ const async = require('asyncawait/async'),
 
 router.route('/')
     .get(async((req, res) => {
-        let invoiceQuery = new InvoiceQuery(req.cookies['branch-id']),
+        let invoiceQuery = new InvoiceQuery(req.branchId),
             result = await(invoiceQuery.getAll(req.query, 'sale'));
 
         res.json(result);
     }))
 
-    //confirm invoice
     .post(async((req, res) => {
-        let branchId = req.cookies['branch-id'],
+        let branchId = req.branchId,
             invoiceRepository = new InvoiceRepository(branchId),
             productRepository = new ProductRepository(branchId),
             cmd = req.body,
@@ -32,8 +31,10 @@ router.route('/')
                 userId: req.user.id
             },
 
+            status = cmd.status == 'confirm' ? 'waitForPayment' : 'draft',
+
             entity = createInvoice(
-                'waitForPayment',
+                status,
                 cmd,
                 invoiceRepository,
                 productRepository),
@@ -42,27 +43,88 @@ router.route('/')
 
         res.json({isValid: true, returnValue: {id: result.id}});
 
-        EventEmitter.emit('on-sale-created', result, current);
+        if (status == 'waitForPayment')
+            EventEmitter.emit('on-sale-created', result, current);
     }));
 
-// saved as draft invoice
-router.route('/as-draft')
+router.route('/:id/confirm')
     .post(async((req, res) => {
-        let invoiceRepository = new InvoiceRepository(req.cookies['branch-id']),
-            productRepository = new ProductRepository(req.cookies['branch-id']),
-            cmd = req.body,
 
-            entity = createInvoice('draft',
-                cmd,
-                invoiceRepository,
-                productRepository),
+        let branchId = req.branchId,
+            invoiceRepository = new InvoiceRepository(branchId),
+            entity = {statue: 'waitForPayment'},
+            id = req.params.id,
 
-            result = await(invoiceRepository.create(entity));
+            current = {
+                branchId,
+                fiscalPeriodId: req.cookies['current-period'],
+                userId: req.user.id
+            };
 
-        res.json({isValid: true, returnValue: {id: result.id}});
+        await(invoiceRepository.update(id, entity));
+
+        let sale = await(invoiceRepository.findById(id));
+
+        res.json({isValid: true});
+
+        EventEmitter.emit('on-sale-created', sale, current);
     }));
 
-function createInvoice(status, cmd, invoiceRepository, productRepository) {
+router.route('/:id')
+    .get(async((req, res) => {
+        let invoiceQuery = new InvoiceQuery(req.branchId),
+            result = await(invoiceQuery.getById(req.params.id));
+
+        res.json(result);
+    }))
+    .put(async((req, res) => {
+        let invoiceRepository = new InvoiceRepository(req.branchId),
+            id = req.params.id,
+            cmd = req.body,
+            status = cmd.status == 'confirm' ? 'waitForPayment' : 'draft',
+
+            current = {
+                branchId: req.branchId,
+                fiscalPeriodId: req.cookies['current-period'],
+                userId: req.user.id
+            },
+
+            entity = {
+                date: cmd.date,
+                description: cmd.description,
+                detailAccountId: cmd.detailAccountId,
+                invoiceStatus: status
+            };
+
+        entity.invoiceLines = cmd.invoiceLines.asEnumerable()
+            .select(line => ({
+                id: line.id,
+                productId: line.productId,
+                description: line.description,
+                quantity: line.quantity,
+                unitPrice: line.unitPrice,
+                discount: line.discount,
+                vat: line.vat
+            }))
+            .toArray();
+
+        await(invoiceRepository.updateBatch(id, entity));
+
+        if (status == 'waitForPayment')
+            EventEmitter.emit('on-sale-created', await(invoiceRepository.findById(id)), current);
+
+        res.json({isValid: true});
+
+    }))
+    .delete(async((req, res) => {
+        let invoiceRepository = new InvoiceRepository(req.branchId);
+
+        await(invoiceRepository.remove(req.params.id));
+
+        res.json({isValid: true});
+    }));
+
+function createInvoice(status, cmd, invoiceRepository) {
     let entity = {
         number: (await(invoiceRepository.saleMaxNumber()).max || 0) + 1,
         date: cmd.date,
@@ -72,12 +134,10 @@ function createInvoice(status, cmd, invoiceRepository, productRepository) {
         invoiceStatus: status
     };
 
-    entity.lines = cmd.invoiceLines.asEnumerable()
+    entity.invoiceLines = cmd.invoiceLines.asEnumerable()
         .select(line => ({
             productId: line.productId,
-            description: (line.productId)
-                ? await(productRepository.findById(line.productId)).title
-                : line.description,
+            description: line.description,
             quantity: line.quantity,
             unitPrice: line.unitPrice,
             discount: line.discount,
@@ -90,22 +150,27 @@ function createInvoice(status, cmd, invoiceRepository, productRepository) {
 
 router.route('/:id/pay')
     .post(async((req, res) => {
-        let payment = new Payment(req.cookies['branch-id']);
+        let payment = new Payment(req.branchId, req.cookies['current-period']);
 
-        payment.create(req.body);
-        await(payment.save());
+        await(payment.save(req.params.id, req.body));
 
         res.json({isValid: true});
-
-        payment.generateJournal();
     }));
 
 router.route('/:id/lines').get(async((req, res) => {
-    let invoiceQuery = new InvoiceQuery(req.cookies['branch-id']),
+    let invoiceQuery = new InvoiceQuery(req.branchId),
         result = await(invoiceQuery.getAllLines(req.params.id, req.query));
 
     res.json(result);
 }));
+
+router.route('/max/number')
+    .get(async((req, res) => {
+        let invoiceQuery = new InvoiceQuery(req.branchId),
+            result = await(invoiceQuery.maxNumber('sale'));
+
+        res.json(result.max);
+    }));
 
 module.exports = router;
 

@@ -6,8 +6,8 @@
     <dev-tag-combo-box
             multiple
             ng-model="model.parameters.generalLedgerAccounts"
-            k-data-source="model.generalLedgerAccountDataSource"
             k-placeholder="{{'Select ...'|translate}}"
-            k-data-text-field="display"=
-            k-data-value-field="id"></dev-tag-combo-box>
+            k-data-text-field="display"
+            k-data-value-field="id"
+            url="{{model.urls.getAllGeneralLedgerAccount}}"></dev-tag-combo-box>
 </div>

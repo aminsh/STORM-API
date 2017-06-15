@@ -13,12 +13,32 @@ module.exports = class InvoiceQuery extends BaseQuery {
         super(branchId);
     }
 
+    getById(id) {
+        let knex = this.knex,
+            branchId = this.branchId,
+            invoice = await(knex.select('invoices.*',
+                knex.raw('"detailAccounts"."title" as "detailAccountDisplay"'))
+                .from('invoices')
+                .leftJoin('detailAccounts', 'invoices.detailAccountId', 'detailAccounts.id')
+                .where('invoices.branchId', branchId)
+                .andWhere('invoices.id', id)
+                .first()),
+            invoiceLines = await(knex.select('*')
+                .from('invoiceLines')
+                .where('branchId', branchId)
+                .andWhere('invoiceId', id));
+
+        invoice.invoiceLines = invoiceLines.asEnumerable().select(lineView).toArray();
+
+        return view(invoice);
+    }
+
     getAll(parameters, invoiceType) {
         let knex = this.knex,
             branchId = this.branchId,
 
             query = knex.select().table(function () {
-                this.select('*', knex.raw('"detailAccounts"."title" as "detailAccountDisplay"'))
+                this.select('invoices.*', knex.raw('"detailAccounts"."title" as "detailAccountDisplay"'))
                     .from('invoices')
                     .leftJoin('detailAccounts', 'invoices.detailAccountId', 'detailAccounts.id')
                     .where('invoices.branchId', branchId)
@@ -36,10 +56,18 @@ module.exports = class InvoiceQuery extends BaseQuery {
             query = knex.select('*').table(function () {
                 this.select('*')
                     .from('invoiceLines')
-                    .where('branchId', this.branchId)
-                    .andWhere('invoiceId', invoiceId)
+                    .where('branchId', branchId)
+                    .andWhere('invoiceId', invoiceId).as('invoiceLines')
             });
 
         return kendoQueryResolve(query, parameters, lineView);
+    }
+
+    maxNumber(invoiceType) {
+        return this.knex.table('invoices')
+            .modify(this.modify, this.branchId)
+            .where('invoiceType', invoiceType)
+            .max('number')
+            .first();
     }
 };

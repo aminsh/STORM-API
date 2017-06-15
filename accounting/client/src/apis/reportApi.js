@@ -1,7 +1,7 @@
 
 export default class {
     constructor(apiPromise, $q, devConstants) {
-        this.urlPrefix = '/acc/api/reports';
+        this.urlPrefix = `${devConstants.urls.rootUrl}/reports`;
         this.apiPromise = apiPromise;
         this.$q = $q;
         this.constants = devConstants;

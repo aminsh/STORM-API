@@ -52,6 +52,27 @@ function reportDesigner(reportApi, $rootScope) {
             }));
 
             report.dictionary.variables.add(addVariable({
+                name: 'branchPostalCode',
+                alias: 'Branch postalCode',
+                category: "general",
+                value: $rootScope.branch.postalCode
+            }));
+
+            report.dictionary.variables.add(addVariable({
+                name: 'branchNationalCode',
+                alias: 'Branch nationalCode',
+                category: "general",
+                value: $rootScope.branch.nationalCode
+            }));
+
+            report.dictionary.variables.add(addVariable({
+                name: 'branchAddress',
+                alias: 'Branch address',
+                category: "general",
+                value: $rootScope.branch.address
+            }));
+
+            report.dictionary.variables.add(addVariable({
                 name: 'branchTitle',
                 alias: 'Branch title',
                 category: "general",

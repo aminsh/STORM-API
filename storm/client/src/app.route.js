@@ -82,6 +82,13 @@ export default function routing($stateProvider, $urlRouterProvider, $locationPro
             controllerAs: 'model',
             shouldAuthenticate: true
         })
+        .state('setup.infoSuccess', {
+            url: '/success',
+            onEnter: (logger, translate , $state) => {
+                logger.success(translate('با تشکر از شما . بزودی با شما تماس خواهیم گرفت'))
+                    .then(()=> $state.go('profile'));
+            }
+        })
         .state('setup.fiscalPeriod', {
             url: '/first-fiscal-period',
             templateUrl: 'app/branch/setup-firstFiscalPeriod.html',
@@ -94,6 +101,13 @@ export default function routing($stateProvider, $urlRouterProvider, $locationPro
             templateUrl: 'app/branch/setup-chartOfAccounts.html',
             controller: 'SetupChartOfAccountsController',
             controllerAs: 'model',
+            shouldAuthenticate: true
+        })
+        .state('setup.final', {
+            url: '/final',
+            onEnter: ($window) => {
+                $window.location.href = `${$window.location.origin}/acc`;
+            },
             shouldAuthenticate: true
         })
 

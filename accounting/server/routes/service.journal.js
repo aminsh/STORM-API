@@ -45,7 +45,7 @@ module.exports = class JournalService {
             .select(journalLine => {
 
                 return {
-                    generalLedgerAccountId: await(this.subsidiaryLedgerAccountRepository.findById(journalLine.subsidiaryLedgerAccountId)),
+                    generalLedgerAccountId: await(this.subsidiaryLedgerAccountRepository.findById(journalLine.subsidiaryLedgerAccountId)).id,
                     subsidiaryLedgerAccountId: journalLine.subsidiaryLedgerAccountId,
                     detailAccountId: journalLine.detailAccountId,
                     dimension1Id: journalLine.dimension1Id,
@@ -87,15 +87,16 @@ module.exports = class JournalService {
         return this.createBySale(sale, {subsidiaryLedgerAccountId, detailAccountId});
     }
 
-    createBySale(sale, fundAndBank) {
-        let saleLines = sale.saleLines,
-            sumAmount = saleLines.asEnumerable().sum(line => line.unitPrice * line.quantity),
-            sumDiscount = saleLines.asEnumerable().sum(line => line.discount),
-            sumVat = saleLines.asEnumerable().sum(line => line.vat),
-            description = translate('For Cash invoice number').format(sale.number),
+    createBySale(invoice, fundAndBank) {
+        let invoiceLines = invoice.invoiceLines,
+            sumAmount = invoiceLines.asEnumerable().sum(line => line.unitPrice * line.quantity),
+            sumDiscount = invoiceLines.asEnumerable().sum(line => line.discount),
+            sumVat = invoiceLines.asEnumerable().sum(line => line.vat),
+            description = translate('For Cash invoice number ...').format(invoice.number),
             entity = {description},
             lines = [
                 {
+                    generalLedgerAccountId: fundAndBank.generalLedgerAccountId,
                     subsidiaryLedgerAccountId: fundAndBank.subsidiaryLedgerAccountId,
                     detailAccountId: fundAndBank.detailAccountId,
                     debtor: sumAmount - sumDiscount + sumVat,
@@ -104,7 +105,7 @@ module.exports = class JournalService {
                     row: 1
                 }, {
                     subsidiaryLedgerAccountId: await(this.subsidiaryLedgerAccountRepository.findByCode('6101')).id,
-                    detailAccountId: sale.detailAccountId,
+                    detailAccountId: invoice.detailAccountId,
                     debtor: 0,
                     creditor: sumAmount,
                     article: description,

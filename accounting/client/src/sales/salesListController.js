@@ -2,9 +2,12 @@
 export default class salesListController {
     constructor(
                 translate,
+                confirm,
                 devConstants,
                 logger,
                 $timeout,
+                $state,
+                salesInvoiceApi,
                 navigate,
                 $scope) {
 
@@ -12,30 +15,128 @@ export default class salesListController {
         this.$timeout = $timeout;
         this.logger = logger;
         this.translate = translate;
+        this.salesInvoiceApi=salesInvoiceApi
 
         $scope.gridOption = {
-            columns: [
-                {name: 'number', title: translate('Number'), width: '120px', type: 'number'},
-                {name: 'date', title: translate('Date'), type: 'date', width: '120px',},
-                {
-                name: 'description', title: translate('Description'), type: 'string', width: '30%',
+            dataSource: new kendo.data.DataSource({
+                serverFiltering: true,
+                serverPaging: true,
+                pageSize: 20,
+                transport: {
+                    read: {
+                        url: devConstants.urls.sales.getAll(),
+                        dataType: "json"
+                    }
                 },
-            ],
-            commands: [
+                schema: {
+                    data: 'data',
+                    total: 'total'
+                }
+            }),
+            reorderable: true,
+            resizable: true,
+            sortable: true,
+            scrollable: {
+                virtual: true
+            },
+            filterable: true,
+            pageable: {
+                refresh: true,
+                pageSizes: true,
+                buttonCount: 10
+            },
+            columns: [
                 {
-                    title: translate('Print'),
-                    name: 'print',
-                    action: (current) => {
-                        let reportParam={"id": current.id}
+                    field: "number", title: translate('Number'), width: '120px',
+                    filterable: {
+                        extra: false,
+                        cell: {
+                            operator: "eq",
+                            suggestionOperator: "eq"
+                        }
+                    }
+                },
+                {
+                    field: "date", title: translate('Date'), width: '120px',
+                    filterable: {
+                        extra: false,
+                        cell: {
+                            operator: "eq",
+                            suggestionOperator: "eq"
+                        }
+                    }
+                },
+                {
+                    field: "description", title: translate('Description'), width: '30%',
+                    filterable: {
+                        extra: false,
+                        cell: {
+                            operator: "contains",
+                            suggestionOperator: "contains"
+                        }
+                    }
+                },
+                { command: [
+                    { text: translate('Remove'), click:function (e) {
+                        e.preventDefault();
+                        let sale = this.dataItem($(e.currentTarget).closest("tr"));
+                        confirm(
+                            translate('Remove invoice'),
+                            translate('Are you sure ?'))
+                            .then(function () {
+                                salesInvoiceApi.remove(sale.id)
+                                    .then(function () {
+                                        logger.success();
+                                        $scope.gridOption.refresh();
+                                    })
+                                    .catch((errors) => $scope.errors = errors)
+                                    .finally(() => $scope.isSaving = false);
+                            })
+
+                    }},
+                    { text: translate('Edit'), click:function (e) {
+                        e.preventDefault();
+                        let sale = this.dataItem($(e.currentTarget).closest("tr"));
+                        $state.go('^.edit', {
+                            id: sale.id
+                        });
+                    }},
+                    { text: translate('Print'), click:function (e) {
+                        e.preventDefault();
+                        let sale = this.dataItem($(e.currentTarget).closest("tr"));
+                        let reportParam={"id": sale.id}
                         navigate(
                             'report.print',
                             {key: 700},
                             reportParam);
-                    }
-                }
-                ],
-            readUrl: devConstants.urls.sales.getAll(),
+
+                    }},], title: " ", width: "180px" }
+            ]
         };
+
+        // $scope.gridOption = {
+        //     columns: [
+        //         {name: 'number', title: translate('Number'), width: '120px', type: 'number'},
+        //         {name: 'date', title: translate('Date'), type: 'date', width: '120px',},
+        //         {
+        //         name: 'description', title: translate('Description'), type: 'string', width: '30%',
+        //         },
+        //     ],
+        //     commands: [
+        //         {
+        //             title: translate('Print'),
+        //             name: 'print',
+        //             action: (current) => {
+        //                 let reportParam={"id": current.id}
+        //                 navigate(
+        //                     'report.print',
+        //                     {key: 700},
+        //                     reportParam);
+        //             }
+        //         }
+        //         ],
+        //     readUrl: devConstants.urls.sales.getAll(),
+        // };
 
     }
 }

@@ -1,12 +1,15 @@
 import accModule from '../acc.module';
 
-function salesInvoiceApi(apiPromise) {
-    var urlPrefix = '/acc/api';
+function salesInvoiceApi(apiPromise,devConstants) {
+    var urlPrefix = devConstants.urls.rootUrl;
 
     return {
 
         getAll(){
             return apiPromise.get(`${urlPrefix}/sales/`);
+        },
+        getMaxNumber(){
+            return apiPromise.get(`${urlPrefix}/sales/max/number`);
         },
         getById: function (id) {
             return apiPromise.get(`${urlPrefix}/sales/${id}`);
@@ -19,7 +22,10 @@ function salesInvoiceApi(apiPromise) {
         },
         remove: function (id) {
             return apiPromise.delete(`${urlPrefix}/sales/${id}`);
-        }
+        },
+        pay: function (id,data) {
+            return apiPromise.post(`${urlPrefix}/sales/${id}/pay`,data);
+        },
     };
 
 

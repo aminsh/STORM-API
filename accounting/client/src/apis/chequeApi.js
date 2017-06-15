@@ -1,7 +1,7 @@
 import accModule from '../acc.module';
 
-function chequeApi(apiPromise) {
-    var urlPrefix = '/acc/api';
+function chequeApi(apiPromise, devConstants) {
+    var urlPrefix = devConstants.urls.rootUrl;
 
     return {
         getById: function (id) {

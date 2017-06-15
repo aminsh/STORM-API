@@ -4,8 +4,6 @@ const async = require('asyncawait/async'),
     await = require('asyncawait/await'),
     FiscalPeriodQuery = require('../queries/query.fiscalPeriod'),
     EventEmitter = require('../services/shared').service.EventEmitter,
-    Memory = require('../services/shared').service.Memory,
-    branchQuery = require('../../../storm/server/features/branch/branch.query'),
     knex = require('knex'),
     config = require('../config');
 

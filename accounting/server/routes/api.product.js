@@ -9,28 +9,49 @@ const async = require('asyncawait/async'),
 
 router.route('/')
     .get(async((req, res) => {
-        let productQuery = new ProductQuery(req.cookies['branch-id']),
+        let productQuery = new ProductQuery(req.branchId),
             result = await(productQuery.getAll(req.query));
 
         res.json(result);
     }))
     .post(async((req, res) => {
-        let productRepository = new ProductRepository(req.cookies['branch-id']),
+        let productRepository = new ProductRepository(req.branchId),
             cmd = req.body,
             entity = {
-                title: cmd.title
+                code: cmd.code,
+                title: cmd.title,
+                productType: cmd.productType,
+                reorderPoint: cmd.reorderPoint,
+                salePrice: cmd.salePrice
             };
 
-        entity = await(productRepository.create(entity));
+        await(productRepository.create(entity));
 
         res.json({isValid: true, returnValue: {id: entity.id}});
     }));
 
-router.route('/:id').get(async((req,res)=> {
-    let productQuery = new ProductQuery(req.cookies['branch-id']),
-        result = await(productQuery.getById(req.params.id));
 
-    res.json(result);
-}));
+router.route('/:id')
+    .get(async((req, res) => {
+        let productQuery = new ProductQuery(req.branchId),
+            result = await(productQuery.getById(req.params.id));
+
+        res.json(result);
+    }))
+    .put(async((req, res) => {
+        let productRepository = new ProductRepository(req.branchId),
+            cmd = req.body,
+            entity = {
+                code: cmd.code,
+                title: cmd.title,
+                productType: cmd.productType,
+                reorderPoint: cmd.reorderPoint,
+                salePrice: cmd.salePrice
+            };
+
+        entity = await(productRepository.update(req.params.id, entity));
+
+        res.json({isValid: true, returnValue: {id: entity.id}});
+    }));
 
 module.exports = router;

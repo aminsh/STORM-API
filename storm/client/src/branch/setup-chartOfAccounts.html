@@ -1,4 +1,4 @@
-<form name="form" ng-submit="model.save(form)" novalidate>
+<form name="form" novalidate>
 
     <div class="ibox loginColumns float-e-margins animated bounceInRight">
         <div class="ibox-title panel-primary">
@@ -6,7 +6,8 @@
         </div>
 
         <div class="ibox-content"
-             ng-class="{'sk-loading': model.isWaiting}">
+             ng-class="{'sk-loading': model.isWaiting}"
+             style="height:500px;overflow-y: auto">
 
             <div class="sk-spinner sk-spinner-wave" ng-if="model.isWaiting">
                 <div class="sk-rect1"></div>
@@ -14,6 +15,10 @@
                 <div class="sk-rect3"></div>
                 <div class="sk-rect4"></div>
                 <div class="sk-rect5"></div>
+            </div>
+
+            <div class="alert alert-info">
+                برای صدور اسناد بصورت اتوماتیک سرفصل حسابهای پیش فرض باید بصورت لیست باشد
             </div>
 
             <table class="table">
@@ -51,10 +56,21 @@
         </div>
 
         <div class="ibox-footer">
-            <button type="submit"
-                    class="btn btn-primary btn-block btn-lg">
-                ذخیره
-            </button>
+            <div class="row">
+                <div class="col-md-6">
+                    <button ng-click="model.ignore()"
+                            class="btn btn-white btn-block btn-lg">
+                       انصراف
+                    </button>
+                </div>
+                <div class="col-md-6">
+                    <button ng-click="model.confirm()"
+                            class="btn btn-primary btn-block btn-lg">
+                        تایید
+                    </button>
+                </div>
+
+            </div>
         </div>
     </div>
 </form>
