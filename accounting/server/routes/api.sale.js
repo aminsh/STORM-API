@@ -43,7 +43,8 @@ router.route('/')
 
         res.json({isValid: true, returnValue: {id: result.id}});
 
-        EventEmitter.emit('on-sale-created', result, current);
+        if (status == 'waitForPayment')
+            EventEmitter.emit('on-sale-created', result, current);
     }));
 
 router.route('/:id/confirm')
@@ -62,10 +63,7 @@ router.route('/:id/confirm')
 
         await(invoiceRepository.update(id, entity));
 
-        let sale = await(invoiceRepository.findById(id)),
-            saleLines = await(invoiceRepository.findInvoiceLinesByInvoiceId(id));
-
-        sale.invoiceLines = saleLines;
+        let sale = await(invoiceRepository.findById(id));
 
         res.json({isValid: true});
 
@@ -81,15 +79,22 @@ router.route('/:id')
     }))
     .put(async((req, res) => {
         let invoiceRepository = new InvoiceRepository(req.branchId),
-            productRepository = new ProductRepository(req.branchId),
+            id = req.params.id,
+            cmd = req.body,
+            status = cmd.status == 'confirm' ? 'waitForPayment' : 'draft',
 
-            cmd = req.body;
+            current = {
+                branchId: req.branchId,
+                fiscalPeriodId: req.cookies['current-period'],
+                userId: req.user.id
+            },
 
-        let entity = {
-            date: cmd.date,
-            description: cmd.description,
-            detailAccountId: cmd.detailAccountId
-        };
+            entity = {
+                date: cmd.date,
+                description: cmd.description,
+                detailAccountId: cmd.detailAccountId,
+                invoiceStatus: status
+            };
 
         entity.invoiceLines = cmd.invoiceLines.asEnumerable()
             .select(line => ({
@@ -103,7 +108,10 @@ router.route('/:id')
             }))
             .toArray();
 
-        await(invoiceRepository.updateBatch(req.params.id, entity));
+        await(invoiceRepository.updateBatch(id, entity));
+
+        if (status == 'waitForPayment')
+            EventEmitter.emit('on-sale-created', await(invoiceRepository.findById(id)), current);
 
         res.json({isValid: true});
 

@@ -108,6 +108,10 @@ router.route('/:id')
 
         if(status == 'waitForPayment')
             EventEmitter.emit('on-sale-created', await(invoiceRepository.findById(id)), current);
+        await(invoiceRepository.updateBatch(id, entity));
+
+        if(status == 'waitForPayment')
+            EventEmitter.emit('on-purchase-created', await(invoiceRepository.findById(id)), current);
 
         res.json({isValid: true});
 

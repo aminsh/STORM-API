@@ -84,7 +84,7 @@ let purchase = {
     getAll: ()=> `${rootUrl()}/purchases`
 };
 
-let product = {
+let products = {
     getAll: ()=> `${rootUrl()}/products`
 };
 
@@ -105,7 +105,7 @@ let apiUrls = {
     tag: tag,
     sales:sales,
     purchase:purchase,
-    product,
+    products,
     people,
     fund
 };

@@ -4,7 +4,6 @@ export default class SalesInvoiceController {
     constructor(navigate,
                 devConstants,
                 salesInvoiceApi,
-                inventoryApi,
                 translate,
                 peopleApi,
                 logger,
@@ -28,7 +27,6 @@ export default class SalesInvoiceController {
         this.peopleApi = peopleApi;
         this.createPersonService = createPersonService;
         this.productCreateService = productCreateService;
-        this.inventoryApi = inventoryApi;
         this.salesInvoiceApi = salesInvoiceApi;
         this.$timeout = $timeout;
         this.logger = logger;
@@ -43,7 +41,7 @@ export default class SalesInvoiceController {
             date: null,
             description: '',
             invoiceLines: [],
-            detailAccountId: null,
+            detailAccountId: '',
         };
         this.isLoading = false;
         this.isPayment = false;
@@ -61,7 +59,7 @@ export default class SalesInvoiceController {
                 description: '',
                 invoiceLines: [],
                 status: 'confirm',
-                detailAccountId: null
+                detailAccountId: ''
             };
             this.salesInvoiceApi.getMaxNumber().then(result => {
                 if (result == null)
@@ -79,12 +77,12 @@ export default class SalesInvoiceController {
                     this.invoice = result
                     if (result.status == 'waitForPayment') {
                         this.isPayment = true;
-                        this.invoice.totalPrice = result.invoiceLines.asEnumerable().sum(item => (item.unitPrice * item.quantity) - item.discount + item.vat)
+                        this.invoice.totalPrice = result.invoiceLines
+                            .asEnumerable()
+                            .sum(item => (item.unitPrice * item.quantity) - item.discount + item.vat)
                     }
                 });
         }
-
-        this.newInvoice();
     }
 
 
@@ -189,7 +187,8 @@ export default class SalesInvoiceController {
                     this.salesInvoiceApi.getById(invoice.id).then(result => {
                         if (result.status == 'waitForPayment') {
                             this.isPayment = true;
-                            invoice.totalPrice = invoice.invoiceLines.sum(item => (item.unitPrice * item.quantity) - item.discount + item.vat)
+                            invoice.totalPrice = invoice.invoiceLines.asEnumerable()
+                                .sum(item => (item.unitPrice * item.quantity) - item.discount + item.vat);
                         }
                         if(result.status=='draft'){
                             this.$state.go('^.edit', {
