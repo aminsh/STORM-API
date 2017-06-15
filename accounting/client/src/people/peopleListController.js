@@ -9,8 +9,8 @@ export default class peopleListController {
                 $scope) {
 
         this.$scope = $scope;
-        this.navigate=navigate,
-        this.$timeout = $timeout;
+        this.navigate = navigate,
+            this.$timeout = $timeout;
         this.logger = logger;
         this.translate = translate;
         this.peopleApi = peopleApi;
@@ -60,16 +60,18 @@ export default class peopleListController {
                         }
                     }
                 },
-                {field: "phone", title: translate('Phone'), width: '120px', filterable: {
-                    extra:false
-                }},
+                {
+                    field: "phone", title: translate('Phone'), width: '120px', filterable: {
+                    extra: false
+                }
+                },
                 {
                     template: "#: personTypeDisplay #",
                     field: "personType",
                     title: translate('Person Type'),
                     width: '120px',
                     filterable: {
-                        extra:false,
+                        extra: false,
                         ui: function (element) {
                             element.kendoDropDownList({
                                 dataSource: devConstants.enums.PersonType().data,
@@ -80,29 +82,36 @@ export default class peopleListController {
                         }
                     }
                 },
-                { command: [
-                    { text: translate('Remove'), click:function (e) {
-                    e.preventDefault();
-                    let people = this.dataItem($(e.currentTarget).closest("tr"));
-                    confirm(
-                        translate('Remove Person'),
-                        translate('Are you sure ?'))
-                        .then(function () {
-                            peopleApi.remove(people.id)
+                {
+                    command: [
+                        {
+                            text: translate('Remove'), click: function (e) {
+                            e.preventDefault();
+                            let people = this.dataItem($(e.currentTarget).closest("tr"));
+                            confirm(
+                                translate('Are you sure ?'),
+                                translate('Remove Person'))
                                 .then(function () {
-                                    logger.success();
-                                    $scope.gridOption.refresh();
+                                    peopleApi.remove(people.id)
+                                        .then(function () {
+                                            logger.success();
+                                            $scope.gridOption.refresh();
+                                        })
+                                        .catch((errors) => $scope.errors = errors)
+                                        .finally(() => $scope.isSaving = false);
                                 })
-                                .catch((errors) => $scope.errors = errors)
-                                .finally(() => $scope.isSaving = false);
-                        })
 
-                }},
-                    { text: translate('Edit'), click:function (e) {
-                          e.preventDefault();
-                         let people = this.dataItem($(e.currentTarget).closest("tr"));
-                         return navigate('.edit', {id: people.id});
-                    }}], title: " ", width: "180px" }
+                        }
+                        },
+                        {
+                            text: translate('Edit'),
+                            click: function (e) {
+                                e.preventDefault();
+                                let people = this.dataItem($(e.currentTarget).closest("tr"));
+                                return navigate('.edit', {id: people.id});
+                            }
+                        }], title: " ", width: "180px"
+                }
             ]
         };
     }
