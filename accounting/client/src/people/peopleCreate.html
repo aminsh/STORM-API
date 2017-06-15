@@ -11,7 +11,8 @@
             <div class="col-sm-12">
                 <div class="form-group">
                     <label for="inputName" class="title1">{{'name'| translate}}</label>
-                    <input type="text" class="form-control input-sm" id="inputName" ng-model="model.people.title" name="title" required
+                    <input type="text" class="form-control input-sm" id="inputName" ng-model="model.people.title"
+                           name="title" required
                            aria-describedby="inputNamehelp">
                     <span id="inputNamehelp" class="help-block small">{{'person,company,...'| translate}}</span>
                     <div ng-messages="form.title.$error" ng-if="form.title.$dirty">
@@ -49,7 +50,8 @@
             <div class="col-sm-6">
                 <div class="form-group">
                     <label for="inputEconomicCode" class="title1">{{'Economic Code'| translate}}</label>
-                    <input type="text" class="form-control input-sm" id="inputEconomicCode" ng-model="model.people.economicCode">
+                    <input type="text" class="form-control input-sm" id="inputEconomicCode"
+                           ng-model="model.people.economicCode">
                 </div>
             </div>
         </div>
@@ -63,15 +65,38 @@
             <div class="col-sm-6">
                 <div class="form-group">
                     <label for="inputContactEmail" class="title1">{{'Email'| translate}}</label>
-                    <input type="email" class="form-control input-sm " id="inputContactEmail" ng-model="model.people.email">
+                    <input type="email" class="form-control input-sm " id="inputContactEmail"
+                           ng-model="model.people.email">
                 </div>
             </div>
         </div>
         <div class="row">
-            <div class="col-sm-12">
+            <div class="col-sm-6">
                 <div class="form-group">
-                    <label for="inputAddress" class="title1">{{'Address'| translate}}</label>
-                    <textarea class="form-control input-sm" rows="2" id="inputAddress" ng-model="model.people.address"></textarea>
+                    <label>{{'Province'| translate}}</label>
+                    <dev-tag-text-box name="province"
+                                      ng-model="model.people.province">
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label>{{'City'| translate}}</label>
+                    <dev-tag-text-box name="city"
+                                      ng-model="model.people.city">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group col-sm-6">
+                <label>{{'Address'| translate}}</label>
+                <textarea class="form-control input-sm" rows="2" style="height: 100px"
+                          ng-model="model.people.address"></textarea>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label>{{'Postal code'| translate}}</label>
+                    <dev-tag-text-box name="postalCode"
+                                      ng-model="model.people.postalCode">
                 </div>
             </div>
         </div>
