@@ -7,6 +7,7 @@ let async = require('asyncawait/async'),
 module.exports = class InvoiceRepository extends BaseRepository {
     constructor(branchId) {
         super(branchId);
+        this.findById = async(this.findById);
         this.create = async(this.create);
         this.createInvoice = async(this.createInvoice);
         this.createInvoiceLines = async(this.createInvoiceLines);
@@ -15,7 +16,12 @@ module.exports = class InvoiceRepository extends BaseRepository {
     }
 
     findById(id) {
-        return this.knex.table('invoices').where('id', id).first();
+        let invoice = await(this.knex.table('invoices').where('id', id).first()),
+            invoiceLines = await(this.knex.table('invoiceLines').where('invoiceId', id));
+
+        invoice.invoiceLines = invoiceLines;
+
+        return invoice;
     }
 
     findInvoiceLinesByInvoiceId(id) {
