@@ -22,7 +22,10 @@ function purchaseApi(apiPromise,devConstants) {
         },
         remove: function (id) {
             return apiPromise.delete(`${urlPrefix}/purchases/${id}`);
-        }
+        },
+        pay: function (id,data) {
+            return apiPromise.post(`${urlPrefix}/purchases/${id}/pay`,data);
+        },
     };
 
 

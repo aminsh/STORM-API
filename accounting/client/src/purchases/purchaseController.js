@@ -14,11 +14,12 @@ export default class purchaseController {
                 $stateParams,
                 promise,
                 createPersonService,
+                createPaymentService,
                 productCreateService) {
 
         this.urls = {
             getAllPeople: devConstants.urls.people.getAll(),
-            getAllProduct: devConstants.urls.product.getAll()
+            getAllProduct: devConstants.urls.products.getAll()
         };
         this.$scope = $scope;
         this.promise = promise;
@@ -30,6 +31,7 @@ export default class purchaseController {
         this.purchaseApi = purchaseApi;
         this.$timeout = $timeout;
         this.logger = logger;
+        this.createPaymentService=createPaymentService;
         this.translate = translate;
         this.navigate = navigate;
         this.formService = formService;
@@ -173,10 +175,9 @@ export default class purchaseController {
         if (status){}
             invoice.status = status;
 
-        if (status==undefined){}
+        if (status==undefined){
             invoice.status = 'confirm';
-
-
+        }
         if (form.$invalid) {
             formService.setDirty(form);
             Object.keys(form).asEnumerable()
@@ -213,7 +214,7 @@ export default class purchaseController {
                             invoice.totalPrice = invoice.invoiceLines.sum(item => (item.unitPrice * item.quantity) - item.discount + item.vat)
                         }
                         if (result.status == 'draft') {
-                            this.$state.go('edit', {
+                            this.$state.go('^.edit', {
                                 id: invoice.id
                             });
                         }
@@ -222,6 +223,18 @@ export default class purchaseController {
                 .catch(err => errors = err)
                 .finally(() => this.isSaving = true);
         }
+    }
+
+    cashPaymentShow() {
+        this.createPaymentService.show({amount: this.invoice.totalPrice}).then(result => {
+            return this.purchaseApi.pay(this.invoice.id, result)
+                .then(result => {
+                    this.logger.success();
+                    this.isLoading = true;
+                })
+                .catch(err => this.errors = err)
+                .finally(() => this.isSaving = true);
+        });
     }
 
     print() {

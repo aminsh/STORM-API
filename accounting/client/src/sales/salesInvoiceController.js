@@ -19,7 +19,7 @@ export default class SalesInvoiceController {
 
         this.urls = {
             getAllPeople: devConstants.urls.people.getAll(),
-            getAllProduct: devConstants.urls.product.getAll()
+            getAllProduct: devConstants.urls.products.getAll()
         };
         this.$scope = $scope;
         this.promise = promise;
@@ -50,8 +50,28 @@ export default class SalesInvoiceController {
 
         this.id = this.$state.params.id;
 
-        if (this.id != undefined)
+        if (this.id != undefined) {
             this.editMode = true;
+        } else {
+
+            this.isLoading = false;
+            this.invoice = {
+                number: null,
+                date: localStorage.getItem('today'),
+                description: '',
+                invoiceLines: [],
+                status: 'confirm',
+                detailAccountId: null
+            };
+            this.salesInvoiceApi.getMaxNumber().then(result => {
+                if (result == null)
+                    result = 0;
+                this.invoice.number = result + 1;
+            });
+
+            this.createInvoiceLine();
+        }
+
 
         if (this.editMode) {
             this.salesInvoiceApi.getById(this.id)
@@ -98,9 +118,6 @@ export default class SalesInvoiceController {
                 }
             }
         });
-
-
-        this.newInvoice();
     }
 
 
@@ -155,23 +172,7 @@ export default class SalesInvoiceController {
     }
 
     newInvoice() {
-        this.isLoading = false;
-        this.invoice = {
-            number: null,
-            date: localStorage.getItem('today'),
-            description: '',
-            invoiceLines: [],
-            status: 'confirm',
-            detailAccountId: null
-        };
-
-        this.salesInvoiceApi.getMaxNumber().then(result => {
-            if (result == null)
-                result = 0;
-            this.invoice.number = result + 1;
-        });
-
-        this.createInvoiceLine();
+        this.$state.go('^.create')
     }
 
     saveInvoice(form, status) {
@@ -183,8 +184,9 @@ export default class SalesInvoiceController {
         if (status)
             invoice.status = status;
 
-        if (status==undefined){}
-            invoice.status = 'confirm';
+        if (status == undefined) {
+            invoice.status = 'waitForPayment';
+        }
 
         if (form.$invalid) {
             formService.setDirty(form);
@@ -222,7 +224,7 @@ export default class SalesInvoiceController {
                             this.isPayment = true;
                             invoice.totalPrice = invoice.invoiceLines.sum(item => (item.unitPrice * item.quantity) - item.discount + item.vat)
                         }
-                        if(result.status=='draft'){
+                        if (result.status == 'draft') {
                             this.$state.go('^.edit', {
                                 id: invoice.id
                             });

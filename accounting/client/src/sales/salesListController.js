@@ -33,15 +33,8 @@ export default class salesListController {
                     total: 'total'
                 }
             }),
-            toolbar: ["excel"],
-            excel: {
-                fileName: "export.xls",
-                filterable: true
-            },
             reorderable: true,
             resizable: true,
-            columnMenu: true,
-            groupable: false,
             sortable: true,
             scrollable: {
                 virtual: true
