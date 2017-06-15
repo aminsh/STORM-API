@@ -18,8 +18,8 @@ router.route('/')
 
         res.json(result);
     }))
-
     .post(async((req, res) => {
+
         let branchId = req.cookies['branch-id'],
             invoiceRepository = new InvoiceRepository(branchId),
             productRepository = new ProductRepository(branchId),

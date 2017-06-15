@@ -31,7 +31,7 @@ router.route('/')
 
             status = cmd.status == 'confirm' ? 'waitForPayment' : 'draft',
 
-            entity = createInvoice(status, cmd),
+            entity = createInvoice(status, cmd,invoiceRepository),
 
             result = await(invoiceRepository.create(entity));
 
@@ -83,10 +83,11 @@ router.route('/:id')
         let entity = {
             date: cmd.date,
             description: cmd.description,
-            detailAccountId: cmd.detailAccountId
+            detailAccountId: cmd.detailAccountId,
+            invoiceStatus: cmd.status
         };
 
-        entity.lines = cmd.invoiceLines.asEnumerable()
+        entity.invoiceLines = cmd.invoiceLines.asEnumerable()
             .select(line => ({
                 id: line.id,
                 productId: line.productId,
@@ -113,19 +114,9 @@ router.route('/:id')
         res.json({isValid: true});
     }));
 
-router.route('/:id/lines').get(async((req, res) => {
-    let invoiceQuery = new InvoiceQuery(req.cookies['branch-id']),
-        result = await(invoiceQuery.getAllLines(req.params.id, req.query));
-
-    res.json(result);
-}));
-
-module.exports = router;
-
-
-function createInvoice(status, cmd) {
+function createInvoice(status, cmd,invoiceRepository) {
     let entity = {
-        number: cmd.number,
+        number: (await(invoiceRepository.purchaseMaxNumber()).max || 0) + 1,
         date: cmd.date,
         description: cmd.description,
         detailAccountId: cmd.detailAccountId,
@@ -147,7 +138,31 @@ function createInvoice(status, cmd) {
     return entity;
 }
 
+router.route('/:id/pay')
+    .post(async((req, res) => {
+        let payment = new Payment(req.cookies['branch-id'], req.cookies['current-period']);
 
+        await(payment.save(req.params.id, req.body));
+
+        res.json({isValid: true});
+    }));
+
+router.route('/:id/lines').get(async((req, res) => {
+    let invoiceQuery = new InvoiceQuery(req.cookies['branch-id']),
+        result = await(invoiceQuery.getAllLines(req.params.id, req.query));
+
+    res.json(result);
+}));
+
+router.route('/max/number')
+    .get(async((req, res) => {
+        let invoiceQuery = new InvoiceQuery(req.cookies['branch-id']),
+            result = await(invoiceQuery.maxNumber('purchase'));
+
+        res.json(result.max);
+    }));
+
+module.exports = router;
 
 
 

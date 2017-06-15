@@ -11,6 +11,7 @@ export default class purchaseController {
                 $timeout,
                 $scope,
                 $state,
+                $stateParams,
                 promise,
                 createPersonService,
                 productCreateService) {
@@ -40,15 +41,32 @@ export default class purchaseController {
         };
         this.isLoading = false;
 
-        this.id = this.$state.params.id;
+        this.id = $stateParams.id;
 
-        if (this.id != undefined)
-            $scope.editMode = true;
+        if (this.id != undefined) {
+            this.editMode = true;
+        } else {
+            this.purchaseApi.getMaxNumber().then(result => {
+                if (result == null)
+                    result = 0;
+                this.invoice.number = result + 1;
+            });
 
-        if ($scope.editMode) {
-            this.purchaseApi.getById(this.id)
-                .then(result => this.invoice = result);
+            this.createInvoiceLine();
         }
+
+        if (this.editMode) {
+            this.purchaseApi.getById(this.id)
+                .then(result => {
+                    this.isSaving = true
+                    this.invoice = result
+                    if (result.status == 'waitForPayment') {
+                        this.isPayment = true;
+                        this.invoice.totalPrice = result.invoiceLines.asEnumerable().sum(item => (item.unitPrice * item.quantity) - item.discount + item.vat)
+                    }
+                });
+        }
+
 
         this.detailAccount = new kendo.data.DataSource({
             serverFiltering: true,
@@ -84,7 +102,7 @@ export default class purchaseController {
         });
 
 
-        this.newInvoice();
+        //this.newInvoice();
     }
 
 
@@ -104,7 +122,7 @@ export default class purchaseController {
         });
     }
 
-    onProductChanged(item, product){
+    onProductChanged(item, product) {
         item.description = product.title;
     }
 
@@ -126,7 +144,7 @@ export default class purchaseController {
             newInvoice = {
                 id: Guid.new(),
                 row: ++maxRow,
-                itemId: null,
+                productId: null,
                 description: '',
                 quantity: 0,
                 vat: 0,
@@ -139,27 +157,21 @@ export default class purchaseController {
     }
 
     newInvoice() {
-        this.isLoading = false;
-        this.invoice = {
-            number: null,
-            date: localStorage.getItem('today'),
-            description: '',
-            invoiceLines: [],
-            status: 'confirm',
-            detailAccountId: null
-        };
-
-        this.createInvoiceLine();
+        this.$state.go('^.create');
     }
 
-    saveInvoice(form) {
+    saveInvoice(form, status) {
         let logger = this.logger,
             formService = this.formService,
             errors = this.errors,
             invoice = this.invoice;
 
-        if (status)
+        if (status){}
             invoice.status = status;
+
+        if (status==undefined){}
+            invoice.status = 'confirm';
+
 
         if (form.$invalid) {
             formService.setDirty(form);
@@ -176,6 +188,11 @@ export default class purchaseController {
                 .then(result => {
                     logger.success();
                     this.isLoading = true;
+                    this.purchaseApi.getById(invoice.id).then(result => {
+                        if (result.status == 'waitForPayment') {
+                            this.isPayment = true;
+                        }
+                    })
                 })
                 .catch(err => errors = err)
                 .finally(() => this.isSaving = true);
@@ -186,6 +203,17 @@ export default class purchaseController {
                     logger.success();
                     invoice.id = result.id;
                     this.isLoading = true;
+                    this.purchaseApi.getById(invoice.id).then(result => {
+                        if (result.status == 'waitForPayment') {
+                            this.isPayment = true;
+                            invoice.totalPrice = invoice.invoiceLines.sum(item => (item.unitPrice * item.quantity) - item.discount + item.vat)
+                        }
+                        if (result.status == 'draft') {
+                            this.$state.go('edit', {
+                                id: invoice.id
+                            });
+                        }
+                    })
                 })
                 .catch(err => errors = err)
                 .finally(() => this.isSaving = true);
