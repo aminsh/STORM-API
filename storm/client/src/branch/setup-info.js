@@ -14,6 +14,7 @@ export default class SetupInfoController {
             phone: '',
             mobile: '',
             address: '',
+            nationalCode: '',
             webSite: '',
             registrationNumber: ''
         };

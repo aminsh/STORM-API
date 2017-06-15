@@ -23,6 +23,7 @@ router.route('/').post(async((req, res) => {
             phone: cmd.phone,
             mobile: cmd.mobile,
             address: cmd.address,
+            nationalCode: cmd.nationalCode,
             ownerId: req.user.id,
             status: 'pending'
         };
