@@ -75,7 +75,7 @@
                                    k-data-value-field="id"
                                    k-data-text-field="title"
                                    k-data-source="model.products"
-                                   k-on-created="model.createNewProduct(item,value)"
+                                   k-on-created="model.createNewProduct(item,$search)"
                                    k-on-changed="model.onProductChanged(item, $item)"
                                    show-no-data-template
                                    url="{{model.urls.getAllProduct}}"
