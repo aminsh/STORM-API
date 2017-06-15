@@ -10,7 +10,7 @@ const async = require('asyncawait/async'),
     persianDateSerivce = require('../services/persianDateService');
 
 module.exports.Insert = async((req, res) => {
-    let branchId = req.cookies['branch-id'],
+    let branchId = req.branchId,
         currentFiscalPeriodId = req.cookies['current-period'],
         fiscalPeriodRepository = new FiscalPeriodRepository(branchId),
         currentFiscalPeriod = await(fiscalPeriodRepository.findById(currentFiscalPeriodId)),
@@ -127,7 +127,7 @@ module.exports.Insert = async((req, res) => {
 });
 
 module.exports.update = async((req, res) => {
-    let branchId = req.cookies['branch-id'],
+    let branchId = req.branchId,
         journalRepository = new JournalRepository(branchId),
         journalLineRepository = new JournalLineRepository(branchId),
         fiscalPeriodRepository = new FiscalPeriodRepository(branchId),
@@ -246,10 +246,10 @@ module.exports.update = async((req, res) => {
 });
 
 module.exports.delete = async((req, res) => {
-    let journalRepository = new JournalRepository(req.cookies['branch-id']),
+    let journalRepository = new JournalRepository(req.branchId),
         errors = [],
         cmd = req.body,
-        branchId = req.cookies['branch-id'],
+        branchId = req.branchId,
         fiscalPeriodRepository = new FiscalPeriodRepository(branchId),
         currentFiscalPeriod = await(fiscalPeriodRepository.findById(req.cookies['current-period'])),
         journal = await(journalRepository.findById(cmd.id));

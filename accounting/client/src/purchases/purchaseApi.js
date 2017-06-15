@@ -1,7 +1,7 @@
 import accModule from '../acc.module';
 
-function purchaseApi(apiPromise) {
-    var urlPrefix = '/acc/api';
+function purchaseApi(apiPromise,devConstants) {
+    var urlPrefix = devConstants.urls.rootUrl;
 
     return {
 

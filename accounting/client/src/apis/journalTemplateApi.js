@@ -1,14 +1,14 @@
-import accModule from '../acc.module';
+import accModule from "../acc.module";
 
-function journalTemplateApi(apiPromise) {
-    var urlPrefix = '/acc/api';
+function journalTemplateApi(apiPromise, devConstants) {
+    var urlPrefix = devConstants.urls.rootUrl;
 
     return {
-        create: (journalId, data)=>
+        create: (journalId, data) =>
             apiPromise.post('{0}/journal-templates/journal/{1}'.format(urlPrefix, journalId), data),
-        journalCreate: (id)=>
+        journalCreate: (id) =>
             apiPromise.post('{0}/journal-templates/{1}/journal/create'.format(urlPrefix, id)),
-        remove: (id)=>
+        remove: (id) =>
             apiPromise.delete('{0}/journal-templates/{1}'.format(urlPrefix, id))
     };
 

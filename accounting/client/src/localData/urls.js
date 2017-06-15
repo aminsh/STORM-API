@@ -89,6 +89,7 @@ let products = {
 };
 
 let apiUrls = {
+    rootUrl: rootUrl(),
     generalLedgerAccount: generalLedgerAccount,
     subsidiaryLedgerAccount: subsidiaryLedgerAccount,
     detailAccount: detailAccount,

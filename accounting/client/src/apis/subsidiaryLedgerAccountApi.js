@@ -1,9 +1,9 @@
 export default class {
 
-    constructor(apiPromise) {
+    constructor(apiPromise,devConstants) {
         this.apiPromise = apiPromise;
 
-        this.urlPrefix = '/acc/api/subsidiary-ledger-accounts';
+        this.urlPrefix = `${devConstants.urls.rootUrl}/subsidiary-ledger-accounts`;
     }
 
     getAll() {

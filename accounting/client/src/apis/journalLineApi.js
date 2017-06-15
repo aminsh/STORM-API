@@ -1,11 +1,11 @@
-import accModule from '../acc.module';
+import accModule from "../acc.module";
 
-function journalLineApi(apiPromise) {
-    var urlPrefix = '/acc/api';
+function journalLineApi(apiPromise, devConstants) {
+    var urlPrefix = devConstants.urls.rootUrl;
 
     return {
         url: {
-            getAll: (journalId)=> '{0}/journal-lines/journal/{1}'.format(urlPrefix, journalId)
+            getAll: (journalId) => '{0}/journal-lines/journal/{1}'.format(urlPrefix, journalId)
         },
         getAll(journalId){
             return apiPromise.get(`${urlPrefix}/journal-lines/journal/${journalId}`);

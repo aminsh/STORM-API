@@ -7,19 +7,40 @@ function combo($parse, apiPromise) {
     return {
         restrict: 'E',
         require: ['ngModel'],
-        scope: true,
-        templateUrl: function (tElement, tAttrs) {
-            return '/global/dg-ui/dg-select' + ((angular.isDefined(tAttrs.multiple) ? '-multi' : '') + '.tpl.html');
+        scope: {
+            onChanged: '&kOnChanged',
+            onCreated: '&kOnCreated'
         },
+        /*templateUrl: function (tElement, tAttrs) {
+         return '/global/dg-ui/dg-select' + ((angular.isDefined(tAttrs.multiple) ? '-multi' : '') + '.tpl.html');
+         },*/
+        template: `
+        <ui-select  class="ui-select"
+        ng-model="selectionModel"
+        on-select="onItemSelect($item, $model)"
+        on-remove="onItemRemove($item, $model)"
+        ng-disabled="disabled"><ui-select-match></ui-select-match>
+            <ui-select-choices refrech="onSearch($select)" repeat="item in items | filter:$select.search"></ui-select-choices>
+        <ui-select-no-choice>
+        <dev-tag-button
+                                ng-click="onCreate($select.search)"
+                                icon="glyphicon glyphicon-plus"
+                                style-type="primary"
+                                title="{{'Create' | translate}} {{$select.search}}"></dev-tag-button>
+        </ui-select-no-choice>
+    </ui-select>`,
         compile(tElement, tAttrs){
             let displayPropSufix = tAttrs.kDataTextField ? '.' + tAttrs.kDataTextField : '',
                 isMultiple = angular.isDefined(tAttrs.multiple);
 
-            if (tAttrs.onChanged)
-                $('ui-select', tElement).attr('on-select', tAttrs.onChanged);
+            /*if (tAttrs.onChanged)
+             $('ui-select', tElement).attr('on-select', tAttrs.onChanged);*/
 
             if (tAttrs.searchEnabled)
                 $('ui-select', tElement).attr('search-enabled', tAttrs.searchEnabled);
+
+            if(angular.isDefined(tAttrs.multiple))
+                $('ui-select', tElement).attr('multiple', '');
 
             if (tAttrs.focusOn)
                 $('ui-select', tElement).attr('focus-on', tAttrs.focusOn);
@@ -67,15 +88,20 @@ function combo($parse, apiPromise) {
 
                 scope.updateValueFromModel = function (modelValue) {
                     if (scope.isMultiple) {
-                        var selectionArray = [];
+                        let parameters = getMultipleParameters(attrs.kDataValueField, modelValue);
+                        modelValue && modelValue.length && getData(parameters)
+                            .then(result => {
+                                scope.selectionModel = result.data;
+                            });
+                        /*var selectionArray = [];
                         angular.forEach(modelValue, function (modelItem, key) {
                             var modelItemValue = scope.getValueMapper(modelItem);
                             selectionArray.push(modelItemValue);
                         });
-                        scope.selectionModel = selectionArray;
+                        scope.selectionModel = selectionArray;*/
                     } else {
 
-                        if(!modelValue)
+                        if (!modelValue)
                             return;
 
                         getData(getParameters(attrs.kDataValueField, modelValue))
@@ -97,7 +123,7 @@ function combo($parse, apiPromise) {
                     let parameters = getParameters(attrs.kDataTextField, $select.search);
 
                     getData(parameters)
-                        .then(result =>  scope.items = result.data.length ? result.data : ['noData']);
+                        .then(result => scope.items = result.data.length ? result.data : ['noData']);
                 };
 
                 if (scope.isMultiple) {
@@ -121,10 +147,10 @@ function combo($parse, apiPromise) {
                         scope.ngModel.$viewValue.push(modelValue);
                     } else {
                         scope.ngModel.$setViewValue(modelValue);
-
-                        if (angular.isDefined(attrs.onChanged))
-                            eval(`scope.${attrs.onChanged}`)(item);
                     }
+
+                    if (scope.onChanged)
+                        scope.onChanged({$item: item});
                 };
 
                 scope.onItemRemove = function (item, model) {
@@ -146,11 +172,16 @@ function combo($parse, apiPromise) {
                 };
 
                 scope.onSearch = $select => {
-                    let parameters= getParameters(attrs.kDataTextField,$select.search);
+                    let parameters = getParameters(attrs.kDataTextField, $select.search);
                     getData(parameters)
                         .then(result => {
                             scope.items = result.data.length ? result.data : ['noData'];
                         });
+                };
+
+                scope.onCreate = search => {
+                    if (scope.onCreated)
+                        scope.onCreated({$search: search});
                 };
 
                 function getParameters(dataTextField, search) {
@@ -164,6 +195,22 @@ function combo($parse, apiPromise) {
                         parameters.filter.filters = [{field: dataTextField, operator: 'contains', value: search}];
 
                     return parameters;
+                }
+
+                function getMultipleParameters(field, values) {
+                    let parameters = {
+                        skip: 0,
+                        take: 20,
+                        filter: {logic: 'or'}
+                    };
+
+                    if (values && values.length)
+                        parameters.filter.filters = values.asEnumerable()
+                            .select(v => ({field: field, operator: 'eq', value: v}))
+                            .toArray();
+
+                    return parameters;
+
                 }
 
                 function getData(parameters) {
@@ -181,6 +228,9 @@ accModule.directive('devTagComboBox', combo)
 ng-model="selectionModel" 
 on-select="onItemSelect($item, $model)" 
 on-remove="onItemRemove($item, $model)" 
-ng-disabled="disabled"><ui-select-match></ui-select-match><ui-select-choices refrech="onSearch($select)" ></div></ui-select-choices></ui-select>`);
+ng-disabled="disabled"><ui-select-match></ui-select-match>
+<ui-select-choices refrech="onSearch($select)" ></div></ui-select-choices>
+<ui-select-no-choice><a class="btn btn-primary">{{'Create' | translate}} {{$select.search}}</a></ui-select-no-choice>
+</ui-select>`);
         $templateCache.put('/global/dg-ui/dg-select-multi.tpl.html', '<ui-select class="ui-select" multiple ng-model="selectionModel" on-select="onItemSelect($item, $model)" on-remove="onItemRemove($item, $model)" ng-disabled="disabled"><ui-select-match></ui-select-match><ui-select-choices></ui-select-choices></ui-select>');
     }]);

@@ -66,7 +66,7 @@ module.exports = router;
 function getAccountReviewInstance(req) {
     const filter = (req.query.extra) ? req.query.extra.filter : {};
     return new AccountReview(
-        req.cookies['branch-id'],
+        req.branchId,
         req.cookies['current-period'],
         req.cookies['current-mode'],
         filter,

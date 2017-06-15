@@ -1,7 +1,7 @@
-import accModule from '../acc.module';
+import accModule from "../acc.module";
 
-function generalLedgerAccountApi(apiPromise) {
-    var urlPrefix = '/acc/api';
+function generalLedgerAccountApi(apiPromise, devConstants) {
+    var urlPrefix = devConstants.urls.rootUrl;
 
     return {
         url: {

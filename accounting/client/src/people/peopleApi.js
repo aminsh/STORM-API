@@ -1,7 +1,7 @@
 import accModule from '../acc.module';
 
-function peopleApi(apiPromise) {
-    var urlPrefix = '/api/v1';
+function peopleApi(apiPromise,devConstants) {
+    var urlPrefix = devConstants.urls.rootUrl;
 
     return {
 

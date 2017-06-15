@@ -1,7 +1,7 @@
 import accModule from '../acc.module';
 
-function dimensionApi(apiPromise, $q, $timeout) {
-    var urlPrefix = '/acc/api';
+function dimensionApi(apiPromise, devConstants) {
+    var urlPrefix = devConstants.urls.rootUrl;
 
     return {
         url: {

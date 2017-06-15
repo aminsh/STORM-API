@@ -1,20 +1,20 @@
-export  default class FiscalPeriodApi{
-    constructor(apiPromise){
-        this.urlPrefix = '/acc/api';
+export  default class FiscalPeriodApi {
+    constructor(apiPromise, devConstants) {
+        this.urlPrefix = devConstants.urls.rootUrl;
         this.apiPromise = apiPromise;
 
         //this.getAll= '{0}/periods'.format(this.urlPrefix)
     }
 
-    create(fiscalPeriod){
+    create(fiscalPeriod) {
         return this.apiPromise.post(`${this.urlPrefix}/fiscal-periods`, fiscalPeriod)
     }
 
-    current(){
+    current() {
         return this.apiPromise.get(`${this.urlPrefix}/fiscal-periods/current`);
     }
 
-    getAll(){
+    getAll() {
         return this.apiPromise.get(`${this.urlPrefix}/fiscal-periods`);
     }
 }

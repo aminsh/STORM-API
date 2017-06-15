@@ -1,7 +1,7 @@
 import accModule from '../acc.module';
 
-function bankApi(apiPromise) {
-    var urlPrefix = '/acc/api';
+function bankApi(apiPromise, devConstants) {
+    let urlPrefix = devConstants.urls.rootUrl;
 
     return {
         getAll(){

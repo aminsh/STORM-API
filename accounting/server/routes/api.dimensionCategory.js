@@ -10,12 +10,12 @@ const async = require('asyncawait/async'),
 
 router.route('/')
     .get(async((req, res) => {
-        let dimensionCategoryQuery = new DimensionCategoryQuery(req.cookies['branch-id']),
+        let dimensionCategoryQuery = new DimensionCategoryQuery(req.branchId),
             result = await(dimensionCategoryQuery.getAll(req.query));
         res.json(result);
     }))
     .post(async((req, res) => {
-        let dimensionCategoryRepository = new DimensionCategoryRepository(req.cookies['branch-id']),
+        let dimensionCategoryRepository = new DimensionCategoryRepository(req.branchId),
             errors = [],
             cmd = req.body;
 
@@ -44,12 +44,12 @@ router.route('/')
 
 router.route('/:id')
     .get(async((req, res) => {
-        let dimensionCategoryQuery = new DimensionCategoryQuery(req.cookies['branch-id']),
+        let dimensionCategoryQuery = new DimensionCategoryQuery(req.branchId),
             result = dimensionCategoryQuery.getById(req.params.id);
         res.json(result);
     }))
     .put(async((req, res) => {
-        let dimensionCategoryRepository = new DimensionCategoryRepository(req.cookies['branch-id']),
+        let dimensionCategoryRepository = new DimensionCategoryRepository(req.branchId),
             errors = [],
             cmd = req.body;
 
@@ -75,7 +75,7 @@ router.route('/:id')
         return res.json({ isValid: true });
     }))
     .delete(async((req, res) => {
-        let dimensionCategoryRepository = new DimensionCategoryRepository(req.cookies['branch-id']),
+        let dimensionCategoryRepository = new DimensionCategoryRepository(req.branchId),
             errors = [],
             cmd = req.body;
 

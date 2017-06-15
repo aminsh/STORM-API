@@ -1,11 +1,9 @@
-import io from 'socket.io-client';
-
 export default class {
 
-    constructor(apiPromise) {
+    constructor(apiPromise, devConstants) {
         this.apiPromise = apiPromise;
 
-        this.urlPrefix = '/acc/api/detail-accounts';
+        this.urlPrefix = `${devConstants.urls.rootUrl}/detail-accounts`;
     }
 
 
