@@ -74,17 +74,23 @@ router.route('/:id')
         res.json(result);
     }))
     .put(async((req, res) => {
-        let branchId = req.cookies['branch-id'],
-            invoiceRepository = new InvoiceRepository(branchId),
+        let invoiceRepository = new InvoiceRepository(req.branchId),
+            id= req.params.id,
+            cmd = req.body,
+            status = cmd.status == 'confirm' ? 'waitForPayment' : 'draft',
 
-            cmd = req.body;
+            current = {
+                branchId: req.branchId,
+                fiscalPeriodId: req.cookies['current-period'],
+                userId: req.user.id
+            },
 
-        let entity = {
-            date: cmd.date,
-            description: cmd.description,
-            detailAccountId: cmd.detailAccountId,
-            invoiceStatus: cmd.status
-        };
+            entity = {
+                date: cmd.date,
+                description: cmd.description,
+                detailAccountId: cmd.detailAccountId,
+                invoiceStatus: status
+            };
 
         entity.invoiceLines = cmd.invoiceLines.asEnumerable()
             .select(line => ({
@@ -98,7 +104,10 @@ router.route('/:id')
             }))
             .toArray();
 
-        await(invoiceRepository.updateBatch(req.params.id, entity));
+        await(invoiceRepository.updateBatch(id, entity));
+
+        if(status == 'waitForPayment')
+            EventEmitter.emit('on-sale-created', await(invoiceRepository.findById(id)), current);
 
         res.json({isValid: true});
 

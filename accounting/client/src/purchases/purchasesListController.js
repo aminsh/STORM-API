@@ -32,11 +32,6 @@ export default class purchasesListController {
                     total: 'total'
                 }
             }),
-            toolbar: ["excel"],
-            excel: {
-                fileName: "export.xls",
-                filterable: true
-            },
             reorderable: true,
             resizable: true,
             sortable: true,
@@ -51,7 +46,7 @@ export default class purchasesListController {
             },
             columns: [
                 {
-                    field: "number", title: translate('number'), width: '120px',
+                    field: "number", title: translate('Number'), width: '120px',
                     filterable: {
                         extra: false,
                         cell: {
@@ -61,7 +56,7 @@ export default class purchasesListController {
                     }
                 },
                 {
-                    field: "date", title: translate('date'), width: '120px',
+                    field: "date", title: translate('Date'), width: '120px',
                     filterable: {
                         extra: false,
                         cell: {
@@ -71,7 +66,7 @@ export default class purchasesListController {
                     }
                 },
                 {
-                    field: "description", title: translate('description'), width: '120px',
+                    field: "description", title: translate('Description'), width: '120px',
                     filterable: {
                         extra: false,
                         cell: {

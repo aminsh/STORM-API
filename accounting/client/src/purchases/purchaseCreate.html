@@ -32,7 +32,6 @@
                                                show-no-data-template
                                                url="{{model.urls.getAllPeople}}"
                                                ng-model="model.invoice.detailAccountId"
-                                               url="/acc/api/people"
                                                required></dev-tag-combo-box>
 
                             <div ng-messages="form.detailAccountId.$error" ng-if="form.detailAccountId.$dirty">
@@ -132,6 +131,7 @@
                                         ng-click="model.saveInvoice(form)" style="width: 100px;"></dev-tag-button>
 
                         <dev-tag-button style-type="success"
+                                        ng-if="!model.isPayment"
                                         title="{{'Save as draft' | translate}}"
                                         ng-click="model.saveInvoice(form, 'draft')" style="width: 100px;"></dev-tag-button>
 
