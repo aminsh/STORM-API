@@ -10,7 +10,10 @@ class BranchQuery {
     }
 
     getById(id) {
-        return knex.select('id', 'name', 'logo', 'apiKey')
+        return knex.select(
+            'id', 'name', 'ownerName' , 'logo',
+            'apiKey', 'address', 'phone', 'mobile',
+            'nationalCode', 'postalCode')
             .from('branches')
             .where('id', id).first();
     }

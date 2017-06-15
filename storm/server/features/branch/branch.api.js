@@ -17,12 +17,14 @@ router.route('/').post(async((req, res) => {
     let cmd = req.body,
         entity = {
             name: cmd.name,
+            ownerName: cmd.ownerName,
             logo: cmd.logo
                 ? Image.toBase64(`${config.rootPath}/../${cmd.logo}`)
                 : config.logo,
             phone: cmd.phone,
             mobile: cmd.mobile,
             address: cmd.address,
+            postalCode: cmd.postalCode,
             nationalCode: cmd.nationalCode,
             ownerId: req.user.id,
             status: 'pending'
