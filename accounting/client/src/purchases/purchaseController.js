@@ -54,40 +54,6 @@ export default class purchaseController {
                 .then(result => this.invoice = result);
         }
 
-        this.detailAccount = new kendo.data.DataSource({
-            serverFiltering: true,
-
-            transport: {
-                read: {
-                    url: devConstants.urls.people.getAll(),
-                    dataType: "json"
-                },
-            },
-            schema: {
-                data: 'data',
-                total: 'total'
-            }
-        });
-
-        this.products = new kendo.data.DataSource({
-            serverFiltering: true,
-            transport: {
-                read: {
-                    url: devConstants.urls.products.getAll(),
-                    dataType: "json"
-                },
-            },
-            schema: {
-                data: function (data) {
-                    return data.data;
-                },
-                total: function (data) {
-                    return data.total;
-                }
-            }
-        });
-
-
         this.newInvoice();
     }
 
