@@ -20,6 +20,9 @@ export default class peopleCreateController {
         this.people = {
             title: data.title,
             address: '',
+            postalCode:'',
+            province: '',
+            city: '',
             phone: '',
             registrationNumber: '',
             nationalCode: '',
@@ -30,7 +33,7 @@ export default class peopleCreateController {
         this.personType = devConstants.enums.PersonType().data;
         this.editMode = false;
 
-        this.id = $state.params.id;
+        this.id = data.id;
 
         if (this.id != undefined)
             this.editMode = true;

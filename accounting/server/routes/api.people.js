@@ -21,6 +21,9 @@ router.route('/')
                 code: cmd.code,
                 title: cmd.title,
                 address: cmd.address,
+                postalCode: cmd.postalCode,
+                province: cmd.province,
+                city: cmd.city,
                 phone: cmd.phone,
                 nationalCode: cmd.nationalCode,
                 registrationNumber: cmd.registrationNumber,
@@ -50,6 +53,9 @@ router.route('/:id')
         entity.code = cmd.code;
         entity.title = cmd.title;
         entity.address = cmd.address;
+        entity.postalCode = cmd.postalCode;
+        entity.province = cmd.province;
+        entity.city = cmd.city;
         entity.phone = cmd.phone;
         entity.nationalCode = cmd.nationalCode;
         entity.registrationNumber = cmd.registrationNumber;

@@ -10,10 +10,13 @@ export default class SetupInfoController {
 
         this.branch = {
             name: '',
+            ownerName: '',
             logo: '',
             phone: '',
             mobile: '',
             address: '',
+            postalCode: '',
+            nationalCode: '',
             webSite: '',
             registrationNumber: ''
         };

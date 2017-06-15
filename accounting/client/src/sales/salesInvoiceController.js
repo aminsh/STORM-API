@@ -84,40 +84,7 @@ export default class SalesInvoiceController {
                 });
         }
 
-
-        this.detailAccount = new kendo.data.DataSource({
-            serverFiltering: true,
-            //serverPaging: true,
-            // pageSize: 10,
-            transport: {
-                read: {
-                    url: devConstants.urls.people.getAll(),
-                    dataType: "json"
-                },
-            },
-            schema: {
-                data: 'data',
-                total: 'total'
-            }
-        });
-
-        this.products = new kendo.data.DataSource({
-            serverFiltering: true,
-            transport: {
-                read: {
-                    url: devConstants.urls.products.getAll(),
-                    dataType: "json"
-                },
-            },
-            schema: {
-                data: function (data) {
-                    return data.data;
-                },
-                total: function (data) {
-                    return data.total;
-                }
-            }
-        });
+        this.newInvoice();
     }
 
 
@@ -185,7 +152,7 @@ export default class SalesInvoiceController {
             invoice.status = status;
 
         if (status == undefined) {
-            invoice.status = 'waitForPayment';
+            invoice.status = 'confirm';
         }
 
         if (form.$invalid) {
@@ -224,7 +191,7 @@ export default class SalesInvoiceController {
                             this.isPayment = true;
                             invoice.totalPrice = invoice.invoiceLines.sum(item => (item.unitPrice * item.quantity) - item.discount + item.vat)
                         }
-                        if (result.status == 'draft') {
+                        if(result.status=='draft'){
                             this.$state.go('^.edit', {
                                 id: invoice.id
                             });

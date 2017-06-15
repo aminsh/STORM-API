@@ -257,5 +257,8 @@
   "Reorder point": "نقطه سفارش مجدد",
   "Sale price": "قیمت فروش",
   "Type": "نوع",
-  "Customer": "مشتری"
+  "Customer": "مشتری",
+  "Province": "استان",
+  "City": "شهر",
+  "Postal code": "کدپستی"
 }

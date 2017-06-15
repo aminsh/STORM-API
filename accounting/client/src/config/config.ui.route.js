@@ -315,18 +315,18 @@ export default function ($stateProvider, $urlRouterProvider, $locationProvider) 
                     controller: 'peopleCreateController',
                     controllerAs: 'model',
                     templateUrl: 'partials/people/peopleCreate.html',
-                    //resolve: {data: () => $stateParams}
+                    resolve: {data: () => ({})}
                 });
             }
         })
         .state('people.edit', {
             url: '/:id/edit',
-            onEnter: $modelFactory => {
+            onEnter: ($modelFactory, $stateParams) => {
                 $modelFactory.create({
                     controller: 'peopleCreateController',
                     controllerAs: 'model',
                     templateUrl: 'partials/people/peopleCreate.html',
-                    //resolve: {data: () => $stateParams}
+                    resolve: {data: () => $stateParams}
                 });
             }
         })

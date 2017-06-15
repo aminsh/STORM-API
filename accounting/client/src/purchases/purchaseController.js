@@ -72,8 +72,6 @@ export default class purchaseController {
                     }
                 });
         }
-
-
         this.detailAccount = new kendo.data.DataSource({
             serverFiltering: true,
 
@@ -172,8 +170,10 @@ export default class purchaseController {
             errors = this.errors,
             invoice = this.invoice;
 
-        if (status){}
+        if (status){
             invoice.status = status;
+        }
+
 
         if (status==undefined){
             invoice.status = 'confirm';
