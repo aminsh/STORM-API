@@ -5,7 +5,7 @@ export default class peopleCreateController {
                 peopleApi,
                 logger,
                 devConstants,
-                $state) {
+                $state, data) {
 
         this.$scope = $scope;
         this.logger = logger;
@@ -18,7 +18,7 @@ export default class peopleCreateController {
         this.errors = [];
         this.isSaving = false;
         this.people = {
-            title: '',
+            title: data.title,
             address: '',
             phone: '',
             registrationNumber: '',
