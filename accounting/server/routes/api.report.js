@@ -260,7 +260,7 @@ router.route('/invoices')
     .get(async((req, res) => {
         let ins = new ReportQueryInvoice(req.branchId),
             //result = await(ins.invoice(req.query.id));
-           result = [
+        result = [
                 {
                     number: 0,
                     date: '',
