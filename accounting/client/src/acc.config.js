@@ -42,6 +42,7 @@ import reportController from './controllers/reportController';
 import reportDesignerController from './controllers/reportDesignerController';
 import chooseBranchController from './branch/branch.choose.controller';
 import SettingsController from './settings/settings';
+import BranchInfoController from './branch/branchInfo';
 
 import './sales';
 
@@ -187,6 +188,7 @@ accModule
     .controller('reportDesignerController', reportDesignerController)
     .controller('chooseBranchController', chooseBranchController)
     .controller('settingsController', SettingsController)
+    .controller('branchInfoController', BranchInfoController)
 
     .filter('totalSum', totalSum);
 

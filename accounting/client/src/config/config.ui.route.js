@@ -22,6 +22,12 @@ export default function ($stateProvider, $urlRouterProvider, $locationProvider) 
             templateUrl: 'partials/branch/branch.choose.html'
         })
 
+        .state('branchInfo',{
+            url: '/branch-info',
+            controller:'branchInfoController',
+            controllerAs: 'model',
+            templateUrl: 'partials/branch/branchInfo.html'
+        })
         .state('general-ledger-accounts', {
             url: '/general-ledger-accounts',
             controller: 'generalLedgerAccountsController',

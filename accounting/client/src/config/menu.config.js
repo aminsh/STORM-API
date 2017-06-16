@@ -82,6 +82,11 @@ accModule.config(menuItemsProvider => {
                     title: 'دوره های مالی',
                     url: 'fiscal-periods',
                     icon: ''
+                },
+                {
+                    title: 'اطلاعات کسب و کار',
+                    url: 'branch-info',
+                    icon: ''
                 }
             ]
         });

@@ -6,15 +6,19 @@ export default class {
         this.apiPromise = apiPromise;
     }
 
-    getMyBranches(){
+    getMyBranches() {
         return this.apiPromise.get('/api/branches/my');
     }
 
-    getCurrent(){
+    getCurrent() {
         return this.apiPromise.get('/api/branches/current');
     }
 
-    getApiKey(){
+    getApiKey() {
         return this.apiPromise.get('/api/branches/current/api-key');
+    }
+
+    save(data) {
+        return this.apiPromise.put('/api/branches/current', data);
     }
 }
