@@ -92,7 +92,7 @@ router.route('/:id')
             entity = {
                 date: cmd.date,
                 description: cmd.description,
-                detailAccountId: cmd.detailAccountId,
+                detailAccountId: cmd.detailAccountId || cmd.customerId,
                 invoiceStatus: status
             };
 
@@ -129,7 +129,7 @@ function createInvoice(status, cmd, invoiceRepository) {
         number: (await(invoiceRepository.saleMaxNumber()).max || 0) + 1,
         date: cmd.date,
         description: cmd.description,
-        detailAccountId: cmd.detailAccountId,
+        detailAccountId: cmd.detailAccountId || cmd.customerId,
         invoiceType: 'sale',
         invoiceStatus: status
     };

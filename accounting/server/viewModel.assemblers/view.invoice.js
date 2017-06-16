@@ -11,6 +11,8 @@ module.exports = function(entity) {
         description: entity.description,
         detailAccountId: entity.detailAccountId,
         detailAccountDisplay: entity.detailAccountDisplay,
+        customerId: entity.detailAccountId,
+        customerDisplay: entity.detailAccountDisplay,
         status: entity.invoiceStatus,
         statusDisplay: enums.InvoiceStatus().getDisplay(entity.invoiceStatus),
         invoiceLines: entity.invoiceLines
