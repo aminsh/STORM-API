@@ -58,7 +58,7 @@ router.route('/current')
             };
 
         if (cmd.logoFileName)
-            cmd.logo = Image.toBase64(`${config.rootPath}/../${cmd.logoFileName}`);
+            entity.logo = Image.toBase64(`${config.rootPath}/../${cmd.logoFileName}`);
 
         await(branchRepository.update(req.cookies['branch-id'], entity));
 
