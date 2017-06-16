@@ -6,6 +6,8 @@ module.exports = class {
     }
 
     getDisplay(key) {
+        if (!key)return '';
+
         return this.data
             .asEnumerable()
             .single(e => e.key == key)
