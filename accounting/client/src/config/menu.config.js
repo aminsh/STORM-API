@@ -87,6 +87,11 @@ accModule.config(menuItemsProvider => {
                     title: 'اطلاعات کسب و کار',
                     url: 'branch-info',
                     icon: ''
+                },
+                {
+                    title: 'پیش فرض',
+                    url: 'settings',
+                    icon: ''
                 }
             ]
         });

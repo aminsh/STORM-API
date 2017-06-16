@@ -62,6 +62,7 @@ import FiscalPeriodApi from './apis/fiscalPeriodApi';
 import ReportApi from './apis/reportApi';
 import TagApi from './apis/tagApi';
 import BranchApi from './branch/branchApi';
+import SettingsApi from './settings/settingsApi';
 
 // load modals
 import './modals/generalLedgerAccountCreate';
@@ -182,6 +183,7 @@ accModule
     .service('reportApi', ReportApi)
     .service('tagApi', TagApi)
     .service('branchApi', BranchApi)
+    .service('settingsApi', SettingsApi)
 
     .controller('chequePrintController', chequePrintController)
     .controller('reportController', reportController)

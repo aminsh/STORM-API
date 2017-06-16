@@ -1,13 +1,25 @@
 "use strict";
 
 export default class {
-    constructor(branchApi){
-       this.branchApi = branchApi;
-       this.apiKey = '';
+    constructor(settingsApi, formService, logger) {
+        this.settingsApi = settingsApi;
+        this.formService = formService;
+        this.logger = logger;
+        this.errors = [];
+        this.isSaving = false;
+
+        settingsApi.get().then(result => this.settings = result);
     }
 
-    getApiKey(){
-        this.branchApi.getApiKey()
-            .then(result => this.apiKey = result.apiKey);
+    save(form) {
+        if(form.$invalid)
+            return this.formService.setDirty(form);
+        this.errors = [];
+        this.isSaving = true;
+
+        this.settingsApi.save(this.settings)
+            .then(()=> this.logger.success())
+            .catch(errors => this.errors = errors)
+            .finally(()=> this.isSaving = false);
     }
 }

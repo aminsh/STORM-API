@@ -69,4 +69,5 @@ app.use('/reports', require('../accounting/server/routes/api.report'));
 app.use('/sales', require('../accounting/server/routes/api.sale'));
 app.use('/purchases', require('../accounting/server/routes/api.purchase'));
 app.use('/products', require('../accounting/server/routes/api.product'));
+app.use('/settings', require('../accounting/server/routes/api.setting'));
 

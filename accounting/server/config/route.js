@@ -27,10 +27,10 @@ app.use('/api/reports', require('../routes/api.report'));
 app.use('/api/sales', require('../routes/api.sale'));
 app.use('/api/purchases', require('../routes/api.purchase'));
 app.use('/api/products', require('../routes/api.product'));
+app.use('/api/settings', require('../routes/api.setting'));
+
 app.use('/upload', require('../routes/api.upload'));
 
-
-app.use('/api/v1/sales', require('../external.apis/v1/v1.api.sale'));
 
 /* should handled angular routes */
 app.get('*', (req, res) => res.render('index.ejs'));

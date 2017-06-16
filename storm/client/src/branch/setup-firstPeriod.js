@@ -3,8 +3,9 @@
 import moment from 'moment-jalaali';
 
 export default class SetupFirstPeriodController {
-    constructor(fiscalPeriodApi, $state, setDirty) {
+    constructor(fiscalPeriodApi, $state, setDirty, $q) {
         this.fiscalPeriodApi = fiscalPeriodApi;
+        this.$q = $q;
         this.$state = $state;
         this.setDirty = setDirty;
 
@@ -24,11 +25,14 @@ export default class SetupFirstPeriodController {
         if (form.$invalid)
             return this.setDirty(form);
 
-        this.fiscalPeriodApi.create(this.fiscalPeriod)
+        this.$q.all([
+            this.fiscalPeriodApi.create(this.fiscalPeriod),
+            this.fiscalPeriodApi.setSettings()
+        ])
             .then(() => {
                 this.$state.go('^.chartOfAccounts');
             });
     }
 }
 
-SetupFirstPeriodController.$inject = ['fiscalPeriodApi', '$state', 'setDirty'];
+SetupFirstPeriodController.$inject = ['fiscalPeriodApi', '$state', 'setDirty', '$q'];
