@@ -47,16 +47,6 @@ export default class salesListController {
             },
             columns: [
                 {
-                    field: "number", title: translate('Number'), width: '120px',
-                    filterable: {
-                        extra: false,
-                        cell: {
-                            operator: "eq",
-                            suggestionOperator: "eq"
-                        }
-                    }
-                },
-                {
                     field: "date", title: translate('Date'), width: '120px',
                     filterable: {
                         extra: false,
@@ -67,7 +57,59 @@ export default class salesListController {
                     }
                 },
                 {
-                    field: "description", title: translate('Description'), width: '30%',
+                    field: "number", title: translate('Number'), width: '120px',
+                    filterable: {
+                        extra: false,
+                        cell: {
+                            operator: "eq",
+                            suggestionOperator: "eq"
+                        }
+                    }
+                },
+                {
+                    field: "detailAccountDisplay", title: translate('Customer'), width: '120px',
+                    filterable: {
+                        extra: false,
+                        cell: {
+                            operator: "contains",
+                            suggestionOperator: "contains"
+                        }
+                    }
+                },
+                {
+                    field: "description", title: translate('Title'), width: '30%',
+                    filterable: {
+                        extra: false,
+                        cell: {
+                            operator: "contains",
+                            suggestionOperator: "contains"
+                        }
+                    }
+                },
+                {
+                    field: "sumTotalPrice", title: translate('Amount'), width: '120px',
+                    format: '{0:#,##}',
+                    filterable: {
+                        extra: false,
+                        cell: {
+                            operator: "eq",
+                            suggestionOperator: "eq"
+                        }
+                    }
+                },
+                {
+                    field: "sumRemainder", title: translate('Remainder'), width: '120px',
+                    format: '{0:#,##}',
+                    filterable: {
+                        extra: false,
+                        cell: {
+                            operator: "eq",
+                            suggestionOperator: "eq"
+                        }
+                    }
+                },
+                {
+                    field: "statusDisplay", title: translate('Status'), width: '120px',
                     filterable: {
                         extra: false,
                         cell: {
