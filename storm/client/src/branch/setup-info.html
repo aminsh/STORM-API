@@ -42,12 +42,14 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="label-control">وب سایت</label>
+                        <label class="label-control">کدملی صاحب کسب و کار</label>
                         <input type="text"
                                class="form-control"
-                               name="name"
-                               ng-model="model.branch.webSite">
+                               name="ownerName"
+                               ng-model="model.branch.nationalCode">
                     </div>
+
+
                 </div>
 
 
@@ -55,6 +57,14 @@
                     <label class="label-control">لوگوی کسب و کار</label>
                     <logo-uploader uploaded="model.logoUploaded(fileName)"></logo-uploader>
                 </div>
+            </div>
+
+            <div class="form-group">
+                <label class="label-control">وب سایت</label>
+                <input type="text"
+                       class="form-control"
+                       name="name"
+                       ng-model="model.branch.webSite">
             </div>
 
             <div class="row">
@@ -82,7 +92,7 @@
 
             <div class="row">
                 <div class="form-group col-md-6">
-                    <label class="label-control">کدپستی صاحب کسب و کار</label>
+                    <label class="label-control">کدپستی</label>
                     <input type="text"
                            class="form-control"
                            name="phone"
