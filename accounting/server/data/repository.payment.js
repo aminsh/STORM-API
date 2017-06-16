@@ -10,11 +10,14 @@ module.exports = class PaymentRepository extends BaseRepository {
     }
 
     create(entity, trx) {
-        super.create(entity);
+        if (Array.isArray(entity))
+            entity.forEach(e => super.create(e));
+        else
+            super.create(entity);
 
-        let query =  this.knex.table('payments');
+        let query = this.knex.table('payments');
 
-        if(trx)
+        if (trx)
             query.transacting(trx);
 
         return query.insert(entity);

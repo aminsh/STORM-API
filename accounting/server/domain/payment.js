@@ -19,6 +19,9 @@ module.exports = class Payment {
         this.invoiceRepository = new InvoiceRepository(branchId);
         this.paymentRepository = new PaymentRepository(branchId);
         this.subsidiaryLedgerAccountRepository = new SubsidiaryLedgerAccountRepository(branchId);
+
+        this.receivableJournalLine = async(this.receivableJournalLine);
+        this.payableJournalLine = async(this.payableJournalLine);
     }
 
 
@@ -27,6 +30,7 @@ module.exports = class Payment {
         list.forEach(e => e.journalLineId = Guid.new());
 
         this.payments = list.asEnumerable().select(e => ({
+            id: Guid.new(),
             number: e.number,
             date: e.date,
             invoiceId,
@@ -35,25 +39,27 @@ module.exports = class Payment {
             bankName: e.bankName,
             bankBranch: e.bankBranch,
             journalLineId: e.journalLineId
-        }));
+        })).toArray();
 
         this.journal = {
-            number: (await(this.journalRepository.maxTemporaryNumber(this.fiscalPeriodId)).max || 0) + 1,
-            date: invoice.date,
+            journalStatus: 'Temporary',
+            isInComplete: false,
+            temporaryNumber: (await(this.journalRepository.maxTemporaryNumber(this.fiscalPeriodId)).max || 0) + 1,
+            temporaryDate: invoice.date,
             description: invoice.invoiceType == 'sale'
                 ? this.getReceiveJournalDescription(invoice)
-                : this.getPayJournalDescription(invoice)
+                : this.getPayJournalDescription(invoice),
+            periodId: this.fiscalPeriodId
         };
 
         this.journalLines = [];
 
-        let journalLineGenerator = invoice.invoiceType == 'sale'
-            ? async(this.receivableJournalLine)
-            : async(this.payableJournalLine);
+        if (invoice.invoiceType == 'sale')
+            list.forEach(e => await(this.receivableJournalLine(e, invoice)));
+        else
+            list.forEach(e => await(this.payableJournalLine(e, invoice)));
 
-        list.forEach(e => journalLineGenerator(e, invoice));
-
-        await(this.journalRepository.create(this.journal, this.journalLines));
+        await(this.journalRepository.batchCreate(this.journalLines, this.journal));
         await(this.paymentRepository.create(this.payments));
     }
 
@@ -132,7 +138,7 @@ module.exports = class Payment {
     getDebtorDetailAccount(invoice, payment) {
         if (payment.paymentType == 'receipt')
             return payment.bankId;
-        if (payment.paymentType == 'cach')
+        if (payment.paymentType == 'cash')
             return payment.fundId;
         if (payment.paymentType == 'cheque')
             return invoice.detailAccountId;
@@ -141,7 +147,7 @@ module.exports = class Payment {
     getCreditorDetailAccount(invoice, payment) {
         if (payment.paymentType == 'receipt')
             return payment.bankId;
-        if (payment.paymentType == 'cach')
+        if (payment.paymentType == 'cash')
             return payment.fundId;
         if (payment.paymentType == 'cheque')
             return payment.bankId;
