@@ -26,7 +26,7 @@
                                                k-suggest="true"
                                                k-minLength="0"
                                                k-filter="'contains'"
-                                               k-on-created="model.createNewCustomer(value)"
+                                               k-on-created="model.createNewCustomer($search)"
                                                show-no-data-template
                                                ng-model="model.invoice.detailAccountId"
                                                url="{{model.urls.getAllPeople}}"
@@ -41,7 +41,7 @@
                     <div ng-if="model.isPayment" class="form-group">
                         <label for="detailAccountId" class="title1">مشتری</label>
                         <div class="input-group" style="width: 100%">
-                            <span style="width: 100%">{{model.invoice.detailAccountId}}</span>
+                            <span style="width: 100%">{{model.invoice.detailAccountDisplay}}</span>
                         </div>
                     </div>
                 </div>

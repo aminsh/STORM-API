@@ -11,9 +11,6 @@ function combo($parse, apiPromise) {
             onChanged: '&kOnChanged',
             onCreated: '&kOnCreated'
         },
-        /*templateUrl: function (tElement, tAttrs) {
-         return '/global/dg-ui/dg-select' + ((angular.isDefined(tAttrs.multiple) ? '-multi' : '') + '.tpl.html');
-         },*/
         template: `
         <ui-select  class="ui-select"
         ng-model="selectionModel"
@@ -32,6 +29,10 @@ function combo($parse, apiPromise) {
         compile(tElement, tAttrs){
             let displayPropSufix = tAttrs.kDataTextField ? '.' + tAttrs.kDataTextField : '',
                 isMultiple = angular.isDefined(tAttrs.multiple);
+
+            if (tAttrs.ngModel) {
+                tAttrs.$set('ngModel', '$parent.' + tAttrs.ngModel, false);
+            }
 
             /*if (tAttrs.onChanged)
              $('ui-select', tElement).attr('on-select', tAttrs.onChanged);*/
