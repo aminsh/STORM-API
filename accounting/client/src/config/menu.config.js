@@ -110,7 +110,7 @@ accModule.config(menuItemsProvider => {
     menuItemsProvider
         .add({
             title: 'صندوق',
-            url: 'fund',
+            url: 'funds',
             icon: 'fa fa-archive'
         });
 

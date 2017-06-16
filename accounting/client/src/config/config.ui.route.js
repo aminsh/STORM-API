@@ -331,13 +331,13 @@ export default function ($stateProvider, $urlRouterProvider, $locationProvider) 
             }
         })
 
-        .state('fund', {
-            url: '/fund',
+        .state('funds', {
+            url: '/funds',
             controller: 'fundListController',
             controllerAs: 'model',
             templateUrl: 'partials/fund/fundList.html'
         })
-        .state('fund.create', {
+        .state('funds.create', {
             url: '/create',
             onEnter: $modelFactory => {
                 $modelFactory.create({
@@ -347,7 +347,7 @@ export default function ($stateProvider, $urlRouterProvider, $locationProvider) 
                 });
             }
         })
-        .state('fund.edit', {
+        .state('funds.edit', {
             url: '/:id/edit',
             onEnter: $modelFactory => {
                 $modelFactory.create({
