@@ -11,8 +11,7 @@
     <div class="row">
 
         <div class="btn-group" role="group">
-            <button type="button" ng-click="model.newReceiptPayment()" class="btn btn-white">{{'New
-                Receipt'|translate}}
+            <button type="button" ng-click="model.newReceiptPayment()" class="btn btn-white">{{'New Receipt'|translate}}
             </button>
             <button type="button" ng-click="model.newChequePayment()" class="btn btn-white">{{'New Cheque'|translate}}
             </button>
@@ -50,12 +49,12 @@
                 </div>
 
                 <div class="form-group row col-lg-12">
-                    <label class="col-lg-2 control-label">{{'Ammount'|translate}}</label>
+                    <label class="col-lg-2 control-label">{{'Amount'|translate}}</label>
                     <div class="col-lg-10">
                         <dev-tag-numeric
                                 class="form-control"
-                                name="ammount"
-                                ng-model="item.ammount"
+                                name="amount"
+                                ng-model="item.amount"
                                 required></dev-tag-numeric>
                     </div>
                 </div>
@@ -91,7 +90,6 @@
                                            k-placeholder="{{'Select ...'|translate}}"
                                            k-data-value-field="id"
                                            k-data-text-field="title"
-                                           k-data-source="model.bankdDataSource"
                                            k-suggest="true"
                                            k-minLength="0"
                                            k-filter="'contains'"
@@ -109,7 +107,7 @@
                     <div class="col-lg-10">
                         <dev-tag-text-box
                                 class="form-control"
-                                ng-model="item.numbaer"
+                                ng-model="item.number"
                                 required></dev-tag-text-box>
                     </div>
                 </div>

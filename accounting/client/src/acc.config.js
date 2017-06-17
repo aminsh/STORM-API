@@ -42,6 +42,7 @@ import reportController from './controllers/reportController';
 import reportDesignerController from './controllers/reportDesignerController';
 import chooseBranchController from './branch/branch.choose.controller';
 import SettingsController from './settings/settings';
+import BranchInfoController from './branch/branchInfo';
 
 import './sales';
 
@@ -61,6 +62,7 @@ import FiscalPeriodApi from './apis/fiscalPeriodApi';
 import ReportApi from './apis/reportApi';
 import TagApi from './apis/tagApi';
 import BranchApi from './branch/branchApi';
+import SettingsApi from './settings/settingsApi';
 
 // load modals
 import './modals/generalLedgerAccountCreate';
@@ -181,12 +183,14 @@ accModule
     .service('reportApi', ReportApi)
     .service('tagApi', TagApi)
     .service('branchApi', BranchApi)
+    .service('settingsApi', SettingsApi)
 
     .controller('chequePrintController', chequePrintController)
     .controller('reportController', reportController)
     .controller('reportDesignerController', reportDesignerController)
     .controller('chooseBranchController', chooseBranchController)
     .controller('settingsController', SettingsController)
+    .controller('branchInfoController', BranchInfoController)
 
     .filter('totalSum', totalSum);
 

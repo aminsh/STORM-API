@@ -13,6 +13,7 @@ import 'angular-ui-select';
 import 'angular-local-storage';
 import 'kendo-web';
 import 'kendo-angular';
+import 'kendo-messages-fa-IR';
 import 'adm-dtp';
 import 'chart.js';
 

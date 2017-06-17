@@ -8,33 +8,36 @@ export default class {
     }
 
     loadIfNot() {
-        return this.promise.create((resolve, reject)=> {
-           if(this.$window.hasOwnProperty('Stimulsoft'))
-               return resolve();
+        return this.promise.create((resolve, reject) => {
+            if (this.$window.hasOwnProperty('Stimulsoft'))
+                return resolve();
 
-           this.logger.alert({
-               title: 'بارگزاری گزارشات',
-               text: `<div class="sk-spinner sk-spinner-wave">
+            this.logger.alert({
+                title: 'بارگزاری گزارشات',
+                text: `<div class="sk-spinner sk-spinner-wave">
                                 <div class="sk-rect1"></div>
                                 <div class="sk-rect2"></div>
                                 <div class="sk-rect3"></div>
                                 <div class="sk-rect4"></div>
                                 <div class="sk-rect5"></div>
                             </div>`,
-               html: true,
-               showConfirmButton: false
-           });
+                html: true,
+                showConfirmButton: false
+            });
 
-            $.getScript('/public/js/stimulsoft.all.min.js')
-                .then(() => {
-                    resolve();
-                    this.init();
-                    this.logger.close();
-                });
+            $.ajax({
+                cache: true,
+                url: '/public/js/stimulsoft.all.min.js',
+                dataType: 'script'
+            }).then(() => {
+                resolve();
+                this.init();
+                this.logger.close();
+            });
         });
     }
 
-    init(){
+    init() {
         let Stimulsoft = this.$window.Stimulsoft;
 
         Stimulsoft.Base.Localization.StiLocalization.setLocalizationFile('/public/fa.xml', true);

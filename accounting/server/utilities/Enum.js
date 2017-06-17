@@ -2,6 +2,8 @@ function Enum(enums) {
     this.data = enums;
 
     this.getDisplay = function(key) {
+        if(!key) return '';
+
         return this.data.asEnumerable()
             .single(function(e) {
                 return e.key == key;

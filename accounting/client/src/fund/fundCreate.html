@@ -2,7 +2,8 @@
     <button type="button" ng-click="model.close()" class="close" data-dismiss="modal" aria-label="Close">
         <span aria-hidden="true">&times;</span>
     </button>
-    <h3 class="modal-title">{{'New fund'| translate}}</h3>
+    <h3 class="modal-title" ng-if="!model.editMode">{{'New fund'| translate}}</h3>
+    <h3 class="modal-title" ng-if="model.editMode">{{'Edit fund'| translate}}</h3>
 </div>
 <div class="modal-body k-rtl">
     <form name="form">
@@ -10,9 +11,11 @@
         <div class="row">
             <div class="col-sm-12">
                 <div class="form-group">
-                    <label for="inputName" class="title1">{{'name'| translate}}</label>
-                    <input type="text" class="form-control input-sm" id="inputName" ng-model="model.fund.title" name="title" required
-                           aria-describedby="inputNamehelp">
+                    <label>{{'Title'| translate}}</label>
+                    <dev-tag-text-box
+                            name="title"
+                            ng-model="model.fund.title"></dev-tag-text-box>
+
                     <div ng-messages="form.title.$error" ng-if="form.title.$dirty">
                         <label ng-message="required" class="error">{{'This field is required'|translate}}</label>
                     </div>

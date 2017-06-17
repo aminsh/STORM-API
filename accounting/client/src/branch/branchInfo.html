@@ -1,0 +1,101 @@
+<form name="form">
+    <dev-tag-content dev-attr-title="{{'Branch info'|translate}}">
+        <dev-tag-button
+                ng-click="model.save(form)"
+                icon="glyphicon glyphicon-floppy-disk"
+                ng-disabled="model.isSaving"
+                is-waiting="model.isSaving"
+                style-type="primary"
+                title="{{'Save' | translate}}"></dev-tag-button>
+
+        <dev-tag-validation-summary errors="model.errors"></dev-tag-validation-summary>
+
+        <div style="margin-top: 20px">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="label-control">نام کسب و کار</label>
+                        <dev-tag-text-box
+                                required
+                                minlength="3"
+                                name="name"
+                                ng-model="model.branch.name"></dev-tag-text-box>
+
+                        <div ng-messages="form.name.$error" ng-if="form.name.$dirty">
+                            <div ng-message="required" class="error">وارد کردن نام الزامی است</div>
+                            <div ng-message="minlength" class="error">نام باید حداقل 3 کاراکتر باشد</div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="label-control">نام صاحب کسب و کار</label>
+                        <dev-tag-text-box
+                                name="ownerName"
+                                ng-model="model.branch.ownerName"></dev-tag-text-box>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="label-control">کدملی صاحب کسب و کار</label>
+                        <dev-tag-text-box
+                                name="nationalCode"
+                                ng-model="model.branch.nationalCode"></dev-tag-text-box>
+                    </div>
+
+
+                </div>
+
+
+                <div class="form-group col-md-6">
+                    <label class="label-control">لوگوی کسب و کار</label>
+                    <dev-tag-uploader uploaded="model.logoUploaded(fileName)"></dev-tag-uploader>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="label-control">وب سایت</label>
+                <dev-tag-text-box
+                        name="name"
+                        ng-model="model.branch.webSite"></dev-tag-text-box>
+            </div>
+
+            <div class="row">
+                <div class="form-group col-md-6">
+                    <label class="label-control">تلفن</label>
+                    <dev-tag-text-box
+                            name="phone"
+                            required
+                            ng-model="model.branch.phone"></dev-tag-text-box>
+
+                    <div ng-messages="form.phone.$error" ng-if="form.phone.$dirty">
+                        <div ng-message="required" class="text-danger">وارد کردن تلفن الزامی است</div>
+                    </div>
+                </div>
+
+                <div class="form-group col-md-6">
+                    <label class="label-control">موبایل</label>
+                    <dev-tag-text-box
+                            name="mobile"
+                            ng-model="model.branch.mobile"></dev-tag-text-box>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="form-group col-md-6">
+                    <label class="label-control">کدپستی</label>
+                    <dev-tag-text-box
+                            name="postalCode"
+                            ng-model="model.branch.postalCode">
+                </div>
+
+                <div class="form-group col-md-6">
+                    <label class="label-control">آدرس</label>
+                    <textarea
+                            style="height: 100px"
+                            class="form-control"
+                            name="address"
+                            ng-model="model.branch.address"></textarea>
+                </div>
+            </div>
+        </div>
+    </dev-tag-content>
+</form>

@@ -1,15 +1,32 @@
-<dev-tag-content dev-attr-title="{{'Settings'|translate}}">
-    <div class="row">
-        <div class="col-"></div>
-    </div>
-    <dev-tag-button
-            ng-click="model.getApiKey()"
-            style-type="success"
-            title="{{'Api key' | translate}}"></dev-tag-button>
+<form name="form" novalidate >
+    <dev-tag-content dev-attr-title="{{'Settings'|translate}}">
+        <div class="row">
+            <div class="col-"></div>
+        </div>
+        <dev-tag-button
+                ng-click="model.save(form)"
+                icon="glyphicon glyphicon-floppy-disk"
+                ng-disabled="model.isSaving"
+                is-waiting="model.isSaving"
+                style-type="primary"
+                title="{{'Save' | translate}}"
+                ng-disabled="form.$invalid"></dev-tag-button>
 
-    <textarea ng-model="model.apiKey"
-              ng-show="model.apiKey != ''"
-              ng-disabled="true"
-              class="form-control"
-              style="width: 500px; height: 250px;cursor: text"></textarea>
-</dev-tag-content>
+        <div class="row" style="margin-top: 50px">
+            <div class="form-group col-md-3">
+                <label class="label-control">نرخ ارزش افزوده</label>
+                <dev-tag-numeric
+                        required
+                        not-zero
+                        name="vat"
+                        ng-model="model.settings.vat"></dev-tag-numeric>
+
+                <div ng-messages="form.vat.$error" ng-if="form.vat.$dirty">
+                    <label ng-message="required" class="error">{{'This field is required'|translate}}</label>
+                    <label ng-message="notZero" class="error">{{'This field should have a value not equal to zero'|translate}}</label>
+                </div>
+            </div>
+        </div>
+
+    </dev-tag-content>
+</form>

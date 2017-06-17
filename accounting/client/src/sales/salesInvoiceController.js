@@ -107,6 +107,7 @@ export default class SalesInvoiceController {
 
     onProductChanged(item, product) {
         item.description = product.title;
+        item.unitPrice = product.salePrice;
     }
 
     createNewCustomer(title) {

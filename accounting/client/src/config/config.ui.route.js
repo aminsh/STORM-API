@@ -15,6 +15,13 @@ export default function ($stateProvider, $urlRouterProvider, $locationProvider) 
             templateUrl: 'partials/views/home.html'
         })
 
+        .state('settings', {
+            url: '/settings',
+            controller: 'settingsController',
+            controllerAs: 'model',
+            templateUrl: 'partials/settings/settings.html'
+        })
+
         .state('chooseBranch', {
             url: '/branch/choose',
             controller: 'chooseBranchController',
@@ -22,6 +29,12 @@ export default function ($stateProvider, $urlRouterProvider, $locationProvider) 
             templateUrl: 'partials/branch/branch.choose.html'
         })
 
+        .state('branchInfo',{
+            url: '/branch-info',
+            controller:'branchInfoController',
+            controllerAs: 'model',
+            templateUrl: 'partials/branch/branchInfo.html'
+        })
         .state('general-ledger-accounts', {
             url: '/general-ledger-accounts',
             controller: 'generalLedgerAccountsController',
@@ -331,13 +344,13 @@ export default function ($stateProvider, $urlRouterProvider, $locationProvider) 
             }
         })
 
-        .state('fund', {
-            url: '/fund',
+        .state('funds', {
+            url: '/funds',
             controller: 'fundListController',
             controllerAs: 'model',
             templateUrl: 'partials/fund/fundList.html'
         })
-        .state('fund.create', {
+        .state('funds.create', {
             url: '/create',
             onEnter: $modelFactory => {
                 $modelFactory.create({
@@ -347,7 +360,7 @@ export default function ($stateProvider, $urlRouterProvider, $locationProvider) 
                 });
             }
         })
-        .state('fund.edit', {
+        .state('funds.edit', {
             url: '/:id/edit',
             onEnter: $modelFactory => {
                 $modelFactory.create({

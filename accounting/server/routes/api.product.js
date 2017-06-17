@@ -44,7 +44,6 @@ router.route('/:id')
             entity = {
                 code: cmd.code,
                 title: cmd.title,
-                productType: cmd.productType,
                 reorderPoint: cmd.reorderPoint,
                 salePrice: cmd.salePrice
             };

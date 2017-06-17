@@ -13,34 +13,57 @@ const express = require('express'),
     Image = require('../../services/shared').utility.Image;
 
 
-router.route('/').post(async((req, res) => {
-    let cmd = req.body,
-        entity = {
-            name: cmd.name,
-            ownerName: cmd.ownerName,
-            logo: cmd.logo
-                ? Image.toBase64(`${config.rootPath}/../${cmd.logo}`)
-                : config.logo,
-            phone: cmd.phone,
-            mobile: cmd.mobile,
-            address: cmd.address,
-            postalCode: cmd.postalCode,
-            nationalCode: cmd.nationalCode,
-            ownerId: req.user.id,
-            status: 'pending'
-        };
+router.route('/')
+    .post(async((req, res) => {
+        let cmd = req.body,
+            entity = {
+                name: cmd.name,
+                ownerName: cmd.ownerName,
+                logo: cmd.logo
+                    ? Image.toBase64(`${config.rootPath}/../${cmd.logo}`)
+                    : config.logo,
+                phone: cmd.phone,
+                mobile: cmd.mobile,
+                address: cmd.address,
+                postalCode: cmd.postalCode,
+                nationalCode: cmd.nationalCode,
+                ownerId: req.user.id,
+                status: 'pending'
+            };
 
-    await(branchRepository.create(entity));
+        await(branchRepository.create(entity));
 
-    res.cookie('branch-id', entity.id);
+        res.cookie('branch-id', entity.id);
 
-    res.json({isValid: true});
-}));
+        res.json({isValid: true});
+    }));
 
-router.route('/current').get(async((req, res) => {
-    let currentBranch = await(branchQuery.getById(req.cookies['branch-id']));
-    res.json(currentBranch);
-}));
+
+router.route('/current')
+    .get(async((req, res) => {
+        let currentBranch = await(branchQuery.getById(req.cookies['branch-id']));
+        res.json(currentBranch);
+    }))
+    .put(async((req, res) => {
+        let cmd = req.body,
+
+            entity = {
+                name: cmd.name,
+                ownerName: cmd.ownerName,
+                phone: cmd.phone,
+                mobile: cmd.mobile,
+                address: cmd.address,
+                postalCode: cmd.postalCode,
+                nationalCode: cmd.nationalCode
+            };
+
+        if (cmd.logoFileName)
+            entity.logo = Image.toBase64(`${config.rootPath}/../${cmd.logoFileName}`);
+
+        await(branchRepository.update(req.cookies['branch-id'], entity));
+
+        res.json({isValid: true});
+    }));
 
 router.route('/current/api-key').get(async((req, res) => {
     let currentBranch = await(branchRepository.getById(req.cookies['branch-id'])),

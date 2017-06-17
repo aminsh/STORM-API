@@ -39,7 +39,6 @@ export default class peopleListController {
             reorderable: true,
             resizable: true,
             columnMenu: true,
-            groupable: true,
             sortable: true,
             scrollable: {
                 virtual: true
@@ -52,7 +51,7 @@ export default class peopleListController {
             },
             columns: [
                 {
-                    field: "title", title: translate('title'), width: '120px',
+                    field: "title", title: translate('Title'), width: '120px',
                     filterable: {
                         multi: true,
                         cell: {
@@ -66,8 +65,9 @@ export default class peopleListController {
                         e.preventDefault();
                         let fund = this.dataItem($(e.currentTarget).closest("tr"));
                         confirm(
-                            translate('Remove Person'),
-                            translate('Are you sure ?'))
+                            translate('Are you sure ?'),
+                            translate('Remove fund')
+                            )
                             .then(function () {
                                 fundApi.remove(fund.id)
                                     .then(function () {

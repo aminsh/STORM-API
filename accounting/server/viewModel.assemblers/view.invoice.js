@@ -11,9 +11,14 @@ module.exports = function(entity) {
         description: entity.description,
         detailAccountId: entity.detailAccountId,
         detailAccountDisplay: entity.detailAccountDisplay,
+        customerId: entity.detailAccountId,
+        customerDisplay: entity.detailAccountDisplay,
         status: entity.invoiceStatus,
         statusDisplay: enums.InvoiceStatus().getDisplay(entity.invoiceStatus),
-        invoiceLines: entity.invoiceLines
+        invoiceLines: entity.invoiceLines,
+        sumTotalPrice: entity.sumTotalPrice,
+        sumPaidAmount: entity.sumPaidAmount,
+        sumRemainder: entity.sumRemainder
     };
 };
 

@@ -82,6 +82,16 @@ accModule.config(menuItemsProvider => {
                     title: 'دوره های مالی',
                     url: 'fiscal-periods',
                     icon: ''
+                },
+                {
+                    title: 'اطلاعات کسب و کار',
+                    url: 'branch-info',
+                    icon: ''
+                },
+                {
+                    title: 'پیش فرض',
+                    url: 'settings',
+                    icon: ''
                 }
             ]
         });
@@ -110,7 +120,7 @@ accModule.config(menuItemsProvider => {
     menuItemsProvider
         .add({
             title: 'صندوق',
-            url: 'fund',
+            url: 'funds',
             icon: 'fa fa-archive'
         });
 

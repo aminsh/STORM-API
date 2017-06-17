@@ -50,7 +50,7 @@ export default class peopleListController {
             },
             columns: [
                 {
-                    field: "title", title: translate('title'), width: '120px',
+                    field: "title", title: translate('Title'), width: '120px',
                     filterable: {
                         multi: true,
                         cell: {

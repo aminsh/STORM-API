@@ -54,12 +54,19 @@ router.route('/:id/confirm')
             invoiceRepository = new InvoiceRepository(branchId),
             entity = {statue: 'waitForPayment'},
             id = req.params.id,
-
+            invoice = await(invoiceRepository.findById(id)),
+            errors = [],
             current = {
                 branchId,
                 fiscalPeriodId: req.cookies['current-period'],
                 userId: req.user.id
             };
+
+        if (invoice.status != 'draft')
+            errors.push('این فاکتور قبلا تایید شده');
+
+        if (errors.length != 0)
+            return res.json({isValid: false, errors});
 
         await(invoiceRepository.update(id, entity));
 
@@ -80,6 +87,8 @@ router.route('/:id')
     .put(async((req, res) => {
         let invoiceRepository = new InvoiceRepository(req.branchId),
             id = req.params.id,
+            errors = [],
+            invoice = await(invoiceRepository.findById(id)),
             cmd = req.body,
             status = cmd.status == 'confirm' ? 'waitForPayment' : 'draft',
 
@@ -92,9 +101,15 @@ router.route('/:id')
             entity = {
                 date: cmd.date,
                 description: cmd.description,
-                detailAccountId: cmd.detailAccountId,
+                detailAccountId: cmd.detailAccountId || cmd.customerId,
                 invoiceStatus: status
             };
+
+        if (invoice.invoiceStatus != 'draft')
+            errors.push('فاکتور جاری قابل ویرایش نمیباشد');
+
+        if (errors.length != 0)
+            return res.json({isValid: false, errors});
 
         entity.invoiceLines = cmd.invoiceLines.asEnumerable()
             .select(line => ({
@@ -117,7 +132,15 @@ router.route('/:id')
 
     }))
     .delete(async((req, res) => {
-        let invoiceRepository = new InvoiceRepository(req.branchId);
+        let invoiceRepository = new InvoiceRepository(req.branchId),
+            invoice = await(invoiceRepository.findById(req.params.id)),
+            errors = [];
+
+        if (invoice.invoiceStatus != 'draft')
+            errors.push('فاکتور جاری قابل حذف نمیباشد');
+
+        if (errors.length != 0)
+            return res.json({isValid: false, errors});
 
         await(invoiceRepository.remove(req.params.id));
 
@@ -129,7 +152,7 @@ function createInvoice(status, cmd, invoiceRepository) {
         number: (await(invoiceRepository.saleMaxNumber()).max || 0) + 1,
         date: cmd.date,
         description: cmd.description,
-        detailAccountId: cmd.detailAccountId,
+        detailAccountId: cmd.detailAccountId || cmd.customerId,
         invoiceType: 'sale',
         invoiceStatus: status
     };

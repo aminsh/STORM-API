@@ -148,7 +148,11 @@
   "Remove Cheque category": "حذف دسته چک",
   "Amount": "مبلغ",
   "New Bank": "بانک جدید",
+  "Edit Bank": "ویرایش بانک",
   "Remove Bank": "حذف بانک",
+  "Bank Branch": "شعبه",
+  "Bank Account Number": "شماره حساب",
+  "Bank Name": "نام بانک",
   "Write cheque": "ثبت چک",
   "Description on cheque": "شرح روی چک",
   "Description cheque": "شرح چک",
@@ -246,8 +250,12 @@
   "Purchase invoice": "فاکتور خرید",
   "New purchase": "خرید جدید",
   "People": "اشخاص",
+  "Funds": "صندوق ها",
   "New People":"شخص جدید",
   "Remove Person": "حذف شخص",
+  "Remove fund": "حذف صندوق",
+  "New fund":"صندوق جدید",
+  "Edit fund": "ویرایش صندوق",
   "name":"نام",
   "person,company,...":"به عنوان مثال : نام شخص , شرکت یا ...",
   "Person Type":"نوع شخص",
@@ -262,5 +270,7 @@
   "Customer": "مشتری",
   "Province": "استان",
   "City": "شهر",
-  "Postal code": "کدپستی"
+  "Postal code": "کدپستی",
+  "Branch info": "اطلاعات کسب و کار",
+  "Settings": "پیش فرض"
 }

@@ -38,12 +38,39 @@ module.exports = class InvoiceQuery extends BaseQuery {
             branchId = this.branchId,
 
             query = knex.select().table(function () {
-                this.select('invoices.*', knex.raw('"detailAccounts"."title" as "detailAccountDisplay"'))
-                    .from('invoices')
-                    .leftJoin('detailAccounts', 'invoices.detailAccountId', 'detailAccounts.id')
-                    .where('invoices.branchId', branchId)
-                    .andWhere('invoiceType', invoiceType)
-                    .as('base');
+                this.select(
+                    'id',
+                    'number',
+                    'date',
+                    'detailAccountId',
+                    'detailAccountDisplay',
+                    'invoiceStatus',
+                    'description',
+                    knex.raw('"sum"("totalPrice") as "sumTotalPrice"'),
+                    knex.raw('"sum"("paidAmount") as "sumPaidAmount"'),
+                    knex.raw('"sum"("totalPrice"-"paidAmount") as "sumRemainder"'))
+                    .from(function () {
+                        this.select('invoices.*',
+                            knex.raw('(select "sum"("amount") from "payments" where "invoiceId" = "invoices"."id" limit 1) as "paidAmount"'),
+                            knex.raw('"detailAccounts"."title" as "detailAccountDisplay"'),
+                            knex.raw('(("invoiceLines"."unitPrice" * "invoiceLines"."quantity") - "invoiceLines"."discount" + "invoiceLines"."vat") as "totalPrice"'))
+                            .from('invoices')
+                            .leftJoin('invoiceLines', 'invoices.id', 'invoiceLines.invoiceId')
+                            .leftJoin('detailAccounts', 'invoices.detailAccountId', 'detailAccounts.id')
+                            .where('invoices.branchId', branchId)
+                            .andWhere('invoiceType', invoiceType)
+                            .as('base');
+                    }).as("group")
+                    .groupBy(
+                        'id',
+                        'number',
+                        'date',
+                        'detailAccountId',
+                        'detailAccountDisplay',
+                        'invoiceStatus',
+                        'description')
+                    .orderBy('number', 'desc')
+
             });
 
         return kendoQueryResolve(query, parameters, view);

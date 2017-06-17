@@ -66,7 +66,7 @@ export default class paymentController {
         let newPayment = {
             style:"panel-info",
             date: null,
-            ammount: 0,
+            amount: 0,
             fundId:null,
             paymentType: 'cash',
             paymentDisplay: this.devConstants.enums.paymentType().getDisplay('cash')
@@ -79,7 +79,7 @@ export default class paymentController {
             style:"panel-success",
             date: null,
             number:null,
-            ammount: 0,
+            amount: 0,
             bankName:null,
             bankBranch:null,
             paymentType: 'cheque',
@@ -92,7 +92,7 @@ export default class paymentController {
         let newPayment = {
             style:"panel-danger",
             date: null,
-            ammount: 0,
+            amount: 0,
             bankId:null,
             paymentType: 'receipt',
             paymentDisplay: this.devConstants.enums.paymentType().getDisplay('receipt')
@@ -111,7 +111,7 @@ export default class paymentController {
 
         this.errors.asEnumerable().removeAll();
 
-        if(payment.asEnumerable().sum(item=>item.ammount)>this.totalPrice.amount){
+        if(payment.asEnumerable().sum(item=>item.amount)>this.totalPrice.amount){
             logger.error('مقدار وارد شده بیشتر از مبلغ فاکتور میباشد');
             return;
         }
