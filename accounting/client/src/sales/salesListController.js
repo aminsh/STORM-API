@@ -77,7 +77,7 @@ export default class salesListController {
                     }
                 },
                 {
-                    field: "description", title: translate('Title'), width: '30%',
+                    field: "description", title: translate('Title'), width: '20%',
                     filterable: {
                         extra: false,
                         cell: {

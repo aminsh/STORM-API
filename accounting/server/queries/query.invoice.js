@@ -45,6 +45,7 @@ module.exports = class InvoiceQuery extends BaseQuery {
                     'detailAccountId',
                     'detailAccountDisplay',
                     'invoiceStatus',
+                    'description',
                     knex.raw('"sum"("totalPrice") as "sumTotalPrice"'),
                     knex.raw('"sum"("paidAmount") as "sumPaidAmount"'),
                     knex.raw('"sum"("totalPrice"-"paidAmount") as "sumRemainder"'))
@@ -56,7 +57,6 @@ module.exports = class InvoiceQuery extends BaseQuery {
                             .from('invoices')
                             .leftJoin('invoiceLines', 'invoices.id', 'invoiceLines.invoiceId')
                             .leftJoin('detailAccounts', 'invoices.detailAccountId', 'detailAccounts.id')
-                            //.leftJoin('payments', 'invoices.id', 'payments.invoiceId')
                             .where('invoices.branchId', branchId)
                             .andWhere('invoiceType', invoiceType)
                             .as('base');
@@ -67,7 +67,8 @@ module.exports = class InvoiceQuery extends BaseQuery {
                         'date',
                         'detailAccountId',
                         'detailAccountDisplay',
-                        'invoiceStatus')
+                        'invoiceStatus',
+                        'description')
                     .orderBy('number', 'desc')
 
             });
