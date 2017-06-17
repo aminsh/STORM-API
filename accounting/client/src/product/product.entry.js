@@ -1,14 +1,27 @@
 "use strict";
 
 export default class ProductEntryController {
-    constructor($scope, productApi, data, formService, devConstants) {
+    constructor($scope,
+                productApi,
+                data,
+                formService,
+                devConstants,
+                productCategoryApi,
+                prompt,
+                translate) {
+
         this.$scope = $scope;
         this.productApi = productApi;
         this.formService = formService;
+        this.prompt = prompt;
+        this.translate = translate;
         this.id = data.id;
         this.isSaving = false;
         this.errors = [];
         this.productTypes = devConstants.enums.ProductType().data;
+
+        this.productCategoryApi = productCategoryApi;
+        this.getAllProductCategoryUrl = devConstants.urls.productCategory.getAll();
 
         if (this.id)
             productApi.getById(data.id)
@@ -19,7 +32,8 @@ export default class ProductEntryController {
                 title: data.title || '',
                 reorderPoint: 0,
                 productType: 'good',
-                salePrice: 0
+                salePrice: 0,
+                categoryId: ''
             };
     }
 
@@ -42,5 +56,20 @@ export default class ProductEntryController {
 
     close() {
         this.$scope.$dismiss();
+    }
+
+    onCategoryChanged(category) {
+        this.product.categoryId = category.id;
+    }
+
+    onCategoryCreated(value) {
+        this.prompt({
+            title: this.translate('New product category'),
+            text: this.translate('Enter product category title'),
+            defaultValue: value
+        }).then(inputValue => {
+            this.productCategoryApi.create({title: inputValue})
+                .then(result => this.product.categoryId = result.id);
+        });
     }
 }

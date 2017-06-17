@@ -8,6 +8,7 @@ function prompt(translate, $q) {
         swal({
             title: option.title,
             text: option.text,
+            inputValue: option.defaultValue,
             type: 'input',
             showCancelButton: true,
             closeOnConfirm: false,
@@ -23,6 +24,8 @@ function prompt(translate, $q) {
             }
 
             deferred.resolve(inputValue);
+
+            swal.close();
         });
 
         return deferred.promise;

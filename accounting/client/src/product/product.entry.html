@@ -47,6 +47,21 @@
         </div>
 
         <div class="row">
+            <div class="form-group col-md-12">
+                <label class="label-control">{{'Product category' | translate}}</label>
+                <dev-tag-combo-box name="categoryId"
+                                   k-placeholder="{{'Select ...'|translate}}"
+                                   k-data-value-field="id"
+                                   k-data-text-field="title"
+                                   k-on-created="model.onCategoryCreated($search)"
+                                   k-on-changed="model.onCategoryChanged($item)"
+                                   show-no-data-template
+                                   ng-model="model.product.categoryId"
+                                   url="{{model.getAllProductCategoryUrl}}"></dev-tag-combo-box>
+            </div>
+        </div>
+
+        <div class="row">
             <div class="form-group col-md-6">
                 <label class="label-control">{{'Reorder point' | translate}}</label>
                 <dev-tag-numeric

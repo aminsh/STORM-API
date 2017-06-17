@@ -88,6 +88,10 @@ let products = {
     getAll: ()=> `${rootUrl()}/products`
 };
 
+let productCategory = {
+    getAll: ()=> `${rootUrl()}/product-categories`
+};
+
 let apiUrls = {
     rootUrl: rootUrl(),
     generalLedgerAccount: generalLedgerAccount,
@@ -106,6 +110,8 @@ let apiUrls = {
     sales:sales,
     purchase:purchase,
     products,
+    productCategory,
+    fund,
     people,
     fund
 };
