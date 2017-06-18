@@ -9,7 +9,8 @@ function createPaymentService(modalBase) {
     return modalBase({
         controller: 'paymentController',
         controllerAs: 'model',
-        templateUrl: 'partials/payment/payment.html'
+        templateUrl: 'partials/payment/payment.html',
+        size: 'lg'
     });
 }
 

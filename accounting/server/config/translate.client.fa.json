@@ -249,6 +249,7 @@
   "Create invoice": "ایجاد فاکتور",
   "New purchase": "خرید جدید",
   "People": "اشخاص",
+  "Fund": "صندوق",
   "Funds": "صندوق ها",
   "New People":"شخص جدید",
   "Remove Person": "حذف شخص",
@@ -275,7 +276,8 @@
   "Postal code": "کدپستی",
   "Branch info": "اطلاعات کسب و کار",
   "Settings": "پیش فرض",
-  "New Receipt":"رسید جدید",
-  "New Cheque":"چک جدید",
-  "New Cash":"پرداخت نقدی"
+  "New Receipt": "پرداخت به بانک",
+  "New Cheque": "پرداخت با چک",
+  "New Cash": "پرداخت نقدی",
+  "Vendor":"فروشنده"
 }

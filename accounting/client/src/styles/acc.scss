@@ -236,11 +236,12 @@ div.dropdown-menu h1 {
   border-radius: 2px;
 }
 
-.dropdown-menu.shadow{
+.dropdown-menu.shadow {
   -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
   -moz-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
 }
+
 .notify-arrow {
   border-style: solid;
   border-width: 0 13px 13px;
@@ -305,7 +306,6 @@ div.dropdown-menu h1 {
 #wrapper.toggled #sidebar-wrapper {
   width: 250px;
 }
-
 
 #wrapper.toggled #page-content-wrapper {
   position: absolute;
@@ -549,7 +549,6 @@ h1.head-current {
   background-color: #A659EC;
 }
 
-
 .modal-dialog {
   margin-top: 100px;
 }
@@ -698,7 +697,7 @@ h1.head-current {
   z-index: 10003 !important;
 }
 
-.modal{
+.modal {
   z-index: 10004 !important;
 }
 
@@ -1044,8 +1043,12 @@ h1.head-current {
   border-color: #1ab394;
 }
 
-.ADMdtp-box{
+.ADMdtp-box {
   font-family: "IRANSans", "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.label {
+  font-family: "IRANSans"
 }
 
 .pace .pace-progress {
@@ -1056,7 +1059,7 @@ h1.head-current {
   border: 1px dotted #cc5965;
 }
 
-label.error{
+label.error {
   color: #cc5965;
   display: inline-block;
   margin-right: 5px;
@@ -1066,11 +1069,11 @@ label.error{
   background: #1ab394;
 }
 
-.pointer{
+.pointer {
   cursor: pointer;
 }
 
-.command-cell{
+.command-cell {
   padding: 2px !important;
   text-align: left;
   min-width: 100px;
@@ -1081,27 +1084,24 @@ label.error{
 }
 
 ::-webkit-scrollbar-track {
-  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
   border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb {
   border-radius: 10px;
-  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5);
 }
 
-.grid-row-striped{
+.grid-row-striped {
   background-color: #f9f9f9;
 }
 
-
-
-
 .dataTables_empty {
-  display:none;
+  display: none;
 }
 
-.dataTables_scrollHead{
+.dataTables_scrollHead {
   overflow: inherit !important;
 }
 
@@ -1128,8 +1128,8 @@ label.error{
 .ui.dimmer {
   display: block;
   position: absolute;
-  top: 0!important;
-  left: 0!important;
+  top: 0 !important;
+  left: 0 !important;
   width: 100%;
   height: 100%;
   text-align: center;
@@ -1151,8 +1151,7 @@ label.error{
   z-index: 1000;
 }
 
-
-.grid-col{
+.grid-col {
   margin: 15px 0;
   font-size: 15px;
 }
@@ -1170,29 +1169,27 @@ label.error{
 }
 
 .progress-waiting {
-  background-color: rgb(229,233,235);
+  background-color: rgb(229, 233, 235);
   height: 0.5em;
   position: relative;
   width: 16em;
 }
+
 .progress-waiting-bar {
   background-size: 16em 0.25em;
   height: 100%;
   position: relative;
-  background-image: linear-gradient(to right, rgb(76,217,100), rgb(90,200,250), rgb(0,122,255), rgb(52,170,220), rgb(88,86,214), rgb(255,45,85));
-  background-image: -o-linear-gradient(to right, rgb(76,217,100), rgb(90,200,250), rgb(0,122,255), rgb(52,170,220), rgb(88,86,214), rgb(255,45,85));
-  background-image: -ms-linear-gradient(to right, rgb(76,217,100), rgb(90,200,250), rgb(0,122,255), rgb(52,170,220), rgb(88,86,214), rgb(255,45,85));
-  background-image: -webkit-linear-gradient(to right, rgb(76,217,100), rgb(90,200,250), rgb(0,122,255), rgb(52,170,220), rgb(88,86,214), rgb(255,45,85));
-  background-image: -moz-linear-gradient(to right, rgb(76,217,100), rgb(90,200,250), rgb(0,122,255), rgb(52,170,220), rgb(88,86,214), rgb(255,45,85));
+  background-image: linear-gradient(to right, rgb(76, 217, 100), rgb(90, 200, 250), rgb(0, 122, 255), rgb(52, 170, 220), rgb(88, 86, 214), rgb(255, 45, 85));
+  background-image: -o-linear-gradient(to right, rgb(76, 217, 100), rgb(90, 200, 250), rgb(0, 122, 255), rgb(52, 170, 220), rgb(88, 86, 214), rgb(255, 45, 85));
+  background-image: -ms-linear-gradient(to right, rgb(76, 217, 100), rgb(90, 200, 250), rgb(0, 122, 255), rgb(52, 170, 220), rgb(88, 86, 214), rgb(255, 45, 85));
+  background-image: -webkit-linear-gradient(to right, rgb(76, 217, 100), rgb(90, 200, 250), rgb(0, 122, 255), rgb(52, 170, 220), rgb(88, 86, 214), rgb(255, 45, 85));
+  background-image: -moz-linear-gradient(to right, rgb(76, 217, 100), rgb(90, 200, 250), rgb(0, 122, 255), rgb(52, 170, 220), rgb(88, 86, 214), rgb(255, 45, 85));
   animation: cssload-width 1.95s cubic-bezier(0.45, 0, 1, 1) infinite;
   -o-animation: cssload-width 1.95s cubic-bezier(0.45, 0, 1, 1) infinite;
   -ms-animation: cssload-width 1.95s cubic-bezier(0.45, 0, 1, 1) infinite;
   -webkit-animation: cssload-width 1.95s cubic-bezier(0.45, 0, 1, 1) infinite;
   -moz-animation: cssload-width 1.95s cubic-bezier(0.45, 0, 1, 1) infinite;
 }
-
-
-
 
 @keyframes cssload-width {
   0%, 100% {
@@ -1258,7 +1255,7 @@ label.error{
   width: 0;
 }
 
-.grid-refresh{
+.grid-refresh {
   top: 3px;
   position: relative;
   color: black;
