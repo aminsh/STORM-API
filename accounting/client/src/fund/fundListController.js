@@ -31,14 +31,8 @@ export default class peopleListController {
                     total: 'total'
                 }
             }),
-            toolbar: ["excel"],
-            excel: {
-                fileName: "export.xls",
-                filterable: true
-            },
             reorderable: true,
             resizable: true,
-            columnMenu: true,
             sortable: true,
             scrollable: {
                 virtual: true

@@ -1,5 +1,5 @@
 export default class paymentController {
-    constructor($scope, $uibModalInstance, formService, logger,promise,  devConstants,data,createFundService) {
+    constructor($scope, $uibModalInstance, formService, logger,promise,  devConstants,data,createFundService,fundApi,bankApi) {
 
         this.$scope = $scope;
         this.promise=promise;
@@ -12,40 +12,14 @@ export default class paymentController {
         this.isSaving = false;
         this.devConstants = devConstants;
         this.payment = [];
+        this.fundApi=fundApi;
+        this.bankApi=bankApi;
         this.totalPrice=data;
 
         this.urls = {
             getAllFunds: devConstants.urls.fund.getAll(),
+            getAllBanks: devConstants.urls.bank.getAll(),
         };
-
-        this.fundDataSource= new kendo.data.DataSource({
-            serverFiltering: true,
-            transport: {
-                read: {
-                    url: this.devConstants.urls.fund.getAll(),
-                    dataType: "json"
-                },
-            },
-            schema: {
-                data:'data',
-                total:'total'
-            }
-        });
-
-        this.bankDataSource= new kendo.data.DataSource({
-            serverFiltering: true,
-            transport: {
-                read: {
-                    url: this.devConstants.urls.fund.getAll(),
-                    dataType: "json"
-                },
-            },
-            schema: {
-                data:'data',
-                total:'total'
-            }
-        });
-
     }
 
     removePayment(item) {
@@ -53,12 +27,14 @@ export default class paymentController {
     }
 
     createNewFund(title) {
-        return this.promise.create((resolve, reject) => {
-            this.createFundService.show({title})
-                .then(result => {
+        this.fundApi.create({title:title}).then(result=>{
+            this.logger.success();
+        });
+    }
 
-                    resolve({id: result.id, title})
-                });
+    createNewBank(title) {
+        this.bankApi.create({title:title}).then(result=>{
+            this.logger.success();
         });
     }
 

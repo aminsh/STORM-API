@@ -66,6 +66,20 @@ function reportDesigner(reportApi, $rootScope) {
             }));
 
             report.dictionary.variables.add(addVariable({
+                name: 'branchPhone',
+                alias: 'Branch Phone',
+                category: "general",
+                value: $rootScope.branch.phone
+            }));
+
+            report.dictionary.variables.add(addVariable({
+                name: 'branchMobile',
+                alias: 'Branch Mobile',
+                category: "general",
+                value: $rootScope.branch.phone
+            }));
+
+            report.dictionary.variables.add(addVariable({
                 name: 'branchAddress',
                 alias: 'Branch address',
                 category: "general",

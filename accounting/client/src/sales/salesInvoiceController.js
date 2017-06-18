@@ -190,16 +190,9 @@ export default class SalesInvoiceController {
                     this.isLoading = true;
                     this.isSaving = true;
                     this.salesInvoiceApi.getById(invoice.id).then(result => {
-                        if (result.status == 'waitForPayment') {
-                            this.isPayment = true;
-                            invoice.totalPrice = invoice.invoiceLines.asEnumerable()
-                                .sum(item => (item.unitPrice * item.quantity) - item.discount + item.vat);
-                        }
-                        if(result.status=='draft'){
-                            this.$state.go('^.edit', {
-                                id: invoice.id
-                            });
-                        }
+                        this.$state.go('^.edit', {
+                            id: invoice.id
+                        })
                     })
                 })
                 .catch(err => errors = err)
@@ -208,13 +201,16 @@ export default class SalesInvoiceController {
     }
 
     cashPaymentShow() {
+        this.invoice.totalPrice = this.invoice.invoiceLines.asEnumerable()
+            .sum(item => (item.unitPrice * item.quantity) - item.discount + item.vat);
+
         this.createPaymentService.show({amount: this.invoice.totalPrice}).then(result => {
             return this.salesInvoiceApi.pay(this.invoice.id, result)
                 .then(result => {
                     this.logger.success();
                     this.isLoading = true;
                 })
-                .catch(err => errors = err)
+                .catch(err => this.errors = err)
                 .finally(() => this.isSaving = true);
         });
     }

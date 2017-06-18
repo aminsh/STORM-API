@@ -60,14 +60,13 @@
                 </div>
 
                 <div class="form-group row col-lg-12" ng-if="item.paymentType=='cash'">
-                    <label class="col-lg-2 control-label">{{'Fund'|translate}}</label>
+                    <label class="col-lg-2 control-label">{{'Funds'|translate}}</label>
                     <div class="col-lg-10">
                         <dev-tag-combo-box id="fundId"
                                            name="fundId"
                                            k-placeholder="{{'Select ...'|translate}}"
                                            k-data-value-field="id"
                                            k-data-text-field="title"
-                                           k-data-source="model.fundDataSource"
                                            k-suggest="true"
                                            k-minLength="0"
                                            k-filter="'contains'"
@@ -94,7 +93,9 @@
                                            k-minLength="0"
                                            k-filter="'contains'"
                                            ng-model="item.bankId"
-                                           url="/acc/api/banks"
+                                           k-on-created="model.createNewBank($search)"
+                                           show-no-data-template
+                                           url="{{model.urls.getAllBanks}}"
                                            required></dev-tag-combo-box>
                     </div>
                     <!--<div ng-messages="form.bankId.$error" ng-if="form.bankId.$dirty">-->
