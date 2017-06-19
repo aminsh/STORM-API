@@ -279,5 +279,6 @@
   "New Receipt": "پرداخت به بانک",
   "New Cheque": "پرداخت با چک",
   "New Cash": "پرداخت نقدی",
-  "Vendor":"فروشنده"
+  "Vendor":"فروشنده",
+  "Total Remaining Amount:":"جمع مبلغ باقیمانده:"
 }

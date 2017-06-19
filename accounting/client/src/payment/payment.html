@@ -24,6 +24,12 @@
     <form name="form" class="form-horizontal">
         <dev-tag-validation-summary errors="model.errors" class="col-md-8"></dev-tag-validation-summary>
 
+        <div class="row col-sm-12 text-right">
+            <span class="label label-default" style="font-size: medium"> {{'Total Remaining Amount:' | translate}}   {{model.totalPrice.amount- (model.payment |  totalSum: ('amount'))  | number }} </span>
+        </div>
+
+      <br>
+
         <ul class="list-group  clear-list m-t" >
             <li class="list-group-item "
                 ng-repeat="item in model.payment"
@@ -86,8 +92,8 @@
                     </div>
                     <div class="col-md-2">
                         <dev-tag-text-box
-                                name="amount"
-                                ng-model="item.amount"
+                                name="number"
+                                ng-model="item.number"
                                 required></dev-tag-text-box>
                     </div>
                     <div class="col-md-1" style="text-align: left;margin-top: 7px">
@@ -116,8 +122,8 @@
 
                     <div class="col-md-3">
                         <dev-tag-text-box
-                                name="amount"
-                                ng-model="item.amount"
+                                name="bankName"
+                                ng-model="item.bankName"
                                 required></dev-tag-text-box>
                     </div>
 
@@ -127,8 +133,8 @@
                     </div>
                     <div class="col-md-3">
                         <dev-tag-text-box
-                                name="amount"
-                                ng-model="item.amount"
+                                name="bankBranch"
+                                ng-model="item.bankBranch"
                                 required></dev-tag-text-box>
                     </div>
 
@@ -157,8 +163,8 @@
                     </div>
                     <div class="col-md-2">
                         <dev-tag-text-box
-                                name="amount"
-                                ng-model="item.amount"
+                                name="number"
+                                ng-model="item.number"
                                 required></dev-tag-text-box>
                     </div>
                     <div class="col-md-1" style="text-align: left;margin-top: 7px">
