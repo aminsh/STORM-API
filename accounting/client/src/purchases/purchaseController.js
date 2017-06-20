@@ -109,6 +109,7 @@ export default class purchaseController {
     }
 
     onProductChanged(item, product) {
+        item.productId=product.id;
         item.description = product.title;
         item.unitPrice = product.salePrice;
     }
