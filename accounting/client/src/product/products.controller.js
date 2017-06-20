@@ -1,7 +1,7 @@
 "use strict";
 
 export default class ProductController {
-    constructor(productApi, translate, devConstants, logger, confirm) {
+    constructor(productApi, translate, devConstants, logger, confirm,$timeout) {
         this.productApi = productApi;
         this.logger = logger;
         this.gridOption = {
