@@ -24,6 +24,12 @@
     <form name="form" class="form-horizontal">
         <dev-tag-validation-summary errors="model.errors" class="col-md-8"></dev-tag-validation-summary>
 
+        <div class="row col-sm-12 text-right">
+            <span class="label label-default" style="font-size: medium"> {{'Total Remaining Amount:' | translate}}   {{model.totalPrice.amount- (model.payment |  totalSum: ('amount'))  | number }} </span>
+        </div>
+
+      <br>
+
         <ul class="list-group  clear-list m-t" >
             <li class="list-group-item "
                 ng-repeat="item in model.payment"
@@ -31,7 +37,7 @@
 
                 <div class="row" ng-if="item.paymentType=='cash'">
                     <div class="col-md-1" style="font-size: 20px;margin-top: 7px">
-                        <span class="label label-primary" style="font-size: medium">نقدی</span>
+                        <span class="label label-primary" style="font-size: medium">{{'Cash' | translate}}</span>
                     </div>
 
                     <div class="col-md-1" style="text-align: left;margin-top: 7px">
@@ -40,9 +46,15 @@
                     <div class="col-md-4">
                         <dev-tag-numeric
                                 class="form-control"
-                                name="amount"
+                                name="cashAmount"
                                 ng-model="item.amount"
                                 required></dev-tag-numeric>
+
+                        <div ng-messages="form.cashAmount.$error" ng-if="form.cashAmount.$dirty">
+                            <label ng-message="required" class="error">
+                                {{'This field is required'|translate}}</label>
+                        </div>
+
                     </div>
                     <div class="col-md-1" style="text-align: left;margin-top: 7px">
                         <label class="label-control">{{'Fund' | translate}}</label>
@@ -58,6 +70,12 @@
                                            show-no-data-template
                                            url="{{model.urls.getAllFunds}}"
                                            required></dev-tag-combo-box>
+
+                        <div ng-messages="form.fundId.$error" ng-if="form.fundId.$dirty">
+                            <label ng-message="required" class="error">
+                                {{'This field is required'|translate}}</label>
+                        </div>
+
                     </div>
                     <div class="col-md-1" style="font-size: 20px;margin-top: 7px;text-align: left;">
                         <button type="button" ng-click="model.removePayment(item)" class="close" title="حذف">
@@ -67,7 +85,7 @@
                 </div>
                 <div class="row" ng-if="item.paymentType=='cheque'">
                     <div class="col-md-1" style="font-size: 20px;margin-top: 7px">
-                        <span class="label label-success" style="font-size: medium">چک</span>
+                        <span class="label label-success" style="font-size: medium">{{'Cheque' | translate}}</span>
                     </div>
 
                     <div class="col-md-1" style="text-align: left;margin-top: 7px">
@@ -76,9 +94,14 @@
                     <div class="col-md-2">
                         <dev-tag-numeric
                                 class="form-control"
-                                name="amount"
+                                name="chequeAmount"
                                 ng-model="item.amount"
                                 required></dev-tag-numeric>
+
+                        <div ng-messages="form.chequeAmount.$error" ng-if="form.chequeAmount.$dirty">
+                            <label ng-message="required" class="error">
+                                {{'This field is required'|translate}}</label>
+                        </div>
                     </div>
 
                     <div class="col-md-1" style="text-align: left;margin-top: 7px">
@@ -86,9 +109,14 @@
                     </div>
                     <div class="col-md-2">
                         <dev-tag-text-box
-                                name="amount"
-                                ng-model="item.amount"
+                                name="chequeNumber"
+                                ng-model="item.number"
                                 required></dev-tag-text-box>
+
+                        <div ng-messages="form.chequeNumber.$error" ng-if="form.chequeNumber.$dirty">
+                            <label ng-message="required" class="error">
+                                {{'This field is required'|translate}}</label>
+                        </div>
                     </div>
                     <div class="col-md-1" style="text-align: left;margin-top: 7px">
                         <label class="label-control">{{'Date' | translate}}</label>
@@ -98,6 +126,11 @@
                                 ng-model="item.date"
                                 name="paymentDate"
                                 required></dev-tag-datepicker>
+
+                        <div ng-messages="form.paymentDate.$error" ng-if="form.paymentDate.$dirty">
+                            <label ng-message="required" class="error">
+                                {{'This field is required'|translate}}</label>
+                        </div>
                     </div>
                     <div class="col-md-1" style="font-size: 20px;margin-top: 7px;text-align: left;">
                         <button type="button" ng-click="model.removePayment(item)" class="close" title="حذف">
@@ -116,9 +149,14 @@
 
                     <div class="col-md-3">
                         <dev-tag-text-box
-                                name="amount"
-                                ng-model="item.amount"
+                                name="bankName"
+                                ng-model="item.bankName"
                                 required></dev-tag-text-box>
+
+                        <div ng-messages="form.bankName.$error" ng-if="form.bankName.$dirty">
+                            <label ng-message="required" class="error">
+                                {{'This field is required'|translate}}</label>
+                        </div>
                     </div>
 
                     <div class="col-md-2"></div>
@@ -127,9 +165,14 @@
                     </div>
                     <div class="col-md-3">
                         <dev-tag-text-box
-                                name="amount"
-                                ng-model="item.amount"
+                                name="bankBranch"
+                                ng-model="item.bankBranch"
                                 required></dev-tag-text-box>
+
+                        <div ng-messages="form.bankBranch.$error" ng-if="form.bankBranch.$dirty">
+                            <label ng-message="required" class="error">
+                                {{'This field is required'|translate}}</label>
+                        </div>
                     </div>
 
                     <div class="col-md-1" style="font-size: 20px;margin-top: 7px;text-align: left;">
@@ -138,7 +181,7 @@
                 </div>
                 <div class="row" ng-if="item.paymentType=='receipt'">
                     <div class="col-md-1" style="font-size: 20px;margin-top: 7px">
-                        <span class="label label-info" style="font-size: medium" title="فیش / رسید بانکی">رسید</span>
+                        <span class="label label-info" style="font-size: medium" title="فیش / رسید بانکی">{{'Receipt' | translate}}</span>
                     </div>
 
                     <div class="col-md-1" style="text-align: left;margin-top: 7px">
@@ -147,9 +190,14 @@
                     <div class="col-md-2">
                         <dev-tag-numeric
                                 class="form-control"
-                                name="amount"
+                                name="receiptAmount"
                                 ng-model="item.amount"
                                 required></dev-tag-numeric>
+
+                        <div ng-messages="form.receiptAmount.$error" ng-if="form.receiptAmount.$dirty">
+                            <label ng-message="required" class="error">
+                                {{'This field is required'|translate}}</label>
+                        </div>
                     </div>
 
                     <div class="col-md-1" style="text-align: left;margin-top: 7px">
@@ -157,9 +205,14 @@
                     </div>
                     <div class="col-md-2">
                         <dev-tag-text-box
-                                name="amount"
-                                ng-model="item.amount"
+                                name="receiptNumber"
+                                ng-model="item.number"
                                 required></dev-tag-text-box>
+
+                        <div ng-messages="form.receiptNumber.$error" ng-if="form.receiptNumber.$dirty">
+                            <label ng-message="required" class="error">
+                                {{'This field is required'|translate}}</label>
+                        </div>
                     </div>
                     <div class="col-md-1" style="text-align: left;margin-top: 7px">
                         <label class="label-control">{{'Bank' | translate}}</label>
@@ -175,6 +228,11 @@
                                 show-no-data-template
                                 url="{{model.urls.getAllBanks}}"
                                 required></dev-tag-combo-box>
+
+                        <div ng-messages="form.bankId.$error" ng-if="form.bankId.$dirty">
+                            <label ng-message="required" class="error">
+                                {{'This field is required'|translate}}</label>
+                        </div>
                     </div>
                     <div class="col-md-1" style="font-size: 20px;margin-top: 7px;text-align: left;">
                         <button type="button" ng-click="model.removePayment(item)" class="close" title="حذف">

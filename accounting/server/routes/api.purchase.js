@@ -37,7 +37,8 @@ router.route('/')
 
         res.json({isValid: true, returnValue: {id: result.id}});
 
-        EventEmitter.emit('on-purchase-created', result, current);
+        if (status == 'waitForPayment')
+            EventEmitter.emit('on-sale-created', result, current);
     }));
 
 router.route('/:id/confirm')
@@ -106,14 +107,10 @@ router.route('/:id')
 
         await(invoiceRepository.updateBatch(id, entity));
 
-        if(status == 'waitForPayment')
-            EventEmitter.emit('on-sale-created', await(invoiceRepository.findById(id)), current);
-        await(invoiceRepository.updateBatch(id, entity));
+        res.json({isValid: true});
 
         if(status == 'waitForPayment')
             EventEmitter.emit('on-purchase-created', await(invoiceRepository.findById(id)), current);
-
-        res.json({isValid: true});
 
     }))
     .delete(async((req, res) => {

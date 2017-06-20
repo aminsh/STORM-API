@@ -16,17 +16,58 @@ module.exports = class InvoiceQuery extends BaseQuery {
     getById(id) {
         let knex = this.knex,
             branchId = this.branchId,
-            invoice = await(knex.select('invoices.*',
-                knex.raw('"detailAccounts"."title" as "detailAccountDisplay"'))
-                .from('invoices')
-                .leftJoin('detailAccounts', 'invoices.detailAccountId', 'detailAccounts.id')
-                .where('invoices.branchId', branchId)
-                .andWhere('invoices.id', id)
-                .first()),
-            invoiceLines = await(knex.select('*')
+            invoice = await(knex.select().table(function () {
+                this.select(
+                    'id',
+                    'number',
+                    'date',
+                    'detailAccountId',
+                    'detailAccountDisplay',
+                    'invoiceStatus',
+                    'description',
+                    knex.raw('"sum"("totalPrice") as "sumTotalPrice"'),
+                    knex.raw('"sum"("paidAmount") as "sumPaidAmount"'),
+                    knex.raw('"sum"("totalPrice"-"paidAmount") as "sumRemainder"'))
+                    .from(function () {
+                        this.select('invoices.*',
+                            knex.raw('(select "sum"("amount") from "payments" where "invoiceId" = "invoices"."id" limit 1) as "paidAmount"'),
+                            knex.raw('"detailAccounts"."title" as "detailAccountDisplay"'),
+                            knex.raw('(("invoiceLines"."unitPrice" * "invoiceLines"."quantity") - "invoiceLines"."discount" + "invoiceLines"."vat") as "totalPrice"'))
+                            .from('invoices')
+                            .leftJoin('invoiceLines', 'invoices.id', 'invoiceLines.invoiceId')
+                            .leftJoin('detailAccounts', 'invoices.detailAccountId', 'detailAccounts.id')
+                            .where('invoices.branchId', branchId)
+                            .andWhere('invoiceId', id)
+                            .as('base');
+                    }).as("group")
+                    .groupBy(
+                        'id',
+                        'number',
+                        'date',
+                        'detailAccountId',
+                        'detailAccountDisplay',
+                        'invoiceStatus',
+                        'description')
+                    .orderBy('number', 'desc')
+
+            }).first()), invoiceLines = await(knex.select('*')
                 .from('invoiceLines')
                 .where('branchId', branchId)
                 .andWhere('invoiceId', id));
+
+
+            //
+            //  invoice = await(knex.select('invoices.*',
+            //     knex.raw('"detailAccounts"."title" as "detailAccountDisplay"'))
+            //     .from('invoices')
+            //     .leftJoin('detailAccounts', 'invoices.detailAccountId', 'detailAccounts.id')
+            //     .where('invoices.branchId', branchId)
+            //     .andWhere('invoices.id', id)
+            //     .first()),
+            // invoiceLines = await(knex.select('*')
+            //     .from('invoiceLines')
+            //     .where('branchId', branchId)
+            //     .andWhere('invoiceId', id));
 
         invoice.invoiceLines = invoiceLines.asEnumerable().select(lineView).toArray();
 

@@ -42,6 +42,9 @@ export default class SalesInvoiceController {
             description: '',
             invoiceLines: [],
             detailAccountId: '',
+            sumPaidAmount:null,
+            sumRemainder:null,
+            sumTotalPrice:null
         };
 
         this.isLoading = false;
@@ -106,6 +109,7 @@ export default class SalesInvoiceController {
     }
 
     onProductChanged(item, product) {
+        item.productId=product.id;
         item.description = product.title;
         item.unitPrice = product.salePrice;
     }
@@ -201,10 +205,10 @@ export default class SalesInvoiceController {
     }
 
     cashPaymentShow() {
-        this.invoice.totalPrice = this.invoice.invoiceLines.asEnumerable()
-            .sum(item => (item.unitPrice * item.quantity) - item.discount + item.vat);
+        if(this.invoice.sumRemainder==null)
+            this.invoice.sumRemainder=this.invoice.sumTotalPrice;
 
-        this.createPaymentService.show({amount: this.invoice.totalPrice}).then(result => {
+        this.createPaymentService.show({amount: this.invoice.sumRemainder}).then(result => {
             return this.salesInvoiceApi.pay(this.invoice.id, result)
                 .then(result => {
                     this.logger.success();

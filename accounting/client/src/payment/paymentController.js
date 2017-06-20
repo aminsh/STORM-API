@@ -1,5 +1,5 @@
 export default class paymentController {
-    constructor($scope, $uibModalInstance, formService, logger,promise,  devConstants,data,createFundService,fundApi,bankApi) {
+    constructor($scope,translate, $uibModalInstance, formService, logger,promise,  devConstants,data,createFundService,fundApi,bankApi) {
 
         this.$scope = $scope;
         this.promise=promise;
@@ -10,6 +10,7 @@ export default class paymentController {
         this.formService = formService;
         this.errors = [];
         this.isSaving = false;
+        this.translate=translate;
         this.devConstants = devConstants;
         this.payment = [];
         this.fundApi=fundApi;
@@ -88,7 +89,7 @@ export default class paymentController {
         this.errors.asEnumerable().removeAll();
 
         if(payment.asEnumerable().sum(item=>item.amount)>this.totalPrice.amount){
-            logger.error('مقدار وارد شده بیشتر از مبلغ فاکتور میباشد');
+            logger.error(this.translate('The sum of the amount You entered is more than the amount'));
             return;
         }
 

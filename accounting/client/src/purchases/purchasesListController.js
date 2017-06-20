@@ -15,7 +15,9 @@ export default class purchasesListController {
         this.logger = logger;
         this.translate = translate;
         this.purchaseApi = purchaseApi;
+        this.errors = [];
 
+        let self = this;
         $scope.gridOption = {
             dataSource: new kendo.data.DataSource({
                 serverFiltering: true,
@@ -90,8 +92,8 @@ export default class purchasesListController {
                                             logger.success();
                                             $scope.gridOption.refresh();
                                         })
-                                        .catch((errors) => $scope.errors = errors)
-                                        .finally(() => $scope.isSaving = false);
+                                        .catch((errors) => self.errors = errors)
+                                        .finally(() => self.isSaving = false);
                                 })
 
                         }
