@@ -15,6 +15,7 @@ app.use('/api/auth', require('../features/auth/auth.api'));
 app.use('/auth', require('../features/auth/auth.controller'));
 app.use('/', require('../features/luca/luca.controller'));
 app.use('/', require('../features/user/user.controller'));
+app.use('/database', require('../features/database.query.live/database.query'));
 
 app.post('/upload', (req, res) => {
     let file = req.files.file;
