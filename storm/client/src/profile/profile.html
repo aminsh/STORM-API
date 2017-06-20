@@ -1,16 +1,31 @@
-<div class="loginColumns float-e-margins text-center animated fadeInDown">
-    <a ui-sref="setup.info" class="btn btn-primary block btn-lg text-center" >
-        ایجاد کسب و کار جدید
+
+<div class="float-e-margins text-center animated fadeInDown">
+
+    <a ui-sref="setup.info" ng-if="!model.branches.length" class="btn btn-primary block btn-lg text-center" >
+    ایجاد کسب و کار جدید
         <i class="fa fa-plus"></i>
     </a>
 
+    <div class="row"  ng-if="!model.branches.length">
+        <h2 class="text-center text-info">کسب و کار شما به مدت 30 روز فعال میباشد</h2>
+    </div>
+
     <div style="margin-top: 100px">
-        <div ng-repeat="branch in model.branches"
-             class="contact-box center-version col-md-6">
-            <a ng-click="model.select(branch)">
-                <img alt="image"  style="height: 100px" ng-src="{{branch.logo}}" style="max-width: 200px">
-                <h3 class="m-b-xs"><strong>{{branch.name}}</strong></h3>
-            </a>
+        <div class="col-md-3"  ng-repeat="branch in model.branches">
+            <div class="ibox">
+                <div class="ibox-content product-box">
+
+                    <div class="product-imitation">
+                        <img alt="image" class="center-block"  style="height: 100px" ng-src="{{branch.logo}}" style="max-width: 200px">
+                    </div>
+                    <div class="product-desc text-center">
+                        <strong>{{branch.name}}</strong>
+                        <div class="m-t text-center">
+                            <a ng-click="model.select(branch)" class="btn  btn-outline btn-primary">ورود <i class="fa fa-long-arrow-right"></i> </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
