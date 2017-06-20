@@ -1,11 +1,5 @@
 FROM node:7
 
-RUN \
-  apt-get -y update && \
-  apt-get -y install postgresql-client-9.4 && \
-  apt-get clean && \
-  rm -rf /var/lib/apt/lists/*
-
 # Create app directory
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
@@ -15,6 +9,12 @@ COPY package.json /usr/src/app/
 
 RUN npm install -g bower gulp
 RUN npm install
+
+RUN \
+  apt-get -y update && \
+  apt-get -y install postgresql-client-9.4 && \
+  apt-get clean && \
+  rm -rf /var/lib/apt/lists/*
 
 # Bundle app source
 COPY . /usr/src/app

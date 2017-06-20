@@ -62,7 +62,7 @@ gulp.task('migrate-latest', () => {
 });
 
 gulp.task('migrate-rollback', () => {
-    knex.migrate.rollback()
+    knex.migrate.rollback(options)
         .then(() => process.exit())
         .catch((err) => {
             Util.log(Util.colors.red(err));
