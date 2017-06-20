@@ -50,6 +50,8 @@ enums.InvoiceType = function () {
     return new Enum([
         {key: 'purchase', display: 'خرید'},
         {key: 'sale', display: 'فروش'},
+        {key: 'returnSale', display: 'برگشت از فروش'},
+        {key: 'returnPurchase', display: 'برگشت از خرید'},
     ]);
 };
 
