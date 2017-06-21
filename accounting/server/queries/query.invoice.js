@@ -30,7 +30,7 @@ module.exports = class InvoiceQuery extends BaseQuery {
                     knex.raw('"sum"("totalPrice"-"paidAmount") as "sumRemainder"'))
                     .from(function () {
                         this.select('invoices.*',
-                            knex.raw('(select "sum"("amount") from "payments" where "invoiceId" = "invoices"."id" limit 1) as "paidAmount"'),
+                            knex.raw('(select coalesce("sum"("amount"),0) from "payments" where "invoiceId" = "invoices"."id" limit 1) as "paidAmount"'),
                             knex.raw('"detailAccounts"."title" as "detailAccountDisplay"'),
                             knex.raw('(("invoiceLines"."unitPrice" * "invoiceLines"."quantity") - "invoiceLines"."discount" + "invoiceLines"."vat") as "totalPrice"'))
                             .from('invoices')
@@ -92,7 +92,7 @@ module.exports = class InvoiceQuery extends BaseQuery {
                     knex.raw('"sum"("totalPrice"-"paidAmount") as "sumRemainder"'))
                     .from(function () {
                         this.select('invoices.*',
-                            knex.raw('(select "sum"("amount") from "payments" where "invoiceId" = "invoices"."id" limit 1) as "paidAmount"'),
+                            knex.raw('(select coalesce("sum"("amount"),0) from "payments" where "invoiceId" = "invoices"."id" limit 1) as "paidAmount"'),
                             knex.raw('"detailAccounts"."title" as "detailAccountDisplay"'),
                             knex.raw('(("invoiceLines"."unitPrice" * "invoiceLines"."quantity") - "invoiceLines"."discount" + "invoiceLines"."vat") as "totalPrice"'))
                             .from('invoices')
