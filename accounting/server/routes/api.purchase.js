@@ -38,7 +38,7 @@ router.route('/')
         res.json({isValid: true, returnValue: {id: result.id}});
 
         if (status == 'waitForPayment')
-            EventEmitter.emit('on-sale-created', result, current);
+            EventEmitter.emit('on-purchase-created', result, current);
     }));
 
 router.route('/:id/confirm')

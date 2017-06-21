@@ -103,7 +103,7 @@ module.exports = class Payment {
             id: e.journalLineId,
             generalLedgerAccountId: debtorSubsidiaryLedgerAccount.generalLedgerAccountId,
             subsidiaryLedgerAccountId: debtorSubsidiaryLedgerAccount.id,
-            detailAccountId: detailAccountId,
+            detailAccountId: invoice.detailAccountId,
             article,
             debtor: e.amount,
             creditor: 0
@@ -112,7 +112,7 @@ module.exports = class Payment {
         this.journalLines.push({
             generalLedgerAccountId: creditorSubsidiaryLedgerAccount.generalLedgerAccountId,
             subsidiaryLedgerAccountId: creditorSubsidiaryLedgerAccount.id,
-            detailAccountId: invoice.detailAccountId,
+            detailAccountId: detailAccountId,
             article,
             debtor: 0,
             creditor: e.amount

@@ -43,7 +43,7 @@ EventEmitter.on('on-sale-created', async((sale, current) => {
             }, {
                 generalLedgerAccountId: saleSubLedgerAccount.generalLedgerAccountId,
                 subsidiaryLedgerAccountId: saleSubLedgerAccount.id,
-                detailAccountId: sale.detailAccountId,
+                //detailAccountId: sale.detailAccountId, sale does n`t have detailAccount
                 debtor: 0,
                 creditor: sumAmount,
                 article: description,

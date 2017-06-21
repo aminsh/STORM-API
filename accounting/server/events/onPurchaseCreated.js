@@ -10,7 +10,7 @@ const async = require('asyncawait/async'),
 
 /*
 * 1111 مالیات بر ارزش افزوده خرید
-* 5102 خرید کالا
+* 5101 خرید کالا
 * 2102 حسابهای پرداختنی
 * 7203 تخفیفات نقدی خرید
 * */
@@ -36,8 +36,8 @@ EventEmitter.on('on-purchase-created', async((purchase, current) => {
             description: description,
             isInComplete: false
         },
-        payableSubLedgerAccount = await(subsidiaryLedgerAccountRepository.findByCode('2102')),
-        purchaseSubLedgerAccount = await(subsidiaryLedgerAccountRepository.findByCode('5102')),
+        payableSubLedgerAccount = await(subsidiaryLedgerAccountRepository.findByCode('2101')),
+        purchaseSubLedgerAccount = await(subsidiaryLedgerAccountRepository.findByCode('5101')),
         journalLines = [
             {
                 generalLedgerAccountId: payableSubLedgerAccount.generalLedgerAccountId,
@@ -50,7 +50,7 @@ EventEmitter.on('on-purchase-created', async((purchase, current) => {
             }, {
                 generalLedgerAccountId: purchaseSubLedgerAccount.generalLedgerAccountId,
                 subsidiaryLedgerAccountId: purchaseSubLedgerAccount.id,
-                detailAccountId: purchase.detailAccountId,
+                //detailAccountId: purchase.detailAccountId, purchase does n`t have detailAccount
                 debtor: sumAmount,
                 creditor: 0,
                 article: description,
