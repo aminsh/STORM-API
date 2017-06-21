@@ -1,12 +1,17 @@
 "use strict";
 
 export class JournalLineAdditionalInformation {
-    constructor($scope, chequeApi, data, translate) {
+    constructor($scope, chequeApi, data, translate, devConstants) {
         this.$scope = $scope;
         this.chequeApi = chequeApi;
         this.translate = translate;
 
         this.cheques = [];
+
+        this.urls = {
+            getAllDimension1s: devConstants.urls.dimension.allByCategory('1'),
+            getAllDimension2s: devConstants.urls.dimension.allByCategory('2')
+        };
 
         this.journalLine = data.journalLine;
 
@@ -42,8 +47,7 @@ export class JournalLineAdditionalInformation {
     }
 
     save() {
-        this.journalLine.cheque = this.additionalInfo.cheque;
-        this.journalLine.receipt = this.additionalInfo.receipt;
+        Object.assign(this.journalLine, this.additionalInfo);
 
         this.$scope.$close(this.journalLine);
     }
