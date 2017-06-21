@@ -51,11 +51,6 @@ function accountReviewTurnoverController($scope,
             order: 5,
             key: 'dimension2',
             display: translate('Dimension2')
-        },
-        {
-            order: 6,
-            key: 'dimension3',
-            display: translate('Dimension3')
         }
     ]
         .asEnumerable()
@@ -379,12 +374,6 @@ function accountReviewTurnoverGridOptionService(translate, devConstants) {
                 title: translate('Date'),
                 type: 'string',
                 width: '100px'
-            },
-            {
-                name: 'dimension3Code',
-                title: translate('Dimension3'),
-                type: 'string',
-                width: '70px'
             },
             {
                 name: 'dimension2Code',

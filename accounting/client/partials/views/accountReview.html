@@ -22,13 +22,12 @@
                     <div class="col-md-9">
                         <div ng-if="'detailAccount' == item.key">
                             <dev-tag-combo-box
-                                    ng-disabled="parameters.detailAccountOrDimension != 'detailAccount'"
                                     name="detailAccount"
                                     k-placeholder="{{'Select ...'|translate}}"
-                                    k-data-value-field="id"
+
                                     k-data-text-field="display"
-                                    k-data-source="detailAccountDataSource"
                                     k-value-primitive="false"
+                                    url="{{urls.getAllDetailAccounts}}"
                                     ng-required="parameters.detailAccountOrDimension == 'detailAccount'"
                                     ng-model="parameters.detailAccount"></dev-tag-combo-box>
 
@@ -44,9 +43,9 @@
                                     k-placeholder="{{'Select ...'|translate}}"
                                     k-data-value-field="id"
                                     k-data-text-field="display"
-                                    k-data-source="dimension1DataSource"
                                     k-value-primitive="false"
                                     ng-model="parameters.dimension1"
+                                    url="urls.getAllDimension2s"
                                     ng-required="parameters.detailAccountOrDimension == 'dimension1'"></dev-tag-combo-box>
 
                             <div ng-messages="form.dimension1.$error" ng-if="form.dimension1.$dirty">
@@ -65,6 +64,7 @@
                                     k-data-source="dimension2DataSource"
                                     k-value-primitive="false"
                                     ng-model="parameters.dimension2"
+                                    url="urls.getAllDimension3s"
                                     ng-required="parameters.detailAccountOrDimension == 'dimension2'"></dev-tag-combo-box>
 
                             <div ng-messages="form.dimension2.$error" ng-if="form.dimension2.$dirty">
@@ -72,23 +72,6 @@
                             </div>
                         </div>
 
-                        <div ng-if="'dimension3' == item.key">
-                            <dev-tag-combo-box
-
-                                    ng-disabled="parameters.detailAccountOrDimension != 'dimension3'"
-                                    name="dimension3"
-                                    k-placeholder="{{'Select ...'|translate}}"
-                                    k-data-value-field="id"
-                                    k-data-text-field="display"
-                                    k-data-source="dimension3DataSource"
-                                    k-value-primitive="false"
-                                    ng-model="parameters.dimension3"
-                                    ng-required="parameters.detailAccountOrDimension == 'dimension3'"></dev-tag-combo-box>
-
-                            <div ng-messages="form.dimension3.$error" ng-if="form.dimension3.$dirty">
-                                <label ng-message="required" class="error">{{'This field is required'|translate}}</label>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
