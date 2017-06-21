@@ -1,18 +1,25 @@
 
-<div class="float-e-margins text-center animated fadeInDown">
+<div class="loginColumns text-center animated fadeInDown"
+     ng-if="model.branches && !model.branches.length">
 
-    <a ui-sref="setup.info" ng-if="!model.branches.length" class="btn btn-primary block btn-lg text-center" >
-    ایجاد کسب و کار جدید
+    <div class="row"  style="margin-bottom: 20px">
+        <h2 class="text-center" style="color: white">برای فعالسازی پنل رایگان بر روی ایجاد کسب و کار جدید کلیک کنید</h2>
+    </div>
+
+    <a ui-sref="setup.info"
+       class="btn btn-primary block btn-lg text-center" >
         <i class="fa fa-plus"></i>
+    ایجاد کسب و کار جدید
+
     </a>
 
     <div class="row"  ng-if="!model.branches.length">
-        <h2 class="text-center text-info">کسب و کار شما به مدت 30 روز فعال میباشد</h2>
+        <h2 class="text-center text-info">پنل حسابداری کسب و کار شما به مدت 30 روز به صورت آزمایشی فعال میشود</h2>
     </div>
 </div>
 
 <div class="col-md-1"></div>
-<div class="col-md-10">
+<div class="col-md-10 animated fadeInDown" ng-if="model.branches">
     <div style="margin-top: 100px">
         <div class="col-md-3"  ng-repeat="branch in model.branches">
             <div class="ibox">
