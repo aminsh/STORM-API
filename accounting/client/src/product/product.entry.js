@@ -33,7 +33,7 @@ export default class ProductEntryController {
                 reorderPoint: 0,
                 productType: 'good',
                 salePrice: 0,
-                categoryId: ''
+                categoryId: null
             };
     }
 
