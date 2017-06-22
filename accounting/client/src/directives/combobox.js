@@ -103,8 +103,10 @@ function combo($parse, apiPromise) {
                          scope.selectionModel = selectionArray;*/
                     } else {
 
-                        if (!modelValue)
+                        if (!modelValue){
+                            scope.selectionModel = modelValue;
                             return;
+                        }
 
                         getData(getParameters(attrs.kDataValueField, modelValue))
                             .then(result => {

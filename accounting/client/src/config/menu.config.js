@@ -1,4 +1,4 @@
-import accModule from '../acc.module';
+import accModule from "../acc.module";
 
 accModule.config(menuItemsProvider => {
     "use strict";
@@ -91,6 +91,20 @@ accModule.config(menuItemsProvider => {
                 {
                     title: 'پیش فرض',
                     url: 'settings',
+                    icon: ''
+                }
+            ]
+        });
+
+    menuItemsProvider
+        .add({
+            title: 'عملیات مالی',
+            url: '',
+            icon: 'fa fa-hand-pointer-o',
+            children: [
+                {
+                    title: 'انتقال وجه',
+                    url: 'transfer-money',
                     icon: ''
                 }
             ]

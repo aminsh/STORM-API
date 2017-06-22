@@ -157,5 +157,7 @@ enums.BranchStatus = function () {
     ]);
 };
 
+enums.cash
+
 
 module.exports = enums;

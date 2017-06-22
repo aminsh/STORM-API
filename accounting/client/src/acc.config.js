@@ -150,6 +150,7 @@ import './fund';
 import './bank';
 import './fiscalPeriod';
 import './product';
+import './financialOperations';
 
 accModule
     .config(uiRouteConfig)

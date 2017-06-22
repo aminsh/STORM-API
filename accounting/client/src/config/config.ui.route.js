@@ -424,6 +424,12 @@ export default function ($stateProvider, $urlRouterProvider, $locationProvider) 
                 });
             }
         })
+        .state('transferMoney', {
+            url: '/transfer-money',
+            controller: 'transferMoneyController',
+            controllerAs: 'model',
+            templateUrl: 'partials/financialOperations/transferMoney.html'
+        })
         .state('not-found', {
             url: '/not-found',
             templateUrl: 'partials/views/notFound.html'

@@ -284,5 +284,6 @@
   "Vendor":"فروشنده",
   "Total Remaining Amount:":"جمع مبلغ باقیمانده:",
   "The sum of the amount You entered is more than the amount":"جمع مبلغ وارد شده بیشتر از مبلغ مانده است",
-  "Remove invoice":"حذف صورتحساب"
+  "Remove invoice":"حذف صورتحساب",
+  "Transfer money": "انتقال وجه"
 }

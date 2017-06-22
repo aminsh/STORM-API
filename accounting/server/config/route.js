@@ -29,6 +29,7 @@ app.use('/api/purchases', require('../routes/api.purchase'));
 app.use('/api/products', require('../routes/api.product'));
 app.use('/api/product-categories', require('../routes/api.productCategory'));
 app.use('/api/settings', require('../routes/api.setting'));
+app.use('/api/transfer-money', require('../routes/api.moneyTransfer'));
 
 app.use('/upload', require('../routes/api.upload'));
 
