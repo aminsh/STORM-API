@@ -150,5 +150,12 @@ enums.ProductType = function () {
     ]);
 };
 
+enums.BranchStatus = function () {
+    return new Enum([
+        { key: 'pending', display: 'انتظار' },
+        { key: 'active', display: 'فعال' }
+    ]);
+};
+
 
 module.exports = enums;

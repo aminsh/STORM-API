@@ -15,10 +15,7 @@ module.exports = async((req, res, next) => {
 
     if(!branchId) return next();
 
-    let user = req.user,
-        currentPeriod = req.cookies['current-period'];
-
-    EventEmitter.emit('on-user-created', {id: user.id, name: user.name}, req);
+    let currentPeriod = req.cookies['current-period'];
 
     if (currentPeriod == null || currentPeriod == 0 || isNaN(currentPeriod)) {
         let fiscalPeriodQuery = new FiscalPeriodQuery(req.cookies['branch-id']),

@@ -1,0 +1,229 @@
+{
+"RECORDS":[
+{
+"createdAt":"2017\/5\/9 17:25:36.321086",
+"updatedAt":"2017\/5\/9 17:25:36.321086",
+"id":2,
+"state":"active",
+"app":"accounting",
+"branchId":"bb8d9d9b-f28d-4aae-a3e1-33a55b30db18",
+"userId":"1a6d669e-039d-4ab2-99b5-43783a1fb809"
+},
+{
+"createdAt":"2017\/5\/9 17:26:14.719079",
+"updatedAt":"2017\/5\/9 17:26:14.719079",
+"id":3,
+"state":"active",
+"app":"accounting",
+"branchId":"bb8d9d9b-f28d-4aae-a3e1-33a55b30db18",
+"userId":"934a30b9-0af9-4081-a8a7-3a43c6f3645e"
+},
+{
+"createdAt":"2017\/5\/9 17:26:37.789755",
+"updatedAt":"2017\/5\/9 17:26:37.789755",
+"id":4,
+"state":"active",
+"app":"accounting",
+"branchId":"bb8d9d9b-f28d-4aae-a3e1-33a55b30db18",
+"userId":"1bf0f0ff-d77e-4127-b776-b96e3dadeb06"
+},
+{
+"createdAt":"2017\/5\/9 17:27:06.719784",
+"updatedAt":"2017\/5\/9 17:27:06.719784",
+"id":5,
+"state":"active",
+"app":"accounting",
+"branchId":"bb8d9d9b-f28d-4aae-a3e1-33a55b30db18",
+"userId":"90e55b2f-6ae1-4782-b513-64f40debb6c7"
+},
+{
+"createdAt":"2017\/5\/9 17:28:43.291872",
+"updatedAt":"2017\/5\/9 17:28:43.291872",
+"id":9,
+"state":"active",
+"app":"accounting",
+"branchId":"bb8d9d9b-f28d-4aae-a3e1-33a55b30db18",
+"userId":"ab2d6862-e89d-4dbc-aca8-820cd505c2c4"
+},
+{
+"createdAt":"2017\/5\/11 15:09:38.23868",
+"updatedAt":"2017\/5\/11 15:09:38.23868",
+"id":13,
+"state":"active",
+"app":"accounting",
+"branchId":"991680d8-8ae4-4d61-bda7-35c5633b7dcd",
+"userId":"105159708713913295867"
+},
+{
+"createdAt":"2017\/5\/13 15:37:06.071046",
+"updatedAt":"2017\/5\/13 15:37:06.071046",
+"id":14,
+"state":"active",
+"app":"accounting",
+"branchId":"7b90c303-48a5-4af7-ae01-c0023b552420",
+"userId":"104586455533647067471"
+},
+{
+"createdAt":"2017\/5\/14 07:04:03.342887",
+"updatedAt":"2017\/5\/14 07:04:03.342887",
+"id":15,
+"state":"active",
+"app":"accounting",
+"branchId":"991680d8-8ae4-4d61-bda7-35c5633b7dcd",
+"userId":"106665340732874333865"
+},
+{
+"createdAt":"2017\/5\/14 07:50:45.750653",
+"updatedAt":"2017\/5\/14 07:50:45.750653",
+"id":16,
+"state":"active",
+"app":"accounting",
+"branchId":"cc5e21f1-fa26-4500-a4f5-44374615a109",
+"userId":"114040594418000076713"
+},
+{
+"createdAt":"2017\/5\/14 12:38:18.03102",
+"updatedAt":"2017\/5\/14 12:38:18.03102",
+"id":17,
+"state":"active",
+"app":"accounting",
+"branchId":"7b90c303-48a5-4af7-ae01-c0023b552420",
+"userId":"105159708713913295867"
+},
+{
+"createdAt":"2017\/5\/16 17:01:58.965035",
+"updatedAt":"2017\/5\/16 17:01:58.965035",
+"id":18,
+"state":"active",
+"app":"accounting",
+"branchId":"cc5e21f1-fa26-4500-a4f5-44374615a109",
+"userId":"105159708713913295867"
+},
+{
+"createdAt":"2017\/5\/19 19:23:29.315726",
+"updatedAt":"2017\/5\/19 19:23:29.315726",
+"id":19,
+"state":"active",
+"app":"accounting",
+"branchId":"c3339d0d-b4f7-4c96-b5c2-2d4376ceb9ea",
+"userId":"1e447742-c935-4a96-b878-53d3ae09ff39"
+},
+{
+"createdAt":"2017\/6\/7 11:19:09.139212",
+"updatedAt":"2017\/6\/7 11:19:09.139212",
+"id":20,
+"state":"active",
+"app":"accounting",
+"branchId":"5c4158ef-c54b-4349-820e-5e0a3e5f9e0e",
+"userId":"106665340732874333865"
+},
+{
+"createdAt":"2017\/6\/8 10:35:53.42845",
+"updatedAt":"2017\/6\/8 10:35:53.42845",
+"id":22,
+"state":"active",
+"app":"accounting",
+"branchId":"00379516-b9a6-4b72-80c1-2b81245d9541",
+"userId":"106665340732874333865"
+},
+{
+"createdAt":"2017\/6\/8 11:54:13.712341",
+"updatedAt":"2017\/6\/8 11:54:13.712341",
+"id":24,
+"state":"active",
+"app":"accounting",
+"branchId":"2c5349c8-3752-4a6c-98c3-7e1431d9b473",
+"userId":"106665340732874333865"
+},
+{
+"createdAt":"2017\/6\/10 06:30:18.841541",
+"updatedAt":"2017\/6\/10 06:30:18.841541",
+"id":27,
+"state":"active",
+"app":"accounting",
+"branchId":"33052c5c-c458-4c21-85cd-9294dba3aa48",
+"userId":"106665340732874333865"
+},
+{
+"createdAt":"2017\/6\/10 08:54:31.031736",
+"updatedAt":"2017\/6\/10 08:54:31.031736",
+"id":28,
+"state":"active",
+"app":"accounting",
+"branchId":"cc5e21f1-fa26-4500-a4f5-44374615a109",
+"userId":"106665340732874333865"
+},
+{
+"createdAt":"2017\/6\/16 05:37:07.101132",
+"updatedAt":"2017\/6\/16 05:37:07.101132",
+"id":30,
+"state":"active",
+"app":"accounting",
+"branchId":"c3f32c0a-080f-4600-8442-f5b277ba020a",
+"userId":"106665340732874333865"
+},
+{
+"createdAt":"2017\/6\/17 12:52:41.91219",
+"updatedAt":"2017\/6\/17 12:52:41.91219",
+"id":32,
+"state":"active",
+"app":"accounting",
+"branchId":"1a562bed-67e0-452d-b664-7c3c36b57bab",
+"userId":"106665340732874333865"
+},
+{
+"createdAt":"2017\/6\/18 14:40:50.307966",
+"updatedAt":"2017\/6\/18 14:40:50.307966",
+"id":33,
+"state":"active",
+"app":"accounting",
+"branchId":"85786440-6209-4f7f-8dd8-09c4e8503117",
+"userId":"106665340732874333865"
+},
+{
+"createdAt":"2017\/6\/19 11:35:51.397865",
+"updatedAt":"2017\/6\/19 11:35:51.397865",
+"id":34,
+"state":"active",
+"app":"accounting",
+"branchId":"e7511b02-d4c2-4575-b786-2bd239d1bad4",
+"userId":"106665340732874333865"
+},
+{
+"createdAt":"2017\/6\/20 07:23:00.594039",
+"updatedAt":"2017\/6\/20 07:23:00.594039",
+"id":35,
+"state":"active",
+"app":"accounting",
+"branchId":"a7d02718-d012-483d-b7e5-b45404c04e8e",
+"userId":"106665340732874333865"
+},
+{
+"createdAt":"2017\/6\/20 09:29:23.845802",
+"updatedAt":"2017\/6\/20 09:29:23.845802",
+"id":36,
+"state":"active",
+"app":"accounting",
+"branchId":"9a78beb8-b9a5-4ea4-b4b4-334acb170bf0",
+"userId":"106665340732874333865"
+},
+{
+"createdAt":"2017\/6\/20 09:30:11.640631",
+"updatedAt":"2017\/6\/20 09:30:11.640631",
+"id":37,
+"state":"active",
+"app":"accounting",
+"branchId":"57eae1a0-1124-4f95-b751-ee3ac7edcded",
+"userId":"106665340732874333865"
+},
+{
+"createdAt":"2017\/6\/20 19:36:48.692111",
+"updatedAt":"2017\/6\/20 19:36:48.692111",
+"id":38,
+"state":"active",
+"app":"accounting",
+"branchId":"c3f32c0a-080f-4600-8442-f5b277ba020a",
+"userId":"105159708713913295867"
+}
+]
+}
