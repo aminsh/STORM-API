@@ -1,4 +1,4 @@
-let rootUrl = ()=> '/api/v1';
+let rootUrl = ()=> '/acc/api';
 
 let generalLedgerAccount = {
     all: ()=> '{0}/general-ledger-accounts'.format(rootUrl())

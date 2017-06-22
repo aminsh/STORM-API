@@ -26,10 +26,9 @@ module.exports = async((req, res, next) => {
         maxId = maxId || 0;
 
         res.cookie('current-period', maxId);
-    }
-
-    if (!req.cookies['current-mode'])
-        res.cookie('current-mode', 'create');
+        req.fiscalPeriodId = maxId;
+    }else
+        req.fiscalPeriodId = currentPeriod;
 
     next();
 });
