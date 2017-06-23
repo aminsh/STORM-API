@@ -157,6 +157,13 @@ enums.BranchStatus = function () {
     ]);
 };
 
+enums.InventoryType = function () {
+    return new Enum([
+        { key: 'input', display: 'رسید' },
+        { key: 'output', display: 'حواله' }
+    ]);
+};
+
 enums.cash
 
 
