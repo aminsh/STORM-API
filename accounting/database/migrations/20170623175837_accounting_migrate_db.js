@@ -4,6 +4,12 @@ const enums = require('../../shared/enums');
 
 exports.up = function (knex, Promise) {
     return knex.schema
+        .createTable('stocks', table => {
+            table.timestamp('createdAt').defaultTo(knex.fn.now());
+            table.timestamp('updatedAt').defaultTo(knex.fn.now());
+            table.string('id').primary();
+            table.string('title');
+        })
         .createTable('inventories', table => {
             table.timestamp('createdAt').defaultTo(knex.fn.now());
             table.timestamp('updatedAt').defaultTo(knex.fn.now());
@@ -31,18 +37,12 @@ exports.up = function (knex, Promise) {
                 .references('id')
                 .inTable('inventories')
                 .onDelete('CASCADE');
-        })
-        .createTable('stocks', table => {
-            table.timestamp('createdAt').defaultTo(knex.fn.now());
-            table.timestamp('updatedAt').defaultTo(knex.fn.now());
-            table.string('id').primary();
-            table.string('title');
         });
 };
 
 exports.down = function (knex, Promise) {
     return knex.schema
-        .dropTable('inventories')
         .dropTable('inventoryLines')
+        .dropTable('inventories')
         .dropTable('stocks');
 };
