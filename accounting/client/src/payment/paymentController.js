@@ -1,21 +1,32 @@
 export default class paymentController {
-    constructor($scope,translate, $uibModalInstance, formService, logger,promise,  devConstants,data,createFundService,fundApi,bankApi) {
+    constructor(
+        $scope,
+        translate,
+        $uibModalInstance,
+        formService,
+        logger,
+        promise,
+        devConstants,
+        data,
+        createFundService,
+        fundApi,
+        bankApi) {
 
         this.$scope = $scope;
-        this.promise=promise;
-        this.createFundService=createFundService,
+        this.promise = promise;
+        this.createFundService = createFundService;
         this.logger = logger;
         this.$uibModalInstance = $uibModalInstance;
         this.logger = logger;
         this.formService = formService;
         this.errors = [];
         this.isSaving = false;
-        this.translate=translate;
+        this.translate = translate;
         this.devConstants = devConstants;
         this.payment = [];
-        this.fundApi=fundApi;
-        this.bankApi=bankApi;
-        this.totalPrice=data;
+        this.fundApi = fundApi;
+        this.bankApi = bankApi;
+        this.totalPrice = data;
 
         this.urls = {
             getAllFunds: devConstants.urls.fund.getAll(),
@@ -28,23 +39,23 @@ export default class paymentController {
     }
 
     createNewFund(title) {
-        this.fundApi.create({title:title}).then(result=>{
+        this.fundApi.create({title: title}).then(result => {
             this.logger.success();
         });
     }
 
     createNewBank(title) {
-        this.bankApi.create({title:title}).then(result=>{
+        this.bankApi.create({title: title}).then(result => {
             this.logger.success();
         });
     }
 
     newCashPayment() {
         let newPayment = {
-            style:"panel-info",
+            style: "panel-info",
             date: null,
             amount: 0,
-            fundId:null,
+            fundId: null,
             paymentType: 'cash',
             paymentDisplay: this.devConstants.enums.paymentType().getDisplay('cash')
         };
@@ -53,12 +64,12 @@ export default class paymentController {
 
     newChequePayment() {
         let newPayment = {
-            style:"panel-success",
+            style: "panel-success",
             date: null,
-            number:null,
+            number: null,
             amount: 0,
-            bankName:null,
-            bankBranch:null,
+            bankName: null,
+            bankBranch: null,
             paymentType: 'cheque',
             paymentDisplay: this.devConstants.enums.paymentType().getDisplay('cheque')
         };
@@ -67,10 +78,10 @@ export default class paymentController {
 
     newReceiptPayment() {
         let newPayment = {
-            style:"panel-danger",
+            style: "panel-danger",
             date: null,
             amount: 0,
-            bankId:null,
+            bankId: null,
             paymentType: 'receipt',
             paymentDisplay: this.devConstants.enums.paymentType().getDisplay('receipt')
         };
@@ -88,7 +99,7 @@ export default class paymentController {
 
         this.errors.asEnumerable().removeAll();
 
-        if(payment.asEnumerable().sum(item=>item.amount)>this.totalPrice.amount){
+        if (payment.asEnumerable().sum(item => item.amount) > this.totalPrice.amount) {
             logger.error(this.translate('The sum of the amount You entered is more than the amount'));
             return;
         }
