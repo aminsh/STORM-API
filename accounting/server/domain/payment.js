@@ -38,7 +38,9 @@ module.exports = class Payment {
             paymentType: e.paymentType,
             bankName: e.bankName,
             bankBranch: e.bankBranch,
-            journalLineId: e.journalLineId
+            journalLineId: e.journalLineId,
+            receiveOrPay: invoice.invoiceType == 'sale' ? 'receive' : 'pay',
+            chequeStatus: e.paymentType == 'cheque' ? 'normal' : null
         })).toArray();
 
         this.journal = {

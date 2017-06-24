@@ -92,10 +92,11 @@ enums.JournalStatus = function () {
 
 enums.ChequeStatus = function () {
     return new Enum([
-        {key: 'White', display: 'سفید'},
-        {key: 'Used', display: 'استفاده شده'},
-        {key: 'Cancel', display: 'باطل'}
-    ])
+        {key: 'normal', display: 'عادی'},
+        {key: 'inProcessOnPassing', display: 'در جریان وصول'},
+        {key: 'passed', display: 'پاس شده'},
+        {key: 'return', display: 'عودت داده'}
+    ]);
 };
 
 enums.ChequeCategoryStatus = function () {
@@ -164,7 +165,11 @@ enums.InventoryType = function () {
     ]);
 };
 
-enums.cash
-
+enums.ReceiveOrPay = function () {
+    return new Enum([
+        {key: 'receive', display: 'دریافت'},
+        {key: 'pay', display: 'پرداخت'},
+    ]);
+};
 
 module.exports = enums;
