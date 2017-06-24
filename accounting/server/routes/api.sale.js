@@ -178,6 +178,8 @@ router.route('/:id/pay')
         await(payment.save(req.params.id, req.body));
 
         res.json({isValid: true});
+
+        EventEmitter.emit('on-invoice-paid', req.params.id, req.branchId);
     }));
 
 router.route('/:id/lines').get(async((req, res) => {

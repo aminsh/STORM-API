@@ -9,6 +9,14 @@ module.exports = class PaymentRepository extends BaseRepository {
         super(branchId);
     }
 
+    getBySumAmountByInvoiceId(invoiceId) {
+        return this.knex.select('*').table('payments')
+            .where('branchId', this.branchId)
+            .andWhere('invoiceId', invoiceId)
+            .sum('amount')
+            .first();
+    }
+
     create(entity, trx) {
         if (Array.isArray(entity))
             entity.forEach(e => super.create(e));

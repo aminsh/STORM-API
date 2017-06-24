@@ -31,7 +31,7 @@ router.route('/')
 
             status = cmd.status == 'confirm' ? 'waitForPayment' : 'draft',
 
-            entity = createInvoice(status, cmd,invoiceRepository),
+            entity = createInvoice(status, cmd, invoiceRepository),
 
             result = await(invoiceRepository.create(entity));
 
@@ -76,7 +76,7 @@ router.route('/:id')
     }))
     .put(async((req, res) => {
         let invoiceRepository = new InvoiceRepository(req.branchId),
-            id= req.params.id,
+            id = req.params.id,
             cmd = req.body,
             status = cmd.status == 'confirm' ? 'waitForPayment' : 'draft',
 
@@ -109,7 +109,7 @@ router.route('/:id')
 
         res.json({isValid: true});
 
-        if(status == 'waitForPayment')
+        if (status == 'waitForPayment')
             EventEmitter.emit('on-purchase-created', await(invoiceRepository.findById(id)), current);
 
     }))
@@ -121,7 +121,7 @@ router.route('/:id')
         res.json({isValid: true});
     }));
 
-function createInvoice(status, cmd,invoiceRepository) {
+function createInvoice(status, cmd, invoiceRepository) {
     let entity = {
         number: (await(invoiceRepository.purchaseMaxNumber()).max || 0) + 1,
         date: cmd.date,
@@ -152,6 +152,8 @@ router.route('/:id/pay')
         await(payment.save(req.params.id, req.body));
 
         res.json({isValid: true});
+
+        EventEmitter.emit('on-invoice-paid', req.params.id, req.branchId);
     }));
 
 router.route('/:id/lines').get(async((req, res) => {
