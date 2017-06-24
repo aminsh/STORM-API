@@ -8,7 +8,7 @@ const users = require('../users.json').RECORDS,
 
 exports.seed = async(function (knex, Promise) {
 
-    let journalLines = await(knex.select('*').from('journalLines')
+    /*let journalLines = await(knex.select('*').from('journalLines')
         .whereNotNull('dimension1Id')
         .orWhereNotNull('dimension2Id'));
 
@@ -37,7 +37,7 @@ exports.seed = async(function (knex, Promise) {
     await(knex('dimensions').insert(dimension1s));
     await(knex('dimensions').insert(dimension2s));
 
-    await(knex('journalLines').insert(journalLines));
+    await(knex('journalLines').insert(journalLines));*/
 
     users.forEach(u => {
         let user = await(knex.select('id').table('users').where('id', u.id).first());
