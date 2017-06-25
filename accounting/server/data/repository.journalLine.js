@@ -17,12 +17,20 @@ class JournalLineRepository extends BaseRepository {
             .first();
     }
 
-    findByJournalId_ids(journalId){
+    findByJournalId_ids(journalId) {
         return this.knex.select('id')
             .from('journalLines')
             .modify(this.modify, this.branchId)
             .where('journalId', journalId)
             .map(item => item.id);
+    }
+
+    findLinesByJournalId(journalLineId) {
+        return this.knex.select('*')
+            .from('journalLines')
+            .modify(this.modify, this.branchId)
+            .whereRaw('"journalId" = (select "journalId" from "journalLines" where id = ? limit 1)',
+                journalLineId);
     }
 
     create(entity) {

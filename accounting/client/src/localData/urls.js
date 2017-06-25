@@ -92,6 +92,10 @@ let productCategory = {
     getAll: ()=> `${rootUrl()}/product-categories`
 };
 
+let receivableCheques = {
+    getAll: ()=> `${rootUrl()}/receive/cheques`
+};
+
 let apiUrls = {
     rootUrl: rootUrl(),
     generalLedgerAccount: generalLedgerAccount,
@@ -113,7 +117,8 @@ let apiUrls = {
     productCategory,
     fund,
     people,
-    fund
+    fund,
+    receivableCheques
 };
 
 export default apiUrls;

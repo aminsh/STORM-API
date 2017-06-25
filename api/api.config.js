@@ -72,4 +72,5 @@ app.use('/products', require('../accounting/server/routes/api.product'));
 app.use('/product-categories', require('../accounting/server/routes/api.productCategory'));
 app.use('/settings', require('../accounting/server/routes/api.setting'));
 app.use('/transfer-money', require('../accounting/server/routes/api.moneyTransfer'));
+app.use('/api/receive', require('../accounting/server/routes/api.receive'));
 
