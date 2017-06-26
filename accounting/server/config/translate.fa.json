@@ -55,5 +55,8 @@
   "paid cash for invoice number ... ": "پرداخت وجه نقد بابت فاکتور شماره {0}",
   "paid receipt number ... for invoice number ... ": "پرداخت فیش / رسید شماره {0} بابت فاکتور شماره {1}",
   "paid cheque number ... date ... bank ... branch ... for invoice number ... ": "پرداخت چک شماره {0} سررسید {1} بانک {2} شعبه {3} بابت فاکتور شماره {4}",
-  "Transfer money from ... to ...": "بابت انتقال وجه از {0} به {1}"
+  "Transfer money from ... to ...": "بابت انتقال وجه از {0} به {1}",
+
+  "passed cheque number ... date ... bank ... branch ...": "بابت وصول چک شماره {0} سررسید {1} بانک {2} شعبه {3}",
+  "returned cheque number ... date ... bank ... branch ...": "بابت عودت چک شماره {0} سررسید {1} بانک {2} شعبه {3}"
 }

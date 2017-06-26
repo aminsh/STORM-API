@@ -13,7 +13,8 @@ const async = require('asyncawait/async'),
 EventEmitter.on('on-sale-created', async((sale, current) => {
     let inventoryRepository = new InventoryRepository(current.branchId),
         stockRepository = new StockRepository(current.branchId),
-        inventoryDomain = new InventoryDomain(current.branchId,current.fiscalPeriodId),
+        inventoryDomain = new InventoryDomain(current.branchId, current.fiscalPeriodId),
+        productRepository = new ProductRepository(current.branchId),
 
         input = {
             number: await(inventoryRepository.outputMaxNumber(current.fiscalPeriodId).max || 0) + 1,
@@ -22,11 +23,13 @@ EventEmitter.on('on-sale-created', async((sale, current) => {
             description: translate('For Cash sale invoice number ...').format(sale.number),
             inventoryType: 'output'
         },
-        inputLines = sale.invoiceLines.asEnumerable().select(line => ({
-            productId: line.productId,
-            quantity: line.quantity,
-            unitPrice: await(inventoryDomain.getPrice(line.productId))
-        })).toArray();
+        inputLines = sale.invoiceLines.asEnumerable()
+            .where(async(line => await(productRepository.isGood(line.productId))))
+            .select(line => ({
+                productId: line.productId,
+                quantity: line.quantity,
+                unitPrice: await(inventoryDomain.getPrice(line.productId))
+            })).toArray();
 
 
     input.inventoryLines = inputLines;

@@ -17,6 +17,14 @@ module.exports = class ProductRepository extends BaseRepository {
             .first();
     }
 
+    isGood(id){
+        return this.knex.table('products')
+            .modify(this.modify, this.branchId)
+            .where('id', id)
+            .andWhere('productType', 'good')
+            .first();
+    }
+
     findByReferenceId(referenceId) {
         return this.knex.table('products')
             .modify(this.modify, this.branchId)

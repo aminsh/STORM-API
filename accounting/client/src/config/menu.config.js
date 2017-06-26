@@ -18,23 +18,6 @@ accModule.config(menuItemsProvider => {
             }
         ],
 
-        overcome = [
-            {
-                title: 'فاکتور فروش',
-                url: 'sales/list',
-                icon: ''
-            }
-        ],
-
-        cost = [
-            {
-                title: 'فاکتور خرید',
-                url: 'purchases/list',
-                icon: ''
-            }
-        ],
-
-
         journal = [
             {
                 title: 'لیست اسناد حسابداری',
@@ -92,13 +75,46 @@ accModule.config(menuItemsProvider => {
                     title: 'پیش فرض',
                     url: 'settings',
                     icon: ''
+                },
+                {
+                    title: 'سرفصل حسابها',
+                    url: 'general-ledger-accounts'
                 }
             ]
         });
 
     menuItemsProvider
         .add({
-            title: 'عملیات مالی',
+            title: 'تعاریف',
+            url: '',
+            icon: 'fa fa-info',
+            children: [
+                {
+                    title: 'کالا / خدمات',
+                    url: 'products',
+                    icon: ''
+                },
+                {
+                    title: 'اشخاص',
+                    url: 'people',
+                    icon: ''
+                },
+                {
+                    title: 'بانک',
+                    url: 'bank',
+                    icon: ''
+                },
+                {
+                    title: 'صندوق',
+                    url: 'funds',
+                    icon: ''
+                }
+            ]
+        });
+
+    menuItemsProvider
+        .add({
+            title: 'عملیات',
             url: '',
             icon: 'fa fa-hand-pointer-o',
             children: [
@@ -112,49 +128,30 @@ accModule.config(menuItemsProvider => {
 
     menuItemsProvider
         .add({
-            title: 'کالا / خدمات',
-            url: 'products',
-            icon: 'fa fa-star'
-        });
-
-    menuItemsProvider
-        .add({
-            title: 'اشخاص',
-            url: 'people',
-            icon: 'fa fa-user'
-        });
-
-    menuItemsProvider
-        .add({
-            title: 'بانک',
-            url: 'bank',
-            icon: 'fa fa-bank'
-        });
-
-    menuItemsProvider
-        .add({
-            title: 'صندوق',
-            url: 'funds',
-            icon: 'fa fa-archive'
-        });
-
-    menuItemsProvider
-        .add({
-            title: 'فروش',
+            title: 'فهرست',
             url: '',
-            icon: 'fa fa-shopping-cart',
+            icon: 'fa fa-list',
             children: [
-                ...overcome
-            ]
-        });
-
-    menuItemsProvider
-        .add({
-            title: 'خرید',
-            url: '',
-            icon: 'fa fa-shopping-basket',
-            children: [
-                ...cost
+                {
+                    title: 'فاکتور فروش',
+                    url: 'sales/list',
+                    icon: ''
+                },
+                {
+                    title: 'فاکتور خرید',
+                    url: 'purchases/list',
+                    icon: ''
+                },
+                {
+                    title: 'چک های دریافتی',
+                    url: 'receivable-cheques',
+                    icon: ''
+                },
+                {
+                    title: 'چک های پرداختی',
+                    url: 'payable-cheques',
+                    icon: ''
+                }
             ]
         });
 

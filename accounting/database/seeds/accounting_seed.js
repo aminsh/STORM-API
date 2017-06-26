@@ -8,7 +8,7 @@ const users = require('../users.json').RECORDS,
 
 exports.seed = async(function (knex, Promise) {
 
-    /*let journalLines = await(knex.select('*').from('journalLines')
+    let journalLines = await(knex.select('*').from('journalLines')
         .whereNotNull('dimension1Id')
         .orWhereNotNull('dimension2Id'));
 
@@ -37,17 +37,30 @@ exports.seed = async(function (knex, Promise) {
     await(knex('dimensions').insert(dimension1s));
     await(knex('dimensions').insert(dimension2s));
 
-    await(knex('journalLines').insert(journalLines));*/
+    try {
+        let totalPages = (journalLines.length / 100) + ((journalLines.length % 100) ? 1 : 0);
 
-    users.forEach(u => {
-        let user = await(knex.select('id').table('users').where('id', u.id).first());
+        for (let i = 0; i < totalPages; i++) {
 
-        if (user)
-            await(knex('users').where('id', u.id).update(u));
-        else
-            await(knex('users').insert(u));
-    });
+            let page = journalLines.asEnumerable().skip(i * 100).take(100).toArray();
 
-    await(knex('branches').insert(branches));
-    await(knex('userInBranches').insert(userInBranches));
+            await(knex('journalLines').insert(page));
+        }
+    }
+    catch(e) {
+        console.log(e);
+    }
+    finally {
+        users.forEach(u => {
+            let user = await(knex.select('id').table('users').where('id', u.id).first());
+
+            if (user)
+                await(knex('users').where('id', u.id).update(u));
+            else
+                await(knex('users').insert(u));
+        });
+
+        await(knex('branches').insert(branches));
+        await(knex('userInBranches').insert(userInBranches));
+    }
 });

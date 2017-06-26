@@ -9,6 +9,13 @@ module.exports = class PaymentRepository extends BaseRepository {
         super(branchId);
     }
 
+    findById(id) {
+        return this.knex.select('*').table('payments')
+            .where('branchId', this.branchId)
+            .andWhere('id', id)
+            .first();
+    }
+
     getBySumAmountByInvoiceId(invoiceId) {
         return this.knex.select('*').table('payments')
             .where('branchId', this.branchId)
@@ -29,5 +36,9 @@ module.exports = class PaymentRepository extends BaseRepository {
             query.transacting(trx);
 
         return query.insert(entity);
+    }
+
+    update(id, entity) {
+        return this.knex('payments').where('id', id).update(entity);
     }
 };
