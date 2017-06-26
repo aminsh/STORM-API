@@ -24,6 +24,6 @@ export default class {
     }
 
     remove(id) {
-
+        return this.apiPromise.delete(`${this.baseUrl}/${id}`);
     }
 }
