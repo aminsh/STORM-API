@@ -6,7 +6,8 @@ const BaseQuery = require('./query.base'),
     view = require('../viewModel.assemblers/view.invoice'),
     lineView = require('../viewModel.assemblers/view.invoiceLine'),
     FiscalPeriodQuery = require('./query.fiscalPeriod'),
-    kendoQueryResolve = require('../services/kendoQueryResolve');
+    kendoQueryResolve = require('../services/kendoQueryResolve'),
+    enums = require('../../shared/enums');
 
 
 module.exports = class InvoiceQuery extends BaseQuery {
@@ -156,6 +157,64 @@ module.exports = class InvoiceQuery extends BaseQuery {
                 .whereBetween('date', [fiscalPeriod.minDate, fiscalPeriod.maxDate])
                 .as('base');
         }).first();
+    }
+
+    getTotalByMonth(fiscalPeriodId, invoiceType) {
+        let branchId = this.branchId,
+            knex = this.knex,
+            fiscalPeriodRepository = new FiscalPeriodQuery(this.branchId),
+            fiscalPeriod = await(fiscalPeriodRepository.getById(fiscalPeriodId));
+
+        return knex.select(
+            'month',
+            knex.raw('"count"(*) as "total"'),
+            knex.raw('"sum"("totalPrice") as "sumTotalPrice"'))
+            .from(function () {
+                this.select('invoices.*',
+                    knex.raw('cast(substring("invoices"."date" from 6 for 2) as INTEGER) as "month"'),
+                    knex.raw('(("invoiceLines"."unitPrice" * "invoiceLines"."quantity") - "invoiceLines"."discount" + "invoiceLines"."vat") as "totalPrice"'))
+                    .from('invoices')
+                    .leftJoin('invoiceLines', 'invoices.id', 'invoiceLines.invoiceId')
+                    .where('invoices.branchId', branchId)
+                    .andWhere('invoiceType', invoiceType)
+                    .whereBetween('date', [fiscalPeriod.minDate, fiscalPeriod.maxDate])
+                    .as('base');
+            })
+            .groupBy('month')
+            .orderBy('month')
+            .map(item => ({
+                total: item.total,
+                totalPrice: item.sumTotalPrice,
+                month: item.month,
+                monthName: enums.getMonth().getDisplay(item.month),
+            }));
+    }
+
+    getTotalByProduct(fiscalPeriodId, invoiceType) {
+        let branchId = this.branchId,
+            knex = this.knex,
+            fiscalPeriodRepository = new FiscalPeriodQuery(this.branchId),
+            fiscalPeriod = await(fiscalPeriodRepository.getById(fiscalPeriodId));
+
+        return knex.select(
+            'productId', 'productTitle', knex.raw('"count"(*) as "total"'))
+            .from(function () {
+                this.select('invoiceLines.productId', knex.raw('"products"."title" as "productTitle"'))
+                    .from('invoices')
+                    .leftJoin('invoiceLines', 'invoices.id', 'invoiceLines.invoiceId')
+                    .leftJoin('products', 'invoiceLines.productId', 'products.id')
+                    .where('invoices.branchId', branchId)
+                    .andWhere('invoiceType', invoiceType)
+                    .whereBetween('date', [fiscalPeriod.minDate, fiscalPeriod.maxDate])
+                    .as('base');
+            })
+            .groupBy('productId', 'productTitle')
+            .orderByRaw('"count"(*) desc')
+            .map(item => ({
+                productId: item.productId,
+                productTitle: item.productTitle,
+                total: item.total
+            }));
     }
 
     maxNumber(invoiceType) {

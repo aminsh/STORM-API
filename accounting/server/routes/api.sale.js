@@ -18,6 +18,22 @@ router.route('/summary')
 
         res.json(result);
     }));
+
+router.route('/summary/by-month').get(async((req, res) => {
+    let invoiceQuery = new InvoiceQuery(req.branchId),
+        result = await(invoiceQuery.getTotalByMonth(req.fiscalPeriodId, 'sale'));
+
+    res.json(result);
+}));
+
+router.route('/summary/by-product').get(async((req, res) => {
+    let invoiceQuery = new InvoiceQuery(req.branchId),
+        result = await(invoiceQuery.getTotalByProduct(req.fiscalPeriodId, 'sale'));
+
+    res.json(result);
+}));
+
+
 router.route('/')
     .get(async((req, res) => {
         let invoiceQuery = new InvoiceQuery(req.branchId),
