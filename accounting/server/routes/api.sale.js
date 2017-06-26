@@ -11,6 +11,13 @@ const async = require('asyncawait/async'),
     EventEmitter = require('../services/shared').service.EventEmitter,
     Payment = require('../domain/payment');
 
+router.route('/summary')
+    .get(async((req, res) => {
+        let invoiceQuery = new InvoiceQuery(req.branchId),
+            result = await(invoiceQuery.getSummary(req.fiscalPeriodId, 'sale'));
+
+        res.json(result);
+    }));
 router.route('/')
     .get(async((req, res) => {
         let invoiceQuery = new InvoiceQuery(req.branchId),

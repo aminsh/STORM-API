@@ -5,6 +5,7 @@ const BaseQuery = require('./query.base'),
     await = require('asyncawait/await'),
     view = require('../viewModel.assemblers/view.invoice'),
     lineView = require('../viewModel.assemblers/view.invoiceLine'),
+    FiscalPeriodQuery = require('./query.fiscalPeriod'),
     kendoQueryResolve = require('../services/kendoQueryResolve');
 
 
@@ -56,18 +57,18 @@ module.exports = class InvoiceQuery extends BaseQuery {
                 .andWhere('invoiceId', id));
 
 
-            //
-            //  invoice = await(knex.select('invoices.*',
-            //     knex.raw('"detailAccounts"."title" as "detailAccountDisplay"'))
-            //     .from('invoices')
-            //     .leftJoin('detailAccounts', 'invoices.detailAccountId', 'detailAccounts.id')
-            //     .where('invoices.branchId', branchId)
-            //     .andWhere('invoices.id', id)
-            //     .first()),
-            // invoiceLines = await(knex.select('*')
-            //     .from('invoiceLines')
-            //     .where('branchId', branchId)
-            //     .andWhere('invoiceId', id));
+        //
+        //  invoice = await(knex.select('invoices.*',
+        //     knex.raw('"detailAccounts"."title" as "detailAccountDisplay"'))
+        //     .from('invoices')
+        //     .leftJoin('detailAccounts', 'invoices.detailAccountId', 'detailAccounts.id')
+        //     .where('invoices.branchId', branchId)
+        //     .andWhere('invoices.id', id)
+        //     .first()),
+        // invoiceLines = await(knex.select('*')
+        //     .from('invoiceLines')
+        //     .where('branchId', branchId)
+        //     .andWhere('invoiceId', id));
 
         invoice.invoiceLines = invoiceLines.asEnumerable().select(lineView).toArray();
 
@@ -129,6 +130,32 @@ module.exports = class InvoiceQuery extends BaseQuery {
             });
 
         return kendoQueryResolve(query, parameters, lineView);
+    }
+
+    getSummary(fiscalPeriodId, invoiceType) {
+        let knex = this.knex,
+            branchId = this.branchId,
+            fiscalPeriodRepository = new FiscalPeriodQuery(this.branchId),
+            fiscalPeriod = await(fiscalPeriodRepository.getById(fiscalPeriodId));
+
+        return knex.select(
+            knex.raw('"count"(*) as "total"'),
+            knex.raw('"sum"("totalPrice") as "sumTotalPrice"'),
+            knex.raw('"sum"("paidAmount") as "sumPaidAmount"'),
+            knex.raw('"sum"("totalPrice"-"paidAmount") as "sumRemainder"')
+        ).from(function () {
+            this.select('invoices.*',
+                knex.raw('(select coalesce("sum"("amount"),0) from "payments" where "invoiceId" = "invoices"."id" limit 1) as "paidAmount"'),
+                knex.raw('"detailAccounts"."title" as "detailAccountDisplay"'),
+                knex.raw('(("invoiceLines"."unitPrice" * "invoiceLines"."quantity") - "invoiceLines"."discount" + "invoiceLines"."vat") as "totalPrice"'))
+                .from('invoices')
+                .leftJoin('invoiceLines', 'invoices.id', 'invoiceLines.invoiceId')
+                .leftJoin('detailAccounts', 'invoices.detailAccountId', 'detailAccounts.id')
+                .where('invoices.branchId', branchId)
+                .andWhere('invoiceType', invoiceType)
+                .whereBetween('date', [fiscalPeriod.minDate, fiscalPeriod.maxDate])
+                .as('base');
+        }).first();
     }
 
     maxNumber(invoiceType) {
