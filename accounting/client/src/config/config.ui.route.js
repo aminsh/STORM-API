@@ -436,6 +436,12 @@ export default function ($stateProvider, $urlRouterProvider, $locationProvider) 
             controllerAs: 'model',
             templateUrl: 'partials/receivableCheque/receivableCheques.html'
         })
+        .state('payableCheques', {
+            url: '/payable-cheques',
+            controller: 'payableChequesController',
+            controllerAs: 'model',
+            templateUrl: 'partials/payableCheque/payableCheques.html'
+        })
         .state('not-found', {
             url: '/not-found',
             templateUrl: 'partials/views/notFound.html'

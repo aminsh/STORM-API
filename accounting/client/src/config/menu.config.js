@@ -150,7 +150,7 @@ accModule.config(menuItemsProvider => {
                 {
                     title: 'چک های پرداختی',
                     url: 'payable-cheques',
-                    icon: ''
+                    icon: 'payable-cheques'
                 }
             ]
         });

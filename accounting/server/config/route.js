@@ -31,6 +31,7 @@ app.use('/api/product-categories', require('../routes/api.productCategory'));
 app.use('/api/settings', require('../routes/api.setting'));
 app.use('/api/transfer-money', require('../routes/api.moneyTransfer'));
 app.use('/api/receive', require('../routes/api.receive'));
+app.use('/api/pay', require('../routes/api.pay'));
 
 app.use('/upload', require('../routes/api.upload'));
 

@@ -1,16 +1,15 @@
 export default class paymentController {
-    constructor(
-        $scope,
-        translate,
-        $uibModalInstance,
-        formService,
-        logger,
-        promise,
-        devConstants,
-        data,
-        createFundService,
-        fundApi,
-        bankApi) {
+    constructor($scope,
+                translate,
+                $uibModalInstance,
+                formService,
+                logger,
+                promise,
+                devConstants,
+                data,
+                createFundService,
+                fundApi,
+                bankApi) {
 
         this.$scope = $scope;
         this.promise = promise;
@@ -27,6 +26,7 @@ export default class paymentController {
         this.fundApi = fundApi;
         this.bankApi = bankApi;
         this.totalPrice = data;
+        this.receiveOrPay = data.receiveOrPay;
 
         this.urls = {
             getAllFunds: devConstants.urls.fund.getAll(),
@@ -68,6 +68,7 @@ export default class paymentController {
             date: null,
             number: null,
             amount: 0,
+            bankId: null,
             bankName: null,
             bankBranch: null,
             paymentType: 'cheque',
@@ -86,6 +87,11 @@ export default class paymentController {
             paymentDisplay: this.devConstants.enums.paymentType().getDisplay('receipt')
         };
         this.payment.push(newPayment);
+    }
+
+    onBankChanged(bank, item) {
+        item.bankName = bank.bank;
+        item.bankBranch = bank.bankBranch;
     }
 
     save(form) {

@@ -152,6 +152,7 @@ import './fiscalPeriod';
 import './product';
 import './financialOperations';
 import './receivableCheque';
+import './payableCheque';
 
 accModule
     .config(uiRouteConfig)

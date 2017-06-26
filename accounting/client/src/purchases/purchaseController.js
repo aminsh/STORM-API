@@ -42,14 +42,14 @@ export default class purchaseController {
             description: '',
             invoiceLines: [],
             detailAccountId: '',
-            sumPaidAmount:null,
-            sumRemainder:null,
-            sumTotalPrice:null
+            sumPaidAmount: null,
+            sumRemainder: null,
+            sumTotalPrice: null
         };
 
         this.isLoading = false;
         this.isPayment = false;
-        this.isSaving=false;
+        this.isSaving = false;
 
         this.id = this.$state.params.id;
 
@@ -77,7 +77,7 @@ export default class purchaseController {
 
 
         if (this.editMode) {
-            this.isSaving=true;
+            this.isSaving = true;
             this.purchaseApi.getById(this.id)
                 .then(result => {
                     this.invoice = result
@@ -109,7 +109,7 @@ export default class purchaseController {
     }
 
     onProductChanged(item, product) {
-        item.productId=product.id;
+        item.productId = product.id;
         item.description = product.title;
         item.unitPrice = product.salePrice;
     }
@@ -205,12 +205,15 @@ export default class purchaseController {
     }
 
     cashPaymentShow() {
-        if(this.invoice.sumRemainder==null)
-            this.invoice.sumRemainder=this.invoice.sumTotalPrice;
+        if (this.invoice.sumRemainder == null)
+            this.invoice.sumRemainder = this.invoice.sumTotalPrice;
 
-        this.createPaymentService.show({amount: this.invoice.sumRemainder}).then(result => {
+        this.createPaymentService.show({
+            amount: this.invoice.sumRemainder,
+            receiveOrPay: 'pay'
+        }).then(result => {
             return this.purchaseApi.pay(this.invoice.id, result)
-                .then(result => {
+                .then(() => {
                     this.logger.success();
                     this.isLoading = true;
                 })

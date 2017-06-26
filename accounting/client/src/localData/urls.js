@@ -96,6 +96,10 @@ let receivableCheques = {
     getAll: ()=> `${rootUrl()}/receive/cheques`
 };
 
+let payableCheques = {
+    getAll: ()=> `${rootUrl()}/pay/cheques`
+};
+
 let apiUrls = {
     rootUrl: rootUrl(),
     generalLedgerAccount: generalLedgerAccount,
@@ -118,7 +122,8 @@ let apiUrls = {
     fund,
     people,
     fund,
-    receivableCheques
+    receivableCheques,
+    payableCheques
 };
 
 export default apiUrls;

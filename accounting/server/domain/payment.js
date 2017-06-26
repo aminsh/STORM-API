@@ -4,6 +4,7 @@ const Guid = require('../services/shared').utility.Guid,
     async = require('asyncawait/async'),
     await = require('asyncawait/await'),
     translate = require('../services/translateService'),
+    persianDate = require('../services/persianDateService'),
     PaymentRepository = require('../data/repository.payment'),
     JournalRepository = require('../data/repository.journal'),
     JournalLineRepository = require('../data/repository.journalLine'),
@@ -149,6 +150,80 @@ module.exports = class Payment {
         await(this.paymentRepository.update(id, {chequeStatus: 'return', invoiceId: null}));
     }
 
+    passPayableCheque(id, command) {
+        let journalLineRepository = new JournalLineRepository(this.branchId),
+
+            payment = await(this.paymentRepository.findById(id)),
+            payableJournalLine = await(journalLineRepository.findById(payment.journalLineId)),
+
+            bankSubLedger = await(this.getDebtorSubsidiaryLedgerAccount('receipt')),
+
+            journal = {
+                journalStatus: 'Temporary',
+                isInComplete: false,
+                temporaryNumber: (await(this.journalRepository.maxTemporaryNumber(this.fiscalPeriodId)).max || 0) + 1,
+                temporaryDate: command.date || persianDate.current(),
+                description: translate('passed cheque number ... date ... bank ... branch ...')
+                    .format(payment.number, payment.date, payment.bankName, payment.bankBranch),
+                periodId: this.fiscalPeriodId
+            },
+
+            debtorLine = {
+                id: Guid.new(),
+                row: 2,
+                generalLedgerAccountId: bankSubLedger.generalLedgerAccountId,
+                subsidiaryLedgerAccountId: bankSubLedger.id,
+                detailAccountId: payableJournalLine.detailAccountId,
+                article: journal.description,
+                debtor: 0,
+                creditor: payableJournalLine.creditor
+            };
+
+        delete payableJournalLine.id;
+        payableJournalLine.debtor = payableJournalLine.creditor;
+        payableJournalLine.creditor = 0;
+        payableJournalLine.article = journal.description;
+        payableJournalLine.row = 1;
+
+        let journalLines = [debtorLine, payableJournalLine];
+
+        await(this.journalRepository.batchCreate(journalLines, journal));
+        await(this.paymentRepository.update(id, {chequeStatus: 'passed'}));
+    }
+
+    returnPayableCheque(id, command) {
+        let journalLineRepository = new JournalLineRepository(this.branchId),
+
+            payment = await(this.paymentRepository.findById(id)),
+            journalLines = await(journalLineRepository.findLinesByJournalId(payment.journalLineId)),
+
+
+            journal = {
+                journalStatus: 'Temporary',
+                isInComplete: false,
+                temporaryNumber: (await(this.journalRepository.maxTemporaryNumber(this.fiscalPeriodId)).max || 0) + 1,
+                temporaryDate: command.date || persianDate.current(),
+                description: translate('returned cheque number ... date ... bank ... branch ...')
+                    .format(payment.number, payment.date, payment.bankName, payment.bankBranch),
+                periodId: this.fiscalPeriodId
+            };
+
+        journalLines.forEach(e => {
+            delete e.id;
+            let debtor = e.debtor,
+                creditor = e.creditor;
+
+            e.debtor = creditor;
+            e.creditor = debtor;
+            e.article = journal.description;
+        });
+
+        journalLines = journalLines.asEnumerable().reverse().toArray();
+
+        await(this.journalRepository.batchCreate(journalLines, journal));
+        await(this.paymentRepository.update(id, {chequeStatus: 'return', invoiceId: null}));
+    }
+
     receivableJournalLine(e, invoice) {
         let debtorSubsidiaryLedgerAccount = await(this.getDebtorSubsidiaryLedgerAccount(e.paymentType)),
 
@@ -186,7 +261,6 @@ module.exports = class Payment {
             article = this.getPayJournalLineArticle(invoice, e);
 
         this.journalLines.push({
-            id: e.journalLineId,
             generalLedgerAccountId: debtorSubsidiaryLedgerAccount.generalLedgerAccountId,
             subsidiaryLedgerAccountId: debtorSubsidiaryLedgerAccount.id,
             detailAccountId: invoice.detailAccountId,
@@ -196,6 +270,7 @@ module.exports = class Payment {
         });
 
         this.journalLines.push({
+            id: e.journalLineId,
             generalLedgerAccountId: creditorSubsidiaryLedgerAccount.generalLedgerAccountId,
             subsidiaryLedgerAccountId: creditorSubsidiaryLedgerAccount.id,
             detailAccountId: detailAccountId,

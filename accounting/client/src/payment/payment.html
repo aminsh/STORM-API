@@ -143,11 +143,30 @@
 
                     </div>
 
-                    <div class="col-md-1" style="text-align: left;margin-top: 7px">
+                    <div class="col-md-1" style="text-align: left;margin-top: 7px" >
                         <label class="label-control">{{'Bank' | translate}}</label>
                     </div>
 
-                    <div class="col-md-3">
+                    <div class="col-md-3" ng-if="model.receiveOrPay == 'pay'">
+                        <dev-tag-combo-box
+                                name="bankId"
+                                k-placeholder="{{'Select ...'|translate}}"
+                                k-data-value-field="id"
+                                k-data-text-field="title"
+                                ng-model="item.bankId"
+                                k-on-created="model.createNewBank($search)"
+                                k-on-changed="model.onBankChanged($item,item)"
+                                show-no-data-template
+                                url="{{model.urls.getAllBanks}}"
+                                required></dev-tag-combo-box>
+
+                        <div ng-messages="form.bankId.$error" ng-if="form.bankId.$dirty">
+                            <label ng-message="required" class="error">
+                                {{'This field is required'|translate}}</label>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3" ng-if="model.receiveOrPay == 'receive'">
                         <dev-tag-text-box
                                 name="bankName"
                                 ng-model="item.bankName"
@@ -160,10 +179,10 @@
                     </div>
 
                     <div class="col-md-2"></div>
-                    <div class="col-md-1" style="text-align: left;margin-top: 7px">
+                    <div class="col-md-1" style="text-align: left;margin-top: 7px" ng-if="model.receiveOrPay == 'receive'">
                         <label class="label-control">{{'Bank Branch' | translate}}</label>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-3" ng-if="model.receiveOrPay == 'receive'">
                         <dev-tag-text-box
                                 name="bankBranch"
                                 ng-model="item.bankBranch"
