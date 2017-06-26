@@ -132,7 +132,7 @@ export default class purchasesListController {
                                     purchaseApi.remove(purchase.id)
                                         .then(function () {
                                             logger.success();
-                                            $scope.gridOption.refresh();
+                                            $scope.gridOption.dataSource.read();
                                         })
                                         .catch((errors) => self.errors = errors)
                                         .finally(() => self.isSaving = false);

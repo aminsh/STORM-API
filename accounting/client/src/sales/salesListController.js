@@ -130,7 +130,7 @@ export default class salesListController {
                                 salesInvoiceApi.remove(sale.id)
                                     .then(function () {
                                         logger.success();
-                                        $scope.gridOption.refresh();
+                                        $scope.gridOption.dataSource.read();
                                     })
                                     .catch((errors) => {
                                         self.errors = errors

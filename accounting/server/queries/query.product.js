@@ -11,6 +11,9 @@ module.exports = class ProductQuery extends BaseQuery {
         super(branchId);
     }
 
+    remove(id){
+        return this.knex('products').where('id', id).del();
+    }
     getAll(parameters) {
         let query = this.knex.select()
             .from('products')

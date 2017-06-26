@@ -112,26 +112,30 @@
 
             <div class="row">
                 <div class="col-sm-4 text-right">
-                    <div class="btn-group">
+
                         <dev-tag-button style-type="info" style="width: 100px;"
                                         title="{{'New' | translate}}"
                                         ng-click="model.newInvoice(form)"></dev-tag-button>
 
                         <dev-tag-button style-type="primary" style="width: 100px;"
                                         ng-click="model.print()"
-                                        ng-if="model.isSaving" title="{{'Print ' | translate}}">
+                                        ng-if="!model.isSaving" title="{{'Print ' | translate}}">
 
                             <span class="fa fa-print"></span></dev-tag-button>
 
                         <dev-tag-button style-type="success"
                                         ng-if="!model.isPayment"
+                                        ng-disabled="model.isSaving"
+                                        is-waiting="model.isSaving"
                                         title="{{'Confirm' | translate}}"
-                                        ng-click="model.saveInvoice(form)" style="width: 100px;"></dev-tag-button>
+                                        ng-click="model.saveInvoice(form)"></dev-tag-button>
 
                         <dev-tag-button style-type="success"
                                         ng-if="!model.isPayment"
+                                        ng-disabled="model.isSaving"
+                                        is-waiting="model.isSaving"
                                         title="{{'Save as draft' | translate}}"
-                                        ng-click="model.saveInvoice(form, 'draft')" style="width: 100px;"></dev-tag-button>
+                                        ng-click="model.saveInvoice(form, 'draft')"></dev-tag-button>
 
                         <dev-tag-button style-type="primary" style="width: 100px;"
                                         ng-click="model.cashPaymentShow()"
@@ -139,11 +143,10 @@
 
                             <span class="fa  fa-money"></span></dev-tag-button>
 
-
-                    </div>&nbsp;
                 </div>
                 <div class="col-sm-4"></div>
                 <div class="col-sm-4 text-left">
+
                     <!--<dev-tag-button-->
                             <!--ng-click="model.cashPaymentShow()"-->
                             <!--title="{{'Add cash'| translate}}"-->

@@ -38,6 +38,7 @@ exports.up = function (knex, Promise) {
                 .inTable('inventories')
                 .onDelete('CASCADE');
         });
+
 };
 
 exports.down = function (knex, Promise) {

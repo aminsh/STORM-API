@@ -36,6 +36,9 @@ module.exports = class DetailAccountQuery extends BaseQuery {
         return view(detailAccount);
     }
 
+    remove(id){
+        return this.knex('detailAccounts').where('id', id).del();
+    }
     getAllPeople(parameters){
         return this.getAllByDetailAccountType(parameters, 'person');
     }
