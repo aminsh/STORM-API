@@ -31,11 +31,6 @@ export default class peopleListController {
                     total: 'total'
                 }
             }),
-            toolbar: ["excel"],
-            excel: {
-                fileName: "export.xls",
-                filterable: true
-            },
             reorderable: true,
             resizable: true,
             sortable: true,
@@ -64,13 +59,13 @@ export default class peopleListController {
                         e.preventDefault();
                         let bank = this.dataItem($(e.currentTarget).closest("tr"));
                         confirm(
-                            translate('Remove Person'),
+                            translate('Remove Bank'),
                             translate('Are you sure ?'))
                             .then(function () {
                                 bankApi.remove(bank.id)
                                     .then(function () {
                                         logger.success();
-                                        $scope.gridOption.refresh();
+                                        $scope.gridOption.dataSource.read();
                                     })
                                     .catch((errors) => $scope.errors = errors)
                                     .finally(() => $scope.isSaving = false);
