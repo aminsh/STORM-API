@@ -64,6 +64,11 @@ router.route('/:id')
         await(detailAccountRepository.update(entity));
 
         res.json({isValid: true});
+    }))
+    .delete(async((req, res) => {
+        let detailAccountQuery = new DetailAccountQuery(req.branchId),
+            result = await(detailAccountQuery.remove(req.params.id));
+        res.json({isValid: true});
     }));
 
 

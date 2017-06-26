@@ -53,6 +53,11 @@ router.route('/:id')
         entity = await(productRepository.update(req.params.id, entity));
 
         res.json({isValid: true, returnValue: {id: entity.id}});
+    }))
+    .delete(async((req, res) => {
+        let productQuery = new ProductQuery(req.branchId),
+            result = await(productQuery.remove(req.params.id));
+        res.json({isValid: true});
     }));
 
 module.exports = router;
