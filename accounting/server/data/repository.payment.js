@@ -17,7 +17,7 @@ module.exports = class PaymentRepository extends BaseRepository {
     }
 
     getBySumAmountByInvoiceId(invoiceId) {
-        return this.knex.select('*').table('payments')
+        return this.knex.table('payments')
             .where('branchId', this.branchId)
             .andWhere('invoiceId', invoiceId)
             .sum('amount')

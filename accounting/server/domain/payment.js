@@ -123,6 +123,8 @@ module.exports = class Payment {
             payment = await(this.paymentRepository.findById(id)),
             journalLines = await(journalLineRepository.findLinesByJournalId(payment.journalLineId)),
 
+            /*
+            * */
 
             journal = {
                 journalStatus: 'Temporary',
