@@ -4,8 +4,8 @@ const async = require('asyncawait/async'),
     await = require('asyncawait/await'),
     router = require('express').Router(),
     ProductQuery = require('../queries/query.product'),
-    ProductRepository = require('../data/repository.product');
-
+    ProductRepository = require('../data/repository.product'),
+    InvoiceRepository = require('../data/repository.invoice');
 
 router.route('/')
     .get(async((req, res) => {
@@ -55,8 +55,19 @@ router.route('/:id')
         res.json({isValid: true, returnValue: {id: entity.id}});
     }))
     .delete(async((req, res) => {
-        let productQuery = new ProductQuery(req.branchId),
-            result = await(productQuery.remove(req.params.id));
+        let productRepository = new ProductRepository(req.branchId),
+            invoiceRepository = new InvoiceRepository(req.branchId),
+            errors = [],
+            id = req.params.id;
+
+        if (await(invoiceRepository.isExistsProduct(id)))
+            errors.push('کالا / خدمات جاری در فاکتور استفاده شده . نمیتوانید آنرا حذف کنید');
+
+        if (errors.length)
+            return res.json({isValid: false, errors});
+
+        await(productRepository.remove(id));
+
         res.json({isValid: true});
     }));
 

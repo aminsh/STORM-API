@@ -171,4 +171,12 @@ module.exports = class InvoiceRepository extends BaseRepository {
             shouldUpdatedLines.forEach(e => await(this.knex('invoiceLines')
                 .transacting(trx).where('id', e.id).update(e)));
     }
+
+    isExistsProduct(productId) {
+        return this.knex('id')
+            .from('invoiceLines')
+            .modify(this.modify, this.branchId)
+            .where('productId', productId)
+            .first();
+    }
 };
