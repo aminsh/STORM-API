@@ -22,6 +22,7 @@ function returnReceivableCheque(modalBase) {
         controller: 'returnReceivableChequeController',
         controllerAs: 'model',
         templateUrl: 'partials/receivableCheque/returnReceivableCheque.html',
+        size: 'sm'
     });
 }
 

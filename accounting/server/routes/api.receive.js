@@ -4,7 +4,8 @@ const async = require('asyncawait/async'),
     await = require('asyncawait/await'),
     router = require('express').Router(),
     PaymentQuery = require('../queries/query.payment'),
-    Payment = require('../domain/payment');
+    PaymentRepository = require('../data/repository.payment'),
+    EventEmitter = require('../services/shared').service.EventEmitter;
 
 
 router.route('/cheques')
@@ -17,22 +18,36 @@ router.route('/cheques')
 
 router.route('/cheques/:id/pass')
     .post(async((req, res) => {
-        let payment = new Payment(req.branchId, req.fiscalPeriodId),
-            cmd = req.body;
+        let paymentRepository = new PaymentRepository(req.branchId),
+            cmd = req.body,
+            id = req.params.id;
 
-        await(payment.passReceivableCheque(req.params.id,cmd));
+        await(paymentRepository.update(id, {chequeStatus: 'passed'}));
 
         res.json({isValid: true});
+
+        EventEmitter.emit(
+            'on-receivable-cheque-passed',
+            id,
+            cmd,
+            {branchId: req.branchId, fiscalPeriodId: req.fiscalPeriodId});
     }));
 
 router.route('/cheques/:id/return')
     .post(async((req, res) => {
-        let payment = new Payment(req.branchId, req.fiscalPeriodId),
-            cmd = req.body;
+        let paymentRepository = new PaymentRepository(req.branchId),
+            cmd = req.body,
+            id = req.params.id;
 
-        await(payment.returnReceivableCheque(req.params.id,cmd));
+        await(paymentRepository.update(id, {chequeStatus: 'return', invoiceId: null}));
 
         res.json({isValid: true});
+
+        EventEmitter.emit(
+            'on-receivable-cheque-return',
+            id,
+            cmd,
+            {branchId: req.branchId, fiscalPeriodId: req.fiscalPeriodId});
     }));
 
 module.exports = router;

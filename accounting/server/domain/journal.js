@@ -6,6 +6,7 @@ const Guid = require('../services/shared').utility.Guid,
     translate = require('../services/translateService'),
     persianDate = require('../services/persianDateService'),
     JournalRepository = require('../data/repository.journal'),
+    JournalLineRepository = require('../data/repository.journalLine'),
     InvoiceRepository = require('../data/repository.invoice'),
     SubLedger = require('./subledger');
 
@@ -14,6 +15,7 @@ module.exports = class Journal {
         this.fiscalPeriodId = fiscalPeriodId;
 
         this.journalRepository = new JournalRepository(branchId);
+        this.journalLineRepositroy = new JournalLineRepository(branchId);
         this.invoiceRepository = new InvoiceRepository(branchId);
         this.subLedger = new SubLedger(branchId);
     }
@@ -161,6 +163,96 @@ module.exports = class Journal {
             if (p.paymentType == 'cheque')
                 return invoice.detailAccountId;
         }
+    }
+
+    generatePassReceivableCheque(payment, command) {
+        let subLedger = this.subLedger,
+            description = 'بابت وصول چک شماره {0} سررسید {1} بانک {2} شعبه {3}'
+                .format(payment.number, payment.date, payment.bankName, payment.bankBranch),
+
+            journal = await(this.getJournal(command.date || persianDate.current(), description)),
+            paymentJournalLine = await(this.journalLineRepositroy.findById(payment.journalLineId)),
+            journalLines = [],
+
+            receivableDocument = await(subLedger.receivableDocument());
+
+        journalLines.push({
+            row: 2,
+            generalLedgerAccountId: receivableDocument.generalLedgerAccountId,
+            subsidiaryLedgerAccountId: receivableDocument.id,
+            detailAccountId: paymentJournalLine.detailAccountId,
+            article: description,
+            debtor: 0,
+            creditor: paymentJournalLine.debtor
+        });
+
+        let debtorSubLedger = await(getDebtorSubLedger());
+
+        journalLines.push({
+            row: 1,
+            generalLedgerAccountId: debtorSubLedger.generalLedgerAccountId,
+            subsidiaryLedgerAccountId: debtorSubLedger.id,
+            detailAccountId: getDebtorDetailAccount(),
+            article: description,
+            debtor: paymentJournalLine.debtor,
+            creditor: 0
+        });
+
+        journalLines = journalLines.asEnumerable().reverse().toArray();
+
+        return {journalLines, journal};
+
+        function getDebtorSubLedger() {
+            if (command.paymentType == 'receipt')
+                return subLedger.bankAccount();
+
+            if (command.paymentType == 'cash')
+                return subLedger.fundAccount();
+        }
+
+        function getDebtorDetailAccount() {
+            if (command.paymentType == 'receipt')
+                return command.bankId;
+
+            if (command.paymentType == 'cash')
+                return command.fundId;
+        }
+    }
+
+    generateReturnReceivableCheque(payment, command) {
+        let subLedger = this.subLedger,
+            description = 'بابت عودت چک شماره {0} سررسید {1} بانک {2} شعبه {3}'
+                .format(payment.number, payment.date, payment.bankName, payment.bankBranch),
+
+            journal = await(this.getJournal(command.date || persianDate.current(), description)),
+            paymentJournalLine = await(this.journalLineRepositroy.findById(payment.journalLineId)),
+            journalLines = [],
+
+            receivableAccount = await(subLedger.receivableAccount());
+
+        journalLines.push({
+            row: 1,
+            generalLedgerAccountId: receivableAccount.generalLedgerAccountId,
+            subsidiaryLedgerAccountId: receivableAccount.id,
+            detailAccountId: paymentJournalLine.detailAccountId,
+            article: description,
+            debtor: paymentJournalLine.debtor,
+            creditor: 0
+        });
+
+        let debtorSubLedger = await(subLedger.receivableDocument());
+
+        journalLines.push({
+            row: 2,
+            generalLedgerAccountId: debtorSubLedger.generalLedgerAccountId,
+            subsidiaryLedgerAccountId: debtorSubLedger.id,
+            detailAccountId: paymentJournalLine.detailAccountId,
+            article: description,
+            debtor: 0,
+            creditor: paymentJournalLine.debtor
+        });
+
+        return {journalLines, journal};
     }
 
     getJournal(date, description) {
