@@ -179,4 +179,12 @@ module.exports = class InvoiceRepository extends BaseRepository {
             .where('productId', productId)
             .first();
     }
+
+    isExistsCustomer(customerId) {
+        return this.knex('id')
+            .from('invoices')
+            .modify(this.modify, this.branchId)
+            .where('detailAccountId', customerId)
+            .first();
+    }
 };

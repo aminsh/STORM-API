@@ -7,5 +7,10 @@ module.exports = {
         if (!str.trim()) return true;
 
         return false;
+    },
+    isSmallerThan3Chars(str){
+        if(!str) return false;
+
+        return str.length < 3;
     }
 };
