@@ -57,6 +57,7 @@ import './apis/journalLineApi';
 import './apis/chequeCategoryApi';
 import './apis/bankApi';
 import './apis/chequeApi';
+import './bankAndFund/bankAndFundApi';
 import './apis/journalTemplateApi';
 import FiscalPeriodApi from './apis/fiscalPeriodApi';
 import ReportApi from './apis/reportApi';

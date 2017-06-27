@@ -49,9 +49,6 @@ app.use((req, res, next) => {
 
 app.use('/account-review', require('../accounting/server/routes/api.accountReview'));
 
-app.use('/cheques', require('../accounting/server/routes/api.cheque'));
-app.use('/cheque-categories', require('../accounting/server/routes/api.chequeCategory'));
-
 app.use('/detail-accounts', require('../accounting/server/routes/api.detailAccount'));
 app.use('/banks', require('../accounting/server/routes/api.bank'));
 app.use('/people', require('../accounting/server/routes/api.people'));
