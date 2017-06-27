@@ -6,7 +6,8 @@ const async = require('asyncawait/async'),
     kendoQueryResolve = require('../services/kendoQueryResolve'),
     view = require('../viewModel.assemblers/view.detailAccount'),
     personView = require('../viewModel.assemblers/view.person'),
-    bankView = require('../viewModel.assemblers/view.bank');
+    bankView = require('../viewModel.assemblers/view.bank'),
+    fundView = require('../viewModel.assemblers/view.fund');
 
 
 module.exports = class DetailAccountQuery extends BaseQuery {
@@ -45,6 +46,9 @@ module.exports = class DetailAccountQuery extends BaseQuery {
         if (detailAccount.detailAccountType == 'bank')
             return bankView(detailAccount);
 
+        if (detailAccount.detailAccountType == 'fund')
+            return fundView(detailAccount);
+
         return view(detailAccount);
     }
 
@@ -82,7 +86,7 @@ module.exports = class DetailAccountQuery extends BaseQuery {
     getAllByDetailAccountType(parameters, type) {
         let knex = this.knex,
             branchId = this.branchId,
-            views = {personView, bankView};
+            views = {personView, bankView, fundView};
 
         let query = knex.select().from(function () {
             this.select(knex.raw(`*,coalesce("code", '') || ' ' || title as display`))
