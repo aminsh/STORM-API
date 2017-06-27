@@ -8,6 +8,7 @@ const Guid = require('../services/shared').utility.Guid,
     JournalRepository = require('../data/repository.journal'),
     JournalLineRepository = require('../data/repository.journalLine'),
     InvoiceRepository = require('../data/repository.invoice'),
+    DetailAccountRepository = require('../data/repository.detailAccount'),
     SubLedger = require('./subledger');
 
 module.exports = class Journal {
@@ -17,6 +18,7 @@ module.exports = class Journal {
         this.journalRepository = new JournalRepository(branchId);
         this.journalLineRepositroy = new JournalLineRepository(branchId);
         this.invoiceRepository = new InvoiceRepository(branchId);
+        this.detailAccountRepository = new DetailAccountRepository(branchId);
         this.subLedger = new SubLedger(branchId);
     }
 
@@ -78,6 +80,9 @@ module.exports = class Journal {
             });
         }
 
+        journalLines = journalLines.asEnumerable().orderBy(e => e.row).toArray();
+        journalLines.forEach((e, i) => e.row = i + 1);
+
         return {journal, journalLines};
     }
 
@@ -90,7 +95,7 @@ module.exports = class Journal {
             invoice = await(this.invoiceRepository.findById(invoiceId));
 
         let description = invoice
-                ? `دریافت بابت فاکتور شماره ${invoice.number}`
+                ? `دریافت بابت فاکتور فروش شماره ${invoice.number}`
                 : 'دریافت وجه',
 
             journal = await(this.getJournal(persianDate.current(), description)),
@@ -250,6 +255,256 @@ module.exports = class Journal {
             article: description,
             debtor: 0,
             creditor: paymentJournalLine.debtor
+        });
+
+        return {journalLines, journal};
+    }
+
+    generateForPurchase(purchase) {
+        let journal = await(this.getJournal(
+            purchase.date,
+            translate('For Cash purchase invoice number ...').format(purchase.number))),
+
+            invoiceLines = purchase.invoiceLines,
+            sumAmount = invoiceLines.asEnumerable().sum(line => line.unitPrice * line.quantity),
+            sumDiscount = invoiceLines.asEnumerable().sum(line => line.discount),
+            sumVat = invoiceLines.asEnumerable().sum(line => line.vat),
+
+            payableAccount = await(this.subLedger.payableAccount()),
+            purchaseAccount = await(this.subLedger.purchaseAccount()),
+
+            journalLines = [
+                {
+                    generalLedgerAccountId: payableAccount.generalLedgerAccountId,
+                    subsidiaryLedgerAccountId: payableAccount.id,
+                    detailAccountId: purchase.detailAccountId,
+                    debtor: 0,
+                    creditor: sumAmount - sumDiscount + sumVat,
+                    article: journal.description,
+                    row: 3
+                }, {
+                    generalLedgerAccountId: purchaseAccount.generalLedgerAccountId,
+                    subsidiaryLedgerAccountId: purchaseAccount.id,
+                    debtor: sumAmount,
+                    creditor: 0,
+                    article: journal.description,
+                    row: 1
+                }];
+
+        if (sumDiscount > 0) {
+            let discountAccount = await(this.subLedger.purchaseDiscountAccount());
+
+            journalLines.push({
+                generalLedgerAccountId: discountAccount.generalLedgerAccountId,
+                subsidiaryLedgerAccountId: discountAccount.id,
+                debtor: 0,
+                creditor: sumDiscount,
+                article: journal.description,
+                row: 4
+            });
+        }
+
+
+        if (sumVat > 0) {
+            let vatAccount = await(this.subLedger.purchaseVatAccount());
+
+            journalLines.push({
+                generalLedgerAccountId: vatAccount.generalLedgerAccountId,
+                subsidiaryLedgerAccountId: vatAccount.id,
+                debtor: sumVat,
+                creditor: 0,
+                article: journal.description,
+                row: 2
+            });
+        }
+
+        journalLines = journalLines.asEnumerable().orderBy(e => e.row).toArray();
+        journalLines.forEach((e, i) => e.row = i + 1);
+
+        return {journal, journalLines};
+    }
+
+    generatePayablePayment(payments, invoiceId) {
+
+        let invoice,
+            subLedger = this.subLedger;
+
+        if (invoiceId)
+            invoice = await(this.invoiceRepository.findById(invoiceId));
+
+        let description = invoice
+                ? `دریافت بابت فاکتور خرید شماره ${invoice.number}`
+                : 'دریافت وجه',
+
+            journal = await(this.getJournal(persianDate.current(), description)),
+
+            payableAccount = await(this.subLedger.payableAccount()),
+            journalLines = [];
+
+        payments.forEach(p => {
+            let bankDetailAccount;
+
+            if (p.paymentType == 'cheque')
+                bankDetailAccount = await(this.detailAccountRepository.findById(p.bankId));
+
+            let article = getArticle(p, bankDetailAccount);
+
+
+            /* معین حسابهای پرداختنی بدهکار میشود */
+            journalLines.push({
+                generalLedgerAccountId: payableAccount.generalLedgerAccountId,
+                subsidiaryLedgerAccountId: payableAccount.id,
+                detailAccountId: invoice.detailAccountId,
+                article,
+                debtor: p.amount,
+                creditor: 0
+            });
+
+            let debtorSubLedger = await(getSubLedgerForCreditor(p)),
+                id = Guid.new();
+
+            journalLines.push({
+                id,
+                generalLedgerAccountId: debtorSubLedger.generalLedgerAccountId,
+                subsidiaryLedgerAccountId: debtorSubLedger.id,
+                detailAccountId: getDetailAccountForCreditor(p),
+                article,
+                debtor: 0,
+                creditor: p.amount
+            });
+
+            p.journalLineId = id;
+        });
+
+        return {journalLines, journal, payments};
+
+        function getArticle(p, bankDetailAccount) {
+            if (p.paymentType == 'cash')
+                return 'پرداخت نقدی بابت فاکتور شماره {0}'.format(invoice.number);
+
+            if (p.paymentType == 'receipt')
+                return 'پرداخت طی فیش / رسید {0} بابت فاکتور شماره {1}'
+                    .format(p.number, invoice.number);
+
+            if (p.paymentType == 'cheque')
+                return 'پرداخت چک به شماره {0} سررسید {1} حساب {2} - {3} بابت فاکتور شماره {4}'
+                    .format(
+                        p.number,
+                        p.date,
+                        bankDetailAccount.title,
+                        bankDetailAccount.bankAccountNumber,
+                        invoice.number);
+        }
+
+        function getSubLedgerForCreditor(p) {
+            if (p.paymentType == 'cash')
+                return subLedger.fundAccount();
+
+            if (p.paymentType == 'receipt')
+                return subLedger.bankAccount();
+
+            if (p.paymentType == 'cheque')
+                return subLedger.payableDocument();
+        }
+
+        function getDetailAccountForCreditor(p) {
+            if (p.paymentType == 'cash')
+                return p.fundId;
+
+            if (p.paymentType == 'receipt')
+                return p.bankId;
+
+            if (p.paymentType == 'cheque')
+                return p.bankId;
+        }
+    }
+
+    generatePassPayableCheque(payment, command) {
+        let subLedger = this.subLedger,
+
+            paymentJournalLine = await(this.journalLineRepositroy.findById(payment.journalLineId)),
+            bankDetailAccount = await(this.detailAccountRepository.findById(paymentJournalLine.detailAccountId)),
+
+            description = 'بابت وصول چک شماره {0} سررسید {1} حساب {2} - {3}'
+                .format(
+                    payment.number,
+                    payment.date,
+                    bankDetailAccount.title,
+                    bankDetailAccount.bankAccountNumber),
+
+            journal = await(this.getJournal(command.date || persianDate.current(), description)),
+            journalLines = [],
+
+            payableDocument = await(subLedger.payableDocument());
+
+        journalLines.push({
+            row: 1,
+            generalLedgerAccountId: payableDocument.generalLedgerAccountId,
+            subsidiaryLedgerAccountId: payableDocument.id,
+            detailAccountId: paymentJournalLine.detailAccountId,
+            article: description,
+            debtor: paymentJournalLine.creditor,
+            creditor: 0
+        });
+
+        let bankAccount = await(subLedger.bankAccount());
+
+        journalLines.push({
+            row: 2,
+            generalLedgerAccountId: bankAccount.generalLedgerAccountId,
+            subsidiaryLedgerAccountId: bankAccount.id,
+            detailAccountId: paymentJournalLine.detailAccountId,
+            article: description,
+            debtor: 0,
+            creditor: paymentJournalLine.creditor
+        });
+
+        return {journalLines, journal};
+    }
+
+    generateReturnPayableCheque(payment, command) {
+        let subLedger = this.subLedger,
+
+            paymentJournalLine = await(this.journalLineRepositroy.findById(payment.journalLineId)),
+            allPaymentJournalLines = await(this.journalRepository.findByJournalLinesById(paymentJournalLine.journalId)),
+            bankDetailAccount = await(this.detailAccountRepository.findById(paymentJournalLine.detailAccountId)),
+
+            description = 'بابت عودت چک شماره {0} سررسید {1} حساب {2} - {3}'
+                .format(
+                    payment.number,
+                    payment.date,
+                    bankDetailAccount.title,
+                    bankDetailAccount.bankAccountNumber),
+
+            journal = await(this.getJournal(command.date || persianDate.current(), description)),
+            journalLines = [],
+
+            payableAccount = await(subLedger.payableAccount()),
+            payableAccountDetailAccountId = allPaymentJournalLines.asEnumerable()
+                .first(line =>
+                    line.subsidiaryLedgerAccountId == payableAccount.id &&
+                    line.debtor == paymentJournalLine.creditor).detailAccountId;
+
+        journalLines.push({
+            row: 1,
+            generalLedgerAccountId: payableAccount.generalLedgerAccountId,
+            subsidiaryLedgerAccountId: payableAccount.id,
+            detailAccountId: payableAccountDetailAccountId,
+            article: description,
+            debtor: 0,
+            creditor: paymentJournalLine.creditor
+        });
+
+        let payableDocument = await(subLedger.payableDocument());
+
+        journalLines.push({
+            row: 2,
+            generalLedgerAccountId: payableDocument.generalLedgerAccountId,
+            subsidiaryLedgerAccountId: payableDocument.id,
+            detailAccountId: paymentJournalLine.detailAccountId,
+            article: description,
+            debtor: paymentJournalLine.creditor,
+            creditor: 0
         });
 
         return {journalLines, journal};

@@ -38,6 +38,12 @@ class JournalRepository extends BaseRepository {
             .first();
     }
 
+    findByJournalLinesById(id) {
+        return this.knex.select('*').from('journalLines')
+            .modify(this.modify, this.branchId)
+            .where('journalId', id);
+    }
+
     maxTemporaryNumber(periodId) {
         return this.knex.table('journals')
             .modify(this.modify, this.branchId)
