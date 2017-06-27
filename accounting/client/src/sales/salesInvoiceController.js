@@ -209,7 +209,10 @@ export default class SalesInvoiceController {
         if(this.invoice.sumRemainder==null)
             this.invoice.sumRemainder=this.invoice.sumTotalPrice;
 
-        this.createPaymentService.show({amount: this.invoice.sumRemainder}).then(result => {
+        this.createPaymentService.show({
+            amount: this.invoice.sumRemainder,
+            receiveOrPay: 'receive'
+        }).then(result => {
             return this.salesInvoiceApi.pay(this.invoice.id, result)
                 .then(result => {
                     this.logger.success();
