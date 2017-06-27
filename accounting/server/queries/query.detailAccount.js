@@ -5,7 +5,8 @@ const async = require('asyncawait/async'),
     BaseQuery = require('./query.base'),
     kendoQueryResolve = require('../services/kendoQueryResolve'),
     view = require('../viewModel.assemblers/view.detailAccount'),
-    personView = require('../viewModel.assemblers/view.person');
+    personView = require('../viewModel.assemblers/view.person'),
+    bankView = require('../viewModel.assemblers/view.bank');
 
 
 module.exports = class DetailAccountQuery extends BaseQuery {
@@ -35,28 +36,35 @@ module.exports = class DetailAccountQuery extends BaseQuery {
                 .andWhere('id', id)
                 .first());
 
-        if(detailAccount.detailAccountType == 'person')
+        if (!detailAccount)
+            return null;
+
+        if (detailAccount.detailAccountType == 'person')
             return personView(detailAccount);
+
+        if (detailAccount.detailAccountType == 'bank')
+            return bankView(detailAccount);
 
         return view(detailAccount);
     }
 
-    remove(id){
+    remove(id) {
         return this.knex('detailAccounts').where('id', id).del();
     }
-    getAllPeople(parameters){
+
+    getAllPeople(parameters) {
         return this.getAllByDetailAccountType(parameters, 'person');
     }
 
-    getAllBanks(parameters){
+    getAllBanks(parameters) {
         return this.getAllByDetailAccountType(parameters, 'bank');
     }
 
-    getAllFunds(parameters){
+    getAllFunds(parameters) {
         return this.getAllByDetailAccountType(parameters, 'fund');
     }
 
-    getAllOthers(parameter){
+    getAllOthers(parameter) {
         let knex = this.knex,
             branchId = this.branchId;
 
@@ -71,10 +79,10 @@ module.exports = class DetailAccountQuery extends BaseQuery {
         return kendoQueryResolve(query, parameter, view);
     }
 
-    getAllByDetailAccountType(parameters, type){
+    getAllByDetailAccountType(parameters, type) {
         let knex = this.knex,
             branchId = this.branchId,
-            views = {personView};
+            views = {personView, bankView};
 
         let query = knex.select().from(function () {
             this.select(knex.raw(`*,coalesce("code", '') || ' ' || title as display`))

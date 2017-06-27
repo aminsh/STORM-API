@@ -98,7 +98,7 @@ router.route('/:id')
         if (await(invoiceRepository.isExistsCustomer(id)))
             errors.push('برای شخص جاری فاکتور صادره شده . نمیتوانید حذف کنید');
 
-        if (journalRepository.isExistsDetailAccount(id))
+        if (await(journalRepository.isExistsDetailAccount(id)))
             errors.push('برای شخص جاری تراکنش ثبت شده . نمیتوانید حذف کنید');
 
         if (errors.length)
