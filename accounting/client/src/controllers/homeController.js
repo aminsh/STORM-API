@@ -1,10 +1,24 @@
 import accModule from '../acc.module';
 
-function homeController($scope, journalApi, translate) {
+function homeController($scope, journalApi, translate, purchaseApi, salesInvoiceApi, bankAndFundApi) {
 
     fetch();
 
     $scope.$on('fiscal-period-changed', fetch);
+
+    $scope.purchaseInfo = {
+        total: 0,
+        sumOfPaid: 0,
+        sumOfRemain: 0
+    };
+
+    $scope.saleInfo = {
+        total: 0,
+        sumOfPaid: 0,
+        sumOfRemain: 0
+    };
+
+    $scope.bankAndFundInfos = [];
 
     $scope.incomeAndOutcomes = [];
     $scope.months = [];
@@ -36,54 +50,100 @@ function homeController($scope, journalApi, translate) {
     $scope.labels = [];
 
     function fetch() {
-        journalApi.getGroupedByMouth()
-            .then(result => {
-                let items = result.data.asEnumerable();
+        // journalApi.getGroupedByMouth()
+        //     .then(result => {
+        //         let items = result.data.asEnumerable();
+        //
+        //         let colors = ['#803690', '#00ADF9', '#DCDCDC', '#46BFBD', '#FDB45C', '#949FB1', '#4D5360'];
+        //
+        //         $scope.labels = items.select(item => item.monthName).toArray();
+        //
+        //         $scope.labelForDisplay = colors.asEnumerable()
+        //             .take($scope.labels.length)
+        //             .select(c => ({color: c, label: $scope.labels[colors.indexOf(c)]}))
+        //             .toArray();
+        //
+        //        // $scope.data = items.select(item => parseInt(item.count)).toArray();
+        //     });
+        //
+        // journalApi.incomesAndOutcomes()
+        //     .then(result => {
+        //         let items = result.asEnumerable()
+        //
+        //         let incomes = items
+        //             .where(item => item.amountType == 'income')
+        //             .select(item => item.amount)
+        //             .toArray();
+        //
+        //         let outcomes = items
+        //             .where(item => item.amountType == 'outcome')
+        //             .select(item => item.amount)
+        //             .toArray();
+        //
+        //         $scope.incomeAndOutcomes = [
+        //             incomes, outcomes
+        //         ];
+        //
+        //         $scope.months = items
+        //             .distinct(item => item.monthName)
+        //             .select(item => item.monthName)
+        //             .toArray();
+        //
+        //         let income = incomes.asEnumerable().sum(),
+        //             outcome = outcomes.asEnumerable().sum(),
+        //             total = income + outcome,
+        //             incomePercent = (income * 100) / total,
+        //             outcomePercent = (outcome * 100) / total;
+        //
+        //         $scope.totalIncomeAndOutcome = {income, outcome, incomePercent, outcomePercent};
+        //     });
+        //
+        // journalApi.getTotalInfo().then(result => $scope.totalInfo = result);
 
-                let colors = ['#803690', '#00ADF9', '#DCDCDC', '#46BFBD', '#FDB45C', '#949FB1', '#4D5360'];
-                $scope.labels = items.select(item => item.monthName).toArray();
+        purchaseApi.summary().then(result => {
+            console.log(result);
+            $scope.purchaseInfo.sumOfPaid = result.sumPaidAmount;
+            $scope.purchaseInfo.sumOfRemain = result.sumRemainder;
+            $scope.purchaseInfo.total = result.total;
+        });
 
-                $scope.labelForDisplay = colors.asEnumerable()
-                    .take($scope.labels.length)
-                    .select(c => ({color: c, label: $scope.labels[colors.indexOf(c)]}))
-                    .toArray();
+        salesInvoiceApi.summary().then(result => {
+            console.log(result);
+            $scope.data = result;
+            $scope.saleInfo.sumOfPaid = result.sumPaidAmount;
+            $scope.saleInfo.sumOfRemain = result.sumRemainder;
+            $scope.saleInfo.total = result.total;
+        });
 
-                $scope.data = items.select(item => parseInt(item.count)).toArray();
-            });
+        bankAndFundApi.summary().then(result => {
+            $scope.bankAndFundInfos = result;
+        });
+        salesInvoiceApi.summaryByProduct().then(result => {
+            let items = result.asEnumerable();
+            let colors = ['#803690', '#00ADF9', '#DCDCDC', '#46BFBD', '#FDB45C', '#949FB1', '#4D5360'];
+            $scope.labels = items.select(item => item.productTitle).toArray();
+            $scope.labelForDisplay = colors.asEnumerable()
+                .take($scope.labels.length)
+                .select(c => ({color: c, label: $scope.labels[colors.indexOf(c)]}))
+                .toArray();
+            $scope.data = items.select(item => parseInt(item.total)).toArray();
+        });
 
-        journalApi.incomesAndOutcomes()
-            .then(result => {
-                let items = result.asEnumerable()
+        salesInvoiceApi.summaryByMonth().then(result => {
+            console.log(result);
+            let items = result.asEnumerable();
+            let colors = ['#803690', '#00ADF9', '#DCDCDC', '#46BFBD', '#FDB45C', '#949FB1', '#4D5360'];
+            $scope.series=['Price',"Quantity"];
+            $scope.saleByMonthLabels = items.select(item => item.monthName).toArray();
 
-                let incomes = items
-                    .where(item => item.amountType == 'income')
-                    .select(item => item.amount)
-                    .toArray();
+            $scope.labelForDisplay = colors.asEnumerable()
+                .take($scope.labels.length)
+                .select(c => ({color: c, label: $scope.labels[colors.indexOf(c)]}))
+                .toArray();
 
-                let outcomes = items
-                    .where(item => item.amountType == 'outcome')
-                    .select(item => item.amount)
-                    .toArray();
+            $scope.saleByMonthData = [items.select(item => parseInt(item.totalPrice)).toArray(),items.select(item => parseInt(item.total)).toArray()];
+        });
 
-                $scope.incomeAndOutcomes = [
-                    incomes, outcomes
-                ];
-
-                $scope.months = items
-                    .distinct(item => item.monthName)
-                    .select(item => item.monthName)
-                    .toArray();
-
-                let income = incomes.asEnumerable().sum(),
-                    outcome = outcomes.asEnumerable().sum(),
-                    total = income + outcome,
-                    incomePercent = (income * 100) / total,
-                    outcomePercent = (outcome * 100) / total;
-
-                $scope.totalIncomeAndOutcome = {income, outcome, incomePercent, outcomePercent};
-            });
-
-        journalApi.getTotalInfo().then(result => $scope.totalInfo = result);
     }
 }
 

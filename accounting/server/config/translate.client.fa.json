@@ -239,6 +239,12 @@
   "Address": "آدرس",
   "Phone": "تلفن",
   "Email": "ایمیل",
+  "Purchase":"خرید",
+  "Total":"تعداد کل",
+  "Sum Of Paid":"جمع کل پرداخت ها",
+  "Sum Of Remain":"جمع کل مانده ها",
+  "Remain":"مانده",
+  "Sale":"فروش",
   "Sales invoice": "فاکتور فروش",
   "Purchase invoice":"فاکتور خرید",
   "Item title": "عنوان کالا",
@@ -293,5 +299,10 @@
   "Pass cheque":"وصول چک",
   "Return cheque":"عودت چک",
   "Receive from": "دریافت از",
-  "Passed date": "تاریخ وصول"
+  "Passed date": "تاریخ وصول",
+  "Receive from": "دریافت از",
+  "Bank/Fund":"بانک / صندوق",
+  "Sales information by month":"اطلاعات فروش به تفکیک ماه",
+  "Best Selling Product Information":"اطلاعات کالاهای پر فروش"
+
 }

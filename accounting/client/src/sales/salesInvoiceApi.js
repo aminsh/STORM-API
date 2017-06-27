@@ -26,6 +26,15 @@ function salesInvoiceApi(apiPromise,devConstants) {
         pay: function (id,data) {
             return apiPromise.post(`${urlPrefix}/sales/${id}/pay`,data);
         },
+        summary(){
+            return apiPromise.get(`${urlPrefix}/sales/summary`);
+        },
+        summaryByMonth(){
+            return apiPromise.get(`${urlPrefix}/sales/summary/by-month`);
+        },
+        summaryByProduct(){
+            return apiPromise.get(`${urlPrefix}/sales/summary/by-product`);
+        },
     };
 
 
