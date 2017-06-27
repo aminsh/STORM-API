@@ -72,8 +72,12 @@ router.route('/current/api-key').get(async((req, res) => {
     if (currentBranch.apiKey)
         apiKey = currentBranch.apiKey;
     else {
-        let owner = await(userRepository.getById(currentBranch.ownerId));
-        apiKey = jwt.sign({branchId: currentBranch.id, userId: req.user.id}, superSecret);
+        let owner = await(userRepository.getById(currentBranch.ownerId)),
+
+        apiKey = jwt.sign({
+            branchId: currentBranch.id,
+            userId: owner.id
+        }, superSecret);
 
         await(branchRepository.update(currentBranch.id, {apiKey}));
     }

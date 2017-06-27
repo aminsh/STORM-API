@@ -10,6 +10,7 @@ require('./accounting/server/events/onUserCreated');
 require('./accounting/server/events/onSaleCreated.generateJournal');
 require('./accounting/server/events/onPurchaseCreated.generateJournal');
 require('./accounting/server/events/onInvoicePaid');
+require('./accounting/server/events/onPaymentCreated');
 
 const config = require('./storm/server/config'),
     accApp = require('./accounting/server/config/express'),

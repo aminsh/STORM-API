@@ -223,6 +223,13 @@ class JournalRepository extends BaseRepository {
             }))
         });
     }
+
+    isExistsDetailAccount(detailAccountId){
+        return this.knex.select('id').from('journalLines')
+            .modify(this.modify, this.branchId)
+            .where('detailAccountId', detailAccountId)
+            .first()
+    }
 }
 
 module.exports = JournalRepository;

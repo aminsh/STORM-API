@@ -1,4 +1,4 @@
-export default function (fiscalPeriodApi, $rootScope, $cookies, logger) {
+export default function (fiscalPeriodApi, $rootScope, $cookies, logger, branchApi) {
     return {
         restrict: 'E',
         templateUrl: 'partials/templates/shell.header-template.html',
@@ -26,11 +26,16 @@ export default function (fiscalPeriodApi, $rootScope, $cookies, logger) {
                 scope.$broadcast('fiscal-period-changed');
             };
 
-            scope.showApiKey = () => logger.alert({
-                title: 'api-key',
-                text: `<textarea disabled="true" style="font-family: Arial;width: 100%;height: 171px">${localStorage.getItem('token')}</textarea>`,
-                html: true
-            });
+            scope.showApiKey = () => {
+                branchApi.getApiKey()
+                    .then(result => logger.alert({
+                        title: 'api-key',
+                        text: `<textarea 
+                                    disabled="true" 
+                                    style="font-family: Arial;width: 100%;height: 171px;direction: ltr">${result.apiKey}</textarea>`,
+                        html: true
+                    }));
+            };
         }
     }
 }

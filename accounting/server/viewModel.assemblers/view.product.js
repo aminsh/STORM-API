@@ -11,7 +11,8 @@ function productAssembler(entity) {
         productTypeDisplay: enums.ProductType().getDisplay(entity.productType),
         reorderPoint: entity.reorderPoint,
         salePrice: entity.salePrice,
-        categoryId: entity.categoryId
+        categoryId: entity.categoryId,
+        inventorySelect: entity.inventorySelect
     };
 
     return viewModel;
