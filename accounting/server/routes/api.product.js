@@ -35,7 +35,7 @@ router.route('/')
 router.route('/:id')
     .get(async((req, res) => {
         let productQuery = new ProductQuery(req.branchId),
-            result = await(productQuery.getById(req.params.id));
+            result = await(productQuery.getById(req.params.id, req.fiscalPeriodId));
 
         res.json(result);
     }))

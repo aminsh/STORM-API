@@ -16,8 +16,9 @@ module.exports = class InventoryDomain {
     }
 
     getPrice(productId) {
-        let inputs = await(this.inventoryRepository.getAllInputBeforeDate(this.fiscalPeriodId, productId, new Date)),
-            sumPrice = inputs.asEnumerable().sum(e => e.unitPrice * e.quantity),
+        let inputs = await(this.inventoryRepository
+                .getAllInputBeforeDate(this.fiscalPeriodId, productId, new Date)),
+            sumPrice = inputs.asEnumerable().sum(e => (e.unitPrice * e.quantity)),
             sumQuantity = inputs.asEnumerable().sum(e => e.quantity);
 
         return sumPrice / sumQuantity;

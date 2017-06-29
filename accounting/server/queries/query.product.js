@@ -25,15 +25,14 @@ module.exports = class ProductQuery extends BaseQuery {
 
     getById(id, fiscalPeriodId) {
         let knex = this.knex,
-            /*inventorySelect = `select
+            inventorySelect = `select
              "sum"((case
-             when "inventory"."inventoryType" == 'input' then 1
-             when "inventory"."inventoryType" == 'output' then -1
+             when "inventories"."inventoryType" = 'input' then 1
+             when "inventories"."inventoryType" = 'output' then -1
              end) *  "inventoryLines"."quantity") as "total"
              from "inventories"
              left join "inventoryLines" on "inventories"."id" = "inventoryLines"."inventoryId"
-             where "inventories"."fiscalPeriodId"= '${fiscalPeriodId}' and "inventoryLines"."productId" = '${id}'`;*/
-            inventorySelect = 1;
+             where "inventories"."fiscalPeriodId"= '${fiscalPeriodId}' and "inventoryLines"."productId" = '${id}'`;
 
         let entity = await(this.knex.select(
             'products.*', knex.raw(`(${inventorySelect}) as "totalQuantity"`))

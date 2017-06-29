@@ -9,10 +9,10 @@ module.exports = class InventoryRepository extends BaseRepository {
         super(branchId);
         this.findById = async(this.findById);
         this.create = async(this.create);
-        this.createInvoice = async(this.createInvoice);
-        this.createInvoiceLines = async(this.createInvoiceLines);
-        this.updateInvoice = async(this.updateInvoice);
-        this.updateInvoiceLines = async(this.updateInvoiceLines);
+        this.createInventory = async(this.createInventory);
+        this.createInventoryLines = async(this.createInventoryLines);
+        this.updateInventory = async(this.updateInventory);
+        this.updateInventoryLines = async(this.updateInventoryLines);
     }
 
     findById(id) {
@@ -121,9 +121,9 @@ module.exports = class InventoryRepository extends BaseRepository {
     createInventory(entity, trx) {
         super.create(entity);
 
-        entity.id = await(this.knex('inventories')
+        await(this.knex('inventories')
             .transacting(trx)
-            .insert(entity))[0];
+            .insert(entity));
 
         return entity;
     }

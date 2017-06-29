@@ -12,7 +12,8 @@ function productAssembler(entity) {
         reorderPoint: entity.reorderPoint,
         salePrice: entity.salePrice,
         categoryId: entity.categoryId,
-        inventorySelect: entity.inventorySelect
+        inventorySelect: entity.inventorySelect,
+        totalQuantity: entity.totalQuantity
     };
 
     return viewModel;
