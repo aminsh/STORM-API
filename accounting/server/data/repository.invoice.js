@@ -131,7 +131,6 @@ module.exports = class InvoiceRepository extends BaseRepository {
         lines.forEach(line => {
             super.create(line);
             line.invoiceId = id;
-
         });
 
         await(this.knex('invoiceLines')
