@@ -197,9 +197,12 @@ module.exports = class InvoiceQuery extends BaseQuery {
             fiscalPeriod = await(fiscalPeriodRepository.getById(fiscalPeriodId));
 
         return knex.select(
-            'productId', 'productTitle', knex.raw('"count"(*) as "total"'))
+            'productId', 'productTitle', knex.raw('"sum"("quantity") as "total"'))
             .from(function () {
-                this.select('invoiceLines.productId', knex.raw('"products"."title" as "productTitle"'))
+                this.select(
+                    'invoiceLines.productId',
+                    'invoiceLines.quantity',
+                    knex.raw('"products"."title" as "productTitle"'))
                     .from('invoices')
                     .leftJoin('invoiceLines', 'invoices.id', 'invoiceLines.invoiceId')
                     .leftJoin('products', 'invoiceLines.productId', 'products.id')
