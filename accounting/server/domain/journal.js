@@ -482,8 +482,8 @@ module.exports = class Journal {
             payableAccount = await(subLedger.payableAccount()),
             payableAccountDetailAccountId = allPaymentJournalLines.asEnumerable()
                 .first(line =>
-                    line.subsidiaryLedgerAccountId == payableAccount.id &&
-                    line.debtor == paymentJournalLine.creditor).detailAccountId;
+                line.subsidiaryLedgerAccountId == payableAccount.id &&
+                line.debtor == paymentJournalLine.creditor).detailAccountId;
 
         journalLines.push({
             row: 1,
@@ -508,6 +508,69 @@ module.exports = class Journal {
         });
 
         return {journalLines, journal};
+    }
+
+    generateIncome(payments, command) {
+        let subLedger = this.subLedger,
+
+            description = command.description || 'بابت درآمد',
+
+            journal = await(this.getJournal(persianDate.current(), description)),
+            journalLines = [],
+
+            incomeAccount = await(subLedger.getById(command.incomeSubLedgerId));
+
+        journalLines.push({
+            generalLedgerAccountId: incomeAccount.generalLedgerAccountId,
+            subsidiaryLedgerAccountId: incomeAccount.id,
+            detailAccountId: command.personId || null,
+            article: description,
+            debtor: 0,
+            creditor: payments.asEnumerable().sum(e => e.amount)
+        });
+
+        payments.forEach(p => {
+            let article = description,
+                id = Guid.new(),
+
+                debtorSubLedger = await(getSubLedgerForDebtor(p));
+
+            journalLines.push({
+                id,
+                generalLedgerAccountId: debtorSubLedger.generalLedgerAccountId,
+                subsidiaryLedgerAccountId: debtorSubLedger.id,
+                detailAccountId: getDetailAccountForDebtor(p),
+                article,
+                debtor: p.amount,
+                creditor: 0
+            });
+
+            p.journalLineId = id;
+        });
+
+        return {journalLines, journal, payments};
+
+        function getSubLedgerForDebtor(p) {
+            if (p.paymentType == 'cash')
+                return subLedger.fundAccount();
+
+            if (p.paymentType == 'receipt')
+                return subLedger.bankAccount();
+
+            if (p.paymentType == 'cheque')
+                return subLedger.receivableDocument();
+        }
+
+        function getDetailAccountForDebtor(p) {
+            if (p.paymentType == 'cash')
+                return p.fundId;
+
+            if (p.paymentType == 'receipt')
+                return p.bankId;
+
+            if (p.paymentType == 'cheque')
+                return command.personId || null;
+        }
     }
 
     getJournal(date, description) {

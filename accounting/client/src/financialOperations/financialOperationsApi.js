@@ -9,4 +9,8 @@ export default class {
     transferMoney(data) {
         return this.apiPromise.post(`${this.urlPrefix}/transfer-money`, data);
     }
+
+    createIncome(data){
+        return this.apiPromise.post(`${this.urlPrefix}/receive/income`, data);
+    }
 }

@@ -304,6 +304,9 @@
   "Bank/Fund":"بانک / صندوق",
   "Sales information by month":"اطلاعات فروش به تفکیک ماه",
   "Best Selling Product Information":"اطلاعات کالاهای پر فروش",
-  "Payment Information":"اطلاعات پرداخت ها"
+  "Payment Information":"اطلاعات پرداخت ها",
+  "Income type": "نوع درآمد",
+  "Person": "شخص",
+  "Create income": "ثبت درآمد"
 
 }

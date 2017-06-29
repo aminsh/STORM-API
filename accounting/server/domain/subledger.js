@@ -4,55 +4,59 @@ const SubsidiaryLedgerAccountRepository = require('../data/repository.subsidiary
 
 
 module.exports = class SubLedger {
-    constructor(branchId){
+    constructor(branchId) {
         this.subsidiaryLedgerAccountRepository = new SubsidiaryLedgerAccountRepository(branchId);
     }
 
-    receivableAccount(){
+    getById(id) {
+        return this.subsidiaryLedgerAccountRepository.findById(id);
+    }
+
+    receivableAccount() {
         return this.subsidiaryLedgerAccountRepository.findByCode('1104');
     }
 
-    payableAccount(){
+    payableAccount() {
         return this.subsidiaryLedgerAccountRepository.findByCode('2101');
     }
 
-    saleAccount(){
+    saleAccount() {
         return this.subsidiaryLedgerAccountRepository.findByCode('6101');
     }
 
-    saleDiscountAccount(){
+    saleDiscountAccount() {
         return this.subsidiaryLedgerAccountRepository.findByCode('8305');
     }
 
-    saleVatAccount(){
+    saleVatAccount() {
         return this.subsidiaryLedgerAccountRepository.findByCode('2106');
     }
 
-    purchaseAccount(){
+    purchaseAccount() {
         return this.subsidiaryLedgerAccountRepository.findByCode('5101');
     }
 
-    purchaseDiscountAccount(){
+    purchaseDiscountAccount() {
         return this.subsidiaryLedgerAccountRepository.findByCode('7203');
     }
 
-    purchaseVatAccount(){
+    purchaseVatAccount() {
         return this.subsidiaryLedgerAccountRepository.findByCode('1111');
     }
 
-    fundAccount(){
+    fundAccount() {
         return this.subsidiaryLedgerAccountRepository.findByCode('1101');
     }
 
-    bankAccount(){
+    bankAccount() {
         return this.subsidiaryLedgerAccountRepository.findByCode('1103');
     }
 
-    receivableDocument(){
+    receivableDocument() {
         return this.subsidiaryLedgerAccountRepository.findByCode('1105');
     }
 
-    payableDocument(){
+    payableDocument() {
         return this.subsidiaryLedgerAccountRepository.findByCode('2102');
     }
 };

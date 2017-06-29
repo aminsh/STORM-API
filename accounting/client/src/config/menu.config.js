@@ -122,6 +122,11 @@ accModule.config(menuItemsProvider => {
                     title: 'انتقال وجه',
                     url: 'transfer-money',
                     icon: ''
+                },
+                {
+                    title: 'ثبت درآمد',
+                    url: 'income/create',
+                    icon: ''
                 }
             ]
         });

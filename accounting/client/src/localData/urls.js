@@ -8,7 +8,8 @@ let subsidiaryLedgerAccount = {
     all: ()=> '{0}/subsidiary-ledger-accounts'.format(rootUrl()),
     allByGeneralLedgerAccount: (generalLedgerAccountId)=>
         '{0}/subsidiary-ledger-accounts/general-ledger-account/{1}'
-            .format(rootUrl(), generalLedgerAccountId)
+            .format(rootUrl(), generalLedgerAccountId),
+    allIncomes: ()=> `${rootUrl()}/subsidiary-ledger-accounts/incomes`
 };
 
 let detailAccount = {
