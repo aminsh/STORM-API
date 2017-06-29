@@ -12,13 +12,29 @@ class BandQuery extends BaseQuery {
         this.getById = async(this.getById);
     }
 
-    getAll(parameters) {
-        let query = this.knex.select().from('banks');
-        return kendoQueryResolve(query, parameters, view);
+    getAll(id, fiscalPeriodId, parameters) {
+        let knex = this.knex,
+            bank = await(this.knex.select(knex.raw(`"detailAccounts".title, "journalLines".article, "journalLines".debtor, 
+                "journalLines".creditor`))
+                .from('detailAccounts')
+                .leftJoin('journalLines', 'detailAccounts.id', 'journalLines.detailAccountId')
+                .leftJoin('journals', 'journals.id', 'journalLines.journalId')
+                .where('detailAccounts.id', id)
+                .andWhere('branchId', this.branchId)
+                .andWhere('journals.periodId', fiscalPeriodId)
+                .andWhere('detailAccounts.detailAccountType', 'bank')
+            );
+        return kendoQueryResolve(bank, parameters, view);
     }
 
+
     getById(id) {
-        let bank = await(this.knex.select().from('banks').where('id', id).first());
+        let bank = await(this.knex.select()
+            .from('detailAccounts')
+            .where('id', id)
+            .andWhere('branchId', this.branchId)
+            .first()
+        );
         return view(bank);
     }
 }

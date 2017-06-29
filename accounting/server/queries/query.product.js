@@ -9,11 +9,6 @@ const async = require('asyncawait/async'),
 module.exports = class ProductQuery extends BaseQuery {
     constructor(branchId) {
         super(branchId);
-        this.getById = async(this.getById);
-    }
-
-    remove(id) {
-        return this.knex('products').where('id', id).del();
     }
 
     getAll(parameters) {
@@ -23,25 +18,28 @@ module.exports = class ProductQuery extends BaseQuery {
         return kendoQueryResolve(query, parameters, view);
     }
 
-    getById(id, fiscalPeriodId) {
-        let knex = this.knex,
-            /*inventorySelect = `select
-             "sum"((case
-             when "inventory"."inventoryType" == 'input' then 1
-             when "inventory"."inventoryType" == 'output' then -1
-             end) *  "inventoryLines"."quantity") as "total"
-             from "inventories"
-             left join "inventoryLines" on "inventories"."id" = "inventoryLines"."inventoryId"
-             where "inventories"."fiscalPeriodId"= '${fiscalPeriodId}' and "inventoryLines"."productId" = '${id}'`;*/
-            inventorySelect = 1;
+    getById(id) {
+/*
+        select products.*, (il."unitPrice"*il.quantity)-il.discount as "netPrice", il.quantity, il.discount, il."unitPrice"
+        0 as inventory, 0 as "cost", 0 as profit
+        from products
+        left Join (select "invoiceLines"."productId",
+            sum("invoiceLines"."unitPrice") as "unitPrice",
+            sum("invoiceLines"."quantity") as "quantity",
+            sum("invoiceLines"."discount") as discount
+        from "invoiceLines"
+        left Join invoices on invoices.id="invoiceLines"."invoiceId"
+        group by "invoiceLines"."productId")as il on il."productId" = products.id
 
-        let entity = await(this.knex.select(
-            'products.*', knex.raw(`(${inventorySelect}) as "totalQuantity"`))
+        LEFT JOIN inventory*/
+
+        let query = this.knex.select()
             .from('products')
+            .leftJoin('invoiceLines','products.id','invoiceLines.productId')
+            .leftJoin('invoices','invoices.id','invoiceLines.invoiceId')
             .where('branchId', this.branchId)
             .andWhere('id', id)
-            .first());
-
-        return view(entity);
+            .first();
+        return query;
     }
 };
