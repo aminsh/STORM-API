@@ -24,6 +24,22 @@ module.exports = class ProductQuery extends BaseQuery {
     }
 
     getById(id, fiscalPeriodId) {
+
+        /*
+         select products.*, (il."unitPrice"*il.quantity)-il.discount as "netPrice", il.quantity, il.discount, il."unitPrice"
+         0 as inventory, 0 as "cost", 0 as profit
+         from products
+         left Join (select "invoiceLines"."productId",
+         sum("invoiceLines"."unitPrice") as "unitPrice",
+         sum("invoiceLines"."quantity") as "quantity",
+         sum("invoiceLines"."discount") as discount
+         from "invoiceLines"
+         left Join invoices on invoices.id="invoiceLines"."invoiceId"
+         group by "invoiceLines"."productId")as il on il."productId" = products.id
+
+         LEFT JOIN inventory*/
+
+
         let knex = this.knex,
             inventorySelect = `select
              "sum"((case
