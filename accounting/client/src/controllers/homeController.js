@@ -1,6 +1,6 @@
 import accModule from '../acc.module';
 
-function homeController($scope, journalApi, translate, purchaseApi, salesInvoiceApi, bankAndFundApi) {
+function homeController($scope, translate, purchaseApi, salesInvoiceApi, bankAndFundApi) {
 
     fetch();
 
@@ -18,36 +18,37 @@ function homeController($scope, journalApi, translate, purchaseApi, salesInvoice
         sumOfRemain: 0
     };
 
-    $scope.bankAndFundInfos = [];
 
-    $scope.incomeAndOutcomes = [];
-    $scope.months = [];
-
-    $scope.series = [translate('Income'), translate('Outcome')];
-
-    $scope.datasetOverride = [{yAxisID: 'y-axis-1'}, {yAxisID: 'y-axis-2'}];
-
-    $scope.options = {
-        scales: {
-            yAxes: [
-                {
-                    id: 'y-axis-1',
-                    type: 'linear',
-                    display: true,
-                    position: 'left'
-                },
-                {
-                    id: 'y-axis-2',
-                    type: 'linear',
-                    display: true,
-                    position: 'right'
-                }
-            ]
-        }
-    };
-
-    $scope.data = [];
-    $scope.labels = [];
+    // $scope.months = [];
+    //
+    // $scope.series = [translate('Price'), translate('Quantity')];
+    //
+    // $scope.datasetOverride = [{yAxisID: 'y-axis-1'}, {yAxisID: 'y-axis-2'}];
+    //
+    // $scope.options = {
+    //     responsive: true,
+    //     maintainAspectRatio:false,
+    //     scales: {
+    //         yAxes: [
+    //             {
+    //                 id: 'y-axis-1',
+    //                 type: 'linear',
+    //                 display: true,
+    //                 position: 'left'
+    //             },
+    //             {
+    //                 id: 'y-axis-2',
+    //                 type: 'linear',
+    //                 display: true,
+    //                 position: 'right'
+    //             }
+    //         ]
+    //     }
+    // };
+    //
+    // $scope.data = [];
+    //
+    // $scope.labels = [];
 
     function fetch() {
         // journalApi.getGroupedByMouth()
@@ -118,30 +119,62 @@ function homeController($scope, journalApi, translate, purchaseApi, salesInvoice
         bankAndFundApi.summary().then(result => {
             $scope.bankAndFundInfos = result;
         });
+
         salesInvoiceApi.summaryByProduct().then(result => {
             let items = result.asEnumerable();
             let colors = ['#803690', '#00ADF9', '#DCDCDC', '#46BFBD', '#FDB45C', '#949FB1', '#4D5360'];
-            $scope.labels = items.select(item => item.productTitle).toArray();
-            $scope.labelForDisplay = colors.asEnumerable()
-                .take($scope.labels.length)
-                .select(c => ({color: c, label: $scope.labels[colors.indexOf(c)]}))
+
+            $scope.dounatlabels = items.select(item => item.productTitle).toArray();
+            $scope.dounatlabelForDisplay = colors.asEnumerable()
+                .take($scope.dounatlabels.length)
+                .select(c => ({color: c, label: $scope.dounatlabels[colors.indexOf(c)]}))
                 .toArray();
-            $scope.data = items.select(item => parseInt(item.total)).toArray();
+            $scope.dounatdata = items.select(item => parseInt(item.total)).toArray();
         });
 
         salesInvoiceApi.summaryByMonth().then(result => {
             console.log(result);
             let items = result.asEnumerable();
             let colors = ['#803690', '#00ADF9', '#DCDCDC', '#46BFBD', '#FDB45C', '#949FB1', '#4D5360'];
-            $scope.series=['Price',"Quantity"];
-            $scope.saleByMonthLabels = items.select(item => item.monthName).toArray();
+
+            $scope.series = [translate('Total Sales Price'), translate('Sales Quantity')];
+
+            $scope.datasetOverride = [{yAxisID: 'y-axis-1'}, {yAxisID: 'y-axis-2'}];
+
+            $scope.options = {
+                responsive: true,
+                legend: {display: true},
+                maintainAspectRatio:false,
+                scaleLabel: ((label)=>{
+                    console.log(label);
+                    return label.value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                }),
+                scales: {
+                    yAxes: [
+                        {
+                            id: 'y-axis-1',
+                            type: 'linear',
+                            display: true,
+                            position: 'left'
+                        },
+                        {
+                            id: 'y-axis-2',
+                            type: 'linear',
+                            display: true,
+                            position: 'right'
+                        }
+                    ]
+                }
+            };
+
+            $scope.labels = items.select(item => item.monthName).toArray();
 
             $scope.labelForDisplay = colors.asEnumerable()
                 .take($scope.labels.length)
                 .select(c => ({color: c, label: $scope.labels[colors.indexOf(c)]}))
                 .toArray();
 
-            $scope.saleByMonthData = [items.select(item => parseInt(item.totalPrice)).toArray(),items.select(item => parseInt(item.total)).toArray()];
+            $scope.data = [items.select(item => parseInt(item.totalPrice)).toArray(),items.select(item => parseInt(item.total)).toArray()];
         });
 
     }

@@ -68,11 +68,12 @@
             <div class="ibox-content">
                 <div class="row">
                     <div class="col-lg-12">
-                            <canvas height="140" class="chart chart-bar"
-                                    chart-data="saleByMonthData"
+                            <canvas height="300" class="chart chart-bar"
+                                    chart-data="data"
                                     chart-series="series"
-                                    chart-labels="saleByMonthLabels"
-                                    chart-options="{legend: {display: true}}"
+                                    chart-labels="labels"
+                                    chart-dataset-override="datasetOverride"
+                                    chart-options="options"
                                     chart-click="select"></canvas>
 
                         <!--<canvas class="chart chart-bar"-->
@@ -132,9 +133,9 @@
 
                 <div class="row">
                     <canvas class="chart chart-doughnut"
-                            chart-data="data"
-                            chart-labels="labels"
-                            chart-options="{legend: {display: true}}"
+                            chart-data="dounatdata"
+                            chart-labels="dounatlabels"
+                            chart-options="{legend: {display: true},responsive:true,maintainAspectRatio:false}"
                             chart-click="select"></canvas>
                 </div>
 
