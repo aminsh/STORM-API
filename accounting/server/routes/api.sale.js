@@ -3,14 +3,14 @@
 const async = require('asyncawait/async'),
     await = require('asyncawait/await'),
     router = require('express').Router(),
-    string = require('../utilities/string'),
+    String = require('../utilities/string'),
+    Guid = require('../services/shared').utility.Guid,
     translate = require('../services/translateService'),
     InvoiceRepository = require('../data/repository.invoice'),
     ProductRepository = require('../data/repository.product'),
     InvoiceQuery = require('../queries/query.invoice'),
     PaymentRepository = require('../data/repository.payment'),
-    EventEmitter = require('../services/shared').service.EventEmitter,
-    Payment = require('../domain/payment');
+    EventEmitter = require('../services/shared').service.EventEmitter;
 
 router.route('/summary')
     .get(async((req, res) => {
@@ -48,10 +48,37 @@ router.route('/')
             invoiceRepository = new InvoiceRepository(branchId),
             productRepository = new ProductRepository(branchId),
             cmd = req.body,
+            errors  = [];
 
-            current = {
+        if(!(cmd.invoiceLines && cmd.invoiceLines.length != 0))
+            errors.push('ردیف های فاکتور وجود ندارد');
+        else checkLinesValidation();
+
+        if(String.isNullOrEmpty(cmd.date))
+            errors.push('تاریخ نباید خالی باشد');
+
+        if(Guid.isEmpty(cmd.detailAccountId) && Guid.isEmpty(cmd.customerId))
+            errors.push('مشتری نباید خالی باشد');
+
+        function checkLinesValidation() {
+            cmd.invoiceLines.forEach(e => {
+               if(Guid.isEmpty(e.productId) && String.isNullOrEmpty(e.description))
+                   errors.push('کالا یا شرح کالا نباید خالی باشد');
+
+               if(!(e.quantity && e.quantity != 0))
+                   errors.push('مقدار نباید خالی یا صفر باشد')
+
+                if(!(e.unitPrice && e.unitPrice != 0))
+                    errors.push('قیمت واحد نباید خالی یا صفر باشد')
+            });
+        }
+
+        if(errors.length != 0)
+            return res.json({isValid: false, errors});
+
+            let current = {
                 branchId,
-                fiscalPeriodId: req.cookies['current-period'],
+                fiscalPeriodId: req.fiscalPeriodId,
                 userId: req.user.id
             },
 
@@ -171,7 +198,7 @@ router.route('/:id')
         res.json({isValid: true});
     }));
 
-function createInvoice(status, cmd, invoiceRepository) {
+function createInvoice(status, cmd, invoiceRepository, productReposittory) {
     let entity = {
         number: (await(invoiceRepository.saleMaxNumber()).max || 0) + 1,
         date: cmd.date,
@@ -184,11 +211,11 @@ function createInvoice(status, cmd, invoiceRepository) {
     entity.invoiceLines = cmd.invoiceLines.asEnumerable()
         .select(line => ({
             productId: line.productId,
-            description: line.description,
+            description: line.description || await(productReposittory.findById(line.productId)).title,
             quantity: line.quantity,
             unitPrice: line.unitPrice,
-            discount: line.discount,
-            vat: line.vat
+            discount: line.discount || 0,
+            vat: line.vat || 0
         }))
         .toArray();
 
