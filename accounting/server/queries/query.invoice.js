@@ -210,6 +210,7 @@ module.exports = class InvoiceQuery extends BaseQuery {
             })
             .groupBy('productId', 'productTitle')
             .orderByRaw('"count"(*) desc')
+            .limit(5)
             .map(item => ({
                 productId: item.productId,
                 productTitle: item.productTitle,
