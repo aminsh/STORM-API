@@ -67,6 +67,7 @@
                                            k-data-text-field="title"
                                            ng-model="item.fundId"
                                            k-on-created="model.createNewFund($search)"
+                                           k-on-changed="model.onFundChanged($item, item)"
                                            show-no-data-template
                                            url="{{model.urls.getAllFunds}}"
                                            required></dev-tag-combo-box>
@@ -244,6 +245,7 @@
                                 k-data-text-field="title"
                                 ng-model="item.bankId"
                                 k-on-created="model.createNewBank($search)"
+                                k-on-changed="model.onBankChanged($item, item)"
                                 show-no-data-template
                                 url="{{model.urls.getAllBanks}}"
                                 required></dev-tag-combo-box>

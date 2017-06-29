@@ -56,6 +56,7 @@ export default class paymentController {
             date: null,
             amount: 0,
             fundId: null,
+            fundDisplay: null,
             paymentType: 'cash',
             paymentDisplay: this.devConstants.enums.paymentType().getDisplay('cash')
         };
@@ -83,6 +84,7 @@ export default class paymentController {
             date: null,
             amount: 0,
             bankId: null,
+            bankDisplay: null,
             paymentType: 'receipt',
             paymentDisplay: this.devConstants.enums.paymentType().getDisplay('receipt')
         };
@@ -92,6 +94,14 @@ export default class paymentController {
     onBankChanged(bank, item) {
         item.bankName = bank.bank;
         item.bankBranch = bank.bankBranch;
+    }
+
+    onFundChanged(fund, item){
+        item.fundDisplay = fund.title;
+    }
+
+    onBankChanged(bank, item){
+        item.bankDisplay = bank.title;
     }
 
     save(form) {

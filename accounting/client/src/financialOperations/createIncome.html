@@ -57,6 +57,42 @@
             </div>
         </div>
 
+        <div class="row ">
+            <div class="col-md-12">
+                <ul class="list-group clear-list m-t">
+                    <li class="list-group-item"
+                        ng-repeat="item in model.payments">
+                        <div class="row">
+                            <div class="col-md-5">
+                                {{item.amount|number}} ریال
+                            </div>
+
+                            <div class="col-md-6" ng-if="item.paymentType == 'receipt'">
+                                {{item.bankDisplay}}
+                            </div>
+                            <div class="col-md-6" ng-if="item.paymentType == 'cash'">
+                                {{item.fundDisplay}}
+                            </div>
+                            <div class="col-md-6" ng-if="item.paymentType == 'cheque'">
+                                چک شماره
+                                {{item.number}}
+
+                                سررسید
+                                {{item.date}}
+                            </div>
+
+                            <div class="col-md-1" style="font-size: 20px;margin-top: 7px;text-align: left;">
+                                <button type="button" ng-click="model.removePayment(item)" class="close" title="حذف">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
         <dev-tag-content-footer>
             <dev-tag-button
                     ng-click="model.save(form)"

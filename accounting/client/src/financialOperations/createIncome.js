@@ -56,4 +56,8 @@ export default class IncomeCreateController {
         this.createPaymentService.show({receiveOrPay: 'receive'})
             .then(payments => this.payments = payments);
     }
+
+    removePayment(item){
+        this.payments.asEnumerable().remove(item);
+    }
 }
