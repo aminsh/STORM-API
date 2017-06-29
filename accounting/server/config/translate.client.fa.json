@@ -298,7 +298,6 @@
   "Payable cheques": "چک های پرداختی",
   "Pass cheque":"وصول چک",
   "Return cheque":"عودت چک",
-  "Receive from": "دریافت از",
   "Passed date": "تاریخ وصول",
   "Receive from": "دریافت از",
   "Bank/Fund":"بانک / صندوق",
@@ -306,7 +305,10 @@
   "Best Selling Product Information":"اطلاعات کالاهای پر فروش",
   "Payment Information":"اطلاعات پرداخت ها",
   "Income type": "نوع درآمد",
+  "Expense type": "نوع هزینه",
   "Person": "شخص",
-  "Create income": "ثبت درآمد"
+  "Create income": "ثبت درآمد",
+  "Create expense": "ثبت هزینه",
+  "There are not any payments": "هیج پرداختی وجود ندارد"
 
 }

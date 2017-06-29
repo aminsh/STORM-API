@@ -448,6 +448,12 @@ export default function ($stateProvider, $urlRouterProvider, $locationProvider) 
             controllerAs: 'model',
             templateUrl: 'partials/financialOperations/createIncome.html'
         })
+        .state('createExpense', {
+            url: '/expense/create',
+            controller: 'createExpenseController',
+            controllerAs: 'model',
+            templateUrl: 'partials/financialOperations/createExpense.html'
+        })
         .state('not-found', {
             url: '/not-found',
             templateUrl: 'partials/views/notFound.html'

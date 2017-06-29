@@ -21,6 +21,12 @@ router.route('/incomes').get(async((req, res) => {
     res.json(result);
 }));
 
+router.route('/expenses').get(async((req, res) => {
+    let subsidiaryLedgerAccountQuery = new SubsidiaryLedgerAccountQuery(req.branchId),
+        result = await(subsidiaryLedgerAccountQuery.getAllExpense(req.query));
+    res.json(result);
+}));
+
 router.route('/account/:id').get(async((req, res) => {
     let subsidiaryLedgerAccountQuery = new SubsidiaryLedgerAccountQuery(req.branchId),
         result = await(subsidiaryLedgerAccountQuery.getAll(req.params.id));

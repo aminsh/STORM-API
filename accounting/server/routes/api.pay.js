@@ -49,4 +49,38 @@ router.route('/cheques/:id/return')
             {branchId: req.branchId, fiscalPeriodId: req.fiscalPeriodId});
     }));
 
+router.route('/expense').post(async ((req, res) => {
+    let cmd = req.body,
+        payments = cmd.payments,
+        id = req.params.id,
+
+        paymentRepository = new PaymentRepository(req.branchId);
+
+    payments.forEach(e => {
+
+        let entity = {
+            number: e.number,
+            date: e.date,
+            invoiceId: id,
+            amount: e.amount,
+            paymentType: e.paymentType,
+            bankName: e.bankName,
+            bankBranch: e.bankBranch,
+            receiveOrPay: 'pay',
+            chequeStatus: e.paymentType == 'cheque' ? 'normal' : null
+        };
+
+        await(paymentRepository.create(entity));
+
+        e.id = entity.id;
+    });
+
+    res.json({isValid: true});
+
+    EventEmitter.emit('on-expense-created',
+        payments,
+        cmd,
+        {branchId: req.branchId, fiscalPeriodId: req.fiscalPeriodId});2
+}));
+
 module.exports = router;

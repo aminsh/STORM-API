@@ -88,4 +88,16 @@ module.exports = class SubsidiaryLedgerAccountQuery extends BaseQuery {
 
         return kendoQueryResolve(query, parameters, view);
     }
+
+    getAllExpense(parameters){
+        let knex = this.knex,
+            subquery = knex.select('id').from('generalLedgerAccounts')
+                .where('groupingType', '8'),
+
+            query = knex.from('subsidiaryLedgerAccounts')
+                .where('branchId', this.branchId)
+                .whereIn('generalLedgerAccountId', subquery);
+
+        return kendoQueryResolve(query, parameters, view);
+    }
 };

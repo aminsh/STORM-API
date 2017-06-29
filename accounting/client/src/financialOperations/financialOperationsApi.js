@@ -13,4 +13,8 @@ export default class {
     createIncome(data){
         return this.apiPromise.post(`${this.urlPrefix}/receive/income`, data);
     }
+
+    createExpense(data){
+        return this.apiPromise.post(`${this.urlPrefix}/pay/expense`, data);
+    }
 }

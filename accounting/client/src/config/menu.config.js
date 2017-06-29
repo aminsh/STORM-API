@@ -127,6 +127,11 @@ accModule.config(menuItemsProvider => {
                     title: 'ثبت درآمد',
                     url: 'income/create',
                     icon: ''
+                },
+                {
+                    title: 'ثبت هزینه',
+                    url: 'expense/create',
+                    icon: ''
                 }
             ]
         });

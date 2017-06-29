@@ -19,6 +19,7 @@ require('./accounting/server/events/onReceivableChequeReturn');
 require('./accounting/server/events/onPayableChequePassed');
 require('./accounting/server/events/onPayableChequeReturn');
 require('./accounting/server/events/onIcomeCreated');
+require('./accounting/server/events/onExpenseCreated');
 
 const config = require('./storm/server/config'),
     accApp = require('./accounting/server/config/express'),

@@ -573,6 +573,69 @@ module.exports = class Journal {
         }
     }
 
+    generateExpense(payments, command) {
+        let subLedger = this.subLedger,
+
+            description = command.description || 'بابت هزینه',
+
+            journal = await(this.getJournal(persianDate.current(), description)),
+            journalLines = [],
+
+            expenseAccount = await(subLedger.getById(command.expenseSubLedgerId));
+
+        journalLines.push({
+            generalLedgerAccountId: expenseAccount.generalLedgerAccountId,
+            subsidiaryLedgerAccountId: expenseAccount.id,
+            detailAccountId: command.personId || null,
+            article: description,
+            debtor: payments.asEnumerable().sum(e => e.amount),
+            creditor: 0
+        });
+
+        payments.forEach(p => {
+            let article = description,
+                id = Guid.new(),
+
+                debtorSubLedger = await(getSubLedgerForDebtor(p));
+
+            journalLines.push({
+                id,
+                generalLedgerAccountId: debtorSubLedger.generalLedgerAccountId,
+                subsidiaryLedgerAccountId: debtorSubLedger.id,
+                detailAccountId: getDetailAccountForDebtor(p),
+                article,
+                debtor: 0,
+                creditor: p.amount
+            });
+
+            p.journalLineId = id;
+        });
+
+        return {journalLines, journal, payments};
+
+        function getSubLedgerForDebtor(p) {
+            if (p.paymentType == 'cash')
+                return subLedger.fundAccount();
+
+            if (p.paymentType == 'receipt')
+                return subLedger.bankAccount();
+
+            if (p.paymentType == 'cheque')
+                return subLedger.payableDocument();
+        }
+
+        function getDetailAccountForDebtor(p) {
+            if (p.paymentType == 'cash')
+                return p.fundId;
+
+            if (p.paymentType == 'receipt')
+                return p.bankId;
+
+            if (p.paymentType == 'cheque')
+                return p.bankId
+        }
+    }
+
     getJournal(date, description) {
         let maxNumber = await(this.journalRepository.maxTemporaryNumber(this.fiscalPeriodId)).max || 0;
 
@@ -585,4 +648,5 @@ module.exports = class Journal {
             isInComplete: false
         };
     }
+
 };
