@@ -62,5 +62,13 @@ exports.seed = async(function (knex, Promise) {
 
         await(knex('branches').insert(branches));
         await(knex('userInBranches').insert(userInBranches));
+
+        branches.forEach(async(e=> {
+            if(!await(knex.select('id')
+                    .from('settings')
+                    .where('branchId', e.id)
+                    .first()))
+                await(knex('settings').insert({vat: 9}));
+        }));
     }
 });
