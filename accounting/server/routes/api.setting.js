@@ -27,8 +27,11 @@ router.route('/')
     }))
     .put(async((req, res)=> {
         let settingRepository = new SettingRepository(req.branchId),
+            cmd = req.body,
+
             entity = {
-                vat: req.body.vat,
+                vat: cmd.vat,
+                bankId: cmd.bankId
             };
 
         await(settingRepository.update(entity));

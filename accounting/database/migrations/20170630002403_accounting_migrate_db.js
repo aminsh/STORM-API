@@ -26,6 +26,14 @@ exports.up = function (knex, Promise) {
         })
         .table('stocks', table => {
             table.string('branchId');
+        })
+        .table('settings', table => {
+           table.string('bankId');
+            table
+                .foreign('bankId')
+                .references('id')
+                .inTable('detailAccounts')
+                .onDelete('SET NULL');
         });
 };
 
@@ -41,5 +49,8 @@ exports.down = function (knex, Promise) {
         })
         .table('stocks', table => {
             table.dropColumn('branchId');
+        })
+        .table('settings', table => {
+           table.dropColumn('bankId');
         });
 };

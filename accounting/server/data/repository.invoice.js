@@ -16,10 +16,43 @@ module.exports = class InvoiceRepository extends BaseRepository {
     }
 
     findById(id) {
-        let invoice = await(this.knex.table('invoices').where('id', id).first()),
-            invoiceLines = await(this.knex.table('invoiceLines').where('invoiceId', id));
 
-        invoice.invoiceLines = invoiceLines;
+        let knex = this.knex,
+            data = await(this.knex.select(
+                '*',
+                knex.raw('"invoices"."description" as "invoiceDescription"'),
+                knex.raw('"invoiceLines"."description" as "invoiceLineDescription"'),
+                knex.raw('"invoiceLines"."id" as "invoiceLineId"')
+            ).from('invoices')
+            .leftJoin('invoiceLines', 'invoices.id', 'invoiceLines.invoiceId')
+            .where('invoices.branchId', this.branchId)
+            .andWhere('invoices.id', id));
+
+        let first = data[0],
+            invoice = {
+                id: first.invoiceId,
+                number: first.number,
+                date: first.date,
+                detailAccountId: first.detailAccountId,
+                description: first.invoiceDescription,
+                referenceId: first.referenceId,
+                journalId: first.journalId,
+                invoiceStatus: first.invoiceStatus,
+                orderId: first.orderId,
+                invoiceType: first.invoiceType,
+            };
+
+        invoice.invoiceLines = data.asEnumerable().select(line => ({
+            id: line.invoiceLineId,
+            invoiceId: line.invoiceId,
+            productId: line.productId,
+            description: line.invoiceLineDescription,
+            unitPrice: line.unitPrice,
+            quantity: line.quantity,
+            discount: line.discount,
+            vat: line.vat
+        }))
+            .toArray();
 
         return invoice;
     }

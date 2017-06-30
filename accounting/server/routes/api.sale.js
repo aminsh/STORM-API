@@ -10,6 +10,7 @@ const async = require('asyncawait/async'),
     ProductRepository = require('../data/repository.product'),
     InvoiceQuery = require('../queries/query.invoice'),
     PaymentRepository = require('../data/repository.payment'),
+    SettingRepository = require('../data/repository.setting'),
     EventEmitter = require('../services/shared').service.EventEmitter;
 
 router.route('/summary')
@@ -47,42 +48,53 @@ router.route('/')
         let branchId = req.branchId,
             invoiceRepository = new InvoiceRepository(branchId),
             productRepository = new ProductRepository(branchId),
+            settingRepository = new SettingRepository(branchId),
             cmd = req.body,
-            errors  = [];
+            errors = [],
 
-        if(!(cmd.invoiceLines && cmd.invoiceLines.length != 0))
+            bankId;
+
+        if (!(cmd.invoiceLines && cmd.invoiceLines.length != 0))
             errors.push('ردیف های فاکتور وجود ندارد');
         else checkLinesValidation();
 
-        if(String.isNullOrEmpty(cmd.date))
+        if (String.isNullOrEmpty(cmd.date))
             errors.push('تاریخ نباید خالی باشد');
 
-        if(Guid.isEmpty(cmd.detailAccountId) && Guid.isEmpty(cmd.customerId))
+        if (Guid.isEmpty(cmd.detailAccountId) && Guid.isEmpty(cmd.customerId))
             errors.push('مشتری نباید خالی باشد');
 
         function checkLinesValidation() {
             cmd.invoiceLines.forEach(e => {
-               if(Guid.isEmpty(e.productId) && String.isNullOrEmpty(e.description))
-                   errors.push('کالا یا شرح کالا نباید خالی باشد');
+                if (Guid.isEmpty(e.productId) && String.isNullOrEmpty(e.description))
+                    errors.push('کالا یا شرح کالا نباید خالی باشد');
 
-               if(!(e.quantity && e.quantity != 0))
-                   errors.push('مقدار نباید خالی یا صفر باشد')
+                if (!(e.quantity && e.quantity != 0))
+                    errors.push('مقدار نباید خالی یا صفر باشد')
 
-                if(!(e.unitPrice && e.unitPrice != 0))
+                if (!(e.unitPrice && e.unitPrice != 0))
                     errors.push('قیمت واحد نباید خالی یا صفر باشد')
             });
         }
 
-        if(errors.length != 0)
+        if (cmd.status == 'paid') {
+            bankId = await(settingRepository.get()).bankId;
+            if (!bankId)
+                errors.push('اطلاعات بانک پیش فرض تعریف نشده - ثبت پرداخت برای این فاکتور امکانپذیر نیست')
+        }
+
+        if (errors.length != 0)
             return res.json({isValid: false, errors});
 
-            let current = {
+        let current = {
                 branchId,
                 fiscalPeriodId: req.fiscalPeriodId,
                 userId: req.user.id
             },
 
-            status = cmd.status == 'confirm' ? 'waitForPayment' : 'draft',
+            status = (cmd.status == 'confirm' || cmd.status == 'paid')
+                ? 'waitForPayment'
+                : 'draft',
 
             entity = createInvoice(
                 status,
@@ -96,6 +108,30 @@ router.route('/')
 
         if (status == 'waitForPayment')
             EventEmitter.emit('on-sale-created', result, current);
+
+        if (cmd.status == 'paid') {
+
+            setTimeout(async(() => {
+                let paymentRepository = new PaymentRepository(req.branchId),
+
+                    bankPayment = {
+                        date: cmd.date,
+                        amount: cmd.invoiceLines.asEnumerable().sum(e => (e.unitPrice * e.quantity) - e.discount + e.vat),
+                        paymentType: 'receipt',
+                        invoiceId: result.id
+                    };
+
+                await(paymentRepository.create(bankPayment));
+
+                bankPayment.bankId = bankId;
+                EventEmitter.emit('on-receive-created',
+                    [bankPayment],
+                    result.id,
+                    {branchId: req.branchId, fiscalPeriodId: req.fiscalPeriodId});
+
+                EventEmitter.emit('on-invoice-paid', result.id, req.branchId);
+            }), 1000);
+        }
     }));
 
 router.route('/:id/confirm')
