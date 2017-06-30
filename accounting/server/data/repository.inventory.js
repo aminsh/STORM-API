@@ -28,6 +28,24 @@ module.exports = class InventoryRepository extends BaseRepository {
         return this.knex.table('inventoryLines').where('inventoryId', id);
     }
 
+    inventoryByProduct(productId, fiscalPeriodId) {
+
+        let knex = this.knex;
+
+        return knex.from(function () {
+            this.select(`((case
+         when "inventories"."inventoryType" = 'input' then 1
+         when "inventories"."inventoryType" = 'output' then -1
+         end) * "inventoryLines"."quantity") as "countOfProduct"`).from('inventories')
+                .leftJoin('inventoryLines', 'inventories.id', 'inventoryLines.inventoryId')
+                .where('branchId', this.branchId)
+                .andWhere('fiscalPeriodId', fiscalPeriodId)
+                .andWhere('productId', productId)
+        })
+            .sum('countOfProduct')
+            .first();
+    }
+
     inputMaxNumber(fiscalPeriodId) {
         return this.knex.table('inventories')
             .modify(this.modify, this.branchId)

@@ -31,7 +31,8 @@ router.route('/')
 
             entity = {
                 vat: cmd.vat,
-                bankId: cmd.bankId
+                bankId: cmd.bankId,
+                canControlInventory: cmd.canControlInventory
             };
 
         await(settingRepository.update(entity));

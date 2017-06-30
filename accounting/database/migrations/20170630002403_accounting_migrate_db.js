@@ -28,12 +28,14 @@ exports.up = function (knex, Promise) {
             table.string('branchId');
         })
         .table('settings', table => {
-           table.string('bankId');
+            table.string('bankId');
             table
                 .foreign('bankId')
                 .references('id')
                 .inTable('detailAccounts')
                 .onDelete('SET NULL');
+
+            table.boolean('canControlInventory');
         });
 };
 
@@ -51,6 +53,7 @@ exports.down = function (knex, Promise) {
             table.dropColumn('branchId');
         })
         .table('settings', table => {
-           table.dropColumn('bankId');
+            table.dropColumn('bankId');
+            table.dropColumn('canControlInventory');
         });
 };

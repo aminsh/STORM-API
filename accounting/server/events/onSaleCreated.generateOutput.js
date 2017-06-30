@@ -9,19 +9,23 @@ const async = require('asyncawait/async'),
     StockRepository = require('../data/repository.stock'),
     translate = require('../services/translateService'),
     InventoryDomain = require('../domain/inventory'),
+    SettingRepository = require('../data/repository.setting'),
     EventEmitter = require('../services/shared').service.EventEmitter;
 
 EventEmitter.on('on-sale-created', async((sale, current) => {
     let inventoryRepository = new InventoryRepository(current.branchId),
         stockRepository = new StockRepository(current.branchId),
         inventoryDomain = new InventoryDomain(current.branchId, current.fiscalPeriodId),
-        productRepository = new ProductRepository(current.branchId);
+        productRepository = new ProductRepository(current.branchId),
+        settingRepository = new SettingRepository(current.branchId);
 
     if (!sale.invoiceLines
             .asEnumerable()
             .any(async(line => await(productRepository.isGood(line.productId)))))
         return;
 
+    if(!await(settingRepository.get()).canControlInventory)
+        return;
 
     let input = {
             number: (await(inventoryRepository.outputMaxNumber(current.fiscalPeriodId)).max || 0) + 1,

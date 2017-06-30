@@ -6,16 +6,21 @@ const async = require('asyncawait/async'),
     StockRepository = require('../data/repository.stock'),
     ProductRepository = require('../data/repository.product'),
     translate = require('../services/translateService'),
+    SettingRepository = require('../data/repository.setting'),
     EventEmitter = require('../services/shared').service.EventEmitter;
 
 EventEmitter.on('on-purchase-created', async((purchase, current) => {
     let inventoryRepository = new InventoryRepository(current.branchId),
         stockRepository = new StockRepository(current.branchId),
-        productRepository = new ProductRepository(current.branchId);
+        productRepository = new ProductRepository(current.branchId),
+        settingRepository = new SettingRepository(current.branchId);
 
     if (!purchase.invoiceLines
             .asEnumerable()
             .any(async(line => await(productRepository.isGood(line.productId)))))
+        return;
+
+    if(!await(settingRepository.get()).canControlInventory)
         return;
 
         let input = {

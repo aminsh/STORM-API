@@ -23,4 +23,9 @@ module.exports = class InventoryDomain {
 
         return sumPrice / sumQuantity;
     }
+
+    getInventory(productId){
+        let result = await(this.inventoryRepository.inventoryByProduct(productId, this.fiscalPeriodId));
+        return result.sum || 0;
+    }
 };
