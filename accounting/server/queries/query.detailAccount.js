@@ -99,4 +99,34 @@ module.exports = class DetailAccountQuery extends BaseQuery {
 
         return kendoQueryResolve(query, parameters, views[`${type}View`]);
     }
+
+    getAllSmallTurnoverById(id, type, fiscalPeriodId, parameters) {
+        let knex = this.knex,
+            branchId = this.branchId,
+
+            query = knex.from(function () {
+                this.select(
+                    'detailAccounts.title',
+                    'journalLines.article',
+                    'journalLines.debtor',
+                    'journalLines.creditor')
+                    .from('detailAccounts')
+                    .leftJoin('journalLines', 'detailAccounts.id', 'journalLines.detailAccountId')
+                    .leftJoin('journals', 'journals.id', 'journalLines.journalId')
+                    .where('detailAccounts.id', id)
+                    .andWhere('detailAccounts.branchId', branchId)
+                    .andWhere('journals.periodId', fiscalPeriodId)
+                    .andWhere('detailAccounts.detailAccountType', type)
+                    .as('base');
+
+            }),
+            view = entity => ({
+                title: entity.title,
+                article: entity.article,
+                debtor: entity.debtor,
+                creditor: entity.creditor
+            });
+
+        return kendoQueryResolve(query, parameters, view);
+    }
 };
