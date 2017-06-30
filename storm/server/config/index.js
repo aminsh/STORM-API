@@ -10,7 +10,7 @@ const path = require('path'),
             logo,
             db: {
                 client: 'pg',
-                connection: 'postgres://postgres:P@ssw0rd@localhost:5432/admin',
+                connection: 'postgres://postgres:P@ssw0rd@localhost:5432/dbAccounting',
                 //connection:'postgres://bkwyyehssvwmee:ecd4e9a2e49d514da639da8f87d4327e96365836819b7961f82fa8a03586188d@ec2-54-235-168-152.compute-1.amazonaws.com:5432/d90ra2sgbuijdl?ssl=true',
                 debug: true
             },
@@ -96,6 +96,7 @@ const path = require('path'),
             },
             port: process.env.PORT,
             version: {
+                app: '1.0.1',
                 vendor: '1.0.0',
                 acc: '1.0.0',
                 css: '1.0.0',

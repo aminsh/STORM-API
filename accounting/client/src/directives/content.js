@@ -6,7 +6,7 @@ function content() {
         templateUrl: 'partials/templates/content-template.html',
         transclude: true,
         replace: true,
-        scope: {},
+        scope: false,
         link: function (scope, element, attrs) {
             let $element = $(element),
                 title_template = `<div class="ibox-title panel-primary">

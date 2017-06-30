@@ -11,6 +11,16 @@ module.exports = class FiscalPeriodQuery extends BaseQuery {
     constructor(branchId) {
         super(branchId);
         this.getMaxId = async(this.getMaxId);
+        this.getById = async(this.getById);
+    }
+
+    getById(id) {
+        let fiscalPeriod = await(this.knex.select('*')
+            .from('fiscalPeriods')
+            .where('id', id)
+            .first());
+
+        return view(fiscalPeriod);
     }
 
     getAll(parameters) {

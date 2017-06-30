@@ -7,11 +7,15 @@
 <div class="modal-body">
 
     <form name="form" class="form-horizontal">
-        <div class="form-group" ng-if="model.jounrnalLine.hasDimension1">
+        <div class="form-group" ng-if="model.journalLine.hasDimension1">
             <label class="label-control col-lg-2">{{'Dimension1'|translate}}</label>
             <div class="col-lg-10">
-                <dev-tag-combo-box name="dimension1Id" k-placeholder="{{'Select ...'|translate}}" k-data-value-field="id" k-data-text-field="display"
-                    k-data-source="model.dimension1DataSource" ng-model="model.additionalInfo.dimension1Id" required></dev-tag-combo-box>
+                <dev-tag-combo-box
+                        name="dimension1Id" k-placeholder="{{'Select ...'|translate}}"
+                        k-data-value-field="id" k-data-text-field="display"
+                        url="{{model.urls.getAllDimension1s}}"
+                        ng-model="model.additionalInfo.dimension1Id"
+                        required></dev-tag-combo-box>
 
                 <div ng-messages="form.dimension1Id.$error" ng-if="form.dimension1Id.$dirty">
                     <label ng-message="required" class="error">{{'This field is required'|translate}}</label>
@@ -19,12 +23,14 @@
             </div>
         </div>
 
-        <div class="form-group" ng-if="model.jounrnalLine.hasDimension2">
+        <div class="form-group" ng-if="model.journalLine.hasDimension2">
             <label class="label-control col-lg-2">{{'Dimension2'|translate}}</label>
 
             <div class="col-lg-10">
-                <dev-tag-combo-box name="dimension2Id" k-placeholder="{{'Select ...'|translate}}" k-data-value-field="id" k-data-text-field="display"
-                    k-data-source="model.dimension2DataSource" ng-model="model.additionalInfo.dimension2Id" required></dev-tag-combo-box>
+                <dev-tag-combo-box name="dimension2Id" k-placeholder="{{'Select ...'|translate}}"
+                                   k-data-value-field="id" k-data-text-field="display"
+                                   url="{{model.urls.getAllDimension2s}}"
+                                   ng-model="model.additionalInfo.dimension2Id" required></dev-tag-combo-box>
 
                 <div ng-messages="form.dimension2Id.$error" ng-if="form.dimension2Id.$dirty">
                     <label ng-message="required" class="error">{{'This field is required'|translate}}</label>
@@ -32,12 +38,14 @@
             </div>
         </div>
 
-        <div class="form-group" ng-if="model.jounrnalLine.hasDimension3">
+        <div class="form-group" ng-if="model.journalLine.hasDimension3">
             <label class="label-control col-lg-2">{{'Dimension3'|translate}}</label>
 
             <div class="col-lg-10">
-                <dev-tag-combo-box name="dimension3Id" k-placeholder="{{'Select ...'|translate}}" k-data-value-field="id" k-data-text-field="display"
-                    k-data-source="model.dimension3DataSource" ng-model="model.additionalInfo.dimension3Id" required></dev-tag-combo-box>
+                <dev-tag-combo-box name="dimension3Id" k-placeholder="{{'Select ...'|translate}}"
+                                   k-data-value-field="id" k-data-text-field="display"
+                                   k-data-source="model.dimension3DataSource"
+                                   ng-model="model.additionalInfo.dimension3Id" required></dev-tag-combo-box>
 
                 <div ng-messages="form.dimension3Id.$error" ng-if="form.dimension3Id.$dirty">
                     <label ng-message="required" class="error">{{'This field is required'|translate}}</label>
@@ -46,7 +54,7 @@
         </div>
 
         <span ng-if="model.journalLine.isBankAccount && model.journalLine.creditor != 0">
-            <div class="form-group" >
+            <div class="form-group">
                 <label class="label-control col-lg-2">{{'Cheque number'| translate}}</label>
                 <div class="col-lg-10">
                     <dev-tag-combo-box name="chequeId"
@@ -54,7 +62,8 @@
                                        k-data-value-field="id"
                                        k-data-text-field="number"
                                        group-by="categoryDisplay"
-                        k-data-source="model.cheques" group-by="categoryDisplay" ng-model="model.additionalInfo.cheque.id" required></dev-tag-combo-box>
+                                       k-data-source="model.cheques" group-by="categoryDisplay"
+                                       ng-model="model.additionalInfo.cheque.id" required></dev-tag-combo-box>
                 </div>
             </div>
 
@@ -70,7 +79,7 @@
         <div class="form-group">
             <label class="label-control col-lg-2">{{'Number'| translate}}</label>
             <div class="col-lg-10">
-                <input type="text" class="form-control" ng-model="model.additionalInfo.receipt.number" />
+                <input type="text" class="form-control" ng-model="model.additionalInfo.receipt.number"/>
             </div>
         </div>
 
@@ -83,6 +92,7 @@
     </form>
 </div>
 <div class="modal-footer">
-    <dev-tag-button ng-click="save(form)" icon="glyphicon glyphicon-floppy-disk" style-type="primary" title="{{'Save' | translate}}"
-        ng-disabled="form.$invalid"></dev-tag-button>
+    <dev-tag-button ng-click="model.save(form)" icon="glyphicon glyphicon-floppy-disk" style-type="primary"
+                    title="{{'Save' | translate}}"
+                    ng-disabled="form.$invalid"></dev-tag-button>
 </div>

@@ -42,16 +42,6 @@ function generalLedgerAccountsController($scope, logger, translate, confirm, dev
                 type: 'balanceType',
                 width: '150px',
                 template: '{{item.balanceTypeDisplay}}'
-            },
-            {
-                name: 'isActive',
-                title: translate('Is active ?'),
-                type: 'activeType',
-                width: '150px',
-                template: `<i class="fa"
-                          ng-class="{'fa-check text-navy': item.isActive,
-                                     'fa-times text-danger': !item.isActive}">
-                       </i>`
             }
         ],
         commands = [
@@ -102,15 +92,6 @@ function generalLedgerAccountsController($scope, logger, translate, confirm, dev
                 type: 'string',
                 width: '40%',
                 template: `<a ui-sref=".subsidiary-ledger-accounts.edit({id: item.id})">{{item.title}}</a>`
-            },
-            {
-                name: 'isActive',
-                title: translate('Is active ?'),
-                type: 'activeType',
-                template: `<i class="fa"
-                          ng-class="{'fa-check text-navy': item.isActive,
-                                     'fa-times text-danger': !item.isActive}">
-                       </i>`
             }
         ],
         commands: [

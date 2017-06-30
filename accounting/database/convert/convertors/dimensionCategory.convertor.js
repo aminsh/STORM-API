@@ -15,15 +15,12 @@ class DimensionCategoryConvertor {
         data.dimensionCategories = this.categoryNames.asEnumerable()
             .select(n => new DimensionCategory(n))
             .toArray();
-
-        _util.idGenerator(data.dimensionCategories);
     }
 
     get categoryNames() {
         return [
-            'تفصیل 2',
-            'تفصیل 3',
-            'تفصیل 4'
+            {id: '1', title: 'تفصیل 2'},
+            {id: '2', title: 'تفصیل 3'}
         ];
     }
 }

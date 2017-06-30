@@ -7,7 +7,6 @@ let async = require('asyncawait/async'),
 class DetailAccountRepository extends BaseRepository {
     constructor(branchId) {
         super(branchId);
-        this.create = async(this.create);
     }
 
     findById(id) {

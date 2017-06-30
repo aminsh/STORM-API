@@ -9,7 +9,8 @@ function combo($parse, apiPromise) {
         require: ['ngModel'],
         scope: {
             onChanged: '&kOnChanged',
-            onCreated: '&kOnCreated'
+            onCreated: '&kOnCreated',
+            onBound: '&kOnBound'
         },
         template: `
         <ui-select  class="ui-select"
@@ -40,7 +41,7 @@ function combo($parse, apiPromise) {
             if (tAttrs.searchEnabled)
                 $('ui-select', tElement).attr('search-enabled', tAttrs.searchEnabled);
 
-            if(angular.isDefined(tAttrs.multiple))
+            if (angular.isDefined(tAttrs.multiple))
                 $('ui-select', tElement).attr('multiple', '');
 
             if (tAttrs.focusOn)
@@ -95,15 +96,17 @@ function combo($parse, apiPromise) {
                                 scope.selectionModel = result.data;
                             });
                         /*var selectionArray = [];
-                        angular.forEach(modelValue, function (modelItem, key) {
-                            var modelItemValue = scope.getValueMapper(modelItem);
-                            selectionArray.push(modelItemValue);
-                        });
-                        scope.selectionModel = selectionArray;*/
+                         angular.forEach(modelValue, function (modelItem, key) {
+                         var modelItemValue = scope.getValueMapper(modelItem);
+                         selectionArray.push(modelItemValue);
+                         });
+                         scope.selectionModel = selectionArray;*/
                     } else {
 
-                        if (!modelValue)
+                        if (!modelValue){
+                            scope.selectionModel = modelValue;
                             return;
+                        }
 
                         getData(getParameters(attrs.kDataValueField, modelValue))
                             .then(result => {
@@ -112,9 +115,8 @@ function combo($parse, apiPromise) {
                                 if (item) {
                                     scope.selectionModel = item;
 
-                                    if (angular.isDefined(attrs.onBound)) {
-                                        eval(`scope.${attrs.onBound}`)(item);
-                                    }
+                                    if (scope.onBound)
+                                        scope.onBound({$item: item});
                                 }
                             });
                     }

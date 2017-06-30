@@ -1,7 +1,7 @@
 "use strict";
 
 export default class ProductController {
-    constructor(productApi, translate, devConstants, logger, confirm) {
+    constructor(productApi, translate, devConstants, logger, confirm,$timeout) {
         this.productApi = productApi;
         this.logger = logger;
         this.gridOption = {
@@ -28,13 +28,13 @@ export default class ProductController {
                     icon: 'fa fa-trash text-danger',
                     action: (current) => {
                         confirm(
-                            translate('Remove Subsidiary ledger account'),
+                            translate('Remove Product'),
                             translate('Are you sure ?'))
                             .then(() => {
                                 productApi.remove(current.id)
                                     .then(() => {
                                         logger.success();
-                                        $scope.gridOptionSubsidiaryLedgerAccount.refresh();
+                                        this.gridOption.refresh();
                                     })
                                     .catch((errors) => {
                                         $timeout(() => logger.error(errors.join('<br/>')), 100);

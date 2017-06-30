@@ -3,10 +3,11 @@
 const Base = require('./base');
 
 class DimensionCategory extends Base{
-    constructor(title){
+    constructor(model){
         super();
 
-        this.title = title;
+        this.title = model.title;
+        this.id = model.id;
     }
 }
 

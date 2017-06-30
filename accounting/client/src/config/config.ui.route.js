@@ -424,6 +424,36 @@ export default function ($stateProvider, $urlRouterProvider, $locationProvider) 
                 });
             }
         })
+        .state('transferMoney', {
+            url: '/transfer-money',
+            controller: 'transferMoneyController',
+            controllerAs: 'model',
+            templateUrl: 'partials/financialOperations/transferMoney.html'
+        })
+        .state('receivableCheques', {
+            url: '/receivable-cheques',
+            controller: 'receivableChequesController',
+            controllerAs: 'model',
+            templateUrl: 'partials/receivableCheque/receivableCheques.html'
+        })
+        .state('payableCheques', {
+            url: '/payable-cheques',
+            controller: 'payableChequesController',
+            controllerAs: 'model',
+            templateUrl: 'partials/payableCheque/payableCheques.html'
+        })
+        .state('createIncome', {
+            url: '/income/create',
+            controller: 'createIncomeController',
+            controllerAs: 'model',
+            templateUrl: 'partials/financialOperations/createIncome.html'
+        })
+        .state('createExpense', {
+            url: '/expense/create',
+            controller: 'createExpenseController',
+            controllerAs: 'model',
+            templateUrl: 'partials/financialOperations/createExpense.html'
+        })
         .state('not-found', {
             url: '/not-found',
             templateUrl: 'partials/views/notFound.html'

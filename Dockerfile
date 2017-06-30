@@ -10,6 +10,12 @@ COPY package.json /usr/src/app/
 RUN npm install -g bower gulp
 RUN npm install
 
+RUN \
+  apt-get -y update && \
+  apt-get -y install postgresql-client-9.4 && \
+  apt-get clean && \
+  rm -rf /var/lib/apt/lists/*
+
 # Bundle app source
 COPY . /usr/src/app
 RUN chmod -R ug+rwx /usr/src/app

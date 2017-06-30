@@ -3,6 +3,7 @@
 <html ng-cloak>
 <head>
     <meta name="viewport" content="width=device-width"/>
+    <meta name="token" content="<%- token %>"/>
     <meta http-equiv="Content-Type" content="text/html" charset="utf-8"/>
 
     <title ng-bind="branch.name">STORM</title>
@@ -48,9 +49,7 @@
     localStorage.setItem('translate', '<%- JSON.stringify(clientTranslation) %>');
     localStorage.setItem('currentUser', '<%- JSON.stringify(currentUser) %>');
     localStorage.setItem('reports', '<%- JSON.stringify(reports) %>');
-    localStorage.setItem('env', '<%- env %>')
-    localStorage.setItem('token', '<%- token %>')
-
+    localStorage.setItem('env', '<%- env %>');
 </script>
 
 <% if (env != 'development') {%>

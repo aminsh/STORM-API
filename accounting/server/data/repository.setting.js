@@ -20,4 +20,10 @@ module.exports = class SettingRepository extends BaseRepository {
         return this.knex('settings').where('branchId', this.branchId).update(entity);
     }
 
+    get() {
+        return this.knex.table('settings')
+            .where('branchId', this.branchId)
+            .first();
+    }
+
 };

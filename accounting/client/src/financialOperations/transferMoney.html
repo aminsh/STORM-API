@@ -1,0 +1,129 @@
+<dev-tag-content dev-attr-title="{{'Transfer money'| translate}}" class="loginColumns">
+    <form name="form" novalidate>
+        <div class="row">
+            <div class="form-group col-md-4">
+                <label class="label-control">{{'Date' | translate}}</label>
+                <dev-tag-datepicker
+                        name="date"
+                        ng-model="model.transferMoney.date"></dev-tag-datepicker>
+            </div>
+
+            <div class="col-md-4"></div>
+
+            <div class="form-group col-md-4">
+                <label class="label-control">{{'Amount' | translate}}</label>
+                <dev-tag-numeric
+                        name="amount"
+                        ng-model="model.transferMoney.amount"
+                        required
+                        not-zero></dev-tag-numeric>
+
+                <div ng-messages="form.amount.$error" ng-if="form.amount.$dirty">
+                    <label ng-message="required" class="error">{{'This field is required'|translate}}</label>
+                    <label ng-message="notZero"
+                           class="error">{{'This field should have a value not equal to zero'|translate}}
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group col-md-12">
+                <label class="label-control">{{'Description' | translate}}</label>
+                <dev-tag-text-box
+                        name="description"
+                        ng-model="model.transferMoney.description"></dev-tag-text-box>
+            </div>
+        </div>
+
+        <div class="row" style="margin-top: 20px">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <span ng-repeat="item in model.cashTypes" style="margin-left: 10px">
+                       <dev-tag-radio
+                               ng-class="{'checked': item.key == model.transferMoney.source.type}"
+
+                               k-value="{{item.key}}"
+                               ng-model="model.transferMoney.source.type"></dev-tag-radio>
+                               {{item.display}}
+                    </span>
+                </div>
+
+                <div class="form-group">
+                    <dev-tag-combo-box
+                            ng-if="model.transferMoney.source.type == 'fund'"
+                            k-placeholder="{{'Select ...'|translate}}"
+                            k-data-value-field="id"
+                            k-data-text-field="title"
+                            name="sourceAccountId"
+                            url="{{model.urls.getAllFunds}}"
+                            ng-model="model.transferMoney.source.accountId"
+                            required></dev-tag-combo-box>
+
+                    <dev-tag-combo-box
+                            ng-if="model.transferMoney.source.type == 'bank'"
+                            k-placeholder="{{'Select ...'|translate}}"
+                            k-data-value-field="id"
+                            k-data-text-field="title"
+                            name="sourceAccountId"
+                            url="{{model.urls.getAllBanks}}"
+                            ng-model="model.transferMoney.source.accountId"
+                            required></dev-tag-combo-box>
+
+                    <div ng-messages="form.sourceAccountId.$error" ng-if="form.sourceAccountId.$dirty">
+                        <label ng-message="required" class="error">{{'This field is required'|translate}}</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="form-group">
+                    <span ng-repeat="item in model.cashTypes" style="margin-left: 10px">
+                       <dev-tag-radio
+                               ng-class="{'checked': item.key == model.transferMoney.target.type}"
+
+                               k-value="{{item.key}}"
+                               ng-model="model.transferMoney.target.type"></dev-tag-radio>
+                               {{item.display}}
+                    </span>
+                </div>
+
+                <div class="form-group">
+                    <dev-tag-combo-box
+                            ng-if="model.transferMoney.target.type == 'fund'"
+                            k-placeholder="{{'Select ...'|translate}}"
+                            k-data-value-field="id"
+                            k-data-text-field="title"
+                            url="{{model.urls.getAllFunds}}"
+                            name="targetAccountId"
+                            ng-model="model.transferMoney.target.accountId"
+                            required></dev-tag-combo-box>
+
+                    <dev-tag-combo-box
+                            ng-if="model.transferMoney.target.type == 'bank'"
+                            k-placeholder="{{'Select ...'|translate}}"
+                            k-data-value-field="id"
+                            k-data-text-field="title"
+                            url="{{model.urls.getAllBanks}}"
+                            name="targetAccountId"
+                            ng-model="model.transferMoney.target.accountId"
+                            required></dev-tag-combo-box>
+
+                    <div ng-messages="form.targetAccountId.$error" ng-if="form.targetAccountId.$dirty">
+                        <label ng-message="required" class="error">{{'This field is required'|translate}}</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <dev-tag-content-footer>
+            <dev-tag-button
+                    ng-click="model.save(form)"
+                    icon="glyphicon glyphicon-floppy-disk"
+                    ng-disabled="model.isSaving"
+                    is-waiting="model.isSaving"
+                    style-type="primary"
+                    title="{{'Save' | translate}}"></dev-tag-button>
+        </dev-tag-content-footer>
+    </form>
+</dev-tag-content>

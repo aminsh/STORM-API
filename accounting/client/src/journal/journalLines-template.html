@@ -22,7 +22,7 @@
 
             <td style="text-align: center">{{item.row}}</td>
             <td>
-                <dev-tag-ui-select-combo-box
+                <dev-tag-combo-box
                         ng-if="item.hasDetailAccount"
                         ng-keyup="model.keyUpGridRow($event, item, 'detailAccountId')"
                         focus-on="detailAccount-focus-{{item.id}}"
@@ -30,10 +30,10 @@
                         k-placeholder="{{'Select ...'|translate}}"
                         k-data-value-field="id"
                         k-data-text-field="display"
-                        k-data-source="model.detailAccount.data"
-                        on-changed="model.detailAccount.onChanged($item, item)"
+                        url="{{model.urls.getAllDetailAccounts}}"
+                        k-on-changed="model.detailAccount.onChanged($item, item)"
                         ng-model="item.detailAccountId"
-                        required></dev-tag-ui-select-combo-box>
+                        required></dev-tag-combo-box>
                 <div ng-messages="form['form-'+$index].detailAccountId.$error"
                      ng-if="form['form-'+$index].detailAccountId.$dirty">
                     <label ng-message="required"
@@ -42,18 +42,19 @@
             </td>
             <td>
 
-                <dev-tag-ui-select-combo-box
+                <dev-tag-combo-box
                         ng-keyup="model.keyUpGridRow($event, item, 'subsidiaryLedgerAccountId')"
                         name="subsidiaryLedgerAccountId"
                         focus-on="subsidiaryLedgerAccount-focus-{{item.id}}"
                         k-placeholder="{{'Select ...'|translate}}"
                         k-data-value-field="id"
                         k-data-text-field="account"
-                        k-data-source="model.subsidiaryLedgerAccount.data"
+                        url="{{model.urls.getAllAccounts}}"
                         group-by="generalLedgerAccountDisplay"
-                        on-changed="model.subsidiaryLedgerAccount.onChanged($item, item)"
+                        k-on-changed="model.subsidiaryLedgerAccount.onChanged($item, item)"
+                        k-on-bound="model.subsidiaryLedgerAccount.onChanged($item, item)"
                         ng-model="item.subsidiaryLedgerAccountId"
-                        required></dev-tag-ui-select-combo-box>
+                        required></dev-tag-combo-box>
 
                 <div ng-messages="form['form-'+$index].subsidiaryLedgerAccountId.$error"
                      ng-if="form['form-'+$index].subsidiaryLedgerAccountId.$dirty">

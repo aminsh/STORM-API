@@ -37,19 +37,17 @@ app.use((req, res, next) => {
             maxId = maxId || 0;
 
             res.cookie('current-period', maxId);
+            currentPeriod = maxId;
         }
 
-        if (!req.cookies['current-mode'])
-            res.cookie('current-mode', 'create');
+        req.fiscalPeriodId = currentPeriod;
+
 
         next();
     }));
 });
 
 app.use('/account-review', require('../accounting/server/routes/api.accountReview'));
-
-app.use('/cheques', require('../accounting/server/routes/api.cheque'));
-app.use('/cheque-categories', require('../accounting/server/routes/api.chequeCategory'));
 
 app.use('/detail-accounts', require('../accounting/server/routes/api.detailAccount'));
 app.use('/banks', require('../accounting/server/routes/api.bank'));
@@ -69,5 +67,10 @@ app.use('/reports', require('../accounting/server/routes/api.report'));
 app.use('/sales', require('../accounting/server/routes/api.sale'));
 app.use('/purchases', require('../accounting/server/routes/api.purchase'));
 app.use('/products', require('../accounting/server/routes/api.product'));
+app.use('/product-categories', require('../accounting/server/routes/api.productCategory'));
 app.use('/settings', require('../accounting/server/routes/api.setting'));
+app.use('/transfer-money', require('../accounting/server/routes/api.moneyTransfer'));
+app.use('/receive', require('../accounting/server/routes/api.receive'));
+app.use('/pay', require('../accounting/server/routes/api.pay'));
+app.use('/bank-and-fund', require('../accounting/server/routes/api.bankAndFund'));
 

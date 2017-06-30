@@ -4,6 +4,7 @@ import accModule from "../acc.module";
 import ProductsController from "./products.controller";
 import ProductEntry from "./product.entry";
 import ProductApi from "./productApi";
+import ProductCategoryApi from './productCategoryApi';
 
 function productEntryService(modalBase) {
     return modalBase({
@@ -17,6 +18,7 @@ accModule
     .controller('productsController', ProductsController)
     .controller('productEntryController', ProductEntry)
     .factory('productCreateService', productEntryService)
-    .service('productApi', ProductApi);
+    .service('productApi', ProductApi)
+    .service('productCategoryApi', ProductCategoryApi);
 
 

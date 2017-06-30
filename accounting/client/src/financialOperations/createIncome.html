@@ -1,0 +1,112 @@
+<dev-tag-content dev-attr-title="{{'Create income'| translate}}" class="loginColumns">
+    <form name="form" novalidate>
+        <div class="row">
+
+            <div class="form-group col-md-4">
+                <label class="label-control">{{'Date' | translate}}</label>
+                <dev-tag-datepicker
+                        name="date"
+                        ng-model="model.income.date"></dev-tag-datepicker>
+            </div>
+
+        </div>
+
+        <div class="row">
+            <div class="form-group col-md-12">
+                <label class="label-control">{{'Description' | translate}}</label>
+                <dev-tag-text-box
+                        name="description"
+                        ng-model="model.income.description"></dev-tag-text-box>
+            </div>
+        </div>
+
+        <div class="row" style="margin-top: 20px">
+            <div class="col-md-6">
+
+                <div class="form-group">
+                    <label class="label-control">{{'Income type' | translate}}</label>
+                    <dev-tag-combo-box
+                            k-placeholder="{{'Select ...'|translate}}"
+                            k-data-value-field="id"
+                            k-data-text-field="title"
+                            name="incomeSubLedgerId"
+                            url="{{model.urls.getAllIcomes}}"
+                            ng-model="model.income.incomeSubLedgerId"
+                            required></dev-tag-combo-box>
+
+                    <div ng-messages="form.incomeSubLedgerId.$error" ng-if="form.incomeSubLedgerId.$dirty">
+                        <label ng-message="required" class="error">{{'This field is required'|translate}}</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+
+                <div class="form-group">
+                    <label class="label-control">{{'Person' | translate}}</label>
+
+                    <dev-tag-combo-box
+                            k-placeholder="{{'Select ...'|translate}}"
+                            k-data-value-field="id"
+                            k-data-text-field="title"
+                            url="{{model.urls.getAllPeople}}"
+                            name="targetAccountId"
+                            ng-model="model.income.personId"
+                            ></dev-tag-combo-box>
+                </div>
+            </div>
+        </div>
+
+        <div class="row ">
+            <div class="col-md-12">
+                <ul class="list-group clear-list m-t">
+                    <li class="list-group-item"
+                        ng-repeat="item in model.payments">
+                        <div class="row">
+                            <div class="col-md-5">
+                                {{item.amount|number}} ریال
+                            </div>
+
+                            <div class="col-md-6" ng-if="item.paymentType == 'receipt'">
+                                {{item.bankDisplay}}
+                            </div>
+                            <div class="col-md-6" ng-if="item.paymentType == 'cash'">
+                                {{item.fundDisplay}}
+                            </div>
+                            <div class="col-md-6" ng-if="item.paymentType == 'cheque'">
+                                چک شماره
+                                {{item.number}}
+
+                                سررسید
+                                {{item.date}}
+                            </div>
+
+                            <div class="col-md-1" style="font-size: 20px;margin-top: 7px;text-align: left;">
+                                <button type="button" ng-click="model.removePayment(item)" class="close" title="حذف">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <dev-tag-content-footer>
+            <dev-tag-button
+                    ng-click="model.save(form)"
+                    icon="glyphicon glyphicon-floppy-disk"
+                    ng-disabled="model.isSaving"
+                    is-waiting="model.isSaving"
+                    style-type="primary"
+                    title="{{'Save' | translate}}"></dev-tag-button>
+
+            <dev-tag-button
+                    ng-click="model.createPayment()"
+                    icon="fa fa-plus"
+                    style-type="white"
+                    title="{{'Payment' | translate}}"></dev-tag-button>
+        </dev-tag-content-footer>
+    </form>
+</dev-tag-content>

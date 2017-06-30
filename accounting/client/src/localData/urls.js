@@ -1,4 +1,4 @@
-let rootUrl = ()=> '/api/v1';
+let rootUrl = ()=> '/acc/api';
 
 let generalLedgerAccount = {
     all: ()=> '{0}/general-ledger-accounts'.format(rootUrl())
@@ -8,7 +8,9 @@ let subsidiaryLedgerAccount = {
     all: ()=> '{0}/subsidiary-ledger-accounts'.format(rootUrl()),
     allByGeneralLedgerAccount: (generalLedgerAccountId)=>
         '{0}/subsidiary-ledger-accounts/general-ledger-account/{1}'
-            .format(rootUrl(), generalLedgerAccountId)
+            .format(rootUrl(), generalLedgerAccountId),
+    allIncomes: ()=> `${rootUrl()}/subsidiary-ledger-accounts/incomes`,
+    allExpenses: ()=> `${rootUrl()}/subsidiary-ledger-accounts/expenses`
 };
 
 let detailAccount = {
@@ -88,6 +90,18 @@ let products = {
     getAll: ()=> `${rootUrl()}/products`
 };
 
+let productCategory = {
+    getAll: ()=> `${rootUrl()}/product-categories`
+};
+
+let receivableCheques = {
+    getAll: ()=> `${rootUrl()}/receive/cheques`
+};
+
+let payableCheques = {
+    getAll: ()=> `${rootUrl()}/pay/cheques`
+};
+
 let apiUrls = {
     rootUrl: rootUrl(),
     generalLedgerAccount: generalLedgerAccount,
@@ -106,8 +120,12 @@ let apiUrls = {
     sales:sales,
     purchase:purchase,
     products,
+    productCategory,
+    fund,
     people,
-    fund
+    fund,
+    receivableCheques,
+    payableCheques
 };
 
 export default apiUrls;

@@ -9,12 +9,18 @@ export default class peopleListController {
                 $scope) {
 
         this.$scope = $scope;
-        this.navigate = navigate,
-            this.$timeout = $timeout;
+        this.navigate = navigate;
+        this.$timeout = $timeout;
         this.logger = logger;
         this.translate = translate;
         this.peopleApi = peopleApi;
         this.errors = [];
+
+        $scope.$on('on-people-committed',(e,data)=>{
+            console.log('hello baby')
+            $scope.gridOption.dataSource.read();
+        });
+
         $scope.gridOption = {
             dataSource: new kendo.data.DataSource({
                 serverFiltering: true,
@@ -31,14 +37,8 @@ export default class peopleListController {
                     total: 'total'
                 }
             }),
-            toolbar: ["excel"],
-            excel: {
-                fileName: "export.xls",
-                filterable: true
-            },
             reorderable: true,
             resizable: true,
-            groupable: true,
             sortable: true,
             scrollable: {
                 virtual: true
@@ -95,7 +95,7 @@ export default class peopleListController {
                                     peopleApi.remove(people.id)
                                         .then(function () {
                                             logger.success();
-                                            $scope.gridOption.refresh();
+                                            $scope.gridOption.dataSource.read();
                                         })
                                         .catch((errors) => $scope.errors = errors)
                                         .finally(() => $scope.isSaving = false);

@@ -57,6 +57,7 @@ import './apis/journalLineApi';
 import './apis/chequeCategoryApi';
 import './apis/bankApi';
 import './apis/chequeApi';
+import './bankAndFund/bankAndFundApi';
 import './apis/journalTemplateApi';
 import FiscalPeriodApi from './apis/fiscalPeriodApi';
 import ReportApi from './apis/reportApi';
@@ -150,6 +151,9 @@ import './fund';
 import './bank';
 import './fiscalPeriod';
 import './product';
+import './financialOperations';
+import './receivableCheque';
+import './payableCheque';
 
 accModule
     .config(uiRouteConfig)

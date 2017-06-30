@@ -6,7 +6,7 @@ function alertTag() {
         success: {icon: 'ok-sign'},
         danger: {icon: 'remove-sign'},
         info: {icon: 'info=sign'}
-    }
+    };
     return {
         restrict: 'E',
         template: '<div class="alert alert-{{type}}" role="alert" style="margin-top: 10px"' +

@@ -1,9 +1,8 @@
-<div class="row">
+<div class="row" ng-if="model.isPayment">
     <table class="table table-bordered table-hover">
         <thead>
         <tr class="active" style="font-size: 9pt; font-weight: bold;">
             <td>#</td>
-            <td>کالا / خدمات</td>
             <td>شرح</td>
             <td>
             <span data-toggle="popover" data-placement="top" data-trigger="hover"
@@ -18,17 +17,13 @@
         </thead>
         <tbody>
 
-        <tr ng-if="model.isPayment" name="form-{{$index}}"
+        <tr  name="form-{{$index}}"
             ng-repeat="item in model.invoice.invoiceLines"
             ng-class-odd="'grid-row-striped'">
 
             <td style="width: 30px; padding: 0px; vertical-align: middle; text-align: center;">{{item.row}}</td>
 
-            <td style="width: 20%; padding: 0px;" class="invoice-td">
-                <span class="form-control input-grid-factor input-sm">{{item.productName}}</span>
-            </td>
-
-            <td style="width: 30%; padding: 0px;">
+            <td style="width: 50%; padding: 0px;"  class="invoice-td">
                 <span class="form-control input-grid-factor input-sm"  style="height: 30px">{{item.description}}</span>
             </td>
 
@@ -57,10 +52,73 @@
             </td>
 
         </tr>
+        </tbody>
+    </table>
+
+    <div class="row" style="padding-left: 15px;">
+        <div class="col-md-8">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="btn-group">
+                        <dev-tag-button
+                                ng-click="model.createInvoiceLine()" ng-if="!model.isPayment"
+                                icon="glyphicon glyphicon-plus"
+                                style-type="primary"
+                                title="{{'New Journal line' | translate}}"></dev-tag-button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="col-md-4">
+            <div class="row text-left">
+                <div class="col-xs-5 title1">جمع <span style="font-weight: normal">(ریال)</span></div>
+                <div class="col-xs-7 title1">{{model.invoice.invoiceLines | totalPrice | number}}</div>
+            </div>
+            <div class="row text-left">
+                <div class="col-xs-5 title1">جمع تخفیف <span style="font-weight: normal">(ریال)</span></div>
+                <div class="col-xs-7 title1">
+                    {{model.invoice.invoiceLines | totalSum: ('discount') | number}}
+                </div>
+            </div>
+            <div class="row text-left">
+                <div class="col-xs-5 title1">جمع مالیات <span style="font-weight: normal">(ریال)</span></div>
+                <div class="col-xs-7 title1">
+                    {{model.invoice.invoiceLines | totalSum: ('vat') | number}}
+                </div>
+            </div>
+            <div class="row" style="border-top: 1px solid rgb(69, 69, 69); margin-top: 1px; margin-bottom: 1px;"></div>
+            <div class="row text-left" style="border-bottom: 1px solid rgb(69, 69, 69)">
+                <div class="col-xs-5 h5 txt-bold">مبلغ کل <span style="font-weight: normal">(ریال)</span></div>
+                <div class="col-xs-7 h5 txt-bold " ng-model="model.invoice.totalPrice"> {{model.invoice.invoiceLines | sumTotalPrice| number}}</div>
+            </div>
+            <div class="row" style="border-top: 1px solid rgb(69, 69, 69); margin-top: 1px; margin-bottom: 10px;"></div>
+        </div>
+    </div>
+</div>
 
 
 
-        <tr ng-if="!model.isPayment" name="form-{{$index}}"
+<div class="row"  ng-if="!model.isPayment">
+    <table class="table table-bordered table-hover">
+        <thead>
+        <tr class="active" style="font-size: 9pt; font-weight: bold;">
+            <td>#</td>
+            <td>کالا / خدمات</td>
+            <td>شرح</td>
+            <td>
+            <span data-toggle="popover" data-placement="top" data-trigger="hover"
+                  data-original-title="" title="">مقدار</span>
+            </td>
+            <td>مبلغ واحد <span style="font-weight: normal">(ریال)</span></td>
+            <td>تخفیف</td>
+            <td>مالیات (9 درصد)</td>
+            <td>مبلغ کل <span style="font-weight: normal">(ریال)</span></td>
+            <td></td>
+        </tr>
+        </thead>
+        <tbody>
+        <tr  name="form-{{$index}}"
             id="{{item.id}}"
             ng-form
             ng-repeat="item in model.invoice.invoiceLines"
@@ -190,7 +248,6 @@
         </tr>
         </tbody>
     </table>
-
     <div class="row" style="padding-left: 15px;">
         <div class="col-md-8">
             <div class="row">

@@ -9,7 +9,15 @@ const async = require('asyncawait/async'),
     ProductRepository = require('../data/repository.product'),
     InvoiceQuery = require('../queries/query.invoice'),
     EventEmitter = require('../services/shared').service.EventEmitter,
-    Payment = require('../domain/payment');
+    PaymentRepository = require('../data/repository.payment');
+
+router.route('/summary')
+    .get(async((req, res) => {
+        let invoiceQuery = new InvoiceQuery(req.branchId),
+            result = await(invoiceQuery.getSummary(req.fiscalPeriodId, 'purchase'));
+
+        res.json(result);
+    }));
 
 router.route('/')
     .get(async((req, res) => {
@@ -31,13 +39,14 @@ router.route('/')
 
             status = cmd.status == 'confirm' ? 'waitForPayment' : 'draft',
 
-            entity = createInvoice(status, cmd,invoiceRepository),
+            entity = createInvoice(status, cmd, invoiceRepository),
 
             result = await(invoiceRepository.create(entity));
 
         res.json({isValid: true, returnValue: {id: result.id}});
 
-        EventEmitter.emit('on-purchase-created', result, current);
+        if (status == 'waitForPayment')
+            EventEmitter.emit('on-purchase-created', result, current);
     }));
 
 router.route('/:id/confirm')
@@ -75,7 +84,7 @@ router.route('/:id')
     }))
     .put(async((req, res) => {
         let invoiceRepository = new InvoiceRepository(req.branchId),
-            id= req.params.id,
+            id = req.params.id,
             cmd = req.body,
             status = cmd.status == 'confirm' ? 'waitForPayment' : 'draft',
 
@@ -106,14 +115,10 @@ router.route('/:id')
 
         await(invoiceRepository.updateBatch(id, entity));
 
-        if(status == 'waitForPayment')
-            EventEmitter.emit('on-sale-created', await(invoiceRepository.findById(id)), current);
-        await(invoiceRepository.updateBatch(id, entity));
-
-        if(status == 'waitForPayment')
-            EventEmitter.emit('on-purchase-created', await(invoiceRepository.findById(id)), current);
-
         res.json({isValid: true});
+
+        if (status == 'waitForPayment')
+            EventEmitter.emit('on-purchase-created', await(invoiceRepository.findById(id)), current);
 
     }))
     .delete(async((req, res) => {
@@ -124,7 +129,7 @@ router.route('/:id')
         res.json({isValid: true});
     }));
 
-function createInvoice(status, cmd,invoiceRepository) {
+function createInvoice(status, cmd, invoiceRepository) {
     let entity = {
         number: (await(invoiceRepository.purchaseMaxNumber()).max || 0) + 1,
         date: cmd.date,
@@ -150,11 +155,38 @@ function createInvoice(status, cmd,invoiceRepository) {
 
 router.route('/:id/pay')
     .post(async((req, res) => {
-        let payment = new Payment(req.cookies['branch-id'], req.cookies['current-period']);
+        let payments = req.body,
+            id = req.params.id,
 
-        await(payment.save(req.params.id, req.body));
+            paymentRepository = new PaymentRepository(req.branchId);
+
+        payments.forEach(e => {
+
+            let entity = {
+                number: e.number,
+                date: e.date,
+                invoiceId: id,
+                amount: e.amount,
+                paymentType: e.paymentType,
+                bankName: e.bankName,
+                bankBranch: e.bankBranch,
+                receiveOrPay: 'pay',
+                chequeStatus: e.paymentType == 'cheque' ? 'normal' : null
+            };
+
+            await(paymentRepository.create(entity));
+
+            e.id = entity.id;
+        });
 
         res.json({isValid: true});
+
+        EventEmitter.emit('on-pay-created',
+            payments,
+            id,
+            {branchId: req.branchId, fiscalPeriodId: req.fiscalPeriodId});
+
+        EventEmitter.emit('on-invoice-paid', req.params.id, req.branchId);
     }));
 
 router.route('/:id/lines').get(async((req, res) => {

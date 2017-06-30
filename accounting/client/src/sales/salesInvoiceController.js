@@ -42,19 +42,19 @@ export default class SalesInvoiceController {
             description: '',
             invoiceLines: [],
             detailAccountId: '',
+            sumPaidAmount:null,
+            sumRemainder:null,
+            sumTotalPrice:null
         };
 
-        this.isLoading = false;
-        this.isPayment = false;
-        this.isSaving=false;
+         this.isPayment = false;
 
-        this.id = this.$state.params.id;
+         this.id = this.$state.params.id;
 
         if (this.id != undefined) {
             this.editMode = true;
         } else {
 
-            this.isLoading = false;
             this.invoice = {
                 number: null,
                 date: localStorage.getItem('today'),
@@ -74,7 +74,6 @@ export default class SalesInvoiceController {
 
 
         if (this.editMode) {
-            this.isSaving=true;
             this.salesInvoiceApi.getById(this.id)
                 .then(result => {
                     this.invoice = result
@@ -106,6 +105,7 @@ export default class SalesInvoiceController {
     }
 
     onProductChanged(item, product) {
+        item.productId=product.id;
         item.description = product.title;
         item.unitPrice = product.salePrice;
     }
@@ -145,6 +145,7 @@ export default class SalesInvoiceController {
     }
 
     saveInvoice(form, status) {
+
         let logger = this.logger,
             formService = this.formService,
             errors = this.errors,
@@ -157,6 +158,7 @@ export default class SalesInvoiceController {
             invoice.status = 'confirm';
         }
 
+
         if (form.$invalid) {
             formService.setDirty(form);
             Object.keys(form).asEnumerable()
@@ -168,11 +170,13 @@ export default class SalesInvoiceController {
 
         errors.asEnumerable().removeAll();
 
+        this.isSaving = true;
+
         if (this.editMode == true) {
             return this.salesInvoiceApi.update(invoice.id, invoice)
                 .then(result => {
                     logger.success();
-                    this.isLoading = true;
+                    //this.isLoading = true;
                     this.salesInvoiceApi.getById(invoice.id).then(result => {
                         if (result.status == 'waitForPayment') {
                             this.isPayment = true;
@@ -180,42 +184,42 @@ export default class SalesInvoiceController {
                     })
                 })
                 .catch(err => errors = err)
-                .finally(() => this.isSaving = true);
+                .finally(() =>this.isSaving = false);
         } else {
 
             return this.salesInvoiceApi.create(invoice)
                 .then(result => {
                     logger.success();
                     invoice.id = result.id;
-                    this.isLoading = true;
-                    this.isSaving = true;
+                    //this.isLoading = true;
+                    //this.isSaving = true;
                     this.salesInvoiceApi.getById(invoice.id).then(result => {
-                        if (result.status == 'waitForPayment') {
-                            this.isPayment = true;
-                            invoice.totalPrice = invoice.invoiceLines.asEnumerable()
-                                .sum(item => (item.unitPrice * item.quantity) - item.discount + item.vat);
-                        }
-                        if(result.status=='draft'){
-                            this.$state.go('^.edit', {
-                                id: invoice.id
-                            });
-                        }
+                        this.$state.go('^.edit', {
+                            id: invoice.id
+                        })
                     })
                 })
                 .catch(err => errors = err)
-                .finally(() => this.isSaving = true);
+                .finally(() => this.isSaving = false);
         }
     }
 
     cashPaymentShow() {
-        this.createPaymentService.show({amount: this.invoice.totalPrice}).then(result => {
+
+        if(this.invoice.sumRemainder==null)
+            this.invoice.sumRemainder=this.invoice.sumTotalPrice;
+
+        this.createPaymentService.show({
+            amount: this.invoice.sumRemainder,
+            receiveOrPay: 'receive'
+        }).then(result => {
             return this.salesInvoiceApi.pay(this.invoice.id, result)
                 .then(result => {
                     this.logger.success();
-                    this.isLoading = true;
+                    //this.isLoading = true;
                 })
-                .catch(err => errors = err)
-                .finally(() => this.isSaving = true);
+                .catch(err => this.errors = err)
+                .finally();
         });
     }
 

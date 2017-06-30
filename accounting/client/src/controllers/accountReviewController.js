@@ -1,15 +1,28 @@
-import accModule from '../acc.module';
+import accModule from "../acc.module";
 
 function accountReviewController($scope,
                                  navigate,
-                                 detailAccountApi,
-                                 dimensionCategoryApi,
-                                 dimensionApi,
                                  formService,
                                  translate,
-                                 $q) {
+                                 devConstants) {
 
-    $scope.parameters = [];
+    $scope.parameters = localStorage.getItem('account-review-state')
+        ? JSON.parse(localStorage.getItem('account-review-state'))
+        : {
+            minDate: '',
+            maxDate: '',
+            minNumber: null,
+            maxNumber: null,
+            notShowZeroRemainder: false,
+            isNotPeriodIncluded: false,
+            detailAccount: null,
+            dimension1: null,
+            dimension2: null,
+            dimension3: null,
+            filterByDetailAccountOrDimension: false,
+            detailAccountOrDimension: 'detailAccount'
+        };
+
     $scope.reportTypes = [
         {key: 'tiny', display: translate('Tiny turnover journals')},
         {key: 'generalLedgerAccount', display: translate('Total turnover general ledger account')},
@@ -20,6 +33,12 @@ function accountReviewController($scope,
         {key: 'dimension3', display: `${translate('Total turnover dimension')} ${translate('Dimension3')}`}
     ];
 
+    $scope.urls = {
+        getAllDetailAccounts: devConstants.urls.detailAccount.all(),
+        getAllDimension2s: devConstants.urls.dimension.allByCategory('1'),
+        getAllDimension3s: devConstants.urls.dimension.allByCategory('2')
+    };
+
     $scope.reportTypeFilter = item =>
     !$scope.parameters.filterByDetailAccountOrDimension ||
     ($scope.parameters.filterByDetailAccountOrDimension && item.key != $scope.parameters.detailAccountOrDimension);
@@ -27,18 +46,8 @@ function accountReviewController($scope,
     $scope.detailAccountAndDimensions = [
         {key: 'detailAccount', display: translate('Detail account')},
         {key: 'dimension1', display: translate('Dimension1')},
-        {key: 'dimension2', display: translate('Dimension2')},
-        {key: 'dimension3', display: translate('Dimension3')}
+        {key: 'dimension2', display: translate('Dimension2')}
     ];
-
-    $scope.detailAccountDataSource = false;
-    debugger;
-    $scope.dimensionCategories = dimensionCategoryApi.getAllLookupSync();
-    $scope.dimension1DataSource = [];
-    $scope.dimension2DataSource = [];
-    $scope.dimension3DataSource = [];
-
-    init();
 
     function saveState() {
         let state = JSON.stringify($scope.parameters);
@@ -81,7 +90,7 @@ function accountReviewController($scope,
     }
 
     $scope.executeTurnover = (form, reportName) => {
-      debugger;
+        debugger;
         if (form.$invalid)
             return formService.setDirty(form);
 
@@ -105,7 +114,7 @@ function accountReviewController($scope,
         saveState();
 
         let params = getParameters();
-        params.detailAccountId = $scope.parameters.detailAccount;
+        params.detailAccountId = $scope.parameters.detailAccount.id;
         params.detailAccountDisplay = $scope.parameters.detailAccount.display;
 
         navigate('account-review-turnover', {name: reportName}, params);
@@ -123,43 +132,6 @@ function accountReviewController($scope,
         //navigate('accountReviewTurnover', {name: reportName}, params);
     };
 
-    function init() {
-
-        let dimensionPromise = $scope.dimensionCategories
-            .asEnumerable()
-            .select(c => dimensionApi.getByCategory(c.id))
-            .toArray();
-
-        $q.all([
-            detailAccountApi.getAll(),
-            dimensionApi,
-            dimensionPromise[0],
-            dimensionPromise[1],
-            dimensionPromise[2]])
-            .then(result => {
-                $scope.detailAccountDataSource = result[0].data;
-                $scope.dimension1DataSource = result[1].data;
-                $scope.dimension2DataSource = result[2].data;
-                $scope.dimension3DataSource = result[3].data;
-
-                $scope.parameters = localStorage.getItem('account-review-state')
-                    ? JSON.parse(localStorage.getItem('account-review-state'))
-                    : {
-                        minDate: '',
-                        maxDate: '',
-                        minNumber: null,
-                        maxNumber: null,
-                        notShowZeroRemainder: false,
-                        isNotPeriodIncluded: false,
-                        detailAccount: null,
-                        dimension1: null,
-                        dimension2: null,
-                        dimension3: null,
-                        filterByDetailAccountOrDimension: false,
-                        detailAccountOrDimension: 'detailAccount'
-                    };
-            });
-    }
 }
 
 accModule.controller('accountReviewController', accountReviewController);
