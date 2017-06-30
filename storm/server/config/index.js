@@ -96,6 +96,7 @@ const path = require('path'),
             },
             port: process.env.PORT,
             version: {
+                app: '1.0.1',
                 vendor: '1.0.0',
                 acc: '1.0.0',
                 css: '1.0.0',
