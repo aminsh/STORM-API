@@ -12,8 +12,10 @@ function productAssembler(entity) {
         reorderPoint: entity.reorderPoint,
         salePrice: entity.salePrice,
         categoryId: entity.categoryId,
-        inventorySelect: entity.inventorySelect,
-        totalQuantity: entity.totalQuantity
+        sumTotalSalePrice: entity.sumTotalSalePrice,
+        sumTotalPurchasePrice: entity.sumTotalPurchasePrice,
+        sumQuantity: entity.sumQuantity,
+        costOfGood: entity.costOfGood
     };
 
     return viewModel;
