@@ -1,0 +1,72 @@
+<div class="modal-header">
+    <button type="button" ng-click="model.close()" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+    <h3 class="modal-title">{{'More Info'| translate}}</h3>
+</div>
+<div class="modal-body k-rtl">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="contact-box center-version">
+
+                <h3 class="m-b-xs"><strong>{{model.people.title}}</strong></h3>
+
+                <div class="font-bold">{{model.people.phone}}</div>
+                <address class="m-t-md">
+                    <strong>{{model.people.address}} </strong>
+                </address>
+                <div class="font-bold">{{model.people.economicCode!=null && model.people.economicCode ||
+                    model.people.nationalCode}}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-content">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <ul class="list-group clear-list m-t">
+                                <li class="list-group-item fist-item">
+                                    <h4 class="pull-right">
+                                        350000
+                                    </h4>
+                                    <span class="font-bold">{{'Total number of purchases'| translate}}</span>
+                                </li>
+                                <li class="list-group-item">
+                                    <h4 class="pull-right">
+                                        1850025025
+                                    </h4>
+                                    <span class="font-bold">{{'Total purchase amount'| translate}}</span>
+                                </li>
+                                <li class="list-group-item">
+                                    <h4 class="pull-right">
+                                        2525855
+                                    </h4>
+                                    <span class="font-bold">{{'Last purchase date'| translate}}</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="col-sm-6">
+                            <ul class="list-group clear-list m-t">
+                                <li class="list-group-item fist-item">
+                                    <h4 class="pull-right text-success">
+                                        252582236
+                                    </h4>
+                                    <span class="font-bold">{{'Total paid amount'| translate}}</span>
+                                </li>
+                                <li class="list-group-item">
+                                    <h4 class="pull-right text-danger">
+                                        252582236
+                                    </h4>
+                                    <span class="font-bold">{{'Total amount of debt'| translate}}</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
