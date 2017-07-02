@@ -7,6 +7,13 @@ const async = require('asyncawait/async'),
     ProductRepository = require('../data/repository.product'),
     InvoiceRepository = require('../data/repository.invoice');
 
+router.route('/:id/summary/sale/by-month').get(async((req, res) => {
+    let productQuery = new ProductQuery(req.branchId),
+        result = await(productQuery.getTotalPriceAndCountByMonth(req.params.id, req.fiscalPeriodId));
+
+    res.json(result);
+}));
+
 router.route('/')
     .get(async((req, res) => {
         let productQuery = new ProductQuery(req.branchId),
