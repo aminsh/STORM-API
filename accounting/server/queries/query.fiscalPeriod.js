@@ -39,11 +39,10 @@ module.exports = class FiscalPeriodQuery extends BaseQuery {
     }
 
     getMaxId() {
-        let result = await(
-            this.knex.table('fiscalPeriods')
+        let result = await(this.knex.select('id').from('fiscalPeriods')
                 .where('branchId', this.branchId)
-                .max('id')
-                .first());
-        return result.max;
+                .where('isClosed', false).first());
+
+        return result.id;
     }
 };
