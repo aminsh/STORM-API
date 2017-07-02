@@ -109,7 +109,8 @@ module.exports = class DetailAccountQuery extends BaseQuery {
                     'detailAccounts.title',
                     'journalLines.article',
                     'journalLines.debtor',
-                    'journalLines.creditor')
+                    'journalLines.creditor',
+                    'journals.date')
                     .from('detailAccounts')
                     .leftJoin('journalLines', 'detailAccounts.id', 'journalLines.detailAccountId')
                     .leftJoin('journals', 'journals.id', 'journalLines.journalId')
@@ -117,6 +118,7 @@ module.exports = class DetailAccountQuery extends BaseQuery {
                     .andWhere('detailAccounts.branchId', branchId)
                     .andWhere('journals.periodId', fiscalPeriodId)
                     .andWhere('detailAccounts.detailAccountType', type)
+                    .orderBy('journals.date', 'desc')
                     .as('base');
 
             }),
