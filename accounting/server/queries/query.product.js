@@ -38,12 +38,20 @@ module.exports = class ProductQuery extends BaseQuery {
                 and "invoices"."branchId" = '${branchId}'
                 and "invoiceLines"."productId" = "products".id 
                 and "invoiceType" = 'sale'`,
-            totalPurchasePrice = `select sum(("unitPrice" * "quantity") - discount + vat) from "invoices" 
+            totalSaleDiscount = `select sum("discount") from "invoices" 
                 left join "invoiceLines" on "invoices".id = "invoiceLines"."invoiceId"
                 where "invoices".date between '${fiscalPeriod.minDate}' and '${fiscalPeriod.maxDate}' 
                 and "invoices"."branchId" = '${branchId}'
                 and "invoiceLines"."productId" = "products".id 
                 and "invoiceType" = 'purchase'`,
+            countOfSale = `select count(*) from "invoices" 
+                left join "invoiceLines" on "invoices".id = "invoiceLines"."invoiceId"
+                where "invoices".date between '${fiscalPeriod.minDate}' and '${fiscalPeriod.maxDate}' 
+                and "invoices"."branchId" = '${branchId}'
+                and "invoiceLines"."productId" = "products".id 
+                and "invoiceType" = 'sale'
+                group by "invoices"."id" 
+                limit 1`,
             inventory = `select sum(case when "inventoryType" = 'input' then "quantity" else "quantity" * -1 end) as "sumQuantity" 
                 from "inventories" left join "inventoryLines" on "inventories".id = "inventoryLines"."inventoryId"
                 where "inventories"."fiscalPeriodId" = '${fiscalPeriod.id}'
@@ -59,7 +67,8 @@ module.exports = class ProductQuery extends BaseQuery {
             result = await(this.knex.select(
                 '*',
                 knex.raw(`coalesce((${totalSalePrice}),0) as "sumTotalSalePrice"`),
-                knex.raw(`coalesce((${totalPurchasePrice}),0) as "sumTotalPurchasePrice"`),
+                knex.raw(`coalesce((${totalSaleDiscount}),0) as "sumDiscount"`),
+                knex.raw(`coalesce((${countOfSale}),0) as "countOnSale"`),
                 knex.raw(`coalesce((${inventory}),0) as "sumQuantity"`),
                 knex.raw(`coalesce((${costOfGood}),0) as "costOfGood"`)
             )
