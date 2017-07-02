@@ -9,6 +9,7 @@ const async = require('asyncawait/async'),
     ProductRepository = require('../data/repository.product'),
     InvoiceQuery = require('../queries/query.invoice'),
     EventEmitter = require('../services/shared').service.EventEmitter,
+    PaymentQuery = require('../queries/query.payment'),
     PaymentRepository = require('../data/repository.payment');
 
 router.route('/summary')
@@ -21,7 +22,7 @@ router.route('/summary')
 
 router.route('/')
     .get(async((req, res) => {
-        let invoiceQuery = new InvoiceQuery(req.cookies['branch-id']),
+        let invoiceQuery = new InvoiceQuery(req.branchId),
             result = await(invoiceQuery.getAll(req.query, 'purchase'));
 
         res.json(result);
@@ -188,6 +189,14 @@ router.route('/:id/pay')
 
         EventEmitter.emit('on-invoice-paid', req.params.id, req.branchId);
     }));
+
+router.route('/:id/payments').get(async((req, res)=> {
+    let paymentQuery = new PaymentQuery(req.branchId),
+        result = await(paymentQuery.getPeymentsByInvoiceId(req.params.id));
+
+    res.json(result);
+}));
+
 
 router.route('/:id/lines').get(async((req, res) => {
     let invoiceQuery = new InvoiceQuery(req.cookies['branch-id']),

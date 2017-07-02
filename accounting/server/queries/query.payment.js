@@ -30,7 +30,7 @@ module.exports = class PaymentQuery extends BaseQuery {
                     .where('payments.branchId', branchId)
                     .andWhere('receiveOrPay', 'receive')
                     .andWhere('paymentType', 'cheque')
-                    .orderBy('payments.date','desc')
+                    .orderBy('payments.date', 'desc')
                     .as("base");
             }),
 
@@ -70,7 +70,7 @@ module.exports = class PaymentQuery extends BaseQuery {
                     .where('payments.branchId', branchId)
                     .andWhere('receiveOrPay', 'pay')
                     .andWhere('paymentType', 'cheque')
-                    .orderBy('payments.date','desc')
+                    .orderBy('payments.date', 'desc')
                     .as("base");
             }),
 
@@ -89,5 +89,38 @@ module.exports = class PaymentQuery extends BaseQuery {
             });
 
         return kendoQueryResolve(query, parameters, view);
+    }
+
+    getPeymentsByInvoiceId(invoiceId) {
+        let knex = this.knex;
+
+        return knex.select(
+            'payments.id',
+            'payments.amount',
+            'payments.date',
+            'payments.number',
+            'payments.paymentType',
+            'journalLines.detailAccountId',
+            knex.raw('"detailAccounts".title as "detailAccountDisplay"')
+        )
+            .from('payments')
+            .leftJoin('journalLines', 'journalLines.id', 'payments.journalLineId')
+            .leftJoin('detailAccounts', 'detailAccounts.id', 'journalLines.detailAccountId')
+            .where('payments.branchId', this.branchId)
+            .andWhere('payments.invoiceId', invoiceId)
+            .map(entity => ({
+                id: entity.id,
+                amount: entity.amount,
+                date: entity.date,
+                number: entity.number,
+                paymentType: entity.paymentType,
+                paymentTypeDisplay: entity.paymentType
+                    ? enums.paymentType().getDisplay(entity.paymentType)
+                    : '',
+                bankId: entity.paymentType == 'receipt' ? entity.detailAccountId : undefined,
+                bankDisplay: entity.paymentType == 'receipt' ? entity.detailAccountDisplay : undefined,
+                fundId: entity.paymentType == 'cash' ? entity.detailAccountId : undefined,
+                fundDisplay: entity.paymentType == 'cash' ? entity.detailAccountDisplay : undefined,
+            }));
     }
 };
