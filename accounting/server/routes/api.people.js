@@ -7,7 +7,14 @@ const async = require('asyncawait/async'),
     DetailAccountRepository = require('../data/repository.detailAccount'),
     DetailAccountQuery = require('../queries/query.detailAccount'),
     InvoiceRepository = require('../data/repository.invoice'),
-    JournalRepository = require('../data/repository.journal');
+    JournalRepository = require('../data/repository.journal'),
+    PersonQuery = require('../queries/query.person');
+
+router.route('/:id/summary/sale/by-month').get(async((req, res) => {
+    let personQuery = new PersonQuery(req.branchId),
+        result = await(personQuery.getTotalPriceAndCountByMonth(req.params.id, req.fiscalPeriodId));
+    res.json(result);
+}));
 
 router.route('/')
     .get(async((req, res) => {
