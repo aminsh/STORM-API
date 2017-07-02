@@ -31,7 +31,7 @@ app.use((req, res, next) => {
 
         let currentPeriod = req.cookies['current-period'];
 
-        if (currentPeriod == null || currentPeriod == 0 || isNaN(currentPeriod)) {
+        if (currentPeriod == null || currentPeriod == 0) {
             let fiscalPeriodQuery = new FiscalPeriodQuery(req.branchId),
                 maxId = await(fiscalPeriodQuery.getMaxId());
             maxId = maxId || 0;
