@@ -5,7 +5,7 @@ import ProductsController from "./products.controller";
 import ProductEntry from "./product.entry";
 import ProductApi from "./productApi";
 import ProductCategoryApi from './productCategoryApi';
-import ProductMoreInfoController from './ProductMoreInfoController';
+import ProductMoreInfoController from './productMoreInfoController';
 
 function productEntryService(modalBase) {
     return modalBase({
