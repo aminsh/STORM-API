@@ -19,6 +19,9 @@ function bankApi(apiPromise,devConstants) {
         },
         remove: function (id) {
             return apiPromise.delete(`${urlPrefix}/banks/${id}`);
+        },
+        smallTurnOver: function (id) {
+            return apiPromise.get(`${urlPrefix}/banks/${id}/small-turnover`);
         }
     };
 

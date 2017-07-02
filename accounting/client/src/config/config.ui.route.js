@@ -343,6 +343,18 @@ export default function ($stateProvider, $urlRouterProvider, $locationProvider) 
                 });
             }
         })
+        .state('people.info', {
+            url: '/:id/info',
+            onEnter: ($modelFactory, $stateParams) => {
+                $modelFactory.create({
+                    controller: 'peopleMoreInfoController',
+                    controllerAs: 'model',
+                    templateUrl: 'partials/people/peopleMoreInfo.html',
+                    size: 'lg',
+                    resolve: {data: () => $stateParams}
+                });
+            }
+        })
 
         .state('funds', {
             url: '/funds',
@@ -396,6 +408,19 @@ export default function ($stateProvider, $urlRouterProvider, $locationProvider) 
                 });
             }
         })
+        .state('bank.info', {
+            url: '/:id/info',
+            onEnter: ($modelFactory,$stateParams) => {
+                $modelFactory.create({
+                    controller: 'bankMoreInfoController',
+                    size: 'lg',
+                    controllerAs: 'model',
+                    templateUrl: 'partials/bank/bankMoreInfo.html',
+                    resolve: {data: {id: $stateParams.id,title:$stateParams.title}},
+                });
+            }
+        })
+
         .state('products', {
             url: '/products',
             controller: 'productsController',
@@ -421,6 +446,18 @@ export default function ($stateProvider, $urlRouterProvider, $locationProvider) 
                     controllerAs: 'model',
                     templateUrl: 'partials/product/product.entry.html',
                     resolve: {data: {id: $stateParams.id}}
+                });
+            }
+        })
+        .state('products.info', {
+            url: '/:id/info',
+            onEnter: ($modelFactory, $stateParams) => {
+                $modelFactory.create({
+                    controller: 'ProductMoreInfoController',
+                    controllerAs: 'model',
+                    size: 'lg',
+                    templateUrl: 'partials/product/productMoreInfo.html',
+                    resolve: {data: {id: $stateParams.id}},
                 });
             }
         })

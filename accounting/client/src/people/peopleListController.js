@@ -110,7 +110,17 @@ export default class peopleListController {
                                 let people = this.dataItem($(e.currentTarget).closest("tr"));
                                 return navigate('.edit', {id: people.id});
                             }
-                        }], title: " ", width: "180px"
+                        },
+                        {
+                            text: translate('More Info'),
+                            click: function (e) {
+                                e.preventDefault();
+                                let people = this.dataItem($(e.currentTarget).closest("tr"));
+                                return navigate('.info', {id: people.id});
+                            }
+                        }
+
+                        ], title: " ", width: "180px"
                 }
             ]
         };
