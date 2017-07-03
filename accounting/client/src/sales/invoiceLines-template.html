@@ -262,15 +262,18 @@
                     </div>
                 </div>
             </div>
-            <div class="row col-md-6">
-                <ul class="list-group clear-list m-t">
+            <div class="row col-md-7">
+                <ul class="list-group clear-list m-t" ng-repeat="payment in model.payments">
                     <li class="list-group-item">
-                            <div class="col-md-3">
-                               561545
-                            </div>
-                            <div class="col-md-3">
-                                444545
-                            </div>
+                        <div class="col-md-3">
+                            <p>{{payment.date}}</p>
+                        </div>
+                        <div class="col-md-2">
+                            <p>{{payment.amount|number}}</p>
+                        </div>
+                        <div class="col-md-2">
+                            <p>{{payment.paymentTypeDisplay}}</p>
+                        </div>
                     </li>
                 </ul>
             </div>
