@@ -19,6 +19,9 @@ function peopleApi(apiPromise,devConstants) {
         },
         remove: function (id) {
             return apiPromise.delete(`${urlPrefix}/people/${id}`);
+        },
+        summary:function (id) {
+            return apiPromise.get(`${urlPrefix}/people/${id}/summary/sale/by-month`);
         }
     };
 

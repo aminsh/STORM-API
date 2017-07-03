@@ -2,23 +2,31 @@
     <button type="button" ng-click="model.close()" class="close" data-dismiss="modal" aria-label="Close">
         <span aria-hidden="true">&times;</span>
     </button>
-    <h3 class="modal-title">{{'More Info'| translate}}</h3>
+    <h3 class="modal-title">{{'More Info'| translate}} - {{model.people.title}}</h3>
 </div>
 <div class="modal-body k-rtl">
     <div class="row">
         <div class="col-sm-12">
-            <div class="contact-box center-version">
-
-                <h3 class="m-b-xs"><strong>{{model.people.title}}</strong></h3>
-
-                <div class="font-bold">{{model.people.phone}}</div>
-                <address class="m-t-md">
-                    <strong>{{model.people.address}} </strong>
-                </address>
-                <div class="font-bold">{{model.people.economicCode!=null && model.people.economicCode ||
-                    model.people.nationalCode}}
-                </div>
-            </div>
+                <ul class="list-group clear-list m-t">
+                    <li class="list-group-item fist-item">
+                                <span>
+                                     {{'Phone'|translate}} :
+                                </span>
+                        <strong>{{model.people.phone}}</strong>
+                    </li>
+                    <li class="list-group-item">
+                                 <span>
+                                   {{'Address'|translate}} :
+                                </span>
+                        <strong>{{model.people.address}}</strong>
+                    </li>
+                    <li class="list-group-item">
+                                 <span>
+                                    {{'NationalCode'|translate}}
+                                </span>
+                        <strong>{{model.people.economicCode!=null && model.people.economicCode || model.people.nationalCode}}</strong>
+                    </li>
+                </ul>
         </div>
     </div>
     <div class="row">
@@ -64,6 +72,14 @@
                                 </li>
                             </ul>
                         </div>
+                    </div>
+                    <div class="row">
+                        <canvas height="300" class="chart chart-bar"
+                                chart-data="model.data"
+                                chart-series="model.series"
+                                chart-labels="model.labels"
+                                chart-dataset-override="model.datasetOverride"
+                                chart-options="model.options"></canvas>
                     </div>
                 </div>
             </div>
