@@ -26,4 +26,7 @@ export default class {
     remove(id) {
         return this.apiPromise.delete(`${this.baseUrl}/${id}`);
     }
+    summary(id){
+         return this.apiPromise.get(`${this.baseUrl}/${id}/summary/sale/by-month`);
+    }
 }

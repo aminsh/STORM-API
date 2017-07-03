@@ -2,7 +2,7 @@
     <button type="button" ng-click="model.close()" class="close" data-dismiss="modal" aria-label="Close">
         <span aria-hidden="true">&times;</span>
     </button>
-    <h3 class="modal-title">{{'More Info'| translate}} {{model.product.title}}</h3>
+    <h3 class="modal-title">{{model.product.title}}</h3>
 </div>
 <div class="modal-body k-rtl">
 
@@ -11,19 +11,19 @@
             <ul class="list-group clear-list m-t">
                 <li class="list-group-item fist-item">
                     <span class="pull-right">
-                        0
+                        {{model.product.countOnSale}}
                     </span>
                     <span class="font-bold">{{'Total number of sales'| translate}}</span>
                 </li>
                 <li class="list-group-item">
                     <span class="pull-right">
-                         {{model.product.sumTotalSalePrice |number}}
+                         {{model.product.salePrice |number}}
                     </span>
                     <span class="font-bold">{{'Total sales amount'| translate}}</span>
                 </li>
                 <li class="list-group-item">
                     <span class="pull-right">
-                      0
+                      {{model.product.sumDiscount}}
                     </span>
                     <span class="font-bold">{{'Total discount'| translate}}</span>
                 </li>
@@ -54,7 +54,12 @@
         </div>
     </div>
     <div class="row">
-
+        <canvas height="300" class="chart chart-bar"
+                chart-data="model.data"
+                chart-series="model.series"
+                chart-labels="model.labels"
+                chart-dataset-override="model.datasetOverride"
+                chart-options="model.options"></canvas>
     </div>
 
 </div>
