@@ -339,5 +339,9 @@
   "Total discount":"مبلغ کل تخفیف",
   "Total Inventory":"موجودی کالا",
   "Sales profits":"سود فروش",
-  "Fixed price":"قیمت تمام شده"
+  "Fixed price":"قیمت تمام شده",
+  "Sum Of Sale Amount":"جمع مبلغ فروش",
+  "Count Of Sale Quantity":"تعداد کل فروش",
+  "Sum Of Buy Amount":"جمع مبلغ خرید",
+  "Count Of Buy Quantity":"تعداد کل خرید"
 }
