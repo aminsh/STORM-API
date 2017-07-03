@@ -26,6 +26,9 @@ function purchaseApi(apiPromise,devConstants) {
         pay: function (id,data) {
             return apiPromise.post(`${urlPrefix}/purchases/${id}/pay`,data);
         },
+        payments:function (id) {
+            return apiPromise.get(`${urlPrefix}/purchases/${id}/payments`);
+        },
         summary(){
             return apiPromise.get(`${urlPrefix}/purchases/summary`);
         },
