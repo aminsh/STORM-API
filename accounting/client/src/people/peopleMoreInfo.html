@@ -38,19 +38,19 @@
                             <ul class="list-group clear-list m-t">
                                 <li class="list-group-item fist-item">
                                     <h4 class="pull-right">
-                                        350000
+                                        {{model.people.countOfSale}}
                                     </h4>
                                     <span class="font-bold">{{'Total number of purchases'| translate}}</span>
                                 </li>
                                 <li class="list-group-item">
                                     <h4 class="pull-right">
-                                        1850025025
+                                        {{model.people.sumPrice|number}}
                                     </h4>
                                     <span class="font-bold">{{'Total purchase amount'| translate}}</span>
                                 </li>
                                 <li class="list-group-item">
                                     <h4 class="pull-right">
-                                        2525855
+                                        {{model.people.lastSaleDate}}
                                     </h4>
                                     <span class="font-bold">{{'Last purchase date'| translate}}</span>
                                 </li>
@@ -60,13 +60,13 @@
                             <ul class="list-group clear-list m-t">
                                 <li class="list-group-item fist-item">
                                     <h4 class="pull-right text-success">
-                                        252582236
+                                        {{model.people.sumPaid| number}}
                                     </h4>
                                     <span class="font-bold">{{'Total paid amount'| translate}}</span>
                                 </li>
                                 <li class="list-group-item">
                                     <h4 class="pull-right text-danger">
-                                        252582236
+                                        {{model.people.sumRemainder|number}}
                                     </h4>
                                     <span class="font-bold">{{'Total amount of debt'| translate}}</span>
                                 </li>
