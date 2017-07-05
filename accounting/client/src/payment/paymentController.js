@@ -52,14 +52,14 @@ export default class paymentController {
         });
     }
 
-    setFocus(item){
+    setFocus(item) {
         this.$timeout(() => {
             this.$scope.$broadcast(`payment-${this.payment.indexOf(item)}`);
         });
     }
 
     newCashPayment() {
-        if(this.getRemainder()<= 0) return;
+        if (this.amount && this.getRemainder() <= 0) return;
 
         let newPayment = {
             style: "panel-info",
@@ -75,7 +75,7 @@ export default class paymentController {
     }
 
     newChequePayment() {
-        if(this.getRemainder()<= 0) return;
+        if (this.amount && this.getRemainder() <= 0) return;
 
         let newPayment = {
             style: "panel-success",
@@ -93,7 +93,7 @@ export default class paymentController {
     }
 
     newReceiptPayment() {
-        if(this.getRemainder()<= 0) return;
+        if (this.amount && this.getRemainder() <= 0) return;
 
         let newPayment = {
             style: "panel-danger",
@@ -121,19 +121,19 @@ export default class paymentController {
         item.bankDisplay = bank.title;
     }
 
-    onAmountChanged(item){
-        if(!this.amount)
+    onAmountChanged(item) {
+        if (!this.amount)
             return;
 
         let remainder = this.amount - (this.payment.asEnumerable()
                 .where(e => e != item) || 0).sum(e => e.amount);
 
-        if(item.amount > remainder)
+        if (item.amount > remainder)
             item.amount = remainder;
     }
 
     getRemainder() {
-        if(!this.amount)
+        if (!this.amount)
             return 0;
 
         return this.amount - (this.payment.asEnumerable().sum(e => e.amount) || 0);
