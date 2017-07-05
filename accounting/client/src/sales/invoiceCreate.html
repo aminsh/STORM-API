@@ -1,8 +1,12 @@
 <form name="form" novalidate>
     <dev-tag-content>
         <dev-tag-content-heading>
-            <h5 class="panel-title">
-                {{'Create invoice'|translate}}
+            <h5 class="panel-title" ng-if="!model.editMode">
+                {{'Create sale'|translate}}
+            </h5>
+
+            <h5 class="panel-title" ng-if="model.editMode">
+                {{'Edit sale'|translate}}
             </h5>
         </dev-tag-content-heading>
         <dev-tag-content-body>
@@ -40,9 +44,7 @@
 
                     <div ng-if="model.isPayment" class="form-group">
                         <label for="detailAccountId" class="title1">مشتری</label>
-                        <div class="input-group" style="width: 100%">
-                            <span style="width: 100%">{{model.invoice.detailAccountDisplay}}</span>
-                        </div>
+                        <span style="width: 100%">{{model.invoice.detailAccountDisplay}}</span>
                     </div>
                 </div>
 
@@ -89,14 +91,14 @@
                 <div class="row">
                     <div ng-if="!model.isPayment" class="col-sm-12">
                         <div  class="form-group">
-                            <label class="label-control" for="description">{{'Description' | translate}}</label>
+                            <label class="label-control" for="description">{{'Title' | translate}}</label>
                             <textarea class="form-control" rows="4" id="description" ng-model="model.invoice.description"></textarea>
                         </div>
                     </div>
 
                     <div ng-if="model.isPayment" class="col-sm-12">
                         <div  class="form-group">
-                            <label class="label-control" for="description">{{'Description' | translate}}</label>
+                            <label class="label-control" for="description">{{'Title' | translate}}</label>
                             <span class="form-control">{{model.invoice.description}}</span>
                         </div>
                     </div>

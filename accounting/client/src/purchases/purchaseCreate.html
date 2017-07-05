@@ -39,10 +39,8 @@
                     </div>
 
                     <div ng-if="model.isPayment" class="form-group">
-                        <label for="detailAccountId" class="title1">مشتری</label>
-                        <div class="input-group" style="width: 100%">
-                            <span style="width: 100%">{{model.invoice.detailAccountDisplay}}</span>
-                        </div>
+                        <label>مشتری</label>
+                        <span style="width: 100%">{{model.invoice.detailAccountDisplay}}</span>
                     </div>
                 </div>
 
@@ -146,19 +144,6 @@
                 </div>
                 <div class="col-sm-4"></div>
                 <div class="col-sm-4 text-left">
-
-                    <!--<dev-tag-button-->
-                    <!--ng-click="model.cashPaymentShow()"-->
-                    <!--title="{{'Add cash'| translate}}"-->
-                    <!--style-type="info"></dev-tag-button>-->
-                    <!--<dev-tag-button-->
-                    <!--ng-click="model.attachImage()"-->
-                    <!--title="{{'Add Bank Receipt'| translate}}"-->
-                    <!--style-type="primary"></dev-tag-button>-->
-                    <!--<dev-tag-button-->
-                    <!--ng-click="model.attachImage()"-->
-                    <!--title="{{'Add Cheque'| translate}}"-->
-                    <!--style-type="warning"></dev-tag-button>-->
                 </div>
             </div>
 

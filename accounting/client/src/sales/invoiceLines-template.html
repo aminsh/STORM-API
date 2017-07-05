@@ -32,15 +32,15 @@
             </td>
 
             <td style="width: 120px; padding: 0px;" class="invoice-td">
-                <span class="form-control input-grid-factor input-sm">{{item.unitPrice}}</span>
+                <span class="form-control input-grid-factor input-sm">{{item.unitPrice|number}}</span>
             </td>
 
             <td style="width: 120px; padding: 0px;" class="invoice-td">
-                <span class="form-control input-grid-factor input-sm">{{item.discount}}</span>
+                <span class="form-control input-grid-factor input-sm">{{item.discount|number}}</span>
             </td>
 
             <td style="width: 120px; padding: 0px;" class="invoice-td">
-                <span class="form-control input-grid-factor input-sm">{{item.vat}}</span>
+                <span class="form-control input-grid-factor input-sm">{{item.vat|number}}</span>
             </td>
 
             <td style="width: 120px;padding: 0px; vertical-align: middle; text-align: center;">
@@ -67,6 +67,53 @@
                                 title="{{'New Journal line' | translate}}"></dev-tag-button>
                     </div>
                 </div>
+            </div>
+<div class="row col-md-1"></div>
+            <div class="row col-md-8" ng-if="model.payments.length > 0">
+                <h3>{{'Payment Information'|translate}}</h3>
+                <ul class="list-group clear-list m-t">
+                    <li class="list-group-item"
+                    ng-repeat="p in model.payments">
+                        <div class="row">
+                            <div class="col-md-6" ng-if="p.paymentType == 'cash'">
+                                {{p.fundDisplay}}
+                            </div>
+                            <div class="col-md-6" ng-if="p.paymentType == 'receipt'">
+                                {{p.bankDisplay}}
+                            </div>
+                            <div class="col-md-6" ng-if="p.paymentType == 'cheque'">
+                                چک شماره
+                                {{p.number}}
+                                سررسید
+                                {{p.date}}
+                            </div>
+                            <div class="col-md-6">
+                                {{p.amount | amount }}
+                            </div>
+
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h3>{{'Sum'|translate}}</h3>
+                            </div>
+                            <div class="col-md-6">
+                                <h3>{{model.payments | totalSum:('amount')|number}}</h3>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h3>{{'Remainder'|translate}}</h3>
+                            </div>
+                            <div class="col-md-6">
+                                <h3>{{model.invoice.totalPrice - (model.payments | totalSum:('amount'))|number}}</h3>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
             </div>
 
         </div>

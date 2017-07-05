@@ -42,23 +42,18 @@ export default class SalesInvoiceController {
             description: '',
             invoiceLines: [],
             detailAccountId: '',
-            sumPaidAmount:null,
-            sumRemainder:null,
-            sumTotalPrice:null,
+            sumPaidAmount: null,
+            sumRemainder: null,
+            sumTotalPrice: null,
         };
 
-         this.isPayment = false;
+        this.isPayment = false;
 
-         this.id = this.$state.params.id;
-
+        this.id = this.$state.params.id;
 
 
         if (this.id != undefined) {
-            this.salesInvoiceApi.payments(this.id).then(result=>{
-                console.log(result);
-                this.payments=result;
-            });
-
+            this.getPayments();
             this.editMode = true;
         } else {
 
@@ -95,58 +90,61 @@ export default class SalesInvoiceController {
     }
 
 
-    canShow(status,command){
+    canShow(status, command) {
 
-        if(status=="waitForPayment"){
-            if(command=="draft"){
+        if (status == "waitForPayment") {
+            if (command == "draft") {
                 return false;
             }
-            if(command=="confirm"){
+            if (command == "confirm") {
                 return false;
             }
-            if(command=="payment"){
+            if (command == "payment") {
                 return true;
             }
         }
 
-        if(status=="paid")
-        {
-            if(command=="draft"){
+        if (status == "paid") {
+            if (command == "draft") {
                 return false;
             }
-            if(command=="confirm"){
+            if (command == "confirm") {
                 return false;
             }
-            if(command=="payment"){
+            if (command == "payment") {
                 return false;
             }
         }
-        if(status=="confirm")
-        {
-            if(command=="draft"){
+        if (status == "confirm") {
+            if (command == "draft") {
                 return true;
             }
-            if(command=="confirm"){
+            if (command == "confirm") {
                 return true;
             }
-            if(command=="payment"){
+            if (command == "payment") {
                 return false;
             }
         }
 
-        if(status=="draft")
-        {
-            if(command=="draft"){
+        if (status == "draft") {
+            if (command == "draft") {
                 return true;
             }
-            if(command=="confirm"){
+            if (command == "confirm") {
                 return true;
             }
-            if(command=="payment"){
+            if (command == "payment") {
                 return false;
             }
         }
     }
+
+    getPayments() {
+        this.salesInvoiceApi.payments(this.id)
+            .then(result => this.payments = result);
+    }
+
     removeInvoiceLine(item) {
         this.invoice.invoiceLines.asEnumerable().remove(item);
     }
@@ -164,7 +162,7 @@ export default class SalesInvoiceController {
     }
 
     onProductChanged(item, product) {
-        item.productId=product.id;
+        item.productId = product.id;
         item.description = product.title;
         item.unitPrice = product.salePrice;
     }
@@ -189,7 +187,7 @@ export default class SalesInvoiceController {
                 row: ++maxRow,
                 productId: null,
                 description: '',
-                quantity: 0,
+                quantity: 1,
                 vat: 0,
                 discount: 0,
                 unitPrice: 0,
@@ -243,7 +241,7 @@ export default class SalesInvoiceController {
                     })
                 })
                 .catch(err => errors = err)
-                .finally(() =>this.isSaving = false);
+                .finally(() => this.isSaving = false);
         } else {
 
             return this.salesInvoiceApi.create(invoice)
@@ -265,17 +263,17 @@ export default class SalesInvoiceController {
 
     cashPaymentShow() {
 
-        if(this.invoice.sumRemainder==null)
-            this.invoice.sumRemainder=this.invoice.sumTotalPrice;
+        if (this.invoice.sumRemainder == null)
+            this.invoice.sumRemainder = this.invoice.sumTotalPrice;
 
         this.createPaymentService.show({
             amount: this.invoice.sumRemainder,
             receiveOrPay: 'receive'
         }).then(result => {
             return this.salesInvoiceApi.pay(this.invoice.id, result)
-                .then(result => {
+                .then(() => {
                     this.logger.success();
-                    //this.isLoading = true;
+                    this.getPayments();
                 })
                 .catch(err => this.errors = err)
                 .finally();
