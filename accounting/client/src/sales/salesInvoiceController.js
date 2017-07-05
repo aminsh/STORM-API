@@ -44,14 +44,21 @@ export default class SalesInvoiceController {
             detailAccountId: '',
             sumPaidAmount:null,
             sumRemainder:null,
-            sumTotalPrice:null
+            sumTotalPrice:null,
         };
 
          this.isPayment = false;
 
          this.id = this.$state.params.id;
 
+
+
         if (this.id != undefined) {
+            this.salesInvoiceApi.payments(this.id).then(result=>{
+                console.log(result);
+                this.payments=result;
+            });
+
             this.editMode = true;
         } else {
 

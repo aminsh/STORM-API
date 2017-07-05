@@ -57,7 +57,6 @@ export default class ProductController {
             selectable: true
         };
     }
-
     remove(id) {
         this.productApi.remove(id)
             .then(result => this.logger.success())
