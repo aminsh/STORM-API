@@ -59,8 +59,8 @@ router.route('/')
 
 router.route('/:id')
     .get(async((req, res) => {
-        let detailAccountQuery = new DetailAccountQuery(req.branchId),
-            result = await(detailAccountQuery.getById(req.params.id));
+        let personQuery = new PersonQuery(req.branchId),
+            result = await(personQuery.getById(req.params.id, req.fiscalPeriodId));
         res.json(result);
     }))
     .put(async((req, res) => {
