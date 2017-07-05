@@ -110,7 +110,7 @@ module.exports = class DetailAccountQuery extends BaseQuery {
                     'journalLines.article',
                     'journalLines.debtor',
                     'journalLines.creditor',
-                    'journals.date')
+                    knex.raw('journals."temporaryDate" as date'))
                     .from('detailAccounts')
                     .leftJoin('journalLines', 'detailAccounts.id', 'journalLines.detailAccountId')
                     .leftJoin('journals', 'journals.id', 'journalLines.journalId')
@@ -118,7 +118,7 @@ module.exports = class DetailAccountQuery extends BaseQuery {
                     .andWhere('detailAccounts.branchId', branchId)
                     .andWhere('journals.periodId', fiscalPeriodId)
                     .andWhere('detailAccounts.detailAccountType', type)
-                    .orderBy('journals.date', 'desc')
+                    .orderBy('journals.temporaryDate', 'desc')
                     .as('base');
 
             }),
@@ -126,7 +126,8 @@ module.exports = class DetailAccountQuery extends BaseQuery {
                 title: entity.title,
                 article: entity.article,
                 debtor: entity.debtor,
-                creditor: entity.creditor
+                creditor: entity.creditor,
+                date: entity.date
             });
 
         return kendoQueryResolve(query, parameters, view);

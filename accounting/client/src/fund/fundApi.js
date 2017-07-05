@@ -19,6 +19,9 @@ function fundApi(apiPromise, devConstants) {
         },
         remove: function (id) {
             return apiPromise.delete(`${urlPrefix}/funds/${id}`);
+        },
+        smallTurnOver: function (id) {
+            return apiPromise.get(`${urlPrefix}/funds/${id}/small-turnover`);
         }
     };
 

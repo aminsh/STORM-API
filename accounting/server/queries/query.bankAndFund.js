@@ -32,7 +32,7 @@ class BandQuery extends BaseQuery {
             .where('journalLines.branchId', this.branchId)
             .andWhere('journals.periodId', fiscalPeriodId)
             .andWhereBetween('subsidiaryLedgerAccounts.code', ['1101', '1103'])
-            .whereIn('detailAccounts.detailAccountType',['bank','fund'])
+            .whereIn('detailAccounts.detailAccountType', ['bank', 'fund'])
             .groupBy(
                 'journalLines.detailAccountId',
                 'detailAccounts.detailAccountType',
@@ -49,10 +49,34 @@ class BandQuery extends BaseQuery {
             }));
     }
 
-    getById(id) {
-        let bank = await(this.knex.select().from('banks').where('id', id).first());
-        return view(bank);
+    getAll(fiscalPeriodId) {
+        let knex = this.knex;
+
+        return knex.select(
+            '*',
+            knex.raw(`(select sum(debtor-creditor) from journals 
+                left join "journalLines" on journals.id = "journalLines"."journalId"
+                left join "subsidiaryLedgerAccounts" on "journalLines"."subsidiaryLedgerAccountId" = "subsidiaryLedgerAccounts"."id"
+                where journals."periodId" = '${fiscalPeriodId}' 
+                and journals."branchId" = '${this.branchId}'
+                and "detailAccountId" = "detailAccounts"."id"
+                and "subsidiaryLedgerAccounts".code in ('1101','1103') ) as "remainder"`)
+        )
+            .from('detailAccounts')
+            .where('branchId', this.branchId)
+            .whereIn('detailAccountType', ['bank', 'fund'])
+            .map(item => ({
+                id: item.id,
+                title: item.title,
+                type: item.detailAccountType,
+                typeDisplay: item.detailAccountType
+                    ? enums.DetailAccountType().getDisplay(item.detailAccountType)
+                    : '',
+                remainder: item.remainder || 0
+            }));
     }
+
+
 }
 
 module.exports = BandQuery;

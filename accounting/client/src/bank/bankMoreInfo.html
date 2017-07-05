@@ -2,7 +2,7 @@
     <button type="button" ng-click="model.close()" class="close" data-dismiss="modal" aria-label="Close">
         <span aria-hidden="true">&times;</span>
     </button>
-    <h3 class="modal-title">{{'Tiny turnover'| translate}} - {{'Bank'|translate}} {{model.banks[0].title}}</h3>
+    <h3 class="modal-title">{{'Tiny turnover'| translate}} - {{model.items[0].title}}</h3>
 </div>
 <div class="modal-body k-rtl">
 
@@ -16,16 +16,21 @@
                 <thead>
                 <tr>
                     <th>{{'Status'| translate}}</th>
+                    <th>{{'Date'| translate}}</th>
                     <th>{{'Description'| translate}}</th>
                     <th>{{'Amount'| translate}}</th>
                 </tr>
                 </thead>
                 <tbody>
 
-                <tr ng-repeat="bank in model.banks">
-                    <td ng-class="{'text-danger':bank.creditor!=0,'text-navy':bank.debtor!=0}"><i ng-class="{'fa fa-play fa-rotate-90':bank.creditor!=0,'fa fa-play fa-rotate-270':bank.debtor!=0}"></i></td>
-                    <td> {{bank.article}}</td>
-                    <td ng-class="{'text-danger':bank.creditor!=0,'text-navy':bank.debtor!=0}"> {{bank.creditor === 0 ? bank.debtor : bank.creditor | number}} </td>
+                <tr ng-repeat="item in model.items">
+                    <td ng-class="{'text-danger':item.creditor!=0,'text-navy':item.debtor!=0}">
+                        <i ng-class="{'fa fa-play fa-rotate-90':item.creditor!=0,'fa fa-play fa-rotate-270':item.debtor!=0}"></i></td>
+                    <td> {{item.date}}</td>
+                    <td> {{item.article}}</td>
+                    <td ng-class="{'text-danger':item.creditor!=0,'text-navy':item.debtor!=0}">
+                        {{item.creditor === 0 ? item.debtor : item.creditor | number}}
+                    </td>
                 </tr>
                 </tbody>
             </table>

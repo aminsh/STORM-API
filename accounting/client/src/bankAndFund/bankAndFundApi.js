@@ -5,6 +5,10 @@ function bankAndFundApi(apiPromise,devConstants) {
 
     return {
 
+        all(){
+            return apiPromise.get(`${urlPrefix}/bank-and-fund`);
+        },
+
         summary(){
             return apiPromise.get(`${urlPrefix}/bank-and-fund/summary`);
         }
