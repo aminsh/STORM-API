@@ -43,14 +43,16 @@ module.exports = class PersonQuery extends BaseQuery {
                         knex.raw(`(select date from invoices 
                             where "detailAccountId" = base.id and "invoiceType" = 'sale'
                             order by date desc limit 1) as "lastSaleDate"`),
-                        knex.raw(`sum(price) as "sumPrice"`),
-                        knex.raw(`sum(amount) as "sumPaid"`),
-                        knex.raw(`sum(price) - sum(amount) as "sumRemainder"`)
+                        knex.raw(`(select sum(("invoiceLines"."quantity" * "invoiceLines"."unitPrice") - "invoiceLines"."discount" + "invoiceLines"."vat") from invoices
+                            left join "invoiceLines" on invoices.id = "invoiceLines"."invoiceId"
+                            where "detailAccountId" = base.id and "invoiceType" = 'sale' 
+                            and date between '${fiscalPeriod.minDate}' and '${fiscalPeriod.maxDate}'
+                            limit 1) as "sumPrice"`),
+                        knex.raw(`sum(amount) as "sumPaid"`)
                     ]))
                 .from(function () {
                     this.select(
                         'detailAccounts.*',
-                        knex.raw('("invoiceLines"."quantity" * "invoiceLines"."unitPrice") - "invoiceLines"."discount" + "invoiceLines"."vat" as "price"'),
                         'amount'
                     )
                         .from('invoices')
@@ -67,6 +69,8 @@ module.exports = class PersonQuery extends BaseQuery {
                 .first(),
 
             result = await(query);
+
+        result.sumRemainder = result.sumPrice - result.sumPaid;
 
         return result;
 
