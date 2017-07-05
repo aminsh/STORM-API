@@ -7,6 +7,7 @@ export default function () {
             if (angular.isDefined(attrs.focusMeOn)) {
                 scope.$on(attrs.focusMeOn, () => {
                     element[0].focus();
+                    element[0].select();
                 });
             }
         }
