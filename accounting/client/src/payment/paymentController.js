@@ -150,7 +150,7 @@ export default class paymentController {
 
         this.errors.asEnumerable().removeAll();
 
-        if (this.amount != 0 && payment.asEnumerable().sum(item => item.amount) > this.totalPrice.amount) {
+        if (this.amount != 0 && payment.asEnumerable().sum(item => item.amount) > this.amount) {
             logger.error(this.translate('The sum of the amount You entered is more than the amount'));
             return;
         }
