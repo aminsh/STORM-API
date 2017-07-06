@@ -1,6 +1,10 @@
 "use strict";
 
-const CryptoJS = require("crypto-js"),
+const async = require('asyncawait/async'),
+    await = require('asyncawait/await'),
+    Promise = require('promise'),
+    CryptoJS = require("crypto-js"),
+    jwt = require('jsonwebtoken'),
     superSecret = 'i love nodejs';
 
 module.exports.encrypt = function (data) {
@@ -14,5 +18,24 @@ module.exports.decrypt = function (token) {
 
     return decryptedData;
 };
+
+module.exports.sign = data => {
+    return jwt.sign(data, superSecret);
+};
+
+module.exports.verify = async.result(token => {
+    return await(verify(token));
+});
+
+function verify(token) {
+    return new Promise((resolve, reject) => {
+        jwt.verify(token, superSecret, (error, decode) => {
+            if (error)
+                return reject(error);
+
+            resolve(decode);
+        });
+    });
+}
 
 module.exports.superSecret = superSecret;

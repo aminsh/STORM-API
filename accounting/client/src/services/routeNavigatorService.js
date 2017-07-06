@@ -1,6 +1,5 @@
-import accModule from '../acc.module';
 
-function routeNavigatorService($state, $location) {
+export default function routeNavigatorService($state, $location) {
 
     let navigate = (name, parameters, queryString) => {
 
@@ -13,7 +12,6 @@ function routeNavigatorService($state, $location) {
     return navigate;
 }
 
-accModule.factory('navigate', routeNavigatorService);
 
 
 

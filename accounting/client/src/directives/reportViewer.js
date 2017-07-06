@@ -1,11 +1,7 @@
-import accModule from '../acc.module';
 import Guid from 'guid';
 import {viewerConfig, addVariable, addTranslates} from '../utilities/stimulsoft';
 
-//
-
-
-function reportViewer($rootScope) {
+export  default function reportViewer($rootScope, devConstants) {
     return {
         restrict: 'E',
         template: '<div id="contentViewer" style="direction: ltr"></div>',
@@ -25,7 +21,7 @@ function reportViewer($rootScope) {
 
             $(element).find('div').attr('id', id);
 
-            report.loadFile(`/acc/api/reports/file/${scope.reportFileName}`);
+            report.loadFile(`${devConstants.urls.rootUrl}/reports/file/${scope.reportFileName}`);
             viewer.renderHtml(id);
 
             report.dictionary.variables.add(addVariable({
@@ -114,5 +110,3 @@ function reportViewer($rootScope) {
         }
     };
 }
-
-accModule.directive('devTagReportViewer', reportViewer);

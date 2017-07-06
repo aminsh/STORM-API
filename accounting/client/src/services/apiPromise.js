@@ -1,6 +1,5 @@
-import accModule from '../acc.module';
 
-function apiPromise($http, $q, $window) {
+export default function apiPromise($http, $q, $window) {
 
     function promise($httpPromise) {
         var deferred = $q.defer();
@@ -54,5 +53,3 @@ function apiPromise($http, $q, $window) {
         }
     };
 }
-
-accModule.factory('apiPromise', apiPromise)

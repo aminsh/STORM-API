@@ -12,7 +12,9 @@ const async = require('asyncawait/async'),
     PaymentRepository = require('../data/repository.payment'),
     PaymentQuery = require('../queries/query.payment'),
     SettingRepository = require('../data/repository.setting'),
-    EventEmitter = require('../services/shared').service.EventEmitter;
+    EventEmitter = require('../services/shared').service.EventEmitter,
+    Crypro = require('../services/shared').service.Crypto,
+    stormConfig = require('../../../storm/server/config');
 
 router.route('/summary')
     .get(async((req, res) => {
@@ -103,9 +105,16 @@ router.route('/')
                 invoiceRepository,
                 productRepository),
 
-            result = await(invoiceRepository.create(entity));
+            result = await(invoiceRepository.create(entity)),
+            returnValue = {
+                id: result.id, printUrl: `${stormConfig.url.origin}/print/?token=${Crypro.sign({
+                    branchId: req.branchId,
+                    id: result.id,
+                    reportId: 700
+                })}`
+            };
 
-        res.json({isValid: true, returnValue: {id: result.id}});
+        res.json({isValid: true, returnValue});
 
         if (status == 'waitForPayment')
             EventEmitter.emit('on-sale-created', result, current);
@@ -296,7 +305,7 @@ router.route('/:id/pay')
         EventEmitter.emit('on-invoice-paid', req.params.id, req.branchId);
     }));
 
-router.route('/:id/payments').get(async((req, res)=> {
+router.route('/:id/payments').get(async((req, res) => {
     let paymentQuery = new PaymentQuery(req.branchId),
         result = await(paymentQuery.getPeymentsByInvoiceId(req.params.id));
 
