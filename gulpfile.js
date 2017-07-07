@@ -28,7 +28,8 @@ const path = require('path'),
         isProduction: util.env.production,
         accSrcDir: './accounting/client',
         stormSrcDir: './storm/client',
-        publicDir: './public'
+        publicDir: './public',
+        adminDir: './admin/client'
     };
 
 gulp.task('acc-build-template', function () {
@@ -79,6 +80,52 @@ gulp.task('print-build-js', function () {
             .bundle()
             .pipe(gulpif(!config.isProduction, exorcist(path.join(distPath, `print.bundle.min.map`)))
                 .pipe(fs.createWriteStream(path.join(distPath, 'print.bundle.min.js'), 'utf8')));
+
+        process.exit();
+    });
+});
+
+
+gulp.task('admin-build-template', function () {
+
+    return gulp.src([
+        `${config.adminDir}/**/*.html`,
+        `${config.accSrcDir}/partials/templates/content-template.html`
+    ])
+        .pipe(templateCache(
+            {
+                module: 'admin.module',
+                filename: 'admin.template.bundle.js',
+                root: 'partials/templates'
+            }))
+        .pipe(gulp.dest(`${config.publicDir}/js`));
+});
+
+gulp.task('admin-build-js', function () {
+    const distPath = `${config.publicDir}/js`;
+
+    mkdirp(`${config.publicDir}/js`, err => {
+        if (err) {
+            return util.log(util.colors.green.bold(JSON.stringify(err)));
+
+        }
+
+        return browserify(
+            {
+                entries: `./admin/app.client.config.js`,
+                debug: !config.isProduction
+            })
+            .transform({
+                global: true,
+                mangle: false,
+                comments: true,
+                compress: {
+                    angular: true
+                }
+            }, 'uglifyify')
+            .bundle()
+            .pipe(gulpif(!config.isProduction, exorcist(path.join(distPath, `admin.bundle.min.map`)))
+                .pipe(fs.createWriteStream(path.join(distPath, 'admin.bundle.min.js'), 'utf8')));
 
         process.exit();
     });
@@ -234,7 +281,9 @@ gulp.task('default', [
     'storm-build-js',
     'copy-assets',
     'print-build-template',
-    'print-build-js'
+    'print-build-js',
+    'admin-build-template',
+    'admin-build-js'
 ]);
 
 gulp.task('storm-build-sass', () => {

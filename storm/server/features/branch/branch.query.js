@@ -19,7 +19,9 @@ class BranchQuery {
     }
 
     getAll() {
-        return knex.select('id', 'name', 'logo', 'apiKey').from('branches');
+        return knex.select('id', 'name', 'logo', 'apiKey', 'status')
+            .from('branches')
+            .orderBy('createdAt', 'desc');
     }
 
     getBranchesByUser(userId) {

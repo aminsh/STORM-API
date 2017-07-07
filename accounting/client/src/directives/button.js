@@ -1,9 +1,13 @@
-import accModule from '../acc.module';
 
-function button() {
+export default function button() {
     return {
         restrict: 'E',
-        templateUrl: 'partials/templates/button-template.html',
+        template: `<a class="btn btn-{{styleType}}"
+   ladda="isWaiting"
+   data-style="expand-left">
+    <i class="{{icon}}"></i>
+    {{title}}
+</a>`,
         replace: true,
         scope: {
             isWaiting: '=',
@@ -16,6 +20,3 @@ function button() {
         }
     };
 }
-
-
-accModule.directive('devTagButton', button);

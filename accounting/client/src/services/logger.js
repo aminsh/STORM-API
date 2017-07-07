@@ -1,7 +1,6 @@
 import swal from "sweetalert";
-import accModule from "../acc.module";
 
-function logger(translate) {
+export default function logger(translate) {
     return {
         alert(item){
             swal(item);
@@ -48,6 +47,5 @@ function logger(translate) {
     }
 }
 
-accModule.factory('logger', logger);
 
 

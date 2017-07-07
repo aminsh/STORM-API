@@ -34,7 +34,7 @@ class BranchRepository {
         let member = {
             branchId: id,
             userId: userId,
-            app: 'accouning',
+            app: 'accounting',
             state: 'active'
         };
 

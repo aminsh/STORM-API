@@ -85,7 +85,7 @@ import "./directives/blockUi";
 import "./directives/customValidator";
 import "./directives/validationSummary";
 import "./directives/uploader";
-import "./directives/button";
+import button from "./directives/button";
 import "./directives/combobox";
 import "./directives/uiSelectCombobox";
 import {content, heading, footer, body} from "./directives/content";
@@ -121,7 +121,7 @@ import "./services/translateStorageService";
 import apiPromise from "./services/apiPromise";
 import "./services/confirm";
 import "./services/gridFilterCellTypeProvider";
-import "./services/logger";
+import logger from "./services/logger";
 import "./services/menuItemsProvider";
 import "./services/modalBase";
 import "./services/translate";
@@ -173,6 +173,7 @@ accModule
     .directive('devTagContentBody', body)
     .directive('devTagContentHeading', heading)
     .directive('devTagContentFooter', footer)
+    .directive('devTagButton', button)
 
 
     .directive('devTagReportViewer', reportViewer)
@@ -189,6 +190,7 @@ accModule
 
     .factory('navigate', routeNavigatorService)
     .factory('apiPromise', apiPromise)
+    .factory('logger', logger)
 
     .controller('chequePrintController', chequePrintController)
     .controller('reportController', reportController)

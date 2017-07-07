@@ -13,6 +13,13 @@ const express = require('express'),
     translate = require('../../services/translateService'),
     emailService = require('../../services/emailService');
 
+router.route('/').get(async((req, res)=> {
+    let userQuery = new UserQuery(),
+        users = await(userQuery.getAll());
+
+    res.json(users);
+}));
+
 router.route('/register').post(async((req, res) => {
     let userRepository = new UserRepository(),
         cmd = req.body,

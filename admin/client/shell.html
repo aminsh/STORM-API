@@ -1,0 +1,36 @@
+<div>
+
+    <div id="page-wrapper" class="gray-bg dashbard-1">
+        <div class="row border-bottom">
+            <nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
+
+
+                <ul class="nav navbar-top-links navbar-left">
+                    <li class="dropdown">
+                        <a ui-sref="branches">
+                            Branches
+                        </a>
+                    </li>
+                    <li class="dropdown">
+                        <a ui-sref="users">
+                            Users
+                        </a>
+                    </li>
+
+                </ul>
+            </nav>
+        </div>
+
+        <div id="page-content-wrapper" class="content-total">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-12 content-ngtransclude">
+                        <ui-view></ui-view>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</div>

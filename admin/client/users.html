@@ -1,0 +1,18 @@
+<dev-tag-content dev-attr-title="Users">
+    <table class="table">
+        <thead>
+        <tr>
+            <th style="text-align: left">Id</th>
+            <th style="text-align: left">Email</th>
+            <th style="text-align: left">Name</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="user in model.users">
+            <td>{{user.id}}</td>
+            <td>{{user.email}}</td>
+            <td>{{user.name}}</td>
+        </tr>
+        </tbody>
+    </table>
+</dev-tag-content>
