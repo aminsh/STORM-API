@@ -331,5 +331,8 @@
   "Count Of Sale Quantity":"تعداد کل فروش",
   "Sum Of Buy Amount":"جمع مبلغ خرید",
   "Count Of Buy Quantity":"تعداد کل خرید",
-  "Bank and fund": "بانک و صندوق"
+  "Bank and fund": "بانک و صندوق",
+  "Scale": "واحد اندازه گیری",
+  "New scale": "واحد انداره گیری جدید",
+  "Enter scale title": "عنوان واحد اندازه گیری را وارد کنید"
 }

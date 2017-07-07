@@ -4,12 +4,17 @@ function generalLedgerAccountsController($scope, logger, translate, confirm, dev
                                          generalLedgerAccountApi,
                                          subsidiaryLedgerAccountApi,
                                          subsidiaryLedgerAccountEntryModalService,
-                                         $timeout,
-                                         generalLedgerAccountCreateModalService,
-                                         generalLedgerAccountUpdateModalService) {
+                                         $timeout) {
 
 
     let columns = [
+            {
+                name: 'isLocked',
+                title: '',
+                width: '50px',
+                filterable: false,
+                template: '<i class="fa fa-lock fa-lg"></i>'
+            },
             {
                 name: 'code',
                 title: translate('Code'),
@@ -85,6 +90,13 @@ function generalLedgerAccountsController($scope, logger, translate, confirm, dev
 
     $scope.gridOptionSubsidiaryLedgerAccount = {
         columns: [
+            {
+                name: 'isLocked',
+                title: '',
+                width: '50px',
+                filterable: false,
+                template: '<i class="fa fa-lock fa-lg"></i>'
+            },
             {name: 'code', title: translate('Code'), type: 'string'},
             {
                 name: 'title',
