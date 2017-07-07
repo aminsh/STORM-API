@@ -9,6 +9,11 @@ module.exports = class {
 
     }
 
+    getAll(){
+        return knex.select('id', 'name', 'email')
+            .from('users');
+    }
+
     getByEmail(email) {
         return knex.table('users')
             .where('email', 'ILIKE', email)

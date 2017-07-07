@@ -1,9 +1,10 @@
 "use strict";
 
 export default class ProductController {
-    constructor(productApi, translate, devConstants, logger, confirm,$timeout) {
+    constructor(productApi, translate, devConstants, logger, confirm,$timeout,$state) {
         this.productApi = productApi;
         this.logger = logger;
+        this.$state=$state;
         this.gridOption = {
             columns: [
                 {
@@ -42,6 +43,13 @@ export default class ProductController {
                             });
 
                     }
+                },
+                {
+                    title: translate('More Info'),
+                    icon: 'fa fa-info-circle',
+                    action: (current) => {
+                        this.$state.go('.info',{id:current.id});
+                    }
                 }
             ],
             readUrl: devConstants.urls.products.getAll(),
@@ -49,7 +57,6 @@ export default class ProductController {
             selectable: true
         };
     }
-
     remove(id) {
         this.productApi.remove(id)
             .then(result => this.logger.success())

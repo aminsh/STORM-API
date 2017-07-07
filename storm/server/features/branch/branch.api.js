@@ -14,6 +14,10 @@ const express = require('express'),
 
 
 router.route('/')
+    .get(async((req, res) => {
+        let branches = await(branchQuery.getAll());
+        res.json(branches);
+    }))
     .post(async((req, res) => {
         let cmd = req.body,
             entity = {
@@ -38,6 +42,24 @@ router.route('/')
         res.json({isValid: true});
     }));
 
+
+router.route('/:id/activate')
+    .put(async((req, res)=> {
+        await(branchRepository.update(req.params.id, {status: 'active'}));
+        res.json({isValid: true});
+    }));
+
+router.route('/:id/deactivate')
+    .put(async((req, res)=> {
+        await(branchRepository.update(req.params.id, {status: 'pending'}));
+        res.json({isValid: true});
+    }));
+
+router.route('/:id/add-me')
+    .put(async((req, res)=> {
+        await(branchRepository.addMember(req.params.id, req.user.id));
+        res.json({isValid: true});
+    }));
 
 router.route('/current')
     .get(async((req, res) => {
@@ -74,10 +96,10 @@ router.route('/current/api-key').get(async((req, res) => {
     else {
         let owner = await(userRepository.getById(currentBranch.ownerId)),
 
-        apiKey = jwt.sign({
-            branchId: currentBranch.id,
-            userId: owner.id
-        }, superSecret);
+            apiKey = jwt.sign({
+                branchId: currentBranch.id,
+                userId: owner.id
+            }, superSecret);
 
         await(branchRepository.update(currentBranch.id, {apiKey}));
     }

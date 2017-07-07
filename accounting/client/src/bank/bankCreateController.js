@@ -1,4 +1,4 @@
-export default class peopleCreateController {
+export default class bankCreateController {
     constructor($scope, $uibModalInstance, formService, bankApi, logger, $state) {
 
         this.$scope = $scope;

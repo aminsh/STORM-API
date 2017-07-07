@@ -3,6 +3,7 @@
 export default class ProductEntryController {
     constructor($scope,
                 productApi,
+                scaleApi,
                 data,
                 formService,
                 devConstants,
@@ -12,6 +13,7 @@ export default class ProductEntryController {
 
         this.$scope = $scope;
         this.productApi = productApi;
+        this.scaleApi = scaleApi;
         this.formService = formService;
         this.prompt = prompt;
         this.translate = translate;
@@ -22,6 +24,7 @@ export default class ProductEntryController {
 
         this.productCategoryApi = productCategoryApi;
         this.getAllProductCategoryUrl = devConstants.urls.productCategory.getAll();
+        this.getAllScaleUrl = devConstants.urls.scale.getAll();
 
         if (this.id)
             productApi.getById(data.id)
@@ -33,7 +36,8 @@ export default class ProductEntryController {
                 reorderPoint: 0,
                 productType: 'good',
                 salePrice: 0,
-                categoryId: null
+                categoryId: null,
+                scaleId: null
             };
     }
 
@@ -70,6 +74,21 @@ export default class ProductEntryController {
         }).then(inputValue => {
             this.productCategoryApi.create({title: inputValue})
                 .then(result => this.product.categoryId = result.id);
+        });
+    }
+
+    onScaleChanged(scale) {
+        this.product.scaleId = scale.id;
+    }
+
+    onScaleCreated(value) {
+        this.prompt({
+            title: this.translate('New scale'),
+            text: this.translate('Enter scale title'),
+            defaultValue: value
+        }).then(inputValue => {
+            this.scaleApi.create({title: inputValue})
+                .then(result => this.product.scaleId = result.id);
         });
     }
 }

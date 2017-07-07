@@ -23,7 +23,7 @@ module.exports = class InvoicesQuery extends BaseQuery {
         "invoiceLines".vat as "vatPrice",
         (("invoiceLines"."unitPrice" * "invoiceLines".quantity)-"invoiceLines".discount) + "invoiceLines".vat as "netPrice",
         "invoiceLines".description as "invoiceLineDescription",
-        "products".title as "productName",
+        "invoiceLines".description as "productName",
         "detailAccounts"."postalCode" as "postalCode",
         "detailAccounts".title as "customerName", "detailAccounts".address as "customerAddress",
         CASE WHEN "detailAccounts"."personType" = 'legal' THEN "detailAccounts"."economicCode" 
@@ -31,9 +31,9 @@ module.exports = class InvoicesQuery extends BaseQuery {
             .from('invoices')
             .where('invoices.branchId', branchId)
             .andWhere('invoices.id',id)
-            .innerJoin('invoiceLines', 'invoices.id', 'invoiceLines.invoiceId')
-            .innerJoin('detailAccounts', 'detailAccounts.id', 'invoices.detailAccountId')
-            .innerJoin('products', 'products.id', 'invoiceLines.productId')
+            .leftJoin('invoiceLines', 'invoices.id', 'invoiceLines.invoiceId')
+            .leftJoin('detailAccounts', 'detailAccounts.id', 'invoices.detailAccountId')
+            .leftJoin('products', 'products.id', 'invoiceLines.productId')
             .as('Invoice');
     }
 };

@@ -15,7 +15,7 @@ function subsidiaryLedgerAccountAssembler(entity) {
         hasDimension2: entity.hasDimension2,
         hasDimension3: entity.hasDimension3,
         description: entity.description,
-        isActive: entity.isActive
+        isLocked: entity.isLocked
     };
 
     return viewModel;

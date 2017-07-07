@@ -5,6 +5,7 @@ export default class peopleListController {
                 logger,
                 $timeout,
                 bankApi,
+                $state,
                 confirm,
                 $scope) {
 
@@ -13,8 +14,10 @@ export default class peopleListController {
         this.$timeout = $timeout;
         this.logger = logger;
         this.translate = translate;
+        this.$state=$state;
         this.bankApi = bankApi;
         this.errors = [];
+        $scope.current=this;
         $scope.gridOption = {
             dataSource: new kendo.data.DataSource({
                 serverFiltering: true,
@@ -76,6 +79,13 @@ export default class peopleListController {
                         e.preventDefault();
                         let bank = this.dataItem($(e.currentTarget).closest("tr"));
                         return navigate('.edit', {id: bank.id});
+                    }},
+                    { text: translate('Tiny turnover'), click:function (e) {
+                        e.preventDefault();
+                        let bank = this.dataItem($(e.currentTarget).closest("tr"));
+
+                        $scope.current.$state.go('.info',{id: bank.id,title:bank.title});
+                        //return navigate('.info', {id: bank.id,title:bank.title});
                     }}], title: " ", width: "180px" }
             ]
         };

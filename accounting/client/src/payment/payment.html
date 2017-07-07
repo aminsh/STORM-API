@@ -23,11 +23,6 @@
 
     <form name="form" class="form-horizontal">
         <dev-tag-validation-summary errors="model.errors" class="col-md-8"></dev-tag-validation-summary>
-
-        <div class="row col-sm-12 text-right">
-            <span class="label label-default" style="font-size: medium"> {{'Total Remaining Amount:' | translate}}   {{model.totalPrice.amount- (model.payment |  totalSum: ('amount'))  | number }} </span>
-        </div>
-
       <br>
 
         <ul class="list-group  clear-list m-t" >
@@ -45,6 +40,8 @@
                     </div>
                     <div class="col-md-4">
                         <dev-tag-numeric
+                                ng-change="model.onAmountChanged(item)"
+                                focus-me-on="payment-{{$index}}"
                                 class="form-control"
                                 name="cashAmount"
                                 ng-model="item.amount"
@@ -94,6 +91,8 @@
                     </div>
                     <div class="col-md-2">
                         <dev-tag-numeric
+                                ng-change="model.onAmountChanged(item)"
+                                focus-me-on="payment-{{$index}}"
                                 class="form-control"
                                 name="chequeAmount"
                                 ng-model="item.amount"
@@ -209,6 +208,8 @@
                     </div>
                     <div class="col-md-2">
                         <dev-tag-numeric
+                                ng-change="model.onAmountChanged(item)"
+                                focus-me-on="payment-{{$index}}"
                                 class="form-control"
                                 name="receiptAmount"
                                 ng-model="item.amount"
@@ -261,6 +262,29 @@
                         </button>
                     </div>
                 </div >
+
+            </li>
+            <li class="list-group-item" ng-show="model.payment.length > 0">
+                <div class="row">
+                    <div class="col-md-1"></div>
+                    <div class="col-md-1">
+                        <h3>{{'Sum'|translate}}</h3>
+                    </div>
+                    <div class="col-md-3">
+                        <h3>{{model.payment|totalSum:('amount')|number}}</h3>
+                    </div>
+                </div>
+            </li>
+            <li class="list-group-item" ng-show="model.payment.length > 0 && model.amount > 0">
+              <div class="row">
+                  <div class="col-md-1"></div>
+                  <div class="col-md-1">
+                      <h3>{{'Remainder' | translate}}</h3>
+                  </div>
+                  <div class="col-md-3">
+                      <h3>{{model.amount - (model.payment |  totalSum: ('amount'))  | number }}</h3>
+                  </div>
+              </div>
             </li>
         </ul>
     </form>

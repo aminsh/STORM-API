@@ -91,4 +91,15 @@ router.route('/:id')
     }));
 
 
+router.route('/:id/small-turnover').get(async((req, res) => {
+    let detailAccountQuery = new DetailAccountQuery(req.branchId),
+        result = await(detailAccountQuery.getAllSmallTurnoverById(
+            req.params.id,
+            'bank',
+            req.fiscalPeriodId,
+            req.query));
+
+    res.json(result);
+}));
+
 module.exports = router;

@@ -343,6 +343,18 @@ export default function ($stateProvider, $urlRouterProvider, $locationProvider) 
                 });
             }
         })
+        .state('people.info', {
+            url: '/:id/info',
+            onEnter: ($modelFactory, $stateParams) => {
+                $modelFactory.create({
+                    controller: 'peopleMoreInfoController',
+                    controllerAs: 'model',
+                    templateUrl: 'partials/people/peopleMoreInfo.html',
+                    size: 'lg',
+                    resolve: {data: () => $stateParams}
+                });
+            }
+        })
 
         .state('funds', {
             url: '/funds',
@@ -350,8 +362,36 @@ export default function ($stateProvider, $urlRouterProvider, $locationProvider) 
             controllerAs: 'model',
             templateUrl: 'partials/fund/fundList.html'
         })
-        .state('funds.create', {
-            url: '/create',
+
+        .state('bankAndFund', {
+            url: '/banks-and-funds',
+            controller: 'banksAndFundsController',
+            controllerAs: 'model',
+            templateUrl: 'partials/bankAndFund/bankAndFund.html'
+        })
+        .state('bankAndFund.bankCreate', {
+            url: '/bank/create',
+            onEnter: $modelFactory => {
+                $modelFactory.create({
+                    controller: 'bankCreateController',
+                    controllerAs: 'model',
+                    templateUrl: 'partials/bank/bankCreate.html'
+                });
+            }
+        })
+        .state('bankAndFund.bankEdit', {
+            url: '/bank/:id/edit',
+            onEnter: $modelFactory => {
+                $modelFactory.create({
+                    controller: 'bankCreateController',
+                    controllerAs: 'model',
+                    templateUrl: 'partials/bank/bankCreate.html',
+                });
+            }
+        })
+
+        .state('bankAndFund.fundCreate', {
+            url: '/fund/create',
             onEnter: $modelFactory => {
                 $modelFactory.create({
                     controller: 'fundCreateController',
@@ -360,13 +400,30 @@ export default function ($stateProvider, $urlRouterProvider, $locationProvider) 
                 });
             }
         })
-        .state('funds.edit', {
-            url: '/:id/edit',
+        .state('bankAndFund.fundEdit', {
+            url: '/fund/:id/edit',
             onEnter: $modelFactory => {
                 $modelFactory.create({
                     controller: 'fundCreateController',
                     controllerAs: 'model',
                     templateUrl: 'partials/fund/fundCreate.html',
+                });
+            }
+        })
+
+        .state('bankAndFund.info', {
+            url: '/:id/:type/info',
+            onEnter: ($modelFactory,$stateParams) => {
+                $modelFactory.create({
+                    controller: 'bankMoreInfoController',
+                    size: 'lg',
+                    controllerAs: 'model',
+                    templateUrl: 'partials/bank/bankMoreInfo.html',
+                    resolve: {data: {
+                        id: $stateParams.id,
+                        title:$stateParams.title,
+                        type: $stateParams.type
+                    }},
                 });
             }
         })
@@ -376,26 +433,7 @@ export default function ($stateProvider, $urlRouterProvider, $locationProvider) 
             controllerAs: 'model',
             templateUrl: 'partials/bank/bankList.html'
         })
-        .state('bank.create', {
-            url: '/create',
-            onEnter: $modelFactory => {
-                $modelFactory.create({
-                    controller: 'bankCreateController',
-                    controllerAs: 'model',
-                    templateUrl: 'partials/bank/bankCreate.html'
-                });
-            }
-        })
-        .state('bank.edit', {
-            url: '/:id/edit',
-            onEnter: $modelFactory => {
-                $modelFactory.create({
-                    controller: 'bankCreateController',
-                    controllerAs: 'model',
-                    templateUrl: 'partials/bank/bankCreate.html',
-                });
-            }
-        })
+
         .state('products', {
             url: '/products',
             controller: 'productsController',
@@ -421,6 +459,18 @@ export default function ($stateProvider, $urlRouterProvider, $locationProvider) 
                     controllerAs: 'model',
                     templateUrl: 'partials/product/product.entry.html',
                     resolve: {data: {id: $stateParams.id}}
+                });
+            }
+        })
+        .state('products.info', {
+            url: '/:id/info',
+            onEnter: ($modelFactory, $stateParams) => {
+                $modelFactory.create({
+                    controller: 'ProductMoreInfoController',
+                    controllerAs: 'model',
+                    size: 'lg',
+                    templateUrl: 'partials/product/productMoreInfo.html',
+                    resolve: {data: {id: $stateParams.id}},
                 });
             }
         })

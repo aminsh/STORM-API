@@ -28,7 +28,8 @@ const path = require('path'),
         isProduction: util.env.production,
         accSrcDir: './accounting/client',
         stormSrcDir: './storm/client',
-        publicDir: './public'
+        publicDir: './public',
+        adminDir: './admin/client'
     };
 
 gulp.task('acc-build-template', function () {
@@ -41,6 +42,95 @@ gulp.task('acc-build-template', function () {
             }))
         .pipe(gulp.dest(`${config.publicDir}/js`));
 });
+
+gulp.task('print-build-template', function () {
+    return gulp.src([`${config.accSrcDir}/src/report/reportPrint.html`,
+        `${config.accSrcDir}/partials/templates/content-template.html`])
+        .pipe(templateCache(
+            {
+                module: 'print.module',
+                filename: 'print.template.bundle.js',
+                root: 'partials/templates'
+            }))
+        .pipe(gulp.dest(`${config.publicDir}/js`));
+});
+
+gulp.task('print-build-js', function () {
+    const distPath = `${config.publicDir}/js`;
+
+    mkdirp(`${config.publicDir}/js`, err => {
+        if (err) {
+            return util.log(util.colors.green.bold(JSON.stringify(err)));
+
+        }
+
+        return browserify(
+            {
+                entries: `./print/app.client.config.js`,
+                debug: !config.isProduction
+            })
+            .transform({
+                global: true,
+                mangle: false,
+                comments: true,
+                compress: {
+                    angular: true
+                }
+            }, 'uglifyify')
+            .bundle()
+            .pipe(gulpif(!config.isProduction, exorcist(path.join(distPath, `print.bundle.min.map`)))
+                .pipe(fs.createWriteStream(path.join(distPath, 'print.bundle.min.js'), 'utf8')));
+
+        process.exit();
+    });
+});
+
+
+gulp.task('admin-build-template', function () {
+
+    return gulp.src([
+        `${config.adminDir}/**/*.html`,
+        `${config.accSrcDir}/partials/templates/content-template.html`
+    ])
+        .pipe(templateCache(
+            {
+                module: 'admin.module',
+                filename: 'admin.template.bundle.js',
+                root: 'partials/templates'
+            }))
+        .pipe(gulp.dest(`${config.publicDir}/js`));
+});
+
+gulp.task('admin-build-js', function () {
+    const distPath = `${config.publicDir}/js`;
+
+    mkdirp(`${config.publicDir}/js`, err => {
+        if (err) {
+            return util.log(util.colors.green.bold(JSON.stringify(err)));
+
+        }
+
+        return browserify(
+            {
+                entries: `./admin/app.client.config.js`,
+                debug: !config.isProduction
+            })
+            .transform({
+                global: true,
+                mangle: false,
+                comments: true,
+                compress: {
+                    angular: true
+                }
+            }, 'uglifyify')
+            .bundle()
+            .pipe(gulpif(!config.isProduction, exorcist(path.join(distPath, `admin.bundle.min.map`)))
+                .pipe(fs.createWriteStream(path.join(distPath, 'admin.bundle.min.js'), 'utf8')));
+
+        process.exit();
+    });
+});
+
 
 gulp.task('minfy', function () {
     return gulp.src('./vendors/kendo/kendo.web.js')
@@ -73,7 +163,7 @@ gulp.task('acc-build-js', function () {
             }, 'uglifyify')
             .bundle()
             .pipe(gulpif(!config.isProduction, exorcist(path.join(distPath, `acc.bundle.min.map`)))
-            .pipe(fs.createWriteStream(path.join(distPath, 'acc.bundle.min.js'), 'utf8')));
+                .pipe(fs.createWriteStream(path.join(distPath, 'acc.bundle.min.js'), 'utf8')));
 
         process.exit();
     });
@@ -95,9 +185,9 @@ gulp.task('acc-build-sass', function () {
 gulp.task('build-stimulsoft', function () {
 
     let reports = [
-        './vendors/stimulsoft/stimulsoft.reports.js',
-        './vendors/stimulsoft/stimulsoft.viewer.js'
-    ],
+            './vendors/stimulsoft/stimulsoft.reports.js',
+            './vendors/stimulsoft/stimulsoft.viewer.js'
+        ],
         designer = ['./vendors/stimulsoft/stimulsoft.designer.js']
     return gulp.src(config.isProduction ? reports : reports.concat(designer))
         .pipe(beautify({indent_size: 2}))
@@ -190,7 +280,10 @@ gulp.task('default', [
     'storm-build-template',
     'storm-build-js',
     'copy-assets',
-
+    'print-build-template',
+    'print-build-js',
+    'admin-build-template',
+    'admin-build-js'
 ]);
 
 gulp.task('storm-build-sass', () => {

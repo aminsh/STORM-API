@@ -3,7 +3,9 @@
 const async = require('asyncawait/async'),
     await = require('asyncawait/await'),
     BaseQuery = require('./query.base'),
+    FiscalPeriodQuery = require('./query.fiscalPeriod'),
     kendoQueryResolve = require('../services/kendoQueryResolve'),
+    enums = require('../../shared/enums'),
     view = require('../viewModel.assemblers/view.product');
 
 module.exports = class ProductQuery extends BaseQuery {
@@ -25,38 +27,95 @@ module.exports = class ProductQuery extends BaseQuery {
 
     getById(id, fiscalPeriodId) {
 
-        /*
-         select products.*, (il."unitPrice"*il.quantity)-il.discount as "netPrice", il.quantity, il.discount, il."unitPrice"
-         0 as inventory, 0 as "cost", 0 as profit
-         from products
-         left Join (select "invoiceLines"."productId",
-         sum("invoiceLines"."unitPrice") as "unitPrice",
-         sum("invoiceLines"."quantity") as "quantity",
-         sum("invoiceLines"."discount") as discount
-         from "invoiceLines"
-         left Join invoices on invoices.id="invoiceLines"."invoiceId"
-         group by "invoiceLines"."productId")as il on il."productId" = products.id
+        let branchId = this.branchId,
+            knex = this.knex,
 
-         LEFT JOIN inventory*/
+            fiscalPeriodQuery = new FiscalPeriodQuery(this.branchId),
+            fiscalPeriod = await(fiscalPeriodQuery.getById(fiscalPeriodId)),
 
+            totalSalePrice = `select sum(("unitPrice" * "quantity") - discount + vat) from "invoices" 
+                left join "invoiceLines" on "invoices".id = "invoiceLines"."invoiceId"
+                where "invoices".date between '${fiscalPeriod.minDate}' and '${fiscalPeriod.maxDate}' 
+                and "invoices"."branchId" = '${branchId}'
+                and "invoiceLines"."productId" = "products".id 
+                and "invoiceType" = 'sale'`,
+            totalSaleDiscount = `select sum("discount") from "invoices" 
+                left join "invoiceLines" on "invoices".id = "invoiceLines"."invoiceId"
+                where "invoices".date between '${fiscalPeriod.minDate}' and '${fiscalPeriod.maxDate}' 
+                and "invoices"."branchId" = '${branchId}'
+                and "invoiceLines"."productId" = "products".id 
+                and "invoiceType" = 'purchase'`,
+            countOfSale = `select count(*) from "invoices" 
+                left join "invoiceLines" on "invoices".id = "invoiceLines"."invoiceId"
+                where "invoices".date between '${fiscalPeriod.minDate}' and '${fiscalPeriod.maxDate}' 
+                and "invoices"."branchId" = '${branchId}'
+                and "invoiceLines"."productId" = "products".id 
+                and "invoiceType" = 'sale'
+                group by "invoices"."id" 
+                limit 1`,
+            inventory = `select sum(case when "inventoryType" = 'input' then "quantity" else "quantity" * -1 end) as "sumQuantity" 
+                from "inventories" left join "inventoryLines" on "inventories".id = "inventoryLines"."inventoryId"
+                where "inventories"."fiscalPeriodId" = '${fiscalPeriod.id}'
+                and "inventories"."branchId" = '${branchId}'
+                and "productId" = "products".id`,
+            costOfGood = `select sum("quantity" * "unitPrice") / sum("quantity") as "sumQuantity" from "inventories" 
+                left join "inventoryLines" on "inventories".id = "inventoryLines"."inventoryId"
+                where "inventories"."fiscalPeriodId" = '${fiscalPeriod.id}'
+                and "inventories"."branchId" = '${branchId}'
+                and "productId" = "products".id
+                and "inventoryType" = 'input'`,
 
-        let knex = this.knex,
-            inventorySelect = `select
-             "sum"((case
-             when "inventories"."inventoryType" = 'input' then 1
-             when "inventories"."inventoryType" = 'output' then -1
-             end) *  "inventoryLines"."quantity") as "total"
-             from "inventories"
-             left join "inventoryLines" on "inventories"."id" = "inventoryLines"."inventoryId"
-             where "inventories"."fiscalPeriodId"= '${fiscalPeriodId}' and "inventoryLines"."productId" = '${id}'`;
+            result = await(this.knex.select(
+                '*',
+                knex.raw(`coalesce((${totalSalePrice}),0) as "sumTotalSalePrice"`),
+                knex.raw(`coalesce((${totalSaleDiscount}),0) as "sumDiscount"`),
+                knex.raw(`coalesce((${countOfSale}),0) as "countOnSale"`),
+                knex.raw(`coalesce((${inventory}),0) as "sumQuantity"`),
+                knex.raw(`coalesce((${costOfGood}),0) as "costOfGood"`)
+            )
+                .from('products')
+                .where('branchId', branchId)
+                .andWhere('id', id)
+                .first());
 
-        let entity = await(this.knex.select(
-            'products.*', knex.raw(`(${inventorySelect}) as "totalQuantity"`))
-            .from('products')
-            .where('branchId', this.branchId)
-            .andWhere('id', id)
-            .first());
+        return view(result);
+    }
 
-        return view(entity);
+    getTotalPriceAndCountByMonth(id, fiscalPeriodId) {
+        let branchId = this.branchId,
+            knex = this.knex,
+
+            fiscalPeriodQuery = new FiscalPeriodQuery(this.branchId),
+            fiscalPeriod = await(fiscalPeriodQuery.getById(fiscalPeriodId)),
+
+            result = await(knex.select(
+                'month',
+                knex.raw('sum("quantity") as "sumQuantity"'),
+                knex.raw('sum("price") as "sumPrice"')
+            )
+                .from(function () {
+                    this.select(
+                        knex.raw('cast(substring("invoices"."date" from 6 for 2) as INTEGER) as "month"'),
+                        knex.raw('"invoiceLines"."quantity"'),
+                        knex.raw('("invoiceLines"."quantity" * "invoiceLines"."unitPrice") - "invoiceLines"."discount" as "price"')
+                    )
+                        .from('invoices')
+                        .leftJoin('invoiceLines', 'invoices.id', 'invoiceLines.invoiceId')
+                        .where('invoices.branchId', branchId)
+                        .andWhere('invoiceLines.productId', id)
+                        .andWhere('invoices.invoiceType', 'sale')
+                        .andWhereBetween('invoices.date', [fiscalPeriod.minDate, fiscalPeriod.maxDate])
+                        .as('base');
+                })
+                .groupBy('month')
+                .orderBy('month'))
+                .map(item => ({
+                    month: item.month,
+                    monthDisplay: enums.getMonth().getDisplay(item.month),
+                    sumQuantity: item.sumQuantity,
+                    sumPrice: item.sumPrice
+                }));
+
+        return result;
     }
 };

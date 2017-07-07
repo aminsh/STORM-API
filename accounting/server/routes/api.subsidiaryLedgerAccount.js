@@ -92,7 +92,11 @@ router.route('/:id')
         let subsidiaryLedgerAccountRepository = new SubsidiaryLedgerAccountRepository(req.branchId),
             errors = [],
             cmd = req.body,
-            id = req.params.id;
+            id = req.params.id,
+            account = await(subsidiaryLedgerAccountRepository.findById(id));
+
+        if(account.isLocked)
+            errors.push('این حساب قفل است - امکان ویرایش وجود ندارد');
 
         if (string.isNullOrEmpty(cmd.title))
             errors.push(translate('The code is required'));
@@ -132,7 +136,11 @@ router.route('/:id')
         let subsidiaryLedgerAccountRepository = new SubsidiaryLedgerAccountRepository(req.branchId),
             errors = [],
             id = req.params.id,
+            entity = await(subsidiaryLedgerAccountRepository.findById(id)),
             isUsedOnJournalLines = await(subsidiaryLedgerAccountRepository.isUsedOnJournalLines(id));
+
+        if(entity.isLocked)
+            errors.push('این حساب قفل است - امکان حذف وجود ندارد');
 
         if (isUsedOnJournalLines)
             errors.push(translate('The Subsidiary ledger account is used on journal'));

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+
+<html ng-cloak  ng-app="admin.module">
+<head>
+    <meta name="viewport" content="width=device-width"/>
+    <meta http-equiv="Content-Type" content="text/html" charset="utf-8"/>
+
+    <title>STORM | Admin</title>
+
+    <link href="/public/css/acc.min.css?v=<%- version.app %>" rel="stylesheet"/>
+
+    <style>
+        body{
+            background-color: inherit;
+        }
+            #page-wrapper {
+                margin: 0;
+            }
+    </style>
+
+    <base href="/admin/">
+</head>
+<body>
+<shell>
+    <div class="waiting-overley">
+        <div class="start-waiting-block">
+            <div style="margin-bottom: 30px">
+                <img src="/public/images/logo.png" style="height: 70px">
+            </div>
+            <div class="progress-line"></div>
+        </div>
+    </div>
+</shell>
+
+</body>
+
+</html>
+
+
+<script src="/public/js/admin.bundle.min.js"></script>
+<script src="/public/js/admin.template.bundle.js"></script>
+
+
+
+
+

@@ -1,5 +1,6 @@
 export default class paymentController {
     constructor($scope,
+                $timeout,
                 translate,
                 $uibModalInstance,
                 formService,
@@ -12,6 +13,7 @@ export default class paymentController {
                 bankApi) {
 
         this.$scope = $scope;
+        this.$timeout = $timeout;
         this.promise = promise;
         this.createFundService = createFundService;
         this.logger = logger;
@@ -25,7 +27,7 @@ export default class paymentController {
         this.payment = [];
         this.fundApi = fundApi;
         this.bankApi = bankApi;
-        this.totalPrice = data;
+        this.amount = data.amount;
         this.receiveOrPay = data.receiveOrPay;
 
         this.urls = {
@@ -50,25 +52,36 @@ export default class paymentController {
         });
     }
 
+    setFocus(item) {
+        this.$timeout(() => {
+            this.$scope.$broadcast(`payment-${this.payment.indexOf(item)}`);
+        });
+    }
+
     newCashPayment() {
+        if (this.amount && this.getRemainder() <= 0) return;
+
         let newPayment = {
             style: "panel-info",
             date: null,
-            amount: 0,
+            amount: this.getRemainder(),
             fundId: null,
             fundDisplay: null,
             paymentType: 'cash',
             paymentDisplay: this.devConstants.enums.paymentType().getDisplay('cash')
         };
         this.payment.push(newPayment);
+        this.setFocus(newPayment);
     }
 
     newChequePayment() {
+        if (this.amount && this.getRemainder() <= 0) return;
+
         let newPayment = {
             style: "panel-success",
             date: null,
             number: null,
-            amount: 0,
+            amount: this.getRemainder(),
             bankId: null,
             bankName: null,
             bankBranch: null,
@@ -76,19 +89,23 @@ export default class paymentController {
             paymentDisplay: this.devConstants.enums.paymentType().getDisplay('cheque')
         };
         this.payment.push(newPayment);
+        this.setFocus(newPayment);
     }
 
     newReceiptPayment() {
+        if (this.amount && this.getRemainder() <= 0) return;
+
         let newPayment = {
             style: "panel-danger",
             date: null,
-            amount: 0,
+            amount: this.getRemainder(),
             bankId: null,
             bankDisplay: null,
             paymentType: 'receipt',
             paymentDisplay: this.devConstants.enums.paymentType().getDisplay('receipt')
         };
         this.payment.push(newPayment);
+        this.setFocus(newPayment);
     }
 
     onBankChanged(bank, item) {
@@ -96,12 +113,30 @@ export default class paymentController {
         item.bankBranch = bank.bankBranch;
     }
 
-    onFundChanged(fund, item){
+    onFundChanged(fund, item) {
         item.fundDisplay = fund.title;
     }
 
-    onBankChanged(bank, item){
+    onBankChanged(bank, item) {
         item.bankDisplay = bank.title;
+    }
+
+    onAmountChanged(item) {
+        if (!this.amount)
+            return;
+
+        let remainder = this.amount - (this.payment.asEnumerable()
+                .where(e => e != item) || 0).sum(e => e.amount);
+
+        if (item.amount > remainder)
+            item.amount = remainder;
+    }
+
+    getRemainder() {
+        if (!this.amount)
+            return 0;
+
+        return this.amount - (this.payment.asEnumerable().sum(e => e.amount) || 0);
     }
 
     save(form) {
@@ -115,7 +150,7 @@ export default class paymentController {
 
         this.errors.asEnumerable().removeAll();
 
-        if (payment.asEnumerable().sum(item => item.amount) > this.totalPrice.amount) {
+        if (this.amount != 0 && payment.asEnumerable().sum(item => item.amount) > this.amount) {
             logger.error(this.translate('The sum of the amount You entered is more than the amount'));
             return;
         }

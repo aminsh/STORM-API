@@ -90,6 +90,10 @@ let products = {
     getAll: ()=> `${rootUrl()}/products`
 };
 
+let scale = {
+    getAll: ()=> `${rootUrl()}/scales`
+};
+
 let productCategory = {
     getAll: ()=> `${rootUrl()}/product-categories`
 };
@@ -120,8 +124,8 @@ let apiUrls = {
     sales:sales,
     purchase:purchase,
     products,
+    scale,
     productCategory,
-    fund,
     people,
     fund,
     receivableCheques,

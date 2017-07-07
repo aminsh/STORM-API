@@ -83,6 +83,7 @@ router.route('/default/chart-of-accounts')
                     groupingType: g.key,
                     balanceType: gla.balanceType,
                     postingType: gla.postingType,
+                    isLocked: gla.isLocked,
                     branchId
                 };
 
@@ -93,6 +94,7 @@ router.route('/default/chart-of-accounts')
                         title: sla.title,
                         code: sla.code,
                         generalLedgerAccountId: newGla.id,
+                        isLocked: sla.isLocked,
                         branchId
                     };
 
@@ -114,7 +116,11 @@ router.route('/:id')
         let generalLedgerAccountRepository = new GeneralLedgerAccountRepository(req.branchId),
             errors = [],
             cmd = req.body,
-            id = req.params.id;
+            id = req.params.id,
+            account = await(generalLedgerAccountRepository.findById(id));
+
+        if(account.isLocked)
+            errors.push('این حساب قفل است - امکان ویرایش وجود ندارد');
 
         if (string.isNullOrEmpty(cmd.code))
             errors.push(translate('The code is required'));
@@ -157,6 +163,9 @@ router.route('/:id')
             errors = [],
             cmd = req.body,
             gla = await(generalLedgerAccountRepository.findById(req.params.id));
+
+        if(gla.isLocked)
+            errors.push('این حساب قفل است - امکان حذف وجود ندارد');
 
         if (gla.subsidiaryLedgerAccounts.asEnumerable().any())
             errors

@@ -1,6 +1,6 @@
 import Guid from "guid";
 
-export default class purchaseController {
+export default class SalesInvoiceController {
     constructor(navigate,
                 devConstants,
                 purchaseApi,
@@ -42,22 +42,26 @@ export default class purchaseController {
             description: '',
             invoiceLines: [],
             detailAccountId: '',
-            sumPaidAmount: null,
-            sumRemainder: null,
-            sumTotalPrice: null
+            sumPaidAmount:null,
+            sumRemainder:null,
+            sumTotalPrice:null,
         };
 
-        this.isLoading = false;
         this.isPayment = false;
-        this.isSaving = false;
 
         this.id = this.$state.params.id;
 
+
+
         if (this.id != undefined) {
+            this.purchaseApi.payments(this.id).then(result=>{
+                console.log(result);
+                this.payments=result;
+            });
+
             this.editMode = true;
         } else {
 
-            this.isLoading = false;
             this.invoice = {
                 number: null,
                 date: localStorage.getItem('today'),
@@ -77,7 +81,6 @@ export default class purchaseController {
 
 
         if (this.editMode) {
-            this.isSaving = true;
             this.purchaseApi.getById(this.id)
                 .then(result => {
                     this.invoice = result
@@ -92,6 +95,58 @@ export default class purchaseController {
     }
 
 
+    canShow(status,command){
+
+        if(status=="waitForPayment"){
+            if(command=="draft"){
+                return false;
+            }
+            if(command=="confirm"){
+                return false;
+            }
+            if(command=="payment"){
+                return true;
+            }
+        }
+
+        if(status=="paid")
+        {
+            if(command=="draft"){
+                return false;
+            }
+            if(command=="confirm"){
+                return false;
+            }
+            if(command=="payment"){
+                return false;
+            }
+        }
+        if(status=="confirm")
+        {
+            if(command=="draft"){
+                return true;
+            }
+            if(command=="confirm"){
+                return true;
+            }
+            if(command=="payment"){
+                return false;
+            }
+        }
+
+        if(status=="draft")
+        {
+            if(command=="draft"){
+                return true;
+            }
+            if(command=="confirm"){
+                return true;
+            }
+            if(command=="payment"){
+                return false;
+            }
+        }
+    }
     removeInvoiceLine(item) {
         this.invoice.invoiceLines.asEnumerable().remove(item);
     }
@@ -109,7 +164,7 @@ export default class purchaseController {
     }
 
     onProductChanged(item, product) {
-        item.productId = product.id;
+        item.productId=product.id;
         item.description = product.title;
         item.unitPrice = product.salePrice;
     }
@@ -149,6 +204,7 @@ export default class purchaseController {
     }
 
     saveInvoice(form, status) {
+
         let logger = this.logger,
             formService = this.formService,
             errors = this.errors,
@@ -161,6 +217,7 @@ export default class purchaseController {
             invoice.status = 'confirm';
         }
 
+
         if (form.$invalid) {
             formService.setDirty(form);
             Object.keys(form).asEnumerable()
@@ -172,11 +229,13 @@ export default class purchaseController {
 
         errors.asEnumerable().removeAll();
 
+        this.isSaving = true;
+
         if (this.editMode == true) {
             return this.purchaseApi.update(invoice.id, invoice)
                 .then(result => {
                     logger.success();
-                    this.isLoading = true;
+                    //this.isLoading = true;
                     this.purchaseApi.getById(invoice.id).then(result => {
                         if (result.status == 'waitForPayment') {
                             this.isPayment = true;
@@ -184,15 +243,15 @@ export default class purchaseController {
                     })
                 })
                 .catch(err => errors = err)
-                .finally(() => this.isSaving = true);
+                .finally(() =>this.isSaving = false);
         } else {
 
             return this.purchaseApi.create(invoice)
                 .then(result => {
                     logger.success();
                     invoice.id = result.id;
-                    this.isLoading = true;
-                    this.isSaving = true;
+                    //this.isLoading = true;
+                    //this.isSaving = true;
                     this.purchaseApi.getById(invoice.id).then(result => {
                         this.$state.go('^.edit', {
                             id: invoice.id
@@ -200,25 +259,26 @@ export default class purchaseController {
                     })
                 })
                 .catch(err => errors = err)
-                .finally(() => this.isSaving = true);
+                .finally(() => this.isSaving = false);
         }
     }
 
     cashPaymentShow() {
-        if (this.invoice.sumRemainder == null)
-            this.invoice.sumRemainder = this.invoice.sumTotalPrice;
+
+        if(this.invoice.sumRemainder==null)
+            this.invoice.sumRemainder=this.invoice.sumTotalPrice;
 
         this.createPaymentService.show({
             amount: this.invoice.sumRemainder,
-            receiveOrPay: 'pay'
+            receiveOrPay: 'receive'
         }).then(result => {
             return this.purchaseApi.pay(this.invoice.id, result)
-                .then(() => {
+                .then(result => {
                     this.logger.success();
-                    this.isLoading = true;
+                    //this.isLoading = true;
                 })
                 .catch(err => this.errors = err)
-                .finally(() => this.isSaving = true);
+                .finally();
         });
     }
 

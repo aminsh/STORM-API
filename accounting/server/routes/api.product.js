@@ -7,6 +7,13 @@ const async = require('asyncawait/async'),
     ProductRepository = require('../data/repository.product'),
     InvoiceRepository = require('../data/repository.invoice');
 
+router.route('/:id/summary/sale/by-month').get(async((req, res) => {
+    let productQuery = new ProductQuery(req.branchId),
+        result = await(productQuery.getTotalPriceAndCountByMonth(req.params.id, req.fiscalPeriodId));
+
+    res.json(result);
+}));
+
 router.route('/')
     .get(async((req, res) => {
         let productQuery = new ProductQuery(req.branchId),
@@ -23,7 +30,8 @@ router.route('/')
                 productType: cmd.productType,
                 reorderPoint: cmd.reorderPoint,
                 salePrice: cmd.salePrice,
-                categoryId: cmd.categoryId
+                categoryId: cmd.categoryId,
+                scaleId: cmd.scaleId
             };
 
         await(productRepository.create(entity));
@@ -47,7 +55,8 @@ router.route('/:id')
                 title: cmd.title,
                 reorderPoint: cmd.reorderPoint,
                 salePrice: cmd.salePrice,
-                categoryId: cmd.categoryId
+                categoryId: cmd.categoryId,
+                scaleId: cmd.scaleId
             };
 
         entity = await(productRepository.update(req.params.id, entity));

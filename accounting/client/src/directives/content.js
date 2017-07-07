@@ -1,6 +1,5 @@
-import accModule from '../acc.module';
 
-function content() {
+export function content() {
     return {
         restrict: 'E',
         templateUrl: 'partials/templates/content-template.html',
@@ -26,24 +25,32 @@ function content() {
     };
 }
 
-accModule
-    .directive('devTagContent', content)
-    .directive('devTagContentHeading', function () {
-        return {
-            restrict: 'E',
-            template: `<div class="ibox-title panel-primary" ng-transclude></div>`,
-            transclude: true,
-            replace: true
-        };
-    })
-    .directive('devTagContentBody', function ($parse) {
-        return {
-            restrict: 'E',
-            template: `<div class="ibox-content" ng-transclude></div>`,
-            transclude: true,
-            replace: true,
-            link(scope, element, attrs){
-                const waitingTags = `<div class="sk-spinner sk-spinner-wave">
+export function heading () {
+    return {
+        restrict: 'E',
+        template: `<div class="ibox-title panel-primary" ng-transclude></div>`,
+        transclude: true,
+        replace: true
+    };
+}
+
+export function footer () {
+    return {
+        restrict: 'E',
+        template: `<div class="ibox-footer" ng-transclude></div>`,
+        transclude: true,
+        replace: true
+    };
+}
+
+export function body ($parse) {
+    return {
+        restrict: 'E',
+        template: `<div class="ibox-content" ng-transclude></div>`,
+        transclude: true,
+        replace: true,
+        link(scope, element, attrs){
+            const waitingTags = `<div class="sk-spinner sk-spinner-wave">
                                 <div class="sk-rect1"></div>
                                 <div class="sk-rect2"></div>
                                 <div class="sk-rect3"></div>
@@ -51,22 +58,14 @@ accModule
                                 <div class="sk-rect5"></div>
                             </div>`;
 
-                $(element).append(waitingTags);
+            $(element).append(waitingTags);
 
-                scope.$watch(attrs.isLoading, newValue => {
-                   if(newValue)
-                       $(element).addClass('sk-loading');
-                   else
-                       $(element).removeClass('sk-loading');
-                });
-            }
-        };
-    })
-    .directive('devTagContentFooter', function () {
-        return {
-            restrict: 'E',
-            template: `<div class="ibox-footer" ng-transclude></div>`,
-            transclude: true,
-            replace: true
-        };
-    });
+            scope.$watch(attrs.isLoading, newValue => {
+                if(newValue)
+                    $(element).addClass('sk-loading');
+                else
+                    $(element).removeClass('sk-loading');
+            });
+        }
+    };
+}

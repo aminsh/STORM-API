@@ -13,7 +13,7 @@ function generalLedgerAccountView(entity) {
         balanceTypeDisplay: entity.balanceType ? enums.AccountBalanceType().getDisplay(entity.balanceType) : '',
         groupingTypeDisplay: entity.groupingType ? enums.AccountGroupingType().getDisplay(entity.groupingType) : '',
         description: entity.description,
-        isActive: entity.isActive
+        isLocked: entity.isLocked
     };
 
     return viewModel;

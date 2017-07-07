@@ -172,4 +172,11 @@ enums.ReceiveOrPay = function () {
     ]);
 };
 
+enums.UserRole = function () {
+    return new Enum([
+        {key: 'admin'},
+        {key: 'customer'}
+    ]);
+}
+
 module.exports = enums;

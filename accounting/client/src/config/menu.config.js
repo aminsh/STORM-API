@@ -100,14 +100,8 @@ accModule.config(menuItemsProvider => {
                     icon: ''
                 },
                 {
-                    title: 'بانک',
-                    url: 'bank',
-                    icon: ''
-                },
-                {
-                    title: 'صندوق',
-                    url: 'funds',
-                    icon: ''
+                    title: 'بانک و صندوق',
+                    url: 'banks-and-funds'
                 }
             ]
         });

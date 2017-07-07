@@ -31,7 +31,7 @@ app.use((req, res, next) => {
 
         let currentPeriod = req.cookies['current-period'];
 
-        if (currentPeriod == null || currentPeriod == 0 || isNaN(currentPeriod)) {
+        if (currentPeriod == null || currentPeriod == 0) {
             let fiscalPeriodQuery = new FiscalPeriodQuery(req.branchId),
                 maxId = await(fiscalPeriodQuery.getMaxId());
             maxId = maxId || 0;
@@ -73,4 +73,5 @@ app.use('/transfer-money', require('../accounting/server/routes/api.moneyTransfe
 app.use('/receive', require('../accounting/server/routes/api.receive'));
 app.use('/pay', require('../accounting/server/routes/api.pay'));
 app.use('/bank-and-fund', require('../accounting/server/routes/api.bankAndFund'));
+app.use('/api/scales', require('../accounting/server/routes/api.scale'));
 

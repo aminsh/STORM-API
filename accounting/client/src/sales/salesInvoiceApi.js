@@ -26,6 +26,9 @@ function salesInvoiceApi(apiPromise,devConstants) {
         pay: function (id,data) {
             return apiPromise.post(`${urlPrefix}/sales/${id}/pay`,data);
         },
+        payments:function (id) {
+            return apiPromise.get(`${urlPrefix}/sales/${id}/payments`);
+        },
         summary(){
             return apiPromise.get(`${urlPrefix}/sales/summary`);
         },

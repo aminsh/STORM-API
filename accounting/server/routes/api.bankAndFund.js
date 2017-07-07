@@ -13,4 +13,12 @@ router.route('/summary')
         res.json(result);
     }));
 
+router.route('/')
+    .get(async((req, res)=> {
+        let bankAndFundQuery = new BankAndFundQuery(req.branchId),
+            result = await(bankAndFundQuery.getAll(req.fiscalPeriodId));
+
+        res.json(result);
+    }));
+
 module.exports = router;
