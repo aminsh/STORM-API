@@ -30,7 +30,8 @@ router.route('/')
                 productType: cmd.productType,
                 reorderPoint: cmd.reorderPoint,
                 salePrice: cmd.salePrice,
-                categoryId: cmd.categoryId
+                categoryId: cmd.categoryId,
+                scaleId: cmd.scaleId
             };
 
         await(productRepository.create(entity));
@@ -54,7 +55,8 @@ router.route('/:id')
                 title: cmd.title,
                 reorderPoint: cmd.reorderPoint,
                 salePrice: cmd.salePrice,
-                categoryId: cmd.categoryId
+                categoryId: cmd.categoryId,
+                scaleId: cmd.scaleId
             };
 
         entity = await(productRepository.update(req.params.id, entity));

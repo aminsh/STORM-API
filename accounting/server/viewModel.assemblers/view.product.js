@@ -12,6 +12,7 @@ function productAssembler(entity) {
         reorderPoint: entity.reorderPoint,
         salePrice: entity.salePrice,
         categoryId: entity.categoryId,
+        scaleId: entity.scaleId,
         sumDiscount: entity.sumDiscount,
         sumQuantity: entity.sumQuantity,
         costOfGood: entity.costOfGood,

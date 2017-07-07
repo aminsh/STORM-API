@@ -47,7 +47,7 @@
         </div>
 
         <div class="row">
-            <div class="form-group col-md-12">
+            <div class="form-group col-md-8">
                 <label class="label-control">{{'Product category' | translate}}</label>
                 <dev-tag-combo-box name="categoryId"
                                    k-placeholder="{{'Select ...'|translate}}"
@@ -58,6 +58,19 @@
                                    show-no-data-template
                                    ng-model="model.product.categoryId"
                                    url="{{model.getAllProductCategoryUrl}}"></dev-tag-combo-box>
+            </div>
+
+            <div class="form-group col-md-4">
+                <label class="label-control">{{'Scale' | translate}}</label>
+                <dev-tag-combo-box name="scaleId"
+                                   k-placeholder="{{'Select ...'|translate}}"
+                                   k-data-value-field="id"
+                                   k-data-text-field="title"
+                                   k-on-created="model.onScaleCreated($search)"
+                                   k-on-changed="model.onScaleChanged($item)"
+                                   show-no-data-template
+                                   ng-model="model.product.scaleId"
+                                   url="{{model.getAllScaleUrl}}"></dev-tag-combo-box>
             </div>
         </div>
 
