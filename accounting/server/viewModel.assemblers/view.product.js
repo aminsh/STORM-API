@@ -13,6 +13,7 @@ function productAssembler(entity) {
         salePrice: entity.salePrice,
         categoryId: entity.categoryId,
         scaleId: entity.scaleId,
+        scaleDisplay: entity.scaleDisplay,
         sumDiscount: entity.sumDiscount,
         sumQuantity: entity.sumQuantity,
         costOfGood: entity.costOfGood,

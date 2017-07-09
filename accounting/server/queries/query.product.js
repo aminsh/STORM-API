@@ -19,9 +19,16 @@ module.exports = class ProductQuery extends BaseQuery {
     }
 
     getAll(parameters) {
-        let query = this.knex.select()
-            .from('products')
-            .where('branchId', this.branchId);
+        let knex = this.knex,
+            branchId = this.branchId,
+            query = this.knex.select()
+            .from(function () {
+                this.select('products.*', knex.raw('scales.title as "scaleDisplay"'))
+                    .from('products')
+                    .leftJoin('scales', 'products.scaleId', 'scales.id')
+                    .where('products.branchId', branchId)
+                    .as('base');
+            });
         return kendoQueryResolve(query, parameters, view);
     }
 
@@ -67,6 +74,7 @@ module.exports = class ProductQuery extends BaseQuery {
 
             result = await(this.knex.select(
                 '*',
+                knex.raw('scales.title as "scaleDisplay"'),
                 knex.raw(`coalesce((${totalSalePrice}),0) as "sumTotalSalePrice"`),
                 knex.raw(`coalesce((${totalSaleDiscount}),0) as "sumDiscount"`),
                 knex.raw(`coalesce((${countOfSale}),0) as "countOnSale"`),
@@ -74,7 +82,8 @@ module.exports = class ProductQuery extends BaseQuery {
                 knex.raw(`coalesce((${costOfGood}),0) as "costOfGood"`)
             )
                 .from('products')
-                .where('branchId', branchId)
+                .leftJoin('scales', 'products.scaleId', 'scales.id')
+                .where('products.branchId', branchId)
                 .andWhere('id', id)
                 .first());
 
