@@ -16,6 +16,13 @@ class DetailAccountRepository extends BaseRepository {
             .first();
     }
 
+    findByReferenceId(referenceId){
+        return this.knex.table('detailAccounts')
+            .modify(this.modify, this.branchId)
+            .orWhere('referenceId', referenceId)
+            .first();
+    }
+
     findByCode(code, notEqualId) {
         let query = this.knex.table('detailAccounts')
             .modify(this.modify, this.branchId)

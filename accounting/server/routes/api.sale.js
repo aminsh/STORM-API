@@ -5,7 +5,10 @@ const async = require('asyncawait/async'),
     router = require('express').Router(),
     String = require('../utilities/string'),
     Guid = require('../services/shared').utility.Guid,
-    translate = require('../services/translateService'),
+    PersianDate = require('../services/persianDateService'),
+    SaleDomain = require('../domain/sale'),
+    DetailAccountDomain = require('../domain/detailAccount'),
+    ProductDomain = require('../domain/product'),
     InvoiceRepository = require('../data/repository.invoice'),
     ProductRepository = require('../data/repository.product'),
     InvoiceQuery = require('../queries/query.invoice'),
@@ -49,8 +52,9 @@ router.route('/')
 
     .post(async((req, res) => {
         let branchId = req.branchId,
-            invoiceRepository = new InvoiceRepository(branchId),
-            productRepository = new ProductRepository(branchId),
+            saleDomain = new SaleDomain(req.branchId),
+            detailAccountDomain = new DetailAccountDomain(req.branchId),
+            productDomain = new ProductDomain(req.branchId),
             settingRepository = new SettingRepository(branchId),
             cmd = req.body,
             errors = [],
@@ -61,23 +65,29 @@ router.route('/')
             errors.push('ردیف های فاکتور وجود ندارد');
         else checkLinesValidation();
 
-        if (String.isNullOrEmpty(cmd.date))
-            errors.push('تاریخ نباید خالی باشد');
+        let customer = detailAccountDomain.findPersonByIdOrCreate(cmd.customer);
 
-        if (Guid.isEmpty(cmd.detailAccountId) && Guid.isEmpty(cmd.customerId))
+        if (!customer)
             errors.push('مشتری نباید خالی باشد');
 
         function checkLinesValidation() {
-            cmd.invoiceLines.forEach(e => {
+            cmd.invoiceLines.forEach(async.result(e => {
+                e.product = productDomain.findByIdOrCreate(e.product);
+
+                if(e.product){
+                    e.productId = e.product.id;
+                    if(!e.description) e.description = e.product.title;
+                }
+
                 if (Guid.isEmpty(e.productId) && String.isNullOrEmpty(e.description))
                     errors.push('کالا یا شرح کالا نباید خالی باشد');
 
                 if (!(e.quantity && e.quantity != 0))
-                    errors.push('مقدار نباید خالی یا صفر باشد')
+                    errors.push('مقدار نباید خالی یا صفر باشد');
 
                 if (!(e.unitPrice && e.unitPrice != 0))
-                    errors.push('قیمت واحد نباید خالی یا صفر باشد')
-            });
+                    errors.push('قیمت واحد نباید خالی یا صفر باشد');
+            }));
         }
 
         if (cmd.status == 'paid') {
@@ -97,19 +107,17 @@ router.route('/')
 
             status = (cmd.status == 'confirm' || cmd.status == 'paid')
                 ? 'waitForPayment'
-                : 'draft',
+                : 'draft';
 
-            entity = createInvoice(
-                status,
-                cmd,
-                invoiceRepository,
-                productRepository),
+        cmd.date = cmd.date || PersianDate.current();
+        cmd.detailAccountId = customer.id;
+        cmd.status = status;
 
-            result = await(invoiceRepository.create(entity)),
+        let sale = saleDomain.create(cmd),
             returnValue = {
-                id: result.id, printUrl: `${stormConfig.url.origin}/print/?token=${Crypro.sign({
+                id: sale.id, printUrl: `${stormConfig.url.origin}/print/?token=${Crypro.sign({
                     branchId: req.branchId,
-                    id: result.id,
+                    id: sale.id,
                     reportId: 700
                 })}`
             };
@@ -117,7 +125,7 @@ router.route('/')
         res.json({isValid: true, returnValue});
 
         if (status == 'waitForPayment')
-            EventEmitter.emit('on-sale-created', result, current);
+            EventEmitter.emit('on-sale-created', sale, current);
 
         if (cmd.status == 'paid') {
 
@@ -128,7 +136,7 @@ router.route('/')
                         date: cmd.date,
                         amount: cmd.invoiceLines.asEnumerable().sum(e => (e.unitPrice * e.quantity) - e.discount + e.vat),
                         paymentType: 'receipt',
-                        invoiceId: result.id
+                        invoiceId: sale.id
                     };
 
                 await(paymentRepository.create(bankPayment));
@@ -136,10 +144,10 @@ router.route('/')
                 bankPayment.bankId = bankId;
                 EventEmitter.emit('on-receive-created',
                     [bankPayment],
-                    result.id,
+                    sale.id,
                     {branchId: req.branchId, fiscalPeriodId: req.fiscalPeriodId});
 
-                EventEmitter.emit('on-invoice-paid', result.id, req.branchId);
+                EventEmitter.emit('on-invoice-paid', sale.id, req.branchId);
             }), 1000);
         }
     }));
