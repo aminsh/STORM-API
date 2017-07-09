@@ -8,6 +8,7 @@
             <span data-toggle="popover" data-placement="top" data-trigger="hover"
                   data-original-title="" title="">مقدار</span>
             </td>
+            <td>واحد</td>
             <td>مبلغ واحد <span style="font-weight: normal">(ریال)</span></td>
             <td>تخفیف</td>
             <td>مالیات (9 درصد)</td>
@@ -23,13 +24,18 @@
 
             <td style="width: 30px; padding: 0px; vertical-align: middle; text-align: center;">{{item.row}}</td>
 
-            <td style="width: 50%; padding: 0px;" class="invoice-td">
+            <td style="width: 35%; padding: 0px;" class="invoice-td">
                 <span class="form-control input-grid-factor input-sm" style="height: 30px">{{item.description}}</span>
             </td>
 
             <td style="width: 120px; padding: 0px;" class="invoice-td">
                 <span class="form-control input-grid-factor input-sm">{{item.quantity}}</span>
             </td>
+
+            <td style="width: 120px; padding: 0px;" class="invoice-td">
+                <span class="form-control input-grid-factor input-sm">{{item.scale}}</span>
+            </td>
+
 
             <td style="width: 120px; padding: 0px;" class="invoice-td">
                 <span class="form-control input-grid-factor input-sm">{{item.unitPrice|number}}</span>
@@ -158,6 +164,7 @@
             <span data-toggle="popover" data-placement="top" data-trigger="hover"
                   data-original-title="" title="">مقدار</span>
             </td>
+            <td>واحد</td>
             <td>مبلغ واحد <span style="font-weight: normal">(ریال)</span></td>
             <td>تخفیف</td>
             <td>مالیات (9 درصد)</td>
@@ -188,7 +195,7 @@
                                    ng-model="item.productId"></dev-tag-combo-box>
             </td>
 
-            <td style="width: 30%; padding: 0px;">
+            <td style="width: 25%; padding: 0px;">
                 <dev-tag-text-box
                         style="height: 30px"
                         ng-model="item.description"
@@ -217,6 +224,10 @@
                         {{'Item quantity is not allowed to be zero'|translate}}
                     </label>
                 </div>
+            </td>
+
+            <td style="width: 120px; padding: 0px;" class="invoice-td">
+                <span class="form-control input-grid-factor input-sm">{{item.scale}}</span>
             </td>
 
             <td style="width: 120px; padding: 0px;" class="invoice-td">
