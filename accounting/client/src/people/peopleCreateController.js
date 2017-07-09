@@ -29,7 +29,7 @@ export default class peopleCreateController {
             economicCode: '',
             email: '',
             personType: null,
-            code:null
+            referenceId:null
         };
         this.personType = devConstants.enums.PersonType().data;
         this.editMode = false;
