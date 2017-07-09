@@ -165,7 +165,7 @@ export default class SalesInvoiceController {
         item.productId = product.id;
         item.description = product.title;
         item.unitPrice = product.salePrice;
-        item.scale=product.scaleDisplay;
+        item.scale = product.scaleDisplay;
     }
 
     createNewCustomer(title) {
@@ -209,9 +209,12 @@ export default class SalesInvoiceController {
             errors = this.errors,
             invoice = this.invoice;
 
-        invoice.customer={
-            id:invoice.detailAccountId
+        invoice.customer = {
+            id: invoice.detailAccountId
         };
+
+        invoice.invoiceLines.forEach(line => line.product = {id: line.productId});
+
         if (status)
             invoice.status = status;
 
