@@ -8,16 +8,24 @@
     <form name="form">
         <dev-tag-validation-summary errors="model.errors" class="col-md-8"></dev-tag-validation-summary>
         <div class="row">
-            <div class="col-sm-12">
+            <div class="col-sm-6">
                 <div class="form-group">
                     <label for="inputName" class="title1">{{'name'| translate}}</label>
                     <input type="text" class="form-control input-sm" id="inputName" ng-model="model.people.title"
                            name="title" required
                            aria-describedby="inputNamehelp">
-                    <span id="inputNamehelp" class="help-block small">{{'person,company,...'| translate}}</span>
+                    <span class="help-block small">{{'person,company,...'| translate}}</span>
                     <div ng-messages="form.title.$error" ng-if="form.title.$dirty">
                         <label ng-message="required" class="error">{{'This field is required'|translate}}</label>
                     </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label for="inputName" class="title1">{{'Reference Code'| translate}}</label>
+                    <input type="text" class="form-control input-sm" ng-model="model.people.code"
+                           name="title">
+                    <span class="help-block small text text-success">{{'For communication with other systems'| translate}}</span>
                 </div>
             </div>
         </div>

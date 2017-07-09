@@ -8,7 +8,7 @@ export default class ProductController {
         this.gridOption = {
             columns: [
                 {
-                    name: 'code', title: translate('Code'), width: '10%',
+                    name: 'code', title: translate('Reference Code'), width: '10%',
                 },
                 {
                     name: 'title',
