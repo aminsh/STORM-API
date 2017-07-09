@@ -16,6 +16,8 @@ module.exports = class InvoicesQuery extends BaseQuery {
 
         return knex.select(knex.raw(`invoices."number" as "number", invoices."date" as "date",
         invoices.description as "invoiceDescription",
+        scales.title as "scaleTitle",
+        "invoiceLines".quantity || ' ' || scales.title as "amount",
         invoices."invoiceType" as "invoiceType",
         "invoiceLines".quantity as quantity, "invoiceLines"."unitPrice" as "unitPrice",
         "invoiceLines".vat as vat,"invoiceLines".discount as discount,
@@ -34,6 +36,7 @@ module.exports = class InvoicesQuery extends BaseQuery {
             .leftJoin('invoiceLines', 'invoices.id', 'invoiceLines.invoiceId')
             .leftJoin('detailAccounts', 'detailAccounts.id', 'invoices.detailAccountId')
             .leftJoin('products', 'products.id', 'invoiceLines.productId')
+            .leftJoin('scales','products.scaleId','scales.id')
             .as('Invoice');
     }
 };

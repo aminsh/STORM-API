@@ -164,9 +164,11 @@ export default class SalesInvoiceController {
     }
 
     onProductChanged(item, product) {
+        console.log(product);
         item.productId=product.id;
         item.description = product.title;
         item.unitPrice = product.salePrice;
+        item.scale=product.scaleDisplay;
     }
 
     createNewCustomer(title) {
@@ -209,7 +211,9 @@ export default class SalesInvoiceController {
             formService = this.formService,
             errors = this.errors,
             invoice = this.invoice;
-
+            invoice.customer={
+                id:invoice.detailAccountId
+            };
         if (status)
             invoice.status = status;
 
