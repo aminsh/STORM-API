@@ -13,7 +13,7 @@ function generalLedgerAccountsController($scope, logger, translate, confirm, dev
                 title: '',
                 width: '50px',
                 filterable: false,
-                template: '<i class="fa fa-lock fa-lg"></i>'
+                template: '<i ng-if="item.isLocked" class="fa fa-lock fa-lg"></i>'
             },
             {
                 name: 'code',
@@ -95,7 +95,7 @@ function generalLedgerAccountsController($scope, logger, translate, confirm, dev
                 title: '',
                 width: '50px',
                 filterable: false,
-                template: '<i class="fa fa-lock fa-lg"></i>'
+                template: '<i ng-if="item.isLocked" class="fa fa-lock fa-lg"></i>'
             },
             {name: 'code', title: translate('Code'), type: 'string'},
             {
