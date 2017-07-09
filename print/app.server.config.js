@@ -5,6 +5,7 @@ const async = require('asyncawait/async'),
     express = require('express'),
     ejs = require('ejs'),
     app = express(),
+    translates = require('../accounting/server/config/translate.client.fa.json'),
     config = require('../accounting/server/config'),
     reports = require('../accounting/reporting/report.config.json'),
     Crypto = require('../shared/services/cryptoService');
@@ -46,5 +47,6 @@ app.use(async((req, res, next) => {
 
 app.get('*', (req, res) => res.render('print.ejs', {
     reports,
-    version: config.version
+    version: config.version,
+    translates
 }));

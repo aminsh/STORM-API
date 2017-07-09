@@ -11,7 +11,7 @@ module.exports = (req, res, next) => {
 
     res.locals = {
         today: persianDate.current(),
-        clientTranslation : translation,
+        translation,
         currentUser: req.user,
         version: config.version,
         reports: reports,
