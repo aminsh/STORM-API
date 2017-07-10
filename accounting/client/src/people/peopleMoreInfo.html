@@ -44,7 +44,7 @@
                                 </li>
                                 <li class="list-group-item">
                                     <h4 class="pull-right">
-                                        {{model.people.sumPrice|number}}
+                                        {{model.people.sumSaleAmount|number}}
                                     </h4>
                                     <span class="font-bold">{{'Total purchase amount'| translate}}</span>
                                 </li>
@@ -60,15 +60,23 @@
                             <ul class="list-group clear-list m-t">
                                 <li class="list-group-item fist-item">
                                     <h4 class="pull-right text-success">
-                                        {{model.people.sumPaid| number}}
+                                        {{model.people.sumDebtor| number}}
                                     </h4>
-                                    <span class="font-bold">{{'Total paid amount'| translate}}</span>
+                                    <span class="font-bold">{{'Debtor'| translate}}</span>
                                 </li>
                                 <li class="list-group-item">
                                     <h4 class="pull-right text-danger">
-                                        {{model.people.sumRemainder|number}}
+                                        {{model.people.sumCreditor|number}}
                                     </h4>
-                                    <span class="font-bold">{{'Total amount of debt'| translate}}</span>
+                                    <span class="font-bold">{{'Creditor'| translate}}</span>
+                                </li>
+                                <li class="list-group-item">
+                                    <h4 class="pull-right " ng-class="{
+                                    'text-danger': model.people.sumDebtor-model.people.sumCreditor < 0,
+                                    'text-success':model.people.sumDebtor-model.people.sumCreditor >= 0}">
+                                        {{model.people.sumDebtor-model.people.sumCreditor|number}}
+                                    </h4>
+                                    <span class="font-bold">{{'Remainder'| translate}}</span>
                                 </li>
                             </ul>
                         </div>

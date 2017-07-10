@@ -19,58 +19,49 @@ module.exports = class PersonQuery extends BaseQuery {
             fiscalPeriodQuery = new FiscalPeriodQuery(this.branchId),
             fiscalPeriod = await(fiscalPeriodQuery.getById(fiscalPeriodId)),
 
-            detailAccountFields = [
-                'id',
-                'code',
-                'title',
-                'address',
-                'nationalCode',
-                'email',
-                'personType',
-                'economicCode',
-                'registrationNumber',
-                'province',
-                'city',
-                'postalCode'
-            ],
-
-            query = knex.select(
-                detailAccountFields
-                    .concat([
-                        knex.raw(`(select count(*) from invoices 
-                            where "detailAccountId" = base.id and "invoiceType" = 'sale'
+            entity = await(knex.select(
+                '*',
+                knex.raw(`(select count(*) from invoices 
+                            where "detailAccountId" = "detailAccounts".id and "invoiceType" = 'sale'
                             limit 1) as "countOfSale"`),
-                        knex.raw(`(select date from invoices 
-                            where "detailAccountId" = base.id and "invoiceType" = 'sale'
+
+                knex.raw(`(select date from invoices 
+                            where "detailAccountId" = "detailAccounts".id and "invoiceType" = 'sale'
                             order by date desc limit 1) as "lastSaleDate"`),
-                        knex.raw(`(select sum(("invoiceLines"."quantity" * "invoiceLines"."unitPrice") - "invoiceLines"."discount" + "invoiceLines"."vat") from invoices
+
+                knex.raw(`(select sum(("invoiceLines"."quantity" * "invoiceLines"."unitPrice") - "invoiceLines"."discount" + "invoiceLines"."vat") from invoices
                             left join "invoiceLines" on invoices.id = "invoiceLines"."invoiceId"
-                            where "detailAccountId" = base.id and "invoiceType" = 'sale' 
+                            where "detailAccountId" = "detailAccounts".id and "invoiceType" = 'sale' 
                             and date between '${fiscalPeriod.minDate}' and '${fiscalPeriod.maxDate}'
-                            limit 1) as "sumPrice"`),
-                        knex.raw(`sum(amount) as "sumPaid"`)
-                    ]))
-                .from(function () {
-                    this.select(
-                        'detailAccounts.*',
-                        'amount'
-                    )
-                        .from('invoices')
-                        .leftJoin('invoiceLines', 'invoices.id', 'invoiceLines.invoiceId')
-                        .leftJoin('detailAccounts', 'invoices.detailAccountId', 'detailAccounts.id')
-                        .leftJoin('payments', 'payments.invoiceId', 'invoices.id')
-                        .where('invoices.branchId', branchId)
-                        .andWhere('invoices.invoiceType', 'sale')
-                        .andWhereBetween('invoices.date', [fiscalPeriod.minDate, fiscalPeriod.maxDate])
-                        .andWhere('detailAccounts.id', id)
-                        .as('base');
-                })
-                .groupBy(detailAccountFields)
-                .first(),
+                            limit 1) as "sumSaleAmount"`),
 
-            result = await(query);
+                knex.raw(`(select sum(case when debtor > 0 then debtor else 0 * -1 end) as "sumDebtor"
+                                    from journals
+                                    left join "journalLines" on journals.id = "journalLines"."journalId"
+                                    left join "subsidiaryLedgerAccounts" 
+                                    on "journalLines"."subsidiaryLedgerAccountId" = "subsidiaryLedgerAccounts"."id"
+                                    where "journalLines"."detailAccountId" = "detailAccounts"."id" 
+                                    and "periodId" = '${fiscalPeriodId}'
+                                    and "subsidiaryLedgerAccounts".code in('1104', '2101')) as "sumDebtor"`),
 
-        result.sumRemainder = result.sumPrice - result.sumPaid;
+                knex.raw(`(select sum(case when creditor > 0 then creditor else 0 * -1 end) as "sumCreditor"
+                                    from journals
+                                    left join "journalLines" on journals.id = "journalLines"."journalId"
+                                    left join "subsidiaryLedgerAccounts" 
+                                    on "journalLines"."subsidiaryLedgerAccountId" = "subsidiaryLedgerAccounts"."id"
+                                    where "journalLines"."detailAccountId" = "detailAccounts"."id" 
+                                    and "periodId" = '${fiscalPeriodId}'
+                                    and "subsidiaryLedgerAccounts".code in('1104', '2101')) as "sumCreditor"`)
+            )
+                .from('detailAccounts')
+                .where('branchId', branchId)
+                .where('id', id)
+                .first()),
+
+
+            result = {
+
+            }
 
         return result;
 

@@ -31,7 +31,8 @@ router.route('/')
                 reorderPoint: cmd.reorderPoint,
                 salePrice: cmd.salePrice,
                 categoryId: cmd.categoryId,
-                scaleId: cmd.scaleId
+                scaleId: cmd.scaleId,
+                referenceId: cmd.referenceId
             };
 
         await(productRepository.create(entity));
