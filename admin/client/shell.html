@@ -1,4 +1,4 @@
-<div>
+<!--<div>
 
     <div id="page-wrapper" class="gray-bg dashbard-1">
         <div class="row border-bottom">
@@ -32,5 +32,24 @@
         </div>
 
 
+    </div>
+</div>-->
+
+
+<div class="wrapper wrapper-content  animated fadeInRight">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox">
+                <div class="ibox-content">
+                    <div class="clients-list">
+                        <ul class="nav nav-tabs">
+                            <li ng-class="{'active' : tab == 1}"><a ui-sref="branches"><i class="fa fa-building"></i> Branches</a></li>
+                            <li ng-class="{'active' : tab == 2}"><a ui-sref="users"><i class="fa fa-user"></i>Users </a></li>
+                        </ul>
+                        <ui-view></ui-view>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>

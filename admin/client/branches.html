@@ -1,48 +1,91 @@
+<div class="tab-content">
+    <div id="tab-1" class="tab-pane active">
+        <div class="full-height-scroll" full-scroll>
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <tbody>
+                    <tr ng-repeat="item in model.branches">
+                        <td><img class="img-responsive img-circle img-small" width="100px" alt="image" ng-src="{{item.logo}}"> </td>
+                        <td>{{item.name}}</a></td>
+                        <td class="contact-type"><i class="fa fa-user"> </i></td>
+                        <td> {{item.ownerName}}</td>
+                        <td class="contact-type"><i class="fa fa-phone"></i></td>
+                        <td>{{item.phone}}</td>
+                        <td class="contact-type"><i class="fa fa-mobile"></i></td>
+                        <td>{{item.mobile}}</td>
+                        <td  class="contact-type"><i class="fa fa-home"></i></td>
+                        <td>{{item.address}}</td>
+                        <td class="client-status"><span ng-class="{'label label-primary':item.status=='active','label label-danger':item.status=='pending'}">{{item.status}}</span></td>
+                        <td>
+                            <dev-tag-button
+                                    ng-click="model.activate(item)"
+                                    icon="fa fa-ok"
+                                    style-type="white"
+                                    title="Activate"></dev-tag-button>
+                            <dev-tag-button
+                                    ng-click="model.deactivate(item)"
+                                    icon="fa fa-ok"
+                                    style-type="white"
+                                    title="Deactivate"></dev-tag-button>
 
-<dev-tag-content dev-attr-title="Branches">
-    <table class="table">
-        <thead>
-        <tr>
-            <th style="text-align: left"></th>
-            <th style="text-align: left">Id</th>
-            <th style="text-align: left">Name</th>
-            <th style="text-align: left">Phone</th>
-            <th style="text-align: left">Mobile</th>
-            <th style="text-align: left">Addrss</th>
-            <th style="text-align: left">Website</th>
-            <th style="text-align: left">Status</th>
-            <th style="text-align: left"></th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr ng-repeat="item in model.branches">
-            <td><img ng-src="{{item.logo}}" width="100px"></td>
-            <td>{{item.id}}</td>
-            <td>{{item.name}}</td>
-            <td>{{item.phone}}</td>
-            <td>{{item.mobile}}</td>
-            <td>{{item.address}}</td>
-            <td>{{item.website}}</td>
-            <td>{{item.status}}</td>
-            <td>
-                <dev-tag-button
-                        ng-click="model.activate(item)"
-                        icon="fa fa-ok"
-                        style-type="white"
-                        title="Activate"></dev-tag-button>
-                <dev-tag-button
-                        ng-click="model.deactivate(item)"
-                        icon="fa fa-ok"
-                        style-type="white"
-                        title="Deactivate"></dev-tag-button>
+                            <dev-tag-button
+                                    ng-click="model.addMe(item)"
+                                    icon="fa fa-plus"
+                                    style-type="white"
+                                    title="Add Me"></dev-tag-button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
 
-                <dev-tag-button
-                        ng-click="model.addMe(item)"
-                        icon="fa fa-plus"
-                        style-type="white"
-                        title="Add Me"></dev-tag-button>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-</dev-tag-content>
+<!--<dev-tag-content dev-attr-title="Branches">-->
+    <!--<table class="table">-->
+        <!--<thead>-->
+        <!--<tr>-->
+            <!--<th style="text-align: left"></th>-->
+            <!--<th style="text-align: left">Id</th>-->
+            <!--<th style="text-align: left">Name</th>-->
+            <!--<th style="text-align: left">Phone</th>-->
+            <!--<th style="text-align: left">Mobile</th>-->
+            <!--<th style="text-align: left">Addrss</th>-->
+            <!--<th style="text-align: left">Website</th>-->
+            <!--<th style="text-align: left">Status</th>-->
+            <!--<th style="text-align: left"></th>-->
+        <!--</tr>-->
+        <!--</thead>-->
+        <!--<tbody>-->
+        <!--<tr ng-repeat="item in model.branches">-->
+            <!--<td><img ng-src="{{item.logo}}" width="100px"></td>-->
+            <!--<td>{{item.id}}</td>-->
+            <!--<td>{{item.name}}</td>-->
+            <!--<td>{{item.phone}}</td>-->
+            <!--<td>{{item.mobile}}</td>-->
+            <!--<td>{{item.address}}</td>-->
+            <!--<td>{{item.website}}</td>-->
+            <!--<td>{{item.status}}</td>-->
+            <!--<td>-->
+                <!--<dev-tag-button-->
+                        <!--ng-click="model.activate(item)"-->
+                        <!--icon="fa fa-ok"-->
+                        <!--style-type="white"-->
+                        <!--title="Activate"></dev-tag-button>-->
+                <!--<dev-tag-button-->
+                        <!--ng-click="model.deactivate(item)"-->
+                        <!--icon="fa fa-ok"-->
+                        <!--style-type="white"-->
+                        <!--title="Deactivate"></dev-tag-button>-->
+
+                <!--<dev-tag-button-->
+                        <!--ng-click="model.addMe(item)"-->
+                        <!--icon="fa fa-plus"-->
+                        <!--style-type="white"-->
+                        <!--title="Add Me"></dev-tag-button>-->
+            <!--</td>-->
+        <!--</tr>-->
+        <!--</tbody>-->
+    <!--</table>-->
+<!--</dev-tag-content>-->

@@ -1,18 +1,42 @@
-<dev-tag-content dev-attr-title="Users">
-    <table class="table">
-        <thead>
-        <tr>
-            <th style="text-align: left">Id</th>
-            <th style="text-align: left">Email</th>
-            <th style="text-align: left">Name</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr ng-repeat="user in model.users">
-            <td>{{user.id}}</td>
-            <td>{{user.email}}</td>
-            <td>{{user.name}}</td>
-        </tr>
-        </tbody>
-    </table>
-</dev-tag-content>
+
+<div class="tab-content">
+    <div id="tab-1" class="tab-pane active">
+        <div class="full-height-scroll" full-scroll>
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <tbody>
+                    <tr ng-repeat="user in model.users">
+                        <td><img class="img-responsive img-circle img-small" width="100px" alt="image" ng-src="{{user.image}}"> </td>
+                        <td>{{user.name}}</td>
+                        <td><i class="fa fa-email"></i> <a ng-href="mailto:{{user.email}}">{{user.email}}</a> </td>
+                        <td class="client-status"><span ng-class="{'label label-primary':user.state=='active','label label-danger':user.state=='pending'}">{{user.state}}</span></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<!--<dev-tag-content dev-attr-title="Users">-->
+    <!--<table class="table">-->
+        <!--<thead>-->
+        <!--<tr>-->
+            <!--<th style="text-align: left">Id</th>-->
+            <!--<th style="text-align: left">Email</th>-->
+            <!--<th style="text-align: left">Name</th>-->
+        <!--</tr>-->
+        <!--</thead>-->
+        <!--<tbody>-->
+        <!--<tr ng-repeat="user in model.users">-->
+            <!--<td>{{user.id}}</td>-->
+            <!--<td>{{user.email}}</td>-->
+            <!--<td>{{user.name}}</td>-->
+        <!--</tr>-->
+        <!--</tbody>-->
+    <!--</table>-->
+<!--</dev-tag-content>-->

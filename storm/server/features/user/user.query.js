@@ -10,7 +10,7 @@ module.exports = class {
     }
 
     getAll(){
-        return knex.select('id', 'name', 'email')
+        return knex.select('id', 'name', 'email','image','state')
             .from('users');
     }
 

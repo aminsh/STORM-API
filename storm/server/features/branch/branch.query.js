@@ -19,13 +19,13 @@ class BranchQuery {
     }
 
     getAll() {
-        return knex.select('id', 'name', 'logo', 'apiKey', 'status')
+        return knex.select('id', 'name', 'logo', 'apiKey', 'status','address','phone','mobile','webSite','ownerName')
             .from('branches')
             .orderBy('createdAt', 'desc');
     }
 
     getBranchesByUser(userId) {
-        let branch = await(knex.select('id', 'name', 'logo', 'apiKey', 'status')
+        let branch = await(knex.select('id', 'name', 'logo', 'apiKey', 'status','address','phone','mobile','webSite','ownerName')
                 .from('branches')
                 .where('ownerId', userId)
                 .andWhere('status', 'active')),
