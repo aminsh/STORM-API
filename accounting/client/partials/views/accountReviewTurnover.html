@@ -16,7 +16,16 @@
 
                 <span ng-if="$index == titleParameters.length -1">)</span>
             </span>
+
+
         </h5>
+
+        <dev-tag-button
+                ng-style="{position: 'relative',top: '-10px' ,  'margin-right': '10px'}"
+                ui-sref="account-review"
+                title="{{'Parameters' | translate}}"
+                style-type="primary "></dev-tag-button>
+
     </dev-tag-content-heading>
 
     <dev-tag-content-body>

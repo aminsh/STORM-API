@@ -67,8 +67,8 @@ function getAccountReviewInstance(req) {
     const filter = (req.query.extra) ? req.query.extra.filter : {};
     return new AccountReview(
         req.branchId,
-        req.cookies['current-period'],
-        req.cookies['current-mode'],
+        req.fiscalPeriodId,
+        req.mode,
         filter,
         req.query);
 }

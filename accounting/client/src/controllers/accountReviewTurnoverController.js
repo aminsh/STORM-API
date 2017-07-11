@@ -42,7 +42,7 @@ function accountReviewTurnoverController($scope,
             key: 'detailAccount',
             display: translate('Detail account')
         },
-        {
+        /*{
             order: 4,
             key: 'dimension1',
             display: translate('Dimension1')
@@ -51,7 +51,7 @@ function accountReviewTurnoverController($scope,
             order: 5,
             key: 'dimension2',
             display: translate('Dimension2')
-        }
+        }*/
     ]
         .asEnumerable()
         .where(c => c.key != reportName)
@@ -228,9 +228,23 @@ function accountReviewTurnoverGridOptionService(translate, devConstants) {
             title: translate('Remainder'),
             type: 'number',
             width: '15%',
-            template: '{{item.sumRemainder | number}}',
+            template: `<span 
+class="text-success" 
+ng-if="item.sumRemainder >= 0"
+style="font-weight: bold">{{item.sumRemainder | number}}</span>
+            <span 
+            class="text-danger" 
+            ng-if="item.sumRemainder < 0"
+            style="font-weight: bold">({{item.sumRemainder*-1 | number}})</span>`,
             aggregates: ['sum'],
-            footerTemplate: '{{aggregates.sumRemainder.sum | number}}'
+            footerTemplate: `<span 
+class="text-success" 
+ng-if="aggregates.sumRemainder.sum >= 0"
+style="font-weight: bold">{{aggregates.sumRemainder.sum | number}}</span>
+            <span 
+            class="text-danger" 
+            ng-if="aggregates.sumRemainder.sum < 0"
+            style="font-weight: bold">({{aggregates.sumRemainder.sum*-1 | number}})</span>`
         }
     ];
 
@@ -375,7 +389,7 @@ function accountReviewTurnoverGridOptionService(translate, devConstants) {
                 type: 'string',
                 width: '100px'
             },
-            {
+            /*{
                 name: 'dimension2Code',
                 title: translate('Dimension2'),
                 type: 'string',
@@ -386,24 +400,27 @@ function accountReviewTurnoverGridOptionService(translate, devConstants) {
                 title: translate('Dimension1'),
                 type: 'string',
                 width: '70px'
-            },
+            },*/
             {
                 name: 'detailAccountCode',
                 title: translate('Detail account'),
                 type: 'string',
-                width: '70px'
+                width: '70px',
+                template: '<span title="{{item.detailAccountTitle}}">{{item.detailAccountCode ? item.detailAccountCode : item.detailAccountTitle}}</span>'
             },
             {
                 name: 'subsidiaryLedgerAccountCode',
                 title: translate('Subsidiary ledger account'),
                 type: 'string',
-                width: '50px'
+                width: '50px',
+                template: '<span title="{{item.subsidiaryLedgerAccountTitle}}">{{item.subsidiaryLedgerAccountCode}}</span>'
             },
             {
                 name: 'generalLedgerAccountCode',
                 title: translate('General ledger account'),
                 type: 'string',
-                width: '50px'
+                width: '50px',
+                template: '<span title="{{item.generalLedgerAccountTitle}}">{{item.generalLedgerAccountCode}}</span>'
             },
             {
                 name: 'sumDebtor',
