@@ -1,7 +1,6 @@
-import accModule from '../acc.module';
+import accModule from "../acc.module";
 
-function journalsController($scope, translate, journalApi, $state, logger,
-                            journalCreateModalControllerService,
+function journalsController($scope, translate, journalApi, $state,
                             journalAdvancedSearchModalService,
                             journalsExtraFilterResolve) {
 
@@ -20,8 +19,8 @@ function journalsController($scope, translate, journalApi, $state, logger,
             },
             {name: 'temporaryNumber', title: translate('Number'), width: '120px', type: 'number'},
             {name: 'temporaryDate', title: translate('Date'), type: 'date', width: '120px',},
-           /* {name: 'number', title: translate('Number'), width: '100px', type: 'number'},
-            {name: 'date', title: translate('Date'), type: 'date', width: '100px',},*/
+            /* {name: 'number', title: translate('Number'), width: '100px', type: 'number'},
+             {name: 'date', title: translate('Date'), type: 'date', width: '100px',},*/
             {
                 name: 'description', title: translate('Description'), type: 'string', width: '30%',
                 template: '<span title="{{item.description}}">{{item.description}}</span>'
@@ -65,15 +64,7 @@ function journalsController($scope, translate, journalApi, $state, logger,
         }
     };
 
-    $scope.create = () => {
-        journalCreateModalControllerService.show()
-            .then((result) => {
-                logger.success();
-                navigate('journalUpdate', {
-                    id: result.id
-                });
-            });
-    };
+    $scope.$on('fiscal-period-changed', () => $scope.gridOption.refresh());
 
     $scope.advancedSearch = () => {
         journalAdvancedSearchModalService.show()
@@ -90,10 +81,6 @@ function journalsController($scope, translate, journalApi, $state, logger,
         $scope.$broadcast('{0}/execute-advanced-search'
             .format($scope.gridOption.name), null);
     };
-
-    $scope.$on('$routeChangeStart', (next, current) => {
-        $scope.gridOption.saveState($scope.searchParameters);
-    });
 }
 
 accModule
