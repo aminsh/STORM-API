@@ -25,8 +25,7 @@ function journalsController($scope, translate, journalApi, $state, logger,
             {
                 name: 'description', title: translate('Description'), type: 'string', width: '30%',
                 template: '<span title="{{item.description}}">{{item.description}}</span>'
-            },
-            {name: 'createdBy', title: translate('User'), width: '100px', type: 'string'}
+            }
         ],
         commands: [
             {

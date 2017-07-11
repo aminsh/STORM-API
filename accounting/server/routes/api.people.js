@@ -37,7 +37,8 @@ router.route('/')
                 email: cmd.email,
                 personType: cmd.personType,
                 detailAccountType: 'person',
-                economicCode: cmd.economicCode
+                economicCode: cmd.economicCode,
+                referenceId: cmd.referenceId
             },
             errors = [];
 

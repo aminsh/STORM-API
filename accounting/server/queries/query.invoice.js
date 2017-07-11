@@ -52,24 +52,16 @@ module.exports = class InvoiceQuery extends BaseQuery {
                         'description')
                     .orderBy('number', 'desc')
 
-            }).first()), invoiceLines = await(knex.select('*')
+            }).first()),
+            invoiceLines = await(knex.select(
+                'invoiceLines.*',
+                knex.raw('scales.title as scale')
+            )
                 .from('invoiceLines')
-                .where('branchId', branchId)
+                .leftJoin('products', 'invoiceLines.productId', 'products.id')
+                .leftJoin('scales', 'products.scaleId', 'scales.id')
+                .where('invoiceLines.branchId', branchId)
                 .andWhere('invoiceId', id));
-
-
-        //
-        //  invoice = await(knex.select('invoices.*',
-        //     knex.raw('"detailAccounts"."title" as "detailAccountDisplay"'))
-        //     .from('invoices')
-        //     .leftJoin('detailAccounts', 'invoices.detailAccountId', 'detailAccounts.id')
-        //     .where('invoices.branchId', branchId)
-        //     .andWhere('invoices.id', id)
-        //     .first()),
-        // invoiceLines = await(knex.select('*')
-        //     .from('invoiceLines')
-        //     .where('branchId', branchId)
-        //     .andWhere('invoiceId', id));
 
         invoice.invoiceLines = invoiceLines.asEnumerable().select(lineView).toArray();
 

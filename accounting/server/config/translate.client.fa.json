@@ -110,6 +110,7 @@
   "Title": "عنوان",
   "Is active ?": "فعال است ؟",
   "Description": "توضیحات",
+  "Journal description": "شرح سند",
   "Posting type": "نوع حساب",
   "Balance type": "ماهیت حساب",
   "Remove current General ledger accounts": "حذف حساب کل جاری",
@@ -223,7 +224,7 @@
   "Journal number": "شماره سند",
   "Comparing income and outcome": "مقایسه درآمد و هزینه",
   "Journal grouped by months": "آمار اسناد به تفکیک ماه",
-  "Filter by": "فیلتر براساس",
+  "Filter by": "فیلتر براساس تفصیل",
   "Filter Date": "فیلتر تاریخ",
   "Filter Number": "فیلتر شماره",
   "Close report list": "بستن لیست گزارشات",
@@ -334,5 +335,7 @@
   "Bank and fund": "بانک و صندوق",
   "Scale": "واحد اندازه گیری",
   "New scale": "واحد انداره گیری جدید",
-  "Enter scale title": "عنوان واحد اندازه گیری را وارد کنید"
+  "Enter scale title": "عنوان واحد اندازه گیری را وارد کنید",
+  "Reference Code":"کد مرجع",
+  "For communication with other systems":"برای ارتباط با سایر سیستم ها"
 }

@@ -14,12 +14,13 @@ router.route('/')
         res.json(result);
     }))
     .post(async((req, res) => {
-        let tag = req.body,
-            tagRepository = new TagRepository(req.branchId);
+        let cmd = req.body,
+            tagRepository = new TagRepository(req.branchId),
+            entity = {title: cmd.title};
 
-        tag = await(tagRepository.create(tag));
+        await(tagRepository.create(entity));
 
-        res.json({isValid: true, returnValue: {id: tag.id}});
+        res.json({isValid: true, returnValue: {id: entity.id}});
     }));
 
 module.exports = router;

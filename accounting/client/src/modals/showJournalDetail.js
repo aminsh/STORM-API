@@ -34,7 +34,7 @@ function showJournalDetailController($scope, translate, $uibModalInstance, journ
                 name: 'detailAccountId',
                 title: translate('Detail account'),
                 type: 'detailAccount',
-                template: '<span title="{{item.detailAccountDisplay}}">{{item.detailAccountCode}}</span>',
+                template: '<span title="{{item.detailAccountDisplay}}">{{item.detailAccountCode ? item.detailAccountCode : item.detailAccountDisplay}}</span>',
                 width: '120px'
             },
             {

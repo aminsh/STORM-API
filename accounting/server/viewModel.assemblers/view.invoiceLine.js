@@ -8,7 +8,8 @@ module.exports = function (entity) {
         quantity: entity.quantity,
         unitPrice: entity.unitPrice,
         vat: entity.vat,
-        discount: entity.discount
+        discount: entity.discount,
+        scale: entity.scale
     };
 };
 

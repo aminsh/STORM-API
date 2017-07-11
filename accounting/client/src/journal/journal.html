@@ -43,7 +43,7 @@
                     <div class="col-md-6">
                         <div class="row" style="margin-top: 20px">
                             <div class="col-md-2" style="text-align: left;margin-top: 7px">
-                                <label class="label-control">{{'Temporary number' | translate}}</label>
+                                <label class="label-control">{{'Number' | translate}}</label>
                             </div>
                             <div class="col-md-4">
                                 <dev-tag-numeric
@@ -58,7 +58,7 @@
                                 </div>
                             </div>
                             <div class="col-md-2" style="text-align: left;margin-top: 7px">
-                                <label class="label-control">{{'Temporary date' | translate}}</label>
+                                <label class="label-control">{{'Date' | translate}}</label>
                             </div>
                             <div class="col-md-4">
                                 <dev-tag-datepicker
@@ -79,16 +79,15 @@
                                 <label class="label-control">{{'Tag' | translate}}</label>
                             </div>
                             <div class="col-md-4 form-group">
-                                <div class="input-group">
-                                    <dev-tag-ui-select-combo-box
+                                <div>
+                                    <dev-tag-combo-box
                                             ng-model="model.journal.tagId"
-                                            k-data-source="model.tags"
                                             k-placeholder="{{'Select ...'|translate}}"
                                             k-data-text-field="title"
-                                            k-data-value-field="id"></dev-tag-ui-select-combo-box>
-                                    <div class="input-group-addon" style="border: 0">
-                                        <a ng-click="model.createTag()"><i class="fa fa-plus"></i></a>
-                                    </div>
+                                            k-data-value-field="id"
+                                            show-no-data-template
+                                            k-on-created="model.onTagCreated($search)"
+                                            url="{{model.urls.getAllTags}}"></dev-tag-combo-box>
                                 </div>
 
                             </div>
@@ -108,7 +107,7 @@
                     <div class="col-md-6">
                         <div class="row" style="margin-top: 10px">
                             <div class="col-md-3" style="text-align: left;margin-top: 7px">
-                                <label class="label-control">{{'Description' | translate}}</label>
+                                <label class="label-control">{{'Journal description' | translate}}</label>
                             </div>
                             <div class="col-md-9">
                         <textarea type="text" class="form-control" ng-model="model.journal.description"

@@ -31,7 +31,7 @@ export default class ProductEntryController {
                 .then(result => this.product = result);
         else
             this.product = {
-                code: '',
+                referenceId: '',
                 title: data.title || '',
                 reorderPoint: 0,
                 productType: 'good',

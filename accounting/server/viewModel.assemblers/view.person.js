@@ -7,6 +7,7 @@ const enums = require('../../shared/enums');
 function personAssembler(entity) {
     var viewModel = {
         id: entity.id,
+        referenceId: entity.referenceId,
         code: entity.code,
         display: entity.display,
         title: entity.title,
@@ -22,7 +23,14 @@ function personAssembler(entity) {
         personType: entity.personType,
         personTypeDisplay: entity.personType
             ? enums.PersonType().getDisplay(entity.personType)
-            : ''
+            : '',
+
+        countOfSale: entity.countOfSale,
+        lastSaleDate: entity.lastSaleDate,
+        sumSaleAmount: entity.sumSaleAmount,
+        sumDebtor: entity.sumDebtor,
+        sumCreditor: entity.sumCreditor
+
     };
 
     return viewModel;
