@@ -17,7 +17,7 @@ module.exports = function(knex, branchId) {
         knex.raw('"subsidiaryLedgerAccounts".code || \' \' || "subsidiaryLedgerAccounts".title as "subsidiaryLedgerAccountDisplay"'),
         'journalLines.detailAccountId',
         knex.raw('"detailAccounts"."code" as "detailAccountCode"'),
-        knex.raw('"detailAccounts"."code" || \' \' || "detailAccounts"."title" as "detailAccountDisplay"'),
+        knex.raw(`coalesce("detailAccounts"."code",'') || ' ' || "detailAccounts"."title" as "detailAccountDisplay"`),
         'journalLines.dimension1Id',
         knex.raw('"dimension1s"."code" || \' \' || "dimension1s"."title" as "dimension1Display"'),
         'journalLines.dimension2Id',

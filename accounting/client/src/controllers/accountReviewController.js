@@ -6,9 +6,7 @@ function accountReviewController($scope,
                                  translate,
                                  devConstants) {
 
-    $scope.parameters = localStorage.getItem('account-review-state')
-        ? JSON.parse(localStorage.getItem('account-review-state'))
-        : {
+    $scope.parameters = {
             minDate: '',
             maxDate: '',
             minNumber: null,
@@ -28,9 +26,9 @@ function accountReviewController($scope,
         {key: 'generalLedgerAccount', display: translate('Total turnover general ledger account')},
         {key: 'subsidiaryLedgerAccount', display: translate('Total turnover subsidiary ledger account')},
         {key: 'detailAccount', display: translate('Total turnover detail account')},
-        {key: 'dimension1', display: `${translate('Total turnover dimension')} ${translate('Dimension1')}`},
+        /*{key: 'dimension1', display: `${translate('Total turnover dimension')} ${translate('Dimension1')}`},
         {key: 'dimension2', display: `${translate('Total turnover dimension')} ${translate('Dimension2')}`},
-        {key: 'dimension3', display: `${translate('Total turnover dimension')} ${translate('Dimension3')}`}
+        {key: 'dimension3', display: `${translate('Total turnover dimension')} ${translate('Dimension3')}`}*/
     ];
 
     $scope.urls = {
@@ -48,6 +46,8 @@ function accountReviewController($scope,
         {key: 'dimension1', display: translate('Dimension1')},
         {key: 'dimension2', display: translate('Dimension2')}
     ];
+
+    $scope.onDetailAccountChanged = detailAccount => $scope.parameters.detailAccount = detailAccount;
 
     function saveState() {
         let state = JSON.stringify($scope.parameters);
