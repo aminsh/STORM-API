@@ -39,6 +39,16 @@ router.route('/:id')
     .put(require('./batch.journal').update)
     .delete(require('./batch.journal').delete);
 
+router.route('/:id/confirm')
+    .put(async((req, res) => {
+        let journalRepository = new JournalRepository(req.branchId),
+            entity = {id: req.params.id, journalStatus: 'Fixed'};
+
+        await(journalRepository.update(entity));
+
+        res.json({isValid: true});
+    }));
+
 router.route('/by-number/:number').get(async((req, res) => {
     let journalQuery = new JournalQuery(req.branchId),
         result = await(journalQuery.getByNumber(

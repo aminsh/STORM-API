@@ -36,6 +36,13 @@
                             title="{{'Print' | translate}}"
                             icon="glyphicon glyphicon-print"
                             style-type="white"></dev-tag-button>
+
+                    <dev-tag-button
+                            ng-if="!model.isNewJournal"
+                            ng-click="model.confirmJournal()"
+                            title="{{'Confirm' | translate}}"
+                            icon="fa fa-check"
+                            style-type="white"></dev-tag-button>
                 </div>
 
                 <div class="row" style="margin-bottom: 20px;">

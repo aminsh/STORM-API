@@ -2,8 +2,10 @@ import Guid from "guid";
 
 export default class {
     constructor($scope,
+                $state,
                 $q,
                 prompt,
+                confirm,
                 logger,
                 translate,
                 navigate,
@@ -24,9 +26,11 @@ export default class {
         $scope.$emit('close-sidebar');
 
         this.$scope = $scope;
+        this.$state = $state;
         this.$q = $q;
         this.$timeout = $timeout;
         this.prompt = prompt;
+        this.confirm = confirm;
         this.logger = logger;
         this.translate = translate;
         this.navigate = navigate;
@@ -43,7 +47,7 @@ export default class {
 
         this.urls = {
             getAllAccounts: devConstants.urls.subsidiaryLedgerAccount.all(),
-            getAllDetailAccounts:devConstants.urls.detailAccount.all(),
+            getAllDetailAccounts: devConstants.urls.detailAccount.all(),
             getAllTags: devConstants.urls.tag.getAll()
         };
         this.id = $stateParams.id;
@@ -237,7 +241,7 @@ export default class {
         //  this.navigate('journalPrint', {id: id});
     }
 
-    onTagCreated(value){
+    onTagCreated(value) {
         this.prompt({
             title: this.translate('Create Tag'),
             text: this.translate('Enter Tag Title'),
@@ -289,6 +293,22 @@ export default class {
 
             this[columnName].onChanged(model, item);
         }
+    }
+
+    confirmJournal() {
+        if (this.isNewJournal)
+            return;
+
+        this.confirm(
+            this.translate('Are you sure ?'),
+            this.translate('Confirm journal'))
+            .then(() => {
+                this.journalApi.confirm(this.journal.id)
+                    .then(() => {
+                        this.logger.success();
+                        this.$state.go('^.list');
+                    });
+            });
     }
 }
 
