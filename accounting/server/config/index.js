@@ -5,7 +5,7 @@ const path = require('path'),
     env = process.env.NODE_ENV || 'development',
     version = {
         vendor: '1.0.0',
-        app: '1.0.2'
+        app: '1.0.3'
     },
     branchId = 'c3339d0d-b4f7-4c96-b5c2-2d4376ceb9ea',
     db = env == 'development'
