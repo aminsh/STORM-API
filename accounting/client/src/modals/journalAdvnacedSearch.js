@@ -2,7 +2,6 @@ import accModule from '../acc.module';
 
 function journalAdvancedSearchModalController($scope, $uibModalInstance, translate, devConstants, $q,
                                               chequeApi,
-                                              dimensionApi,
                                               generalLedgerAccountApi,
                                               subsidiaryLedgerAccountApi,
                                               detailAccountApi,
@@ -31,6 +30,13 @@ function journalAdvancedSearchModalController($scope, $uibModalInstance, transla
         isNotPeriodIncluded: false
     };
 
+    $scope.urls = {
+        getAllGeneralLedgerAccounts: devConstants.urls.generalLedgerAccount.all(),
+        getAllSubsidiaryLedgerAccounts: devConstants.urls.subsidiaryLedgerAccount.all(),
+        getAllDetailAccounts: devConstants.urls.detailAccount.all()
+    };
+
+
     $scope.amountOperators = [
         {key: 'eq ', display: translate('Equal to')},
         {key: 'gte', display: translate("Greater than or equal to")},
@@ -55,9 +61,9 @@ function journalAdvancedSearchModalController($scope, $uibModalInstance, transla
             {key: 'generalLedgerAccount', func: generalLedgerAccountApi.getAll()},
             {key: 'subsidiaryLedgerAccount', func: subsidiaryLedgerAccountApi.getAll()},
             {key: 'detailAccount', func: detailAccountApi.getAll()},
-            {key: 'dimension1', func: dimensionApi.getByCategory(dimensionCategories[0].id)},
+            /*{key: 'dimension1', func: dimensionApi.getByCategory(dimensionCategories[0].id)},
             {key: 'dimension2', func: dimensionApi.getByCategory(dimensionCategories[1].id)},
-            {key: 'dimension3', func: dimensionApi.getByCategory(dimensionCategories[2].id)},
+            {key: 'dimension3', func: dimensionApi.getByCategory(dimensionCategories[2].id)},*/
             {key: 'cheque', func: chequeApi.getAllUsed()}
         ];
 

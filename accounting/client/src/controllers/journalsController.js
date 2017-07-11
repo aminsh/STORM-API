@@ -1,7 +1,6 @@
-import accModule from '../acc.module';
+import accModule from "../acc.module";
 
-function journalsController($scope, translate, journalApi, $state, logger,
-                            journalCreateModalControllerService,
+function journalsController($scope, translate, journalApi, $state,
                             journalAdvancedSearchModalService,
                             journalsExtraFilterResolve) {
 
@@ -14,23 +13,37 @@ function journalsController($scope, translate, journalApi, $state, logger,
                 title: translate('Status'),
                 type: 'journalStatus',
                 width: '120px',
-                template: `<i title="{{item.statusTitle}}" 
-                            class="fa fa-{{item.statusIcon}}"
-                            style="color: {{item.statusColor}};"></i>`
+                template: `<i ng-if="item.journalStatus == 'Fixed'"
+                            title="{{item.journalStatusDisplay}}" 
+                            class="fa fa-lock fa-lg"></i>`
             },
-            {name: 'temporaryNumber', title: translate('Number'), width: '120px', type: 'number'},
-            {name: 'temporaryDate', title: translate('Date'), type: 'date', width: '120px',},
-           /* {name: 'number', title: translate('Number'), width: '100px', type: 'number'},
-            {name: 'date', title: translate('Date'), type: 'date', width: '100px',},*/
+            {name: 'number', title: translate('Number'), width: '120px', type: 'number'},
+            {name: 'date', title: translate('Date'), type: 'date', width: '120px'},
+
             {
-                name: 'description', title: translate('Description'), type: 'string', width: '30%',
-                template: '<span title="{{item.description}}">{{item.description}}</span>'
+                name: 'description', title: translate('Description'), type: 'string', width: '50%',
+                template: '<a ui-sref="journals.list.detail({id: item.id})" title="{{item.description}}">{{item.description}}</a>'
+            },
+            {
+                name: 'sumDebtor',
+                title: translate('Debtor'),
+                type: 'number',
+                width: '120px',
+                template: '<span  style="font-weight: bold">{{item.sumDebtor|number}}</span>'
+            },
+            {
+                name: 'sumCreditor',
+                title: translate('Creditor'),
+                type: 'number',
+                width: '120px',
+                template: '<span  style="font-weight: bold">{{item.sumCreditor|number}}</span>'
             }
         ],
         commands: [
             {
                 title: translate('Edit'),
                 icon: 'fa fa-edit',
+                canShow: item => item.journalStatus != 'Fixed',
                 action: function (current) {
                     $state.go('^.edit', {
                         id: current.id
@@ -57,7 +70,7 @@ function journalsController($scope, translate, journalApi, $state, logger,
             }
         },
         sort: [
-            {dir: 'desc', field: 'temporaryNumber'}
+            {dir: 'desc', field: 'number'}
         ],
         resolveExtraFilter: journalsExtraFilterResolve,
         setExtraFilter: (extra) => {
@@ -65,15 +78,7 @@ function journalsController($scope, translate, journalApi, $state, logger,
         }
     };
 
-    $scope.create = () => {
-        journalCreateModalControllerService.show()
-            .then((result) => {
-                logger.success();
-                navigate('journalUpdate', {
-                    id: result.id
-                });
-            });
-    };
+    $scope.$on('fiscal-period-changed', () => $scope.gridOption.refresh());
 
     $scope.advancedSearch = () => {
         journalAdvancedSearchModalService.show()
@@ -90,10 +95,6 @@ function journalsController($scope, translate, journalApi, $state, logger,
         $scope.$broadcast('{0}/execute-advanced-search'
             .format($scope.gridOption.name), null);
     };
-
-    $scope.$on('$routeChangeStart', (next, current) => {
-        $scope.gridOption.saveState($scope.searchParameters);
-    });
 }
 
 accModule

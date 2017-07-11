@@ -23,7 +23,7 @@ module.exports = async((req, res, next) => {
         req.mode = 'create';
     } else req.mode = mode;
 
-    if (currentPeriod == null || currentPeriod == 0 || isNaN(currentPeriod)) {
+    if (currentPeriod == null || currentPeriod == 0) {
         let fiscalPeriodQuery = new FiscalPeriodQuery(req.cookies['branch-id']),
             maxId = await(fiscalPeriodQuery.getMaxId());
         maxId = maxId || 0;

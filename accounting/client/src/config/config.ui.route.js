@@ -146,6 +146,19 @@ export default function ($stateProvider, $urlRouterProvider, $locationProvider) 
             controllerAs: 'model',
             templateUrl: 'partials/journal/journal.html'
         })
+
+        .state('journals.list.detail', {
+            url: '/detail/:id',
+            onEnter: ($modelFactory, $stateParams) => {
+                $modelFactory.create({
+                    controller: 'showJournalDetailController',
+                    templateUrl: 'partials/modals/showJournalDetail.html',
+                    size: 'lg',
+                    resolve: {data: () => $stateParams}
+                });
+            }
+        })
+
         .state('journals.edit', {
             url: '/:id/edit',
             controller: 'journalUpdateController',

@@ -5,8 +5,6 @@ function journalView(entity) {
     var viewModel = {
         id: entity.id,
         isInComplete: entity.isInComplete,
-        temporaryNumber: entity.temporaryNumber,
-        temporaryDate: entity.temporaryDate,
         number: entity.number,
         date: entity.date,
         description: entity.description,
