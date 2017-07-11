@@ -27,9 +27,10 @@
 
         <ul class="list-group  clear-list m-t" >
             <li class="list-group-item "
+                name="form-{{$index}}"
+                ng-form
                 ng-repeat="item in model.payment"
                 ng-class="{'fist-item': $index == 0}">
-
                 <div class="row" ng-if="item.paymentType=='cash'">
                     <div class="col-md-1" style="font-size: 20px;margin-top: 7px">
                         <span class="label label-primary" style="font-size: medium">{{'Cash' | translate}}</span>
@@ -47,7 +48,7 @@
                                 ng-model="item.amount"
                                 required></dev-tag-numeric>
 
-                        <div ng-messages="form.cashAmount.$error" ng-if="form.cashAmount.$dirty">
+                        <div ng-messages="form['form-'+ $index].cashAmount.$error" ng-if="form['form-'+ $index].cashAmount.$dirty">
                             <label ng-message="required" class="error">
                                 {{'This field is required'|translate}}</label>
                         </div>
@@ -69,7 +70,7 @@
                                            url="{{model.urls.getAllFunds}}"
                                            required></dev-tag-combo-box>
 
-                        <div ng-messages="form.fundId.$error" ng-if="form.fundId.$dirty">
+                        <div ng-messages="form['form-'+ $index].fundId.$error" ng-if="form['form-'+ $index].fundId.$dirty">
                             <label ng-message="required" class="error">
                                 {{'This field is required'|translate}}</label>
                         </div>
@@ -98,7 +99,7 @@
                                 ng-model="item.amount"
                                 required></dev-tag-numeric>
 
-                        <div ng-messages="form.chequeAmount.$error" ng-if="form.chequeAmount.$dirty">
+                        <div ng-messages="form['form-'+ $index].chequeAmount.$error" ng-if="form['form-'+ $index].chequeAmount.$dirty">
                             <label ng-message="required" class="error">
                                 {{'This field is required'|translate}}</label>
                         </div>
@@ -113,7 +114,7 @@
                                 ng-model="item.number"
                                 required></dev-tag-text-box>
 
-                        <div ng-messages="form.chequeNumber.$error" ng-if="form.chequeNumber.$dirty">
+                        <div ng-messages="form['form-'+ $index].chequeNumber.$error" ng-if="form['form-'+ $index].chequeNumber.$dirty">
                             <label ng-message="required" class="error">
                                 {{'This field is required'|translate}}</label>
                         </div>
@@ -127,7 +128,7 @@
                                 name="paymentDate"
                                 required></dev-tag-datepicker>
 
-                        <div ng-messages="form.paymentDate.$error" ng-if="form.paymentDate.$dirty">
+                        <div ng-messages="form['form-'+ $index].paymentDate.$error" ng-if="form['form-'+ $index].paymentDate.$dirty">
                             <label ng-message="required" class="error">
                                 {{'This field is required'|translate}}</label>
                         </div>
@@ -160,7 +161,7 @@
                                 url="{{model.urls.getAllBanks}}"
                                 required></dev-tag-combo-box>
 
-                        <div ng-messages="form.bankId.$error" ng-if="form.bankId.$dirty">
+                        <div ng-messages="form['form-'+ $index].bankId.$error" ng-if="form['form-'+ $index].bankId.$dirty">
                             <label ng-message="required" class="error">
                                 {{'This field is required'|translate}}</label>
                         </div>
@@ -172,7 +173,7 @@
                                 ng-model="item.bankName"
                                 required></dev-tag-text-box>
 
-                        <div ng-messages="form.bankName.$error" ng-if="form.bankName.$dirty">
+                        <div ng-messages="form['form-'+ $index].bankName.$error" ng-if="form['form-'+ $index].bankName.$dirty">
                             <label ng-message="required" class="error">
                                 {{'This field is required'|translate}}</label>
                         </div>
@@ -188,7 +189,7 @@
                                 ng-model="item.bankBranch"
                                 required></dev-tag-text-box>
 
-                        <div ng-messages="form.bankBranch.$error" ng-if="form.bankBranch.$dirty">
+                        <div ng-messages="form['form-'+ $index].bankBranch.$error" ng-if="form['form-'+ $index].bankBranch.$dirty">
                             <label ng-message="required" class="error">
                                 {{'This field is required'|translate}}</label>
                         </div>
@@ -215,7 +216,7 @@
                                 ng-model="item.amount"
                                 required></dev-tag-numeric>
 
-                        <div ng-messages="form.receiptAmount.$error" ng-if="form.receiptAmount.$dirty">
+                        <div ng-messages="form['form-'+ $index].receiptAmount.$error" ng-if="form['form-'+ $index].receiptAmount.$dirty">
                             <label ng-message="required" class="error">
                                 {{'This field is required'|translate}}</label>
                         </div>
@@ -230,7 +231,7 @@
                                 ng-model="item.number"
                                 required></dev-tag-text-box>
 
-                        <div ng-messages="form.receiptNumber.$error" ng-if="form.receiptNumber.$dirty">
+                        <div ng-messages="form['form-'+ $index].receiptNumber.$error" ng-if="form['form-'+ $index].receiptNumber.$dirty">
                             <label ng-message="required" class="error">
                                 {{'This field is required'|translate}}</label>
                         </div>
@@ -251,7 +252,7 @@
                                 url="{{model.urls.getAllBanks}}"
                                 required></dev-tag-combo-box>
 
-                        <div ng-messages="form.bankId.$error" ng-if="form.bankId.$dirty">
+                        <div ng-messages="form['form-'+ $index].bankId.$error" ng-if="form['form-'+ $index].bankId.$dirty">
                             <label ng-message="required" class="error">
                                 {{'This field is required'|translate}}</label>
                         </div>

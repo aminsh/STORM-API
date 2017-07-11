@@ -145,7 +145,12 @@ export default class paymentController {
             payment = this.payment;
 
         if (form.$invalid) {
-            return formService.setDirty(form);
+            formService.setDirty(form);
+            Object.keys(form).asEnumerable()
+                .where(key => key.includes('form-'))
+                .toArray()
+                .forEach(key => formService.setDirty(form[key]));
+            return;
         }
 
         this.errors.asEnumerable().removeAll();
