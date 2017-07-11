@@ -51,8 +51,8 @@
                         k-data-text-field="account"
                         url="{{model.urls.getAllAccounts}}"
                         group-by="generalLedgerAccountDisplay"
-                        k-on-changed="model.subsidiaryLedgerAccount.onChanged($item, item)"
-                        k-on-bound="model.subsidiaryLedgerAccount.onChanged($item, item)"
+                        k-on-changed="model.subsidiaryLedgerAccount.onChanged($item, item, form['form-'+$index])"
+                        k-on-bound="model.subsidiaryLedgerAccount.onChanged($item, item,form['form-'+$index])"
                         ng-model="item.subsidiaryLedgerAccountId"
                         required></dev-tag-combo-box>
 

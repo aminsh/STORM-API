@@ -16,9 +16,9 @@ export default class {
                 dimensionCategoryApi,
                 dimensionApi,
                 detailAccountApi,
+                tagApi,
                 journalAttachImageService,
                 journalLineAdditionalInformation,
-                tagApi,
                 formService) {
 
         $scope.$emit('close-sidebar');
@@ -43,7 +43,8 @@ export default class {
 
         this.urls = {
             getAllAccounts: devConstants.urls.subsidiaryLedgerAccount.all(),
-            getAllDetailAccounts:devConstants.urls.detailAccount.all()
+            getAllDetailAccounts:devConstants.urls.detailAccount.all(),
+            getAllTags: devConstants.urls.tag.getAll()
         };
         this.id = $stateParams.id;
         this.isNewJournal = $stateParams.id == null;
@@ -65,7 +66,8 @@ export default class {
 
         this.subsidiaryLedgerAccount = {
             data: [],
-            onChanged(item, journalLine) {
+            onChanged(item, journalLine, form) {
+                form.subsidiaryLedgerAccountId.$setViewValue(item.id);
                 journalLine.subsidiaryLedgerAccountId = item.id;
                 journalLine.hasDetailAccount = item && item.hasDetailAccount;
                 journalLine.hasDimension1 = item && item.hasDimension1;
@@ -235,27 +237,23 @@ export default class {
         //  this.navigate('journalPrint', {id: id});
     }
 
+    onTagCreated(value){
+        this.prompt({
+            title: this.translate('Create Tag'),
+            text: this.translate('Enter Tag Title'),
+            defaultValue: value
+        }).then(inputValue => {
+            this.tagApi.create({title: inputValue})
+                .then(result => this.journal.tagId = result.id);
+        });
+    }
+
     additionalInfo(journalLine) {
         this.journalLineAdditionalInformation.show({
             journal: this.journal,
             journalLine
         }).then(journalLine => {
             this.journalLine = journalLine;
-        });
-    }
-
-    createTag() {
-        this.prompt({
-            title: this.translate('Create Tag'),
-            text: this.translate('Enter Tag Title'),
-        }).then(inputValue => {
-
-            this.tagApi.create({title: inputValue})
-                .then(result => {
-                    let tag = {id: result.id, title: inputValue};
-                    this.tags.push(tag);
-                    this.journal.tagId = tag.id;
-                });
         });
     }
 
