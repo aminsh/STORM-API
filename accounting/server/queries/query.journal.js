@@ -6,6 +6,7 @@ const async = require('asyncawait/async'),
     kendoQueryResolve = require('../services/kendoQueryResolve'),
     view = require('../viewModel.assemblers/view.journal'),
     enums = require('../constants/enums'),
+    journalBase = require('./query.journal.base'),
     journalBaseFilter = require('./query.journal.baseFilter');
 
 module.exports = class JournalQuery extends BaseQuery {
@@ -55,14 +56,39 @@ module.exports = class JournalQuery extends BaseQuery {
     }
 
     getAll(fiscalPeriodId, parameters) {
-        let knex = this.knex;
-        let extra = (parameters.extra) ? parameters.extra : undefined;
+        let knex = this.knex,
+            branchId = this.branchId,
+            extra = (parameters.extra) ? parameters.extra : undefined;
 
-        let query = knex.select().from('journals')
-            .where('branchId', this.branchId)
-            .as('baseJournals');
+        let query = knex.select().from(function () {
+            this.select(
+                'id',
+                'number',
+                'date',
+                'description',
+                'journalStatus',
+                knex.raw('sum("debtor") as "sumDebtor"'),
+                knex.raw('sum("creditor") as "sumCreditor"')
+            )
+                .from(function () {
+                    journalBase.call(this, knex, {
+                        numberFieldName: 'temporaryNumber',
+                        dateFieldName: 'temporaryDate',
+                        branchId
+                    });
 
-        journalBaseFilter(query, extra, fiscalPeriodId, knex);
+                    journalBaseFilter(this, extra, fiscalPeriodId, knex);
+                })
+                .groupBy(
+                    'id',
+                    'number',
+                    'date',
+                    'description',
+                    'journalStatus')
+                .as('base');
+
+        });
+
         return kendoQueryResolve(query, parameters, view);
     }
 
