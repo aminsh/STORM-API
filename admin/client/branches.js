@@ -11,12 +11,18 @@ export default class BranchesController {
 
     activate(branch) {
         this.branchApi.activate(branch.id)
-            .then(() => this.logger.success());
+            .then(() => {
+                branch.status='active'
+            this.logger.success()
+        });
     }
 
     deactivate(branch) {
         this.branchApi.deactivate(branch.id)
-            .then(() => this.logger.success());
+            .then(() => {
+                branch.status='pending'
+            this.logger.success()
+        });
     }
 
     addMe(branch){
