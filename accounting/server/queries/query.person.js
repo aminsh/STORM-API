@@ -5,7 +5,8 @@ const async = require('asyncawait/async'),
     BaseQuery = require('./query.base'),
     FiscalPeriodQuery = require('./query.fiscalPeriod'),
     kendoQueryResolve = require('../services/kendoQueryResolve'),
-    enums = require('../../shared/enums');
+    enums = require('../../shared/enums'),
+    view = require('../viewModel.assemblers/view.person');
 
 module.exports = class PersonQuery extends BaseQuery {
     constructor(branchId) {
@@ -56,14 +57,9 @@ module.exports = class PersonQuery extends BaseQuery {
                 .from('detailAccounts')
                 .where('branchId', branchId)
                 .where('id', id)
-                .first()),
+                .first());
 
-
-            result = {
-
-            }
-
-        return result;
+        return view(entity);
 
     }
 
