@@ -33,7 +33,7 @@ router.route('/')
             targetDetailAccount = await(detailAccountRepository.findById(cmd.target.accountId)),
 
             journal = {
-                journalStatus: 'Temporary',
+                journalStatus: 'Fixed',
                 isInComplete: false,
                 periodId: req.fiscalPeriodId,
                 temporaryNumber: (await(journalRepository.maxTemporaryNumber(req.fiscalPeriodId)).max || 0) + 1,

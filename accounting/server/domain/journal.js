@@ -641,7 +641,7 @@ module.exports = class Journal {
 
         return {
             periodId: this.fiscalPeriodId,
-            journalStatus: 'Temporary',
+            journalStatus: 'Fixed',
             temporaryNumber: ++maxNumber,
             temporaryDate: date,
             description: description,
