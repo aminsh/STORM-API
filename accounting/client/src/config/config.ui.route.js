@@ -1,6 +1,8 @@
 "use strict";
 
-export default function ($stateProvider, $urlRouterProvider, $locationProvider) {
+export default function ($stateProvider, $urlRouterProvider, $locationProvider, $qProvider) {
+    $qProvider.errorOnUnhandledRejections(false);
+
     $locationProvider.html5Mode(true);
     $locationProvider.hashPrefix('!');
 
