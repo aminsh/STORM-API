@@ -10,7 +10,8 @@ const express = require('express'),
     userRepository = new (require('../user/user.repository')),
     branchQuery = require('./branch.query'),
     superSecret = require('../../../../shared/services/cryptoService').superSecret,
-    Image = require('../../services/shared').utility.Image;
+    Image = require('../../services/shared').utility.Image,
+    EventEmitter = require('../../services/shared').service.EventEmitter;
 
 
 router.route('/')
@@ -32,14 +33,15 @@ router.route('/')
                 postalCode: cmd.postalCode,
                 nationalCode: cmd.nationalCode,
                 ownerId: req.user.id,
+                webSite: cmd.webSite,
                 status: 'pending'
             };
 
         await(branchRepository.create(entity));
 
-        res.cookie('branch-id', entity.id);
-
         res.json({isValid: true});
+
+        EventEmitter.emit('on-branch-created', entity.id);
     }));
 
 

@@ -21,6 +21,8 @@ require('./accounting/server/events/onPayableChequeReturn');
 require('./accounting/server/events/onIcomeCreated');
 require('./accounting/server/events/onExpenseCreated');
 
+require('./storm/server/features/setup');
+
 const config = require('./storm/server/config'),
     accApp = require('./accounting/server/config/express'),
     app = require('./storm/server/config/express').app;
