@@ -73,9 +73,9 @@ module.exports = class ProductQuery extends BaseQuery {
                 and "inventoryType" = 'input'`,
 
             result = await(this.knex.select(
-                '*',
+                'products.*',
                 knex.raw('scales.title as "scaleDisplay"'),
-                knex.raw(`coalesce((${totalSalePrice}),0) as "sumTotalSalePrice"`),
+                knex.raw(`coalesce((${totalSalePrice}),0) as "sumSalePrice"`),
                 knex.raw(`coalesce((${totalSaleDiscount}),0) as "sumDiscount"`),
                 knex.raw(`coalesce((${countOfSale}),0) as "countOnSale"`),
                 knex.raw(`coalesce((${inventory}),0) as "sumQuantity"`),
@@ -84,7 +84,7 @@ module.exports = class ProductQuery extends BaseQuery {
                 .from('products')
                 .leftJoin('scales', 'products.scaleId', 'scales.id')
                 .where('products.branchId', branchId)
-                .andWhere('id', id)
+                .andWhere('products.id', id)
                 .first());
 
         return view(result);

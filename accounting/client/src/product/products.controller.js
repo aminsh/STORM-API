@@ -1,10 +1,11 @@
 "use strict";
 
 export default class ProductController {
-    constructor(productApi, translate, devConstants, logger, confirm,$timeout,$state) {
+    constructor($scope, $rootScope, productApi, translate, devConstants, logger, confirm, $timeout, $state) {
+
         this.productApi = productApi;
         this.logger = logger;
-        this.$state=$state;
+        this.$state = $state;
         this.gridOption = {
             columns: [
                 {
@@ -48,7 +49,7 @@ export default class ProductController {
                     title: translate('More Info'),
                     icon: 'fa fa-info-circle',
                     action: (current) => {
-                        this.$state.go('.info',{id:current.id});
+                        this.$state.go('.info', {id: current.id});
                     }
                 }
             ],
@@ -56,7 +57,12 @@ export default class ProductController {
             gridSize: '200px',
             selectable: true
         };
+
+        let unRegister = $rootScope.$on('onProductChanged', () => this.gridOption.refresh());
+
+        $scope.$on('$destroy', unRegister);
     }
+
     remove(id) {
         this.productApi.remove(id)
             .then(result => this.logger.success())
