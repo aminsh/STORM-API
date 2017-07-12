@@ -1,7 +1,7 @@
 "use strict";
 
 export default class BanksAndFundsController {
-    constructor(bankAndFundApi, confirm, bankApi, fundApi, logger, translate) {
+    constructor($scope, bankAndFundApi, confirm, bankApi, fundApi, logger, translate, $rootScope) {
 
         this.bankApi = bankApi;
         this.fundApi = fundApi;
@@ -11,6 +11,14 @@ export default class BanksAndFundsController {
         this.bankAndFundApi = bankAndFundApi;
 
         this.fetch();
+
+        let unRegisterFundChangedEvent = $rootScope.$on('onFundChanged', () => this.fetch()),
+            unRegisterBankChangedEvent = $rootScope.$on('onBankChanged', () => this.fetch());
+
+        $scope.$on('$destroy', () => {
+            unRegisterFundChangedEvent();
+            unRegisterBankChangedEvent();
+        });
     }
 
     fetch() {

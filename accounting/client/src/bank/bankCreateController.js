@@ -1,7 +1,8 @@
 export default class bankCreateController {
-    constructor($scope, $uibModalInstance, formService, bankApi, logger, $state) {
+    constructor($scope, $rootScope, $uibModalInstance, formService, bankApi, logger, $state) {
 
         this.$scope = $scope;
+        this.$rootScope = $rootScope;
         this.logger = logger;
         this.bankApi = bankApi;
         this.$uibModalInstance = $uibModalInstance;
@@ -48,15 +49,16 @@ export default class bankCreateController {
             return this.bankApi.update(this.id, bank)
                 .then(result => {
                     logger.success();
+                    this.$rootScope.$emit('onBankChanged');
                     this.$scope.$close(result);
                 })
                 .catch(err => this.errors = err)
                 .finally(() => this.isSaving = false);
         } else {
             return this.bankApi.create(bank)
-                .then(result => {
+                .then(() => {
                     logger.success();
-                    bank.id = result.id;
+                    this.$rootScope.$emit('onBankChanged');
                     this.close();
                 })
                 .catch(err => this.errors = err)
