@@ -321,7 +321,7 @@ gulp.task('storm-build-js', function () {
         return browserify(
             {
                 entries: `${config.stormSrcDir}/src/app.js`,
-                debug: true
+                debug: !config.isProduction
             })
             .transform({
                 global: true,
