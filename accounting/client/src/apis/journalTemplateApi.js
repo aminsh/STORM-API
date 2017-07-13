@@ -4,10 +4,10 @@ function journalTemplateApi(apiPromise, devConstants) {
     var urlPrefix = devConstants.urls.rootUrl;
 
     return {
-        create: (journalId, data) =>
-            apiPromise.post('{0}/journal-templates/journal/{1}'.format(urlPrefix, journalId), data),
-        journalCreate: (id) =>
-            apiPromise.post('{0}/journal-templates/{1}/journal/create'.format(urlPrefix, id)),
+        create: (data) =>
+            apiPromise.post('{0}/journal-templates'.format(urlPrefix),data),
+        copy: (id) =>
+            apiPromise.post('{0}/journal-templates/{1}/copy'.format(urlPrefix, id)),
         remove: (id) =>
             apiPromise.delete('{0}/journal-templates/{1}'.format(urlPrefix, id))
     };

@@ -29,8 +29,6 @@ import "./controllers/journalsController";
 import "./controllers/chequeCategoriesController";
 import "./controllers/banksController";
 import "./controllers/journalManagementController";
-import "./controllers/journalCopy";
-import "./controllers/journalTemplatesController";
 import "./controllers/accountReviewController";
 import "./controllers/accountReviewTurnoverController";
 import "./controllers/journalPrintController";

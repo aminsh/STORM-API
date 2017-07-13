@@ -10,6 +10,16 @@ import {
     JournalLineAdditionalInformationModal
 } from './journalLines.additionalInfomation';
 
+import JournalTemplateController from './journalTemplate';
+
+function journalTemplateService(modalBase) {
+    return modalBase({
+        controller: 'journalTemplateController',
+        controllerAs: 'model',
+        templateUrl: 'partials/journal/journalTemplate.html',
+        size: 'lg'
+    });
+}
 
 accModule
     .directive('notShouldBeZeroBoth', notShouldBeZeroBoth)
@@ -19,6 +29,8 @@ accModule
 
     .controller('journalUpdateController', journalController)
     .controller('journalLineAdditionalInformationController', JournalLineAdditionalInformation)
+    .controller('journalTemplateController', JournalTemplateController)
 
     .factory('journalLineAdditionalInformation', JournalLineAdditionalInformationModal)
+    .factory('journalTemplateService', journalTemplateService)
 ;

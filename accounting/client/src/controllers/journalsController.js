@@ -1,8 +1,10 @@
 import accModule from "../acc.module";
 
-function journalsController($scope, translate, journalApi, $state,
+function journalsController($scope, translate, journalApi, $state, logger, prompt, confirm,
                             journalAdvancedSearchModalService,
-                            journalsExtraFilterResolve) {
+                            journalsExtraFilterResolve,
+                            journalTemplateService,
+                            journalTemplateApi) {
 
     $scope.searchParameters = false;
     $scope.gridOption = {
@@ -42,11 +44,40 @@ function journalsController($scope, translate, journalApi, $state,
         commands: [
             {
                 title: translate('Edit'),
-                icon: 'fa fa-edit',
+                icon: 'fa fa-edit text-success',
                 canShow: item => item.journalStatus != 'Fixed',
                 action: function (current) {
                     $state.go('^.edit', {
                         id: current.id
+                    });
+                }
+            },
+            {
+                title: translate('As a journal template'),
+                icon: 'fa fa-file-o text-success',
+                action: current => {
+                    prompt({
+                        title: translate('Copy to journal template'),
+                        text: translate('Enter Title of journal template'),
+                    }).then((inputValue) => {
+                        journalTemplateApi.create({journalId: current.id, title: inputValue})
+                            .then(() => logger.success());
+                    });
+                }
+            },
+            {
+                title: translate('Copy journal'),
+                icon: 'fa fa-copy text-success',
+                action: current => {
+                    confirm(
+                        translate('Are you sure ?'),
+                        translate('Copy journal')
+                    ).then(() => {
+                        journalApi.copy(current.id)
+                            .then(result => {
+                                logger.success();
+                                $state.go('^.edit', {id: result.id});
+                            });
                     });
                 }
             }
@@ -94,6 +125,10 @@ function journalsController($scope, translate, journalApi, $state,
         $scope.searchParameters = false;
         $scope.$broadcast('{0}/execute-advanced-search'
             .format($scope.gridOption.name), null);
+    };
+
+    $scope.journalTemplate = () => {
+        journalTemplateService.show();
     };
 }
 
