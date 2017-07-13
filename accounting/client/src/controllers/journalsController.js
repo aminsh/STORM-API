@@ -1,6 +1,7 @@
 import accModule from "../acc.module";
 
 function journalsController($scope, translate, journalApi, $state, logger, prompt, confirm,
+                            navigate,
                             journalAdvancedSearchModalService,
                             journalsExtraFilterResolve,
                             journalTemplateService,
@@ -23,7 +24,7 @@ function journalsController($scope, translate, journalApi, $state, logger, promp
             {name: 'date', title: translate('Date'), type: 'date', width: '120px'},
 
             {
-                name: 'description', title: translate('Description'), type: 'string', width: '50%',
+                name: 'description', title: translate('Description'), type: 'string', width: '40%',
                 template: '<a ui-sref="journals.list.detail({id: item.id})" title="{{item.description}}">{{item.description}}</a>'
             },
             {
@@ -80,7 +81,37 @@ function journalsController($scope, translate, journalApi, $state, logger, promp
                             });
                     });
                 }
+            },
+            {
+                title: translate('Print'),
+                icon: 'fa fa-print text-success',
+                action: current => {
+                    let reportParam = {"minNumber": current.number, "maxNumber": current.number};
+
+                    navigate(
+                        'report.print',
+                        {key: 100},
+                        reportParam);
+                }
+            },
+            {
+                title: translate('Remove'),
+                icon: 'fa fa-trash text-danger',
+                canShow: item => item.journalStatus != 'Fixed',
+                action: current => {
+                    confirm(
+                        translate('Are you sure ?'),
+                        translate('Remove journal')
+                    ).then(() => {
+                        journalApi.remove(current.id)
+                            .then(result => {
+                                logger.success();
+                                $scope.gridOption.refresh();
+                            });
+                    });
+                }
             }
+
         ],
         readUrl: journalApi.url.getAll,
         mapper: (d) => {
