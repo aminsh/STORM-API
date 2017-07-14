@@ -1,6 +1,6 @@
-import accModule from '../acc.module';
+import accModule from "../acc.module";
 
-function showJournalDetailController($scope, translate, $uibModalInstance, journalApi, journalLineApi, data) {
+function showJournalDetailController($scope, translate, $uibModalInstance, journalApi, journalLineApi, data, $state) {
     "use strict";
 
     let id = data.id;
@@ -8,7 +8,7 @@ function showJournalDetailController($scope, translate, $uibModalInstance, journ
 
     function fetch() {
         journalApi.getById(id)
-            .then((result)=> $scope.journal = result);
+            .then((result) => $scope.journal = result);
     }
 
     fetch();
@@ -42,12 +42,20 @@ function showJournalDetailController($scope, translate, $uibModalInstance, journ
                 template: '<span title="{{item.article}}">{{item.article}}</span>'
             },
             {
-                name: 'debtor', title: translate('Debtor'), width: '120px', type: 'number', template: '{{item.debtor|number}}',
+                name: 'debtor',
+                title: translate('Debtor'),
+                width: '120px',
+                type: 'number',
+                template: '{{item.debtor|number}}',
                 aggregates: ['sum'],
                 footerTemplate: '{{aggregates.debtor.sum | number}}'
             },
             {
-                name: 'creditor', title: translate('Creditor'), width: '120px', type: 'number', template: '{{item.creditor|number}}',
+                name: 'creditor',
+                title: translate('Creditor'),
+                width: '120px',
+                type: 'number',
+                template: '{{item.creditor|number}}',
                 aggregates: ['sum'],
                 footerTemplate: '{{aggregates.creditor.sum | number}}'
             }
@@ -57,7 +65,16 @@ function showJournalDetailController($scope, translate, $uibModalInstance, journ
         readUrl: journalLineApi.url.getAll(id)
     };
 
-    $scope.close = ()=> $uibModalInstance.dismiss();
+    $scope.close = () => $uibModalInstance.dismiss();
+
+    $scope.editJournal = () => {
+        if ($scope.journal.journalStatus == 'Fixed')
+            return;
+
+        $scope.close();
+
+        $state.go('journals.edit', {id: $scope.journal.id});
+    }
 }
 
 function showJournalDetailModalService(modalBase) {
