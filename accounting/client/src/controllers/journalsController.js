@@ -24,7 +24,7 @@ function journalsController($scope, translate, journalApi, $state, logger, promp
             {name: 'date', title: translate('Date'), type: 'date', width: '120px'},
 
             {
-                name: 'description', title: translate('Description'), type: 'string', width: '40%',
+                name: 'description', title: translate('Journal description'), type: 'string', width: '40%',
                 template: '<a ui-sref="journals.list.detail({id: item.id})" title="{{item.description}}">{{item.description}}</a>'
             },
             {
