@@ -242,7 +242,7 @@ router.route('/:id')
             errors = [];
 
         if (invoice.invoiceStatus != 'draft')
-            errors.push('فاکتور جاری قابل حذف نمیباشد');
+            errors.push('فاکتور جاری تایید شده - نمیتوانید آنرا حذف کنید');
 
         if (errors.length != 0)
             return res.json({isValid: false, errors});
@@ -251,30 +251,6 @@ router.route('/:id')
 
         res.json({isValid: true});
     }));
-
-function createInvoice(status, cmd, invoiceRepository, productReposittory) {
-    let entity = {
-        number: (await(invoiceRepository.saleMaxNumber()).max || 0) + 1,
-        date: cmd.date,
-        description: cmd.description,
-        detailAccountId: cmd.detailAccountId || cmd.customerId,
-        invoiceType: 'sale',
-        invoiceStatus: status
-    };
-
-    entity.invoiceLines = cmd.invoiceLines.asEnumerable()
-        .select(line => ({
-            productId: line.productId,
-            description: line.description || await(productReposittory.findById(line.productId)).title,
-            quantity: line.quantity,
-            unitPrice: line.unitPrice,
-            discount: line.discount || 0,
-            vat: line.vat || 0
-        }))
-        .toArray();
-
-    return entity;
-}
 
 router.route('/:id/pay')
     .post(async((req, res) => {
