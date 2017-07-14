@@ -30,18 +30,7 @@ accModule.config(menuItemsProvider => {
                 icon: ''
             }
         ],
-        banking = [
-            {
-                title: 'دسته چک ها',
-                url: 'cheque-categories',
-                icon: ''
-            },
-            {
-                title: 'بانک ها',
-                url: 'banks',
-                icon: ''
-            }
-        ],
+
         reporting = [
             {
                 title: 'مرور حساب',
@@ -167,7 +156,6 @@ accModule.config(menuItemsProvider => {
             children: [
                 ...chartOfAccount,
                 ...journal,
-                ...banking,
                 ...reporting
             ]
         });
