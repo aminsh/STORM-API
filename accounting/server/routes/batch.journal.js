@@ -175,6 +175,7 @@ module.exports.update = async((req, res) => {
     entity.date = cmd.date;
     entity.number = cmd.number;
     entity.description = cmd.description;
+    entity.tagId = cmd.tagId;
 
     let cmdJournalLines = cmd.journalLines.asEnumerable()
         .select(journalLine => ({
