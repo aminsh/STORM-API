@@ -84,7 +84,7 @@ router.route('/:id')
         res.json({isValid: true});
     }));
 
-router.route('/:id/small-turnover').get(async((req, res) => {
+router.route('/:id/tiny-turnover').get(async((req, res) => {
     let detailAccountQuery = new DetailAccountQuery(req.branchId),
         result = await(detailAccountQuery.getAllSmallTurnoverById(
             req.params.id,
