@@ -1,128 +1,66 @@
 export default class peopleListController {
     constructor(translate,
                 devConstants,
-                navigate,
                 logger,
                 $timeout,
                 peopleApi,
                 confirm,
-                $scope) {
+                $state,
+                $scope,
+                $rootScope) {
 
         this.$scope = $scope;
-        this.navigate = navigate;
+        this.$state = $state;
         this.$timeout = $timeout;
         this.logger = logger;
         this.translate = translate;
         this.peopleApi = peopleApi;
         this.errors = [];
 
-        $scope.$on('on-people-committed',(e,data)=>{
-            console.log('hello baby')
-            $scope.gridOption.dataSource.read();
-        });
+        let unRegister = $rootScope.$on('onPersonChanged', () => this.gridOption.refresh());
 
-        $scope.gridOption = {
-            dataSource: new kendo.data.DataSource({
-                serverFiltering: true,
-                serverPaging: true,
-                pageSize: 20,
-                transport: {
-                    read: {
-                        url: devConstants.urls.people.getAll(),
-                        dataType: "json"
-                    }
-                },
-                schema: {
-                    data: 'data',
-                    total: 'total'
-                }
-            }),
-            reorderable: true,
-            resizable: true,
-            sortable: true,
-            scrollable: {
-                virtual: true
-            },
-            filterable: true,
-            pageable: {
-                refresh: true,
-                pageSizes: true,
-                buttonCount: 10
-            },
+        $scope.$on('$destroy', unRegister);
+
+        this.gridOption = {
             columns: [
                 {
-                    field: "title", title: translate('name'), width: '120px',
-                    filterable: {
-                        extra: false,
-                        cell: {
-                            operator: "contains",
-                            suggestionOperator: "contains"
-                        }
-                    }
+                    name: 'title', title: translate('Title'), width: '70%',
+                    template: `<a ui-sref=".info({id: item.id})">{{item.title}}</a>`
                 },
                 {
-                    field: "phone", title: translate('Phone'), width: '120px', filterable: {
-                    extra: false
+                    name: 'phone',
+                    title: translate('Phone'),
+                    width: '30%',
                 }
-                },
+            ],
+            commands: [
                 {
-                    template: "#: personTypeDisplay #",
-                    field: "personType",
-                    title: translate('Person Type'),
-                    width: '120px',
-                    filterable: {
-                        extra: false,
-                        ui: function (element) {
-                            element.kendoDropDownList({
-                                dataSource: devConstants.enums.PersonType().data,
-                                dataTextField: "display",
-                                dataValueField: "key",
-                                optionLabel: translate('Select ...')
+                    title: translate('Remove'),
+                    icon: 'fa fa-trash text-danger',
+                    action: (current) => {
+                        confirm(
+                            translate('Are you sure ?'),
+                            translate('Remove Person'))
+                            .then(() => {
+                                peopleApi.remove(current.id)
+                                    .then(() => {
+                                        logger.success();
+                                        this.gridOption.refresh();
+                                    })
+                                    .catch((errors) => $scope.errors = errors);
                             });
-                        }
+
                     }
                 },
                 {
-                    command: [
-                        {
-                            text: translate('Remove'), click: function (e) {
-                            e.preventDefault();
-                            let people = this.dataItem($(e.currentTarget).closest("tr"));
-                            confirm(
-                                translate('Are you sure ?'),
-                                translate('Remove Person'))
-                                .then(function () {
-                                    peopleApi.remove(people.id)
-                                        .then(function () {
-                                            logger.success();
-                                            $scope.gridOption.dataSource.read();
-                                        })
-                                        .catch((errors) => $scope.errors = errors)
-                                        .finally(() => $scope.isSaving = false);
-                                })
-
-                        }
-                        },
-                        {
-                            text: translate('Edit'),
-                            click: function (e) {
-                                e.preventDefault();
-                                let people = this.dataItem($(e.currentTarget).closest("tr"));
-                                return navigate('.edit', {id: people.id});
-                            }
-                        },
-                        {
-                            text: translate('More Info'),
-                            click: function (e) {
-                                e.preventDefault();
-                                let people = this.dataItem($(e.currentTarget).closest("tr"));
-                                return navigate('.info', {id: people.id});
-                            }
-                        }
-
-                        ], title: " ", width: "180px"
+                    title: translate('Edit'),
+                    icon: 'fa fa-edit text-success',
+                    action: (current) => {
+                        this.$state.go('.edit', {id: current.id});
+                    }
                 }
-            ]
+            ],
+            readUrl: devConstants.urls.people.getAll()
         };
     }
 }
