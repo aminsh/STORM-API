@@ -9,13 +9,13 @@ export default class ProductController {
         this.gridOption = {
             columns: [
                 {
-                    name: 'referenceId', title: translate('Reference Code'), width: '10%',
+                    name: 'referenceId', title: translate('Reference Code'), width: '20%',
                 },
                 {
                     name: 'title',
                     title: translate('Title'),
                     width: '70%',
-                    template: `<a ui-sref=".edit({id: item.id})">{{item.title}}</a>`
+                    template: `<a ui-sref=".info({id: item.id})">{{item.title}}</a>`
                 },
                 {
                     name: 'productType',
@@ -46,16 +46,17 @@ export default class ProductController {
                     }
                 },
                 {
-                    title: translate('More Info'),
-                    icon: 'fa fa-info-circle',
+                    title: translate('Edit'),
+                    icon: 'fa fa-edit text-success',
                     action: (current) => {
-                        this.$state.go('.info', {id: current.id});
+                        if(this.$state.is('products'))
+                            this.$state.go('.edit', {id: current.id});
+                        if(this.$state.is('products.info'))
+                            this.$state.go('^.edit', {id: current.id});
                     }
                 }
             ],
-            readUrl: devConstants.urls.products.getAll(),
-            gridSize: '200px',
-            selectable: true
+            readUrl: devConstants.urls.products.getAll()
         };
 
         let unRegister = $rootScope.$on('onProductChanged', () => this.gridOption.refresh());

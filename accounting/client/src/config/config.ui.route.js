@@ -468,7 +468,7 @@ export default function ($stateProvider, $urlRouterProvider, $locationProvider, 
         })
         .state('products.info', {
             url: '/:id/info',
-            onEnter: ($modelFactory, $stateParams) => {
+            /*onEnter: ($modelFactory, $stateParams) => {
                 $modelFactory.create({
                     controller: 'ProductMoreInfoController',
                     controllerAs: 'model',
@@ -476,7 +476,10 @@ export default function ($stateProvider, $urlRouterProvider, $locationProvider, 
                     templateUrl: 'partials/product/productMoreInfo.html',
                     resolve: {data: {id: $stateParams.id}},
                 });
-            }
+            }*/
+            controller: 'ProductMoreInfoController',
+            controllerAs: 'model',
+            templateUrl: 'partials/product/productMoreInfo.html'
         })
         .state('transferMoney', {
             url: '/transfer-money',

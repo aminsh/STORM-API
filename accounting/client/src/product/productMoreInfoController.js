@@ -3,11 +3,12 @@
 export default class ProductMoreInfoController {
     constructor($scope,
                 productApi,
-                data,
+                $stateParams,
                 formService,
                 devConstants,
                 translate) {
 
+        let data = $stateParams;
         this.$scope = $scope;
         this.productApi = productApi;
         this.formService = formService;
@@ -15,7 +16,7 @@ export default class ProductMoreInfoController {
         this.id = data.id;
         this.errors = [];
         this.productTypes = devConstants.enums.ProductType().data;
-        this.product=[];
+        this.product = [];
         if (this.id)
             productApi.getById(data.id)
                 .then(result => {
@@ -30,7 +31,7 @@ export default class ProductMoreInfoController {
                     // };
                 });
 
-        productApi.summary(data.id).then(result=>{
+        productApi.summary(data.id).then(result => {
             console.log(result);
             let items = result.asEnumerable();
 
@@ -43,7 +44,7 @@ export default class ProductMoreInfoController {
             this.options = {
                 responsive: true,
                 legend: {display: true},
-                maintainAspectRatio:false,
+                maintainAspectRatio: false,
                 scales: {
                     yAxes: [
                         {
@@ -69,8 +70,7 @@ export default class ProductMoreInfoController {
                 .select(c => ({color: c, label: this.labels[colors.indexOf(c)]}))
                 .toArray();
 
-            this.data = [items.select(item => parseInt(item.sumPrice)).toArray(),items.select(item => parseInt(item.sumQuantity)).toArray()];
-
+            this.data = [items.select(item => parseInt(item.sumPrice)).toArray(), items.select(item => parseInt(item.sumQuantity)).toArray()];
 
 
         });

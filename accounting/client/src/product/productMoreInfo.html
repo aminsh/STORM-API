@@ -1,65 +1,65 @@
-<div class="modal-header">
-    <button type="button" ng-click="model.close()" class="close" data-dismiss="modal" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-    </button>
-    <h3 class="modal-title">{{model.product.title}}</h3>
-</div>
-<div class="modal-body k-rtl">
 
-    <div class="row">
-        <div class="col-md-6">
-            <ul class="list-group clear-list m-t">
-                <li class="list-group-item fist-item">
+
+<dev-tag-content>
+    <dev-tag-content-heading>
+        <h5>{{model.product.title}}</h5>
+    </dev-tag-content-heading>
+
+    <dev-tag-content-body>
+        <div class="row">
+            <div class="col-md-6">
+                <ul class="list-group clear-list m-t">
+                    <li class="list-group-item fist-item">
                     <span class="pull-right">
                         {{model.product.countOnSale}}
                     </span>
-                    <span class="font-bold">{{'Total number of sales'| translate}}</span>
-                </li>
-                <li class="list-group-item">
+                        <span class="font-bold">{{'Total number of sales'| translate}}</span>
+                    </li>
+                    <li class="list-group-item">
                     <span class="pull-right">
                          {{model.product.sumSalePrice |number}}
                     </span>
-                    <span class="font-bold">{{'Total sales amount'| translate}}</span>
-                </li>
-                <li class="list-group-item">
+                        <span class="font-bold">{{'Total sales amount'| translate}}</span>
+                    </li>
+                    <li class="list-group-item">
                     <span class="pull-right">
                       {{model.product.sumDiscount}}
                     </span>
-                    <span class="font-bold">{{'Total discount'| translate}}</span>
-                </li>
-            </ul>
-        </div>
+                        <span class="font-bold">{{'Total discount'| translate}}</span>
+                    </li>
+                </ul>
+            </div>
 
-        <div class="col-md-6">
-            <ul class="list-group clear-list m-t">
-                <li class="list-group-item fist-item">
+            <div class="col-md-6">
+                <ul class="list-group clear-list m-t">
+                    <li class="list-group-item fist-item">
                     <span class="pull-right">
                         {{model.product.sumQuantity | number }}
                     </span>
-                    <span class="font-bold">{{'Total Inventory'| translate}}</span>
-                </li>
-                <li class="list-group-item">
+                        <span class="font-bold">{{'Total Inventory'| translate}}</span>
+                    </li>
+                    <li class="list-group-item">
                     <span class="pull-right">
                         {{model.product.costOfGood |number}}
                     </span>
-                    <span class="font-bold">{{'Fixed price'| translate}}</span>
-                </li>
-                <li class="list-group-item">
+                        <span class="font-bold">{{'Fixed price'| translate}}</span>
+                    </li>
+                    <li class="list-group-item">
                     <span class="pull-right">
                         0
                     </span>
-                    <span class="font-bold">{{'Sales profits'| translate}}</span>
-                </li>
-            </ul>
+                        <span class="font-bold">{{'Sales profits'| translate}}</span>
+                    </li>
+                </ul>
+            </div>
         </div>
-    </div>
-    <div class="row">
-        <canvas height="300" class="chart chart-line"
-                chart-data="model.data"
-                chart-series="model.series"
-                chart-labels="model.labels"
-                chart-dataset-override="model.datasetOverride"
-                chart-options="model.options"></canvas>
-    </div>
-
-</div>
+        <div class="row">
+            <canvas height="300" class="chart chart-line"
+                    chart-data="model.data"
+                    chart-series="model.series"
+                    chart-labels="model.labels"
+                    chart-dataset-override="model.datasetOverride"
+                    chart-options="model.options"></canvas>
+        </div>
+    </dev-tag-content-body>
+</dev-tag-content>
