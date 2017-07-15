@@ -175,6 +175,7 @@ module.exports.update = async((req, res) => {
     entity.date = cmd.date;
     entity.number = cmd.number;
     entity.description = cmd.description;
+    entity.tagId = cmd.tagId;
 
     let cmdJournalLines = cmd.journalLines.asEnumerable()
         .select(journalLine => ({
@@ -248,11 +249,11 @@ module.exports.update = async((req, res) => {
 module.exports.delete = async((req, res) => {
     let journalRepository = new JournalRepository(req.branchId),
         errors = [],
-        cmd = req.body,
+        id = req.params.id,
         branchId = req.branchId,
         fiscalPeriodRepository = new FiscalPeriodRepository(branchId),
-        currentFiscalPeriod = await(fiscalPeriodRepository.findById(req.cookies['current-period'])),
-        journal = await(journalRepository.findById(cmd.id));
+        currentFiscalPeriod = await(fiscalPeriodRepository.findById(req.fiscalPeriodId)),
+        journal = await(journalRepository.findById(id));
 
     if (currentFiscalPeriod.isClosed)
         errors.push(translate('The current period is closed , You are not allowed to delete Journal'));
@@ -266,7 +267,7 @@ module.exports.delete = async((req, res) => {
             errors: errors
         });
 
-    await(journalRepository.remove(req.params.id));
+    await(journalRepository.remove(id));
 
     return res.json({isValid: true});
 });

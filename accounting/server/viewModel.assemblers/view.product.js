@@ -14,10 +14,11 @@ function productAssembler(entity) {
         categoryId: entity.categoryId,
         scaleId: entity.scaleId,
         scaleDisplay: entity.scaleDisplay,
+        sumSalePrice: entity.sumSalePrice,
         sumDiscount: entity.sumDiscount,
+        countOnSale: entity.countOnSale,
         sumQuantity: entity.sumQuantity,
-        costOfGood: entity.costOfGood,
-        countOnSale: entity.countOnSale
+        costOfGood: entity.costOfGood
     };
 
     return viewModel;

@@ -29,3 +29,11 @@
         <dev-tag-grid option="gridOption"></dev-tag-grid>
     </div>
 </div>
+<div class="modal-footer">
+    <dev-tag-button
+            ng-if="journal.journalStatus != 'Fixed'"
+            ng-click="editJournal()"
+            icon="fa fa-edit"
+            style-type="primary"
+            title="{{'Edit' | translate}}"></dev-tag-button>
+</div>

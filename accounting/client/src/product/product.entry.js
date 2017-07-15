@@ -2,6 +2,7 @@
 
 export default class ProductEntryController {
     constructor($scope,
+                $rootScope,
                 productApi,
                 scaleApi,
                 data,
@@ -12,6 +13,7 @@ export default class ProductEntryController {
                 translate) {
 
         this.$scope = $scope;
+        this.$rootScope = $rootScope;
         this.productApi = productApi;
         this.scaleApi = scaleApi;
         this.formService = formService;
@@ -53,7 +55,10 @@ export default class ProductEntryController {
             : this.productApi.create(this.product);
 
         promise
-            .then(result => this.$scope.$close(result))
+            .then(result => {
+                this.$rootScope.$broadcast('onProductChanged');
+                this.$scope.$close(result);
+            })
             .catch(errors => this.errors = errors)
             .finally(() => this.isSaving = false);
     }

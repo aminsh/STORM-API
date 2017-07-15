@@ -7,6 +7,7 @@ const async = require('asyncawait/async'),
     router = require('express').Router(),
     FiscalPeriodRepository = require('../data/repository.fiscalPeriod'),
     JournalRepository = require('../data/repository.journal'),
+    JournalLineRepository = require('../data/repository.journalLine'),
     JournalQuery = require('../queries/query.journal');
 
 router.route('/')
@@ -133,42 +134,43 @@ router.route('/:id/attach-image').put(async((req, res) => {
 }));
 
 router.route('/:id/copy').post(async((req, res) => {
-    let journalRepository = new JournalRepository(req.branchId);
+    let journalRepository = new JournalRepository(req.branchId),
+        journalLineRepository = new JournalLineRepository(req.branchId);
 
     const id = req.params.id,
-        periodId = req.cookies['current-period'],
-        journal = await(journalRepository.findById(id));
+        periodId = req.fiscalPeriodId,
+        journal = await(journalRepository.findById(id)),
+        journalLines = await(journalLineRepository.findByJournalId(id)),
 
-    let newJournalLines = journal.journalLines.asEnumerable()
-        .select(line =>
-            ({
-                generalLedgerAccountId: line.generalLedgerAccountId,
-                subsidiaryLedgerAccountId: line.subsidiaryLedgerAccountId,
-                detailAccountId: line.detailAccountId,
-                dimension1Id: line.dimension1Id,
-                dimension2Id: line.dimension2Id,
-                dimension3Id: line.dimension3Id,
-                article: line.article,
-                debtor: line.debtor,
-                creditor: line.creditor
-            }))
-        .toArray();
+        newJournalLines = journalLines.asEnumerable()
+            .select(line =>
+                ({
+                    generalLedgerAccountId: line.generalLedgerAccountId,
+                    subsidiaryLedgerAccountId: line.subsidiaryLedgerAccountId,
+                    detailAccountId: line.detailAccountId,
+                    dimension1Id: line.dimension1Id,
+                    dimension2Id: line.dimension2Id,
+                    dimension3Id: line.dimension3Id,
+                    article: line.article,
+                    debtor: line.debtor,
+                    creditor: line.creditor
+                }))
+            .toArray(),
 
-    let entity = {
-        periodId: periodId,
-        createdById: req.user.id,
-        journalStatus: 'Temporary',
-        temporaryNumber: (await(journalRepository.maxTemporaryNumber(periodId)) || 0) + 1,
-        temporaryDate: persianDateSerivce.current(),
-        description: journal.description,
-        journalLines: newJournalLines
-    };
+        newJournal = {
+            periodId: periodId,
+            createdById: req.user.id,
+            journalStatus: 'Temporary',
+            temporaryNumber: (await(journalRepository.maxTemporaryNumber(periodId)).max || 0) + 1,
+            temporaryDate: persianDateSerivce.current(),
+            description: journal.description
+        };
 
-    entity = await(journalRepository.create(entity));
+    await(journalRepository.batchCreate(newJournalLines, newJournal));
 
     return res.json({
         isValid: true,
-        returnValue: {id: entity.id}
+        returnValue: {id: newJournal.id}
     });
 }));
 

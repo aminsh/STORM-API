@@ -17,6 +17,13 @@ class JournalLineRepository extends BaseRepository {
             .first();
     }
 
+    findByJournalId(journalId) {
+        return this.knex.select('*')
+            .from('journalLines')
+            .modify(this.modify, this.branchId)
+            .where('journalId', journalId);
+    }
+
     findByJournalId_ids(journalId) {
         return this.knex.select('id')
             .from('journalLines')

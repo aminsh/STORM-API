@@ -1,5 +1,5 @@
 export default class peopleCreateController {
-    constructor($scope,
+    constructor($scope,$rootScope,
                 $uibModalInstance,
                 formService,
                 peopleApi,
@@ -8,6 +8,7 @@ export default class peopleCreateController {
                 $state, data) {
 
         this.$scope = $scope;
+        this.$rootScope = $rootScope;
         this.logger = logger;
         this.peopleApi = peopleApi;
         this.$uibModalInstance = $uibModalInstance;
@@ -60,8 +61,9 @@ export default class peopleCreateController {
 
         if (this.editMode) {
             return this.peopleApi.update(this.id, people)
-                .then(result => {
+                .then(() => {
                     logger.success();
+                    this.$rootScope.$broadcast('onPersonChanged');
                     this.$scope.$close();
                 })
                 .catch(err => this.errors = err)
@@ -70,6 +72,7 @@ export default class peopleCreateController {
             return this.peopleApi.create(people)
                 .then(result => {
                     logger.success();
+                    this.$rootScope.$broadcast('onPersonChanged');
                     this.$scope.$close(result);
                 })
                 .catch(err => this.errors = err)

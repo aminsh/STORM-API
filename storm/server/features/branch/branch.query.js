@@ -6,7 +6,7 @@ const knex = require('../../services/knex'),
 
 class BranchQuery {
     constructor() {
-
+        this.isActive = async(this.isActive);
     }
 
     getById(id) {
@@ -16,6 +16,14 @@ class BranchQuery {
             'nationalCode', 'postalCode')
             .from('branches')
             .where('id', id).first();
+    }
+
+    isActive(id){
+        let branch = await(knex.select('status')
+            .from('branches')
+            .where('id', id)
+            .first());
+        return branch.status == 'active';
     }
 
     getAll() {

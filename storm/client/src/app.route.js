@@ -86,7 +86,7 @@ export default function routing($stateProvider, $urlRouterProvider, $locationPro
             url: '/success',
             onEnter: (logger, translate , $state) => {
                 logger.success(translate('با تشکر از شما . بزودی با شما تماس خواهیم گرفت'))
-                    .then(()=> $state.go('profile'));
+                    .then(()=> $state.go('home'));
             }
         })
         .state('setup.fiscalPeriod', {

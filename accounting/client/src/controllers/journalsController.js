@@ -1,8 +1,11 @@
 import accModule from "../acc.module";
 
-function journalsController($scope, translate, journalApi, $state,
+function journalsController($scope, translate, journalApi, $state, logger, prompt, confirm,
+                            navigate,
                             journalAdvancedSearchModalService,
-                            journalsExtraFilterResolve) {
+                            journalsExtraFilterResolve,
+                            journalTemplateService,
+                            journalTemplateApi) {
 
     $scope.searchParameters = false;
     $scope.gridOption = {
@@ -21,7 +24,7 @@ function journalsController($scope, translate, journalApi, $state,
             {name: 'date', title: translate('Date'), type: 'date', width: '120px'},
 
             {
-                name: 'description', title: translate('Description'), type: 'string', width: '50%',
+                name: 'description', title: translate('Journal description'), type: 'string', width: '40%',
                 template: '<a ui-sref="journals.list.detail({id: item.id})" title="{{item.description}}">{{item.description}}</a>'
             },
             {
@@ -42,14 +45,73 @@ function journalsController($scope, translate, journalApi, $state,
         commands: [
             {
                 title: translate('Edit'),
-                icon: 'fa fa-edit',
+                icon: 'fa fa-edit text-success',
                 canShow: item => item.journalStatus != 'Fixed',
                 action: function (current) {
                     $state.go('^.edit', {
                         id: current.id
                     });
                 }
+            },
+            {
+                title: translate('As a journal template'),
+                icon: 'fa fa-file-o text-success',
+                action: current => {
+                    prompt({
+                        title: translate('Copy to journal template'),
+                        text: translate('Enter Title of journal template'),
+                    }).then((inputValue) => {
+                        journalTemplateApi.create({journalId: current.id, title: inputValue})
+                            .then(() => logger.success());
+                    });
+                }
+            },
+            {
+                title: translate('Copy journal'),
+                icon: 'fa fa-copy text-success',
+                action: current => {
+                    confirm(
+                        translate('Are you sure ?'),
+                        translate('Copy journal')
+                    ).then(() => {
+                        journalApi.copy(current.id)
+                            .then(result => {
+                                logger.success();
+                                $state.go('^.edit', {id: result.id});
+                            });
+                    });
+                }
+            },
+            {
+                title: translate('Print'),
+                icon: 'fa fa-print text-success',
+                action: current => {
+                    let reportParam = {"minNumber": current.number, "maxNumber": current.number};
+
+                    navigate(
+                        'report.print',
+                        {key: 100},
+                        reportParam);
+                }
+            },
+            {
+                title: translate('Remove'),
+                icon: 'fa fa-trash text-danger',
+                canShow: item => item.journalStatus != 'Fixed',
+                action: current => {
+                    confirm(
+                        translate('Are you sure ?'),
+                        translate('Remove journal')
+                    ).then(() => {
+                        journalApi.remove(current.id)
+                            .then(result => {
+                                logger.success();
+                                $scope.gridOption.refresh();
+                            });
+                    });
+                }
             }
+
         ],
         readUrl: journalApi.url.getAll,
         mapper: (d) => {
@@ -94,6 +156,10 @@ function journalsController($scope, translate, journalApi, $state,
         $scope.searchParameters = false;
         $scope.$broadcast('{0}/execute-advanced-search'
             .format($scope.gridOption.name), null);
+    };
+
+    $scope.journalTemplate = () => {
+        journalTemplateService.show();
     };
 }
 

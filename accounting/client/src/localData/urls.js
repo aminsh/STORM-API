@@ -1,109 +1,111 @@
-let rootUrl = ()=> '/acc/api';
+let rootUrl = () => '/acc/api';
 
 let generalLedgerAccount = {
-    all: ()=> '{0}/general-ledger-accounts'.format(rootUrl())
+    all: () => '{0}/general-ledger-accounts'.format(rootUrl())
 };
 
 let subsidiaryLedgerAccount = {
-    all: ()=> '{0}/subsidiary-ledger-accounts'.format(rootUrl()),
-    allByGeneralLedgerAccount: (generalLedgerAccountId)=>
+    all: () => '{0}/subsidiary-ledger-accounts'.format(rootUrl()),
+    allByGeneralLedgerAccount: (generalLedgerAccountId) =>
         '{0}/subsidiary-ledger-accounts/general-ledger-account/{1}'
             .format(rootUrl(), generalLedgerAccountId),
-    allIncomes: ()=> `${rootUrl()}/subsidiary-ledger-accounts/incomes`,
-    allExpenses: ()=> `${rootUrl()}/subsidiary-ledger-accounts/expenses`
+    allIncomes: () => `${rootUrl()}/subsidiary-ledger-accounts/incomes`,
+    allExpenses: () => `${rootUrl()}/subsidiary-ledger-accounts/expenses`
 };
 
 let detailAccount = {
-    all: ()=> '{0}/detail-accounts'.format(rootUrl())
+    all: () => '{0}/detail-accounts'.format(rootUrl())
 };
 
 let dimensionCategory = {
-    all: ()=> `${rootUrl()}/dimension-categories`
+    all: () => `${rootUrl()}/dimension-categories`
 };
 
 let dimension = {
-    allByCategory: (categoryId)=> '{0}/dimensions/category/{1}'.format(rootUrl(), categoryId)
+    allByCategory: (categoryId) => '{0}/dimensions/category/{1}'.format(rootUrl(), categoryId)
 };
 
 let period = {
-    all: ()=> '{0}/fiscal-periods'.format(rootUrl())
+    all: () => '{0}/fiscal-periods'.format(rootUrl())
 };
 
 let chequeCategory = {
-    all: ()=> '{0}/cheque-categories'.format(rootUrl()),
-    allOpens: (detailAccountId)=> '{0}/cheque-categories/detail-account/{1}/opens'.format(rootUrl(), detailAccountId)
+    all: () => '{0}/cheque-categories'.format(rootUrl()),
+    allOpens: (detailAccountId) => '{0}/cheque-categories/detail-account/{1}/opens'.format(rootUrl(), detailAccountId)
 };
 
 let cheque = {
-    all: (categoryId)=> '{0}/cheques/category/{1}'.format(rootUrl(), categoryId),
-    allwhites: (categoryId)=> '{0}/cheques/category/{1}/whites'.format(rootUrl(), categoryId),
-    allUseds: ()=> '{0}/cheques/useds'.format(rootUrl())
+    all: (categoryId) => '{0}/cheques/category/{1}'.format(rootUrl(), categoryId),
+    allwhites: (categoryId) => '{0}/cheques/category/{1}/whites'.format(rootUrl(), categoryId),
+    allUseds: () => '{0}/cheques/useds'.format(rootUrl())
 };
 
 let journal = {
-    getGroupedByMouth: ()=> '{0}/journals/summary/grouped-by-month'.format(rootUrl()),
-    getByMonth: (month)=> '{0}/journals/month/{1}'.format(rootUrl(), month),
-    getAllByPeriod: (periodId)=> '{0}/journals/period/{1}'.format(rootUrl(), periodId),
-    getPayablesNotHaveChequeLines: detailAccountId=> `${rootUrl()}/journals/${detailAccountId}/payable-transactions/not-have-cheque`
+    getGroupedByMouth: () => '{0}/journals/summary/grouped-by-month'.format(rootUrl()),
+    getByMonth: (month) => '{0}/journals/month/{1}'.format(rootUrl(), month),
+    getAllByPeriod: (periodId) => '{0}/journals/period/{1}'.format(rootUrl(), periodId),
+    getPayablesNotHaveChequeLines: detailAccountId => `${rootUrl()}/journals/${detailAccountId}/payable-transactions/not-have-cheque`
 };
 
 let journalTemplate = {
-    getAll: ()=> '{0}/journal-templates'.format(rootUrl())
+    getAll: () => '{0}/journal-templates'.format(rootUrl())
 };
 
 let accountReview = {
-    getAllGeneralLedgerAccount: ()=> `${rootUrl()}/account-review/general-ledger-account`,
-    getAllSubsidiaryLedgerAccount: ()=> `${rootUrl()}/account-review/subsidiary-ledger-account`,
-    getAllDetailAccount: ()=> `${rootUrl()}/account-review/detail-account`,
-    getAllDimension1: ()=> `${rootUrl()}/account-review/dimension-1`,
-    getAllDimension2: ()=> `${rootUrl()}/account-review/dimension-2`,
-    getAllDimension3: ()=> `${rootUrl()}/account-review/dimension-3`,
-    getAllTiny: ()=> `${rootUrl()}/account-review/tiny`
+    getAllGeneralLedgerAccount: () => `${rootUrl()}/account-review/general-ledger-account`,
+    getAllSubsidiaryLedgerAccount: () => `${rootUrl()}/account-review/subsidiary-ledger-account`,
+    getAllDetailAccount: () => `${rootUrl()}/account-review/detail-account`,
+    getAllDimension1: () => `${rootUrl()}/account-review/dimension-1`,
+    getAllDimension2: () => `${rootUrl()}/account-review/dimension-2`,
+    getAllDimension3: () => `${rootUrl()}/account-review/dimension-3`,
+    getAllTiny: () => `${rootUrl()}/account-review/tiny`
 };
 
 let tag = {
-    getAll: ()=> `${rootUrl()}/tags`
+    getAll: () => `${rootUrl()}/tags`
 };
 
 let people = {
-    getAll: ()=> `${rootUrl()}/people`
+    getAll: () => `${rootUrl()}/people`
 };
 
 let fund = {
-    getAll: ()=> `${rootUrl()}/funds`
+    getAll: () => `${rootUrl()}/funds`,
+    getAllTinyTurnonver: id => `${rootUrl()}/funds/${id}/tiny-turnover`
 };
 
 let bank = {
-    getAll: ()=> `${rootUrl()}/banks`
+    getAll: () => `${rootUrl()}/banks`,
+    getAllTinyTurnonver: id => `${rootUrl()}/banks/${id}/tiny-turnover`
 };
 
 
 let sales = {
-    getAll: ()=> `${rootUrl()}/sales`
+    getAll: () => `${rootUrl()}/sales`
 };
 
 let purchase = {
-    getAll: ()=> `${rootUrl()}/purchases`
+    getAll: () => `${rootUrl()}/purchases`
 };
 
 let products = {
-    getAll: ()=> `${rootUrl()}/products`
+    getAll: () => `${rootUrl()}/products`
 };
 
 let scale = {
-    getAll: ()=> `${rootUrl()}/scales`
+    getAll: () => `${rootUrl()}/scales`
 };
 
 let productCategory = {
-    getAll: ()=> `${rootUrl()}/product-categories`
+    getAll: () => `${rootUrl()}/product-categories`
 };
 
 let receivableCheques = {
-    getAll: ()=> `${rootUrl()}/receive/cheques`
+    getAll: () => `${rootUrl()}/receive/cheques`
 };
 
 let payableCheques = {
-    getAll: ()=> `${rootUrl()}/pay/cheques`
+    getAll: () => `${rootUrl()}/pay/cheques`
 };
 
 let apiUrls = {
@@ -121,8 +123,8 @@ let apiUrls = {
     journalTemplate: journalTemplate,
     accountReview: accountReview,
     tag: tag,
-    sales:sales,
-    purchase:purchase,
+    sales: sales,
+    purchase: purchase,
     products,
     scale,
     productCategory,

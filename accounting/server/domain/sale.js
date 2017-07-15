@@ -23,7 +23,8 @@ module.exports = class SaleDomain {
             description: cmd.description,
             detailAccountId: cmd.detailAccountId,
             invoiceType: 'sale',
-            invoiceStatus: cmd.status
+            invoiceStatus: cmd.status,
+            orderId: cmd.orderId
         };
 
         entity.invoiceLines = cmd.invoiceLines.asEnumerable()

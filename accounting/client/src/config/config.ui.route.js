@@ -1,10 +1,10 @@
 "use strict";
 
-export default function ($stateProvider, $urlRouterProvider, $locationProvider) {
+export default function ($stateProvider, $urlRouterProvider, $locationProvider, $qProvider) {
+    $qProvider.errorOnUnhandledRejections(false);
+
     $locationProvider.html5Mode(true);
     $locationProvider.hashPrefix('!');
-
-    //$urlRouterProvider.otherwise('/not-found');
 
     $urlRouterProvider.otherwise('/');
 
@@ -164,15 +164,6 @@ export default function ($stateProvider, $urlRouterProvider, $locationProvider) 
             controller: 'journalUpdateController',
             controllerAs: 'model',
             templateUrl: 'partials/journal/journal.html'
-        })
-        .state('journalCopy', {
-            url: 'journal/copy',
-            controller: 'journalCopyController',
-            templateUrl: 'partials/views/journalCopy.html'
-        })
-        .state('/journal-templates', {
-            controller: 'journalTemplatesController',
-            templateUrl: 'partials/views/journalTemplates.html'
         })
         .state('/journal/:id/print', {
             controller: 'journalPrintController',
@@ -477,7 +468,7 @@ export default function ($stateProvider, $urlRouterProvider, $locationProvider) 
         })
         .state('products.info', {
             url: '/:id/info',
-            onEnter: ($modelFactory, $stateParams) => {
+            /*onEnter: ($modelFactory, $stateParams) => {
                 $modelFactory.create({
                     controller: 'ProductMoreInfoController',
                     controllerAs: 'model',
@@ -485,7 +476,10 @@ export default function ($stateProvider, $urlRouterProvider, $locationProvider) 
                     templateUrl: 'partials/product/productMoreInfo.html',
                     resolve: {data: {id: $stateParams.id}},
                 });
-            }
+            }*/
+            controller: 'ProductMoreInfoController',
+            controllerAs: 'model',
+            templateUrl: 'partials/product/productMoreInfo.html'
         })
         .state('transferMoney', {
             url: '/transfer-money',
