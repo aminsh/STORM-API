@@ -5,7 +5,6 @@ const express = require('express'),
     async = require('asyncawait/async'),
     await = require('asyncawait/await'),
     config = require('../../config'),
-    authenticate = require('../../config/auth').authenticate,
     md5 = require('md5'),
     Guid = require('../../services/shared').utility.Guid,
     UserRepository = require('./user.repository'),
@@ -49,8 +48,53 @@ router.route('/is-unique-email/:email')
         let userQuery = new UserQuery(),
             user = await(userQuery.getByEmail(req.params.email));
 
-        res.json({isValid: user != null});
+        res.json({isValid: user !== null});
     }));
 
+router.route('/:id/change-password')
+    .put(async((req, res) => {
+        let userRepository = new UserRepository(),
+            cmd = req.body,
+            id = req.params.id,
+            entity = {
+                password: md5(cmd.password)
+            };
+
+        try{
+
+            await(userRepository.update(id, entity));
+            res.json({isValid: true});
+
+        } catch(e) {
+
+            res.json({isValid: false});
+
+        }
+
+    }));
+
+router.route('/:id/change-image')
+    .put(async((req, res) => {
+
+        let userRepository = new UserRepository()
+            ,imageName = req.body.imageName
+            ,id = req.body.id
+            ,entity = {
+            image: imageName
+        };
+
+        try{
+
+            await(userRepository.update(id, entity));
+            res.json({ isValid: true });
+
+        } catch(e) {
+
+            res.json({ isValid: false });
+            console.log(e.message);
+
+        }
+
+    }));
 
 module.exports = router;
