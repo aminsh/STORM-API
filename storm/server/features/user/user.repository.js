@@ -37,4 +37,14 @@ module.exports = class {
             .andWhere('password', md5(password.toString()))
             .first();
     }
+
+    // SMRSAN
+    getUserByEmail(email){
+
+        return knex.table('users')
+            .where('email', email)
+            .first();
+
+    }
+
 };
