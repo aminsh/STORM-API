@@ -5,13 +5,13 @@ const express = require('express'),
     async = require('asyncawait/async'),
     await = require('asyncawait/await'),
     config = require('../../config'),
-    authenticate = require('../../config/auth').authenticate,
     md5 = require('md5'),
     Guid = require('../../services/shared').utility.Guid,
     UserRepository = require('./user.repository'),
     UserQuery = require('./user.query'),
     translate = require('../../services/translateService'),
-    emailService = require('../../services/emailService');
+    emailService = require('../../services/emailService'),
+    crypto = require('../../../../shared/services/cryptoService');
 
 router.route('/').get(async((req, res)=> {
     let userQuery = new UserQuery(),
@@ -49,8 +49,94 @@ router.route('/is-unique-email/:email')
         let userQuery = new UserQuery(),
             user = await(userQuery.getByEmail(req.params.email));
 
-        res.json({isValid: user != null});
+        res.json({isValid: user !== null});
     }));
 
+router.route('/:id/change-password')
+    .put(async((req, res) => {
+        let userRepository = new UserRepository(),
+            cmd = req.body,
+            id = req.params.id,
+            entity = {
+                password: md5(cmd.password)
+            };
+
+        try{
+
+            await(userRepository.update(id, entity));
+            res.json({isValid: true});
+
+        } catch(e) {
+
+            res.json({isValid: false});
+
+        }
+
+    }));
+
+router.route('/:id/change-image')
+    .put(async((req, res) => {
+
+        let userRepository = new UserRepository()
+            ,imageName = req.body.imageName
+            ,id = req.body.id
+            ,entity = {
+            image: imageName
+        };
+
+        try{
+
+            await(userRepository.update(id, entity));
+            res.json({ isValid: true });
+
+        } catch(e) {
+
+            res.json({ isValid: false });
+            console.log(e.message);
+
+        }
+
+    }));
+
+router.route('/forgot-password')
+    .post(async((req, res) => {
+
+        let userRepository = new UserRepository(),
+            email = req.body.email,
+            token = null,
+            user = await(userRepository.getUserByEmail(email)),
+            email_options = {
+                from: "info@storm-online.ir",
+                subject: "",
+                to: email,
+                text: ""
+            },
+            link = "";
+
+
+        if(user !== null){
+
+            token = crypto.sign({
+                id: user.id,
+                email: user.email
+            });
+
+            link = `${config.url.origin}/reset-password/${token}`;
+            email_options.text = link;
+
+            emailService
+                .send(email_options);
+
+            // Success
+            res.json({ isValid: true });
+
+        } else {
+
+            // With "No user found with this email" Error
+            res.json({ isValid: false, error: ["Invalid email address","No user found with this email address."] });
+
+        }
+
+    }));
 
 module.exports = router;
