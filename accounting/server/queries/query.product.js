@@ -40,11 +40,11 @@ module.exports = class ProductQuery extends BaseQuery {
             fiscalPeriodQuery = new FiscalPeriodQuery(this.branchId),
             fiscalPeriod = await(fiscalPeriodQuery.getById(fiscalPeriodId)),
 
-            totalSalePrice = `select sum(("unitPrice" * "quantity") - discount + vat) from "invoices" 
+            totalSalePrice = `select cast(sum(("unitPrice" * "quantity") - discount + vat) as float) from "invoices" 
                 left join "invoiceLines" on "invoices".id = "invoiceLines"."invoiceId"
                 where "invoices".date between '${fiscalPeriod.minDate}' and '${fiscalPeriod.maxDate}' 
                 and "invoices"."branchId" = '${branchId}'
-                and "invoiceLines"."productId" = "products".id 
+                and "invoiceLines"."productId" = "products".id
                 and "invoiceType" = 'sale'`,
             totalSaleDiscount = `select sum("discount") from "invoices" 
                 left join "invoiceLines" on "invoices".id = "invoiceLines"."invoiceId"
@@ -52,14 +52,12 @@ module.exports = class ProductQuery extends BaseQuery {
                 and "invoices"."branchId" = '${branchId}'
                 and "invoiceLines"."productId" = "products".id 
                 and "invoiceType" = 'purchase'`,
-            countOfSale = `select count(*) from "invoices" 
+            countOfSale = `select sum("invoiceLines"."quantity") from "invoices" 
                 left join "invoiceLines" on "invoices".id = "invoiceLines"."invoiceId"
                 where "invoices".date between '${fiscalPeriod.minDate}' and '${fiscalPeriod.maxDate}' 
                 and "invoices"."branchId" = '${branchId}'
                 and "invoiceLines"."productId" = "products".id 
-                and "invoiceType" = 'sale'
-                group by "invoices"."id" 
-                limit 1`,
+                and "invoiceType" = 'sale'`,
             inventory = `select sum(case when "inventoryType" = 'input' then "quantity" else "quantity" * -1 end) as "sumQuantity" 
                 from "inventories" left join "inventoryLines" on "inventories".id = "inventoryLines"."inventoryId"
                 where "inventories"."fiscalPeriodId" = '${fiscalPeriod.id}'

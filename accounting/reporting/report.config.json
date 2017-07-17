@@ -5,7 +5,7 @@
     "items": [
       {
         "key": "100",
-        "text": "سند حسابداری کل",
+        "text": "سند حسابداری",
         "func": "detailJournals",
         "fileName": "detailJournalsList",
         "params": [

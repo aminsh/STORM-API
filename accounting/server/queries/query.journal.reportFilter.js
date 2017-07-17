@@ -73,6 +73,6 @@ function _getAmountFields(knex, options) {
 }
 
 function _executeFilter(query, filter, currentFiscalPeriod, knex) {
-        query.andWhere('isInComplete', false);
+        //query.andWhere('isInComplete', false);
         baseFilter(query, filter, currentFiscalPeriod , knex);
 }

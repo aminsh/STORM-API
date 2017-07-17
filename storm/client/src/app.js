@@ -27,6 +27,7 @@ import UserApi from './authentication/api.user';
 import ProfileController from './profile/profile.controller';
 import SetupInfoController from './branch/setup-info';
 import BranchApi from './branch/api.branch';
+import uploader from './branch/logo.upload';
 
 angular.module('app', [
     'ngMessages',
@@ -40,6 +41,8 @@ angular.module('app', [
     .run(authInit)
 
     .directive('shell', shell)
+    .directive('logoUploader', uploader)
+
     .factory('setDirty', setDirty)
     .factory('translate', translate)
     .service('Promise', Promise)
