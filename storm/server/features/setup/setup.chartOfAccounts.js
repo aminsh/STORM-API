@@ -33,6 +33,7 @@ module.exports = async.result(function (branchId) {
                     title: sla.title,
                     code: sla.code,
                     generalLedgerAccountId: newGla.id,
+                    hasDetailAccount: sla.hasDetailAccount,
                     isLocked: sla.isLocked,
                     branchId
                 };
