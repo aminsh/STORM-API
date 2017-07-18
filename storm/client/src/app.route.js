@@ -1,5 +1,3 @@
-
-
 routing.$inject = ['$stateProvider', '$urlRouterProvider', '$locationProvider'];
 
 export default function routing($stateProvider, $urlRouterProvider, $locationProvider) {
@@ -10,13 +8,13 @@ export default function routing($stateProvider, $urlRouterProvider, $locationPro
     });
 
     $locationProvider.hashPrefix('!');
-    $urlRouterProvider.otherwise('/page-not-found');
+    $urlRouterProvider.otherwise('/404');
 
     $stateProvider
         .state('home', {
             url: '/',
             onEnter: ($window) => {
-               $window.location.href = $window.location.origin;
+                $window.location.href = $window.location.origin;
             }
         })
         .state('aboutus', {
@@ -34,8 +32,8 @@ export default function routing($stateProvider, $urlRouterProvider, $locationPro
         .state('order', {
             url: '/order/:plan',
             templateUrl: 'app/product/order.html',//require('./auth/register.html'),
-/*            controller: 'orderController',
-            controllerAs: 'vm'*/
+            /*            controller: 'orderController',
+             controllerAs: 'vm'*/
         })
         .state('login', {
             url: '/login',
@@ -51,9 +49,9 @@ export default function routing($stateProvider, $urlRouterProvider, $locationPro
         })
         .state('activateUser', {
             url: '/activate/:token',
-            onEnter: (logger, translate , $state) => {
+            onEnter: (logger, translate, $state) => {
                 logger.success(translate('Your Account activated successfully'))
-                    .then(()=> $state.go('profile'));
+                    .then(() => $state.go('profile'));
             }
         })
         .state('profile', {
@@ -84,9 +82,9 @@ export default function routing($stateProvider, $urlRouterProvider, $locationPro
         })
         .state('setup.infoSuccess', {
             url: '/success',
-            onEnter: (logger, translate , $state) => {
+            onEnter: (logger, translate, $state) => {
                 logger.success(translate('با تشکر از شما . بزودی با شما تماس خواهیم گرفت'))
-                    .then(()=> $state.go('home'));
+                    .then(() => $state.go('home'));
             }
         })
         .state('setup.fiscalPeriod', {
@@ -111,8 +109,18 @@ export default function routing($stateProvider, $urlRouterProvider, $locationPro
             shouldAuthenticate: true
         })
 
-        .state('/page-not-found', {
-            template: '<h1>Page not found</h1>'
+        .state('pageNotFound', {
+            url: '/404',
+            controller: ($scope, $window) => {
+                $scope.goBack = () => {
+                    if ($window.history.back) {
+                        $window.history.back();
+                        return;
+                    }
+                    $window.history.go(-1);
+                };
+            },
+            templateUrl: 'app/pageNotFound/error404.html'
         });
 }
 
