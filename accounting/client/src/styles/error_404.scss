@@ -1,18 +1,11 @@
-@import "resourses/mixins";
-
-*, *::before, *::after{
-  @include box-sizing(border-box);
-  font-family: "IRANSans", sans-serif, tahoma;
-}
-
-body{
+/*body{
   margin: 0;
   position: relative;
   width: 100%;
   min-height: 100vh;
   overflow: hidden;
   background-color: $color-too-dark-gray;
-}
+}*/
 
 //Main Variables
 $error-code-anim-from: $color-dark-blue;// The Default Color

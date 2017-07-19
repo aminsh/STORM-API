@@ -46,7 +46,7 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider, IdlePro
             onEnter: $window => $window.location.href = $window.location.origin + '/profile'
         })
         .state('policy', {
-            url: "/landing/policy",
+            url: "/policy",
             templateUrl: "views/policy.html",
             data: {pageTitle: 'قوانین و مقررات', specialClass: 'landing-page rtls'},
             resolve: {
