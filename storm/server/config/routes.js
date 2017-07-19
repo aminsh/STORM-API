@@ -27,6 +27,7 @@ app.post('/upload', (req, res) => {
 });
 
 app.get('/', (req, res) => res.render('webSite/index.html'));
+app.get('/policy', (req, res) => res.render('webSite/index.html'));
 
 app.get('/new-site', (req, res) => res.render('new-site.ejs'));
 
