@@ -30,7 +30,7 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider, IdlePro
         .state('landing', {
             url: "/",
             templateUrl: "views/landing.html",
-            data: { pageTitle: 'صفحه ی نخست', specialClass: 'landing-page rtls' },
+            data: {pageTitle: 'صفحه ی نخست', specialClass: 'landing-page rtls'},
             resolve: {
                 loadPlugin: function ($ocLazyLoad) {
                     return $ocLazyLoad.load([
@@ -40,12 +40,15 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider, IdlePro
                     ]);
                 }
             }
-        });
-    $stateProvider
-         .state('policy', {
+        })
+        .state('profile', {
+            url: '/profile',
+            onEnter: $window => $window.location.href = $window.location.origin + '/profile'
+        })
+        .state('policy', {
             url: "/landing/policy",
             templateUrl: "views/policy.html",
-            data: { pageTitle: 'قوانین و مقررات', specialClass: 'landing-page rtls' },
+            data: {pageTitle: 'قوانین و مقررات', specialClass: 'landing-page rtls'},
             resolve: {
                 loadPlugin: function ($ocLazyLoad) {
                     return $ocLazyLoad.load([
@@ -60,6 +63,6 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider, IdlePro
 angular
     .module('inspinia')
     .config(config)
-    .run(function($rootScope, $state) {
+    .run(function ($rootScope, $state) {
         $rootScope.$state = $state;
     });
