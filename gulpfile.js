@@ -249,9 +249,10 @@ gulp.task('copy-stimulsoft-files', function () {
 });
 
 gulp.task('watch', () => {
-    gulp.watch(`${config.accSrcDir}/src/**/*.js`, ['build-acc']);
-    gulp.watch(`${config.accSrcDir}/src/**/*.scss`, ['build-sass']);
-    gulp.watch(`${config.accSrcDir}/partials/**/*.html`, ['build-template']);
+    //gulp.watch(`${config.stormSrcDir}/src/!**!/!*.html`, ['storm-build-template']);
+    gulp.watch(`${config.accSrcDir}/src/!**!/!*.js`, ['build-acc']);
+    gulp.watch(`${config.accSrcDir}/src/!**!/!*.scss`, ['build-sass']);
+    gulp.watch(`${config.accSrcDir}/partials/!**!/!*.html`, ['build-template']);
 });
 
 gulp.task('beautify', function () {

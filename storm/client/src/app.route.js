@@ -121,6 +121,14 @@ export default function routing($stateProvider, $urlRouterProvider, $locationPro
                 };
             },
             templateUrl: 'app/pageNotFound/error404.html'
+        })
+        .state("landing",{
+            url: '/landing',
+            templateUrl: "app/landing/landing.html"
+        })
+        .state("success",{
+            url: '/success',
+            templateUrl: 'app/pageSuccess/success.html'
         });
 }
 

@@ -1,0 +1,23 @@
+.so-landing-nav{
+  color: $color-black;
+  background-color: white;
+}
+.so-landing-img{
+  display: block;
+  width: 50%;
+  height: auto;
+  margin: 50px auto;
+}
+.so-landing-nav-logo{
+  width: auto;
+  height: 100%;
+  display: inline-block;
+}
+.so-landing-copyright{
+  color: $color-milk-white;
+  font-size: 12pt;
+  &:hover{
+    color: $color-milk-white;
+    text-decoration: underline;
+  }
+}

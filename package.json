@@ -78,6 +78,7 @@
     "pg": "^6.1.0",
     "pluralize": "^3.1.0",
     "promise": "^7.1.1",
+    "raven-js": "^3.17.0",
     "redis": "^2.6.3",
     "request": "^2.79.0",
     "request-promise": "^4.1.1",

@@ -1,24 +1,17 @@
-@import "resourses/mixins";
-
-*, *::before, *::after{
-  @include box-sizing(border-box);
-  font-family: "IRANSans", sans-serif, tahoma;
-}
-
-body{
+/*body{
   margin: 0;
   position: relative;
   width: 100%;
   min-height: 100vh;
   overflow: hidden;
   background-color: $color-too-dark-gray;
-}
+}*/
 
 //Main Variables
 $error-code-anim-from: $color-dark-blue;// The Default Color
 $error-code-anim-to: $color-red;// Default Color Will Change To It
 $error-caption-color: darken($color-gray,20);
-$error-message-color: $color-dark-gray;
+$error-message-color: $color-dark-gray-blue;
 $btn-trans-duration: 0.75s;
 $wrapper-fade-in-duration: 1.25s;
 

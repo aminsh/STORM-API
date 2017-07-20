@@ -131,7 +131,6 @@ import Promise from "./services/promise";
 import "./journal";
 import "./report";
 import "./cheque";
-import "./purchases";
 import "./inventory";
 import "./people";
 import "./payment";

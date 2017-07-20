@@ -2,11 +2,11 @@
     <dev-tag-content>
         <dev-tag-content-heading>
             <h5 class="panel-title" ng-if="!model.editMode">
-                {{'Create sale'|translate}}
+               {{model.pageTitle}}
             </h5>
 
             <h5 class="panel-title" ng-if="model.editMode">
-                {{'Edit sale'|translate}}
+                {{model.pageTitle}}
             </h5>
         </dev-tag-content-heading>
         <dev-tag-content-body>
@@ -121,46 +121,25 @@
 
                         <dev-tag-button style-type="primary" style="width: 100px;"
                                         ng-click="model.print()"
-                                        ng-if="!model.isSaving" title="{{'Print ' | translate}}">
+                                        ng-if="model.isPrintig" title="{{'Print ' | translate}}">
 
                             <span class="fa fa-print"></span></dev-tag-button>
 
                         <dev-tag-button style-type="success"
-                                        ng-if="model.canShow(model.invoice.status,'confirm')"
                                         ng-disabled="model.isSaving"
                                         is-waiting="model.isSaving"
                                         title="{{'Confirm' | translate}}"
                                         ng-click="model.saveInvoice(form)"></dev-tag-button>
 
                         <dev-tag-button style-type="success"
-                                        ng-if="model.canShow(model.invoice.status,'draft')"
                                         ng-disabled="model.isSaving"
                                         is-waiting="model.isSaving"
                                         title="{{'Save as draft' | translate}}"
                                         ng-click="model.saveInvoice(form, 'draft')"></dev-tag-button>
 
-                        <dev-tag-button style-type="primary" style="width: 100px;"
-                                        ng-click="model.cashPaymentShow()"
-                                        ng-if="model.canShow(model.invoice.status,'payment')" title="{{'Payment ' | translate}}">
-
-                            <span class="fa  fa-money"></span></dev-tag-button>
-
                 </div>
                 <div class="col-sm-4"></div>
                 <div class="col-sm-4 text-left">
-
-                    <!--<dev-tag-button-->
-                            <!--ng-click="model.cashPaymentShow()"-->
-                            <!--title="{{'Add cash'| translate}}"-->
-                            <!--style-type="info"></dev-tag-button>-->
-                    <!--<dev-tag-button-->
-                            <!--ng-click="model.attachImage()"-->
-                            <!--title="{{'Add Bank Receipt'| translate}}"-->
-                            <!--style-type="primary"></dev-tag-button>-->
-                    <!--<dev-tag-button-->
-                            <!--ng-click="model.attachImage()"-->
-                            <!--title="{{'Add Cheque'| translate}}"-->
-                            <!--style-type="warning"></dev-tag-button>-->
                 </div>
             </div>
 

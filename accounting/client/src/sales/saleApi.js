@@ -1,6 +1,6 @@
 import accModule from '../acc.module';
 
-function salesInvoiceApi(apiPromise,devConstants) {
+function saleApi(apiPromise,devConstants) {
     var urlPrefix = devConstants.urls.rootUrl;
 
     return {
@@ -43,4 +43,4 @@ function salesInvoiceApi(apiPromise,devConstants) {
 
 }
 
-accModule.factory('salesInvoiceApi', salesInvoiceApi);
+accModule.factory('saleApi', saleApi);
