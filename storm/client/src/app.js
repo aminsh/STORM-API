@@ -7,6 +7,7 @@ import 'angular-messages';
 import 'angular-ui-router';
 import 'angular-translate';
 import 'angular-cookies';
+//import 'wow';
 
 import appRoute from './app.route';
 import shell from './layout/shell';

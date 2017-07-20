@@ -267,21 +267,27 @@ export default function ($stateProvider, $urlRouterProvider, $locationProvider, 
         })
         .state('sales.list', {
             url: '/list',
-            controller: 'salesListController',
+            controller: 'invoiceListController',
             controllerAs: 'model',
-            templateUrl: 'partials/sales/sales.html'
+            templateUrl: 'partials/sales/list.html'
         })
         .state('sales.create', {
             url: '/create',
-            controller: 'salesInvoiceController',
+            controller: 'invoiceController',
             controllerAs: 'model',
             templateUrl: 'partials/sales/invoiceCreate.html'
         })
         .state('sales.edit', {
             url: '/:id/edit',
-            controller: 'salesInvoiceController',
+            controller: 'invoiceController',
             controllerAs: 'model',
             templateUrl: 'partials/sales/invoiceCreate.html'
+        })
+        .state('sales.view', {
+            url: '/:id/view',
+            controller: 'invoiceController',
+            controllerAs: 'model',
+            templateUrl: 'partials/sales/invoice.html'
         })
         .state('payment', {
             url: '/payment',
@@ -302,21 +308,27 @@ export default function ($stateProvider, $urlRouterProvider, $locationProvider, 
         })
         .state('purchases.list', {
             url: '/list',
-            controller: 'purchasesListController',
+            controller: 'invoiceListController',
             controllerAs: 'model',
-            templateUrl: 'partials/purchases/purchases.html'
+            templateUrl: 'partials/sales/list.html'
         })
         .state('purchases.create', {
             url: '/create',
-            controller: 'purchaseController',
+            controller: 'invoiceController',
             controllerAs: 'model',
-            templateUrl: 'partials/purchases/purchaseCreate.html'
+            templateUrl: 'partials/sales/invoiceCreate.html'
         })
         .state('purchases.edit', {
             url: '/:id/edit',
-            controller: 'purchaseController',
+            controller: 'invoiceController',
             controllerAs: 'model',
-            templateUrl: 'partials/purchases/purchaseCreate.html'
+            templateUrl: 'partials/sales/invoiceCreate.html'
+        })
+        .state('purchases.view', {
+            url: '/:id/view',
+            controller: 'invoiceController',
+            controllerAs: 'model',
+            templateUrl: 'partials/sales/invoice.html'
         })
 
         .state('people', {

@@ -16,9 +16,14 @@ import 'kendo-angular';
 import 'kendo-messages-fa-IR';
 import 'adm-dtp';
 import 'chart.js';
-
+// import Raven from 'raven-js';
 Object.defineProperty(Array.prototype, 'toNumber', { enumerable: false });
 Object.defineProperty(Array.prototype, 'dtp_toDate', { enumerable: false });
+//
+// Raven
+//     .config('https://2ac99533d17849afb7344de4f751a762@sentry.io/189640')
+//     .addPlugin(require('raven-js/plugins/angular'), angular)
+//     .install();
 
 let accModule = angular.module('acc.module', [
     'ngAnimate',

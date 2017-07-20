@@ -11,6 +11,8 @@ $primary-select-color: #87c56f;
 $bootstrap-sass-asset-helper: false;
 $dir: rtl;
 
+@import "resourses/mixins";
+
 @import "loadingbar.start";
 @import "bootstrap-sass-directional/assets/stylesheets/bootstrap";
 @import "bootstrap.override";
@@ -49,7 +51,28 @@ $dir: rtl;
 @import "pace.override";
 @import "sk-loading";
 
+@import "error_404";
+@import "landing";
+@import "success";
+
 @import "../journal/journalLine-style";
+
+// For Each Defined Color
+@each $key , $val in $color-map {
+  .so-tx-#{$key}{ color: $val; }
+  .so-bg-#{$key}{ background-color: $val; }
+}
+
+*, *::before, *::after{
+  @include box-sizing(border-box);
+  font-family: "IRANSans", sans-serif, tahoma, "FontAwesome";
+}
+
+body{
+  margin: 0;
+  width: 100%;
+  min-height: 100vh;
+}
 
 body, h1, a,
 .panel-title,

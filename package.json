@@ -10,7 +10,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node .",
     "dev": "gulp && node . NODE_ENV=development --mode UNIT",
-    "build": "gulp"
+    "build": "webpack"
   },
   "engines": {
     "node": "6.10.x"
@@ -78,6 +78,7 @@
     "pg": "^6.1.0",
     "pluralize": "^3.1.0",
     "promise": "^7.1.1",
+    "raven-js": "^3.17.0",
     "redis": "^2.6.3",
     "request": "^2.79.0",
     "request-promise": "^4.1.1",
@@ -120,6 +121,9 @@
     "gulp-watch": "^4.3.11",
     "main-bower-files": "^2.13.1",
     "uglifyify": "^3.0.2",
+    "uglifyjs-webpack-plugin": "^0.4.6",
+    "webpack": "^3.3.0",
+    "webpack-obfuscator": "^0.9.3",
     "yargs": "^6.6.0"
   },
   "browserify": {
@@ -159,8 +163,8 @@
     "persian-date": "./shared/utilities/persianDate.js",
     "acc-enums": "./acconting/shared/enumns.js",
     "jquery-global-resolve": "./vendors/jquery.global.resolve.js",
-    "kendo-web":"./vendors/kendo/kendo.web.min.js",
-    "kendo-angular":"./vendors/kendo/kendo.angular.js",
+    "kendo-web": "./vendors/kendo/kendo.web.min.js",
+    "kendo-angular": "./vendors/kendo/kendo.angular.js",
     "kendo-messages-fa-IR": "./vendors/kendo/kendo.messages.fa-IR.js",
     "bootstrap": "./node_modules/bootstrap-sass-directional/assets/javascripts/bootstrap.js",
     "metisMenu": "./vendors/jquery.metisMenu.js",

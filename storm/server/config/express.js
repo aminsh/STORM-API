@@ -51,7 +51,7 @@ app.use('/content', express.static(config.rootPath + '/client/content'));
 app.use('/assets', express.static(config.rootPath + '/server/views/webSite/assets'));
 app.use('/images', express.static(config.rootPath + '/server/views/webSite/images'));
 app.use('/data', express.static(config.rootPath + '../data'));
-app.use('/', express.static(config.rootPath + '/server/public'));
+app.use('/', express.static(config.rootPath + '/server/views/webSite'));
 
 app.use(multer({dest: './data/uploads/;'}));
 

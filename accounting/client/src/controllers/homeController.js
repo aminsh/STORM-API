@@ -1,6 +1,6 @@
 import accModule from '../acc.module';
 
-function homeController($scope, translate, purchaseApi, salesInvoiceApi, bankAndFundApi) {
+function homeController($scope, translate, purchaseApi, saleApi, bankAndFundApi) {
 
     fetch();
 
@@ -26,7 +26,7 @@ function homeController($scope, translate, purchaseApi, salesInvoiceApi, bankAnd
             $scope.purchaseInfo.total = result.total;
         });
 
-        salesInvoiceApi.summary().then(result => {
+        saleApi.summary().then(result => {
             console.log(result);
             $scope.data = result;
             $scope.saleInfo.sumOfPaid = result.sumPaidAmount;
@@ -38,7 +38,7 @@ function homeController($scope, translate, purchaseApi, salesInvoiceApi, bankAnd
             $scope.bankAndFundInfos = result;
         });
 
-        salesInvoiceApi.summaryByProduct().then(result => {
+        saleApi.summaryByProduct().then(result => {
             let items = result.asEnumerable();
             let colors = ['#803690', '#00ADF9', '#DCDCDC', '#46BFBD', '#FDB45C', '#949FB1', '#4D5360'];
 
@@ -50,7 +50,7 @@ function homeController($scope, translate, purchaseApi, salesInvoiceApi, bankAnd
             $scope.dounatdata = items.select(item => parseInt(item.total)).toArray();
         });
 
-        salesInvoiceApi.summaryByMonth().then(result => {
+        saleApi.summaryByMonth().then(result => {
             console.log(result);
             let items = result.asEnumerable();
             let colors = ['#803690', '#00ADF9', '#DCDCDC', '#46BFBD', '#FDB45C', '#949FB1', '#4D5360'];
