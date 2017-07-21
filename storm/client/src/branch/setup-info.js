@@ -18,7 +18,8 @@ export default class SetupInfoController {
             postalCode: '',
             nationalCode: '',
             webSite: '',
-            registrationNumber: ''
+            registrationNumber: '',
+            offCode: ''
         };
     }
 
