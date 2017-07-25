@@ -13,17 +13,7 @@ function detailAccountsController($scope, logger, translate, confirm,
                 title: translate('Title'),
                 type: 'string',
                 template: `<a ui-sref=".edit({id: item.id})">{{item.title}}</a>`
-            },
-            {
-                name: 'isActive',
-                title: translate('Is active ?'),
-                type: 'activeType',
-                width: '150px',
-                template: `<i class="fa"
-                          ng-class="{'fa-check text-navy': item.isActive,
-                                     'fa-times text-danger': !item.isActive}">
-                       </i>`
-            },
+            }
         ],
         commands: [
             {
