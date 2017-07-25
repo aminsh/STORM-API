@@ -5,7 +5,8 @@ module.exports = {
         Crypto: require('../../../shared/services/cryptoService'),
         EventEmitter: require('../../../shared/services/eventEmitter'),
         Memory: require('../../../shared/services/memoryService'),
-        PersianDate: require('../../../shared/services/persianDateService')
+        PersianDate: require('../../../shared/services/persianDateService'),
+        render: require('../../../shared/services/ejsRenderService'),
     },
     utility: {
         Guid: require('../../../shared/utilities/guidService'),
