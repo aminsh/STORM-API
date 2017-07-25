@@ -182,6 +182,17 @@ gulp.task('acc-build-sass', function () {
 
 });
 
+gulp.task('email-build-sass', function(){
+    return gulp.src('./accounting/client/src/styles/email.scss')
+        .pipe(sourcemaps.init())
+        .pipe(sass({
+            outputStyle: 'compressed'
+        }).on('error', sass.logError))
+        .pipe(gulpif(!config.isProduction, sourcemaps.write()))
+        .pipe(rename('email.min.css'))
+        .pipe(gulp.dest(`${config.publicDir}/css`));
+});
+
 gulp.task('build-stimulsoft', function () {
 
     let reports = [

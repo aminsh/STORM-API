@@ -1,0 +1,21 @@
+<link rel="stylesheet" type="text/css" href="<%- staticRootPath %>/css/email.min.css" />
+
+<div class="so-mail-header" >
+    <img src="<%- staticRootPath %>/images/logo-black.png" alt="storm-logo" id="storm-logo" />
+    <h1><i class="icon-mail so-fg-primary so-txt-shadow-flat-bottom-right" ></i><%- mainTitle %></h1>
+</div>
+<div class="so-mail-body" >
+    <div class="so-alert-box so-success" >
+        <i class="so-alert-icon icon-ok" ></i>
+        <p>شما با موفقیت ثبت نام شدید !</p>
+    </div>
+    <p>
+        <%- userName %> عزیز کسب و کار <%- jobName %> به مدت 30 روز می باشد.<br/>
+        باتشکر
+        برای ورود به حسابتان از لینک زیر استفاده کنید.
+        <a href="<%- loginUrl %>/profile" target="_blank" ><%- loginUrl %>/profile</a>
+    </p>
+    <br/><span>فرستاده شده در:</span><br/>
+    <i class="icon-clock" ></i> ساعت: <%- sendTime.time %><br/>
+    <i class="icon-calendar-empty" ></i> تاریخ: <%- sendTime.date %>
+</div>
