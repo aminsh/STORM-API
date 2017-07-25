@@ -59,14 +59,21 @@ router.route('/:id/activate')
         let branch = await(branchRepository.getById(branchId));
         let date = new Date();
         render("email-activated-template.ejs", {
-            mainTitle: "فعال سازی",
-            userName: branch.ownerName,
-            jobName: branch.name,
+            user: {
+                name: branch.ownerName
+            },
+            branch: {
+                name: branch.name
+            },
             loginUrl: config.url.origin,
             sendTime: {
                 time: `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`,
                 date: `${persianDate.current()}`
-            }
+            },
+            btn: {
+                text: "ورود به کسب و کار"
+            },
+
         }).then(function(html){
 
             email.send({

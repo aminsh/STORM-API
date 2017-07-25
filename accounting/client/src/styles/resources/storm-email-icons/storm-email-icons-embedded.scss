@@ -1,8 +1,8 @@
 @font-face {
   font-family: 'storm-email-icons';
-  src: url('../fonts/storm-email-icons.eot?54674631');
-  src: url('../fonts/storm-email-icons.eot?54674631#iefix') format('embedded-opentype'),
-       url('../fonts/storm-email-icons.svg?54674631#storm-email-icons') format('svg');
+  src: url('#{$so-origin-url}/fonts/storm-email-icons.eot?54674631');
+  src: url('#{$so-origin-url}/fonts/storm-email-icons.eot?54674631#iefix') format('embedded-opentype'),
+       url('#{$so-origin-url}/fonts/storm-email-icons.svg?54674631#storm-email-icons') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -17,7 +17,7 @@
 @media screen and (-webkit-min-device-pixel-ratio:0) {
   @font-face {
     font-family: 'storm-email-icons';
-    src: url('../fonts/storm-email-icons.svg?54674631#storm-email-icons') format('svg');
+    src: url('#{$so-origin-url}/fonts/storm-email-icons.svg?54674631#storm-email-icons') format('svg');
   }
 }
 */

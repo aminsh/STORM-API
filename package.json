@@ -52,6 +52,7 @@
     "font-awesome": "^4.7.0",
     "get-parameter-names": "^0.3.0",
     "gulp": "^3.9.1",
+    "gulp-css-inliner": "^0.1.0",
     "gulp-flatten": "^0.3.1",
     "html-pdf": "^2.1.0",
     "jquery": "^3.2.1",

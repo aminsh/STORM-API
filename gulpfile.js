@@ -32,6 +32,7 @@ const path = require('path'),
         adminDir: './admin/client'
     };
 
+
 gulp.task('acc-build-template', function () {
     return gulp.src([`${config.accSrcDir}/partials/**/*.html`, `${config.accSrcDir}/src/**/*.html`])
         .pipe(templateCache(

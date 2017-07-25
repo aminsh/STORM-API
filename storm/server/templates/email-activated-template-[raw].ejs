@@ -1,0 +1,88 @@
+<style type="text/css" >
+
+    *, *::before, *::after{
+        direction: rtl;
+        font-family: Aria, sans-serif, tahoma;
+    }
+
+    .so-main-box{
+        display: block;
+        position: relative;
+        width: 500px;
+        max-height: 100%;
+        min-height: 50px;
+        padding: 25px;
+        margin: 0 auto;
+        line-height: 40px;
+        border: 1px solid #2980b9;
+        border-bottom-width: 2px;
+    }
+    .so-main-box.so-primary{ border-color: #2980b9 }
+    .so-main-box.so-success{ border-color: #1abc9c }
+    .so-main-box.so-warning{ border-color: #ffcf4b }
+    .so-main-box.so-danger { border-color: #FF7C6C }
+    .so-divider{
+        display: block;
+        width: 100%;
+        height: 1px;
+        background-color: #d0d0d0;
+    }
+    #main-logo{
+        display: block;
+        position: relative;
+        width: 120px;
+        height: auto;
+        margin: 10px auto;
+        padding: 0;
+    }
+    .so-btn-block{
+        display: block;
+        position: relative !important;
+        margin: 10px auto;
+        padding: 5px 10px;
+        background-color: #2980b9;
+        border: none;
+        -webkit-border-radius: 0.3rem;
+        -moz-border-radius: 0.3rem;
+        border-radius: 0.3rem;
+        line-height: 40px;
+        max-width: 250px;
+        height: 50px;
+        text-align: center;
+        text-decoration: none;
+        color: white;
+        cursor: pointer;
+        vertical-align: middle;
+        border-bottom: 3px solid #0057a0;
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+    }
+    .so-btn-block:active{
+        border-bottom-width: 1px;
+        padding-top: 6px;
+    }
+    .so-btn-block.so-primary{ background-color: #2980b9;border-color: #0057a0 }
+    .so-btn-block.so-success{ background-color: #1abc9c;border-color: #16a085 }
+    .so-btn-block.so-warning{ background-color: #ffcf4b;border-color: #F9BF3B }
+    .so-btn-block.so-danger { background-color: #FF7C6C;border-color: #F75C4C }
+
+</style>
+
+<div class="so-main-box so-success" >
+    <img src="https://www.storm-online.ir/public/images/logo-black.png" id="main-logo" />
+    <div class="so-divider" ></div>
+    <p style="text-align: right" ><%- user.name %> عزیز، نرم افزار حسابداری کسب و کار <%- branch.name %> شما به مدت 30 روز فعال می باشد.</p>
+    <p>
+        برای ورود به حسابتان، از دکمه ی زیر استفاده کنید:
+    </p>
+    <a href="<%- loginUrl %>/profile" target="_blank" class="so-btn-block so-success" ><%- btn.text %></a>
+    <span>و یا با استفاده از این لینک/آدرس وارد شوید:</span>
+    <p style="direction: ltr" >
+        <a href="<%- loginUrl %>/profile" target="_blank" ><%- loginUrl %>/profile</a>
+    </p>
+    <p>
+        <span>ساعت: <%- sendTime.time %></span><br/>
+        <span>تاریخ: <%- sendTime.date %></span>
+    </p>
+</div>

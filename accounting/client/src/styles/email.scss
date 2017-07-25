@@ -1,11 +1,17 @@
 @import "resources/mixins";
+$so-origin-urls: (
+  "dev": "http://localhost:2000",
+  "sandbox": "http://admin-sandbox-storm-admin.abar.cloud",
+  "production": "https://www.storm-online.ir"
+);
+$so-origin-url: map_get($so-origin-urls, "dev");
 //Fontello src
-@import "resources/storm-email-icons/animation.css";
-@import "resources/storm-email-icons/storm-email-icons.css";
-@import "resources/storm-email-icons/storm-email-icons-codes.css";
-@import "resources/storm-email-icons/storm-email-icons-embedded.css";
-@import "resources/storm-email-icons/storm-email-icons-ie7.css";
-@import "resources/storm-email-icons/storm-email-icons-ie7-codes.css";
+@import "resources/storm-email-icons/animation";
+@import "resources/storm-email-icons/storm-email-icons";
+@import "resources/storm-email-icons/storm-email-icons-codes";
+@import "resources/storm-email-icons/storm-email-icons-embedded";
+@import "resources/storm-email-icons/storm-email-icons-ie7";
+@import "resources/storm-email-icons/storm-email-icons-ie7-codes";
 
 *, *::before, *::after{
   @include box-sizing(border-box);
