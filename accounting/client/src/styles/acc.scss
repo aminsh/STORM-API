@@ -65,7 +65,7 @@ $dir: rtl;
 
 *, *::before, *::after{
   @include box-sizing(border-box);
-  font-family: "IRANSans", sans-serif, tahoma, "FontAwesome";
+  font-family: "IRANSans", sans-serif, tahoma, "FontAwesome", "Glyphicons Halflings";
 }
 
 body{
