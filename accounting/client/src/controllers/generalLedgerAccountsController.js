@@ -1,11 +1,13 @@
-import accModule from '../acc.module';
+import accModule from "../acc.module";
 
-function generalLedgerAccountsController($scope, logger, translate, confirm, devConstants,
+function generalLedgerAccountsController($scope, $rootScope, logger, translate, confirm, devConstants,
                                          generalLedgerAccountApi,
                                          subsidiaryLedgerAccountApi,
                                          subsidiaryLedgerAccountEntryModalService,
                                          $timeout) {
 
+    $rootScope.$on('onGeneralLedgerAccountChanged', () => $scope.gridOption.refresh());
+    $rootScope.$on('onSubsidiaryLedgerAccountChanged', () => $scope.gridOptionSubsidiaryLedgerAccount.refresh());
 
     let columns = [
             {

@@ -1,6 +1,6 @@
 import accModule from '../acc.module';
 
-function subsidiaryLedgerAccountEntryModalController($scope, $uibModalInstance, $stateParams, $location,
+function subsidiaryLedgerAccountEntryModalController($scope, $rootScope, $uibModalInstance, $stateParams, $location,
                                                      dimensionCategoryApi,
                                                      generalLedgerAccountApi,
                                                      subsidiaryLedgerAccountApi,
@@ -50,6 +50,7 @@ function subsidiaryLedgerAccountEntryModalController($scope, $uibModalInstance, 
                 .then(() => {
                     logger.success();
                     $uibModalInstance.close();
+                    $rootScope.$emit('onSubsidiaryLedgerAccountChanged');
                 })
                 .catch(errors => $scope.errors = errors)
                 .finally(() => $scope.isSaving = false);
@@ -58,6 +59,7 @@ function subsidiaryLedgerAccountEntryModalController($scope, $uibModalInstance, 
                 .then(result => {
                     logger.success();
                     $scope.$close(result);
+                    $rootScope.$emit('onSubsidiaryLedgerAccountChanged');
                 })
                 .catch(errors => $scope.errors = errors)
                 .finally(() => $scope.isSaving = false);

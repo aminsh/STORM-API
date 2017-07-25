@@ -32,7 +32,7 @@ ejs.filters.digitToWord = function (str) {
     };
     delimiter = ' و ';
     str = str.split('').reverse().join('').replace(/\d{3}(?=\d)/g, "$&,").split('').reverse().join('').split(',').map(function (str) {
-        return Array(4 - str.length).join('0') + str;
+        return new Array(4 - str.length).join('0') + str;
     });
     result = (function () {
         var results;
