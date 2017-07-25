@@ -73,8 +73,7 @@ router.route('/general-ledger-account/:parentId')
             hasDetailAccount: cmd.hasDetailAccount,
             hasDimension1: cmd.hasDimension1,
             hasDimension2: cmd.hasDimension2,
-            hasDimension3: cmd.hasDimension3,
-            isActive: true
+            hasDimension3: cmd.hasDimension3
         };
 
         await(subsidiaryLedgerAccountRepository.create(entity));

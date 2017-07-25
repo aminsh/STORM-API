@@ -53,8 +53,7 @@ router.route('/')
             postingType: cmd.postingType,
             balanceType: cmd.balanceType,
             description: cmd.description,
-            groupingType: cmd.groupingType,
-            isActive: true
+            groupingType: cmd.groupingType
         };
 
         entity = await(generalLedgerAccountRepository.create(entity));
