@@ -10,7 +10,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node .",
     "dev": "gulp && node . NODE_ENV=development --mode UNIT",
-    "build": "gulp"
+    "build": "webpack"
   },
   "engines": {
     "node": "6.10.x"
@@ -121,6 +121,9 @@
     "gulp-watch": "^4.3.11",
     "main-bower-files": "^2.13.1",
     "uglifyify": "^3.0.2",
+    "uglifyjs-webpack-plugin": "^0.4.6",
+    "webpack": "^3.3.0",
+    "webpack-obfuscator": "^0.9.3",
     "yargs": "^6.6.0"
   },
   "browserify": {

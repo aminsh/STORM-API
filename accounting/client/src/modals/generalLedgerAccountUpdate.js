@@ -2,10 +2,13 @@ import accModule from '../acc.module';
 import devConstants from '../localData/devConstants';
 
 function generalLedgerAccountUpdateModalController($scope,
+                                                   $rootScope,
                                                    $uibModalInstance,
                                                    id,
                                                    generalLedgerAccountApi,
                                                    logger, formService) {
+
+
 
     $scope.errors = [];
     $scope.generalLedgerAccount = {
@@ -38,6 +41,7 @@ function generalLedgerAccountUpdateModalController($scope,
             .then(function (result) {
                 logger.success();
                 $uibModalInstance.close(result);
+                $rootScope.$emit('onGeneralLedgerAccountChanged');
             })
             .catch(function (errors) {
                 $scope.errors = errors;
@@ -57,7 +61,7 @@ function generalLedgerAccountUpdateModalController($scope,
             .catch(function () {
                 $scope.errors = err.errors;
             })
-    }
+    };
 
     $scope.deactivate = function () {
         if (!$scope.generalLedgerAccount.isActive)

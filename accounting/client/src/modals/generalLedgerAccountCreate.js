@@ -1,7 +1,7 @@
 import accModule from '../acc.module';
 import devConstants from '../localData/devConstants';
 
-function generalLedgerAccountCreateModalController($scope, $uibModalInstance, generalLedgerAccountApi, logger, formService) {
+function generalLedgerAccountCreateModalController($scope, $rootScope ,$uibModalInstance, generalLedgerAccountApi, logger, formService) {
 
     $scope.errors = [];
     $scope.generalLedgerAccount = {
@@ -28,6 +28,7 @@ function generalLedgerAccountCreateModalController($scope, $uibModalInstance, ge
             .then(function (result) {
                 logger.success();
                 $uibModalInstance.close(result);
+                $rootScope.$emit('onGeneralLedgerAccountChanged');
             })
             .catch((errors)=> $scope.errors = errors)
             .finally(()=> $scope.isSaving = false);

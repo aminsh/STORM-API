@@ -34,6 +34,7 @@ router.route('/')
                 nationalCode: cmd.nationalCode,
                 ownerId: req.user.id,
                 webSite: cmd.webSite,
+                offCode: cmd.offCode,
                 status: 'pending'
             };
 
