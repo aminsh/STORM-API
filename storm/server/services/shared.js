@@ -12,6 +12,6 @@ module.exports = {
         Guid: require('../../../shared/utilities/guidService'),
         Image: require('../../../shared/utilities/image'),
         Number: require('../../../shared/utilities/number'),
-        String: require('../../../shared/utilities/string'),
+        String: require('../../../shared/utilities/string')
     }
 };

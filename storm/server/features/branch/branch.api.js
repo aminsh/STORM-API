@@ -67,7 +67,6 @@ router.route('/:id/activate')
             },
             loginUrl: config.url.origin,
             sendTime: {
-                time: `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`,
                 date: `${persianDate.current()}`
             },
             btn: {

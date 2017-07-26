@@ -67,6 +67,7 @@
     "lodash.clone": "^4.5.0",
     "md5": "^2.2.1",
     "metismenu": "^2.7.0",
+    "moment": "^2.18.1",
     "moment-jalaali": "^0.4.0",
     "mssql": "^3.3.0",
     "multer": "^0.1.8",
