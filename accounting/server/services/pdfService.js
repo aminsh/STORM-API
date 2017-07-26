@@ -1,4 +1,4 @@
-var renderService = require('./ejsRenderService');
+var renderService = require('../../../shared/services/ejsRenderService');
 var _ = require('lodash');
 var pdf = require('html-pdf');
 var pdfOptions = require('../config/pdf.config');

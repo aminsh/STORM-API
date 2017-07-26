@@ -22,8 +22,14 @@ class BranchRepository {
         return knex('branches').where('id', id).del();
     }
 
-    getById(id){
-        return knex.select('*').from('branches').where('id',id).first();
+    getById(id) {
+        return knex.select('branches.*',
+            knex.raw('users.email as "ownerEmail"'),
+            knex.raw('users.name as "ownerName"'))
+            .from('branches')
+            .leftJoin('users', 'branches.ownerId', 'users.id')
+            .where('branches.id', id)
+            .first();
     }
 
     getMemeber(memberId) {

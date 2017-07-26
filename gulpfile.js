@@ -32,6 +32,7 @@ const path = require('path'),
         adminDir: './admin/client'
     };
 
+
 gulp.task('acc-build-template', function () {
     return gulp.src([`${config.accSrcDir}/partials/**/*.html`, `${config.accSrcDir}/src/**/*.html`])
         .pipe(templateCache(
@@ -180,6 +181,17 @@ gulp.task('acc-build-sass', function () {
         .pipe(rename('acc.min.css'))
         .pipe(gulp.dest(`${config.publicDir}/css`));
 
+});
+
+gulp.task('email-build-sass', function(){
+    return gulp.src('./accounting/client/src/styles/email.scss')
+        .pipe(sourcemaps.init())
+        .pipe(sass({
+            outputStyle: 'compressed'
+        }).on('error', sass.logError))
+        .pipe(gulpif(!config.isProduction, sourcemaps.write()))
+        .pipe(rename('email.min.css'))
+        .pipe(gulp.dest(`${config.publicDir}/css`));
 });
 
 gulp.task('build-stimulsoft', function () {

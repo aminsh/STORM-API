@@ -11,8 +11,10 @@ const express = require('express'),
     branchQuery = require('./branch.query'),
     superSecret = require('../../../../shared/services/cryptoService').superSecret,
     Image = require('../../services/shared').utility.Image,
-    EventEmitter = require('../../services/shared').service.EventEmitter;
-
+    EventEmitter = require('../../services/shared').service.EventEmitter,
+    render = require('../../services/shared').service.render.renderFile,
+    persianDate = require('../../services/shared').service.PersianDate,
+    email = require('../../services/emailService.js');
 
 router.route('/')
     .get(async((req, res) => {
@@ -48,8 +50,45 @@ router.route('/')
 
 router.route('/:id/activate')
     .put(async((req, res)=> {
-        await(branchRepository.update(req.params.id, {status: 'active'}));
+
+        let branchId = req.params.id;
+
+        await(branchRepository.update(branchId, {status: 'active'}));
         res.json({isValid: true});
+
+        let branch = await(branchRepository.getById(branchId));
+        let date = new Date();
+        render("email-activated-template.ejs", {
+            user: {
+                name: branch.ownerName
+            },
+            branch: {
+                name: branch.name
+            },
+            loginUrl: config.url.origin,
+            sendTime: {
+                time: `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`,
+                date: `${persianDate.current()}`
+            },
+            btn: {
+                text: "ورود به کسب و کار"
+            },
+
+        }).then(function(html){
+
+            email.send({
+                from: "info@storm-online.ir",
+                to: branch.ownerEmail,
+                subject: "فعال سازی نرم افزار حسابداری آنلاین استورم",
+                html: html
+            });
+
+        }).catch(function(err){
+
+            console.log(`Error: The email DIDN'T send successfuly !!! `, err);
+
+        });
+
     }));
 
 router.route('/:id/deactivate')
