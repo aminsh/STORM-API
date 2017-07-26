@@ -111,7 +111,7 @@ router.route('/current/api-key').get(async((req, res) => {
 }));
 
 router.route('/my').get(async((req, res) => {
-    let branches = branchQuery.getBranchesByUser(req.user.id);
+    let branches = await(branchQuery.getBranchesByUser(req.user.id));
     res.json(branches);
 }));
 
