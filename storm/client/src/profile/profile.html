@@ -30,8 +30,18 @@
                     </div>
                     <div class="product-desc text-center">
                         <strong>{{branch.name}}</strong>
-                        <div class="m-t text-center">
-                            <a ng-click="model.select(branch)" class="btn  btn-outline btn-primary">ورود <i class="fa fa-long-arrow-right"></i> </a>
+                        <div class="m-t text-center" >
+                            <a ng-if="branch.status == 'active'"
+                               ng-click="model.select(branch)"
+
+                               class="btn  btn-outline btn-primary">ورود
+                                <i class="fa fa-long-arrow-right"></i>
+                            </a>
+
+                            <a ng-if="branch.status == 'pending'"
+                               class="btn  btn-warning">هنوز فعال نشده
+                            </a>
+
                         </div>
                     </div>
                 </div>
