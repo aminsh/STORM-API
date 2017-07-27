@@ -11,7 +11,7 @@ $primary-select-color: #87c56f;
 $bootstrap-sass-asset-helper: false;
 $dir: rtl;
 
-@import "resourses/mixins";
+@import "resources/mixins";
 
 @import "loadingbar.start";
 @import "bootstrap-sass-directional/assets/stylesheets/bootstrap";
@@ -54,6 +54,7 @@ $dir: rtl;
 //@import "error_404";
 @import "landing";
 @import "success";
+@import "forgot-password";
 
 @import "../journal/journalLine-style";
 
