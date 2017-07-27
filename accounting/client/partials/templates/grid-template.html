@@ -50,9 +50,9 @@
                 ng-class="{'command-cell': column.hasOwnProperty('commands')}">
 
                 <i ng-if="detailTemplate && $index == 0"
-                   ng-class="{'fa-angle-left': !item.expanded, 'fa-angle-down': item.expanded}"
+                   ng-class="{'fa-angle-left ': !item.expanded, 'fa-angle-down': item.expanded}"
                    ng-click="expand(item)"
-                   class="fa pointer"></i>
+                   class="fa fa-lg pointer"></i>
 
                 <span ng-if="!column.hasOwnProperty('commands')">
                 <span ng-if="!column.template">{{item[column.name]}}</span>
