@@ -16,7 +16,7 @@ const express = require('express'),
 
 router.route('/')
     .get(async((req, res) => {
-        let branches = await(branchQuery.getAll());
+        let branches = await(branchQuery.getAll(req.query));
         res.json(branches);
     }))
     .post(async((req, res) => {
@@ -45,21 +45,30 @@ router.route('/')
         EventEmitter.emit('on-branch-created', entity.id);
     }));
 
+router.route('/:id').delete(async((req, res) => {
+    let id = req.params.id;
+
+    await(branchRepository.remove(id));
+
+    res.json({isValid: true});
+
+    EventEmitter.emit('on-branch-removed', id);
+}));
 
 router.route('/:id/activate')
-    .put(async((req, res)=> {
+    .put(async((req, res) => {
         await(branchRepository.update(req.params.id, {status: 'active'}));
         res.json({isValid: true});
     }));
 
 router.route('/:id/deactivate')
-    .put(async((req, res)=> {
+    .put(async((req, res) => {
         await(branchRepository.update(req.params.id, {status: 'pending'}));
         res.json({isValid: true});
     }));
 
 router.route('/:id/add-me')
-    .put(async((req, res)=> {
+    .put(async((req, res) => {
         await(branchRepository.addMember(req.params.id, req.user.id));
         res.json({isValid: true});
     }));
@@ -113,6 +122,14 @@ router.route('/current/api-key').get(async((req, res) => {
 router.route('/my').get(async((req, res) => {
     let branches = await(branchQuery.getBranchesByUser(req.user.id));
     res.json(branches);
+}));
+
+router.route('/:id/default-logo').put(async((req, res)=> {
+    let id = req.params.id;
+
+    await(branchRepository.update(id, {logo: config.logo}));
+
+    res.json({isValid: true});
 }));
 
 module.exports = router;

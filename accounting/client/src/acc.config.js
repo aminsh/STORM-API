@@ -117,7 +117,7 @@ import totalSum from "./filters/total";
 import "./services/formService";
 import "./services/translateStorageService";
 import apiPromise from "./services/apiPromise";
-import "./services/confirm";
+import confirm from "./services/confirm";
 import "./services/gridFilterCellTypeProvider";
 import logger from "./services/logger";
 import "./services/menuItemsProvider";
@@ -188,6 +188,7 @@ accModule
     .factory('navigate', routeNavigatorService)
     .factory('apiPromise', apiPromise)
     .factory('logger', logger)
+    .factory('confirm', confirm)
 
     .controller('chequePrintController', chequePrintController)
     .controller('reportController', reportController)

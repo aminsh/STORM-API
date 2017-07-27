@@ -11,24 +11,35 @@ import "angular-animate";
 import "angular-ui-router";
 import "angular-sanitize";
 import "angular-resource";
+import "angular-translate";
+import 'angular-ui-bootstrap';
 
 import apiPromise from "../accounting/client/src/services/apiPromise";
 import {body, content, footer, heading} from "../accounting/client/src/directives/content";
 import logger from "../accounting/client/src/services/logger";
+import confirm from "../accounting/client/src/services/confirm";
 import button from "../accounting/client/src/directives/button";
+import grid from "../accounting/client/src/directives/grid";
+import gridFilter from "../accounting/client/src/directives/grid.filter";
+import gridSort from "../accounting/client/src/directives/grid.sort";
+import dataTable from "../accounting/client/src/directives/dataTable";
+import paging from "../accounting/client/src/directives/paging";
+import ngHtmlCompile from "../accounting/client/src/directives/ngHtmlCompile";
 
 import shell from "./client/shell";
 
 import BranchApi from "../accounting/client/src/branch/branchApi";
 import BranchesController from "./client/branches";
-import UserApi from './client/userApi';
+import UserApi from "./client/userApi";
 import UsersController from "./client/users";
 
 let adminModule = angular.module('admin.module', [
     'ngAnimate',
     'ngResource',
     'ngSanitize',
-    'ui.router'
+    'ui.router',
+    'pascalprecht.translate',
+    'ui.bootstrap'
 ]);
 
 
@@ -63,6 +74,7 @@ adminModule
     .service('userApi', UserApi)
     .factory('apiPromise', apiPromise)
     .factory('logger', logger)
+    .factory('confirm', confirm)
     .factory('translate', () => {
         return key => key;
     })
@@ -70,8 +82,29 @@ adminModule
     .directive('devTagContentBody', body)
     .directive('devTagContentHeading', heading)
     .directive('devTagContentFooter', footer)
+    .directive('devTagGrid', grid)
+    .directive('devTagGridFilter', gridFilter)
+    .directive('devTagGridSort', gridSort)
+    .directive('devTagPaging', paging)
+    .directive('devDataTable', dataTable)
+    .directive('ngHtmlCompile', ngHtmlCompile)
     .directive('devTagButton', button)
     .directive('shell', shell)
+
+    .provider('gridFilterCellType', function () {
+        let type = {
+            string: {
+                operator: "contains",
+                template: `<input class="form-control" type="text" ng-model="filter.value"/>`,
+                style: {width: '300px'}
+            }
+        };
+
+        this.$get = function () {
+            return type;
+        };
+    })
+
     .controller('branchesController', BranchesController)
     .controller('usersController', UsersController);
 

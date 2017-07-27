@@ -90,6 +90,10 @@ gulp.task('admin-build-template', function () {
 
     return gulp.src([
         `${config.adminDir}/**/*.html`,
+        `${config.accSrcDir}/partials/templates/content-template.html`,
+        `${config.accSrcDir}/partials/templates/grid-template.html`,
+        `${config.accSrcDir}/partials/templates/grid-filter-template.html`,
+        `${config.accSrcDir}/partials/templates/paging-template.html`,
         `${config.accSrcDir}/partials/templates/content-template.html`
     ])
         .pipe(templateCache(

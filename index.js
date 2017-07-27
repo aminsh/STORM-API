@@ -20,6 +20,7 @@ require('./accounting/server/events/onPayableChequePassed');
 require('./accounting/server/events/onPayableChequeReturn');
 require('./accounting/server/events/onIcomeCreated');
 require('./accounting/server/events/onExpenseCreated');
+require('./accounting/server/events/onBranchRemoved');
 
 require('./storm/server/features/setup');
 

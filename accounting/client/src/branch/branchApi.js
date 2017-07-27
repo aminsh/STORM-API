@@ -37,4 +37,12 @@ export default class {
     addMeToBranch(id){
         return this.apiPromise.put(`/api/branches/${id}/add-me`);
     }
+
+    remove(id){
+        return this.apiPromise.delete(`/api/branches/${id}`);
+    }
+
+    setDefaultLogo(id){
+        return this.apiPromise.put(`/api/branches/${id}/default-logo`);
+    }
 }
