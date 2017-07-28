@@ -171,7 +171,8 @@
     "kendo-messages-fa-IR": "./vendors/kendo/kendo.messages.fa-IR.js",
     "bootstrap": "./node_modules/bootstrap-sass-directional/assets/javascripts/bootstrap.js",
     "metisMenu": "./vendors/jquery.metisMenu.js",
-    "angular-ui-select": "./node_modules/ui-select/dist/select.js"
+    "angular-ui-select": "./node_modules/ui-select/dist/select.js",
+    "angular-image-perloader": "./vendors/angular-image-perloader"
   },
   "browserify-shim": {
     "ladda": "global:Ladda",
