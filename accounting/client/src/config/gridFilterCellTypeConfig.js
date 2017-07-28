@@ -136,6 +136,29 @@ accModule.config(function (gridFilterCellTypeProvider,
 
     };
 
+    let person = {
+        template: `<li>
+               <dev-tag-combo-box
+               k-placeholder="{{'Select' | translate}}"
+               k-data-text-field="title"
+               k-data-value-field="id"
+               url="${devConstants.urls.people.getAll()}"
+               ng-model="filter.value"></dev-tag-combo-box>
+            </li>`,
+        style: {width: '300px'}
+    };
+
+    let invoiceStatus = {
+        data: devConstants.enums.InvoiceStatus().data,
+        template: `<li ng-repeat="item in items">
+        <dev-tag-radio 
+            ng-class="{'checked': item.key == filter.value}"
+            ng-model="filter.value" 
+            k-value="{{item.key}}"></dev-tag-radio>
+        {{item.display}}
+        </li>`
+    };
+
     gridFilterCellTypeProvider.set({
         postingType: postingType,
         groupingType: groupingType,
@@ -147,6 +170,8 @@ accModule.config(function (gridFilterCellTypeProvider,
         detailAccount: detailAccount,
         chequeCategoryStatus: chequeCategoryStatus,
         journalType: journalType,
-        journalStatus: journalStatus
+        journalStatus: journalStatus,
+        person,
+        invoiceStatus
     });
 });
