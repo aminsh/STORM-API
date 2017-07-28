@@ -131,7 +131,7 @@ export default function (apiPromise, $timeout) {
                     .where(f => f.field == filterParam.field)
                     .toArray();
 
-                sameFieldFilters.forEach(f => filters.remove(f));
+                sameFieldFilters.forEach(f => filters.asEnumerable().remove(f));
 
                 filters.push(filterParam);
 
