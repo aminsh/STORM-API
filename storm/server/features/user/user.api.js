@@ -148,4 +148,17 @@ router.route('/forgot-password')
 
     }));
 
+router.route('/connected').get(async((req,res)=> {
+    let userQuery = new UserQuery(),
+        users = await(userQuery.getAllConnectedUsers());
+
+    res.json(users);
+}));
+
+router.route('/total').get(async((req, res) => {
+    let userQuery = new UserQuery(),
+        result = await(userQuery.total());
+    res.json({total: result.count});
+}));
+
 module.exports = router;

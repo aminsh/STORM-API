@@ -32,6 +32,8 @@ import BranchApi from "../accounting/client/src/branch/branchApi";
 import BranchesController from "./client/branches";
 import UserApi from "./client/userApi";
 import UsersController from "./client/users";
+import HomeController from "./client/home";
+import PubSub from './client/pubSub';
 
 let adminModule = angular.module('admin.module', [
     'ngAnimate',
@@ -55,7 +57,10 @@ adminModule
         $stateProvider
             .state('home', {
                 url: '/',
-                template: ''
+                controller: 'homeController',
+                controllerAs: 'model',
+                templateUrl: 'partials/templates/home.html',
+                onExit: pubSub => pubSub.unsubscribeAll()
             })
             .state('branches', {
                 url: '/branches',
@@ -72,6 +77,7 @@ adminModule
     })
     .service('branchApi', BranchApi)
     .service('userApi', UserApi)
+    .service('pubSub', PubSub)
     .factory('apiPromise', apiPromise)
     .factory('logger', logger)
     .factory('confirm', confirm)
@@ -105,6 +111,7 @@ adminModule
         };
     })
 
+    .controller('homeController', HomeController)
     .controller('branchesController', BranchesController)
     .controller('usersController', UsersController);
 

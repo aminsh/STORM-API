@@ -3,7 +3,8 @@
 const knex = require('../../services/knex'),
     async = require('asyncawait/async'),
     await = require('asyncawait/await'),
-    kendoQueryResolve = require('../../../../accounting/server/services/kendoQueryResolve');
+    kendoQueryResolve = require('../../../../accounting/server/services/kendoQueryResolve'),
+    connectedUsers = require('./connectedUsers');
 
 module.exports = class {
     constructor() {
@@ -32,5 +33,15 @@ module.exports = class {
         return knex.table('users')
             .where('email', 'ILIKE', email)
             .first();
+    }
+
+    getAllConnectedUsers() {
+        return knex.select('id', 'name', 'email', 'image', 'state')
+            .from('users')
+            .whereIn('id', connectedUsers.users.asEnumerable().select(u => u.userId).toArray());
+    }
+
+    total(){
+        return knex.from('users').count('*').first();
     }
 };
