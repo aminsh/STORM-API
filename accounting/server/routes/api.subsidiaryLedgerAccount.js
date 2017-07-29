@@ -94,9 +94,6 @@ router.route('/:id')
             id = req.params.id,
             account = await(subsidiaryLedgerAccountRepository.findById(id));
 
-        if(account.isLocked)
-            errors.push('این حساب قفل است - امکان ویرایش وجود ندارد');
-
         if (string.isNullOrEmpty(cmd.title))
             errors.push(translate('The code is required'));
         else {
@@ -117,9 +114,12 @@ router.route('/:id')
                 errors: errors
             });
 
+        let title = account.isLocked ? account.title : cmd.title,
+            code = account.isLocked ? account.code : cmd.code;
+
         let entity = {
-            code: cmd.code,
-            title: cmd.title,
+            title,
+            code,
             isBankAccount: cmd.isBankAccount,
             hasDetailAccount: cmd.hasDetailAccount,
             hasDimension1: cmd.hasDimension1,

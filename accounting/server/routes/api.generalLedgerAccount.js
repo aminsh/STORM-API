@@ -118,9 +118,6 @@ router.route('/:id')
             id = req.params.id,
             account = await(generalLedgerAccountRepository.findById(id));
 
-        if(account.isLocked)
-            errors.push('این حساب قفل است - امکان ویرایش وجود ندارد');
-
         if (string.isNullOrEmpty(cmd.code))
             errors.push(translate('The code is required'));
         else {
@@ -143,10 +140,13 @@ router.route('/:id')
                 errors: errors
             });
 
+        let title = account.isLocked ? account.title : cmd.title,
+            code = account.isLocked ? account.code : cmd.code;
+
         let entity = {
             id,
-            title: cmd.title,
-            code: cmd.code,
+            title,
+            code,
             postingType: cmd.postingType,
             balanceType: cmd.balanceType,
             description: cmd.description,
@@ -163,7 +163,7 @@ router.route('/:id')
             cmd = req.body,
             gla = await(generalLedgerAccountRepository.findById(req.params.id));
 
-        if(gla.isLocked)
+        if (gla.isLocked)
             errors.push('این حساب قفل است - امکان حذف وجود ندارد');
 
         if (gla.subsidiaryLedgerAccounts.asEnumerable().any())
