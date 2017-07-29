@@ -28,7 +28,13 @@ export default class BranchesController {
                                 ng-src="{{item.logo}}">`
                 },
                 {
-                    width: '50%',
+                    name: 'id',
+                    title: 'Id',
+                    width: '20%',
+                    type: 'string'
+                },
+                {
+                    width: '40%',
                     name: 'name',
                     type: 'string',
                     title: 'Name',
@@ -113,9 +119,9 @@ export default class BranchesController {
             });
     }
 
-    setDefaultLogo(branch){
+    setDefaultLogo(branch) {
         this.branchApi.setDefaultLogo(branch.id)
-            .then(()=> {
+            .then(() => {
                 this.logger.success();
                 this.gridOption.refresh();
             });
