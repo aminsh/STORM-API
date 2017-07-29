@@ -13,11 +13,20 @@ const express = require('express'),
     emailService = require('../../services/emailService'),
     crypto = require('../../../../shared/services/cryptoService');
 
-router.route('/').get(async((req, res)=> {
+router.route('/').get(async((req, res) => {
     let userQuery = new UserQuery(),
-        users = await(userQuery.getAll());
+        result = await(userQuery.getAll(req.query));
 
-    res.json(users);
+    res.json(result);
+}));
+
+router.route('/:id').delete(async((req, res) => {
+    let userRepository = new UserRepository(),
+        id = req.params.id;
+
+    await(userRepository.remove(id));
+
+    res.json({isValid: true});
 }));
 
 router.route('/register').post(async((req, res) => {
@@ -30,7 +39,7 @@ router.route('/register').post(async((req, res) => {
             state: 'pending',
             token: Guid.new()
         },
-        url= `${config.url.origin}/activate/${user.token}`;
+        url = `${config.url.origin}/activate/${user.token}`;
 
     await(userRepository.create(user));
 
@@ -61,12 +70,12 @@ router.route('/:id/change-password')
                 password: md5(cmd.password)
             };
 
-        try{
+        try {
 
             await(userRepository.update(id, entity));
             res.json({isValid: true});
 
-        } catch(e) {
+        } catch (e) {
 
             res.json({isValid: false});
 
@@ -78,20 +87,20 @@ router.route('/:id/change-image')
     .put(async((req, res) => {
 
         let userRepository = new UserRepository()
-            ,imageName = req.body.imageName
-            ,id = req.body.id
-            ,entity = {
+            , imageName = req.body.imageName
+            , id = req.body.id
+            , entity = {
             image: imageName
         };
 
-        try{
+        try {
 
             await(userRepository.update(id, entity));
-            res.json({ isValid: true });
+            res.json({isValid: true});
 
-        } catch(e) {
+        } catch (e) {
 
-            res.json({ isValid: false });
+            res.json({isValid: false});
             console.log(e.message);
 
         }
@@ -114,7 +123,7 @@ router.route('/forgot-password')
             link = "";
 
 
-        if(user !== null){
+        if (user !== null) {
 
             token = crypto.sign({
                 id: user.id,
@@ -128,15 +137,28 @@ router.route('/forgot-password')
                 .send(email_options);
 
             // Success
-            res.json({ isValid: true });
+            res.json({isValid: true});
 
         } else {
 
             // With "No user found with this email" Error
-            res.json({ isValid: false, error: ["Invalid email address","No user found with this email address."] });
+            res.json({isValid: false, error: ["Invalid email address", "No user found with this email address."]});
 
         }
 
     }));
+
+router.route('/connected').get(async((req,res)=> {
+    let userQuery = new UserQuery(),
+        users = await(userQuery.getAllConnectedUsers());
+
+    res.json(users);
+}));
+
+router.route('/total').get(async((req, res) => {
+    let userQuery = new UserQuery(),
+        result = await(userQuery.total());
+    res.json({total: result.count});
+}));
 
 module.exports = router;

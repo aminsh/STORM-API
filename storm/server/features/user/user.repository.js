@@ -23,6 +23,10 @@ module.exports = class {
         return knex('users').where('id', id).update(user);
     }
 
+    remove(id){
+        return knex('users').where('id', id).del();
+    }
+
     getById(id){
         return knex.table('users'). where('id', id).first();
     }

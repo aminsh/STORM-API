@@ -18,7 +18,7 @@ const express = require('express'),
 
 router.route('/')
     .get(async((req, res) => {
-        let branches = await(branchQuery.getAll());
+        let branches = await(branchQuery.getAll(req.query));
         res.json(branches);
     }))
     .post(async((req, res) => {
@@ -47,9 +47,18 @@ router.route('/')
         EventEmitter.emit('on-branch-created', entity.id);
     }));
 
+router.route('/:id').delete(async((req, res) => {
+    let id = req.params.id;
+
+    await(branchRepository.remove(id));
+
+    res.json({isValid: true});
+
+    EventEmitter.emit('on-branch-removed', id);
+}));
 
 router.route('/:id/activate')
-    .put(async((req, res)=> {
+    .put(async((req, res) => {
 
         let branchId = req.params.id;
 
@@ -67,14 +76,13 @@ router.route('/:id/activate')
             },
             loginUrl: config.url.origin,
             sendTime: {
-                time: `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`,
                 date: `${persianDate.current()}`
             },
             btn: {
                 text: "ورود به کسب و کار"
             },
 
-        }).then(function(html){
+        }).then(function (html) {
 
             email.send({
                 from: "info@storm-online.ir",
@@ -83,7 +91,7 @@ router.route('/:id/activate')
                 html: html
             });
 
-        }).catch(function(err){
+        }).catch(function (err) {
 
             console.log(`Error: The email DIDN'T send successfuly !!! `, err);
 
@@ -92,13 +100,13 @@ router.route('/:id/activate')
     }));
 
 router.route('/:id/deactivate')
-    .put(async((req, res)=> {
+    .put(async((req, res) => {
         await(branchRepository.update(req.params.id, {status: 'pending'}));
         res.json({isValid: true});
     }));
 
 router.route('/:id/add-me')
-    .put(async((req, res)=> {
+    .put(async((req, res) => {
         await(branchRepository.addMember(req.params.id, req.user.id));
         res.json({isValid: true});
     }));
@@ -150,8 +158,21 @@ router.route('/current/api-key').get(async((req, res) => {
 }));
 
 router.route('/my').get(async((req, res) => {
-    let branches = branchQuery.getBranchesByUser(req.user.id);
+    let branches = await(branchQuery.getBranchesByUser(req.user.id));
     res.json(branches);
+}));
+
+router.route('/total').get(async((req, res) => {
+    let result = await(branchQuery.totalBranches());
+    res.json({total: result.count});
+}));
+
+router.route('/:id/default-logo').put(async((req, res) => {
+    let id = req.params.id;
+
+    await(branchRepository.update(id, {logo: config.logo}));
+
+    res.json({isValid: true});
 }));
 
 module.exports = router;

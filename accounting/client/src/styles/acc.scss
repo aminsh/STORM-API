@@ -51,9 +51,10 @@ $dir: rtl;
 @import "pace.override";
 @import "sk-loading";
 
-@import "error_404";
+//@import "error_404";
 @import "landing";
 @import "success";
+@import "forgot-password";
 
 @import "../journal/journalLine-style";
 
@@ -65,7 +66,7 @@ $dir: rtl;
 
 *, *::before, *::after{
   @include box-sizing(border-box);
-  font-family: "IRANSans", sans-serif, tahoma, "FontAwesome", "Glyphicons Halflings";
+  //font-family: "IRANSans", sans-serif, tahoma, "FontAwesome", "Glyphicons Halflings";
 }
 
 body{

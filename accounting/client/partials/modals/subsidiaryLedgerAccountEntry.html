@@ -24,6 +24,7 @@
                     <input type="text"
                            class="form-control"
                            ng-model="subsidiaryLedgerAccount.code"
+                           ng-disabled="subsidiaryLedgerAccount.isLocked"
                            name="code"/>
                 </div>
 
@@ -32,6 +33,7 @@
                     <input type="text"
                            class="form-control"
                            required
+                           ng-disabled="subsidiaryLedgerAccount.isLocked"
                            ng-model="subsidiaryLedgerAccount.title"
                            name="title"
                     />

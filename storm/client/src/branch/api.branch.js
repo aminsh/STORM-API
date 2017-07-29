@@ -13,6 +13,10 @@ export default class BranchApi {
     getMyBranches(){
         return this.Api.get(`${this.prefixUrl}/my`);
     }
+
+    remove(id){
+        return this.Api.delete(`${this.prefixUrl}/${id}`);
+    }
 }
 
 BranchApi.$inject = ['Api'];

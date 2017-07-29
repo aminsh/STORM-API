@@ -91,6 +91,10 @@ gulp.task('admin-build-template', function () {
 
     return gulp.src([
         `${config.adminDir}/**/*.html`,
+        `${config.accSrcDir}/partials/templates/content-template.html`,
+        `${config.accSrcDir}/partials/templates/grid-template.html`,
+        `${config.accSrcDir}/partials/templates/grid-filter-template.html`,
+        `${config.accSrcDir}/partials/templates/paging-template.html`,
         `${config.accSrcDir}/partials/templates/content-template.html`
     ])
         .pipe(templateCache(
@@ -181,17 +185,6 @@ gulp.task('acc-build-sass', function () {
         .pipe(rename('acc.min.css'))
         .pipe(gulp.dest(`${config.publicDir}/css`));
 
-});
-
-gulp.task('email-build-sass', function(){
-    return gulp.src('./accounting/client/src/styles/email.scss')
-        .pipe(sourcemaps.init())
-        .pipe(sass({
-            outputStyle: 'compressed'
-        }).on('error', sass.logError))
-        .pipe(gulpif(!config.isProduction, sourcemaps.write()))
-        .pipe(rename('email.min.css'))
-        .pipe(gulp.dest(`${config.publicDir}/css`));
 });
 
 gulp.task('build-stimulsoft', function () {

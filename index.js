@@ -20,12 +20,16 @@ require('./accounting/server/events/onPayableChequePassed');
 require('./accounting/server/events/onPayableChequeReturn');
 require('./accounting/server/events/onIcomeCreated');
 require('./accounting/server/events/onExpenseCreated');
+require('./accounting/server/events/onBranchRemoved');
 
 require('./storm/server/features/setup');
 
 const config = require('./storm/server/config'),
     accApp = require('./accounting/server/config/express'),
-    app = require('./storm/server/config/express').app;
+    app = require('./storm/server/config/express').app,
+    server = require('./storm/server/config/express').server,
+    io = require('./storm/server/config/express').io,
+    userConnected = require('./storm/server/features/user/connectedUsers');
 
 
 app.use('/acc', accApp);
@@ -35,4 +39,17 @@ app.use('/admin', require('./admin/app.server.config'));
 
 require('./storm');
 
-app.listen(config.port, () => console.log(`Port ${config.port} is listening ...`));
+server.listen(config.port, () => console.log(`Port ${config.port} is listening ...`));
+
+io.on('connection', function (socket) {
+
+    socket.on('join', userId => {
+        userConnected.add(userId, socket.id);
+        io.sockets.emit('update-users');
+    });
+
+    socket.on('disconnect', function () {
+        userConnected.remove(socket.id);
+        io.sockets.emit('update-users');
+    });
+});

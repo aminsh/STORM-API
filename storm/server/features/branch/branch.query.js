@@ -2,7 +2,8 @@
 
 const knex = require('../../services/knex'),
     async = require('asyncawait/async'),
-    await = require('asyncawait/await');
+    await = require('asyncawait/await'),
+    kendoQueryResolve = require('../../../../accounting/server/services/kendoQueryResolve');
 
 class BranchQuery {
     constructor() {
@@ -11,14 +12,14 @@ class BranchQuery {
 
     getById(id) {
         return knex.select(
-            'id', 'name', 'ownerName' , 'logo',
+            'id', 'name', 'ownerName', 'logo',
             'apiKey', 'address', 'phone', 'mobile',
             'nationalCode', 'postalCode')
             .from('branches')
             .where('id', id).first();
     }
 
-    isActive(id){
+    isActive(id) {
         let branch = await(knex.select('status')
             .from('branches')
             .where('id', id)
@@ -26,26 +27,53 @@ class BranchQuery {
         return branch.status == 'active';
     }
 
-    getAll() {
-        return knex.select('id', 'name', 'logo', 'apiKey', 'status','address','phone','mobile','webSite','ownerName')
-            .from('branches')
-            .orderBy('createdAt', 'desc');
+    getAll(parameters) {
+        let query = knex.from(function () {
+                this.select(
+                    'id',
+                    'name',
+                    'logo',
+                    'apiKey',
+                    'status',
+                    'address',
+                    'phone',
+                    'mobile',
+                    'webSite',
+                    'ownerName')
+                    .from('branches')
+                    .orderBy('createdAt', 'desc')
+                    .as('base');
+            }),
+
+            view = item => ({
+                id: item.id,
+                name: item.name,
+                logo: item.logo,
+                apiKey: item.apiKey,
+                status: item.status,
+                address: item.address,
+                phone: item.phone,
+                mobile: item.mobile,
+                webSite: item.webSite,
+                ownerName: item.ownerName
+            });
+
+        return kendoQueryResolve(query, parameters, view);
     }
 
     getBranchesByUser(userId) {
-        let branch = await(knex.select('id', 'name', 'logo', 'apiKey', 'status','address','phone','mobile','webSite','ownerName')
-                .from('branches')
-                .where('ownerId', userId)
-                .andWhere('status', 'active')),
-            branchIds = await(knex.select('branchId')
-                .from('userInBranches')
-                .where('userId', userId)).asEnumerable().select(b => b.branchId).toArray(),
-            branches = await(knex.select('id', 'name', 'logo', 'apiKey', 'status')
-                .from('branches')
-                .where('status', 'active')
-                .whereIn('id', branchIds));
+        let userInBranchQuery = knex.select('branchId')
+            .from('userInBranches')
+            .where('userId', userId);
 
-        return branch.concat(branches);
+        return knex.select('id', 'name', 'logo', 'apiKey', 'status', 'address', 'phone', 'mobile', 'webSite', 'ownerName')
+            .from('branches')
+            .where('ownerId', userId)
+            .orWhereIn('id', userInBranchQuery);
+    }
+
+    totalBranches(){
+        return knex.from('branches').count('*').first();
     }
 }
 

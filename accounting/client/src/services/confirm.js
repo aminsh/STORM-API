@@ -1,7 +1,6 @@
 import swal from 'sweetalert';
-import accModule from '../acc.module';
 
-function confirm(translate, $q) {
+export default function confirm(translate, $q) {
 
     return (message, title, type)=> {
         let deferred = $q.defer();
@@ -21,5 +20,3 @@ function confirm(translate, $q) {
     }
 
 }
-
-accModule.factory('confirm', confirm);

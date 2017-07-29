@@ -47,6 +47,7 @@
     "datatables.net": "^1.10.13",
     "dropzone": "^4.3.0",
     "ejs": "^1.0.0",
+    "excel": "^0.1.7",
     "express": "^4.10.4",
     "express-session": "^1.11.1",
     "font-awesome": "^4.7.0",
@@ -59,6 +60,7 @@
     "jsdom": "^9.8.3",
     "jsonwebtoken": "^7.4.1",
     "jszip": "^2.6.0",
+    "kavenegar": "^2.0.1",
     "kendo-ui-core": "^2017.1.321",
     "knex": "^0.12.0",
     "ladda": "^1.0.0",
@@ -67,6 +69,7 @@
     "lodash.clone": "^4.5.0",
     "md5": "^2.2.1",
     "metismenu": "^2.7.0",
+    "moment": "^2.18.1",
     "moment-jalaali": "^0.4.0",
     "mssql": "^3.3.0",
     "multer": "^0.1.8",
@@ -169,7 +172,8 @@
     "kendo-messages-fa-IR": "./vendors/kendo/kendo.messages.fa-IR.js",
     "bootstrap": "./node_modules/bootstrap-sass-directional/assets/javascripts/bootstrap.js",
     "metisMenu": "./vendors/jquery.metisMenu.js",
-    "angular-ui-select": "./node_modules/ui-select/dist/select.js"
+    "angular-ui-select": "./node_modules/ui-select/dist/select.js",
+    "angular-image-perloader": "./vendors/angular-image-perloader"
   },
   "browserify-shim": {
     "ladda": "global:Ladda",

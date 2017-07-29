@@ -1,7 +1,5 @@
-
 export default class invoiceListController {
-    constructor(
-                translate,
+    constructor(translate,
                 confirm,
                 devConstants,
                 logger,
@@ -12,316 +10,141 @@ export default class invoiceListController {
                 navigate,
                 $scope) {
 
-
-        let regex = /^([^.]*)/;
-        let strToMatch = $state.current.name;
-        let invoiceType = regex.exec(strToMatch)[0];
-
-        this.invoiceType=invoiceType;
-
+        this.confirm = confirm;
+        this.translate = translate;
+        this.navigate = navigate;
+        this.$state = $state;
         this.$scope = $scope;
         this.$timeout = $timeout;
         this.logger = logger;
         this.translate = translate;
-        this.saleApi=saleApi;
-        this.purchaseApi=purchaseApi
-        this.errors=[];
-        let self=this;
+        this.errors = [];
 
-        if(this.invoiceType=='sales'){
-            $scope.gridOption = {
-                dataSource: new kendo.data.DataSource({
-                    serverFiltering: true,
-                    serverPaging: true,
-                    pageSize: 20,
-                    transport: {
-                        read: {
-                            url: devConstants.urls.sales.getAll(),
-                            dataType: "json"
-                        }
-                    },
-                    schema: {
-                        data: 'data',
-                        total: 'total'
-                    }
-                }),
-                reorderable: true,
-                resizable: true,
-                sortable: true,
-                scrollable: {
-                    virtual: true
+        let invoiceType = this.invoiceType;
+
+        this.api = invoiceType == 'sales' ? saleApi : purchaseApi;
+
+        let detailAccountTitle = invoiceType == 'sales'
+                ? translate('Customer')
+                : translate('Vendor'),
+
+            readUrl = invoiceType == 'sales'
+                ? devConstants.urls.sales.getAll()
+                : devConstants.urls.purchase.getAll()
+
+
+        this.gridOption = {
+            columns: [
+                {
+                    name: 'date',
+                    title: translate('Date'),
+                    width: '10%',
+                    type: 'date'
                 },
-                filterable: true,
-                pageable: {
-                    refresh: true,
-                    pageSizes: true,
-                    buttonCount: 10
+                {
+                    name: 'number',
+                    title: translate('Number'),
+                    width: '10%',
+                    type: 'number',
+                    template: '<a ui-sref="^.view({id: item.id})">{{item.number}}</a>'
                 },
-                columns: [
-                    {
-                        field: "date", title: translate('Date'), width: '120px',
-                        filterable: {
-                            extra: false,
-                            cell: {
-                                operator: "eq",
-                                suggestionOperator: "eq"
-                            }
-                        }
-                    },
-                    {
-                        field: "number", title: translate('Number'), width: '120px',
-                        filterable: {
-                            extra: false,
-                            cell: {
-                                operator: "eq",
-                                suggestionOperator: "eq"
-                            }
-                        }
-                    },
-                    {
-                        field: "detailAccountDisplay", title: translate('Customer'), width: '120px',
-                        filterable: {
-                            extra: false,
-                            cell: {
-                                operator: "contains",
-                                suggestionOperator: "contains"
-                            }
-                        }
-                    },
-                    {
-                        field: "description", title: translate('Title'), width: '20%',
-                        filterable: {
-                            extra: false,
-                            cell: {
-                                operator: "contains",
-                                suggestionOperator: "contains"
-                            }
-                        }
-                    },
-                    {
-                        field: "sumTotalPrice", title: translate('Amount'), width: '120px',
-                        format: '{0:#,##}',
-                        filterable: {
-                            extra: false,
-                            cell: {
-                                operator: "eq",
-                                suggestionOperator: "eq"
-                            }
-                        }
-                    },
-                    {
-                        field: "sumRemainder", title: translate('Remainder'), width: '120px',
-                        format: '{0:#,##}',
-                        filterable: {
-                            extra: false,
-                            cell: {
-                                operator: "eq",
-                                suggestionOperator: "eq"
-                            }
-                        }
-                    },
-                    {
-                        field: "statusDisplay", title: translate('Status'), width: '120px',
-                        filterable: {
-                            extra: false,
-                            cell: {
-                                operator: "contains",
-                                suggestionOperator: "contains"
-                            }
-                        }
-                    },
-                    { command: [
-                        { text: translate('Remove'), click:function (e) {
-                            e.preventDefault();
-                            let sale = this.dataItem($(e.currentTarget).closest("tr"));
-                            confirm(
-                                translate('Remove invoice'),
-                                translate('Are you sure ?'))
-                                .then(function () {
-                                    saleApi.remove(sale.id)
-                                        .then(function () {
-                                            logger.success();
-                                            $scope.gridOption.dataSource.read();
-                                        })
-                                        .catch((errors) => {
-                                            self.errors = errors
-                                        })
-                                        .finally(() => self.isSaving = false);
-                                })
-
-                        }},
-                        { text: translate('Edit'), click:function (e) {
-                            e.preventDefault();
-                            let sale = this.dataItem($(e.currentTarget).closest("tr"));
-                            if(sale.status='waitForPayment'){
-                                $state.go('^.view',{id:sale.id})
-                            }else{
-                                $state.go('^.edit', {
-                                    id: sale.id
-                                });
-                            }
-
-                        }},
-                        { text: translate('Print'), click:function (e) {
-                            e.preventDefault();
-                            let sale = this.dataItem($(e.currentTarget).closest("tr"));
-                            let reportParam={"id": sale.id}
-                            navigate(
-                                'report.print',
-                                {key: 700},
-                                reportParam);
-
-                        }},], title: " ", width: "180px" }
-                ]
-            };
-        }
-
-        if(this.invoiceType=='purchases'){
-            $scope.gridOption = {
-                dataSource: new kendo.data.DataSource({
-                    serverFiltering: true,
-                    serverPaging: true,
-                    pageSize: 20,
-                    transport: {
-                        read: {
-                            url: devConstants.urls.purchase.getAll(),
-                            dataType: "json"
-                        }
-                    },
-                    schema: {
-                        data: 'data',
-                        total: 'total'
-                    }
-                }),
-                reorderable: true,
-                resizable: true,
-                sortable: true,
-                scrollable: {
-                    virtual: true
+                {
+                    name: 'detailAccountId',
+                    title: detailAccountTitle,
+                    width: '15%',
+                    type: 'person',
+                    template: '<span>{{item.detailAccountDisplay}}</span>'
                 },
-                filterable: true,
-                pageable: {
-                    refresh: true,
-                    pageSizes: true,
-                    buttonCount: 10
+                {
+                    name: 'description',
+                    title: translate('Title'),
+                    width: '20%',
+                    type: 'string'
                 },
-                columns: [
-                    {
-                        field: "date", title: translate('Date'), width: '120px',
-                        filterable: {
-                            extra: false,
-                            cell: {
-                                operator: "eq",
-                                suggestionOperator: "eq"
-                            }
-                        }
-                    },
-                    {
-                        field: "number", title: translate('Number'), width: '120px',
-                        filterable: {
-                            extra: false,
-                            cell: {
-                                operator: "eq",
-                                suggestionOperator: "eq"
-                            }
-                        }
-                    },
-                    {
-                        field: "detailAccountDisplay", title: translate('Customer'), width: '120px',
-                        filterable: {
-                            extra: false,
-                            cell: {
-                                operator: "contains",
-                                suggestionOperator: "contains"
-                            }
-                        }
-                    },
-                    {
-                        field: "description", title: translate('Title'), width: '20%',
-                        filterable: {
-                            extra: false,
-                            cell: {
-                                operator: "contains",
-                                suggestionOperator: "contains"
-                            }
-                        }
-                    },
-                    {
-                        field: "sumTotalPrice", title: translate('Amount'), width: '120px',
-                        format: '{0:#,##}',
-                        filterable: {
-                            extra: false,
-                            cell: {
-                                operator: "eq",
-                                suggestionOperator: "eq"
-                            }
-                        }
-                    },
-                    {
-                        field: "sumRemainder", title: translate('Remainder'), width: '120px',
-                        format: '{0:#,##}',
-                        filterable: {
-                            extra: false,
-                            cell: {
-                                operator: "eq",
-                                suggestionOperator: "eq"
-                            }
-                        }
-                    },
-                    {
-                        field: "statusDisplay", title: translate('Status'), width: '120px',
-                        filterable: {
-                            extra: false,
-                            cell: {
-                                operator: "contains",
-                                suggestionOperator: "contains"
-                            }
-                        }
-                    },
-                    { command: [
-                        { text: translate('Remove'), click:function (e) {
-                            e.preventDefault();
-                            let purchase = this.dataItem($(e.currentTarget).closest("tr"));
-                            confirm(
-                                translate('Remove invoice'),
-                                translate('Are you sure ?'))
-                                .then(function () {
-                                    purchaseApi.remove(purchase.id)
-                                        .then(function () {
-                                            logger.success();
-                                            $scope.gridOption.dataSource.read();
-                                        })
-                                        .catch((errors) => {
-                                            self.errors = errors
-                                        })
-                                        .finally(() => self.isSaving = false);
-                                })
+                {
+                    name: 'sumTotalPrice',
+                    title: translate('Amount'),
+                    type: 'number',
+                    width: '10%',
+                    template: '<span>{{item.sumTotalPrice|number}}</span>'
+                },
+                {
+                    name: 'sumRemainder',
+                    title: translate('Remainder'),
+                    type: 'number',
+                    width: '10%',
+                    template: '<span>{{item.sumRemainder|number}}</span>'
+                },
+                {
+                    name: 'invoiceStatus',
+                    title: translate('Status'),
+                    type: 'invoiceStatus',
+                    width: '10%',
+                    template: '<span>{{item.statusDisplay}}</span>'
+                }
 
-                        }},
-                        { text: translate('Edit'), click:function (e) {
-                            e.preventDefault();
-                            let sale = this.dataItem($(e.currentTarget).closest("tr"));
-                            if(sale.status='waitForPayment'){
-                                $state.go('^.view',{id:sale.id})
-                            }else{
-                                $state.go('^.edit', {
-                                    id: sale.id
-                                });
-                            }
-                        }},
-                        { text: translate('Print'), click:function (e) {
-                            e.preventDefault();
-                            let sale = this.dataItem($(e.currentTarget).closest("tr"));
-                            let reportParam={"id": sale.id}
-                            navigate(
-                                'report.print',
-                                {key: 700},
-                                reportParam);
+            ],
+            commands: [
+                {
+                    title: translate('Remove'),
+                    icon: 'fa fa-trash text-danger fa-lg',
+                    action: current => this.remove(current),
+                    canShow: current => current.status == 'draft'
+                },
+                {
+                    title: translate('Edit'),
+                    icon: 'fa fa-edit text-success fa-lg',
+                    action: current => this.edit(current),
+                    canShow: current => current.status == 'draft'
+                },
+                {
+                    title: translate('Show'),
+                    icon: 'fa fa-eye text-success fa-lg',
+                    action: current => this.view(current)
+                },
+                {
+                    title: translate('Print'),
+                    icon: 'fa fa-print text-success fa-lg',
+                    action: current => this.print(current)
+                }
+            ],
+            readUrl
+        };
+    }
 
-                        }},], title: " ", width: "180px" }
-                ]
-            };
-        }
 
+    get invoiceType() {
+        let regex = /^([^.]*)/;
+        let strToMatch = this.$state.current.name;
+        return regex.exec(strToMatch)[0];
+    }
+
+    remove(current) {
+        let translate = this.translate;
+
+        this.confirm(
+            translate('Remove invoice'),
+            translate('Are you sure ?')
+        ).then(() => {
+            this.api.remove(current.id)
+                .then(() => {
+                    this.gridOption.refresh();
+                    this.logger.success();
+                });
+        })
+    }
+
+    print(current) {
+        let reportParam = {id: current.id};
+
+        this.navigate('report.print', {key: 700}, reportParam);
+    }
+
+    edit(current) {
+        this.$state.go('^.edit', {id: current.id});
+    }
+
+    view(current){
+        this.$state.go('^.view', {id: current.id});
     }
 }

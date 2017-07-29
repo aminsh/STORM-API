@@ -129,6 +129,10 @@ export default function routing($stateProvider, $urlRouterProvider, $locationPro
         .state("success",{
             url: '/success',
             templateUrl: 'app/pageSuccess/success.html'
+        })
+        .state("forgotPassword",{
+            url: '/forgotPassword',
+            templateUrl: 'app/authentication/forgotPassword.html'
         });
 }
 

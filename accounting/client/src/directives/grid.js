@@ -131,7 +131,7 @@ export default function (apiPromise, $timeout) {
                     .where(f => f.field == filterParam.field)
                     .toArray();
 
-                sameFieldFilters.forEach(f => filters.remove(f));
+                sameFieldFilters.forEach(f => filters.asEnumerable().remove(f));
 
                 filters.push(filterParam);
 
@@ -145,7 +145,7 @@ export default function (apiPromise, $timeout) {
                     .where(f => f.field == field)
                     .toArray();
 
-                sameFieldFilters.forEach(f => filters.remove(f));
+                sameFieldFilters.forEach(f => filters.asEnumerable().remove(f));
 
                 scope.pageOption.reset();
             }
@@ -181,9 +181,6 @@ export default function (apiPromise, $timeout) {
 
             scope.$watch('option.readUrl', () =>
             scope.pageOption.reset && scope.pageOption.reset());
-
-            // if (scope.option.gridSize)
-            //     $(element).find('tbody').css('height', scope.option.gridSize);
         }
     }
 }

@@ -1,5 +1,7 @@
 "use strict";
 
+import io from 'socket.io-client';
+
 export default function ($rootScope,
                          $state,
                          $cookies,
@@ -12,6 +14,10 @@ export default function ($rootScope,
     $rootScope.mode = localStorage.getItem('mode');
     $rootScope.canShowStatusSection = false;
     $rootScope.isDevelopment = localStorage.getItem('env') == 'development';
+
+    //init socket
+    let socket = io.connect('/');
+    socket.emit('join', $rootScope.user.id);
 
     $rootScope.$on('$stateChangeStart',
         function (event, toState, toParams, fromState, fromParams) {

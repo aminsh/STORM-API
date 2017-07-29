@@ -13,7 +13,9 @@ const express = require('express'),
     persianDateService = require('../../../shared/services/persianDateService'),
     MemoryStore = require('session-memory-store')(session),
     config = require('./'),
-    app = express();
+    app = express(),
+    server = require('http').Server(app),
+    io = require('socket.io')(server);
 
 app.use(compression());
 app.use(favicon(config.rootPath + '/../public/images/favicon.ico'));
@@ -56,3 +58,6 @@ app.use('/', express.static(config.rootPath + '/server/views/webSite'));
 app.use(multer({dest: './data/uploads/;'}));
 
 module.exports.app = app;
+module.exports.server = server;
+module.exports.io = io;
+
