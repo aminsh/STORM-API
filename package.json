@@ -47,6 +47,7 @@
     "datatables.net": "^1.10.13",
     "dropzone": "^4.3.0",
     "ejs": "^1.0.0",
+    "excel": "^0.1.7",
     "express": "^4.10.4",
     "express-session": "^1.11.1",
     "font-awesome": "^4.7.0",

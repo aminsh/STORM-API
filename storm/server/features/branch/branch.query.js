@@ -71,6 +71,10 @@ class BranchQuery {
             .where('ownerId', userId)
             .orWhereIn('id', userInBranchQuery);
     }
+
+    totalBranches(){
+        return knex.from('branches').count('*').first();
+    }
 }
 
 module.exports = new BranchQuery();

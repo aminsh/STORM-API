@@ -45,4 +45,8 @@ export default class {
     setDefaultLogo(id){
         return this.apiPromise.put(`/api/branches/${id}/default-logo`);
     }
+
+    total(){
+        return this.apiPromise.get(`/api/branches/total`);
+    }
 }

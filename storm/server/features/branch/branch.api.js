@@ -58,7 +58,7 @@ router.route('/:id').delete(async((req, res) => {
 }));
 
 router.route('/:id/activate')
-    .put(async((req, res)=> {
+    .put(async((req, res) => {
 
         let branchId = req.params.id;
 
@@ -82,7 +82,7 @@ router.route('/:id/activate')
                 text: "ورود به کسب و کار"
             },
 
-        }).then(function(html){
+        }).then(function (html) {
 
             email.send({
                 from: "info@storm-online.ir",
@@ -91,7 +91,7 @@ router.route('/:id/activate')
                 html: html
             });
 
-        }).catch(function(err){
+        }).catch(function (err) {
 
             console.log(`Error: The email DIDN'T send successfuly !!! `, err);
 
@@ -162,7 +162,12 @@ router.route('/my').get(async((req, res) => {
     res.json(branches);
 }));
 
-router.route('/:id/default-logo').put(async((req, res)=> {
+router.route('/total').get(async((req, res) => {
+    let result = await(branchQuery.totalBranches());
+    res.json({total: result.count});
+}));
+
+router.route('/:id/default-logo').put(async((req, res) => {
     let id = req.params.id;
 
     await(branchRepository.update(id, {logo: config.logo}));
