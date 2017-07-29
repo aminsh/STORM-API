@@ -11,9 +11,7 @@ import 'angular-chart';
 import 'angular-ladda';
 import 'angular-ui-select';
 import 'angular-local-storage';
-/*import 'kendo-web';
-import 'kendo-angular';
-import 'kendo-messages-fa-IR';*/
+
 import 'adm-dtp';
 import 'chart.js';
 import 'angular-image-perloader';
@@ -27,7 +25,6 @@ let accModule = angular.module('acc.module', [
     'ngSanitize',
     'ui.bootstrap',
     'ui.router',
-    //'kendo.directives',
     'pascalprecht.translate',
     'ngMessages',
     'ngCookies',
