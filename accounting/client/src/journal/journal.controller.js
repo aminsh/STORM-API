@@ -14,12 +14,14 @@ export default class {
                 $timeout,
                 journalApi,
                 journalLineApi,
+                promise,
                 subsidiaryLedgerAccountApi,
                 dimensionCategoryApi,
                 dimensionApi,
                 detailAccountApi,
                 tagApi,
                 journalAttachImageService,
+                createAccountService,
                 journalLineAdditionalInformation,
                 formService) {
 
@@ -30,12 +32,14 @@ export default class {
         this.$q = $q;
         this.$timeout = $timeout;
         this.prompt = prompt;
+        this.promise = promise;
         this.confirm = confirm;
         this.logger = logger;
         this.translate = translate;
         this.navigate = navigate;
         this.formService = formService;
         this.journalApi = journalApi;
+        this.createAccountService=createAccountService;
         this.journalLineApi = journalLineApi;
         this.subsidiaryLedgerAccountApi = subsidiaryLedgerAccountApi;
         this.dimensionCategoryApi = dimensionCategoryApi;
@@ -131,6 +135,16 @@ export default class {
                 })
                 .finally(() => this.isJournalLineLoading = false);
         }
+    }
+
+    createNewAccount(item,title) {
+        return this.promise.create((resolve, reject) => {
+            this.createAccountService.show({title})
+                .then(result => {
+                    item.subsidiaryLedgerAccountId = result.id;
+                    resolve({id: result.id, title})
+                });
+        });
     }
 
     keyUpGridRow(e, item, field) {
