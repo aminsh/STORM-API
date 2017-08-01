@@ -4,7 +4,8 @@ const express = require('express'),
     async = require('asyncawait/async'),
     await = require('asyncawait/await'),
     UserRepository = require('./user.repository'),
-    crypto = require('../../../../shared/services/cryptoService');
+    crypto = require('../../../../shared/services/cryptoService'),
+    TokenRepository = require('../token/token.repository');
 
 
 router.route('/activate/:token').get(async((req, res) => {
@@ -49,24 +50,19 @@ router.route('/reset-password/:token')
 
             let token_data = crypto.verify(req.params.token),
                 userRepository = new UserRepository(),
-                user = await(userRepository.getById(token_data.id));
+                tokenRepository = new TokenRepository(),
+                user = await(userRepository.getById(token_data.userId)),
+                token = await(tokenRepository.getById(token_date.id));
 
-            if(user){
+            if(user && token){
 
-                // Render Main Reset Password Page
-                //res.send("OK !");
-                // LogIn With User Record
-                req.logIn(user, async(function (err) {
-                    if (err) return next(err);
-
-                    res.send({
-                        isValid: true,
-                        returnValue: {
-                            currentUser: user.name
-                        }
-                    });
-                }));
-                res.redirect(`${config.url.origin}/reset-password`);
+                if(!req.isAuthenticated()){
+                    // Render Main Reset Password Page
+                    res.render('index.ejs');
+                } else {
+                    // Redirect to Profile Panel
+                    res.redirect(`${config.url.origin}/profile`);
+                }
 
             } else {
 
@@ -84,13 +80,13 @@ router.route('/reset-password/:token')
         }
 
     }));
-router
+/*router
     .route('/reset-password')
     .get((req, res) => {
 
         if(req.isAuthenticated())
             res.render('index.ejs');
 
-    });
+    });*/
 
 module.exports = router;

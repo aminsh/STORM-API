@@ -24,6 +24,11 @@ module.exports = class {
         return knex('tokens').where('id', id).update(token);
 
     }
+    getById(id){
+
+        return knex('tokens'). where('id', id).first();
+
+    }
     // [-END-] SMRSAN
 
 };

@@ -136,15 +136,9 @@ router.route('/forgot-password')
         let userRepository = new UserRepository();
         let tokenRepository = new TokenRepository();
         let email = req.body.email;
-        let token = null,
-            user = await(userRepository.getUserByEmail(email)),
-            email_options = {
-                from: "info@storm-online.ir",
-                subject: "",
-                to: email,
-                html: ""
-            },
-            link = "";
+        let token = null;
+        let user = await(userRepository.getUserByEmail(email));
+        let link = "";
 
 
         if (user) {
@@ -157,8 +151,8 @@ router.route('/forgot-password')
             .then((token_rec) => {
 
                 token = crypto.sign({
-                    id: user.id,
-                    tokenId: token_rec.id
+                    id: token_rec.id,
+                    userId: user.id
                 });
 
                 tokenRepository.update(token_rec.id, {
@@ -166,10 +160,28 @@ router.route('/forgot-password')
                 });
 
                 link = `${config.url.origin}/reset-password/${token}`;
-                email_options.html = `<a href="${link}" target="_blank" >${link}</a>`;
 
-                emailService
-                    .send(email_options);
+                render("email-reset-password-template.ejs", {
+                    user: {
+                        name: user.name
+                    },
+                    originUrl: `${config.origin.url}`,
+                    resetPassUrl: link
+
+                }).then((html) => {
+
+                    emailService.send({
+                        from: "info@storm-online.ir",
+                        to: user.email,
+                        subject: "لینک تغییر رمز عبور در استورم",
+                        html: html
+                    });
+
+                }).catch((err) => {
+
+                    console.log(`Error: The email DIDN'T send successfuly !!! `, err);
+
+                });
 
                 // Success
                 return res.json({isValid: true});
