@@ -52,6 +52,7 @@
                         url="{{model.urls.getAllAccounts}}"
                         group-by="generalLedgerAccountDisplay"
                         k-on-changed="model.subsidiaryLedgerAccount.onChanged($item, item, form['form-'+$index])"
+                        k-on-created="model.createNewAccount(item,$search)"
                         k-on-bound="model.subsidiaryLedgerAccount.onChanged($item, item,form['form-'+$index])"
                         ng-model="item.subsidiaryLedgerAccountId"
                         required></dev-tag-combo-box>
