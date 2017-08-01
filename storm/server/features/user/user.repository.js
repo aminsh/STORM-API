@@ -42,12 +42,21 @@ module.exports = class {
             .first();
     }
 
-    // SMRSAN
+    // [START] SMRSAN
     getUserByEmail(email){
 
         return knex.table('users')
-            .where('email', email)
+            .where('email', "=", email)
             .first();
+
+    }
+    // [-END-] SMRSAN
+    insertToken(token){
+
+        return knex('tokens').insert(token);
+
+    }
+    getTokenByToken(){
 
     }
 

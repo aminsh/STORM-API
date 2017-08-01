@@ -11,7 +11,9 @@ const express = require('express'),
     UserQuery = require('./user.query'),
     translate = require('../../services/translateService'),
     emailService = require('../../services/emailService'),
-    crypto = require('../../../../shared/services/cryptoService');
+    crypto = require('../../../../shared/services/cryptoService'),
+    render = require('../../services/shared').service.render.renderFile,
+    TokenRepository = require('../token/token.repository');
 
 router.route('/').get(async((req, res) => {
     let userQuery = new UserQuery(),
@@ -43,12 +45,33 @@ router.route('/register').post(async((req, res) => {
 
     await(userRepository.create(user));
 
-    emailService.send({
+    render("email-user-register-template.ejs", {
+        user: {
+            name: user.name
+        },
+        activateUrl: url,
+
+    }).then((html) => {
+
+        emailService.send({
+            from: "info@storm-online.ir",
+            to: user.email,
+            subject: "لینک فعال سازی حساب کاربری در استورم",
+            html: html
+        });
+
+    }).catch((err) => {
+
+        console.log(`Error: The email DIDN'T send successfuly !!! `, err);
+
+    });
+
+    /*emailService.send({
         to: user.email,
         subject: translate('Activation link'),
         html: `<p><h3>${translate('Hello')}</h3></p>
                <p>${url}</p>`
-    });
+    });*/
 
     res.json({isValid: true});
 }));
@@ -110,41 +133,59 @@ router.route('/:id/change-image')
 router.route('/forgot-password')
     .post(async((req, res) => {
 
-        let userRepository = new UserRepository(),
-            email = req.body.email,
-            token = null,
+        let userRepository = new UserRepository();
+        let tokenRepository = new TokenRepository();
+        let email = req.body.email;
+        let token = null,
             user = await(userRepository.getUserByEmail(email)),
             email_options = {
                 from: "info@storm-online.ir",
                 subject: "",
                 to: email,
-                text: ""
+                html: ""
             },
             link = "";
 
 
-        if (user !== null) {
+        if (user) {
 
-            token = crypto.sign({
-                id: user.id,
-                email: user.email
+            tokenRepository.create({
+                type: "reset-pass",
+                userId: user.id,
+                token: ""
+            })
+            .then((token_rec) => {
+
+                token = crypto.sign({
+                    id: user.id,
+                    tokenId: token_rec.id
+                });
+
+                tokenRepository.update(token_rec.id, {
+                    token: token
+                });
+
+                link = `${config.url.origin}/reset-password/${token}`;
+                email_options.html = `<a href="${link}" target="_blank" >${link}</a>`;
+
+                emailService
+                    .send(email_options);
+
+                // Success
+                return res.json({isValid: true});
+
+            })
+            .catch((err) => {
+
+                return res.json({isValid: false, errors: ["There is a problem in inserting token"]});
+
             });
 
-            link = `${config.url.origin}/reset-password/${token}`;
-            email_options.text = link;
-
-            emailService
-                .send(email_options);
-
-            // Success
-            res.json({isValid: true});
-
-        } else {
-
-            // With "No user found with this email" Error
-            res.json({isValid: false, error: ["Invalid email address", "No user found with this email address."]});
-
         }
+
+        // With "No user found with this email" Error
+        //res.json({isValid: true, error: ["Invalid email address", "No user found with this email address."]});
+        return res.json({isValid: false, errors: ["Email not found"]});
 
     }));
 

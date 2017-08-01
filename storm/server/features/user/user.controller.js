@@ -35,12 +35,12 @@ router.route('/profile').get(async((req, res) => {
     res.render('index.ejs');
 }));
 
-router.route('/forgot-password')
+/*router.route('/forgot-password')
     .get(async((req, res) => {
 
         // Render forgot-password page
 
-    }));
+    }));*/
 
 router.route('/reset-password/:token')
     .get(async((req,res) => {
@@ -51,13 +51,26 @@ router.route('/reset-password/:token')
                 userRepository = new UserRepository(),
                 user = await(userRepository.getById(token_data.id));
 
-            if(user !== null){
+            if(user){
 
                 // Render Main Reset Password Page
+                //res.send("OK !");
+                // LogIn With User Record
+                req.logIn(user, async(function (err) {
+                    if (err) return next(err);
+
+                    res.send({
+                        isValid: true,
+                        returnValue: {
+                            currentUser: user.name
+                        }
+                    });
+                }));
+                res.redirect(`${config.url.origin}/reset-password`);
 
             } else {
 
-                // Render 404 Page
+                res.redirect(`${config.url.origin}/404`);
 
             }
 
@@ -65,10 +78,19 @@ router.route('/reset-password/:token')
 
             // Render Error Page
             // Error: "An error has occurred !!!"
-            console.log(e.message);
+            console.log(`${e.message}`);
+            res.redirect(`${config.url.origin}/404`);
 
         }
 
     }));
+router
+    .route('/reset-password')
+    .get((req, res) => {
+
+        if(req.isAuthenticated())
+            res.render('index.ejs');
+
+    });
 
 module.exports = router;

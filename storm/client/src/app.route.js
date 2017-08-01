@@ -132,7 +132,15 @@ export default function routing($stateProvider, $urlRouterProvider, $locationPro
         })
         .state("forgotPassword",{
             url: '/forgotPassword',
-            templateUrl: 'app/authentication/forgotPassword.html'
+            templateUrl: 'app/authentication/forgotPassword.html',
+            controller: "ForgotPassController",
+            controllerAs: "self"
+        })
+        .state("resetPassword",{
+            url: "/reset-password/:token?",
+            templateUrl: 'app/authentication/resetPassword.html',
+            controller: "ResetPassController",
+            controllerAs: "self"
         });
 }
 

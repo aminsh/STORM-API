@@ -1,0 +1,102 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>User Register Email</title>
+    <style type='text/css' >
+
+        *, *::before, *::after{
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif, Tahoma;
+            direction: rtl;
+        }
+        body{
+            margin: 0;
+            color: #303030;
+        }
+        #main-logo{
+            display: block;
+            position: relative;
+            width: 120px;
+            height: auto;
+            margin: 10px auto;
+            padding: 0;
+        }
+        #email-container{
+            display: block;
+            width: 500px;
+            min-height: 50px;
+            line-height: 32px;
+            margin: 30px auto 0 auto;
+            padding: 10px 25px;
+            border: 1px solid #2ecc71;
+            -webkit-border-radius: 0.3rem;
+            -moz-border-radius: 0.3rem;
+            border-radius: 0.3rem;
+        }
+        .so-divider{
+            display: block;
+            margin: 10px auto;
+            width: 100%;
+            border-bottom: 1px solid #bdc3c7;
+        }
+        .so-margin-0-auto{
+            margin: 0 auto;
+        }
+        .so-align-center{
+            text-align: center;
+        }
+        .so-btn-block{
+            display: block;
+            position: relative !important;
+            margin: 10px auto;
+            padding: 5px 10px;
+            background-color: #2980b9;
+            border: none;
+            -webkit-border-radius: 0.3rem;
+            -moz-border-radius: 0.3rem;
+            border-radius: 0.3rem;
+            line-height: 40px;
+            max-width: 250px;
+            height: 50px;
+            text-align: center;
+            text-decoration: none;
+            color: white;
+            cursor: pointer;
+            vertical-align: middle;
+            border-bottom: 3px solid #0057a0;
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+        }
+        .so-btn-block:active{
+            border-bottom-width: 1px;
+            padding-top: 6px;
+        }
+        .so-btn-block.so-primary{ background-color: #2980b9;border-color: #0057a0 }
+        .so-btn-block.so-success{ background-color: #1abc9c;border-color: #16a085 }
+        .so-btn-block.so-warning{ background-color: #ffcf4b;border-color: #F9BF3B }
+        .so-btn-block.so-danger { background-color: #FF7C6C;border-color: #F75C4C }
+        .so-tx-color-green{ color: #1abc9c }
+
+    </style>
+</head>
+<body>
+    <div id='email-container' >
+        <img src="https://www.storm-online.ir/public/images/logo-black.png" id="main-logo" />
+        <div class="so-divider" ></div>
+        <h1 class="so-align-center" >شما با موفقیت ثبت نام شدید <span class="so-tx-color-green" >!</span></h1>
+        <p>
+            <span><%- user.name %> عزیز، </span><b>برای ورود:</b><br/>
+            <span>- از دکمه ی زیر استفاده کنید.</span><br/>
+            <a href="<%- loginUrl %>/profile" target="_blank" class="so-btn-block so-success" >ورود به کسب و کار</a>
+            <span>- و یا با استفاده از لینک/آدرس زیر وارد شوید.</span><br/>
+            <div style="direction: ltr;text-align: justify;" >
+                <a href="<%- loginUrl %>/profile" target="_blank" ><%- loginUrl %>/profile</a>
+            </div>
+        </p>
+    </div>
+</body>
+</html>

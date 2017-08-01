@@ -23,6 +23,7 @@ import translate from './shared/translate';
 
 
 import LoginController from './authentication/login.controller';
+import ForgotPassController from './authentication/forgotPassword.controller';
 import RegisterController from './authentication/register.controller';
 import UserApi from './authentication/api.user';
 import ProfileController from './profile/profile.controller';
@@ -52,6 +53,7 @@ angular.module('app', [
 
 
     .controller('LoginController', LoginController)
+    .controller('ForgotPassController', ForgotPassController)
     .controller('RegisterController', RegisterController)
     .service('userApi', UserApi)
 

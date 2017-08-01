@@ -30,6 +30,10 @@ export default class UserApi {
         return this.Api.get(`${this.prefixUrl}/return-url`);
     }
 
+    forgotPassword(emailAddress){
+        return this.Api.post('/api/users/forgot-password',{ email: emailAddress });
+    }
+
 }
 
 UserApi.$inject = ['Api'];
