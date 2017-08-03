@@ -36,14 +36,7 @@ router.route('/profile').get(async((req, res) => {
     res.render('index.ejs');
 }));
 
-/*router.route('/forgot-password')
-    .get(async((req, res) => {
-
-        // Render forgot-password page
-
-    }));*/
-
-router.route('/reset-password/:token')
+/*router.route('/reset-password/:token')
     .get(async((req,res) => {
 
         try{
@@ -79,14 +72,6 @@ router.route('/reset-password/:token')
 
         }
 
-    }));
-/*router
-    .route('/reset-password')
-    .get((req, res) => {
-
-        if(req.isAuthenticated())
-            res.render('index.ejs');
-
-    });*/
+    }));*/
 
 module.exports = router;

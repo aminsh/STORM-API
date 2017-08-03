@@ -15,8 +15,11 @@ module.exports = class {
 
     // [START] SMRSAN
     create(token){
+        if(!token.id)
+            token.id = Guid.new();
 
-        return knex('tokens').insert(token);
+        await(knex('tokens').insert(token));
+        return token;
 
     }
     update(id,token){
@@ -26,7 +29,17 @@ module.exports = class {
     }
     getById(id){
 
-        return knex('tokens'). where('id', id).first();
+        return knex('tokens').where('id', id).first();
+
+    }
+    getByUserId(userId){
+
+        return knex('tokens').where('userId', userId).first();
+
+    }
+    deleteGenerated(userId, type){
+
+        return knex('tokens').where('userId', userId).andWhere('type', type).del();
 
     }
     // [-END-] SMRSAN

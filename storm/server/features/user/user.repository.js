@@ -51,13 +51,5 @@ module.exports = class {
 
     }
     // [-END-] SMRSAN
-    insertToken(token){
-
-        return knex('tokens').insert(token);
-
-    }
-    getTokenByToken(){
-
-    }
 
 };

@@ -2,19 +2,35 @@
 
 export default class ResetPassController{
 
-    constructor($scope, $stateParams, setDirty, userApi){
+    constructor($scope, $location, $stateParams, setDirty, userApi){
 
         this.setDirty = setDirty;
         this.userApi = userApi;
         this.scope = $scope;
+        $scope.token = $stateParams.token;
 
-        if($stateParams.token){
+        console.log($stateParams.token);
+        if($stateParams.token !== undefined){
 
-            $scope.showPage = true;
+            // Check if token is invalid
+            userApi
+                .encodeResetPassToken($stateParams.token)
+                .then((data) => {
+
+                    $scope.tokenId = data.id;
+
+                })
+                .catch((err) => {
+
+                    console.log("Error: ",err);
+                    //$location.path(`/404`);
+
+                });
 
         } else {
 
-            $scope.showPage = false;
+            console.log(`Type of token = ${$stateParams.token}`);
+            // $location.path("/404");
 
         }
 
@@ -27,4 +43,5 @@ ResetPassController.$inject = [
     ,'$stateParams'
     ,'setDirty'
     ,'userApi'
+    ,'$location'
 ];

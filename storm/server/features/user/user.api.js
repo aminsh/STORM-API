@@ -139,65 +139,102 @@ router.route('/forgot-password')
         let token = null;
         let user = await(userRepository.getUserByEmail(email));
         let link = "";
+        // Check if a token already exists, delete them
+        tokenRepository
+            .deleteGenerated(user.id, "reset-pass")
+            .then(() => {
 
+                if (user) {
 
-        if (user) {
+                    tokenRepository.create({
+                        type: "reset-pass",
+                        userId: user.id
+                    })
+                        .then((token_rec) => {
 
-            tokenRepository.create({
-                type: "reset-pass",
-                userId: user.id,
-                token: ""
-            })
-            .then((token_rec) => {
+                            token = crypto.sign({
+                                id: token_rec.id,
+                                userId: user.id
+                            });
 
-                token = crypto.sign({
-                    id: token_rec.id,
-                    userId: user.id
-                });
+                            tokenRepository.update(token_rec.id, {
+                                token: token
+                            })
+                                .catch((err) => {
 
-                tokenRepository.update(token_rec.id, {
-                    token: token
-                });
+                                    console.log(err);
 
-                link = `${config.url.origin}/reset-password/${token}`;
+                                });
 
-                render("email-reset-password-template.ejs", {
-                    user: {
-                        name: user.name
-                    },
-                    originUrl: `${config.origin.url}`,
-                    resetPassUrl: link
+                            link = `${config.url.origin}/reset-password/${token}`;
 
-                }).then((html) => {
+                            render("email-reset-password-template.ejs", {
+                                user: {
+                                    name: user.name
+                                },
+                                originUrl: `${config.url.origin}`,
+                                resetPassUrl: link
 
-                    emailService.send({
-                        from: "info@storm-online.ir",
-                        to: user.email,
-                        subject: "لینک تغییر رمز عبور در استورم",
-                        html: html
-                    });
+                            }).then((html) => {
 
-                }).catch((err) => {
+                                emailService.send({
+                                    from: "info@storm-online.ir",
+                                    to: user.email,
+                                    subject: "لینک تغییر رمز عبور در استورم",
+                                    html: html
+                                });
 
-                    console.log(`Error: The email DIDN'T send successfuly !!! `, err);
+                            }).catch((err) => {
 
-                });
+                                console.log(`Error: The email DIDN'T send successfuly !!! `, err);
 
-                // Success
-                return res.json({isValid: true});
+                            });
+
+                            // Success
+                            res.json({isValid: true});
+
+                        })
+                        .catch((err) => {
+
+                            console.log(err);
+                            res.json({ isValid: false, errors: ["There is a problem in inserting token"] });
+
+                        });
+
+                } else {
+
+                    // With "No user found with this email" Error
+                    //res.json({isValid: true, error: ["Invalid email address", "No user found with this email address."]});
+                    return res.json({isValid: false, errors: ["Email not found"]});
+
+                }
 
             })
             .catch((err) => {
 
-                return res.json({isValid: false, errors: ["There is a problem in inserting token"]});
+                console.log(err);
+                res.json({ isValid: false, errors: ["A problem in deleting generated tokens"] });
 
             });
 
-        }
+    }));
 
-        // With "No user found with this email" Error
-        //res.json({isValid: true, error: ["Invalid email address", "No user found with this email address."]});
-        return res.json({isValid: false, errors: ["Email not found"]});
+router.route('/encode-reset-password-token/:token')
+    .get(async((req,res) => {
+
+        let userRepository = new UserRepository(),
+            tokenRepository = new TokenRepository(),
+            token_data = crypto.verify(req.params.token),
+            // Get Token Record + User Record from DB
+            token_rec = await(tokenRepository.getById(token_data.id)),
+            user = await(userRepository.getById(token_data.userId));
+
+        if(token_rec && user && token_rec.type === "reset-pass"){
+
+            return res.json({ isValid: true, returnValue: { id: token_rec.id } });
+
+        }
+        return res.json({ isValid: false, errors: ["Token is invalid"] });
 
     }));
 

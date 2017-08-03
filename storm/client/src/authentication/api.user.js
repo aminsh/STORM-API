@@ -34,6 +34,10 @@ export default class UserApi {
         return this.Api.post('/api/users/forgot-password',{ email: emailAddress });
     }
 
+    encodeResetPassToken(token){
+        return this.Api.get(`/api/users/encode-reset-password-token/${token}`);
+    }
+
 }
 
 UserApi.$inject = ['Api'];
