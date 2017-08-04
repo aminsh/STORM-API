@@ -11,7 +11,9 @@ const express = require('express'),
     UserQuery = require('./user.query'),
     translate = require('../../services/translateService'),
     emailService = require('../../services/emailService'),
-    crypto = require('../../../../shared/services/cryptoService');
+    crypto = require('../../../../shared/services/cryptoService'),
+    render = require('../../services/shared').service.render.renderFile,
+    TokenRepository = require('../token/token.repository');
 
 router.route('/').get(async((req, res) => {
     let userQuery = new UserQuery(),
@@ -43,12 +45,33 @@ router.route('/register').post(async((req, res) => {
 
     await(userRepository.create(user));
 
-    emailService.send({
+    render("email-user-register-template.ejs", {
+        user: {
+            name: user.name
+        },
+        activateUrl: url,
+
+    }).then((html) => {
+
+        emailService.send({
+            from: "info@storm-online.ir",
+            to: user.email,
+            subject: "لینک فعال سازی حساب کاربری در استورم",
+            html: html
+        });
+
+    }).catch((err) => {
+
+        console.log(`Error: The email DIDN'T send successfuly !!! `, err);
+
+    });
+
+    /*emailService.send({
         to: user.email,
         subject: translate('Activation link'),
         html: `<p><h3>${translate('Hello')}</h3></p>
                <p>${url}</p>`
-    });
+    });*/
 
     res.json({isValid: true});
 }));
@@ -110,39 +133,186 @@ router.route('/:id/change-image')
 router.route('/forgot-password')
     .post(async((req, res) => {
 
-        let userRepository = new UserRepository(),
-            email = req.body.email,
-            token = null,
-            user = await(userRepository.getUserByEmail(email)),
-            email_options = {
-                from: "info@storm-online.ir",
-                subject: "",
-                to: email,
-                text: ""
-            },
-            link = "";
+        let userRepository = new UserRepository();
+        let tokenRepository = new TokenRepository();
+        let email = req.body.email;
+        let token = null;
+        let user = await(userRepository.getUserByEmail(email));
+        let link = "";
+        // Check if a token already exists, delete them
+        tokenRepository
+            .deleteGenerated(user.id, "reset-pass")
+            .then(() => {
 
+                if (user) {
 
-        if (user !== null) {
+                    tokenRepository.create({
+                        type: "reset-pass",
+                        userId: user.id
+                    })
+                        .then((token_rec) => {
 
-            token = crypto.sign({
-                id: user.id,
-                email: user.email
+                            token = crypto.sign({
+                                id: token_rec.id,
+                                userId: user.id
+                            });
+
+                            tokenRepository.update(token_rec.id, {
+                                token: token
+                            })
+                                .catch((err) => {
+
+                                    console.log(err);
+
+                                });
+
+                            link = `${config.url.origin}/reset-password/${token}`;
+
+                            render("email-reset-password-template.ejs", {
+                                user: {
+                                    name: user.name
+                                },
+                                originUrl: `${config.url.origin}`,
+                                resetPassUrl: link
+
+                            }).then((html) => {
+
+                                emailService.send({
+                                    from: "info@storm-online.ir",
+                                    to: user.email,
+                                    subject: "لینک تغییر رمز عبور در استورم",
+                                    html: html
+                                });
+
+                            }).catch((err) => {
+
+                                console.log(`Error: The email DIDN'T send successfuly !!! `, err);
+
+                            });
+
+                            // Success
+                            res.json({isValid: true});
+
+                        })
+                        .catch((err) => {
+
+                            console.log(err);
+                            res.json({ isValid: false, errors: ["There is a problem in inserting token"] });
+
+                        });
+
+                } else {
+
+                    // With "No user found with this email" Error
+                    //res.json({isValid: true, error: ["Invalid email address", "No user found with this email address."]});
+                    return res.json({isValid: false, errors: ["Email not found"]});
+
+                }
+
+            })
+            .catch((err) => {
+
+                console.log(err);
+                res.json({ isValid: false, errors: ["A problem in deleting generated tokens"] });
+
             });
 
-            link = `${config.url.origin}/reset-password/${token}`;
-            email_options.text = link;
+    }));
 
-            emailService
-                .send(email_options);
+router.route('/encode-reset-password-token/:token')
+    .get(async((req,res) => {
 
-            // Success
-            res.json({isValid: true});
+        try{
+
+            let userRepository = new UserRepository(),
+                tokenRepository = new TokenRepository(),
+                token_data = crypto.verify(req.params.token),
+                // Get Token Record + User Record from DB
+                token_rec = await(tokenRepository.getById(token_data.id)),
+                user = await(userRepository.getById(token_data.userId));
+
+            if(token_rec && user && token_rec.type === "reset-pass"){
+
+                return res.json({ isValid: true, returnValue: { id: token_rec.id } });
+
+            }
+
+            return res.json({ isValid: false, errors: ["Token is invalid"] });
+
+        } catch(err) {
+
+            return res.json({ isValid: false, errors: ["Token is invalid"] });
+
+        }
+
+    }));
+
+router.route('/reset-password')
+    .post(async((req, res) => {
+
+        if(!req.isAuthenticated()){
+
+            try{
+
+                let userRepository = new UserRepository(),
+                    tokenRepository = new TokenRepository(),
+                    token = req.body.token,
+                    token_data = await(crypto.verify(token)),
+                    user = await(userRepository.getById(token_data.userId)),
+                    newPass  = req.body.newPass,
+                    token_rec = await(tokenRepository.getById(token_data.id)),
+                    tokenCreateDate = new Date(token_rec.createdAt),
+                    nowDate = new Date();
+
+                if( token_rec.userId === user.id
+                    && token_rec.type === "reset-pass"
+                    && newPass.length >= 6 ){
+
+                    if((nowDate.getTime() - tokenCreateDate.getTime()) < (3600*1000*24)){
+
+                        // The Token isn't Expired, yet ...
+                        userRepository.update(user.id, { password: md5(newPass.toString()) })
+                            .then(() => {
+                                tokenRepository.deleteGenerated(user.id,"reset-pass")
+                                    .then(() => {
+                                        res.json({ isValid: true, returnValue: { id: token_rec.id } });
+                                    })
+                                    .catch((err) => {
+                                        console.log(err);
+                                        res.json({ isValid: false, errors: ["Token is invalid"] });
+                                    });
+                            })
+                            .catch((err) => {
+                                console.log(err);
+                                res.json({ isValid: false, errors: ["Token is invalid"] });
+                            });
+
+                    } else {
+
+                        // The Token is Expired
+                        res.json({ isValid: false, errors: ["Token is invalid"] });
+                        tokenRepository.deleteGenerated(user.id,"reset-pass")
+                            .catch((err) => {
+                                console.log(err);
+                            });
+
+                    }
+
+                    return;
+
+                }
+                return res.json({ isValid: false, errors: ["Token is invalid"] });
+
+            } catch(err) {
+
+                console.log(err);
+                return res.json({ isValid: false, errors: ["Token is invalid"] });
+
+            }
 
         } else {
 
-            // With "No user found with this email" Error
-            res.json({isValid: false, error: ["Invalid email address", "No user found with this email address."]});
+            return res.json({ isValid: false, errors: ["You are already logged in"] });
 
         }
 

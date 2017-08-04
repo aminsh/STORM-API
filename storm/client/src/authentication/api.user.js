@@ -30,6 +30,18 @@ export default class UserApi {
         return this.Api.get(`${this.prefixUrl}/return-url`);
     }
 
+    forgotPassword(emailAddress){
+        return this.Api.post('/api/users/forgot-password',{ email: emailAddress });
+    }
+
+    encodeResetPassToken(token){
+        return this.Api.get(`/api/users/encode-reset-password-token/${token}`);
+    }
+
+    resetPassword(newPass, token){
+        return this.Api.post('/api/users/reset-password',{ newPass: newPass, token: token });
+    }
+
 }
 
 UserApi.$inject = ['Api'];

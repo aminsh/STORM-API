@@ -146,57 +146,6 @@ export default class invoiceController {
         }
     }
 
-
-    canShow(status, command) {
-
-        if (status == "waitForPayment") {
-            if (command == "draft") {
-                return false;
-            }
-            if (command == "confirm") {
-                return false;
-            }
-            if (command == "payment") {
-                return true;
-            }
-        }
-
-        if (status == "paid") {
-            if (command == "draft") {
-                return false;
-            }
-            if (command == "confirm") {
-                return false;
-            }
-            if (command == "payment") {
-                return false;
-            }
-        }
-        if (status == "confirm") {
-            if (command == "draft") {
-                return true;
-            }
-            if (command == "confirm") {
-                return true;
-            }
-            if (command == "payment") {
-                return false;
-            }
-        }
-
-        if (status == "draft") {
-            if (command == "draft") {
-                return true;
-            }
-            if (command == "confirm") {
-                return true;
-            }
-            if (command == "payment") {
-                return false;
-            }
-        }
-    }
-
     getPayments() {
 
         if(this.invoiceType=='sales'){
@@ -214,7 +163,6 @@ export default class invoiceController {
     removeInvoiceLine(item) {
         this.invoice.invoiceLines.asEnumerable().remove(item);
     }
-
 
     createNewProduct(item, title) {
         return this.promise.create((resolve, reject) => {
