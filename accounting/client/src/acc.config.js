@@ -142,6 +142,7 @@ import "./financialOperations";
 import "./receivableCheque";
 import "./payableCheque";
 import "./bankAndFund";
+import "./detailAccount";
 
 accModule
     .config(uiRouteConfig)

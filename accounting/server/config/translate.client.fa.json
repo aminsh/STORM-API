@@ -343,5 +343,11 @@
   "Reference Code":"کد مرجع",
   "For communication with other systems":"برای ارتباط با سایر سیستم ها",
   "Confirm journal": "تایید سند",
-  "invoice List":"لیست فاکتور ها"
+  "invoice List":"لیست فاکتور ها",
+  "Detail account categories": "دسته بندی تفصیل",
+  "New Detail account category": "دسته بندی تفصیل جدید",
+  "Edit Detail account category": "ویرایش دسته بندی تفصیل",
+  "You should input one Subsidiary ledger account": "شما باید حذاقل یک حساب معین وارد کنید",
+  "Remove Detail account category": "حذف دسته بندی تفصیل"
+
 }
