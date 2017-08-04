@@ -20,6 +20,7 @@ export default class ResetPassController{
         // 1 = reset password is done successfully
         // 2 = token is wrong
         // 3 = server error like 404
+        // 4 = you are already logged in
         $scope.sendResetPassStatus = 0;
         // ******************************
 
@@ -73,6 +74,10 @@ export default class ResetPassController{
                     if(errors[0] === "Token is invalid"){
                         console.log('The token is worng !');
                         this.scope.sendResetPassStatus = 2;
+                        return;
+                    } else if(errors[0] === "You are already logged in"){
+                        console.log('You are already logged in !!!');
+                        this.scope.sendResetPassStatus = 4;
                         return;
                     }
                     this.scope.sendResetPassStatus = 3;

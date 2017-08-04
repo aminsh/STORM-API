@@ -250,61 +250,69 @@ router.route('/encode-reset-password-token/:token')
 router.route('/reset-password')
     .post(async((req, res) => {
 
-        try{
+        if(!req.isAuthenticated()){
 
-            let userRepository = new UserRepository(),
-                tokenRepository = new TokenRepository(),
-                token = req.body.token,
-                token_data = await(crypto.verify(token)),
-                user = await(userRepository.getById(token_data.userId)),
-                newPass  = req.body.newPass,
-                token_rec = await(tokenRepository.getById(token_data.id)),
-                tokenCreateDate = new Date(token_rec.createdAt),
-                nowDate = new Date();
+            try{
 
-            if( token_rec.userId === user.id
-                && token_rec.type === "reset-pass"
-                && newPass.length >= 6 ){
+                let userRepository = new UserRepository(),
+                    tokenRepository = new TokenRepository(),
+                    token = req.body.token,
+                    token_data = await(crypto.verify(token)),
+                    user = await(userRepository.getById(token_data.userId)),
+                    newPass  = req.body.newPass,
+                    token_rec = await(tokenRepository.getById(token_data.id)),
+                    tokenCreateDate = new Date(token_rec.createdAt),
+                    nowDate = new Date();
 
-                if((nowDate.getTime() - tokenCreateDate.getTime()) < (3600*1000*24)){
+                if( token_rec.userId === user.id
+                    && token_rec.type === "reset-pass"
+                    && newPass.length >= 6 ){
 
-                    // The Token isn't Expired, yet ...
-                    userRepository.update(user.id, { password: md5(newPass.toString()) })
-                        .then(() => {
-                            tokenRepository.deleteGenerated(user.id,"reset-pass")
-                                .then(() => {
-                                    res.json({ isValid: true, returnValue: { id: token_rec.id } });
-                                })
-                                .catch((err) => {
-                                    console.log(err);
-                                    res.json({ isValid: false, errors: ["Token is invalid"] });
-                                });
-                        })
-                        .catch((err) => {
-                            console.log(err);
-                            res.json({ isValid: false, errors: ["Token is invalid"] });
-                        });
+                    if((nowDate.getTime() - tokenCreateDate.getTime()) < (3600*1000*24)){
 
-                } else {
+                        // The Token isn't Expired, yet ...
+                        userRepository.update(user.id, { password: md5(newPass.toString()) })
+                            .then(() => {
+                                tokenRepository.deleteGenerated(user.id,"reset-pass")
+                                    .then(() => {
+                                        res.json({ isValid: true, returnValue: { id: token_rec.id } });
+                                    })
+                                    .catch((err) => {
+                                        console.log(err);
+                                        res.json({ isValid: false, errors: ["Token is invalid"] });
+                                    });
+                            })
+                            .catch((err) => {
+                                console.log(err);
+                                res.json({ isValid: false, errors: ["Token is invalid"] });
+                            });
 
-                    // The Token is Expired
-                    res.json({ isValid: false, errors: ["Token is invalid"] });
-                    tokenRepository.deleteGenerated(user.id,"reset-pass")
-                        .catch((err) => {
-                            console.log(err);
-                        });
+                    } else {
+
+                        // The Token is Expired
+                        res.json({ isValid: false, errors: ["Token is invalid"] });
+                        tokenRepository.deleteGenerated(user.id,"reset-pass")
+                            .catch((err) => {
+                                console.log(err);
+                            });
+
+                    }
+
+                    return;
 
                 }
+                return res.json({ isValid: false, errors: ["Token is invalid"] });
 
-                return;
+            } catch(err) {
+
+                console.log(err);
+                return res.json({ isValid: false, errors: ["Token is invalid"] });
 
             }
-            return res.json({ isValid: false, errors: ["Token is invalid"] });
 
-        } catch(err) {
+        } else {
 
-            console.log(err);
-            return res.json({ isValid: false, errors: ["Token is invalid"] });
+            return res.json({ isValid: false, errors: ["You are already logged in"] });
 
         }
 
