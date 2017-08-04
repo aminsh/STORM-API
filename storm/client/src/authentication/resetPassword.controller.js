@@ -7,9 +7,22 @@ export default class ResetPassController{
         this.setDirty = setDirty;
         this.userApi = userApi;
         this.scope = $scope;
-        $scope.token = $stateParams.token;
 
-        console.log($stateParams.token);
+        $scope.token = $stateParams.token;
+        $scope.showForm = false;
+        $scope.showPass = false;
+        $scope.inputType = "password";
+        $scope.toggleInputType = this.toggleInputType;
+
+        // ******************************
+        // Forgot Password Status Numbers
+        // 0 = no-thing happened
+        // 1 = reset password is done successfully
+        // 2 = token is wrong
+        // 3 = server error like 404
+        $scope.sendResetPassStatus = 0;
+        // ******************************
+
         if($stateParams.token !== undefined){
 
             // Check if token is invalid
@@ -17,21 +30,54 @@ export default class ResetPassController{
                 .encodeResetPassToken($stateParams.token)
                 .then((data) => {
 
-                    $scope.tokenId = data.id;
+                    $scope.showForm = data.isValid;
+                    if(!data.isValid) $location.path(`/404`);
 
                 })
                 .catch((err) => {
 
-                    console.log("Error: ",err);
-                    //$location.path(`/404`);
+                    $scope.showForm = false;
+                    $location.path(`/404`);
 
                 });
 
         } else {
 
-            console.log(`Type of token = ${$stateParams.token}`);
-            // $location.path("/404");
+            $scope.showForm = false;
+            $location.path("/404");
 
+        }
+
+    }
+
+    toggleInputType(){
+
+        this.scope.showPass = !this.scope.showPass;
+        this.scope.inputType = (this.scope.showPass)? "text":"password";
+
+    }
+
+    send(form, newPass){// Change Password
+
+        if(form.$invalid){
+            return this.setDirty(form);
+        } else {
+            this.userApi
+                .resetPassword(newPass,this.scope.token)
+                .then((data) => {
+                    console.log('Your password has changed successfully !');
+                    this.scope.sendResetPassStatus = 1;
+                    this.scope.showForm = false;
+                })
+                .catch((errors) => {
+                    if(errors[0] === "Token is invalid"){
+                        console.log('The token is worng !');
+                        this.scope.sendResetPassStatus = 2;
+                        return;
+                    }
+                    this.scope.sendResetPassStatus = 3;
+                    console.log(err);
+                });
         }
 
     }
@@ -40,8 +86,8 @@ export default class ResetPassController{
 
 ResetPassController.$inject = [
     '$scope'
+    ,'$location'
     ,'$stateParams'
     ,'setDirty'
     ,'userApi'
-    ,'$location'
 ];

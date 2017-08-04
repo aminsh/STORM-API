@@ -36,42 +36,4 @@ router.route('/profile').get(async((req, res) => {
     res.render('index.ejs');
 }));
 
-/*router.route('/reset-password/:token')
-    .get(async((req,res) => {
-
-        try{
-
-            let token_data = crypto.verify(req.params.token),
-                userRepository = new UserRepository(),
-                tokenRepository = new TokenRepository(),
-                user = await(userRepository.getById(token_data.userId)),
-                token = await(tokenRepository.getById(token_date.id));
-
-            if(user && token){
-
-                if(!req.isAuthenticated()){
-                    // Render Main Reset Password Page
-                    res.render('index.ejs');
-                } else {
-                    // Redirect to Profile Panel
-                    res.redirect(`${config.url.origin}/profile`);
-                }
-
-            } else {
-
-                res.redirect(`${config.url.origin}/404`);
-
-            }
-
-        } catch(e) {
-
-            // Render Error Page
-            // Error: "An error has occurred !!!"
-            console.log(`${e.message}`);
-            res.redirect(`${config.url.origin}/404`);
-
-        }
-
-    }));*/
-
 module.exports = router;

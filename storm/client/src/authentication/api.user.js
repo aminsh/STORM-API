@@ -38,6 +38,10 @@ export default class UserApi {
         return this.Api.get(`/api/users/encode-reset-password-token/${token}`);
     }
 
+    resetPassword(newPass, token){
+        return this.Api.post('/api/users/reset-password',{ newPass: newPass, token: token });
+    }
+
 }
 
 UserApi.$inject = ['Api'];

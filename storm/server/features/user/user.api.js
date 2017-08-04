@@ -222,19 +222,91 @@ router.route('/forgot-password')
 router.route('/encode-reset-password-token/:token')
     .get(async((req,res) => {
 
-        let userRepository = new UserRepository(),
-            tokenRepository = new TokenRepository(),
-            token_data = crypto.verify(req.params.token),
-            // Get Token Record + User Record from DB
-            token_rec = await(tokenRepository.getById(token_data.id)),
-            user = await(userRepository.getById(token_data.userId));
+        try{
 
-        if(token_rec && user && token_rec.type === "reset-pass"){
+            let userRepository = new UserRepository(),
+                tokenRepository = new TokenRepository(),
+                token_data = crypto.verify(req.params.token),
+                // Get Token Record + User Record from DB
+                token_rec = await(tokenRepository.getById(token_data.id)),
+                user = await(userRepository.getById(token_data.userId));
 
-            return res.json({ isValid: true, returnValue: { id: token_rec.id } });
+            if(token_rec && user && token_rec.type === "reset-pass"){
+
+                return res.json({ isValid: true, returnValue: { id: token_rec.id } });
+
+            }
+
+            return res.json({ isValid: false, errors: ["Token is invalid"] });
+
+        } catch(err) {
+
+            return res.json({ isValid: false, errors: ["Token is invalid"] });
 
         }
-        return res.json({ isValid: false, errors: ["Token is invalid"] });
+
+    }));
+
+router.route('/reset-password')
+    .post(async((req, res) => {
+
+        try{
+
+            let userRepository = new UserRepository(),
+                tokenRepository = new TokenRepository(),
+                token = req.body.token,
+                token_data = await(crypto.verify(token)),
+                user = await(userRepository.getById(token_data.userId)),
+                newPass  = req.body.newPass,
+                token_rec = await(tokenRepository.getById(token_data.id)),
+                tokenCreateDate = new Date(token_rec.createdAt),
+                nowDate = new Date();
+
+            if( token_rec.userId === user.id
+                && token_rec.type === "reset-pass"
+                && newPass.length >= 6 ){
+
+                if((nowDate.getTime() - tokenCreateDate.getTime()) < (3600*1000*24)){
+
+                    // The Token isn't Expired, yet ...
+                    userRepository.update(user.id, { password: md5(newPass.toString()) })
+                        .then(() => {
+                            tokenRepository.deleteGenerated(user.id,"reset-pass")
+                                .then(() => {
+                                    res.json({ isValid: true, returnValue: { id: token_rec.id } });
+                                })
+                                .catch((err) => {
+                                    console.log(err);
+                                    res.json({ isValid: false, errors: ["Token is invalid"] });
+                                });
+                        })
+                        .catch((err) => {
+                            console.log(err);
+                            res.json({ isValid: false, errors: ["Token is invalid"] });
+                        });
+
+                } else {
+
+                    // The Token is Expired
+                    res.json({ isValid: false, errors: ["Token is invalid"] });
+                    tokenRepository.deleteGenerated(user.id,"reset-pass")
+                        .catch((err) => {
+                            console.log(err);
+                        });
+
+                }
+
+                return;
+
+            }
+            return res.json({ isValid: false, errors: ["Token is invalid"] });
+
+        } catch(err) {
+
+            console.log(err);
+            return res.json({ isValid: false, errors: ["Token is invalid"] });
+
+        }
 
     }));
 
