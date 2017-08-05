@@ -6,6 +6,10 @@ export default class DetailAccountCategoryApi {
         this.urlPrefix = devConstants.urls.rootUrl;
     }
 
+    getAll() {
+        return this.apiPromise.get(`${this.urlPrefix}/detail-account-categories`);
+    }
+
     getById(id) {
         return this.apiPromise.get(`${this.urlPrefix}/detail-account-categories/${id}`);
     }
