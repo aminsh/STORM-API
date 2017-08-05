@@ -110,6 +110,7 @@ import paging from "./directives/paging";
 import ngHtmlCompile from "./directives/ngHtmlCompile";
 import doughnutChart from "./directives/chart.doughnut";
 import focusMeOn from "./directives/focusMeOn";
+import guide from './directives/guide';
 //filter
 import "./filters/amount";
 import totalSum from "./filters/total";
@@ -172,6 +173,7 @@ accModule
     .directive('devTagContentHeading', heading)
     .directive('devTagContentFooter', footer)
     .directive('devTagButton', button)
+    .directive('devTagGuide', guide)
 
 
     .directive('devTagReportViewer', reportViewer)
