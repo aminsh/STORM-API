@@ -61,8 +61,11 @@
             </span>
             <span uib-dropdown ng-if="column.hasOwnProperty('commands')" style="margin-left: 20px;">
 
-             <i class="fa fa-ellipsis-v fa-lg pointer text-success"
-                uib-dropdown-toggle></i>
+                <a href="#" class="btn btn-primary btn-circle " uib-dropdown-toggle>
+                    <i class="fa fa-ellipsis-v fa-lg "
+                       ></i>
+                </a>
+
 
                  <ul class="dropdown-menu shadow animated bounceIn dropdown-menu-left"
                      uib-dropdown-menu role="menu"
@@ -72,7 +75,7 @@
                      <li role="menuitem"
                          ng-if="!command.canShow || (command.canShow && command.canShow(item))"
                          ng-repeat="command in column.commands">
-                         <a href="#" ng-click="command.action(item)">
+                         <a href="#"   ng-click="command.action(item)">
                          <i class="{{command.icon}} fa-lg"></i>
                          <span>{{command.title}}</span>
                          </a>
