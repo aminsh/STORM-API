@@ -46,6 +46,7 @@ export default class LoginController {
                 if (this.returnUrl)
                     this.$window.location = this.returnUrl;
                 else {
+
                     this.$rootScope.currentUser = result.currentUser;
                     this.$rootScope.isAuthenticated = true;
                     this.$state.go('profile');
