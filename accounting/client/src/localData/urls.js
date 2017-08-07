@@ -1,4 +1,5 @@
 let rootUrl = () => '/acc/api';
+let userApiUrl = () => '/api/users';
 
 let generalLedgerAccount = {
     all: () => '{0}/general-ledger-accounts'.format(rootUrl())
@@ -116,6 +117,7 @@ let payableCheques = {
 
 let apiUrls = {
     rootUrl: rootUrl(),
+    userApiUrl: userApiUrl(),
     generalLedgerAccount: generalLedgerAccount,
     subsidiaryLedgerAccount: subsidiaryLedgerAccount,
     detailAccount: detailAccount,

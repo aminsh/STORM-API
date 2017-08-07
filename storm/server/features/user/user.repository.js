@@ -28,7 +28,7 @@ module.exports = class {
     }
 
     getById(id){
-        return knex.table('users'). where('id', id).first();
+        return knex.table('users').where('id', id).first();
     }
 
     getByToken(token){

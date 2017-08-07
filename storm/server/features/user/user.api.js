@@ -95,21 +95,27 @@ router.route('/change-password')
     .put(async((req, res) => {
         let userRepository = new UserRepository(),
             cmd = req.body,
+            currentPass = md5(cmd.currentPass),
+            userId = req.user.id,
+            user = await(userRepository.getById(userId)),
             entity = {
-                password: md5(cmd.password)
+                password: md5(cmd.newPass)
             };
 
         if(!req.isAuthenticated())
             return res.json({ isValid: false });
 
+        if(user.password !== currentPass)
+            return res.json({ isValid: false });
+
         try {
 
-            await(userRepository.update(req.user.id, entity));
+            await(userRepository.update(userId, entity));
             res.json({isValid: true});
 
-        } catch (e) {
+        } catch (err) {
 
-            console.log(e);
+            console.log(err);
             res.json({isValid: false});
 
         }

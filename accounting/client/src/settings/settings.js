@@ -1,12 +1,19 @@
 "use strict";
 
 export default class {
-    constructor(settingsApi, formService, logger, devConstants) {
+    constructor(settingsApi, userApi, formService, logger, devConstants, $scope) {
         this.settingsApi = settingsApi;
+        this.userApi = userApi;
         this.formService = formService;
         this.logger = logger;
         this.errors = [];
         this.isSaving = false;
+        this.$scope = $scope;
+        $scope.showChangePassMsg = false;
+        // 0 = no-thing happened
+        // 1 = success
+        // 2 = wrong currentPassword
+        $scope.changePassSuccess = 0;
 
         this.urls = {
             getAllBanks: devConstants.urls.bank.getAll()
@@ -27,13 +34,18 @@ export default class {
             .finally(() => this.isSaving = false);
     }
 
-    changePassSave(form){
+    changePassSave(form, currentPass, newPass){
         if (form.$invalid)
             return this.formService.setDirty(form);
         this.errors = [];
         this.isSaving = true;
-
-        this.settingsApi.save(this.settings);
+        this.userApi.save({
+            currentPass: currentPass
+            , newPass: newPass
+        }).then(() => { this.logger.success();this.$scope.changePassSuccess = 1; })
+            .catch(errors => { this.errors = errors;this.$scope.changePassSuccess = 2; })
+            .finally(() => this.isSaving = false);
+        this.$scope.showChangePassMsg = true;
     }
 
 }

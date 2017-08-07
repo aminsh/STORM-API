@@ -58,6 +58,7 @@ import ReportApi from "./apis/reportApi";
 import TagApi from "./apis/tagApi";
 import BranchApi from "./branch/branchApi";
 import SettingsApi from "./settings/settingsApi";
+import UserApi from "./settings/userApi";
 // load modals
 import "./modals/generalLedgerAccountCreate";
 import "./modals/generalLedgerAccountUpdate";
@@ -187,6 +188,7 @@ accModule
     .service('tagApi', TagApi)
     .service('branchApi', BranchApi)
     .service('settingsApi', SettingsApi)
+    .service('userApi', UserApi)
 
     .factory('navigate', routeNavigatorService)
     .factory('apiPromise', apiPromise)

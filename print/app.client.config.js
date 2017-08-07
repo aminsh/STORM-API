@@ -28,8 +28,7 @@ let printModule = angular.module('print.module', [
     ]),
     devConstants = {
         urls: {
-            rootUrl: '/print/api',
-            userApiUrl: '/api/users'
+            rootUrl: '/print/api'
         },
         reports: JSON.parse(localStorage.getItem('reports'))
     };
