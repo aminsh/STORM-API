@@ -20,14 +20,12 @@ function homeController($scope, translate, purchaseApi, saleApi, bankAndFundApi)
     function fetch() {
 
         purchaseApi.summary().then(result => {
-            console.log(result);
             $scope.purchaseInfo.sumOfPaid = result.sumPaidAmount;
             $scope.purchaseInfo.sumOfRemain = result.sumRemainder;
             $scope.purchaseInfo.total = result.total;
         });
 
         saleApi.summary().then(result => {
-            console.log(result);
             $scope.data = result;
             $scope.saleInfo.sumOfPaid = result.sumPaidAmount;
             $scope.saleInfo.sumOfRemain = result.sumRemainder;
@@ -51,7 +49,6 @@ function homeController($scope, translate, purchaseApi, saleApi, bankAndFundApi)
         });
 
         saleApi.summaryByMonth().then(result => {
-            console.log(result);
             let items = result.asEnumerable();
             let colors = ['#803690', '#00ADF9', '#DCDCDC', '#46BFBD', '#FDB45C', '#949FB1', '#4D5360'];
 

@@ -21,7 +21,7 @@ export default class peopleMoreInfoController {
             peopleApi.getById(this.id)
                 .then(result => this.people = result);
             peopleApi.summary(data.id).then(result=>{
-                console.log(result);
+
                 let items = result.asEnumerable();
 
                 let colors = ['#803690', '#00ADF9', '#DCDCDC', '#46BFBD', '#FDB45C', '#949FB1', '#4D5360'];

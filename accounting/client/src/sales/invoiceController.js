@@ -258,7 +258,9 @@ export default class invoiceController {
                             }
                         })
                     })
-                    .catch(err => errors = err)
+                    .catch(err => {
+                        errors = err;
+                    })
                     .finally(() => this.isSaving = false);
             }
 
@@ -274,7 +276,9 @@ export default class invoiceController {
                             }
                         })
                     })
-                    .catch(err => errors = err)
+                    .catch(err => {
+                        errors = err
+                    })
                     .finally(() => this.isSaving = false);
             }
         } else {
