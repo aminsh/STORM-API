@@ -14,7 +14,13 @@ let subsidiaryLedgerAccount = {
 };
 
 let detailAccount = {
-    all: () => '{0}/detail-accounts'.format(rootUrl())
+    all: () => '{0}/detail-accounts'.format(rootUrl()),
+    allBySubsidiaryLedgerAccount: subsidiaryLedgerAccountId =>
+        `${rootUrl()}/detail-accounts/by-subsidiary-ledger-account/${subsidiaryLedgerAccountId}`
+};
+
+let detailAccountCategories = {
+    all: () => '{0}/detail-account-categories'.format(rootUrl())
 };
 
 let dimensionCategory = {
@@ -113,6 +119,7 @@ let apiUrls = {
     generalLedgerAccount: generalLedgerAccount,
     subsidiaryLedgerAccount: subsidiaryLedgerAccount,
     detailAccount: detailAccount,
+    detailAccountCategories: detailAccountCategories,
     dimensionCategory: dimensionCategory,
     dimension: dimension,
     period: period,

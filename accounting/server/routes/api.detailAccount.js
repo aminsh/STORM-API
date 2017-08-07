@@ -19,7 +19,7 @@ router.route('/')
             errors = [],
             cmd = req.body;
 
-        if (!string.isNullOrEmpty(cmd.code)){
+        if (!string.isNullOrEmpty(cmd.code)) {
             let gla = await(detailAccountRepository.findByCode(cmd.code));
 
             if (gla)
@@ -41,7 +41,10 @@ router.route('/')
 
         let entity = await(detailAccountRepository.create({
             code: cmd.code,
-            title: cmd.title
+            title: cmd.title,
+            detailAccountCategoryIds: cmd.detailAccountCategoryIds
+                ? cmd.detailAccountCategoryIds.join('|')
+                : null
         }));
 
         return res.json({
@@ -59,12 +62,13 @@ router.route('/:id')
     .put(async((req, res) => {
         let detailAccountRepository = new DetailAccountRepository(req.branchId),
             errors = [],
-            cmd = req.body;
+            cmd = req.body,
+            id = req.params.id;
 
         if (string.isNullOrEmpty(cmd.code))
             errors.push(translate('The code is required'));
         else {
-            var gla = await(detailAccountRepository.findByCode(cmd.code, cmd.id));
+            var gla = await(detailAccountRepository.findByCode(cmd.code, id));
 
             if (gla)
                 errors.push(translate('The code is duplicated'));
@@ -83,10 +87,13 @@ router.route('/:id')
                 errors: errors
             });
 
-        let entity = await(detailAccountRepository.findById(cmd.id));
+        let entity = await(detailAccountRepository.findById(id));
 
         entity.title = cmd.title;
         entity.code = cmd.code;
+        entity.detailAccountCategoryIds = cmd.detailAccountCategoryIds
+            ? cmd.detailAccountCategoryIds.join('|')
+            : null;
 
         await(detailAccountRepository.update(entity));
 
@@ -129,5 +136,15 @@ router.route('/:id/deactivate').put(async((req, res) => {
 
     return res.json({isValid: true});
 }));
+
+
+router.route('/by-subsidiary-ledger-account/:subsidiaryLedgerAccountId')
+    .get(async((req, res) => {
+        let detailAccountQuery = new DetailAccountQuery(req.branchId),
+            result = await(detailAccountQuery.getAllBySubsidiryLedgerAccount(
+                req.params.subsidiaryLedgerAccountId,
+                req.query));
+        res.json(result);
+    }));
 
 module.exports = router;

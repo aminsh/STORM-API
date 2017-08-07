@@ -1,4 +1,4 @@
-import accModule from '../acc.module';
+import accModule from "../acc.module";
 
 function detailAccountUpdateModalController($scope, $uibModalInstance, formService, detailAccountApi, logger, data, devConstants) {
     "use strict";
@@ -21,7 +21,18 @@ function detailAccountUpdateModalController($scope, $uibModalInstance, formServi
 
         $scope.isSaving = true;
 
-        detailAccountApi.update(id, $scope.detailAccount)
+        let cmd = {
+            code: $scope.detailAccount.code,
+            title: $scope.detailAccount.title,
+            description: $scope.detailAccount.description,
+            detailAccountCategoryIds: $scope.detailAccount.detailAccountCategories
+                .asEnumerable()
+                .where(e => e.isSelected)
+                .select(e => e.id)
+                .toArray()
+        };
+
+        detailAccountApi.update(id, cmd)
             .then((result) => {
                 logger.success();
                 $uibModalInstance.close(result);

@@ -47,6 +47,7 @@
 
 
             <td ng-repeat="column in columns"
+                style="vertical-align: middle"
                 ng-class="{'command-cell': column.hasOwnProperty('commands')}">
 
                 <i ng-if="detailTemplate && $index == 0"
@@ -58,7 +59,32 @@
                 <span ng-if="!column.template">{{item[column.name]}}</span>
                 <span ng-if="column.template" ng-html-compile="column.template"></span>
             </span>
-                <span ng-if="column.hasOwnProperty('commands')">
+            <span uib-dropdown ng-if="column.hasOwnProperty('commands')" style="margin-left: 20px;">
+
+                <a href="#" class="btn btn-primary btn-circle " uib-dropdown-toggle>
+                    <i class="fa fa-ellipsis-v fa-lg "
+                       ></i>
+                </a>
+
+
+                 <ul class="dropdown-menu shadow animated bounceIn dropdown-menu-left"
+                     uib-dropdown-menu role="menu"
+                     aria-labelledby="btn-append-to-body"
+                     style="padding: 10px;min-width: 200px">
+
+                     <li role="menuitem"
+                         ng-if="!command.canShow || (command.canShow && command.canShow(item))"
+                         ng-repeat="command in column.commands">
+                         <a href="#"   ng-click="command.action(item)">
+                         <i class="{{command.icon}} fa-lg"></i>
+                         <span>{{command.title}}</span>
+                         </a>
+                     </li>
+                </ul>
+
+            </span>
+
+               <!-- <span ng-if="column.hasOwnProperty('commands')">
                 <button ng-repeat="command in column.commands"
                         ng-click="command.action(item)"
                         ng-if="!command.canShow || (command.canShow && command.canShow(item))"
@@ -68,11 +94,11 @@
                         style="margin-top: 0;margin-bottom: 0">
                     <i class="{{command.icon}} fa-lg"></i>
                 </button>
-            </span>
+            </span>-->
             </td>
         </tr>
         <tr ng-if="item.expanded"
-            ng-repeat-end >
+            ng-repeat-end>
             <td colspan="{{columns.length}}" ng-html-compile="detailTemplate">
 
             </td>

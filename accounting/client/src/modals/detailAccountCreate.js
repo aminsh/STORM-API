@@ -1,6 +1,12 @@
-import accModule from '../acc.module';
+import accModule from "../acc.module";
 
-function detailAccountCreateModalController($scope, $uibModalInstance, formService, detailAccountApi, logger, devConstants) {
+function detailAccountCreateModalController($scope,
+                                            $uibModalInstance,
+                                            formService,
+                                            detailAccountApi,
+                                            detailAccountCategoryApi,
+                                            logger,
+                                            devConstants) {
     "use strict";
 
     $scope.errors = [];
@@ -16,6 +22,12 @@ function detailAccountCreateModalController($scope, $uibModalInstance, formServi
         personType: null
     };
 
+    detailAccountCategoryApi.getAll()
+        .then(result => {
+            result.data.forEach(e => e.isSelected = false);
+            $scope.detailAccount.detailAccountCategories = result.data;
+        });
+
     $scope.isSaving = false;
 
     $scope.save = function (form) {
@@ -26,10 +38,21 @@ function detailAccountCreateModalController($scope, $uibModalInstance, formServi
 
         $scope.isSaving = true;
 
-        detailAccountApi.create($scope.detailAccount)
+        let cmd = {
+            code: $scope.detailAccount.code,
+            title: $scope.detailAccount.title,
+            description: $scope.detailAccount.description,
+            detailAccountCategoryIds: $scope.detailAccount.detailAccountCategories
+                .asEnumerable()
+                .where(e => e.isSelected)
+                .select(e => e.id)
+                .toArray()
+        };
+
+        detailAccountApi.create(cmd)
             .then((result) => {
                 logger.success();
-                $scope.$broadcast('on-customer-created',result)
+                $scope.$broadcast('on-customer-created', result)
                 $uibModalInstance.close(result);
 
             })

@@ -10,6 +10,7 @@ app.use('/api/cheques', require('../routes/api.cheque'));
 app.use('/api/cheque-categories', require('../routes/api.chequeCategory'));
 
 app.use('/api/detail-accounts', require('../routes/api.detailAccount'));
+app.use('/api/detail-account-categories', require('../routes/api.detailAccountCategory'));
 app.use('/api/banks', require('../routes/api.bank'));
 app.use('/api/people', require('../routes/api.people'));
 app.use('/api/funds', require('../routes/api.fund'));

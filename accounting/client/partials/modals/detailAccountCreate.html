@@ -9,7 +9,7 @@
     <dev-tag-validation-summary errors="errors"></dev-tag-validation-summary>
 
     <form name="form">
-        <dev-tag-validation-summary errors="errors"></dev-tag-validation-summary>
+
         <div class="form-group">
             <label class="label-control">{{'Code' | translate}}</label>
             <input
@@ -41,6 +41,13 @@
             <label class="label-control">{{'Description' | translate}}</label>
             <textarea class="form-control" ng-model="detailAccount.description"
                       name="description"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label class="label-control">{{'Category' | translate}}</label>
+            <dev-tag-check-box
+                    ng-repeat="item in detailAccount.detailAccountCategories"
+                    ng-model="item.isSelected">{{item.title}}</dev-tag-check-box>
         </div>
 
     </form>

@@ -9,6 +9,7 @@ function combo($parse, apiPromise) {
         require: ['ngModel'],
         scope: {
             onChanged: '&kOnChanged',
+            onRemoved: '&kOnRemoved',
             onCreated: '&kOnCreated',
             onBound: '&kOnBound'
         },
@@ -147,7 +148,7 @@ function combo($parse, apiPromise) {
                 scope.onItemSelect = function (item, model) {
                     var modelValue = scope.getValueMapper(item);
                     if (scope.isMultiple) {
-                        scope.ngModel.$viewValue.push(modelValue);
+                        scope.ngModel.$viewValue && scope.ngModel.$viewValue.push(modelValue);
                     } else {
                         scope.ngModel.$setViewValue(modelValue);
                     }
@@ -169,6 +170,8 @@ function combo($parse, apiPromise) {
                         if (removeIndex) {
                             scope.ngModel.$viewValue.splice(removeIndex, 1);
                         }
+
+                        scope.onRemoved && scope.onRemoved({$item: item});
                     } else {
                         scope.ngModel.$setViewValue(removedModelValue);
                     }
