@@ -213,7 +213,7 @@ export default class invoiceController {
     }
 
     saveInvoice(form, status) {
-
+        throw "error";
         let logger = this.logger,
             formService = this.formService,
             errors = this.errors,
