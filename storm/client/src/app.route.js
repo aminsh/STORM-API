@@ -124,7 +124,9 @@ export default function routing($stateProvider, $urlRouterProvider, $locationPro
         })
         .state("landing",{
             url: '/landing',
-            templateUrl: "app/landing/landing.html"
+            templateUrl: "app/landing/landing.html",
+            controller: "LandingController",
+            controllerAs: "self"
         })
         .state("success",{
             url: '/success',

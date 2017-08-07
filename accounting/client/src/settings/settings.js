@@ -26,4 +26,14 @@ export default class {
             .catch(errors => this.errors = errors)
             .finally(() => this.isSaving = false);
     }
+
+    changePassSave(form){
+        if (form.$invalid)
+            return this.formService.setDirty(form);
+        this.errors = [];
+        this.isSaving = true;
+
+        this.settingsApi.save(this.settings);
+    }
+
 }

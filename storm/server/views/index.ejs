@@ -11,7 +11,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="currentUser" content="<%- currentUser %>">
     <meta name="currentUserImage" content="<%- currentUserImage %>">
+    <script src="https://www.google.com/recaptcha/api.js?hl=fa&onload=reCaptchaOnLoad&render=explicit"
+            async defer></script>
+    <script type="text/javascript" >
 
+        var reCaptchaWidget;
+        var reCaptchaOnLoad = function(){
+
+            reCaptchaWidget = grecaptcha.render('g-recaptcha-elem',{
+                'sitekey' : '6LcB-ysUAAAAAE_uDz0N0IiwjdwFGbqUTfcFi_Ey',
+                'theme' : 'light'
+            });
+
+        }
+
+    </script>
     <base href="/">
     <link href="/public/css/acc.min.css?v=<%- version.site %>" rel="stylesheet">
 </head>

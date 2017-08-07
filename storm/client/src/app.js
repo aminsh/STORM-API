@@ -27,6 +27,7 @@ import ForgotPassController from './authentication/forgotPassword.controller';
 import ResetPassController from './authentication/resetPassword.controller';
 import RegisterController from './authentication/register.controller';
 import UserApi from './authentication/api.user';
+import LandingController from './landing/landing.controller';
 import ProfileController from './profile/profile.controller';
 import SetupInfoController from './branch/setup-info';
 import BranchApi from './branch/api.branch';
@@ -58,6 +59,8 @@ angular.module('app', [
     .controller('ResetPassController', ResetPassController)
     .controller('RegisterController', RegisterController)
     .service('userApi', UserApi)
+
+    .controller('LandingController', LandingController)
 
     .controller('ProfileController', ProfileController)
 

@@ -10,7 +10,7 @@
 
     <div class="alert alert-danger"
     ng-if="login.isError">
-      ایمیل یا کلمه عبور صحیح نیست
+      ایمیل، کلمه عبور و یا کپتچا صحیح نیست
     </div>
 
     <form class="m-t" ng-submit="login.login(form)" name="form" novalidate>
@@ -40,7 +40,13 @@
         </div>
 
       </div>
-      <button type="submit" class="btn btn-primary block full-width m-b">ورود</button>
+      <!--[START] reCaptcha-->
+      <div class="form-group" >
+        <div id="g-recaptcha-elem" ></div>
+      </div>
+      <!--[-END-] reCaptcha-->
+      <button type="submit"
+              class="btn btn-primary block full-width m-b" >ورود</button>
 
       <button type="button"
               class="btn btn-danger block full-width m-b"

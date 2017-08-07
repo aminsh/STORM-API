@@ -28,7 +28,7 @@ export default class ResetPassController{
 
             // Check if token is invalid
             userApi
-                .encodeResetPassToken($stateParams.token)
+                .decodeResetPassToken($stateParams.token)
                 .then((data) => {
 
                     $scope.showForm = data.isValid;

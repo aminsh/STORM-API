@@ -46,3 +46,43 @@
         </div>
     </dev-tag-content>
 </form>
+<form name="changePassForm" novalidate >
+    <dev-tag-content dev-attr-title="{{'Change password'|translate}}">
+        <div class="row">
+            <div class="col-"></div>
+        </div>
+        <dev-tag-button
+                ng-click="model.changePassSave(changePassForm)"
+                icon="glyphicon glyphicon-floppy-disk"
+                ng-disabled="model.isSaving"
+                is-waiting="model.isSaving"
+                style-type="primary"
+                title="{{'Save' | translate}}"
+                ng-disabled="form.$invalid"></dev-tag-button>
+        <div class="row" style="margin-top: 50px">
+            <div class="form-group col-md-3">
+                <label class="label-control">رمز کنونی</label>
+                <dev-tag-pass-box
+                        name="currentPass"
+                        ng-minlength="6" >
+                </dev-tag-pass-box>
+            </div>
+            <div class="form-group col-md-3">
+                <label class="label-control">رمز جدید</label>
+                <dev-tag-pass-box
+                        name="newPass"
+                        ng-minlength="6"
+                        required >
+                </dev-tag-pass-box>
+            </div>
+            <div class="form-group col-md-3">
+                <label class="label-control">تکرار رمز جدید</label>
+                <dev-tag-pass-box
+                        name="newPassConf"
+                        ng-minlength="6"
+                        required >
+                </dev-tag-pass-box>
+            </div>
+        </div>
+    </dev-tag-content>
+</form>
