@@ -16,6 +16,13 @@ const express = require('express'),
     TokenRepository = require('../token/token.repository');
 
 router.route('/').get(async((req, res) => {
+
+    if(!req.isAuthenticated())
+        return res.json({ isValid: false });
+
+    if(req.user.role !== "admin")
+        return res.json({ isValid: false });
+
     let userQuery = new UserQuery(),
         result = await(userQuery.getAll(req.query));
 
@@ -84,22 +91,25 @@ router.route('/is-unique-email/:email')
         res.json({isValid: user !== null});
     }));
 
-router.route('/:id/change-password')
+router.route('/change-password')
     .put(async((req, res) => {
         let userRepository = new UserRepository(),
             cmd = req.body,
-            id = req.params.id,
             entity = {
                 password: md5(cmd.password)
             };
 
+        if(!req.isAuthenticated())
+            return res.json({ isValid: false });
+
         try {
 
-            await(userRepository.update(id, entity));
+            await(userRepository.update(req.user.id, entity));
             res.json({isValid: true});
 
         } catch (e) {
 
+            console.log(e);
             res.json({isValid: false});
 
         }
@@ -133,93 +143,108 @@ router.route('/:id/change-image')
 router.route('/forgot-password')
     .post(async((req, res) => {
 
-        let userRepository = new UserRepository();
-        let tokenRepository = new TokenRepository();
-        let email = req.body.email;
-        let token = null;
-        let user = await(userRepository.getUserByEmail(email));
-        let link = "";
-        // Check if a token already exists, delete them
-        tokenRepository
-            .deleteGenerated(user.id, "reset-pass")
-            .then(() => {
+        let userRepository = new UserRepository(),
+            tokenRepository = new TokenRepository(),
+            email = req.body.email,
+            token = null,
+            user = await(userRepository.getUserByEmail(email)),
+            link = "",
+            token_rec = null;
 
-                if (user) {
+        try{
 
-                    tokenRepository.create({
-                        type: "reset-pass",
-                        userId: user.id
-                    })
-                        .then((token_rec) => {
+            if (!user)
+                return res.json({isValid: false, errors: ["Email not found"]});
 
-                            token = crypto.sign({
-                                id: token_rec.id,
-                                userId: user.id
-                            });
+            // Check if a token already exists, delete them
+            await(tokenRepository.deleteGenerated(user.id, "reset-pass"));
 
-                            tokenRepository.update(token_rec.id, {
-                                token: token
-                            })
-                                .catch((err) => {
+            try{
 
-                                    console.log(err);
+                token_rec = await(tokenRepository.create({ type: "reset-pass", userId: user.id }));
 
-                                });
+                token = crypto.sign({
+                    id: token_rec.id,
+                    userId: user.id
+                });
 
-                            link = `${config.url.origin}/reset-password/${token}`;
+                try{
 
-                            render("email-reset-password-template.ejs", {
-                                user: {
-                                    name: user.name
-                                },
-                                originUrl: `${config.url.origin}`,
-                                resetPassUrl: link
+                    await(tokenRepository.update(token_rec.id, { token: token }));
 
-                            }).then((html) => {
+                } catch(err) {
 
-                                emailService.send({
-                                    from: "info@storm-online.ir",
-                                    to: user.email,
-                                    subject: "لینک تغییر رمز عبور در استورم",
-                                    html: html
-                                });
-
-                            }).catch((err) => {
-
-                                console.log(`Error: The email DIDN'T send successfuly !!! `, err);
-
-                            });
-
-                            // Success
-                            res.json({isValid: true});
-
-                        })
-                        .catch((err) => {
-
-                            console.log(err);
-                            res.json({ isValid: false, errors: ["There is a problem in inserting token"] });
-
-                        });
-
-                } else {
-
-                    // With "No user found with this email" Error
-                    //res.json({isValid: true, error: ["Invalid email address", "No user found with this email address."]});
-                    return res.json({isValid: false, errors: ["Email not found"]});
+                    console.log(err);
+                    return;
 
                 }
 
-            })
-            .catch((err) => {
+                link = `${config.url.origin}/reset-password/${token}`;
+
+                try{
+
+                    renderHtmlAndSendEmail();
+
+                } catch(err) {
+
+                    console.log(`Error: The email DIDN'T send successfuly !!! `, err);
+                    return;
+
+                }
+                // Success
+                res.json({isValid: true});
+
+            } catch (err) {
 
                 console.log(err);
-                res.json({ isValid: false, errors: ["A problem in deleting generated tokens"] });
+                res.json({ isValid: false, errors: ["There is a problem in inserting token"] });
 
-            });
+            }
+
+        } catch (err) {
+
+            console.log(err);
+            res.json({ isValid: false, errors: ["A problem in deleting generated tokens"] });
+
+        }
+
+        // ******** END ******** //
+
+        function renderHtmlAndSendEmail(){
+
+            let error = null;
+
+            await(render("email-reset-password-template.ejs", {
+                        user: {
+                            name: user.name
+                        },
+                        originUrl: `${config.url.origin}`,
+                        resetPassUrl: link
+                    })
+                    .then((html) => {
+
+                        emailService.send({
+                            from: "info@storm-online.ir",
+                            to: user.email,
+                            subject: "لینک تغییر رمز عبور در استورم",
+                            html: html
+                        });
+
+                    })
+                    .catch((err) => {
+
+                        error = err;
+
+                    }));
+
+            if(error !== null)
+                throw Error(error);
+
+        }
 
     }));
 
-router.route('/encode-reset-password-token/:token')
+router.route('/decode-reset-password-token/:token')
     .get(async((req,res) => {
 
         try{
@@ -250,69 +275,67 @@ router.route('/encode-reset-password-token/:token')
 router.route('/reset-password')
     .post(async((req, res) => {
 
-        if(!req.isAuthenticated()){
+        if(req.isAuthenticated())
+            return res.json({ isValid: false, errors: ["You are already logged in"] });
 
-            try{
+        try{
 
-                let userRepository = new UserRepository(),
-                    tokenRepository = new TokenRepository(),
-                    token = req.body.token,
-                    token_data = await(crypto.verify(token)),
-                    user = await(userRepository.getById(token_data.userId)),
-                    newPass  = req.body.newPass,
-                    token_rec = await(tokenRepository.getById(token_data.id)),
-                    tokenCreateDate = new Date(token_rec.createdAt),
-                    nowDate = new Date();
+            let userRepository = new UserRepository(),
+                tokenRepository = new TokenRepository(),
+                token = req.body.token,
+                token_data = await(crypto.verify(token)),
+                user = await(userRepository.getById(token_data.userId)),
+                newPass  = req.body.newPass,
+                token_rec = await(tokenRepository.getById(token_data.id)),
+                tokenCreateDate = new Date(token_rec.createdAt),
+                nowDate = new Date();
 
-                if( token_rec.userId === user.id
-                    && token_rec.type === "reset-pass"
-                    && newPass.length >= 6 ){
+            if( !(isValidToken(token_rec, user) && newPass.length >= 6) )
+                return res.json({ isValid: false, errors: ["Token is invalid"] });
 
-                    if((nowDate.getTime() - tokenCreateDate.getTime()) < (3600*1000*24)){
+            if(isTokenDateExpired(nowDate, tokenCreateDate)){
 
-                        // The Token isn't Expired, yet ...
-                        userRepository.update(user.id, { password: md5(newPass.toString()) })
-                            .then(() => {
-                                tokenRepository.deleteGenerated(user.id,"reset-pass")
-                                    .then(() => {
-                                        res.json({ isValid: true, returnValue: { id: token_rec.id } });
-                                    })
-                                    .catch((err) => {
-                                        console.log(err);
-                                        res.json({ isValid: false, errors: ["Token is invalid"] });
-                                    });
-                            })
-                            .catch((err) => {
-                                console.log(err);
-                                res.json({ isValid: false, errors: ["Token is invalid"] });
-                            });
+                // The Token is Expired
+                try{
 
-                    } else {
+                    deleteGeneratedResetPassTokens(tokenRepository, user);
 
-                        // The Token is Expired
-                        res.json({ isValid: false, errors: ["Token is invalid"] });
-                        tokenRepository.deleteGenerated(user.id,"reset-pass")
-                            .catch((err) => {
-                                console.log(err);
-                            });
+                } catch(err) {
 
-                    }
-
-                    return;
+                    console.log(err);
 
                 }
                 return res.json({ isValid: false, errors: ["Token is invalid"] });
 
-            } catch(err) {
-
-                console.log(err);
-                return res.json({ isValid: false, errors: ["Token is invalid"] });
-
             }
 
-        } else {
+            // The Token isn't Expired, yet ...
+            await(userRepository.update(user.id, { password: md5(newPass.toString()) }));
+            await(deleteGeneratedResetPassTokens(tokenRepository, user));
+            res.json({ isValid: true });
 
-            return res.json({ isValid: false, errors: ["You are already logged in"] });
+        } catch(err) {
+
+            console.log(err);
+            return res.json({ isValid: false, errors: ["Token is invalid"] });
+
+        }
+
+        // ******** END ******** //
+
+        function isTokenDateExpired(nowDate, tokenCreateDate){
+
+            return (nowDate.getTime() - tokenCreateDate.getTime()) >= (3600*1000*24);
+
+        }
+        function deleteGeneratedResetPassTokens(tokenRepository, user){
+
+            return tokenRepository.deleteGenerated(user.id,"reset-pass");
+
+        }
+        function isValidToken(token, user){
+
+            return token.userId === user.id && token.type === "reset-pass";
 
         }
 
@@ -329,6 +352,15 @@ router.route('/total').get(async((req, res) => {
     let userQuery = new UserQuery(),
         result = await(userQuery.total());
     res.json({total: result.count});
+}));
+
+router.route('/test').get(async((req, res) => {
+
+    res.json({ isValid: false });
+    for(let p in req){
+        console.log(`req.${p}`);
+    }
+
 }));
 
 module.exports = router;

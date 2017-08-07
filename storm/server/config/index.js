@@ -6,6 +6,12 @@ const path = require('path'),
     logo = '/public/images/noimage.svg',
     environment = {
         development: {
+            reCaptcha: {
+                key: {
+                    site: "6LcB-ysUAAAAAE_uDz0N0IiwjdwFGbqUTfcFi_Ey",
+                    secret: "6LcB-ysUAAAAAIF1O8KjVQG0ykrQLJb5AUkRK44y"
+                }
+            },
             rootPath: rootPath,
             logo,
             db: {
@@ -49,6 +55,12 @@ const path = require('path'),
 
         },
         test: {
+            reCaptcha: {
+                key: {
+                    site: "6LcB-ysUAAAAAE_uDz0N0IiwjdwFGbqUTfcFi_Ey",
+                    secret: "6LcB-ysUAAAAAIF1O8KjVQG0ykrQLJb5AUkRK44y"
+                }
+            },
             rootPath: rootPath,
             logo,
             db: {
@@ -87,6 +99,12 @@ const path = require('path'),
             }
         },
         production: {
+            reCaptcha: {
+                key: {
+                    site: "6LcB-ysUAAAAAE_uDz0N0IiwjdwFGbqUTfcFi_Ey",
+                    secret: "6LcB-ysUAAAAAIF1O8KjVQG0ykrQLJb5AUkRK44y"
+                }
+            },
             rootPath: rootPath,
             logo,
             db: {
