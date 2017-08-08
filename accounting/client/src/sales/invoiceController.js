@@ -215,7 +215,6 @@ export default class invoiceController {
     saveInvoice(form, status) {
         let logger = this.logger,
             formService = this.formService,
-            errors = this.errors,
             invoice = this.invoice;
 
         invoice.customer = {
@@ -241,7 +240,7 @@ export default class invoiceController {
             return;
         }
 
-        errors.asEnumerable().removeAll();
+        this.errors.asEnumerable().removeAll();
 
         this.isSaving = true;
         this.isPrintig = true;
@@ -258,7 +257,7 @@ export default class invoiceController {
                         })
                     })
                     .catch(err => {
-                        errors = err;
+                        this.errors=err;
                     })
                     .finally(() => this.isSaving = false);
             }
@@ -276,7 +275,7 @@ export default class invoiceController {
                         })
                     })
                     .catch(err => {
-                        errors = err
+                        this.errors=err;
                     })
                     .finally(() => this.isSaving = false);
             }
@@ -295,7 +294,9 @@ export default class invoiceController {
                             })
                         })
                     })
-                    .catch(err => errors = err)
+                    .catch(err => {
+                        this.errors=err;
+                    })
                     .finally(() => this.isSaving = false);
             }
             if (this.invoiceType == 'purchases') {
@@ -311,7 +312,7 @@ export default class invoiceController {
                             })
                         })
                     })
-                    .catch(err => errors = err)
+                    .catch(err =>  this.errors=err)
                     .finally(() => this.isSaving = false);
             }
         }
