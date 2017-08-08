@@ -23,7 +23,8 @@ export default class LoginController {
         this.isError = false;
         this.user = {
             email: '',
-            password: ''
+            password: '',
+            reCaptchaResponse: ''
         };
 
         this.$cookies = $cookies;
@@ -37,12 +38,15 @@ export default class LoginController {
     login(form) {
         if (form.$invalid)
             return this.setDirty(form);
-        
+
+        this.setRecaptchaData();
+
         this.userApi.login(this.user)
             .then(result => {
                 if (this.returnUrl)
                     this.$window.location = this.returnUrl;
                 else {
+
                     this.$rootScope.currentUser = result.currentUser;
                     this.$rootScope.isAuthenticated = true;
                     this.$state.go('profile');
@@ -55,6 +59,14 @@ export default class LoginController {
         let url = `${this.$window.location.origin}/auth/google`;
         this.$window.open(url, '_self');
     }
+
+    setRecaptchaData(){
+
+        let $window = this.$window;
+        this.user.reCaptchaResponse = $window.grecaptcha.getResponse($window.reCaptchaWidget)
+
+    }
+
 }
 
 LoginController.$inject = [

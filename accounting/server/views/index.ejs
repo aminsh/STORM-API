@@ -43,6 +43,10 @@
 <script src="/public/js/acc.bundle.min.js?v=<%- version.app %>"></script>
 <script src="/public/js/acc.template.bundle.js?v=<%- version.app %>"></script>
 
+<script src="https://cdn.ravenjs.com/3.17.0/angular/raven.min.js" crossorigin="anonymous"></script>
+<script>Raven.config('https://9bc4ce878ac44361a44a283e63b60a5e@sentry.io/200520').install();</script>
+
+
 <script>
 
     localStorage.setItem('today', '<%- today %>');
@@ -50,6 +54,13 @@
     localStorage.setItem('currentUser', '<%- JSON.stringify(currentUser) %>');
     localStorage.setItem('reports', '<%- JSON.stringify(reports) %>');
     localStorage.setItem('env', '<%- env %>');
+
+    Raven.setUserContext({
+        id:JSON.parse(localStorage.getItem('currentUser')).id,
+        email: JSON.parse(localStorage.getItem('currentUser')).email,
+        name:  JSON.parse(localStorage.getItem('currentUser')).name,
+    });
+
 </script>
 
 <% if (env != 'development') {%>

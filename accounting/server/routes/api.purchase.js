@@ -7,9 +7,13 @@ const async = require('asyncawait/async'),
     translate = require('../services/translateService'),
     InvoiceRepository = require('../data/repository.invoice'),
     ProductRepository = require('../data/repository.product'),
+    ProductDomain = require('../domain/product'),
+    DetailAccountDomain = require('../domain/detailAccount'),
     InvoiceQuery = require('../queries/query.invoice'),
     EventEmitter = require('../services/shared').service.EventEmitter,
     PaymentQuery = require('../queries/query.payment'),
+    FiscalPeriodRepository = require('../data/repository.fiscalPeriod'),
+    Guid = require('../services/shared').utility.Guid,
     PaymentRepository = require('../data/repository.payment');
 
 router.route('/summary')
@@ -31,16 +35,61 @@ router.route('/')
         let branchId = req.cookies['branch-id'],
             invoiceRepository = new InvoiceRepository(branchId),
             cmd = req.body,
-
+            detailAccountDomain = new DetailAccountDomain(req.branchId),
+            productDomain = new ProductDomain(req.branchId),
+            fiscalPeriodRepository = new FiscalPeriodRepository(req.branchId),
+            currentFiscalPeriod = await(fiscalPeriodRepository.findById(req.cookies['current-period'])),
+            errors = [],
             current = {
                 branchId,
                 fiscalPeriodId: req.cookies['current-period'],
                 userId: req.user.id
             },
 
-            status = cmd.status == 'confirm' ? 'waitForPayment' : 'draft',
 
-            entity = createInvoice(status, cmd, invoiceRepository),
+            status = cmd.status == 'confirm' ? 'waitForPayment' : 'draft';
+
+        let temporaryDateIsInPeriodRange =
+            cmd.date >= currentFiscalPeriod.minDate &&
+            cmd.date <= currentFiscalPeriod.maxDate;
+
+        if (!temporaryDateIsInPeriodRange)
+            errors.push(translate('The temporaryDate is not in current period date range'));
+
+        if (!(cmd.invoiceLines && cmd.invoiceLines.length != 0))
+            errors.push('ردیف های فاکتور وجود ندارد');
+        else checkLinesValidation();
+
+
+        let customer = detailAccountDomain.findPersonByIdOrCreate(cmd.customer);
+
+        if (!customer)
+            errors.push('مشتری نباید خالی باشد');
+
+        function checkLinesValidation() {
+            cmd.invoiceLines.forEach(async.result(e => {
+                e.product = productDomain.findByIdOrCreate(e.product);
+
+                if (e.product) {
+                    e.productId = e.product.id;
+                    if (!e.description) e.description = e.product.title;
+                }
+
+                if (Guid.isEmpty(e.productId) && String.isNullOrEmpty(e.description))
+                    errors.push('کالا یا شرح کالا نباید خالی باشد');
+
+                if (!(e.quantity && e.quantity != 0))
+                    errors.push('مقدار نباید خالی یا صفر باشد');
+
+                if (!(e.unitPrice && e.unitPrice != 0))
+                    errors.push('قیمت واحد نباید خالی یا صفر باشد');
+            }));
+        }
+
+        if (errors.length != 0)
+            return res.json({isValid: false, errors});
+
+        let entity = createInvoice(status, cmd, invoiceRepository),
 
             result = await(invoiceRepository.create(entity));
 
@@ -190,7 +239,7 @@ router.route('/:id/pay')
         EventEmitter.emit('on-invoice-paid', req.params.id, req.branchId);
     }));
 
-router.route('/:id/payments').get(async((req, res)=> {
+router.route('/:id/payments').get(async((req, res) => {
     let paymentQuery = new PaymentQuery(req.branchId),
         result = await(paymentQuery.getPeymentsByInvoiceId(req.params.id));
 

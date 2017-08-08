@@ -9,7 +9,7 @@
     <dev-tag-validation-summary errors="errors"></dev-tag-validation-summary>
 
     <form name="form">
-        <dev-tag-validation-summary errors="errors"></dev-tag-validation-summary>
+
         <div class="form-group">
             <label class="label-control">{{'Code' | translate}}</label>
             <input
@@ -43,6 +43,13 @@
                       name="description"></textarea>
         </div>
 
+        <div class="form-group">
+            <label class="label-control">{{'Category' | translate}}</label>
+           <dev-tag-check-box
+                   ng-repeat="item in detailAccount.detailAccountCategories"
+                   ng-model="item.isSelected">{{item.title}}</dev-tag-check-box>
+        </div>
+
     </form>
 </div>
 <div class="modal-footer">
@@ -53,24 +60,4 @@
             is-waiting="isSaving"
             style-type="primary"
             title="{{'Save' | translate}}"></dev-tag-button>
-
-    <span style="float: right">
-    <dev-tag-button
-            ng-click="activate()"
-            ng-if="!detailAccount.isActive"
-            icon="glyphicon glyphicon glyphicon-ok"
-            ng-disabled="isActivating"
-            is-waiting="isActivating"
-            style-type="primary"
-            title="{{'Activate' | translate}}"></dev-tag-button>
-
-    <dev-tag-button
-            ng-click="deactivate()"
-            ng-if="detailAccount.isActive"
-            icon="glyphicon glyphicon glyphicon-ok"
-            ng-disabled="isDeactivating"
-            is-waiting="isDeactivating"
-            style-type="primary"
-            title="{{'Deactivate' | translate}}"></dev-tag-button>
-</span>
 </div>

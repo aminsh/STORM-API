@@ -19,7 +19,7 @@ export default function apiPromise($http, $q, $window) {
                 if (error.status == 401 && error.data == 'user is not authenticated')
                     return $window.location.reload();
                 console.error(error);
-                deferred.reject(['Internal Error']);
+                    deferred.reject(['Internal Error']);
             });
 
         return deferred.promise;

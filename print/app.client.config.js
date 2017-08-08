@@ -27,7 +27,9 @@ let printModule = angular.module('print.module', [
         'ui.router'
     ]),
     devConstants = {
-        urls: {rootUrl: '/print/api'},
+        urls: {
+            rootUrl: '/print/api'
+        },
         reports: JSON.parse(localStorage.getItem('reports'))
     };
 

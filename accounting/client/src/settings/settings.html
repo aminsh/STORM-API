@@ -46,3 +46,70 @@
         </div>
     </dev-tag-content>
 </form>
+<div class="row" >
+    <div class="col-md-4" >
+        <form name="changePassForm" novalidate >
+            <dev-tag-content dev-attr-title="{{'Change password'|translate}}">
+                <div class="row">
+                    <div class="col-"></div>
+                </div>
+                <dev-tag-button
+                        ng-click="model.changePassSave(changePassForm, currentPass, newPass)"
+                        icon="glyphicon glyphicon-floppy-disk"
+                        ng-disabled="model.isSaving"
+                        is-waiting="model.isSaving"
+                        style-type="primary"
+                        title="{{'Save' | translate}}" ></dev-tag-button >
+
+                <div class="row" style="margin-top: 10px" >
+                    <dev-tag-validation-summary
+                            errors="model.changePassword.errors" ></dev-tag-validation-summary>
+                </div>
+                <div class="row" >
+                    <div class="form-group col-md-12">
+                        <label class="label-control">رمز فعلی</label>
+                        <dev-tag-pass-box
+                                name="currentPass"
+                                ng-minlength="6"
+                                ng-model="model.changePassword.currentPassword"
+                                required >
+                        </dev-tag-pass-box>
+                        <div ng-messages="changePassForm.currentPass.$error" ng-if="changePassForm.currentPass.$dirty">
+                            <div ng-message="required" class="text-danger">وارد کردن کلمه‌عبور (فعلی) الزامیست</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" >
+                    <div class="form-group col-md-12">
+                        <label class="label-control">رمز جدید</label>
+                        <dev-tag-pass-box
+                                name="newPass"
+                                ng-minlength="6"
+                                ng-model="model.changePassword.newPassword"
+                                required >
+                        </dev-tag-pass-box>
+                        <div ng-messages="changePassForm.newPass.$error" ng-if="changePassForm.newPass.$dirty">
+                            <div ng-message="required" class="text-danger">وارد کردن کلمه‌عبور (جدید) الزامیست</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" >
+                    <div class="form-group col-md-12">
+                        <label class="label-control">تکرار رمز جدید</label>
+                        <dev-tag-pass-box
+                                name="newPassConf"
+                                ng-minlength="6"
+                                ng-model="model.changePassword.newPasswordConfirm"
+                                required
+                                ng-match="model.changePassword.newPassword" >
+                        </dev-tag-pass-box>
+                        <div ng-messages="changePassForm.newPassConf.$error" ng-if="changePassForm.newPassConf.$dirty">
+                            <div ng-message="required" class="text-danger">وارد کردن (تکرار) کلمه‌عبور (جدید) الزامیست</div>
+                            <div ng-message="match" class="text-danger">رمز عبور و تکرار آن یکسان نیست</div>
+                        </div>
+                    </div>
+                </div>
+            </dev-tag-content>
+        </form>
+    </div>
+</div>

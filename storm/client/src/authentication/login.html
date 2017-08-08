@@ -10,7 +10,7 @@
 
     <div class="alert alert-danger"
     ng-if="login.isError">
-      ایمیل یا کلمه عبور صحیح نیست
+      ایمیل، کلمه عبور و یا کپتچا صحیح نیست
     </div>
 
     <form class="m-t" ng-submit="login.login(form)" name="form" novalidate>
@@ -40,16 +40,22 @@
         </div>
 
       </div>
-      <button type="submit" class="btn btn-primary block full-width m-b">ورود</button>
+      <!--[START] reCaptcha-->
+      <div class="form-group" >
+        <div id="g-recaptcha-elem" ></div>
+      </div>
+      <!--[-END-] reCaptcha-->
+      <button type="submit"
+              class="btn btn-primary block full-width m-b" >ورود</button>
 
       <button type="button"
               class="btn btn-danger block full-width m-b"
-              ng-click="login.loginByGoogle()">
+              ng-click="reCaptchaDestroy();login.loginByGoogle();">
         ورود با گوگل
         <i class="fa fa-google-plus"></i>
       </button>
 
-      <a href="#"><small>کلمه عبور را فراموش کردید ؟</small></a>
+      <a href="/forgot-password"><small>کلمه عبور را فراموش کردید ؟</small></a>
       <p class="text-muted text-center"><small>حساب کاربری ندارید ؟</small></p>
       <a class="btn btn-sm btn-white btn-block" ui-sref="register">ایجاد حساب کاربری</a>
     </form>

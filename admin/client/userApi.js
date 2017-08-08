@@ -20,4 +20,5 @@ export default class UserApi {
     total(){
         return this.apiPromise.get('/api/users/total');
     }
+
 }

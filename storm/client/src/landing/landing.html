@@ -7,7 +7,11 @@
 </div>-->
 <br/>
 <div class="container" >
-    <form action="" method="post" >
+    <form novalidate
+          action=""
+          method="post"
+          name="landingForm"
+          ng-submit="self.send(landingForm)" >
         <div class="row" >
             <div class="col-sm-6 col-sm-push-6" style="text-align: center;" >
                 <img class="so-landing-img" src="public/images/Tablet-Chart-icon.png" alt="storm-landing-img" />
@@ -19,38 +23,86 @@
                         <p>لطفا جهت تماس کارشناسان مشاوره ما با شما، اطلاعات خود را وارد نمایید.</p>
                     </div>
                 </div>
-                <div class="form-group" >
-                    <label for="form-job-name" class="so-tx-color-white" >نام کسب و کار</label>
-                    <input type="text" name="job-name" class="form-control" id="form-job-name" />
-                </div>
-                <div class="form-group" >
-                    <label for="form-owner-name" class="so-tx-color-white" >نام صاحب کسب و کار</label>
-                    <input type="text" name="owner-name" class="form-control" id="form-owner-name" />
+                <div class="form-group row" >
+                    <div class="col-sm-6" >
+                        <br/>
+                        <label for="form-job-name" class="so-tx-color-white" >نام کسب و کار *</label>
+                        <input type="text"
+                               name="job-name"
+                               class="form-control"
+                               id="form-job-name"
+                               ng-model="jobName"
+                               required />
+                    </div>
+                    <div class="col-sm-6" >
+                        <br/>
+                        <label for="form-owner-name" class="so-tx-color-white" >نام صاحب کسب و کار *</label>
+                        <input type="text"
+                               name="owner-name"
+                               class="form-control"
+                               id="form-owner-name"
+                               ng-model="ownerName"
+                               required />
+                    </div>
                 </div>
                 <div class="form-group" >
                     <label for="form-site-address" class="so-tx-color-white" >آدرس سایت</label>
-                    <input type="url" name="site-address" class="form-control" id="form-site-address" />
+                    <div class="input-group" >
+                        <div class="input-group-addon" ><i class="fa fa-globe" ></i></div>
+                        <input type="url"
+                               name="site-address"
+                               class="form-control"
+                               id="form-site-address"
+                               ng-model="siteAddress"
+                               dir="ltr" />
+                    </div>
                 </div>
                 <div class="form-group row" >
                     <div class="col-sm-6" >
                         <br/>
-                        <label for="form-tel-number" class="so-tx-color-white" >شماره تلفن</label>
-                        <input type="tel" name="tel-number" class="form-control" id="form-tel-number" />
+                        <label for="form-tel-number" class="so-tx-color-white" >شماره تلفن *</label>
+                        <div class="input-group" >
+                            <div class="input-group-addon" ><i class="fa fa-phone" ></i></div>
+                            <input type="tel"
+                                   name="tel-number"
+                                   class="form-control"
+                                   id="form-tel-number"
+                                   ng-model="telNumber"
+                                   dir="ltr"
+                                   required />
+                        </div>
                     </div>
                     <div class="col-sm-6" >
                         <br/>
                         <label for="form-email-address" class="so-tx-color-white" >ایمیل</label>
-                        <input type="email" name="email-address" class="form-control" id="form-email-address" />
+                        <div class="input-group" >
+                            <div class="input-group-addon" ><i class="fa fa-envelope-o" ></i></div>
+                            <input type="email"
+                                   name="email-address"
+                                   class="form-control"
+                                   id="form-email-address"
+                                   dir="ltr"
+                                   ng-model="emailAddress" />
+                        </div>
                     </div>
                 </div>
                 <div class="form-group" >
                     <label for="form-off-code" class="so-tx-color-white" >کد تخفیف</label>
-                    <input type="text" name="off-code" class="form-control" id="form-off-code" />
+                    <div class="input-group" >
+                        <div class="input-group-addon" ><i class="fa fa-asterisk" ></i></div>
+                        <input type="text"
+                               name="off-code"
+                               class="form-control"
+                               id="form-off-code"
+                               dir="ltr"
+                               ng-model="offCode" />
+                    </div>
                 </div>
                 <div class="form-group" >
                     <button type="submit"
-                            class="btn btn-md btn-primary"
+                            class="btn btn-lg btn-primary"
                             style="display: block;margin: 0 auto;width: 40%;"
+                            ng-disabled="landingForm.$invalid"
                     >ثبت اطلاعات</button>
                 </div>
             </div>

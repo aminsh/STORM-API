@@ -51,7 +51,7 @@ export default class {
 
         this.urls = {
             getAllAccounts: devConstants.urls.subsidiaryLedgerAccount.all(),
-            getAllDetailAccounts: devConstants.urls.detailAccount.all(),
+            getAllDetailAccounts: devConstants.urls.detailAccount.allBySubsidiaryLedgerAccount(),
             getAllTags: devConstants.urls.tag.getAll()
         };
         this.id = $stateParams.id;
@@ -72,20 +72,29 @@ export default class {
         this.isJournalLineLoading = false;
         this.isSaving = false;
 
+        let self = this;
+
         this.subsidiaryLedgerAccount = {
             data: [],
             onChanged(item, journalLine, form) {
                 form.subsidiaryLedgerAccountId.$setViewValue(item.id);
                 journalLine.subsidiaryLedgerAccountId = item.id;
-                journalLine.hasDetailAccount = item && item.hasDetailAccount;
+
                 journalLine.hasDimension1 = item && item.hasDimension1;
                 journalLine.hasDimension2 = item && item.hasDimension2;
                 journalLine.hasDimension3 = item && item.hasDimension3;
                 journalLine.isBankAccount = item && item.isBankAccount;
 
+                journalLine.hasDetailAccount = false;
+
+                self.urls.getAllDetailAccounts = devConstants.urls.detailAccount.allBySubsidiaryLedgerAccount(item.id);
+
                 $timeout(() => {
+                    journalLine.hasDetailAccount = item && item.hasDetailAccount;
+
                     if (journalLine.hasDetailAccount)
                         $scope.$broadcast(`detailAccount-focus-${journalLine.id}`);
+
                 });
             }
         };

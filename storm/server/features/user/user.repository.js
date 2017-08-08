@@ -28,7 +28,7 @@ module.exports = class {
     }
 
     getById(id){
-        return knex.table('users'). where('id', id).first();
+        return knex.table('users').where('id', id).first();
     }
 
     getByToken(token){
@@ -42,13 +42,14 @@ module.exports = class {
             .first();
     }
 
-    // SMRSAN
+    // [START] SMRSAN
     getUserByEmail(email){
 
         return knex.table('users')
-            .where('email', email)
+            .where('email', "=", email)
             .first();
 
     }
+    // [-END-] SMRSAN
 
 };

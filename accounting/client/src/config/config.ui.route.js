@@ -29,9 +29,9 @@ export default function ($stateProvider, $urlRouterProvider, $locationProvider, 
             templateUrl: 'partials/branch/branch.choose.html'
         })
 
-        .state('branchInfo',{
+        .state('branchInfo', {
             url: '/branch-info',
-            controller:'branchInfoController',
+            controller: 'branchInfoController',
             controllerAs: 'model',
             templateUrl: 'partials/branch/branchInfo.html'
         })
@@ -106,6 +106,35 @@ export default function ($stateProvider, $urlRouterProvider, $locationProvider, 
                 });
             }
         })
+        .state('detail-account-categories', {
+            url: '/detail-account-categories',
+            controller: 'detailAccountCategoriesController',
+            controllerAs: 'model',
+            templateUrl: 'partials/detailAccount/detailAccountCategories.html'
+        })
+        .state('detail-account-categories.create', {
+            url: '/',
+            onEnter: ($modelFactory, $stateParams) => {
+                $modelFactory.create({
+                    controller: 'detailAccountCategoryEntryController',
+                    controllerAs: 'model',
+                    templateUrl: 'partials/detailAccount/detailAccountCategoryEntry.html',
+                    resolve: {data: () => $stateParams}
+                });
+            }
+        })
+        .state('detail-account-categories.edit', {
+            url: '/:id',
+            onEnter: ($modelFactory, $stateParams) => {
+                $modelFactory.create({
+                    controller: 'detailAccountCategoryEntryController',
+                    controllerAs: 'model',
+                    templateUrl: 'partials/detailAccount/detailAccountCategoryEntry.html',
+                    resolve: {data: () => $stateParams}
+                });
+            }
+        })
+
         .state('dimensions', {
             url: '/dimensions',
             controller: 'dimensionsController',
@@ -429,17 +458,19 @@ export default function ($stateProvider, $urlRouterProvider, $locationProvider, 
 
         .state('bankAndFund.info', {
             url: '/:id/:type/info',
-            onEnter: ($modelFactory,$stateParams) => {
+            onEnter: ($modelFactory, $stateParams) => {
                 $modelFactory.create({
                     controller: 'bankMoreInfoController',
                     size: 'lg',
                     controllerAs: 'model',
                     templateUrl: 'partials/bank/bankMoreInfo.html',
-                    resolve: {data: {
-                        id: $stateParams.id,
-                        title:$stateParams.title,
-                        type: $stateParams.type
-                    }},
+                    resolve: {
+                        data: {
+                            id: $stateParams.id,
+                            title: $stateParams.title,
+                            type: $stateParams.type
+                        }
+                    },
                 });
             }
         })
@@ -481,14 +512,14 @@ export default function ($stateProvider, $urlRouterProvider, $locationProvider, 
         .state('products.info', {
             url: '/:id/info',
             /*onEnter: ($modelFactory, $stateParams) => {
-                $modelFactory.create({
-                    controller: 'ProductMoreInfoController',
-                    controllerAs: 'model',
-                    size: 'lg',
-                    templateUrl: 'partials/product/productMoreInfo.html',
-                    resolve: {data: {id: $stateParams.id}},
-                });
-            }*/
+             $modelFactory.create({
+             controller: 'ProductMoreInfoController',
+             controllerAs: 'model',
+             size: 'lg',
+             templateUrl: 'partials/product/productMoreInfo.html',
+             resolve: {data: {id: $stateParams.id}},
+             });
+             }*/
             controller: 'ProductMoreInfoController',
             controllerAs: 'model',
             templateUrl: 'partials/product/productMoreInfo.html'

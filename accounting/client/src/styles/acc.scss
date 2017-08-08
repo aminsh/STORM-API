@@ -51,10 +51,10 @@ $dir: rtl;
 @import "pace.override";
 @import "sk-loading";
 
-//@import "error_404";
+@import "error_404";
 @import "landing";
 @import "success";
-@import "forgot-password";
+@import "reset-password";
 
 @import "../journal/journalLine-style";
 
@@ -81,6 +81,25 @@ body, h1, a,
   font-family: $font-family;
 
 }
+
+// [START] SMRSAN
+.so-md-form-container{
+  display: block;
+  position: absolute;
+  width: 500px;
+  max-width: 100%;
+  min-height: 50px;
+  //max-height: 100vh;
+  margin: 0 auto;
+  padding: 25px;
+  @include overflow-x(hidden);
+  //@include overflow-y(auto);
+  @include border-radius();
+  top: 50%;
+  left: 50%;
+  @include transform(translate(-50%,-50%));
+}
+// [-END-] SMRSAN
 
 .button-click-menu {
   padding: 5px;
@@ -1288,6 +1307,11 @@ label.error {
 .form-control-dropdown-paging {
   width: inherit;
   display: initial;
+}
+
+.dropdown-menu-left {
+  left: 0 !important;
+  right: auto !important;
 }
 
 

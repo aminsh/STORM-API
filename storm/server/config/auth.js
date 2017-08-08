@@ -9,7 +9,8 @@ const config = require('./'),
     memoryService = require('../../../shared/services/memoryService'),
     string = require('../services/shared').utility.String,
     async = require('asyncawait/async'),
-    await = require('asyncawait/await');
+    await = require('asyncawait/await'),
+    request = require('request');
 
 function configure() {
 
@@ -82,12 +83,30 @@ function authenticate(req, res, next) {
         req.logIn(user, async(function (err) {
             if (err) return next(err);
 
-            res.send({
-                isValid: true,
-                returnValue: {
-                    currentUser: user.name
-                }
-            });
+            let reCaptchaUserResponse = req.body.reCaptchaResponse;
+
+            function reCaptchaHandler(err, response, body){
+                if(err)
+                    return res.send({isValid: false, errors: ['Captcha is incorrect']});
+
+                let reCaptchaServerResponse = JSON.parse(body);
+
+                if(reCaptchaServerResponse.success !== true)
+                    return res.send({isValid: false, errors: ['Captcha is incorrect']});
+
+                res.send({
+                    isValid: true,
+                    returnValue: {
+                        currentUser: user.name
+                    }
+                });
+            }
+
+            request(
+                `https://www.google.com/recaptcha/api/siteverify?secret=${config.reCaptcha.key.secret}&response=${reCaptchaUserResponse}`,
+                reCaptchaHandler);
+            // [START] SMRSAN (reCaptcha)
+
         }));
     });
 

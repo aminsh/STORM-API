@@ -4,7 +4,8 @@ const express = require('express'),
     async = require('asyncawait/async'),
     await = require('asyncawait/await'),
     UserRepository = require('./user.repository'),
-    crypto = require('../../../../shared/services/cryptoService');
+    crypto = require('../../../../shared/services/cryptoService'),
+    TokenRepository = require('../token/token.repository');
 
 
 router.route('/activate/:token').get(async((req, res) => {
@@ -34,41 +35,5 @@ router.route('/profile').get(async((req, res) => {
 
     res.render('index.ejs');
 }));
-
-router.route('/forgot-password')
-    .get(async((req, res) => {
-
-        // Render forgot-password page
-
-    }));
-
-router.route('/reset-password/:token')
-    .get(async((req,res) => {
-
-        try{
-
-            let token_data = crypto.verify(req.params.token),
-                userRepository = new UserRepository(),
-                user = await(userRepository.getById(token_data.id));
-
-            if(user !== null){
-
-                // Render Main Reset Password Page
-
-            } else {
-
-                // Render 404 Page
-
-            }
-
-        } catch(e) {
-
-            // Render Error Page
-            // Error: "An error has occurred !!!"
-            console.log(e.message);
-
-        }
-
-    }));
 
 module.exports = router;

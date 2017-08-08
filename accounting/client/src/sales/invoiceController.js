@@ -23,14 +23,14 @@ export default class invoiceController {
         let invoiceType = regex.exec(strToMatch)[0];
 
 
-
         this.urls = {
             getAllPeople: devConstants.urls.people.getAll(),
             getAllProduct: devConstants.urls.products.getAll()
         };
 
-        this.invoiceType =invoiceType;
-        this.pageTitle='';
+        this.isLoading = false;
+        this.invoiceType = invoiceType;
+        this.pageTitle = '';
         this.$scope = $scope;
         this.promise = promise;
         this.$state = $state;
@@ -48,7 +48,7 @@ export default class invoiceController {
         this.formService = formService;
         this.errors = [];
         this.isSaving = false;
-        this.isPrintig=false;
+        this.isPrintig = false;
         this.invoice = {
             number: null,
             date: null,
@@ -65,26 +65,25 @@ export default class invoiceController {
         this.id = this.$state.params.id;
 
 
-
         if (this.id != undefined) {
             this.getPayments();
             this.editMode = true;
-            if(this.invoiceType=='sales'){
-                this.pageTitle= this.translate('Edit sale')
-                this.personType=this.translate('Customer');
+            if (this.invoiceType == 'sales') {
+                this.pageTitle = this.translate('Edit sale')
+                this.personType = this.translate('Customer');
             }
-            if(this.invoiceType=='purchases'){
-                this.pageTitle= this.translate('Edit purchase')
-                this.personType=this.translate('Vendor');
+            if (this.invoiceType == 'purchases') {
+                this.pageTitle = this.translate('Edit purchase')
+                this.personType = this.translate('Vendor');
 
             }
         } else {
 
-            if(this.invoiceType=='sales'){
-                this.pageTitle= this.translate('Create sale')
+            if (this.invoiceType == 'sales') {
+                this.pageTitle = this.translate('Create sale')
             }
-            if(this.invoiceType=='purchases'){
-                this.pageTitle= this.translate('New purchase')
+            if (this.invoiceType == 'purchases') {
+                this.pageTitle = this.translate('New purchase')
             }
             this.invoice = {
                 number: null,
@@ -95,7 +94,7 @@ export default class invoiceController {
                 detailAccountId: ''
             };
 
-            if(this.invoiceType=='sales'){
+            if (this.invoiceType == 'sales') {
                 this.saleApi.getMaxNumber().then(result => {
                     if (result == null)
                         result = 0;
@@ -103,7 +102,7 @@ export default class invoiceController {
                 });
             }
 
-            if(this.invoiceType=='purchases'){
+            if (this.invoiceType == 'purchases') {
                 this.purchaseApi.getMaxNumber().then(result => {
                     if (result == null)
                         result = 0;
@@ -115,96 +114,42 @@ export default class invoiceController {
         }
 
 
-        if (this.editMode) {
-             if(this.invoiceType=='sales'){
-                 this.saleApi.getById(this.id)
-                     .then(result => {
-                         this.invoice = result
-                         if (result.status == 'waitForPayment') {
-                             this.isPayment = true;
-                             this.invoice.totalPrice = result.invoiceLines
-                                 .asEnumerable()
-                                 .sum(item => (item.unitPrice * item.quantity) - item.discount + item.vat);
-                             this.$state.go('^.view',{id:this.invoice.id})
-                         }
-                     });
-             }
-
-             if(this.invoiceType=='purchases'){
-                 this.purchaseApi.getById(this.id)
-                     .then(result => {
-                         this.invoice = result
-                         if (result.status == 'waitForPayment') {
-                             this.isPayment = true;
-                             this.invoice.totalPrice = result.invoiceLines
-                                 .asEnumerable()
-                                 .sum(item => (item.unitPrice * item.quantity) - item.discount + item.vat);
-                             this.$state.go('^.view',{id:this.invoice.id})
-                         }
-                     });
-             }
-        }
+        if (this.editMode)
+            this.fetchInvoice();
     }
 
+    fetchInvoice() {
+        let api;
 
-    canShow(status, command) {
+        if (this.invoiceType == 'sales')
+            api = this.saleApi
+        else
+            api = this.purchaseApi;
 
-        if (status == "waitForPayment") {
-            if (command == "draft") {
-                return false;
-            }
-            if (command == "confirm") {
-                return false;
-            }
-            if (command == "payment") {
-                return true;
-            }
-        }
+        this.isLoading = true;
 
-        if (status == "paid") {
-            if (command == "draft") {
-                return false;
-            }
-            if (command == "confirm") {
-                return false;
-            }
-            if (command == "payment") {
-                return false;
-            }
-        }
-        if (status == "confirm") {
-            if (command == "draft") {
-                return true;
-            }
-            if (command == "confirm") {
-                return true;
-            }
-            if (command == "payment") {
-                return false;
-            }
-        }
-
-        if (status == "draft") {
-            if (command == "draft") {
-                return true;
-            }
-            if (command == "confirm") {
-                return true;
-            }
-            if (command == "payment") {
-                return false;
-            }
-        }
+        api.getById(this.id)
+            .then(result => {
+                this.invoice = result;
+                if (result.status == 'waitForPayment') {
+                    this.isPayment = true;
+                    this.invoice.totalPrice = result.invoiceLines
+                        .asEnumerable()
+                        .sum(item => (item.unitPrice * item.quantity) - item.discount + item.vat);
+                    this.$state.go('^.view', {id: this.invoice.id})
+                }
+            })
+            .finally(() => this.isLoading = false);
     }
 
     getPayments() {
 
-        if(this.invoiceType=='sales'){
+        if (this.invoiceType == 'sales') {
             this.saleApi.payments(this.id)
                 .then(result => this.payments = result);
         }
 
-        if(this.invoiceType=='sales'){
+        if (this.invoiceType == 'sales') {
             this.purchaseApi.payments(this.id)
                 .then(result => this.payments = result);
         }
@@ -214,7 +159,6 @@ export default class invoiceController {
     removeInvoiceLine(item) {
         this.invoice.invoiceLines.asEnumerable().remove(item);
     }
-
 
     createNewProduct(item, title) {
         return this.promise.create((resolve, reject) => {
@@ -269,10 +213,8 @@ export default class invoiceController {
     }
 
     saveInvoice(form, status) {
-
         let logger = this.logger,
             formService = this.formService,
-            errors = this.errors,
             invoice = this.invoice;
 
         invoice.customer = {
@@ -298,44 +240,48 @@ export default class invoiceController {
             return;
         }
 
-        errors.asEnumerable().removeAll();
+        this.errors.asEnumerable().removeAll();
 
         this.isSaving = true;
-        this.isPrintig=true;
+        this.isPrintig = true;
         if (this.editMode == true) {
-             if(this.invoiceType=='sales'){
-                 return this.saleApi.update(invoice.id, invoice)
-                     .then(result => {
-                         logger.success();
-                         this.saleApi.getById(invoice.id).then(result => {
-                             if (result.status == 'waitForPayment') {
-                                 this.isPayment = true;
-                                 this.$state.go('^.view',{id:invoice.id})
-                             }
-                         })
-                     })
-                     .catch(err => errors = err)
-                     .finally(() => this.isSaving = false);
-             }
+            if (this.invoiceType == 'sales') {
+                return this.saleApi.update(invoice.id, invoice)
+                    .then(result => {
+                        logger.success();
+                        this.saleApi.getById(invoice.id).then(result => {
+                            if (result.status == 'waitForPayment') {
+                                this.isPayment = true;
+                                this.$state.go('^.view', {id: invoice.id})
+                            }
+                        })
+                    })
+                    .catch(err => {
+                        this.errors=err;
+                    })
+                    .finally(() => this.isSaving = false);
+            }
 
-             if(this.invoiceType=='purchases'){
-                 return this.purchaseApi.update(invoice.id, invoice)
-                     .then(result => {
-                         logger.success();
-                         //this.isLoading = true;
-                         this.purchaseApi.getById(invoice.id).then(result => {
-                             if (result.status == 'waitForPayment') {
-                                 this.isPayment = true;
-                                 this.$state.go('^.view',{id:invoice.id})
-                             }
-                         })
-                     })
-                     .catch(err => errors = err)
-                     .finally(() => this.isSaving = false);
-             }
+            if (this.invoiceType == 'purchases') {
+                return this.purchaseApi.update(invoice.id, invoice)
+                    .then(result => {
+                        logger.success();
+                        //this.isLoading = true;
+                        this.purchaseApi.getById(invoice.id).then(result => {
+                            if (result.status == 'waitForPayment') {
+                                this.isPayment = true;
+                                this.$state.go('^.view', {id: invoice.id})
+                            }
+                        })
+                    })
+                    .catch(err => {
+                        this.errors=err;
+                    })
+                    .finally(() => this.isSaving = false);
+            }
         } else {
 
-            if(this.invoiceType=='sales'){
+            if (this.invoiceType == 'sales') {
                 return this.saleApi.create(invoice)
                     .then(result => {
                         logger.success();
@@ -348,10 +294,12 @@ export default class invoiceController {
                             })
                         })
                     })
-                    .catch(err => errors = err)
+                    .catch(err => {
+                        this.errors=err;
+                    })
                     .finally(() => this.isSaving = false);
             }
-            if(this.invoiceType=='purchases'){
+            if (this.invoiceType == 'purchases') {
                 return this.purchaseApi.create(invoice)
                     .then(result => {
                         logger.success();
@@ -364,7 +312,7 @@ export default class invoiceController {
                             })
                         })
                     })
-                    .catch(err => errors = err)
+                    .catch(err =>  this.errors=err)
                     .finally(() => this.isSaving = false);
             }
         }
@@ -380,21 +328,23 @@ export default class invoiceController {
             receiveOrPay: 'receive'
         }).then(result => {
 
-            if(this.invoiceType=='sales'){
+            if (this.invoiceType == 'sales') {
                 return this.saleApi.pay(this.invoice.id, result)
                     .then(() => {
                         this.logger.success();
                         this.getPayments();
+                        this.fetchInvoice();
                     })
                     .catch(err => this.errors = err)
                     .finally();
             }
 
-            if(this.invoiceType=='purchases'){
+            if (this.invoiceType == 'purchases') {
                 return this.purchaseApi.pay(this.invoice.id, result)
                     .then(() => {
                         this.logger.success();
                         this.getPayments();
+                        this.fetchInvoice();
                     })
                     .catch(err => this.errors = err)
                     .finally();
