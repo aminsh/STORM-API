@@ -2,8 +2,10 @@
 
 const async = require('asyncawait/async'),
     await = require('asyncawait/await'),
+    FiscalPeriodRepository = require('../data/repository.fiscalPeriod'),
     router = require('express').Router(),
     String = require('../utilities/string'),
+    translate = require('../services/translateService'),
     Guid = require('../services/shared').utility.Guid,
     PersianDate = require('../services/persianDateService'),
     SaleDomain = require('../domain/sale'),
@@ -18,6 +20,7 @@ const async = require('asyncawait/async'),
     EventEmitter = require('../services/shared').service.EventEmitter,
     Crypro = require('../services/shared').service.Crypto,
     stormConfig = require('../../../storm/server/config');
+
 
 router.route('/summary')
     .get(async((req, res) => {
@@ -56,10 +59,19 @@ router.route('/')
             detailAccountDomain = new DetailAccountDomain(req.branchId),
             productDomain = new ProductDomain(req.branchId),
             settingRepository = new SettingRepository(branchId),
+            fiscalPeriodRepository = new FiscalPeriodRepository(req.branchId),
+            currentFiscalPeriod = await(fiscalPeriodRepository.findById(req.cookies['current-period'])),
             cmd = req.body,
             errors = [],
 
             bankId;
+
+        let temporaryDateIsInPeriodRange =
+            cmd.date >= currentFiscalPeriod.minDate &&
+            cmd.date <= currentFiscalPeriod.maxDate;
+
+        if (!temporaryDateIsInPeriodRange)
+            errors.push(translate('The temporaryDate is not in current period date range'));
 
         if (!(cmd.invoiceLines && cmd.invoiceLines.length != 0))
             errors.push('ردیف های فاکتور وجود ندارد');
