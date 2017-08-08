@@ -4,6 +4,8 @@ const async = require('asyncawait/async'),
     await = require('asyncawait/await'),
     router = require('express').Router(),
     PaymentQuery = require('../queries/query.payment'),
+    translate = require('../services/translateService'),
+    FiscalPeriodRepository = require('../data/repository.fiscalPeriod'),
     PaymentRepository = require('../data/repository.payment'),
     EventEmitter = require('../services/shared').service.EventEmitter;
 
@@ -19,7 +21,20 @@ router.route('/cheques/:id/pass')
     .post(async((req, res) => {
         let paymentRepository = new PaymentRepository(req.branchId),
             cmd = req.body,
+            fiscalPeriodRepository = new FiscalPeriodRepository(req.branchId),
+            currentFiscalPeriod = await(fiscalPeriodRepository.findById(req.cookies['current-period'])),
+            errors=[],
             id = req.params.id;
+
+        let temporaryDateIsInPeriodRange =
+            cmd.date >= currentFiscalPeriod.minDate &&
+            cmd.date <= currentFiscalPeriod.maxDate;
+
+        if (!temporaryDateIsInPeriodRange)
+            errors.push(translate('The temporaryDate is not in current period date range'));
+
+        if (errors.length != 0)
+            return res.json({isValid: false, errors});
 
         await(paymentRepository.update(id, {chequeStatus: 'passed'}));
 
@@ -36,7 +51,20 @@ router.route('/cheques/:id/return')
     .post(async((req, res) => {
         let paymentRepository = new PaymentRepository(req.branchId),
             cmd = req.body,
+            fiscalPeriodRepository = new FiscalPeriodRepository(req.branchId),
+            currentFiscalPeriod = await(fiscalPeriodRepository.findById(req.cookies['current-period'])),
+            errors=[],
             id = req.params.id;
+
+        let temporaryDateIsInPeriodRange =
+            cmd.date >= currentFiscalPeriod.minDate &&
+            cmd.date <= currentFiscalPeriod.maxDate;
+
+        if (!temporaryDateIsInPeriodRange)
+            errors.push(translate('The temporaryDate is not in current period date range'));
+
+        if (errors.length != 0)
+            return res.json({isValid: false, errors});
 
         await(paymentRepository.update(id, {chequeStatus: 'return', invoiceId: null}));
 
