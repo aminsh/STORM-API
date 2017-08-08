@@ -1,7 +1,7 @@
 "use strict";
 
 export default class {
-    constructor(settingsApi, userApi, formService, logger, devConstants, $scope) {
+    constructor(settingsApi, userApi, formService, logger, devConstants, $scope, $timeout, translate) {
         this.settingsApi = settingsApi;
         this.userApi = userApi;
         this.formService = formService;
@@ -9,17 +9,22 @@ export default class {
         this.errors = [];
         this.isSaving = false;
         this.$scope = $scope;
-        $scope.showChangePassMsg = false;
-        // 0 = no-thing happened
-        // 1 = success
-        // 2 = wrong currentPassword
-        $scope.changePassSuccess = 0;
+        this.$timeout = $timeout;
+        this.translate = translate;
 
         this.urls = {
             getAllBanks: devConstants.urls.bank.getAll()
         };
 
         settingsApi.get().then(result => this.settings = result);
+
+        this.changePassword = {
+            currentPassword: null,
+            newPassword: null,
+            newPasswordConfirm: null,
+            errors: []
+        };
+
     }
 
     save(form) {
@@ -34,18 +39,32 @@ export default class {
             .finally(() => this.isSaving = false);
     }
 
-    changePassSave(form, currentPass, newPass){
+    changePassSave(form) {
         if (form.$invalid)
             return this.formService.setDirty(form);
+
         this.errors = [];
         this.isSaving = true;
+
         this.userApi.save({
-            currentPass: currentPass
-            , newPass: newPass
-        }).then(() => { this.logger.success();this.$scope.changePassSuccess = 1; })
-            .catch(errors => { this.errors = errors;this.$scope.changePassSuccess = 2; })
+            currentPass: this.changePassword.currentPassword
+            , newPass: this.changePassword.newPassword
+        })
+            .then(() => {
+                this.logger.success();
+                this.changePassword.currentPassword = null;
+                this.changePassword.newPassword = null;
+                this.changePassword.newPasswordConfirm = null;
+                this.changePassword.showChangePassMsg = false;
+                this.changePassword.errors = [];
+                this.$timeout(() => this.formService.setClean(form));
+            })
+            .catch(errors => {
+                this.errors = errors;
+                this.changePassword.errors = [this.translate("The password is wrong")];
+                this.changePassword.showChangePassMsg = true;
+            })
             .finally(() => this.isSaving = false);
-        this.$scope.showChangePassMsg = true;
     }
 
 }
