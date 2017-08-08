@@ -80,15 +80,28 @@ router.route('/cheques/:id/return')
 router.route('/expense').post(async ((req, res) => {
     let cmd = req.body,
         payments = cmd.payments,
+        fiscalPeriodRepository = new FiscalPeriodRepository(req.branchId),
+        currentFiscalPeriod = await(fiscalPeriodRepository.findById(req.cookies['current-period'])),
+        errors=[],
         id = req.params.id,
 
         paymentRepository = new PaymentRepository(req.branchId);
+
+    let temporaryDateIsInPeriodRange =
+        cmd.date >= currentFiscalPeriod.minDate &&
+        cmd.date <= currentFiscalPeriod.maxDate;
+
+    if (!temporaryDateIsInPeriodRange)
+        errors.push(translate('The temporaryDate is not in current period date range'));
+
+    if (errors.length != 0)
+        return res.json({isValid: false, errors});
 
     payments.forEach(e => {
 
         let entity = {
             number: e.number,
-            date: e.date,
+            date: cmd.date,
             invoiceId: id,
             amount: e.amount,
             paymentType: e.paymentType,

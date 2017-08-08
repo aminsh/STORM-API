@@ -3,6 +3,7 @@
 const async = require('asyncawait/async'),
     await = require('asyncawait/await'),
     translate = require('../services/translateService'),
+    FiscalPeriodRepository = require('../data/repository.fiscalPeriod'),
     persianDateSerivce = require('../services/persianDateService'),
     router = require('express').Router(),
     JournalRepository = require('../data/repository.journal'),
@@ -26,7 +27,9 @@ router.route('/')
         let journalRepository = new JournalRepository(req.branchId),
             subsidiaryLedgerAccountRepository = new SubsidiaryLedgetAccount(req.branchId),
             detailAccountRepository = new DetailAccountRepository(req.branchId),
-
+            fiscalPeriodRepository = new FiscalPeriodRepository(req.branchId),
+            currentFiscalPeriod = await(fiscalPeriodRepository.findById(req.cookies['current-period'])),
+            errors=[],
             cmd = req.body,
 
             sourceDetailAccount = await(detailAccountRepository.findById(cmd.source.accountId)),
@@ -66,6 +69,16 @@ router.route('/')
                     debtor: cmd.amount
                 }
             ];
+
+        let temporaryDateIsInPeriodRange =
+            cmd.date >= currentFiscalPeriod.minDate &&
+            cmd.date <= currentFiscalPeriod.maxDate;
+
+        if (!temporaryDateIsInPeriodRange)
+            errors.push(translate('The temporaryDate is not in current period date range'));
+
+        if (errors.length != 0)
+            return res.json({isValid: false, errors});
 
         await(journalRepository.batchCreate(journalLines, journal));
 

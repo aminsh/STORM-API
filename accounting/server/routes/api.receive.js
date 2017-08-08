@@ -85,7 +85,7 @@ router.route('/income').post(async ((req, res) => {
         currentFiscalPeriod = await(fiscalPeriodRepository.findById(req.cookies['current-period'])),
         errors=[],
         id = req.params.id,
-
+        date=cmd.date,
         paymentRepository = new PaymentRepository(req.branchId);
 
     let temporaryDateIsInPeriodRange =
@@ -102,7 +102,7 @@ router.route('/income').post(async ((req, res) => {
 
         let entity = {
             number: e.number,
-            date: e.date,
+            date: date,
             invoiceId: id,
             amount: e.amount,
             paymentType: e.paymentType,
