@@ -48,22 +48,21 @@
 </form>
 <div class="row" >
     <div class="col-md-4" >
-        <form name="changePassForm" novalidate >
+        <form name="changeUserPassForm" novalidate >
             <dev-tag-content dev-attr-title="{{'Change password'|translate}}">
                 <div class="row">
                     <div class="col-"></div>
                 </div>
                 <dev-tag-button
-                        ng-click="model.changePassSave(changePassForm, currentPass, newPass)"
+                        ng-click="model.changeUserPassword(changeUserPassForm, currentPass, newPass)"
                         icon="glyphicon glyphicon-floppy-disk"
                         ng-disabled="model.isSaving"
                         is-waiting="model.isSaving"
                         style-type="primary"
                         title="{{'Save' | translate}}" ></dev-tag-button >
-
                 <div class="row" style="margin-top: 10px" >
                     <dev-tag-validation-summary
-                            errors="model.changePassword.errors" ></dev-tag-validation-summary>
+                            errors="model.changeUserPasswordData.errors" ></dev-tag-validation-summary>
                 </div>
                 <div class="row" >
                     <div class="form-group col-md-12">
@@ -71,10 +70,10 @@
                         <dev-tag-pass-box
                                 name="currentPass"
                                 ng-minlength="6"
-                                ng-model="model.changePassword.currentPassword"
+                                ng-model="model.changeUserPasswordData.currentPassword"
                                 required >
                         </dev-tag-pass-box>
-                        <div ng-messages="changePassForm.currentPass.$error" ng-if="changePassForm.currentPass.$dirty">
+                        <div ng-messages="changeUserPassForm.currentPass.$error" ng-if="changeUserPassForm.currentPass.$dirty">
                             <div ng-message="required" class="text-danger">وارد کردن کلمه‌عبور (فعلی) الزامیست</div>
                         </div>
                     </div>
@@ -85,10 +84,10 @@
                         <dev-tag-pass-box
                                 name="newPass"
                                 ng-minlength="6"
-                                ng-model="model.changePassword.newPassword"
+                                ng-model="model.changeUserPasswordData.newPassword"
                                 required >
                         </dev-tag-pass-box>
-                        <div ng-messages="changePassForm.newPass.$error" ng-if="changePassForm.newPass.$dirty">
+                        <div ng-messages="changeUserPassForm.newPass.$error" ng-if="changeUserPassForm.newPass.$dirty">
                             <div ng-message="required" class="text-danger">وارد کردن کلمه‌عبور (جدید) الزامیست</div>
                         </div>
                     </div>
@@ -99,11 +98,11 @@
                         <dev-tag-pass-box
                                 name="newPassConf"
                                 ng-minlength="6"
-                                ng-model="model.changePassword.newPasswordConfirm"
+                                ng-model="model.changeUserPasswordData.newPasswordConfirm"
                                 required
-                                ng-match="model.changePassword.newPassword" >
+                                ng-match="model.changeUserPasswordData.newPassword" >
                         </dev-tag-pass-box>
-                        <div ng-messages="changePassForm.newPassConf.$error" ng-if="changePassForm.newPassConf.$dirty">
+                        <div ng-messages="changeUserPassForm.newPassConf.$error" ng-if="changeUserPassForm.newPassConf.$dirty">
                             <div ng-message="required" class="text-danger">وارد کردن (تکرار) کلمه‌عبور (جدید) الزامیست</div>
                             <div ng-message="match" class="text-danger">رمز عبور و تکرار آن یکسان نیست</div>
                         </div>
@@ -112,10 +111,39 @@
             </dev-tag-content>
         </form>
     </div>
-    <!--<div class="col-md-8" >
-        <form name="changeImageForm" novalidate >
-            <dev-tag-content dev-attr-title="{{'Change password'|translate}}">
+    <div class="col-md-4" >
+        <form name="changeUserImageForm" novalidate >
+            <dev-tag-content dev-attr-title="{{'Upload profile image'|translate}}">
+                <div class="row">
+                    <div class="col-"></div>
+                </div>
+                <dev-tag-button
+                        ng-click="model.changeUserImage(changeUserImageForm)"
+                        icon="glyphicon glyphicon-floppy-disk"
+                        ng-disabled="model.isSaving"
+                        is-waiting="model.isSaving"
+                        style-type="primary"
+                        title="{{'Save' | translate}}" ></dev-tag-button >
+                <div class="row" >
+                    <div class="col-md-12" >
+                        <div class="so-settings-current-image-hodler" >
+                            <img style="max-width: 100%" ng-src="{{model.changeUserImageData.currentImage}}" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row" >
+                    <div class="col-md-12" >
+                        <dev-tag-uploader
+                                name="userImageUploader"
+                                uploaded="model.loadUserUploadedImage(fileName)" ></dev-tag-uploader>
+                        <br/>
+                        <div ng-show="model.changeUserImageData.errors.length > 0" >
+                            <dev-tag-validation-summary
+                                    errors="model.changeUserImageData.errors" ></dev-tag-validation-summary>
+                        </div>
+                    </div>
+                </div>
             </dev-tag-content>
         </form>
-    </div>-->
+    </div>
 </div>

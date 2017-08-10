@@ -17,13 +17,21 @@ export default class {
         };
 
         settingsApi.get().then(result => this.settings = result);
+        this.updateUserImage();
 
-        this.changePassword = {
+        this.changeUserPasswordData = {
             currentPassword: null,
             newPassword: null,
             newPasswordConfirm: null,
             errors: []
         };
+
+        this.changeUserImageData = {
+            uploaderAddress: null,
+            currentImage: null,
+            imageName: null,
+            errors: []
+        }
 
     }
 
@@ -39,32 +47,81 @@ export default class {
             .finally(() => this.isSaving = false);
     }
 
-    changePassSave(form) {
+    changeUserPassword(form) {
         if (form.$invalid)
             return this.formService.setDirty(form);
 
         this.errors = [];
         this.isSaving = true;
 
-        this.userApi.save({
-            currentPass: this.changePassword.currentPassword
-            , newPass: this.changePassword.newPassword
+        this.userApi.savePassword({
+            currentPass: this.changeUserPasswordData.currentPassword
+            , newPass: this.changeUserPasswordData.newPassword
         })
             .then(() => {
                 this.logger.success();
-                this.changePassword.currentPassword = null;
-                this.changePassword.newPassword = null;
-                this.changePassword.newPasswordConfirm = null;
-                this.changePassword.showChangePassMsg = false;
-                this.changePassword.errors = [];
+                this.changeUserPasswordData.currentPassword = null;
+                this.changeUserPasswordData.newPassword = null;
+                this.changeUserPasswordData.newPasswordConfirm = null;
+                this.changeUserPasswordData.showChangePassMsg = false;
+                this.changeUserPasswordData.errors = [];
                 this.$timeout(() => this.formService.setClean(form));
             })
             .catch(errors => {
                 this.errors = errors;
-                this.changePassword.errors = [this.translate("The password is wrong")];
-                this.changePassword.showChangePassMsg = true;
+                console.log(errors);
+                this.changeUserPasswordData.errors = [this.translate("The password is wrong")];
+                this.changeUserPasswordData.showChangePassMsg = true;
             })
             .finally(() => this.isSaving = false);
+    }
+    changeUserImage(form){
+
+        if (form.$invalid)
+            return this.formService.setDirty(form);
+
+        this.errors = [];
+        this.isSaving = true;
+
+        console.log(`new uploaded image: ${this.changeUserImageData.uploaderAddress}`);
+        this.userApi.saveImage({
+            imageName: this.changeUserImageData.uploaderAddress
+        })
+            .then(() => {
+                this.logger.success();
+                this.changeUserImageData.errors = [];
+            })
+            .catch(errors => {
+                this.errors = errors;
+                console.log(errors);
+                this.changeUserImageData.errors = [this.translate("There is a problem in uploading image")];
+            })
+            .finally(() => {
+                this.isSaving = false;
+                this.updateUserImage();
+            });
+
+    }
+    updateUserImage(){
+
+        let returnValue;
+        this.userApi.getImage()
+            .then((data) => {
+
+                returnValue = (data.isValid)? data.returnValue:"/public/images/user.png";
+                this.changeUserImageData.currentImage = returnValue;
+
+            })
+            .catch(error => {
+
+                console.log(error);
+
+            });
+
+    }
+    loadUserUploadedImage(fileName){
+        this.changeUserImageData.uploaderAddress = `/${fileName}`.replace(/[\\]/g,"/");
+        console.log(this.changeUserImageData.uploaderAddress);
     }
 
 }

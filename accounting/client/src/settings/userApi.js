@@ -11,7 +11,14 @@ export default class UserApi {
         return this.apiPromise.get(`${this.urlPrefix}/settings`);
     }*/
 
-    save(data) {
+    savePassword(data) {
         return this.apiPromise.put(`${this.userApiUrlPrefix}/change-password`, data);
     }
+    saveImage(data){
+        return this.apiPromise.put(`${this.userApiUrlPrefix}/change-image`, data);
+    }
+    getImage(){
+        return this.apiPromise.get(`${this.userApiUrlPrefix}/get-user-image`);
+    }
+
 }
