@@ -515,7 +515,7 @@ module.exports = class Journal {
 
             description = command.description || 'بابت درآمد',
 
-            journal = await(this.getJournal(persianDate.current(), description)),
+            journal = await(this.getJournal(command.date, description)),
             journalLines = [],
 
             incomeAccount = await(subLedger.getById(command.incomeSubLedgerId));
@@ -578,7 +578,7 @@ module.exports = class Journal {
 
             description = command.description || 'بابت هزینه',
 
-            journal = await(this.getJournal(persianDate.current(), description)),
+            journal = await(this.getJournal(command.date, description)),
             journalLines = [],
 
             expenseAccount = await(subLedger.getById(command.expenseSubLedgerId));

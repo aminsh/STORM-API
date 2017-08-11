@@ -1,25 +1,58 @@
 "use strict";
 
 export default class {
-    constructor(settingsApi, userApi, formService, logger, devConstants, $scope) {
+    constructor(
+        settingsApi
+        , userApi
+        , branchApi
+        , formService
+        , logger
+        , devConstants
+        , $scope
+        , $timeout
+        , translate
+    ) {
         this.settingsApi = settingsApi;
         this.userApi = userApi;
+        this.branchApi = branchApi;
         this.formService = formService;
         this.logger = logger;
         this.errors = [];
         this.isSaving = false;
         this.$scope = $scope;
-        $scope.showChangePassMsg = false;
-        // 0 = no-thing happened
-        // 1 = success
-        // 2 = wrong currentPassword
-        $scope.changePassSuccess = 0;
+        this.$timeout = $timeout;
+        this.translate = translate;
 
+        settingsApi.get().then(result => this.settings = result);
+        this.updateUserImage();
+        this.isBranchOwnerUser()
+            .then((isOwner) => {
+                if(isOwner) this.getBranchUsers();
+            })
+            .catch(error => console.log(error));
+
+        this.changeUserPasswordData = {
+            currentPassword: null,
+            newPassword: null,
+            newPasswordConfirm: null,
+            errors: []
+        };
+        this.changeUserImageData = {
+            uploaderAddress: null,
+            currentImage: null,
+            imageName: null,
+            errors: []
+        };
+        this.changeUsersInBranchData = {
+            isOwnerUser: false,
+            newUserEmail: null,
+            branchUsers: [],
+            errors: []
+        };
         this.urls = {
             getAllBanks: devConstants.urls.bank.getAll()
         };
 
-        settingsApi.get().then(result => this.settings = result);
     }
 
     save(form) {
@@ -34,18 +67,182 @@ export default class {
             .finally(() => this.isSaving = false);
     }
 
-    changePassSave(form, currentPass, newPass){
+    changeUserPassword(form) {
         if (form.$invalid)
             return this.formService.setDirty(form);
+
         this.errors = [];
         this.isSaving = true;
-        this.userApi.save({
-            currentPass: currentPass
-            , newPass: newPass
-        }).then(() => { this.logger.success();this.$scope.changePassSuccess = 1; })
-            .catch(errors => { this.errors = errors;this.$scope.changePassSuccess = 2; })
+
+        this.userApi.savePassword({
+            currentPass: this.changeUserPasswordData.currentPassword
+            , newPass: this.changeUserPasswordData.newPassword
+        })
+            .then(() => {
+                this.logger.success();
+                this.changeUserPasswordData.currentPassword = null;
+                this.changeUserPasswordData.newPassword = null;
+                this.changeUserPasswordData.newPasswordConfirm = null;
+                this.changeUserPasswordData.showChangePassMsg = false;
+                this.changeUserPasswordData.errors = [];
+                this.$timeout(() => this.formService.setClean(form));
+            })
+            .catch(errors => {
+                this.errors = errors;
+                console.log(errors);
+                this.changeUserPasswordData.errors = [this.translate("The password is wrong")];
+                this.changeUserPasswordData.showChangePassMsg = true;
+            })
             .finally(() => this.isSaving = false);
-        this.$scope.showChangePassMsg = true;
+    }
+    changeUserImage(form){
+
+        if (form.$invalid)
+            return this.formService.setDirty(form);
+
+        this.errors = [];
+        this.isSaving = true;
+
+        console.log(`new uploaded image: ${this.changeUserImageData.uploaderAddress}`);
+        this.userApi.saveImage({
+            imageName: this.changeUserImageData.uploaderAddress
+        })
+            .then(() => {
+                this.logger.success();
+                this.changeUserImageData.errors = [];
+            })
+            .catch(errors => {
+                this.errors = errors;
+                console.log(errors);
+                this.changeUserImageData.errors = [this.translate("There is a problem in uploading image")];
+            })
+            .finally(() => {
+                this.isSaving = false;
+                this.updateUserImage();
+            });
+
+    }
+    updateUserImage(){
+
+        let returnValue;
+        this.userApi.getImage()
+            .then(data => {
+
+                returnValue = (data.isValid)? data.returnValue:"/public/images/user.png";
+                this.changeUserImageData.currentImage = returnValue;
+
+            })
+            .catch(error => {
+
+                console.log(error);
+
+            });
+
+    }
+    loadUserUploadedImage(fileName){
+        this.changeUserImageData.uploaderAddress = `/${fileName}`.replace(/[\\]/g,"/");
+        console.log(this.changeUserImageData.uploaderAddress);
+    }
+    isBranchOwnerUser(){
+
+        return new Promise((resolve, reject) => {
+
+            this.branchApi
+                .isOwnerUser()
+                .then(data => {
+
+                    this.changeUsersInBranchData.isOwnerUser = data.isValid;
+                    resolve(data.isValid);
+
+                })
+                .catch(error => {
+
+                    // console.log(error);
+                    this.changeUsersInBranchData.isOwnerUser = false;
+                    this.errors = error;
+                    reject(error);
+
+                });
+
+        });
+
+    }
+    getBranchUsers(){
+
+        this.branchApi
+            .getBranchUsers()
+            .then(data => {
+
+                if(data.returnValue.length > 0)
+                    this.changeUsersInBranchData.branchUsers = data.returnValue;
+
+
+            })
+            .catch(error => {
+
+                console.log(error);
+                this.errors = error;
+
+            });
+
+    }
+    addUserToBranch(form){
+
+        if (form.$invalid)
+            return this.formService.setDirty(form);
+
+        this.errors = [];
+        this.isSaving = true;
+
+        this.branchApi
+            .addUserByEmail({
+                newUserEmail: this.changeUsersInBranchData.newUserEmail
+            })
+            .then(data => {
+
+                console.log(data);
+                if(data.isValid){
+                    this.logger.success();
+                    this.changeUsersInBranchData.errors =
+                        (data.returnData)
+                            ? [this.translate("The user is already in the list")] : [];
+                } else {
+
+                    this.changeUsersInBranchData.errors = [this.translate("No user exists with this email address")]
+
+                }
+
+            })
+            .catch(error => {
+
+                console.log(error);
+                this.errors = error;
+
+            })
+            .finally(() => {
+                this.isSaving = false;
+                this.getBranchUsers();
+            });
+
+    }
+    deleteUserFromBranchByEmail(email){
+
+        console.log(email);
+        this.branchApi
+            .deleteUserByEmail(email)
+            .then(data => {
+
+                this.logger.success();
+
+            })
+            .catch(error => {
+
+                console.log(error);
+                this.errors = error;
+
+            })
+            .finally(() => this.getBranchUsers());
+
     }
 
 }

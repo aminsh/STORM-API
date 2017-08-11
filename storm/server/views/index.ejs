@@ -12,7 +12,7 @@
     <meta name="currentUser" content="<%- currentUser %>">
     <meta name="currentUserImage" content="<%- currentUserImage %>">
     <script src="https://www.google.com/recaptcha/api.js?hl=fa&onload=reCaptchaOnLoad&render=explicit"
-            async defer></script>
+            async defer id="reCaptchaScript" ></script>
     <script type="text/javascript" >
 
         var reCaptchaWidget;
@@ -23,7 +23,13 @@
                 'theme' : 'light'
             });
 
-        }
+        };
+        var reCaptchaDestroy = function(){
+
+            reCaptchaWidget = null;
+            $('#reCaptchaScript').remove();
+
+        };
 
     </script>
     <base href="/">

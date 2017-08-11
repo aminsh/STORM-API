@@ -1,117 +1,216 @@
-<form name="form" novalidate>
-    <dev-tag-content dev-attr-title="{{'Settings'|translate}}">
-        <div class="row">
-            <div class="col-"></div>
-        </div>
-        <dev-tag-button
-                ng-click="model.save(form)"
-                icon="glyphicon glyphicon-floppy-disk"
-                ng-disabled="model.isSaving"
-                is-waiting="model.isSaving"
-                style-type="primary"
-                title="{{'Save' | translate}}"
-                ng-disabled="form.$invalid"></dev-tag-button>
+<div class="row" >
+    <div class="col-md-8" >
+        <form name="form" novalidate>
+            <dev-tag-content dev-attr-title="<i class='glyphicon glyphicon-cog' ></i> {{'Settings'|translate}}">
+                <div class="row">
+                    <div class="col-"></div>
+                </div>
+                <dev-tag-button
+                        ng-click="model.save(form)"
+                        icon="glyphicon glyphicon-floppy-disk"
+                        ng-disabled="model.isSaving"
+                        is-waiting="model.isSaving"
+                        style-type="primary"
+                        title="{{'Save' | translate}}"
+                        ng-disabled="form.$invalid"></dev-tag-button>
 
-        <div class="row" style="margin-top: 50px">
-            <div class="form-group col-md-3">
-                <label class="label-control">نرخ ارزش افزوده</label>
-                <dev-tag-numeric
-                        required
-                        not-zero
-                        name="vat"
-                        ng-model="model.settings.vat"></dev-tag-numeric>
+                <div class="row" style="margin-top: 50px">
+                    <div class="form-group col-md-3">
+                        <label class="label-control">نرخ ارزش افزوده</label>
+                        <dev-tag-numeric
+                                required
+                                not-zero
+                                name="vat"
+                                ng-model="model.settings.vat"></dev-tag-numeric>
 
-                <div ng-messages="form.vat.$error" ng-if="form.vat.$dirty">
-                    <label ng-message="required" class="error">{{'This field is required'|translate}}</label>
-                    <label ng-message="notZero" class="error">{{'This field should have a value not equal tozero'|translate}}</label>
-                </div>
-            </div>
+                        <div ng-messages="form.vat.$error" ng-if="form.vat.$dirty">
+                            <label ng-message="required" class="error">{{'This field is required'|translate}}</label>
+                            <label ng-message="notZero" class="error">{{'This field should have a value not equal tozero'|translate}}</label>
+                        </div>
+                    </div>
 
-            <div class="form-group col-md-3">
-                <label class="label-control">بانک</label>
-                <dev-tag-combo-box
-                        name="bankId"
-                        k-placeholder="{{'Select ...'|translate}}"
-                        k-data-value-field="id"
-                        k-data-text-field="title"
-                        ng-model="model.settings.bankId"
-                        url="{{model.urls.getAllBanks}}"></dev-tag-combo-box>
-            </div>
-        </div>
+                    <div class="form-group col-md-3">
+                        <label class="label-control">بانک</label>
+                        <dev-tag-combo-box
+                                name="bankId"
+                                k-placeholder="{{'Select ...'|translate}}"
+                                k-data-value-field="id"
+                                k-data-text-field="title"
+                                ng-model="model.settings.bankId"
+                                url="{{model.urls.getAllBanks}}"></dev-tag-combo-box>
+                    </div>
+                </div>
 
-        <div class="row">
-            <dev-tag-check-box ng-model="model.settings.canControlInventory">
-                کنترل موجودی کالا انجام شود ؟
-            </dev-tag-check-box>
-        </div>
-    </dev-tag-content>
-</form>
-<form name="changePassForm" novalidate >
-    <dev-tag-content dev-attr-title="{{'Change password'|translate}}">
-        <div class="row">
-            <div class="col-"></div>
-        </div>
-        <dev-tag-button
-                ng-click="model.changePassSave(changePassForm, currentPass, newPass)"
-                icon="glyphicon glyphicon-floppy-disk"
-                ng-disabled="model.isSaving"
-                is-waiting="model.isSaving"
-                style-type="primary"
-                title="{{'Save' | translate}}"
-                ng-disabled="form.$invalid || newPass != newPassConf"></dev-tag-button >
-        <div class="row" style="margin-top: 50px">
-            <div class="form-group col-md-6">
-                <label class="label-control">رمز فعلی</label>
-                <dev-tag-pass-box
-                        name="currentPass"
-                        ng-minlength="6"
-                        ng-model="currentPass"
-                        required >
-                </dev-tag-pass-box>
-                <div ng-messages="changePassForm.currentPass.$error" ng-if="changePassForm.currentPass.$dirty">
-                    <div ng-message="required" class="text-danger">وارد کردن کلمه‌عبور (فعلی) الزامیست</div>
+                <div class="row">
+                    <dev-tag-check-box ng-model="model.settings.canControlInventory">
+                        کنترل موجودی کالا انجام شود ؟
+                    </dev-tag-check-box>
                 </div>
-            </div>
-        </div>
-        <div class="row" style="margin-top: 50px">
-            <div class="form-group col-md-3">
-                <label class="label-control">رمز جدید</label>
-                <dev-tag-pass-box
-                        name="newPass"
-                        ng-minlength="6"
-                        ng-model="newPass"
-                        required >
-                </dev-tag-pass-box>
-                <div ng-messages="changePassForm.newPass.$error" ng-if="changePassForm.newPass.$dirty">
-                    <div ng-message="required" class="text-danger">وارد کردن کلمه‌عبور (جدید) الزامیست</div>
+            </dev-tag-content>
+        </form>
+    </div>
+    <div class="col-md-4" >
+        <form name="changeUserPassForm" novalidate >
+            <dev-tag-content dev-attr-title="<i class='glyphicon glyphicon-lock'></i> {{'Change password'|translate}}">
+                <div class="row">
+                    <div class="col-"></div>
                 </div>
-            </div>
-            <div class="form-group col-md-3">
-                <label class="label-control">تکرار رمز جدید</label>
-                <dev-tag-pass-box
-                        name="newPassConf"
-                        ng-minlength="6"
-                        ng-model="newPassConf"
-                        required >
-                </dev-tag-pass-box>
-                <div ng-messages="changePassForm.newPassConf.$error" ng-if="changePassForm.newPassConf.$dirty">
-                    <div ng-message="required" class="text-danger">وارد کردن (تکرار) کلمه‌عبور (جدید) الزامیست</div>
+                <dev-tag-button
+                        ng-click="model.changeUserPassword(changeUserPassForm, currentPass, newPass)"
+                        icon="glyphicon glyphicon-floppy-disk"
+                        ng-disabled="model.isSaving"
+                        is-waiting="model.isSaving"
+                        style-type="primary"
+                        title="{{'Save' | translate}}" ></dev-tag-button >
+                <div class="row" style="margin-top: 10px" >
+                    <dev-tag-validation-summary
+                            errors="model.changeUserPasswordData.errors" ></dev-tag-validation-summary>
                 </div>
-            </div>
-        </div>
-        <div class="row" style="margin-top: 50px" ng-show="showChangePassMsg" >
-            <div class="col-md-2" ></div>
-            <div class="panel so-tx-color-white col-md-8"
-                 ng-class="{ 'so-bg-color-green' : changePassSuccess == 1 ,'so-bg-color-red' : changePassSuccess == 2  }"
-                 style="font-size: 14pt;text-align: center;" >
-                <div class="panel-body" ng-show="changePassSuccess == 1" >
-                    <p>رمز شما با موفقیت تغییر کرد.</p>
+                <div class="row" >
+                    <div class="form-group col-md-12">
+                        <label class="label-control">رمز فعلی</label>
+                        <dev-tag-pass-box
+                                name="currentPass"
+                                ng-minlength="6"
+                                ng-model="model.changeUserPasswordData.currentPassword"
+                                required >
+                        </dev-tag-pass-box>
+                        <div ng-messages="changeUserPassForm.currentPass.$error" ng-if="changeUserPassForm.currentPass.$dirty">
+                            <div ng-message="required" class="text-danger">وارد کردن کلمه‌عبور (فعلی) الزامیست</div>
+                        </div>
+                    </div>
                 </div>
-                <div class="panel-body" ng-show="changePassSuccess == 2" >
-                    <p>رمز فعلی اشتباه بود.</p>
+                <div class="row" >
+                    <div class="form-group col-md-12">
+                        <label class="label-control">رمز جدید</label>
+                        <dev-tag-pass-box
+                                name="newPass"
+                                ng-minlength="6"
+                                ng-model="model.changeUserPasswordData.newPassword"
+                                required >
+                        </dev-tag-pass-box>
+                        <div ng-messages="changeUserPassForm.newPass.$error" ng-if="changeUserPassForm.newPass.$dirty">
+                            <div ng-message="required" class="text-danger">وارد کردن کلمه‌عبور (جدید) الزامیست</div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="col-md-2" ></div>
-        </div>
-    </dev-tag-content>
-</form>
+                <div class="row" >
+                    <div class="form-group col-md-12">
+                        <label class="label-control">تکرار رمز جدید</label>
+                        <dev-tag-pass-box
+                                name="newPassConf"
+                                ng-minlength="6"
+                                ng-model="model.changeUserPasswordData.newPasswordConfirm"
+                                required
+                                ng-match="model.changeUserPasswordData.newPassword" >
+                        </dev-tag-pass-box>
+                        <div ng-messages="changeUserPassForm.newPassConf.$error" ng-if="changeUserPassForm.newPassConf.$dirty">
+                            <div ng-message="required" class="text-danger">وارد کردن (تکرار) کلمه‌عبور (جدید) الزامیست</div>
+                            <div ng-message="match" class="text-danger">رمز عبور و تکرار آن یکسان نیست</div>
+                        </div>
+                    </div>
+                </div>
+            </dev-tag-content>
+        </form>
+    </div>
+</div>
+<div class="row" >
+    <div class="col-md-4" >
+        <form name="changeUserImageForm" novalidate >
+            <dev-tag-content dev-attr-title="<i class='glyphicon glyphicon-picture' ></i> {{'Upload profile image'|translate}}">
+                <div class="row">
+                    <div class="col-"></div>
+                </div>
+                <dev-tag-button
+                        ng-click="model.changeUserImage(changeUserImageForm)"
+                        icon="glyphicon glyphicon-floppy-disk"
+                        ng-disabled="model.isSaving"
+                        is-waiting="model.isSaving"
+                        style-type="primary"
+                        title="{{'Save' | translate}}" ></dev-tag-button >
+                <div class="row" >
+                    <div class="col-md-12" >
+                        <div class="so-settings-current-image-hodler" >
+                            <img style="max-width: 100%" ng-src="{{model.changeUserImageData.currentImage}}" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row" >
+                    <div class="col-md-12" >
+                        <dev-tag-uploader
+                                name="userImageUploader"
+                                uploaded="model.loadUserUploadedImage(fileName)" ></dev-tag-uploader>
+                        <br/>
+                        <div ng-show="model.changeUserImageData.errors.length > 0" >
+                            <dev-tag-validation-summary
+                                    errors="model.changeUserImageData.errors" ></dev-tag-validation-summary>
+                        </div>
+                    </div>
+                </div>
+            </dev-tag-content>
+        </form>
+    </div>
+    <div class="col-md-8" ng-show="model.changeUsersInBranchData.isOwnerUser" >
+        <form name="changeUsersInBranchForm" novalidate >
+            <dev-tag-content dev-attr-title="<i class='glyphicon glyphicon-list' ></i> {{'Branch members management'|translate}}">
+                <div class="row" >
+                    <div class="col-" ></div>
+                </div>
+                <div class="row" >
+                    <div class="col-md-12" >
+                        <div>
+                            <dev-tag-validation-summary
+                                    errors="model.changeUsersInBranchData.errors" ></dev-tag-validation-summary>
+                        </div>
+                        <div class="row" >
+                            <div class="col-md-9" >
+                                <label class="label-control" >ایمیل</label>
+                                <dev-tag-email-box
+                                        name="newUserEmail"
+                                        ng-model="model.changeUsersInBranchData.newUserEmail"
+                                        style="direction: ltr !important;" ></dev-tag-email-box>
+                            </div>
+                            <div class="col-md-3" style="padding-top: 23px;text-align: center" >
+                                <dev-tag-button
+                                        ng-click="model.addUserToBranch(changeUsersInBranchForm)"
+                                        icon="glyphicon glyphicon-plus"
+                                        ng-disabled="model.isSaving"
+                                        is-waiting="model.isSaving"
+                                        style-type="primary"
+                                        title="{{'Add' | translate}}" ></dev-tag-button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" >
+                    <div class="col-md-12" >
+                        <div class="table-responsive m-t" >
+                            <table class="table" ng-show="model.changeUsersInBranchData.branchUsers.length > 0" >
+                                <thead>
+                                <tr>
+                                    <th>{{'Email' | translate}}</th>
+                                    <th>{{'name' | translate}}</th>
+                                    <th style="text-align: center;" >{{'Delete' | translate}}</th>
+                                    <th style="text-align: center;" >{{'Image' | translate}}</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr ng-repeat="item in model.changeUsersInBranchData.branchUsers" >
+                                    <td>{{item.email}}</td>
+                                    <td>{{item.name}}</td>
+                                    <td align="center" style="vertical-align: middle;" >
+                                        <i class="fa fa-close so-tx-color-red"
+                                           style="cursor: pointer;font-size: 18pt;"
+                                           ng-click="model.deleteUserFromBranchByEmail(item.email)" ></i>
+                                    </td>
+                                    <td style="text-align: center;" ><img ng-src="{{item.image}}" alt="{{item.name}}" class="img-circle" /></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </dev-tag-content>
+        </form>
+    </div>
+</div>
