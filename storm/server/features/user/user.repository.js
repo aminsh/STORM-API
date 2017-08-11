@@ -45,8 +45,9 @@ module.exports = class {
     // [START] SMRSAN
     getUserByEmail(email){
 
-        return knex.table('users')
-            .where('email', "=", email)
+        return knex('users')
+            .select("*")
+            .where('email', email)
             .first();
 
     }

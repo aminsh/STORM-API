@@ -49,4 +49,20 @@ export default class {
     total(){
         return this.apiPromise.get(`/api/branches/total`);
     }
+
+    // [START] SMRSAN
+    isOwnerUser(){
+        return this.apiPromise.get('/api/branches/is-owner-user');
+    }
+    getBranchUsers(){
+        return this.apiPromise.get('/api/branches/get-users');
+    }
+    addUserByEmail(data){
+        return this.apiPromise.put('/api/branches/add-user-by-email', data);
+    }
+    deleteUserByEmail(email){
+        return this.apiPromise.delete('/api/branches/user-by-email', { userEmail: email });
+    }
+    // [-END-] SMRSAN
+
 }

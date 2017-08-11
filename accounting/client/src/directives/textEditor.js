@@ -27,9 +27,18 @@ function passBox(){
         template: '<input type="password" class="form-control"/>'
     };
 }
+function emailBox(){
+    return {
+        require: 'ngModel',
+        restrict: 'E',
+        replace: true,
+        template: '<input type="email" class="form-control"/>'
+    };
+}
 // [-END-] SMRSAN
 
 accModule
     .directive('devTagEditor', textEditor)
     .directive('devTagTextBox', textBox)
-    .directive('devTagPassBox', passBox);
+    .directive('devTagPassBox', passBox)
+    .directive('devTagEmailBox', emailBox);

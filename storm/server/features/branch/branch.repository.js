@@ -32,7 +32,7 @@ class BranchRepository {
             .first();
     }
 
-    getMemeber(memberId) {
+    getMember(memberId) {
         return knex.table('userInBranches').where('id', memberId).first();
     }
 
@@ -54,6 +54,31 @@ class BranchRepository {
     getBranchId(userId) {
         return knex('userInBranches').where('userId', userId).first();
     }
+
+    // [START] SMRSAN
+    getBranchMembers(branchId){
+        return knex
+            .select('users.email', 'users.name', 'users.image')
+            .from('users')
+            .leftJoin('userInBranches', 'users.id', 'userInBranches.userId')
+            .where('userInBranches.branchId', branchId);
+    }
+    getUserInBranch(branchId, userId){
+        return knex
+            .select("*")
+            .from("userInBranches")
+            .where("branchId", branchId)
+            .andWhere("userId", userId)
+            .first();
+    }
+    deleteUserInBranch(branchId, userId){
+        return knex("userInBranches")
+            .where("branchId", branchId)
+            .andWhere("userId", userId)
+            .del();
+    }
+    // [-END-] SMRSAN
+
 }
 
 module.exports = new BranchRepository();
