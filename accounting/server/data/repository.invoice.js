@@ -57,6 +57,18 @@ module.exports = class InvoiceRepository extends BaseRepository {
         return invoice;
     }
 
+    findByNumber(number,type, notEqualId) {
+        let query = this.knex.table('invoices')
+            .modify(this.modify, this.branchId)
+            .where('invoiceType', type)
+            .where('number', number);
+
+        if (notEqualId)
+            query.andWhere('id', '!=', notEqualId);
+
+        return query.first();
+    }
+
     findInvoiceLinesByInvoiceId(id) {
         return this.knex.table('invoiceLines').where('invoiceId', id);
     }
