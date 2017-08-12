@@ -1,8 +1,7 @@
 "use strict";
 
 export default class {
-    constructor(
-        settingsApi
+    constructor(settingsApi
         , userApi
         , branchApi
         , formService
@@ -11,7 +10,7 @@ export default class {
         , $scope
         , $timeout
         , translate
-    ) {
+        , confirm) {
         this.settingsApi = settingsApi;
         this.userApi = userApi;
         this.branchApi = branchApi;
@@ -22,12 +21,13 @@ export default class {
         this.$scope = $scope;
         this.$timeout = $timeout;
         this.translate = translate;
+        this.confirm = confirm;
 
         settingsApi.get().then(result => this.settings = result);
         this.updateUserImage();
         this.isBranchOwnerUser()
             .then((isOwner) => {
-                if(isOwner) this.getBranchUsers();
+                if (isOwner) this.getBranchUsers();
             })
             .catch(error => console.log(error));
 
@@ -95,7 +95,8 @@ export default class {
             })
             .finally(() => this.isSaving = false);
     }
-    changeUserImage(form){
+
+    changeUserImage(form) {
 
         if (form.$invalid)
             return this.formService.setDirty(form);
@@ -122,13 +123,14 @@ export default class {
             });
 
     }
-    updateUserImage(){
+
+    updateUserImage() {
 
         let returnValue;
         this.userApi.getImage()
             .then(data => {
 
-                returnValue = (data.isValid)? data.returnValue:"/public/images/user.png";
+                returnValue = (data.isValid) ? data.returnValue : "/public/images/user.png";
                 this.changeUserImageData.currentImage = returnValue;
 
             })
@@ -139,11 +141,13 @@ export default class {
             });
 
     }
-    loadUserUploadedImage(fileName){
-        this.changeUserImageData.uploaderAddress = `/${fileName}`.replace(/[\\]/g,"/");
+
+    loadUserUploadedImage(fileName) {
+        this.changeUserImageData.uploaderAddress = `/${fileName}`.replace(/[\\]/g, "/");
         console.log(this.changeUserImageData.uploaderAddress);
     }
-    isBranchOwnerUser(){
+
+    isBranchOwnerUser() {
 
         return new Promise((resolve, reject) => {
 
@@ -167,15 +171,14 @@ export default class {
         });
 
     }
-    getBranchUsers(){
+
+    getBranchUsers() {
 
         this.branchApi
             .getBranchUsers()
             .then(data => {
 
-                if(data.returnValue.length > 0)
-                    this.changeUsersInBranchData.branchUsers = data.returnValue;
-
+                this.changeUsersInBranchData.branchUsers = data.returnValue;
 
             })
             .catch(error => {
@@ -186,37 +189,39 @@ export default class {
             });
 
     }
-    addUserToBranch(form){
+
+    addUserToBranch(form) {
 
         if (form.$invalid)
             return this.formService.setDirty(form);
 
         this.errors = [];
+        this.changeUsersInBranchData.errors = [];
         this.isSaving = true;
 
         this.branchApi
-            .addUserByEmail({
-                newUserEmail: this.changeUsersInBranchData.newUserEmail
-            })
+            .addUserByEmail(this.changeUsersInBranchData.newUserEmail)
             .then(data => {
 
-                console.log(data);
-                if(data.isValid){
-                    this.logger.success();
-                    this.changeUsersInBranchData.errors =
-                        (data.returnData)
-                            ? [this.translate("The user is already in the list")] : [];
-                } else {
+                if (!(data)) {
 
-                    this.changeUsersInBranchData.errors = [this.translate("No user exists with this email address")]
+                    this.logger.success();
+
+                } else if(data === "The user is already in the list"){
+
+                    this.changeUsersInBranchData.errors = [this.translate("The user is already in the list")];
+
+                } else if(data === "This user is the branch owner"){
+
+                    this.changeUsersInBranchData.errors = [this.translate("This user is the branch owner")];
 
                 }
 
             })
             .catch(error => {
 
-                console.log(error);
                 this.errors = error;
+                this.changeUsersInBranchData.errors = [this.translate("No user exists with this email address")];
 
             })
             .finally(() => {
@@ -225,23 +230,31 @@ export default class {
             });
 
     }
-    deleteUserFromBranchByEmail(email){
 
-        console.log(email);
-        this.branchApi
-            .deleteUserByEmail(email)
-            .then(data => {
+    deleteUserFromBranchByEmail(email) {
 
-                this.logger.success();
+        this.confirm(
+            this.translate('Are you sure ?'),
+            this.translate('Remove Person')
+        )
+            .then(() => {
 
-            })
-            .catch(error => {
+                this.branchApi
+                    .deleteUserByEmail(email)
+                    .then(() => {
 
-                console.log(error);
-                this.errors = error;
+                        this.logger.success();
 
-            })
-            .finally(() => this.getBranchUsers());
+                    })
+                    .catch(error => {
+
+                        console.log(error);
+                        this.errors = error;
+
+                    })
+                    .finally(() => this.getBranchUsers());
+
+            });
 
     }
 

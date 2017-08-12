@@ -79,6 +79,24 @@ $color-map: (
   color-black: #303030,
   color-real-black: #000000
 );
+$propNames: (
+  "align-left": "text-align",
+  "align-right": "text-align",
+  "align-center": "text-align",
+  "dir-rtl": "direction",
+  "dir-ltr": "direction",
+  "disp-block": "display",
+  "vert-align-middle": "vertical-align"
+);
+$propValues: (
+  "align-left": "left",
+  "align-right": "right",
+  "align-center": "center",
+  "dir-rtl": "rtl",
+  "dir-ltr": "ltr",
+  "disp-block": "block",
+  "vert-align-middle": "middle"
+);
 
 //[END] Colors
 //----------------------------

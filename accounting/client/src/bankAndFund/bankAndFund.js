@@ -88,8 +88,9 @@ export default class BanksAndFundsController {
         let translate = this.translate;
 
         this.confirm(
-            translate(item.type == 'bank' ? 'Remove Bank' : 'Remove fund'),
-            translate('Are you sure ?'))
+            translate('Are you sure ?'),
+            translate(item.type == 'bank' ? 'Remove Bank' : 'Remove fund')
+        )
             .then(() => {
                 this[`${item.type}Api`].remove(item.id)
                     .then(() => {
