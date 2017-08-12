@@ -63,6 +63,12 @@ $dir: rtl;
   .so-tx-#{$key}{ color: $val; }
   .so-bg-#{$key}{ background-color: $val; }
 }
+// Make Property Classes
+@each $className, $cssPropName in $propNames {
+  .so-#{$className}{
+    #{$cssPropName}: #{map_get($propValues, $className)} !important;
+  }
+}
 
 *, *::before, *::after{
   @include box-sizing(border-box);

@@ -52,16 +52,16 @@ export default class {
 
     // [START] SMRSAN
     isOwnerUser(){
-        return this.apiPromise.get('/api/branches/is-owner-user');
+        return this.apiPromise.get('/api/branches/users/is-owner');
     }
     getBranchUsers(){
-        return this.apiPromise.get('/api/branches/get-users');
+        return this.apiPromise.get('/api/branches/users');
     }
-    addUserByEmail(data){
-        return this.apiPromise.put('/api/branches/add-user-by-email', data);
+    addUserByEmail(email){
+        return this.apiPromise.put(`/api/branches/users/${email}`);
     }
     deleteUserByEmail(email){
-        return this.apiPromise.delete('/api/branches/user-by-email', { userEmail: email });
+        return this.apiPromise.delete(`/api/branches/users/${email}`);
     }
     // [-END-] SMRSAN
 

@@ -50,6 +50,12 @@ router.route('/')
 router.route('/:id').delete(async((req, res) => {
     let id = req.params.id;
 
+    if(!req.isAuthenticated())
+        return res.json({isValid: false});
+
+    if(req.user.role !== "admin")
+        return res.json({isValid: false});
+
     await(branchRepository.remove(id));
 
     res.json({isValid: true});
@@ -176,7 +182,7 @@ router.route('/:id/default-logo').put(async((req, res) => {
 }));
 
 // [START] SMRSAN
-router.route('/is-owner-user')
+router.route('/users/is-owner')
     .get(async((req, res) => {
 
         if(!req.isAuthenticated())
@@ -196,7 +202,7 @@ router.route('/is-owner-user')
         }
 
     }));
-router.route('/get-users')
+router.route('/users')
     .get(async((req, res) => {
 
         if(!req.isAuthenticated())
@@ -223,7 +229,7 @@ router.route('/get-users')
 
 
     }));
-router.route('/add-user-by-email')
+router.route('/users/:email')
     .put((req, res) => {
 
         if(!req.isAuthenticated())
@@ -231,7 +237,7 @@ router.route('/add-user-by-email')
 
         let branchId = req.cookies['branch-id'],
             currentBranch = await(branchRepository.getById(branchId)),
-            newUserEmail = req.body.newUserEmail,
+            newUserEmail = req.params.email,
             user = null,
             userRecordInList = null;
 
@@ -246,6 +252,18 @@ router.route('/add-user-by-email')
             return res.json({isValid: false});
 
         }
+
+        // Check if the user is not the branch owner
+        if(currentBranch.ownerId !== req.user.id)
+            return res.json({isValid: false});
+
+        // Check if the user is activated
+        if(user.state !== "active")
+            return res.json({isValid: false});
+
+        // Chack if the new member is the owner
+        if(currentBranch.ownerId === user.id)
+            return res.json({isValid: true, returnValue: "This user is the branch owner"});
 
         // Check if the user is already in list
         if(userRecordInList)
@@ -280,13 +298,13 @@ router.route('/add-user-by-email')
         }
 
     });
-router.route("user-by-email")
+router.route("/users/:email")
     .delete(async((req, res) => {
 
         if(!req.isAuthenticated())
             return res.json({isValid: false});
 
-        let userEmail = req.body.userEmail,
+        let userEmail = req.params.email,
             branchId = req.cookies["branch-id"],
             user = null;
 
