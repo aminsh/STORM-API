@@ -203,6 +203,8 @@ export default class {
             .addUserByEmail(this.changeUsersInBranchData.newUserEmail)
             .then(data => {
 
+                this.changeUsersInBranchData.newUserEmail = "";
+
                 if (!(data)) {
 
                     this.logger.success();
@@ -216,6 +218,8 @@ export default class {
                     this.changeUsersInBranchData.errors = [this.translate("This user is the branch owner")];
 
                 }
+
+                this.$timeout(() => this.formService.setClean(form));
 
             })
             .catch(error => {
@@ -243,7 +247,7 @@ export default class {
                     .deleteUserByEmail(email)
                     .then(() => {
 
-                        this.logger.success();
+                        this.$timeout(() => this.logger.success());
 
                     })
                     .catch(error => {

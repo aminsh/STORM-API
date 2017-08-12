@@ -169,8 +169,9 @@
                                         name="newUserEmail"
                                         ng-model="model.changeUsersInBranchData.newUserEmail"
                                         required
+                                        id="changeUsersInBranchForm-email"
                                         style="direction: ltr !important;" ></dev-tag-email-box>
-                                <div ng-messages="changeUsersInBranchForm.newUserEmail.$error" ng-if="changeUsersInBranchForm.$dirty">
+                                <div ng-messages="changeUsersInBranchForm.newUserEmail.$error" ng-if="changeUsersInBranchForm.email.$dirty">
                                     <div ng-message="required" class="text-danger">وارد کردن ایمیل الزامیست</div>
                                     <div ng-message="email" class="text-danger">یک ایمیل مجاز وارد کنید</div>
                                 </div>
