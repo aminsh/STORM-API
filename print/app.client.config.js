@@ -5,6 +5,7 @@ import "function-prototypes";
 import "number-prototypes";
 import "string-prototypes";
 import "jquery-global-resolve";
+import "../vendors/google-material/material-components-web";
 
 import angular from "angular";
 import "angular-animate";

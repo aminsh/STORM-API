@@ -1,0 +1,17 @@
+@import "resources/mixins";
+@import "common.components/fonts";
+@import "common.components/animate";
+@import "../../vendors/google-material/material-components-web/material-components-web";
+
+// For Each Defined Color
+@each $key , $val in $color-map {
+  .so-tx-#{$key}{ color: $val; }
+  .so-bg-#{$key}{ background-color: $val; }
+}
+// Make Property Classes
+@each $className, $cssPropName in $propNames {
+  .so-#{$className}{
+    #{$cssPropName}: #{map_get($propValues, $className)} !important;
+  }
+}
+
