@@ -17,10 +17,7 @@ const express = require('express'),
 
 router.route('/').get(async((req, res) => {
 
-    if(!req.isAuthenticated())
-        return res.json({ isValid: false });
-
-    if(req.user.role !== "admin")
+    if(!req.isAuthenticated() || req.user.role !== "admin")
         return res.json({ isValid: false });
 
     let userQuery = new UserQuery(),
