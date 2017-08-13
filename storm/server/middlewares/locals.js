@@ -21,8 +21,7 @@ module.exports = async((req, res, next) => {
             ? await(branchQuery.getById(branchId))
             : false,
         env: config.env,
-        version: config.version,
-        reCaptchaSiteKey: config.reCaptcha.key.site
+        version: config.version
     };
 
     next();

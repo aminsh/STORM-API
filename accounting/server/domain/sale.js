@@ -16,9 +16,8 @@ module.exports = class SaleDomain {
         this.invoiceRepository = new InvoiceRepository(branchId);
     }
 
-    create(cmd){
+    create(cmd) {
         let entity = {
-            number: (await(this.invoiceRepository.saleMaxNumber()).max || 0) + 1,
             date: cmd.date,
             description: cmd.description,
             detailAccountId: cmd.detailAccountId,
@@ -26,6 +25,11 @@ module.exports = class SaleDomain {
             invoiceStatus: cmd.status,
             orderId: cmd.orderId
         };
+
+        if (cmd.number && cmd.number != 0 && !await(this.invoiceRepository.findByNumber(cmd.number, 'sale')))
+            entity.number = cmd.number;
+        else
+            entity.number = (await(this.invoiceRepository.saleMaxNumber()).max || 0) + 1;
 
         entity.invoiceLines = cmd.invoiceLines.asEnumerable()
             .select(line => ({
@@ -41,5 +45,9 @@ module.exports = class SaleDomain {
         let result = await(this.invoiceRepository.create(entity));
 
         return result;
+    }
+
+    isInvoiceNumberDuplicated(number, id){
+        return this.invoiceRepository.findByNumber(number, 'sale', id);
     }
 };

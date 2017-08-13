@@ -27,7 +27,7 @@ router.route('/')
                 name: cmd.name,
                 ownerName: cmd.ownerName,
                 logo: cmd.logo
-                    ? Image.toBase64(`${config.rootPath}/../${cmd.logo}`)
+                    ? `/${cmd.logo}`
                     : config.logo,
                 phone: cmd.phone,
                 mobile: cmd.mobile,
@@ -49,6 +49,12 @@ router.route('/')
 
 router.route('/:id').delete(async((req, res) => {
     let id = req.params.id;
+
+    if(!req.isAuthenticated())
+        return res.json({isValid: false});
+
+    if(req.user.role !== "admin")
+        return res.json({isValid: false});
 
     await(branchRepository.remove(id));
 
@@ -130,7 +136,7 @@ router.route('/current')
             };
 
         if (cmd.logoFileName)
-            entity.logo = Image.toBase64(`${config.rootPath}/../${cmd.logoFileName}`);
+            entity.logo = `/${cmd.logoFileName}`;
 
         await(branchRepository.update(req.cookies['branch-id'], entity));
 
@@ -174,5 +180,163 @@ router.route('/:id/default-logo').put(async((req, res) => {
 
     res.json({isValid: true});
 }));
+
+// [START] SMRSAN
+router.route('/users/is-owner')
+    .get(async((req, res) => {
+
+        if(!req.isAuthenticated())
+            return res.json({isValid: false});
+
+        let currentBranch = await(branchRepository.getById(req.cookies['branch-id']));
+
+        try{
+
+            return res.json({ isValid: currentBranch.ownerId === req.user.id });
+
+        } catch(err) {
+
+            console.log(err);
+            return res.json({isValid: false});
+
+        }
+
+    }));
+router.route('/users')
+    .get(async((req, res) => {
+
+        if(!req.isAuthenticated())
+            return res.json({isValid: false});
+
+        let currentBranch = await(branchRepository.getById(req.cookies['branch-id']));
+
+        try{
+
+            if(currentBranch.ownerId !== req.user.id){
+                console.log(">>> Not Owner");
+                return res.json({isValid: false});
+            }
+
+        } catch(err) {
+
+            console.log(">>> Error: ", err);
+            return res.json({isValid: false});
+
+        }
+
+        let branchUsers = await(branchRepository.getBranchMembers(currentBranch.id));
+        return res.json({isValid: true, returnValue: branchUsers});
+
+
+    }));
+router.route('/users/:email')
+    .put((req, res) => {
+
+        if(!req.isAuthenticated())
+            return res.json({isValid: false});
+
+        let branchId = req.cookies['branch-id'],
+            currentBranch = await(branchRepository.getById(branchId)),
+            newUserEmail = req.params.email,
+            user = null,
+            userRecordInList = null;
+
+        // Try to get user and it's record in branch members
+        try{
+
+            user = await(userRepository.getUserByEmail(newUserEmail));
+            userRecordInList = await(branchRepository.getUserInBranch(branchId, user.id));
+
+        } catch(err) {
+
+            return res.json({isValid: false});
+
+        }
+
+        // Check if the user is not the branch owner
+        if(currentBranch.ownerId !== req.user.id)
+            return res.json({isValid: false});
+
+        // Check if the user is activated
+        if(user.state !== "active")
+            return res.json({isValid: false});
+
+        // Chack if the new member is the owner
+        if(currentBranch.ownerId === user.id)
+            return res.json({isValid: true, returnValue: "This user is the branch owner"});
+
+        // Check if the user is already in list
+        if(userRecordInList)
+            return res.json({isValid: true, returnValue: "The user is already in the list"});
+
+        // Check if user is the owner
+        try{
+
+            if(currentBranch.ownerId !== req.user.id){
+                // Not The Owner
+                return res.json({isValid: false, errors: ["You have no permission"]});
+            }
+
+        } catch(err) {
+
+            console.log(err);
+            res.json({isValid: false});
+
+        }
+
+        // Add the member
+        try{
+
+            await(branchRepository.addMember(currentBranch.id, user.id));
+            res.json({isValid: true});
+
+        } catch(err) {
+
+            console.log(err);
+            res.json({isValid: false});
+
+        }
+
+    });
+router.route("/users/:email")
+    .delete(async((req, res) => {
+
+        if(!req.isAuthenticated())
+            return res.json({isValid: false});
+
+        let userEmail = req.params.email,
+            branchId = req.cookies["branch-id"],
+            user = null;
+
+        // Get User By Email
+        try{
+
+            user = await(userRepository.getUserByEmail(userEmail));
+
+        } catch(err) {
+
+            console.log(err);
+            return res.json({isValid: false, errors: ["User not found"]});
+
+        }
+
+        console.log(`branchId: ${branchId}`);
+        console.log(`user.id: ${user.id}`);
+
+        // Delete user from branch
+        try{
+
+            await(branchRepository.deleteUserInBranch(branchId, user.id));
+            return res.json({isValid: true});
+
+        } catch(err) {
+
+            console.log(err);
+            return res.json({isValid: false});
+
+        }
+
+    }));
+// [-END-] SMRSAN
 
 module.exports = router;

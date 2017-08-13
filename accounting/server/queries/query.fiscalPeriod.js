@@ -17,6 +17,7 @@ module.exports = class FiscalPeriodQuery extends BaseQuery {
     getById(id) {
         let fiscalPeriod = await(this.knex.select('*')
             .from('fiscalPeriods')
+            .where('branchId', this.branchId)
             .where('id', id)
             .first());
 

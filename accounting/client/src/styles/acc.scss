@@ -54,7 +54,7 @@ $dir: rtl;
 @import "error_404";
 @import "landing";
 @import "success";
-@import "reset-password";
+@import "settings";
 
 @import "../journal/journalLine-style";
 
@@ -62,6 +62,12 @@ $dir: rtl;
 @each $key , $val in $color-map {
   .so-tx-#{$key}{ color: $val; }
   .so-bg-#{$key}{ background-color: $val; }
+}
+// Make Property Classes
+@each $className, $cssPropName in $propNames {
+  .so-#{$className}{
+    #{$cssPropName}: #{map_get($propValues, $className)} !important;
+  }
 }
 
 *, *::before, *::after{

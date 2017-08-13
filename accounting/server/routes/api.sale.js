@@ -82,13 +82,16 @@ router.route('/')
         if (!customer)
             errors.push('مشتری نباید خالی باشد');
 
+        if (cmd.number && await(saleDomain.isInvoiceNumberDuplicated(cmd.number)))
+            errors.push('شماره فاکتور تکراری است');
+
         function checkLinesValidation() {
             cmd.invoiceLines.forEach(async.result(e => {
                 e.product = productDomain.findByIdOrCreate(e.product);
 
-                if(e.product){
+                if (e.product) {
                     e.productId = e.product.id;
-                    if(!e.description) e.description = e.product.title;
+                    if (!e.description) e.description = e.product.title;
                 }
 
                 if (Guid.isEmpty(e.productId) && String.isNullOrEmpty(e.description))
@@ -203,6 +206,7 @@ router.route('/:id')
     }))
     .put(async((req, res) => {
         let invoiceRepository = new InvoiceRepository(req.branchId),
+            saleDomain = new SaleDomain(req.branchId),
             id = req.params.id,
             errors = [],
             invoice = await(invoiceRepository.findById(id)),
@@ -213,14 +217,18 @@ router.route('/:id')
                 branchId: req.branchId,
                 fiscalPeriodId: req.cookies['current-period'],
                 userId: req.user.id
-            },
-
-            entity = {
-                date: cmd.date,
-                description: cmd.description,
-                detailAccountId: cmd.detailAccountId || cmd.customerId,
-                invoiceStatus: status
             };
+
+        if (cmd.number && await(saleDomain.isInvoiceNumberDuplicated(cmd.number, id)))
+            errors.push('شماره فاکتور تکراری است');
+
+        let entity = {
+            date: cmd.date,
+            description: cmd.description,
+            detailAccountId: cmd.detailAccountId || cmd.customerId,
+            invoiceStatus: status
+        };
+
 
         if (invoice.invoiceStatus != 'draft')
             errors.push('فاکتور جاری قابل ویرایش نمیباشد');

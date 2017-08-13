@@ -122,25 +122,54 @@ router.route('/change-password')
 
     }));
 
-router.route('/:id/change-image')
+router.route('/change-image')
     .put(async((req, res) => {
 
         let userRepository = new UserRepository()
             , imageName = req.body.imageName
-            , id = req.body.id
             , entity = {
-            image: imageName
-        };
+                        image: imageName
+                    };
+
+        if(!req.isAuthenticated())
+            return res.json({ isValid: false });
 
         try {
 
-            await(userRepository.update(id, entity));
+            console.log(entity.image);
+            await(userRepository.update(req.user.id, entity));
             res.json({isValid: true});
 
-        } catch (e) {
+        } catch (err) {
+
+            console.log(err);
+            res.json({isValid: false});
+
+        }
+
+    }));
+
+router.route('/get-user-image')
+    .get(async((req, res) => {
+
+        if(!req.isAuthenticated())
+            return res.json({ isValid: false });
+
+        try {
+
+            let userRepository = new UserRepository()
+                ,user = await(userRepository.getById(req.user.id))
+                ,userImage = (user.image !== null)? user.image:"/public/images/user.png";
+
+            res.json({
+                isValid: true
+                ,returnValue: userImage
+            });
+
+        } catch(err) {
 
             res.json({isValid: false});
-            console.log(e.message);
+            console.log(err.message);
 
         }
 
