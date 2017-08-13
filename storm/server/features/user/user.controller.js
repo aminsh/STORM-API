@@ -13,8 +13,19 @@ router.route('/activate/:token').get(async((req, res) => {
         userRepository = new UserRepository(),
         user = await(userRepository.getByToken(token));
 
-    user.token = null;
-    user.state = 'active';
+    try{
+
+        user.token = null;
+        user.state = 'active';
+
+    } catch(err) {
+
+        if(!req.isAuthenticated())
+            return res.redirect("/login");
+
+        return res.redirect("/profile");
+
+    }
 
     await(userRepository.update(user.id, user));
 

@@ -1,7 +1,7 @@
 "use strict";
 
-var Raven = require('raven');
-Raven.config('https://50b4d5bc2a994b1c981dca42cd56013b:530f0521a04c4090b8174c157927d65b@sentry.io/192057').install();
+/*var Raven = require('raven');
+Raven.config('https://50b4d5bc2a994b1c981dca42cd56013b:530f0521a04c4090b8174c157927d65b@sentry.io/192057').install();*/
 
 require('./shared/utilities/string.prototypes');
 require('./shared/utilities/array.prototypes');
