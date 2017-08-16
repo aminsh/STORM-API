@@ -23,6 +23,6 @@ RUN npm install -g bower gulp && npm install
 #RUN chmod -R ug+rwx /usr/src/app
 
 COPY . /tmp/app
-RUN chmod -R ug+rwx /tmp/app && cp -rT /tmp/app /usr/src/app && rm -rf /tmp/app
+RUN chmod -R ug+rwx /tmp/app && cp -rpT /tmp/app /usr/src/app && rm -rf /tmp/app
 
 RUN gulp --production
