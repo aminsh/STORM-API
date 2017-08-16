@@ -1,4 +1,4 @@
-FROM node:7-alpine
+FROM node:7-slim
 
 #RUN \
 #  apt-get -y update && \
