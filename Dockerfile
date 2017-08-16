@@ -14,7 +14,7 @@ RUN npm install -g bower gulp && npm install
 
 # Bundle app source
 COPY . /tmp/app
-RUN mkdir ./config && \
+RUN mkdir /.config && \
     chmod -R ug+rwx /.config && \
     chmod -R ug+rwx /tmp/app && \
     cp -rpT /tmp/app /usr/src/app && \
