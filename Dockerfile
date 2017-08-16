@@ -19,10 +19,10 @@ COPY package.json /usr/src/app/
 RUN npm install -g bower gulp && npm install
 
 # Bundle app source
-COPY . /usr/src/app
-RUN chmod -R ug+rwx /usr/src/app
+#COPY . /usr/src/app
+#RUN chmod -R ug+rwx /usr/src/app
 
-#COPY . /tmp/app
-#RUN chmod -R g+w /tmp/app && cp -rT /tmp/app /usr/src/app && rm -rf /tmp/app
+COPY . /tmp/app
+RUN chmod -R ug+rwx /tmp/app && cp -rT /tmp/app /usr/src/app && rm -rf /tmp/app
 
 RUN gulp --production
