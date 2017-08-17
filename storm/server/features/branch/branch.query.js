@@ -8,7 +8,6 @@ const knex = require('../../services/knex'),
 class BranchQuery {
     constructor() {
         this.isActive = async(this.isActive);
-        this.getBranchByInvoiceId = async(this.getBranchByInvoiceId);
     }
 
     getById(id) {
@@ -77,23 +76,15 @@ class BranchQuery {
         return knex.from('branches').count('*').first();
     }
 
-    getBranchByInvoiceId(id){
+    isSubscriptionExpired(branchId){
+        let record = await(knex.select('*').from('orders').where('branchId', branchId).first());
+        let expireTime = record.expire_at.getTime();
+        let todayTime = new Date().getTime();
 
-        let branchId = await(knex
-            .select("branchId")
-            .from("invoices")
-            .where("id", id)
-            .first())
-            .branchId;
-
-        return knex
-            .select("*")
-            .from("branches")
-            .where("id", branchId)
-            .first();
-
+        if(expireTime < todayTime)
+            return true;
+        return false;
     }
-
 }
 
 module.exports = new BranchQuery();

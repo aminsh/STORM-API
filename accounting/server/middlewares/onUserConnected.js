@@ -16,8 +16,9 @@ module.exports = async((req, res, next) => {
 
     if (branchId) {
         let isActiveBranch = await(branchQuery.isActive(branchId));
+        let isBranchExpired = branchQuery.isSubscriptionExpired(branchId);
 
-        if (!isActiveBranch)
+        if (isBranchExpired || !isActiveBranch)
             return res.redirect('/');
     }
     else return res.redirect('/profile');
@@ -30,17 +31,29 @@ module.exports = async((req, res, next) => {
         req.mode = 'create';
     } else req.mode = mode;
 
+    let fiscalPeriodQuery = new FiscalPeriodQuery(req.cookies['branch-id']);
+
     if (currentPeriod == null || currentPeriod == 0) {
-        let fiscalPeriodQuery = new FiscalPeriodQuery(req.cookies['branch-id']),
-            maxId = await(fiscalPeriodQuery.getMaxId());
+        setFiscalPeriodId();
+    } else{
+        let isFiscalPeriodValid = await(fiscalPeriodQuery.getById(currentPeriod));
+
+        if(isFiscalPeriodValid)
+            req.fiscalPeriodId = currentPeriod;
+
+        else setFiscalPeriodId();
+    }
+
+
+    next();
+
+    function setFiscalPeriodId() {
+        let maxId = await(fiscalPeriodQuery.getMaxId());
         maxId = maxId || 0;
 
         res.cookie('current-period', maxId);
         req.fiscalPeriodId = maxId;
-    } else
-        req.fiscalPeriodId = currentPeriod;
-
-    next();
+    }
 });
 
 

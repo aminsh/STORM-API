@@ -6,6 +6,7 @@ const async = require('asyncawait/async'),
     fiscalPeriod = require('./setup.fiscalPeriod'),
     firstFund = require('./setup.firstFund'),
     firstStock = require('./setup.firstStock'),
+    makeOrder = require('./setup.makeOrder'),
     EventEmitter = require('../../services/shared').service.EventEmitter;
 
 EventEmitter.on('on-branch-created', async(function (branchId) {
@@ -13,4 +14,5 @@ EventEmitter.on('on-branch-created', async(function (branchId) {
     fiscalPeriod(branchId);
     firstFund(branchId);
     firstStock(branchId);
+    makeOrder(branchId);
 }));
