@@ -1,2 +1,161 @@
 @import "common.scss";
 
+.invoice-print-main-wrapper{
+  display: block;
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  max-height: 100vh;
+  background-color: $base-background-color;
+  padding: 0;
+  margin: 0;
+}
+
+.invoice-print-header{
+  display: block;
+  width: 100%;
+  height: 90px;
+  padding: 0 25px;
+  margin: 0;
+  // border-bottom: 1px solid $color-black;
+  line-height: 90px;
+  @include transition(padding ease 0.3s);
+  & > *{
+    vertical-align: middle;
+  }
+  img.invoice-print-header-log{
+    position: relative;
+    display: inline-block;
+    float: left;
+    width: 100px;
+    bottom: -20px;
+  }
+}
+.invoice-print-wrapper{
+  display: block;
+  position: relative;
+  width: 100%;
+  padding: 0 25px 0 0;
+  margin: 0;
+
+  & > div.invoice-print-content{
+    display: block;
+    position: relative;
+    float: right;
+    width: 80%;
+    min-height: 50px;
+    max-height: calc(100vh - 90px);
+    overflow: hidden;
+    @include transition(width ease 0.3s);
+
+    & > div.invoice-print-content-body{
+      display: block;
+      position: relative;
+      padding: 10px 25px;
+      height: calc(100vh - 115px);
+      background-color: white;
+      @include overflow-x(hidden);
+      @include overflow-y(auto);
+      border-bottom: 2px solid $color-cyan-green;
+    }
+    & > div.invoice-print-content-footer {
+      display: block;
+      position: relative;
+      height: 25px;
+      line-height: 25px;
+      direction: ltr;
+      text-align: left;
+      font-size: 11px;
+      padding: 0 5px;
+      color: $color-dark-gray;
+      a{
+        color: inherit;
+        text-decoration: none;
+        &:hover{ color: $color-black; }
+      }
+    }
+
+  }
+  & > div.invoice-print-sidebar{
+    display: block;
+    position: relative;
+    float: left;
+    width: 20%;
+    height: calc(100vh - 90px);
+    // border-right: 1px solid red;
+    @include overflow-x(hidden);
+    @include overflow-y(auto);
+
+    ul.invoice-print-sidebar-pay-list{
+      display: block;
+      position: relative;
+      margin: 0;
+      padding: 0;
+      a{
+        display: block;
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      li{
+        display: block;
+        width: 100%;
+        height: 60px;
+        text-align: center;
+        margin: 0;
+        padding: 0;
+        line-height: 60px;
+        @include anim(invoice-print-sidebar-pay-list-anim ease 1s);
+        @keyframes invoice-print-sidebar-pay-list-anim {
+          from{
+            opacity: 0;
+            @include transform(translateY(25px));
+          }
+          to{
+            opacity: 1;
+            @include transform(translateY(0));
+          }
+        }
+
+        &:hover{
+          background-color: fade_out($color-dark-gray, 0.75);
+          img{
+            @include transform(scale(1.1));
+          }
+        }
+
+        img{
+          display: inline-block;
+          vertical-align: middle;
+          margin: 0 auto;
+          width: auto;
+          height: 40px;
+          @include transition(transform ease 0.2s);
+        }
+      }
+    }
+
+  }
+  @media screen and (max-width: 800px){
+    padding: 0;
+    & > div.invoice-print-content{
+      width: 100%;
+    }
+    & > div.invoice-print-sidebar{
+      display: none;
+    }
+  }
+
+}
+
+.invoice-print-branch-logo{
+  display: block;
+  width: 125px;
+  height: 125px;
+  line-height: 125px;
+  text-align: center;
+  margin: 0 auto;
+  border: 1px solid $color-gray-milk-white;
+  @include border-radius(0.3rem);
+}

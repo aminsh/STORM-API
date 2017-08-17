@@ -1,0 +1,14 @@
+*.rtl{
+  direction: rtl;
+
+  // Data-Table
+  .data-table{
+
+    direction: rtl !important;
+    th{
+      text-align: right;
+    }
+
+  }
+
+}

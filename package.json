@@ -67,6 +67,8 @@
     "linq": "^3.0.5",
     "lodash": "^4.14.2",
     "lodash.clone": "^4.5.0",
+    "lumx": "^1.0.0",
+    "material-components-web": "^0.17.0",
     "md5": "^2.2.1",
     "metismenu": "^2.7.0",
     "moment": "^2.18.1",
@@ -129,7 +131,9 @@
     "uglifyjs-webpack-plugin": "^0.4.6",
     "webpack": "^3.3.0",
     "webpack-obfuscator": "^0.9.3",
-    "yargs": "^6.6.0"
+    "yargs": "^6.6.0",
+    "velocity-animate": "^1.5.0",
+    "bourbon": "^4.3.4"
   },
   "browserify": {
     "transform": [
@@ -175,7 +179,7 @@
     "metisMenu": "./vendors/jquery.metisMenu.js",
     "angular-ui-select": "./node_modules/ui-select/dist/select.js",
     "angular-image-perloader": "./vendors/angular-image-perloader",
-    "google-material": "./vendors/google-material/material-components-web"
+    "storm-lumx": "./vendors/storm-lumx/js/lumx.js"
   },
   "browserify-shim": {
     "ladda": "global:Ladda",

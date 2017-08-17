@@ -1,7 +1,7 @@
 @import "resources/mixins";
 @import "common.components/fonts";
 @import "common.components/animate";
-@import "../../vendors/google-material/material-components-web/material-components-web";
+@import "../../vendors/storm-lumx/css/lumx.scss";
 
 // For Each Defined Color
 @each $key , $val in $color-map {

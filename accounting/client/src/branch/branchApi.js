@@ -63,6 +63,9 @@ export default class {
     deleteUserByEmail(email){
         return this.apiPromise.delete(`/api/branches/users/${email}`);
     }
+    getBranchByInvoiceId(id){
+        return this.apiPromise.get(`/api/branches/logo/${id}/invoice-id`);
+    }
     // [-END-] SMRSAN
 
 }

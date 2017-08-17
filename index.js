@@ -37,7 +37,7 @@ const config = require('./storm/server/config'),
 
 app.use('/acc', accApp);
 app.use('/api/v1', require('./api/api.config'));
-app.use('/print', require('./print/app.server.config'));
+app.use('/invoice', require('./invoice/app.server.config'));
 app.use('/admin', require('./admin/app.server.config'));
 
 require('./storm');

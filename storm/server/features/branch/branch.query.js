@@ -8,6 +8,7 @@ const knex = require('../../services/knex'),
 class BranchQuery {
     constructor() {
         this.isActive = async(this.isActive);
+        this.getBranchByInvoiceId = async(this.getBranchByInvoiceId);
     }
 
     getById(id) {
@@ -75,6 +76,24 @@ class BranchQuery {
     totalBranches(){
         return knex.from('branches').count('*').first();
     }
+
+    getBranchByInvoiceId(id){
+
+        let branchId = await(knex
+            .select("branchId")
+            .from("invoices")
+            .where("id", id)
+            .first())
+            .branchId;
+
+        return knex
+            .select("*")
+            .from("branches")
+            .where("id", branchId)
+            .first();
+
+    }
+
 }
 
 module.exports = new BranchQuery();

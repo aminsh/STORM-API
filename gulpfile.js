@@ -29,7 +29,8 @@ const path = require('path'),
         accSrcDir: './accounting/client',
         stormSrcDir: './storm/client',
         publicDir: './public',
-        adminDir: './admin/client'
+        adminDir: './admin/client',
+        invoiceDir: './invoice/client'
     };
 
 
@@ -44,19 +45,18 @@ gulp.task('acc-build-template', function () {
         .pipe(gulp.dest(`${config.publicDir}/js`));
 });
 
-gulp.task('print-build-template', function () {
-    return gulp.src([`${config.accSrcDir}/src/report/reportPrint.html`,
-        `${config.accSrcDir}/partials/templates/content-template.html`])
+gulp.task('invoice-build-template', function () {
+    return gulp.src([`${config.invoiceDir}/**/*.html`,])
         .pipe(templateCache(
             {
-                module: 'print.module',
-                filename: 'print.template.bundle.js',
+                module: 'invoice.module',
+                filename: 'invoice.template.bundle.js',
                 root: 'partials/templates'
             }))
         .pipe(gulp.dest(`${config.publicDir}/js`));
 });
 
-gulp.task('print-build-js', function () {
+gulp.task('invoice-build-js', function () {
     const distPath = `${config.publicDir}/js`;
 
     mkdirp(`${config.publicDir}/js`, err => {
@@ -67,7 +67,7 @@ gulp.task('print-build-js', function () {
 
         return browserify(
             {
-                entries: `./print/app.client.config.js`,
+                entries: `./invoice/app.client.config.js`,
                 debug: !config.isProduction
             })
             .transform({
@@ -79,11 +79,24 @@ gulp.task('print-build-js', function () {
                 }
             }, 'uglifyify')
             .bundle()
-            .pipe(gulpif(!config.isProduction, exorcist(path.join(distPath, `print.bundle.min.map`)))
-                .pipe(fs.createWriteStream(path.join(distPath, 'print.bundle.min.js'), 'utf8')));
+            .pipe(gulpif(!config.isProduction, exorcist(path.join(distPath, `invoice.bundle.min.map`)))
+                .pipe(fs.createWriteStream(path.join(distPath, 'invoice.bundle.min.js'), 'utf8')));
 
         process.exit();
     });
+});
+gulp.task('invoice-build-sass', function(){
+
+    return gulp.src('./shared/styles/invoice.scss')
+        .pipe(sourcemaps.init())
+        .pipe(sass({
+            outputStyle: 'compressed',
+            includePaths: ['./node_modules']
+        }).on('error', sass.logError))
+        .pipe(gulpif(!config.isProduction, sourcemaps.write()))
+        .pipe(rename('invoice.min.css'))
+        .pipe(gulp.dest(`${config.publicDir}/css`));
+
 });
 
 
@@ -286,8 +299,8 @@ gulp.task('default', [
     'storm-build-template',
     'storm-build-js',
     'copy-assets',
-    'print-build-template',
-    'print-build-js',
+    'invoice-build-template',
+    'invoice-build-js',
     'admin-build-template',
     'admin-build-js'
 ]);
