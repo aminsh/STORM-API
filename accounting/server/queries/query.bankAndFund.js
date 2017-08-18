@@ -6,7 +6,7 @@ const async = require('asyncawait/async'),
     await = require('asyncawait/await'),
     BaseQuery = require('./query.base'),
     kendoQueryResolve = require('../services/kendoQueryResolve'),
-    enums = require('../../shared/enums');
+    enums = require('../../../shared/enums');
 
 class BandQuery extends BaseQuery {
     constructor(branchId) {

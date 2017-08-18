@@ -30,7 +30,8 @@ const path = require('path'),
         stormSrcDir: './storm/client',
         publicDir: './public',
         adminDir: './admin/client'
-    };
+    },
+    nodemon = require('gulp-nodemon');
 
 
 gulp.task('acc-build-template', function () {
@@ -352,7 +353,7 @@ gulp.task('storm-copy-images', function () {
 });
 
 gulp.task('logo-to-file', function () {
-    let knex = require('./storm/server/services/knex'),
+    let knex = require('knex')(require('./config/enviroment').db),
         base64 = require('file-base64');
 
     knex.select('id', 'logo')
@@ -372,5 +373,15 @@ gulp.task('logo-to-file', function () {
                     });
             });
         });
+});
+
+gulp.task('run-server', function () {
+    var env = require('./eviroment.json');
+
+    nodemon({
+        script: 'index.js'
+        , ext: 'js html'
+        , env: env//{ 'NODE_ENV': 'development' }
+    });
 });
 

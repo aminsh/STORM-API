@@ -1,0 +1,7 @@
+{
+  "getServiceTokenUrl": "https://api.payping.ir/token",
+  "getUserKeyUrl": "https://api.payping.ir/GetUserKey?username={0}",
+  "getRequestTokenUrl": "https://api.payping.ir/v1/payment/RequestToken",
+  "redirectToPaypingUrl": "https://api.payping.ir/payment/PayApi/{0}",
+  "verifyPayment": "https://api.payping.ir/v1/payment/VerifyPayment"
+}

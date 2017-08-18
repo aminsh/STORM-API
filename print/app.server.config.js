@@ -21,7 +21,7 @@ app.use('/api', (req, res, next) => {
     next();
 });
 
-app.use('/api/reports', require('../accounting/server/routes/api.report'));
+app.use('/api/sales', require('../accounting/server/routes/api.sale'));
 
 app.use(async((req, res, next) => {
     let token = req.query.token,

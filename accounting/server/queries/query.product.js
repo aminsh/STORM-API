@@ -5,7 +5,7 @@ const async = require('asyncawait/async'),
     BaseQuery = require('./query.base'),
     FiscalPeriodQuery = require('./query.fiscalPeriod'),
     kendoQueryResolve = require('../services/kendoQueryResolve'),
-    enums = require('../../shared/enums'),
+    enums = require('../../../shared/enums'),
     view = require('../viewModel.assemblers/view.product');
 
 module.exports = class ProductQuery extends BaseQuery {

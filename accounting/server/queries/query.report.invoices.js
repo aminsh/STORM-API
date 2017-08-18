@@ -1,7 +1,7 @@
 "use strict";
 
 const BaseQuery = require('./query.base'),
-    enums = require('../constants/enums'),
+    enums = instanceOf('Enums'),
     async = require('asyncawait/async'),
     await = require('asyncawait/await');
 

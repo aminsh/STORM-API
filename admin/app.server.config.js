@@ -7,7 +7,6 @@ const async = require('asyncawait/async'),
     config = require('../accounting/server/config'),
     app = express();
 
-
 module.exports = app;
 
 app.set('views', __dirname);

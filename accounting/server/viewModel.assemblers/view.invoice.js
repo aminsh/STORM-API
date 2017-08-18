@@ -1,6 +1,6 @@
 "use strict";
 
-const enums = require('../../shared/enums');
+const enums = require('../../../shared/enums');
 
 module.exports = function(entity) {
 

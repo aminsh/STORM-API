@@ -1,10 +1,6 @@
 "use strict";
 
-const config = require('../config'),
-    async = require('asyncawait/async'),
-    await = require('asyncawait/await');
-
-module.exports = async((req, res, next) => {
+module.exports = (req, res, next) => {
     if (req.isAuthenticated())
         return next();
 
@@ -13,4 +9,4 @@ module.exports = async((req, res, next) => {
 
     let url = `/login?returnUrl=${req.originalUrl}`;
     return res.redirect(url);
-});
+};

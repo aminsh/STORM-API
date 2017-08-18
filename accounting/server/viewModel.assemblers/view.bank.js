@@ -1,6 +1,6 @@
 "use strict";
 
-const enums = require('../../shared/enums');
+const enums = require('../../../shared/enums');
 
 function bankAssembler(entity) {
     var viewModel = {

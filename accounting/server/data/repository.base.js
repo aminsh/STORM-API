@@ -1,7 +1,7 @@
 "use strict";
 
-const knex = require('../services/knex'),
-    Guid = require('../services/shared').utility.Guid;
+const knex = instanceOf('knex'),
+    Guid = instanceOf('utility').Guid;
 
 module.exports = class RepositoryBase {
     constructor(branchId) {

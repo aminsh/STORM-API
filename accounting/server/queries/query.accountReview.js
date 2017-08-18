@@ -5,7 +5,7 @@ const async = require('asyncawait/async'),
     BaseQuery = require('./query.base'),
     kendoQueryResolve = require('../services/kendoQueryResolve'),
     groupBy = require('./query.journal.grouped'),
-    enums = require('../constants/enums'),
+    enums = instanceOf('Enums'),
     JournalQueryConfig = require('./query.journal.config');
 
 module.exports = class AccountReview extends BaseQuery {
