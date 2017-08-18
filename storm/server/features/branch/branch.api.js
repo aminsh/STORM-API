@@ -332,6 +332,24 @@ router.route("/users/:email")
         }
 
     }));
+router.route("/logo/:id/invoice-id")
+    .get(async((req, res) => {
+
+        try{
+
+            let invoiceId = req.params.id,
+                branch = await(branchQuery.getBranchByInvoiceId(invoiceId));
+
+            return res.json({isValid: true, returnValue: branch.logo});
+
+        } catch(err) {
+
+            console.log(err);
+            return res.json({isValid: false});
+
+        }
+
+    }));
 // [-END-] SMRSAN
 
 module.exports = router;

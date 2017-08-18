@@ -75,6 +75,16 @@ class BranchQuery {
     totalBranches(){
         return knex.from('branches').count('*').first();
     }
+
+    isSubscriptionExpired(branchId){
+        let record = await(knex.select('*').from('orders').where('branchId', branchId).first());
+        let expireTime = record.expire_at.getTime();
+        let todayTime = new Date().getTime();
+
+        if(expireTime < todayTime)
+            return true;
+        return false;
+    }
 }
 
 module.exports = new BranchQuery();
