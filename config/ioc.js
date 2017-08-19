@@ -29,6 +29,7 @@ container.singleton('Authentication', function () {
     return new Authentication();
 });
 
+
 container.singleton('user.repository', function () {
     let UserRepository = require('../storm/server/features/user/user.repository');
     return new UserRepository();
@@ -37,6 +38,11 @@ container.singleton('user.repository', function () {
 container.singleton('branch.repository', function () {
     let BranchRepository = require('../storm/server/features/branch/branch.repository');
     return new BranchRepository();
+});
+
+container.singleton('persistedConfig.repository', function () {
+    let PersistedConfigRepository = require('../storm/server/features/persistedConfig/persistedConfig.repository');
+    return new PersistedConfigRepository();
 });
 
 
