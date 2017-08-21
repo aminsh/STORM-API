@@ -73,14 +73,18 @@ module.exports = class PaypingService {
         });
     }
 
-    getRequestToken(parameters) {
-
-        //Amount on payping is based on Toman
-        parameters.amount = parameters.amount / 10;
+    getRequestToken(parameter) {
 
         const options = {
             uri: paypingConfig.getRequestTokenUrl,
-            form: parameters,
+            form: {
+                UserKey: parameter.userKey,
+                ReturnUrl: parameter.returnUrl,
+                PayerName: parameter.customerName,
+                Description: parameter.description,
+                Amount: parameter.amount /10, //Amount on payping is based on Toman
+                ReferenceId: parameter.referenceId
+            },
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
@@ -107,5 +111,30 @@ module.exports = class PaypingService {
         const url = paypingConfig.redirectToPaypingUrl.format(requestToken);
 
         redirect(url);
+    }
+
+    verify(userKey, referenceId) {
+        const options = {
+            uri: paypingConfig.verifyPayment,
+            form: {RefId: referenceId, UserKey: userKey},
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Accept': 'application/json',
+                'Authorization': await(persistedConfigRepository.get(this.key))
+            }
+        };
+
+        return new Promise((resolve, reject) => {
+            request(options, function (error, response, body) {
+                if (response.statusCode == 401)
+                    return reject({statusCode: 401, statusMessage: 'Unauthorized'});
+
+                if (response.statusCode == 400)
+                    return reject({statusCode: 400, statusMessage: 'Bad Request'});
+
+                return resolve({statusCode: 200, data: body});
+            });
+        });
     }
 };
