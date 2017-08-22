@@ -45,6 +45,11 @@ container.singleton('persistedConfig.repository', function () {
     return new PersistedConfigRepository();
 });
 
+container.singleton('branchThirdParty.repository', function () {
+    let BranchThirdPartyRepository = require('../storm/server/features/thirdParty/branchThirdPary.repository');
+    return new BranchThirdPartyRepository();
+});
+
 
 
 
