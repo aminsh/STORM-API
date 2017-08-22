@@ -147,7 +147,7 @@ import "./payableCheque";
 import "./bankAndFund";
 import "./detailAccount";
 //factory
-import saleApi from "sales/saleApi";
+import saleApi from "./sales/saleApi";
 
 accModule
     .config(uiRouteConfig)
