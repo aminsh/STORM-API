@@ -24,8 +24,8 @@ app.use('/api', (req, res, next) => {
 app.use('/api/reports', require('../accounting/server/routes/api.report'));
 app.use('/api/sales', require('../accounting/server/routes/api.sale'));
 
-app.use(async((req, res, next) => {
-    /*let token = req.query.token,
+/*app.use(async((req, res, next) => {
+    let token = req.query.token,
         branchId = req.cookies['branch-id'];
 
     if (!(token || branchId))
@@ -41,13 +41,26 @@ app.use(async((req, res, next) => {
         return;
     }
 
-    req.branchId = branchId;*/
+    req.branchId = branchId;
     return next();
+}));*/
+
+app.get('/token/:token', async((req,res) => {
+
+    let token = req.params.token;
+    let tokenObj = Crypto.verify(token);
+    let branchId = tokenObj.branchId;
+    let invoiceId = tokenObj.invoiceId;
+
+    req.cookies['branch-id'] = branchId;
+    res.redirect(`/invoice/${invoiceId}`);
+
 }));
 
-
-app.get('*', (req, res) => res.render('invoice.ejs', {
-    reports,
-    version: config.version,
-    translates
-}));
+app.get('*', async((req, res) =>
+    res.render('invoice.ejs', {
+        reports,
+        version: config.version,
+        translates,
+        currentBranch: await(require('../storm/server/features/branch/branch.repository').getById(req.cookies['branch-id']))
+    })));

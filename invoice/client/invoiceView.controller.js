@@ -2,8 +2,19 @@
 
 export default class InvoiceViewController{
 
-    constructor($window, $scope, $location, $stateParams, saleApi, branchApi){
+    constructor($window
+                ,$rootScope
+                ,$scope
+                ,$location
+                ,$stateParams
+                ,saleApi
+                ,branchApi
+                ,navigate
+                ,$filter){
 
+        this.$filter = $filter;
+        this.$rootScope = $rootScope;
+        this.navigate = navigate;
         this.$window = $window;
         this.$scope = $scope;
         this.$location = $location;
@@ -13,7 +24,10 @@ export default class InvoiceViewController{
         this.invoiceId = $stateParams.id;
         this.invoice = {};
         this.payments = {};
-        this.branchLogo = null;
+        this.branch = {
+            logo: null,
+            name: null
+        };
         this.dataTable = {
             thead: [],
             tbody: []
@@ -22,7 +36,7 @@ export default class InvoiceViewController{
         this.tHeadInit();
         this.tBodyInit();
         this.getPayments();
-        this.getBranchLogoByInvoiceId();
+        this.currentBranchInit();
 
     }
 
@@ -81,8 +95,8 @@ export default class InvoiceViewController{
                     status: data.status,
                     statusDisplay: data.statusDisplay,
                     lines: [],
-                    sumTotalPrice: data.sumTotalPrice,
-                    sumPaidAmount: data.sumPaidAmount,
+                    sumTotalPrice: this.$filter("number")(data.sumTotalPrice),
+                    sumPaidAmount: this.$filter("number")(data.sumPaidAmount),
                     sumRemainder: data.sumRemainder,
                     sumDiscount: 0,
                     sumVat: 0
@@ -94,17 +108,20 @@ export default class InvoiceViewController{
                             row: i+1,
                             serviceProductName: thisLine.description,
                             quantity: thisLine.quantity,
-                            unitPrice: thisLine.unitPrice,
-                            discount: thisLine.discount,
-                            vat: thisLine.vat,
+                            unitPrice: this.$filter("number")(thisLine.unitPrice),
+                            discount: this.$filter("number")(thisLine.discount),
+                            vat: this.$filter("number")(thisLine.vat),
                             totalPrice: null
                         };
-                    tmp.totalPrice = (tmp.unitPrice * tmp.quantity) - tmp.discount + tmp.vat;
-                    this.invoice.sumVat += tmp.vat;
-                    this.invoice.sumDiscount += tmp.discount;
+                    tmp.totalPrice = (thisLine.unitPrice * thisLine.quantity) - thisLine.discount + thisLine.vat;
+                    tmp.totalPrice = this.$filter("number")(tmp.totalPrice);
+                    this.invoice.sumVat += thisLine.vat;
+                    this.invoice.sumDiscount += thisLine.discount;
                     this.invoice.lines.push(tmp);
 
                 }
+                this.invoice.sumVat = this.$filter("number")(this.invoice.sumVat);
+                this.invoice.sumDiscount = this.$filter("number")(this.invoice.sumDiscount);
                 this.dataTable.tbody = this.invoice.lines;
 
             })
@@ -129,22 +146,14 @@ export default class InvoiceViewController{
 
     }
 
-    getBranchLogoByInvoiceId(){
+    printInvoiceContent(){
 
-        this.branchApi
-            .getBranchByInvoiceId(this.invoiceId)
-            .then((data) => {
+        this.navigate(
+            'print',
+            {key: 700},
+            {"id": this.invoiceId});
 
-                this.branchLogo = data.returnValue;
-
-            })
-            .catch(err => console.log(err));
-
-    }
-
-    printInvoiceContent(content){
-
-        let printWindow = this.$window.open('', 'چاپ فاکتور', 'height=600,width=800');
+        /*let printWindow = this.$window.open('', 'چاپ فاکتور', 'height=600,width=800');
 
         printWindow
             .document
@@ -160,9 +169,17 @@ export default class InvoiceViewController{
         printWindow.document.close();
         printWindow.focus();
         printWindow.print();
-        printWindow.close();
+        printWindow.close();*/
 
         return true;
+
+    }
+
+    currentBranchInit(){
+
+        let currentBranch = this.$rootScope.branch;
+        this.branch.logo = currentBranch.logo;
+        this.branch.name = currentBranch.name;
 
     }
 

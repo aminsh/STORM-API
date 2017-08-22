@@ -147,7 +147,7 @@ import "./payableCheque";
 import "./bankAndFund";
 import "./detailAccount";
 //factory
-import saleApi from "sales/saleApi";
+
 
 accModule
     .config(uiRouteConfig)
@@ -198,7 +198,6 @@ accModule
     .factory('apiPromise', apiPromise)
     .factory('logger', logger)
     .factory('confirm', confirm)
-    .factory('saleApi', saleApi)
 
     .controller('chequePrintController', chequePrintController)
     .controller('reportController', reportController)
@@ -206,6 +205,7 @@ accModule
     .controller('chooseBranchController', chooseBranchController)
     .controller('settingsController', SettingsController)
     .controller('branchInfoController', BranchInfoController)
+
 
     .filter('totalSum', totalSum);
 

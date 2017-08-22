@@ -15,7 +15,8 @@ export default class invoiceController {
                 promise,
                 createPaymentService,
                 createPersonService,
-                productCreateService) {
+                productCreateService,
+                sendInvoiceEmail) {
 
 
         let regex = /^([^.]*)/;
@@ -28,6 +29,7 @@ export default class invoiceController {
             getAllProduct: devConstants.urls.products.getAll()
         };
 
+        this.sendInvoiceEmail = sendInvoiceEmail;
         this.isLoading = false;
         this.invoiceType = invoiceType;
         this.pageTitle = '';
@@ -364,4 +366,13 @@ export default class invoiceController {
     onItemPropertyChanged(item) {
         item.vat = ((item.unitPrice * item.quantity) - item.discount) * 9 / 100;
     }
+
+    openSendEmailModal(){
+
+        this.sendInvoiceEmail.show({
+            invoiceId: this.invoice.id
+        });
+
+    }
+
 }

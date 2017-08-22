@@ -18,17 +18,17 @@ import "velocity-animate";
 import "storm-lumx";
 // [-END-] Storm Lumx Dependencies
 
-import ReportApi from "../accounting/client/src/apis/reportApi";
+// Controllers
+import ThirdPartyController from "./client/thirdParty.controller";
+
 import apiPromise from "../accounting/client/src/services/apiPromise";
 import navigate from "../accounting/client/src/services/routeNavigatorService";
 import reportViewer from "../accounting/client/src/directives/reportViewer";
-import ReportPrintController from "../accounting/client/src/report/reportPrint";
 import {body, content, footer, heading} from "../accounting/client/src/directives/content";
 import BranchApi from "../accounting/client/src/branch/branchApi";
-import InvoiceViewController from "./client/invoiceView.controller";
 import saleApi from "../accounting/client/src/sales/saleApi";
 
-let invoiceModule = angular.module('invoice.module', [
+let thirdPartyModule = angular.module('thirdParty.module', [
         'ngAnimate',
         'ngResource',
         'ngSanitize',
@@ -37,15 +37,13 @@ let invoiceModule = angular.module('invoice.module', [
     ]),
     devConstants = {
         urls: {
-            rootUrl: '/invoice/api'
-        },
-        reports: JSON.parse(localStorage.getItem('reports'))
+            rootUrl: '/third-party/api'
+        }
     };
 
-invoiceModule
+thirdPartyModule
     .run(($rootScope,$location) => {
         $rootScope.user = {};
-        $rootScope.branch = JSON.parse(localStorage.getItem("currentBranch"));
 
         let locationSearch = false;
 
@@ -62,41 +60,28 @@ invoiceModule
 
     })
     .config(($stateProvider, $urlRouterProvider, $locationProvider) => {
+
         $locationProvider.html5Mode(true);
         $locationProvider.hashPrefix('!');
         $urlRouterProvider.otherwise('/not-found');
 
         $stateProvider
-            .state('report', {
-                url: '/:id',
-                controller: 'invoiceViewController',
+            .state('third-party', {
+                url: '/',
+                controller: 'thirdPartyController',
                 controllerAs: 'model',
-                templateUrl: 'partials/templates/invoiceView.html'
-            })
-            .state('print', {
-                url: '/print/:key',
-                controller: 'reportPrintController',
-                controllerAs: 'model',
-                templateUrl: 'partials/templates/reportPrint.html'
+                templateUrl: 'partials/templates/thirdParty.html'
             });
+
     })
     .constant('devConstants', devConstants)
-    .service('reportApi', ReportApi)
     .service('branchApi', BranchApi)
     .factory('apiPromise', apiPromise)
     .factory('navigate', navigate)
-    .factory('reportParameters', () => ({
-        show: () => console.log('reportParameters')
-    }))
     .factory('saleApi', saleApi)
     .directive('devTagContent', content)
     .directive('devTagContentBody', body)
     .directive('devTagContentHeading', heading)
     .directive('devTagContentFooter', footer)
     .directive('devTagReportViewer', reportViewer)
-    .controller('reportPrintController', ReportPrintController)
-    .controller('invoiceViewController', InvoiceViewController);
-
-
-
-
+    .controller('thirdPartyController', ThirdPartyController);
