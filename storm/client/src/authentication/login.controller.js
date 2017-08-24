@@ -15,7 +15,7 @@ export default class LoginController {
         $scope.$on('$destroy', () => {
             $rootScope.noFooter = false;
         });
-        
+
         this.userApi = userApi;
         this.$rootScope = $rootScope;
         this.$state = $state;
@@ -62,8 +62,8 @@ export default class LoginController {
 
     setRecaptchaData(){
 
-        let $window = this.$window;
-        this.user.reCaptchaResponse = $window.grecaptcha.getResponse($window.reCaptchaWidget)
+        if(this.$rootScope.isDevelopment) return;
+        this.user.reCaptchaResponse = this.$window.grecaptcha.getResponse($window.reCaptchaWidget)
 
     }
 

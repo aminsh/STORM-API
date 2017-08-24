@@ -81,4 +81,4 @@ class BranchRepository {
 
 }
 
-module.exports = new BranchRepository();
+module.exports = BranchRepository;

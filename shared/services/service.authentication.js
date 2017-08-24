@@ -53,7 +53,10 @@ module.exports = class {
             req.logIn(user, async(function (err) {
                 if (err) return next(err);
 
-                let reCaptchaUserResponse = req.body.reCaptchaResponse;
+                let reCaptchaUserResponse = null;
+
+                if(instanceOf('config').env !== "development")
+                    reCaptchaUserResponse = req.body.reCaptchaResponse;
 
                 instanceOf('captcha').verify(reCaptchaUserResponse)
                     .then(() => res.send({
@@ -62,7 +65,10 @@ module.exports = class {
                             currentUser: user.name
                         }
                     }))
-                    .catch(() => res.send({isValid: false, errors: ['Captcha is incorrect']}));
+                    .catch(() => res.send({
+                        isValid: false,
+                        errors: ['Captcha is incorrect']
+                    }));
 
             }));
         });

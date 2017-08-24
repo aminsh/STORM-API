@@ -181,7 +181,7 @@
   line-height: 125px;
   text-align: center;
   margin: 0 auto;
-  border: 1px solid $color-gray-milk-white;
+  // border: 1px solid $color-gray-milk-white;
   @include border-radius(0.3rem);
 }
 
@@ -204,5 +204,27 @@
         color: $color-cyan-green;
       }
     }
+  }
+}
+
+.invoice-print-pay-table-container,
+.invoice-print-avg-table-container{
+  @media screen and (max-width: 800px){
+    padding: 0 !important;
+    text-align: center;
+    .invoice-print-table{
+      margin: 0 auto;
+    }
+  }
+}
+
+.invoice-print-mobile-pay-list{
+  display: none;
+  position: fixed;
+  bottom: 42px;
+  left: 25px;
+  text-align: right;
+  @media screen and (max-width: 800px){
+    display: block;
   }
 }

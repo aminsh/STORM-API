@@ -1,6 +1,6 @@
 "use strict";
 
 const Config = instanceOf('config'),
-    reCaptch = require('../../integration/reCapcha/service');
+    reCaptch = require('../../integration/reCaptcha/service');
 
 module.exports =  reCaptch;

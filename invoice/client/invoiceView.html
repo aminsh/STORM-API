@@ -53,7 +53,7 @@
                 <br/>
                 <br/>
                 <div flex-container="row" flex-column="12" >
-                    <div flex-item="6" style="padding: 0 50px;" >
+                    <div flex-item="6" class="invoice-print-pay-table-container" style="padding: 0 50px;" >
                         <table class="invoice-print-table" >
                             <tr>
                                 <td>پرداخت:</td>
@@ -69,7 +69,7 @@
                             </tr>
                         </table>
                     </div>
-                    <div flex-item="6" style="padding: 0 50px 0 0" >
+                    <div flex-item="6" class="invoice-print-avg-table-container" style="padding: 0 50px 0 0" >
                         <table class="invoice-print-table" >
                             <tr>
                                 <td>جمع مبلغ:</td>
@@ -103,27 +103,22 @@
                         <img src="/public/images/payping-logo.png" />
                     </a>
                 </li>
-                <li>
-                    <a href="" >
-                        <img src="/public/images/payping-logo.png" />
-                    </a>
-                </li>
-                <li>
-                    <a href="" >
-                        <img src="/public/images/payping-logo.png" />
-                    </a>
-                </li>
-                <li>
-                    <a href="" >
-                        <img src="/public/images/payping-logo.png" />
-                    </a>
-                </li>
-                <li>
-                    <a href="" >
-                        <img src="/public/images/payping-logo.png" />
-                    </a>
-                </li>
             </ul>
         </div>
+    </div>
+    <div class="invoice-print-mobile-pay-list" >
+        <lx-fab lx-direction="up" >
+            <lx-fab-trigger>
+                <lx-button lx-size="xl" lx-type="fab" lx-tooltip="پرداخت با" lx-tooltip-position="right" >
+                    <i class="mdi mdi-coin" ></i>
+                    <i class="mdi mdi-plus" ></i>
+                </lx-button>
+            </lx-fab-trigger>
+            <lx-fab-actions>
+                <lx-button lx-size="l" lx-type="fab" lx-tooltip="PayPing" lx-tooltip-position="right" >
+                    <img src="/public/images/payping-favicon2.png" />
+                </lx-button>
+            </lx-fab-actions>
+        </lx-fab>
     </div>
 </div>

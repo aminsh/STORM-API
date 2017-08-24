@@ -1,4 +1,24 @@
 <h1 class="third-party-title" ><img src="/public/images/payping-logo.png" /></h1>
-<div class="third-party-container" >
-    Hello
+<div class="third-party-container-s" >
+    <form name="form" novalidate >
+        <div class="form-group" >
+            <label for="payping-username" >نام کاربری پی پینگ:</label>
+            <input id="payping-username"
+                   type="text"
+                   required
+                   class="form-control"
+                   dir="ltr"
+                   name="username"
+                   ng-model="model.payping.username" />
+        </div>
+        <div ng-messages="form.username.$error" ng-if="form.username.$dirty" >
+            <div ng-message="required" class="text-danger" >وارد کردن نام کاربری الزامیست</div>
+        </div>
+        <div class="form-group" >
+            <button ng-submit="model.submitPayPingUserName(form)"
+                    ng-disabled="form.$invalid"
+                    class="btn btn--flat btn--m btn--green"
+                    lx-ripple >فعال سازی</button>
+        </div>
+    </form>
 </div>

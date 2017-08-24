@@ -8,14 +8,17 @@ const async = require('asyncawait/async'),
     translates = require('../accounting/server/config/translate.client.fa.json'),
     config = require('../accounting/server/config'),
     reports = require('../accounting/reporting/report.config.json'),
-    Crypto = require('../shared/services/cryptoService');
+    Crypto = require('../shared/services/cryptoService'),
+    Enums = instanceOf('Enums');
 
-const thirdParty = [
+let thirdParty = [
     {
         key: "PayPing",
-        value: "پی پینگ"
+        display: "پی پینگ"
     }
 ];
+
+
 
 module.exports = app;
 

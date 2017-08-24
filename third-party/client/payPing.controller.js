@@ -2,10 +2,19 @@
 
 export default class PayPingController{
 
-    constructor(){
+    constructor($scope, formService){
 
-        console.log("Hello World!");
+        this.$scope = $scope;
+        this.formService = formService;
+        this.payping = {
+            username: ""
+        };
 
+    }
+
+    submitPayPingUserName(form){
+        if(form.$invalid)
+            return this.formService.setDirty(form);
     }
 
 }

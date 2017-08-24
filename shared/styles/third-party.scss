@@ -8,15 +8,22 @@ body{
   display: block;
   width: 100%;
   text-align: center;
-  font-size: 72px;
+  font-size: 60px;
   padding: 18px 10px;
+  img{
+    width: 300px;
+    max-width: 100%;
+    height: auto;
+    display: inline-block;
+    margin: 0 auto;
+  }
 }
 
 .third-party-container{
   display: block;
   position: relative;
   margin: 0 auto;
-  padding: 0;
+  padding: 10px 20px;
   width: 800px;
   max-width: 100%;
   min-height: 50px;
@@ -28,3 +35,9 @@ body{
   @include border-radius();
   @include anim(fadeInUp ease 1s);
 }
+.third-party-container-s{
+  @extend .third-party-container;
+  width: 360px;
+}
+
+// PayPing Styles

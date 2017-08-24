@@ -23,12 +23,12 @@ container.register('kendoQueryResolve', require('../shared/services/kendoQueryRe
 container.register('htmlRender', require('../shared/services/ejsRenderService'));
 container.register('Crypto', require('../shared/services/cryptoService'));
 container.register('Enums', require('../shared/enums'));
+container.register('captcha', require('../integration/reCaptcha/service'));
 
 container.singleton('Authentication', function () {
     let Authentication = require('../shared/services/service.authentication');
     return new Authentication();
 });
-
 
 container.singleton('user.repository', function () {
     let UserRepository = require('../storm/server/features/user/user.repository');

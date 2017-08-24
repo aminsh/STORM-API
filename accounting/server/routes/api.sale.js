@@ -21,9 +21,9 @@ const async = require('asyncawait/async'),
     Crypto = require('../services/shared').service.Crypto,
     stormConfig = require('../../../storm/server/config'),
     md5 = require('md5'),
-    BranchRepository = require('../../../storm/server/features/branch/branch.repository'),
-    emailService = require('../../../storm/server/services/emailService'),
-    render = require('../../../storm/server/services/shared').service.render;
+    BranchRepository = instanceOf("branch.repository"),
+    emailService = instanceOf("Email"),
+    render = instanceOf("htmlRender").render;
 
 
 router.route('/summary')
@@ -353,7 +353,7 @@ router.route('/:invoiceId/send-email')
             userEmail = req.body.email;
             invoiceId = req.params.invoiceId;
             invoice = await(invoiceQuery.getById(invoiceId));
-            branchId = invoice.branchId;
+            branchId = req.branchId;
             token = Crypto.sign({
                 branchId: branchId,
                 invoiceId: invoiceId
@@ -373,12 +373,20 @@ router.route('/:invoiceId/send-email')
         try{
 
             emailService.send({
-                from: "info@storm-online.ir",
+                from: process.env.EMAIL_AUTH_USER,
                 to: userEmail,
                 subject: `صورت حساب فروش ${invoice.description}`,
                 html: `<a href="${link}" target="_blank" >${link}</a>`
-            });
-            return res.json({isValid: true});
+            })
+                .then(() => res.json({isValid: true}))
+                .catch(err => {
+
+                    console.log(`Email Error: ${err}`);
+                    res.json({isValid: false});
+
+
+                });
+            return;
 
         } catch(err) {
 

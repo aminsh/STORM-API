@@ -1,6 +1,6 @@
 "use strict";
 
-export default class thirdPartyConstroller{
+export default class ThirdPartyConstroller{
 
     constructor(){
 

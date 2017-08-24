@@ -18,15 +18,17 @@ import "velocity-animate";
 import "storm-lumx";
 // [-END-] Storm Lumx Dependencies
 
-// Controllers
-import ThirdPartyController from "./client/thirdParty.controller";
-
 import apiPromise from "../accounting/client/src/services/apiPromise";
 import navigate from "../accounting/client/src/services/routeNavigatorService";
+import formService from "../accounting/client/src/services/formService";
 import reportViewer from "../accounting/client/src/directives/reportViewer";
 import {body, content, footer, heading} from "../accounting/client/src/directives/content";
 import BranchApi from "../accounting/client/src/branch/branchApi";
 import saleApi from "../accounting/client/src/sales/saleApi";
+
+// Controllers
+import ThirdPartyController from "./client/thirdParty.controller";
+import PayPingController from "./client/payPing.controller";
 
 let thirdPartyModule = angular.module('thirdParty.module', [
         'ngAnimate',
@@ -72,10 +74,18 @@ thirdPartyModule
                 controllerAs: 'model',
                 templateUrl: 'partials/templates/thirdParty.html'
             });
+        $stateProvider
+            .state('payping', {
+                url: '/payping',
+                controller: 'payPingController',
+                controllerAs: 'model',
+                templateUrl: 'partials/templates/payPing.html'
+            });
 
     })
     .constant('devConstants', devConstants)
     .service('branchApi', BranchApi)
+    .service('formService', formService)
     .factory('apiPromise', apiPromise)
     .factory('navigate', navigate)
     .factory('saleApi', saleApi)
@@ -84,4 +94,5 @@ thirdPartyModule
     .directive('devTagContentHeading', heading)
     .directive('devTagContentFooter', footer)
     .directive('devTagReportViewer', reportViewer)
-    .controller('thirdPartyController', ThirdPartyController);
+    .controller('thirdPartyController', ThirdPartyController)
+    .controller('payPingController', PayPingController);

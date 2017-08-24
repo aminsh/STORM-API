@@ -7,6 +7,7 @@ const knex = instanceOf('knex'),
 module.exports = class BranchThirdPartyRepository {
     constructor() {
         this.get = async(this.get);
+        this.getAll = async(this.getAll);
     }
 
     create(branchId, key, data) {
@@ -42,4 +43,16 @@ module.exports = class BranchThirdPartyRepository {
 
         return entity;
     }
+
+    getAll(branchId){
+
+        let entity = await(knex.from('branchThirdParty')
+            .where('branchId', branchId));
+
+        entity.forEach(item => item.data = JSON.parse(item.data));
+
+        return entity;
+
+    }
+
 };

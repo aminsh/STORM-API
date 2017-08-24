@@ -52,7 +52,7 @@ app.get('/token/:token', async((req,res) => {
     let branchId = tokenObj.branchId;
     let invoiceId = tokenObj.invoiceId;
 
-    req.cookies['branch-id'] = branchId;
+    res.cookie('branch-id', branchId);
     res.redirect(`/invoice/${invoiceId}`);
 
 }));
@@ -62,5 +62,5 @@ app.get('*', async((req, res) =>
         reports,
         version: config.version,
         translates,
-        currentBranch: await(require('../storm/server/features/branch/branch.repository').getById(req.cookies['branch-id']))
+        currentBranch: await(instanceOf('branch.repository').getById(req.cookies['branch-id']))
     })));
