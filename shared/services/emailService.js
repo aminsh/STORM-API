@@ -19,7 +19,7 @@ module.exports.send = (options) => {
 
     return new Promise((resolve, reject) => {
         transporter.sendMail(options, function (err, suc) {
-            if (err) reject(err);
+            if (err) return reject(err);
             resolve(suc);
         });
     });
