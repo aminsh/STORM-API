@@ -33,13 +33,9 @@ module.exports = class BranchThirdPartyRepository {
     }
 
     get (branchId, key) {
-        let entity = await(knex.from('branchThirdParty')
+        return knex.from('branchThirdParty')
             .where('key', key)
             .where('branchId', branchId)
-            .first());
-
-        entity.data = JSON.parse(entity.data);
-
-        return entity;
+            .first()
     }
 };
