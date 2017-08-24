@@ -298,7 +298,7 @@ gulp.task('thirdParty-build-js', function(){
     });
 
 });
-gulp.task('thirdParty-build-scss', function(){
+gulp.task('thirdParty-build-sass', function(){
 
     return gulp.src('./shared/styles/third-party.scss')
         .pipe(sourcemaps.init())
@@ -381,6 +381,11 @@ gulp.task('copy-bootstrap-fonts', function () {
         .pipe(gulp.dest(`${config.publicDir}/fonts`));
 });
 
+gulp.task('copy-mdi-fonts', function () {
+    return gulp.src(`./vendors/storm-lumx/css/libs/mdi/fonts/**.*`)
+        .pipe(gulp.dest(`${config.publicDir}/fonts`));
+});
+
 gulp.task('copy-stimulsoft-files', function () {
     return gulp.src(`${config.accSrcDir}/assets/fa.xml`)
         .pipe(gulp.dest(`${config.publicDir}`));
@@ -406,6 +411,7 @@ gulp.task('copy-assets', [
     'copy-kendo-images',
     'copy-kendo-fonts',
     'copy-bootstrap-fonts',
+    'copy-mdi-fonts',
     'copy-persian-fonts',
     'copy-stimulsoft-files',
     'storm-copy-images'
@@ -421,6 +427,10 @@ gulp.task('default', [
     'copy-assets',
     'invoice-build-template',
     'invoice-build-js',
+    'invoice-build-sass',
+    'thirdParty-build-template',
+    'thirdParty-build-js',
+    'thirdParty-build-sass',
     'admin-build-template',
     'admin-build-js'
 ]);
