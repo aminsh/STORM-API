@@ -10,6 +10,7 @@ app.use('/api/users', require('../features/user/user.api'));
 app.use('/api/branches', require('../features/branch/branch.api'));
 app.use('/api', require('../features/message/message.api'));
 app.use('/api/auth', require('../features/auth/auth.api'));
+app.use('/api/branch-third-party', require('../features/thirdParty/branchThirdParty.api'));
 
 /* ctrls */
 app.use('/auth', require('../features/auth/auth.controller'));

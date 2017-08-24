@@ -16,8 +16,6 @@ module.exports = async((req, res, next) => {
 
     if (branchId) {
         let isActiveBranch = await(branchQuery.isActive(branchId));
-
-        // This is for expiration branch order
         /*let isBranchExpired = branchQuery.isSubscriptionExpired(branchId);
 
         if (isBranchExpired || !isActiveBranch)

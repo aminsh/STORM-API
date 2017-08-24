@@ -12,6 +12,7 @@ export default class invoiceController {
                 $state,
                 $timeout,
                 $scope,
+                $window,
                 promise,
                 createPaymentService,
                 createPersonService,
@@ -43,6 +44,7 @@ export default class invoiceController {
         this.saleApi = saleApi;
         this.purchaseApi = purchaseApi;
         this.$timeout = $timeout;
+        this.$window = $window;
         this.logger = logger;
         this.translate = translate;
         this.navigate = navigate;
@@ -375,4 +377,9 @@ export default class invoiceController {
 
     }
 
+
+    goToPayment(){
+        let url = `/invoice/${this.invoice.id}/pay/payping`;
+        this.$window.open(url, '_self');
+    }
 }

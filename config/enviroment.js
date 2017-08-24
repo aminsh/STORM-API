@@ -48,6 +48,10 @@ module.exports = {
             callbackURL: `${process.env.ORIGIN_URL}/auth/google/callback`,
         }
     },
+    payping: {
+        username: process.env.PAYPING_USERNAME,
+        password: process.env.PAYPING_PASSWORD,
+    },
     env: process.env.NODE_ENV,
 };
 
