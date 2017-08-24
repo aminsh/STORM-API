@@ -3,7 +3,9 @@
 const Inverse = require('inverse'),
     container = new Inverse();
 
-global.instanceOf = name => container.make(name);
+global.instanceOf = function () {
+    return container.make.apply(container, arguments);
+};
 
 container.register('utility', {
     PersianDate: require('../shared/utilities/persianDate'),
@@ -29,6 +31,12 @@ container.singleton('Authentication', function () {
     return new Authentication();
 });
 
+container.bind('PaymentService', function (key) {
+    if (key === 'payping') {
+        const PaypingService = require('../integration/payping/service');
+        return new PaypingService();
+    }
+});
 
 container.singleton('user.repository', function () {
     let UserRepository = require('../storm/server/features/user/user.repository');
@@ -49,6 +57,8 @@ container.singleton('branchThirdParty.repository', function () {
     let BranchThirdPartyRepository = require('../storm/server/features/thirdParty/branchThirdPary.repository');
     return new BranchThirdPartyRepository();
 });
+
+require('../accounting/server/bootstrap.ioc')(container);
 
 
 

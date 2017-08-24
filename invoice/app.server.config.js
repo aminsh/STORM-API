@@ -8,7 +8,8 @@ const async = require('asyncawait/async'),
     translates = require('../accounting/server/config/translate.client.fa.json'),
     config = require('../accounting/server/config'),
     reports = require('../accounting/reporting/report.config.json'),
-    Crypto = require('../shared/services/cryptoService');
+    Crypto = require('../shared/services/cryptoService'),
+    PaymentService = instanceOf('PaymentService');
 
 
 module.exports = app;
@@ -25,25 +26,55 @@ app.use('/api/reports', require('../accounting/server/routes/api.report'));
 app.use('/api/sales', require('../accounting/server/routes/api.sale'));
 
 app.use(async((req, res, next) => {
-    /*let token = req.query.token,
-        branchId = req.cookies['branch-id'];
+    const branchId = req.cookies['branch-id'];
 
-    if (!(token || branchId))
-        return res.send('no token');
+    if(!branchId) return next();
 
-    if (token) {
-        let decryptedToken = Crypto.verify(token);
+    req.fiscalPeriodId = await(instanceOf('query.fiscalPeriod', branchId).getMaxId());
+    req.branchId = branchId;
 
-        if (!decryptedToken) return res.send('no token');
-
-        res.cookie('branch-id', decryptedToken.branchId);
-        res.redirect(`/invoice/${decryptedToken.reportId}?id=${decryptedToken.id}`);
-        return;
-    }
-
-    req.branchId = branchId;*/
     return next();
 }));
+
+app.get('/:id/pay/:paymentMethod', async((req, res) => {
+    const paymentMethod = req.params.paymentMethod,
+        invoice = await(instanceOf('query.invoice', req.branchId).getById(req.params.id)),
+        paymentParameters = {
+            customerName: invoice.detailAccountDisplay,
+            amount: invoice.sumRemainder,
+            returnUrl: `${instanceOf('config').url.origin}/invoice/${invoice.id}/pay/${paymentMethod}/return`
+        };
+
+    instanceOf('PaymentService', req.params.paymentMethod)
+        .pay(req.branchId, paymentParameters, res);
+}));
+
+app.get('/:id/pay/:paymentMethod/return', (req, res) => {
+    let id = req.params.id,
+        EventEmitter = instanceOf('EventEmitter'),
+        verifyData = await(instanceOf('PaymentService', req.params.paymentMethod)
+        .verify(req.branchId, req.query)),
+
+    payment = {
+        number: verifyData.referenceId,
+        date: instanceOf('utility').PersianDate.current(),
+        invoiceId: req.params.id,
+        amount: verifyData.amount,
+        paymentType: 'receipt',
+        receiveOrPay: 'receive'
+    };
+
+    await(instanceOf('repository.payment').create(payment));
+
+    EventEmitter.emit('on-receive-created',
+        [payment],
+        id,
+        {branchId: req.branchId, fiscalPeriodId: req.fiscalPeriodId});
+
+    EventEmitter.emit('on-invoice-paid', req.params.id, req.branchId);
+
+    res.redirect(`${config.url.origin}/invoice/${req.params.id}`);
+} );
 
 
 app.get('*', (req, res) => res.render('invoice.ejs', {
