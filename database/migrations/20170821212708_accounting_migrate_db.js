@@ -5,13 +5,19 @@ exports.up = function (knex, Promise) {
         .createTable('branchThirdParty', table => {
             table.timestamp('createdAt').defaultTo(knex.fn.now());
             table.timestamp('updatedAt').defaultTo(knex.fn.now());
-            table.integer('id').primary();
+            table.increments('id').primary();
             table.string('key');
             table.json('data');
+            table.string('branchId');
+            table
+                .foreign('branchId')
+                .references('id')
+                .inTable('branches')
+                .onDelete('CASCADE');
         });
 };
 
 exports.down = function (knex, Promise) {
     return knex.schema
-        .table('branchThirdParty').dropTable();
+        .dropTable('branchThirdParty');
 };
