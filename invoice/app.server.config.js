@@ -28,7 +28,7 @@ app.use('/api/sales', require('../accounting/server/routes/api.sale'));
 app.use(async((req, res, next) => {
     const branchId = req.cookies['branch-id'];
 
-    if(!branchId) return next();
+    if (!branchId) return next();
 
     req.fiscalPeriodId = await(instanceOf('query.fiscalPeriod', branchId).getMaxId());
     req.branchId = branchId;
@@ -36,14 +36,14 @@ app.use(async((req, res, next) => {
     return next();
 }));
 
-app.get('/token/:token', async((req,res) => {
+app.get('/token/:token', async((req, res) => {
 
     let token = req.params.token;
     let tokenObj = Crypto.verify(token);
     let branchId = tokenObj.branchId;
     let invoiceId = tokenObj.invoiceId;
 
-    req.cookies['branch-id'] = branchId;
+    res.cookie('branch-id', branchId);
     res.redirect(`/invoice/${invoiceId}`);
 
 }));
@@ -65,16 +65,16 @@ app.get('/:id/pay/:paymentMethod/return', (req, res) => {
     let id = req.params.id,
         EventEmitter = instanceOf('EventEmitter'),
         verifyData = await(instanceOf('PaymentService', req.params.paymentMethod)
-        .verify(req.branchId, req.query)),
+            .verify(req.branchId, req.query)),
 
-    payment = {
-        number: verifyData.referenceId,
-        date: instanceOf('utility').PersianDate.current(),
-        invoiceId: req.params.id,
-        amount: verifyData.amount,
-        paymentType: 'receipt',
-        receiveOrPay: 'receive'
-    };
+        payment = {
+            number: verifyData.referenceId,
+            date: instanceOf('utility').PersianDate.current(),
+            invoiceId: req.params.id,
+            amount: verifyData.amount,
+            paymentType: 'receipt',
+            receiveOrPay: 'receive'
+        };
 
     await(instanceOf('repository.payment').create(payment));
 
@@ -86,7 +86,7 @@ app.get('/:id/pay/:paymentMethod/return', (req, res) => {
     EventEmitter.emit('on-invoice-paid', req.params.id, req.branchId);
 
     res.redirect(`${config.url.origin}/invoice/${req.params.id}`);
-} );
+});
 
 app.get('*', async((req, res) =>
     res.render('invoice.ejs', {
