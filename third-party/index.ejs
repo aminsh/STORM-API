@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 
-<html ng-cloak ng-app="invoice.module" >
+<html ng-cloak ng-app="thirdParty.module" >
 <head>
     <meta name="viewport" content="width=device-width"/>
     <meta http-equiv="Content-Type" content="text/html" charset="utf-8"/>
 
     <title>نرم افزار حسابداری آنلاین استورم</title>
 
-    <link href="/public/css/acc.min.css?v=<%- version.app %>" rel="stylesheet"/>
-    <link href="/public/css/invoice.min.css?v=<%- version.app %>" rel="stylesheet" />
+    <!--<link href="/public/css/acc.min.css?v=<%- version.app %>" rel="stylesheet"/>-->
+    <link href="/public/css/thirdParty.min.css?v=<%- version.app %>" rel="stylesheet" />
 
-    <base href="/invoice/">
+    <base href="/third-party/">
 </head>
-<body>
+<body class="rtl" >
 <ui-view>
     <div class="waiting-overley">
         <div class="start-waiting-block">
@@ -32,17 +32,15 @@
 
 <script>
     localStorage.setItem('translate', '<%- JSON.stringify(translates) %>');
-    localStorage.setItem('reports', '<%- JSON.stringify(reports) %>');
-    localStorage.setItem('currentBranch', '<%- JSON.stringify(currentBranch) %>');
 </script>
 
-<script src="/public/js/stimulsoft.all.min.js"></script>
-<script src="/public/js/invoice.bundle.min.js"></script>
-<script src="/public/js/invoice.template.bundle.js"></script>
+<!--<script src="/public/js/stimulsoft.all.min.js"></script>-->
+<script src="/public/js/thirdParty.bundle.min.js"></script>
+<script src="/public/js/thirdParty.template.bundle.js"></script>
 
 
 <script>
-    Stimulsoft.Base.Localization.StiLocalization.setLocalizationFile('/public/fa.xml', true);
+    /*Stimulsoft.Base.Localization.StiLocalization.setLocalizationFile('/public/fa.xml', true);
 
     let fonts = [
         {"fileName": "BBadr.ttf", "name": "BBadr"},
@@ -59,7 +57,7 @@
     fonts.forEach(f => Stimulsoft
         .Base
         .StiFontCollection
-        .addOpentypeFontFile(`/public/fonts/${f.fileName}`, f.name));
+        .addOpentypeFontFile(`/public/fonts/${f.fileName}`, f.name));*/
 </script>
 
 

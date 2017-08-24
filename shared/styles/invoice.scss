@@ -1,4 +1,4 @@
-@import "common.scss";
+@import "general";
 
 .invoice-print-main-wrapper{
   display: block;
@@ -89,7 +89,7 @@
     ul.invoice-print-sidebar-pay-list{
       display: block;
       position: relative;
-      margin: 0;
+      margin: 10px 0 0 0;
       padding: 0;
       a{
         display: block;
@@ -100,29 +100,42 @@
       }
       li{
         display: block;
+        position: relative;
+        overflow: hidden;
         width: 100%;
         height: 60px;
         text-align: center;
         margin: 0;
         padding: 0;
         line-height: 60px;
+        $trans-time: 0.2s;
+        @include transition(background-color ease $trans-time);
         @include anim(invoice-print-sidebar-pay-list-anim ease 1s);
         @keyframes invoice-print-sidebar-pay-list-anim {
           from{
             opacity: 0;
+            background-color: fade_out($color-dark-gray, 0.75);
             @include transform(translateY(25px));
           }
           to{
             opacity: 1;
+            background-color: transparent;
             @include transform(translateY(0));
           }
         }
 
-        &:hover{
-          background-color: fade_out($color-dark-gray, 0.75);
-          img{
-            @include transform(scale(1.1));
-          }
+        &::before{
+          content: ' ';
+          display: block;
+          position: absolute;
+          top: 0;
+          right: -30px;
+          width: 0;
+          height: 0;
+          border-style: solid;
+          border-width: 30px;
+          border-color: transparent $color-gray transparent transparent;
+          @include transition(#{"border-color ease #{$trans-time}, right ease #{$trans-time}"});
         }
 
         img{
@@ -132,6 +145,18 @@
           width: auto;
           height: 40px;
           @include transition(transform ease 0.2s);
+        }
+
+        &:hover{
+          background-color: white;
+          // background-color: fade_out($color-dark-gray, 0.75);
+          &::before{
+            right: -10px;
+            border-color: transparent $color-cyan-green transparent transparent;
+          }
+          img{
+            @include transform(scale(1.1));
+          }
         }
       }
     }
@@ -158,4 +183,26 @@
   margin: 0 auto;
   border: 1px solid $color-gray-milk-white;
   @include border-radius(0.3rem);
+}
+
+.invoice-print-table{
+  width: 64%;
+  margin: 0 auto 0 0;
+  tr{
+    td{
+      padding: 10px;
+    }
+    td:nth-of-type(1){
+      text-align: center;
+    }
+    td:nth-of-type(2){
+      text-align: right;
+      border-bottom: 1px solid lighten($color-gray,0.5);
+      &:not(:empty)::after{
+        display: inline;
+        content: ' ریال';
+        color: $color-cyan-green;
+      }
+    }
+  }
 }

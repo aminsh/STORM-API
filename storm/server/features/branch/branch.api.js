@@ -332,14 +332,12 @@ router.route("/users/:email")
         }
 
     }));
-router.route("/logo/:id/invoice-id")
+router.route("/logo")
     .get(async((req, res) => {
 
         try{
 
-            let invoiceId = req.params.id,
-                branch = await(branchQuery.getBranchByInvoiceId(invoiceId));
-
+            let branch = await(branchQuery.getById(req.cookies['branch-id']));
             return res.json({isValid: true, returnValue: branch.logo});
 
         } catch(err) {

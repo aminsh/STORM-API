@@ -30,10 +30,59 @@ const path = require('path'),
         stormSrcDir: './storm/client',
         publicDir: './public',
         adminDir: './admin/client',
-        invoiceDir: './invoice/client'
+        invoiceDir: './invoice/client',
+        thirdPartyDir: './third-party/client'
     },
     nodemon = require('gulp-nodemon');
 
+gulp.task('admin-build-template', function () {
+
+    return gulp.src([
+        `${config.adminDir}/**/*.html`,
+        `${config.accSrcDir}/partials/templates/content-template.html`,
+        `${config.accSrcDir}/partials/templates/grid-template.html`,
+        `${config.accSrcDir}/partials/templates/grid-filter-template.html`,
+        `${config.accSrcDir}/partials/templates/paging-template.html`,
+        `${config.accSrcDir}/partials/templates/content-template.html`
+    ])
+        .pipe(templateCache(
+            {
+                module: 'admin.module',
+                filename: 'admin.template.bundle.js',
+                root: 'partials/templates'
+            }))
+        .pipe(gulp.dest(`${config.publicDir}/js`));
+});
+
+gulp.task('admin-build-js', function () {
+    const distPath = `${config.publicDir}/js`;
+
+    mkdirp(`${config.publicDir}/js`, err => {
+        if (err) {
+            return util.log(util.colors.green.bold(JSON.stringify(err)));
+
+        }
+
+        return browserify(
+            {
+                entries: `./admin/app.client.config.js`,
+                debug: !config.isProduction
+            })
+            .transform({
+                global: true,
+                mangle: false,
+                comments: true,
+                compress: {
+                    angular: true
+                }
+            }, 'uglifyify')
+            .bundle()
+            .pipe(gulpif(!config.isProduction, exorcist(path.join(distPath, `admin.bundle.min.map`)))
+                .pipe(fs.createWriteStream(path.join(distPath, 'admin.bundle.min.js'), 'utf8')));
+
+        process.exit();
+    });
+});
 
 gulp.task('acc-build-template', function () {
     return gulp.src([`${config.accSrcDir}/partials/**/*.html`, `${config.accSrcDir}/src/**/*.html`])
@@ -46,8 +95,113 @@ gulp.task('acc-build-template', function () {
         .pipe(gulp.dest(`${config.publicDir}/js`));
 });
 
+gulp.task('acc-build-js', function () {
+    const distPath = `${config.publicDir}/js`;
+
+    mkdirp(`${config.publicDir}/js`, err => {
+        if (err) {
+            return util.log(util.colors.green.bold(JSON.stringify(err)));
+            process.exit();
+        }
+
+        return browserify(
+            {
+                entries: `${config.accSrcDir}/src/acc.config.js`,
+                debug: true
+            })
+            .transform({
+                global: true,
+                mangle: false,
+                comments: true,
+                compress: {
+                    angular: true
+                }
+            }, 'uglifyify')
+            .bundle()
+            .pipe(gulpif(!config.isProduction, exorcist(path.join(distPath, `acc.bundle.min.map`)))
+                .pipe(fs.createWriteStream(path.join(distPath, 'acc.bundle.min.js'), 'utf8')));
+
+        process.exit();
+    });
+});
+
+gulp.task('acc-build-sass', function () {
+    return gulp.src('./accounting/client/src/styles/acc.scss')
+        .pipe(sourcemaps.init())
+        .pipe(sass({
+            outputStyle: 'compressed',
+            includePaths: ['./node_modules']
+        }).on('error', sass.logError))
+        .pipe(gulpif(!config.isProduction, sourcemaps.write()))
+        .pipe(rename('acc.min.css'))
+        .pipe(gulp.dest(`${config.publicDir}/css`));
+
+});
+
+gulp.task('storm-build-sass', () => {
+    return gulp.src('./storm/client/src/styles/app.scss')
+        .pipe(sourcemaps.init())
+        .pipe(sass({
+            outputStyle: 'compressed',
+            includePaths: ['./node_modules', './vendors', './shared/styles']
+        }).on('error', sass.logError))
+        .pipe(gulpif(!config.isProduction, sourcemaps.write()))
+        .pipe(rename('storm.min.css'))
+        .pipe(gulp.dest(`${config.publicDir}/css`));
+});
+
+gulp.task('storm-build-template', function () {
+    return gulp.src(`${config.stormSrcDir}/src/**/*.html`)
+        .pipe(templateCache(
+            {
+                module: 'app',
+                filename: 'storm.template.bundle.js',
+                root: 'app'
+            }))
+        .pipe(gulp.dest(`${config.publicDir}/js`));
+});
+
+gulp.task('storm-build-js', function () {
+    const distPath = `${config.publicDir}/js`;
+
+    mkdirp(`${config.publicDir}/js`, err => {
+        if (err) {
+            return util.log(util.colors.green.bold(JSON.stringify(err)));
+            process.exit();
+        }
+
+        return browserify(
+            {
+                entries: `${config.stormSrcDir}/src/app.js`,
+                debug: !config.isProduction
+            })
+            .transform({
+                global: true,
+                mangle: false,
+                comments: true,
+                compress: {
+                    angular: true
+                }
+            }, 'uglifyify')
+            .bundle()
+            .pipe(gulpif(!config.isProduction, exorcist(path.join(distPath, `storm.bundle.min.map`))))
+            .pipe(fs.createWriteStream(path.join(distPath, 'storm.bundle.min.js'), 'utf8'));
+
+        process.exit();
+    });
+});
+
+gulp.task('storm-copy-images', function () {
+    return gulp.src(`${config.stormSrcDir}/assets/images/**/**.*`)
+        .pipe(flatten())
+        .pipe(gulp.dest(`${config.publicDir}/images`));
+});
+
 gulp.task('invoice-build-template', function () {
-    return gulp.src([`${config.invoiceDir}/**/*.html`,])
+    return gulp.src([
+        `${config.accSrcDir}/src/report/reportPrint.html`,
+        `${config.invoiceDir}/**/*.html`,
+        `${config.accSrcDir}/partials/templates/content-template.html`])
         .pipe(templateCache(
             {
                 module: 'invoice.module',
@@ -100,27 +254,21 @@ gulp.task('invoice-build-sass', function(){
 
 });
 
+// [START] SMRSAN
+gulp.task('thirdParty-build-template', function(){
 
-gulp.task('admin-build-template', function () {
-
-    return gulp.src([
-        `${config.adminDir}/**/*.html`,
-        `${config.accSrcDir}/partials/templates/content-template.html`,
-        `${config.accSrcDir}/partials/templates/grid-template.html`,
-        `${config.accSrcDir}/partials/templates/grid-filter-template.html`,
-        `${config.accSrcDir}/partials/templates/paging-template.html`,
-        `${config.accSrcDir}/partials/templates/content-template.html`
-    ])
+    return gulp.src([`${config.thirdPartyDir}/**/*.html`])
         .pipe(templateCache(
             {
-                module: 'admin.module',
-                filename: 'admin.template.bundle.js',
+                module: 'thirdParty.module',
+                filename: 'thirdParty.template.bundle.js',
                 root: 'partials/templates'
             }))
         .pipe(gulp.dest(`${config.publicDir}/js`));
-});
 
-gulp.task('admin-build-js', function () {
+});
+gulp.task('thirdParty-build-js', function(){
+
     const distPath = `${config.publicDir}/js`;
 
     mkdirp(`${config.publicDir}/js`, err => {
@@ -131,7 +279,7 @@ gulp.task('admin-build-js', function () {
 
         return browserify(
             {
-                entries: `./admin/app.client.config.js`,
+                entries: `./third-party/app.client.config.js`,
                 debug: !config.isProduction
             })
             .transform({
@@ -143,62 +291,33 @@ gulp.task('admin-build-js', function () {
                 }
             }, 'uglifyify')
             .bundle()
-            .pipe(gulpif(!config.isProduction, exorcist(path.join(distPath, `admin.bundle.min.map`)))
-                .pipe(fs.createWriteStream(path.join(distPath, 'admin.bundle.min.js'), 'utf8')));
+            .pipe(gulpif(!config.isProduction, exorcist(path.join(distPath, `thirdParty.bundle.min.map`)))
+                .pipe(fs.createWriteStream(path.join(distPath, 'thirdParty.bundle.min.js'), 'utf8')));
 
         process.exit();
     });
+
 });
+gulp.task('thirdParty-build-scss', function(){
 
-
-gulp.task('minfy', function () {
-    return gulp.src('./vendors/kendo/kendo.web.js')
-        .pipe(uglify())
-        .pipe(rename({extname: '.min.js'}))
-        .pipe(gulp.dest('./vendors/kendo'));
-});
-
-gulp.task('acc-build-js', function () {
-    const distPath = `${config.publicDir}/js`;
-
-    mkdirp(`${config.publicDir}/js`, err => {
-        if (err) {
-            return util.log(util.colors.green.bold(JSON.stringify(err)));
-            process.exit();
-        }
-
-        return browserify(
-            {
-                entries: `${config.accSrcDir}/src/acc.config.js`,
-                debug: true
-            })
-            .transform({
-                global: true,
-                mangle: false,
-                comments: true,
-                compress: {
-                    angular: true
-                }
-            }, 'uglifyify')
-            .bundle()
-            .pipe(gulpif(!config.isProduction, exorcist(path.join(distPath, `acc.bundle.min.map`)))
-                .pipe(fs.createWriteStream(path.join(distPath, 'acc.bundle.min.js'), 'utf8')));
-
-        process.exit();
-    });
-});
-
-gulp.task('acc-build-sass', function () {
-    return gulp.src('./accounting/client/src/styles/acc.scss')
+    return gulp.src('./shared/styles/third-party.scss')
         .pipe(sourcemaps.init())
         .pipe(sass({
             outputStyle: 'compressed',
             includePaths: ['./node_modules']
         }).on('error', sass.logError))
         .pipe(gulpif(!config.isProduction, sourcemaps.write()))
-        .pipe(rename('acc.min.css'))
+        .pipe(rename('thirdParty.min.css'))
         .pipe(gulp.dest(`${config.publicDir}/css`));
 
+});
+// [-END-] SMRSAN
+
+gulp.task('minfy', function () {
+    return gulp.src('./vendors/kendo/kendo.web.js')
+        .pipe(uglify())
+        .pipe(rename({extname: '.min.js'}))
+        .pipe(gulp.dest('./vendors/kendo'));
 });
 
 gulp.task('build-stimulsoft', function () {
@@ -306,67 +425,8 @@ gulp.task('default', [
     'admin-build-js'
 ]);
 
-gulp.task('storm-build-sass', () => {
-    return gulp.src('./storm/client/src/styles/app.scss')
-        .pipe(sourcemaps.init())
-        .pipe(sass({
-            outputStyle: 'compressed',
-            includePaths: ['./node_modules', './vendors', './shared/styles']
-        }).on('error', sass.logError))
-        .pipe(gulpif(!config.isProduction, sourcemaps.write()))
-        .pipe(rename('storm.min.css'))
-        .pipe(gulp.dest(`${config.publicDir}/css`));
-});
-
-gulp.task('storm-build-template', function () {
-    return gulp.src(`${config.stormSrcDir}/src/**/*.html`)
-        .pipe(templateCache(
-            {
-                module: 'app',
-                filename: 'storm.template.bundle.js',
-                root: 'app'
-            }))
-        .pipe(gulp.dest(`${config.publicDir}/js`));
-});
-
-gulp.task('storm-build-js', function () {
-    const distPath = `${config.publicDir}/js`;
-
-    mkdirp(`${config.publicDir}/js`, err => {
-        if (err) {
-            return util.log(util.colors.green.bold(JSON.stringify(err)));
-            process.exit();
-        }
-
-        return browserify(
-            {
-                entries: `${config.stormSrcDir}/src/app.js`,
-                debug: !config.isProduction
-            })
-            .transform({
-                global: true,
-                mangle: false,
-                comments: true,
-                compress: {
-                    angular: true
-                }
-            }, 'uglifyify')
-            .bundle()
-            .pipe(gulpif(!config.isProduction, exorcist(path.join(distPath, `storm.bundle.min.map`))))
-            .pipe(fs.createWriteStream(path.join(distPath, 'storm.bundle.min.js'), 'utf8'));
-
-        process.exit();
-    });
-});
-
-gulp.task('storm-copy-images', function () {
-    return gulp.src(`${config.stormSrcDir}/assets/images/**/**.*`)
-        .pipe(flatten())
-        .pipe(gulp.dest(`${config.publicDir}/images`));
-});
-
 gulp.task('logo-to-file', function () {
-    let knex = require('knex')(require('./config/enviroment').db),
+    let knex = require('./storm/server/services/knex'),
         base64 = require('file-base64');
 
     knex.select('id', 'logo')

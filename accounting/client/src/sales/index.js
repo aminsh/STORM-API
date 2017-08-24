@@ -5,8 +5,20 @@ import {notShouldBeZero} from './invoiceLines.validations';
 import invoiceController from './invoiceController';
 import invoiceListController from './invoiceListController';
 import {totalPrice,sumTotalPrice} from  './invoice.filter';
-import './saleApi';
+import saleApi from "./saleApi";
 import './purchaseApi';
+import SendInvoiceEmailController from "./sendInvoiceEmail.controller";
+
+function sendInvoiceEmail(modalBase){
+
+    return modalBase({
+        controller: "sendInvoiceEmailController",
+        controllerAs: 'model',
+        templateUrl: 'partials/sales/sendInvoiceEmail.html',
+        size: "sm"
+    });
+
+}
 
 accModule
 
@@ -14,4 +26,7 @@ accModule
     .filter('sumTotalPrice', sumTotalPrice)
     .directive('notShouldBeZero', notShouldBeZero)
     .controller('invoiceController', invoiceController)
-    .controller('invoiceListController', invoiceListController);
+    .controller('invoiceListController', invoiceListController)
+    .controller('sendInvoiceEmailController', SendInvoiceEmailController)
+    .factory('saleApi', saleApi)
+    .factory('sendInvoiceEmail', sendInvoiceEmail);

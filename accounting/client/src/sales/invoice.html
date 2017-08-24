@@ -127,6 +127,12 @@
             translate}}
         </button>
 
+        <button ng-click="model.openSendEmailModal()"
+                ng-if="model.invoice.status != 'draft'"
+                class="btn btn-primary" ><i class="fa fa-send" ></i>
+            {{'Send' | translate}}
+        </button>
+
         <button ng-click="model.cashPaymentShow()"
                 ng-if="model.invoice.status != 'paid'"
                 class="btn btn-primary"><i class="fa fa-money"></i>

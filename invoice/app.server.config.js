@@ -36,6 +36,18 @@ app.use(async((req, res, next) => {
     return next();
 }));
 
+app.get('/token/:token', async((req,res) => {
+
+    let token = req.params.token;
+    let tokenObj = Crypto.verify(token);
+    let branchId = tokenObj.branchId;
+    let invoiceId = tokenObj.invoiceId;
+
+    req.cookies['branch-id'] = branchId;
+    res.redirect(`/invoice/${invoiceId}`);
+
+}));
+
 app.get('/:id/pay/:paymentMethod', async((req, res) => {
     const paymentMethod = req.params.paymentMethod,
         invoice = await(instanceOf('query.invoice', req.branchId).getById(req.params.id)),
@@ -76,9 +88,10 @@ app.get('/:id/pay/:paymentMethod/return', (req, res) => {
     res.redirect(`${config.url.origin}/invoice/${req.params.id}`);
 } );
 
-
-app.get('*', (req, res) => res.render('invoice.ejs', {
-    reports,
-    version: config.version,
-    translates
-}));
+app.get('*', async((req, res) =>
+    res.render('invoice.ejs', {
+        reports,
+        version: config.version,
+        translates,
+        currentBranch: await(require('../storm/server/features/branch/branch.repository').getById(req.cookies['branch-id']))
+    })));
