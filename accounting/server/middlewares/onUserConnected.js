@@ -16,10 +16,10 @@ module.exports = async((req, res, next) => {
 
     if (branchId) {
         let isActiveBranch = await(branchQuery.isActive(branchId));
-        let isBranchExpired = branchQuery.isSubscriptionExpired(branchId);
+        /*let isBranchExpired = branchQuery.isSubscriptionExpired(branchId);
 
         if (isBranchExpired || !isActiveBranch)
-            return res.redirect('/');
+            return res.redirect('/');*/
     }
     else return res.redirect('/profile');
 
