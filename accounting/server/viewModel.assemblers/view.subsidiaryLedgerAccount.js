@@ -1,4 +1,4 @@
-var enums = require('../constants/enums');
+var enums = instanceOf('Enums');
 
 function subsidiaryLedgerAccountAssembler(entity) {
     var viewModel = {

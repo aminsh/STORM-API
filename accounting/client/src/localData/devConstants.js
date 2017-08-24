@@ -1,4 +1,4 @@
-import enums from '../../../shared/enums';
+import enums from '../../../../shared/enums';
 import urls from './urls';
 import config from './config';
 import accModule from '../acc.module';

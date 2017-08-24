@@ -4,7 +4,7 @@ const async = require('asyncawait/async'),
     await = require('asyncawait/await'),
     BaseQuery = require('./query.base'),
     kendoQueryResolve = require('../services/kendoQueryResolve'),
-    enums = require('../../shared/enums');
+    enums = require('../../../shared/enums');
 
 module.exports = class PaymentQuery extends BaseQuery {
     constructor(branchId) {

@@ -4,12 +4,11 @@
 
 const express = require('express'),
     router = express.Router(),
-    googleAuthenticate = require('../../config/auth').googleAuthenticate,
-    googleAuthenticateCallback = require('../../config/auth').googleAuthenticateCallback;
+    googleAuthentication = require('../../../../integration/google/authentication');
 
-router.route('/google').get(googleAuthenticate);
+router.route('/google').get(googleAuthentication.googleAuthenticate);
 
-router.route('/google/callback').get(googleAuthenticateCallback);
+router.route('/google/callback').get(googleAuthentication.googleAuthenticateCallback);
 
 router.route('/logout').all((req, res) => {
     if (req.isAuthenticated())

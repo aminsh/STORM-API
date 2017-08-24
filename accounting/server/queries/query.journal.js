@@ -5,7 +5,7 @@ const async = require('asyncawait/async'),
     BaseQuery = require('./query.base'),
     kendoQueryResolve = require('../services/kendoQueryResolve'),
     view = require('../viewModel.assemblers/view.journal'),
-    enums = require('../constants/enums'),
+    enums = instanceOf('Enums'),
     journalBase = require('./query.journal.base'),
     journalBaseFilter = require('./query.journal.baseFilter');
 

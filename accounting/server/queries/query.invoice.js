@@ -7,7 +7,7 @@ const BaseQuery = require('./query.base'),
     lineView = require('../viewModel.assemblers/view.invoiceLine'),
     FiscalPeriodQuery = require('./query.fiscalPeriod'),
     kendoQueryResolve = require('../services/kendoQueryResolve'),
-    enums = require('../../shared/enums');
+    enums = require('../../../shared/enums');
 
 
 module.exports = class InvoiceQuery extends BaseQuery {

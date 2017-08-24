@@ -79,13 +79,23 @@ function authenticate(req, res, next) {
 
     let auth = passport.authenticate('local', function (err, user) {
         if (err) return next(err);
-        if (!user)return res.send({isValid: false, errors: ['Username or password in incorrect']});
+        if (!user) return res.send({isValid: false, errors: ['Username or password in incorrect']});
         req.logIn(user, async(function (err) {
             if (err) return next(err);
 
             let reCaptchaUserResponse = req.body.reCaptchaResponse;
 
-            function reCaptchaHandler(err, response, body){
+
+            instanceOf('captcha').verify(reCaptchaUserResponse)
+                .then(() => res.send({
+                    isValid: true,
+                    returnValue: {
+                        currentUser: user.name
+                    }
+                }))
+                .catch(() => res.send({isValid: false, errors: ['Captcha is incorrect']}));
+
+            /*function reCaptchaHandler(err, response, body){
                 if(err)
                     return res.send({isValid: false, errors: ['Captcha is incorrect']});
 
@@ -94,17 +104,12 @@ function authenticate(req, res, next) {
                 if(reCaptchaServerResponse.success !== true)
                     return res.send({isValid: false, errors: ['Captcha is incorrect']});
 
-                res.send({
-                    isValid: true,
-                    returnValue: {
-                        currentUser: user.name
-                    }
-                });
+                ;
             }
 
             request(
                 `https://www.google.com/recaptcha/api/siteverify?secret=${config.reCaptcha.key.secret}&response=${reCaptchaUserResponse}`,
-                reCaptchaHandler);
+                reCaptchaHandler);*/
             // [START] SMRSAN (reCaptcha)
 
         }));

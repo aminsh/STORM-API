@@ -6,8 +6,8 @@ const async = require('asyncawait/async'),
     fiscalPeriod = require('./setup.fiscalPeriod'),
     firstFund = require('./setup.firstFund'),
     firstStock = require('./setup.firstStock'),
-    makeOrder = require('./setup.makeOrder'),
-    EventEmitter = require('../../services/shared').service.EventEmitter;
+    EventEmitter = instanceOf('EventEmitter'),
+    makeOrder = require('./setup.makeOrder');
 
 EventEmitter.on('on-branch-created', async(function (branchId) {
     chartOfAccount(branchId);

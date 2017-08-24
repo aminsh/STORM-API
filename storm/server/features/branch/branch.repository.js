@@ -1,9 +1,9 @@
 "use strict";
 
-const knex = require('../../services/knex'),
+const knex = instanceOf('knex'),
     async = require('asyncawait/async'),
     await = require('asyncawait/await'),
-    Guid = require('../../services/shared').utility.Guid;
+    Guid = instanceOf('utility').Guid;
 
 class BranchRepository {
 

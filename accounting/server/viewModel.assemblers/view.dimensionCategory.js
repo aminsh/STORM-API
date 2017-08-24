@@ -1,4 +1,3 @@
-var enums = require('../constants/enums');
 
 function dimensionCategoryAssembler(entity) {
     var viewModel = {

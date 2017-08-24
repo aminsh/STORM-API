@@ -1,7 +1,7 @@
 "use strict";
 
 const BaseQuery = require('./query.base'),
-    enums = require('../constants/enums'),
+    enums = instanceOf('Enums'),
     groupJournals = require('./query.journal.grouped'),
     JournalQueryConfig = require('./query.journal.config'),
     translate = require('../services/translateService'),

@@ -32,7 +32,8 @@ const path = require('path'),
         adminDir: './admin/client',
         invoiceDir: './invoice/client',
         thirdPartyDir: './third-party/client'
-    };
+    },
+    nodemon = require('gulp-nodemon');
 
 gulp.task('admin-build-template', function () {
 
@@ -445,5 +446,15 @@ gulp.task('logo-to-file', function () {
                     });
             });
         });
+});
+
+gulp.task('run-server', function () {
+    var env = require('./eviroment.json');
+
+    nodemon({
+        script: 'index.js'
+        , ext: 'js html'
+        , env: env//{ 'NODE_ENV': 'development' }
+    });
 });
 

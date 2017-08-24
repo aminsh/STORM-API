@@ -1,9 +1,9 @@
 "use strict";
 
-const knex = require('../../services/knex'),
+const knex = instanceOf('knex'),
     async = require('asyncawait/async'),
     await = require('asyncawait/await'),
-    kendoQueryResolve = require('../../../../accounting/server/services/kendoQueryResolve');
+    kendoQueryResolve = instanceOf('kendoQueryResolve');
 
 class BranchQuery {
     constructor() {

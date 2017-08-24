@@ -1,4 +1,8 @@
 function fiscalPeriodView(entity) {
+
+    if(!entity)
+        return null;
+
     var viewModel = {
         title: entity.title,
         minDate: entity.minDate,

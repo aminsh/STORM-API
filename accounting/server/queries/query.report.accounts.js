@@ -1,7 +1,7 @@
 "use strict";
 
 const BaseQuery = require('./query.base'),
-    enums = require('../../shared/enums'),
+    enums = require('../../../shared/enums'),
     translate = require('../services/translateService');
 
 module.exports = class ReportQueryAccounts extends BaseQuery {
