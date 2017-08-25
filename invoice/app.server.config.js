@@ -6,10 +6,11 @@ const async = require('asyncawait/async'),
     ejs = require('ejs'),
     app = express(),
     translates = require('../accounting/server/config/translate.client.fa.json'),
-    config = require('../accounting/server/config'),
+    config = instanceOf('config'),
     reports = require('../accounting/reporting/report.config.json'),
     Crypto = require('../shared/services/cryptoService'),
-    PaymentService = instanceOf('PaymentService');
+    PaymentService = instanceOf('PaymentService'),
+    translate = instanceOf('translate');
 
 
 module.exports = app;
@@ -54,6 +55,7 @@ app.get('/:id/pay/:paymentMethod', async((req, res) => {
         paymentParameters = {
             customerName: invoice.detailAccountDisplay,
             amount: invoice.sumRemainder,
+            description: translate('For payment invoice number ...').formate(invoice.number),
             returnUrl: `${instanceOf('config').url.origin}/invoice/${invoice.id}/pay/${paymentMethod}/return`
         };
 
@@ -61,29 +63,34 @@ app.get('/:id/pay/:paymentMethod', async((req, res) => {
         .pay(req.branchId, paymentParameters, res);
 }));
 
-app.get('/:id/pay/:paymentMethod/return', (req, res) => {
+app.post('/:id/pay/:paymentMethod/return', (req, res) => {
     let id = req.params.id,
         EventEmitter = instanceOf('EventEmitter'),
-        verifyData = await(instanceOf('PaymentService', req.params.paymentMethod)
-            .verify(req.branchId, req.query)),
+        paymentData;
 
-        payment = {
-            number: verifyData.referenceId,
-            date: instanceOf('utility').PersianDate.current(),
-            invoiceId: req.params.id,
-            amount: verifyData.amount,
-            paymentType: 'receipt',
-            receiveOrPay: 'receive'
-        };
+    try {
+        paymentData = await(instanceOf('PaymentService', req.params.paymentMethod)
+            .savePayment(req.branchId, req.query))
+    } catch (e) {
+        throw new Error(e);
+    }
 
-    await(instanceOf('repository.payment').create(payment));
+    const bankId = paymentData.bankId;
+
+    delete paymentData.bankId;
+
+    paymentData.invoiceId = id;
+
+    await(instanceOf('repository.payment').create(paymentData));
+
+    paymentData.bankId = bankId;
 
     EventEmitter.emit('on-receive-created',
-        [payment],
+        [paymentData],
         id,
         {branchId: req.branchId, fiscalPeriodId: req.fiscalPeriodId});
 
-    EventEmitter.emit('on-invoice-paid', req.params.id, req.branchId);
+    EventEmitter.emit('on-invoice-paid', id, req.branchId);
 
     res.redirect(`${config.url.origin}/invoice/${req.params.id}`);
 });
