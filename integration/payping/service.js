@@ -3,20 +3,23 @@
 const async = require('asyncawait/async'),
     await = require('asyncawait/await'),
     paypingConfig = require('./config.json'),
-    request = require('request'),
+    rp = require('request-promise'),
     Promise = require('promise'),
     utility = instanceOf('utility'),
     config = instanceOf('config'),
+    HttpException = instanceOf('httpException'),
     persistedConfigRepository = instanceOf('persistedConfig.repository'),
     branchThirdParty = instanceOf('branchThirdParty.repository');
+
 
 module.exports = class PaypingService {
     constructor() {
         this.key = 'PAYPING_SERVICE_TOKEN';
-        this.register = async(this.register);
     }
 
-    getServiceToken() {
+    // private methods
+
+    setServiceToken() {
         const options = {
                 uri: paypingConfig.getServiceTokenUrl,
                 form: {
@@ -31,33 +34,29 @@ module.exports = class PaypingService {
             },
             key = this.key;
 
-        return new Promise((resolve, reject) => {
+        try {
+            let body = await(rp(options)),
+                value = `bearer ${JSON.parse(body).access_token}`;
 
-            request(options, async(function (error, response, body) {
-
-                if (response.statusCode == 401)
-                    return reject({statusCode: 401, statusMessage: 'Unauthorized'});
-
-                if (response.statusCode == 400)
-                    return reject({statusCode: 400, statusMessage: 'Bad Request'});
-
-                let value = `bearer ${JSON.parse(body).access_token}`;
-
-                await(persistedConfigRepository.set(key, value));
-
-                resolve(value);
-            }));
-        })
+            await(persistedConfigRepository.set(key, value));
+        }
+        catch (e) {
+            throw new HttpException(e.statusCode, e.response.statusMessage, e.error);
+        }
     }
 
-    getUserKey(username) {
-
+    get serviceToken() {
         let serviceToken = await(persistedConfigRepository.get(this.key));
 
-        if(!serviceToken){
-            await(this.getServiceToken());
+        if (!serviceToken) {
+            await(this.setServiceToken());
             serviceToken = await(persistedConfigRepository.get(this.key));
         }
+
+        return serviceToken.value;
+    }
+
+    setUserKey(username) {
 
         const options = {
             uri: paypingConfig.getUserKeyUrl.format(username),
@@ -65,23 +64,17 @@ module.exports = class PaypingService {
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',
-                'Authorization': serviceToken.value
+                'Authorization': this.serviceToken
             }
         };
 
-        return new Promise((resolve, reject) => {
-
-            request(options, async((error, response, body) => {
-
-                if (response.statusCode === 401)
-                    return reject({statusCode: 401, statusMessage: 'Unauthorized'});
-
-                if (response.statusCode === 400)
-                    return reject({statusCode: 400, statusMessage: 'Bad Request'});
-
-                return resolve({statusCode: 200, data: JSON.parse(body)});
-            }));
-        });
+        try {
+            let body = await(rp(options));
+            return JSON.parse(body);
+        }
+        catch (e) {
+            throw new HttpException(e.statusCode, e.response.statusMessage, e.error);
+        }
     }
 
     getRequestToken(parameter) {
@@ -93,22 +86,17 @@ module.exports = class PaypingService {
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
                 'Accept': 'application/json',
-                'Authorization': await(persistedConfigRepository.get(this.key)).value
+                'Authorization': this.serviceToken
             }
         };
 
-        return new Promise((resolve, reject) => {
-            request(options, function (error, response, body) {
-                if (response.statusCode == 401)
-                    return reject({statusCode: 401, statusMessage: 'Unauthorized'});
-
-                if (response.statusCode == 400)
-                    return reject({statusCode: 400, statusMessage: 'Bad Request'});
-
-                return resolve({statusCode: 200, data: JSON.parse(body)});
-            });
-        });
-
+        try {
+            let body = await(rp(options));
+            return JSON.parse(body);
+        }
+        catch (e) {
+            throw new HttpException(e.statusCode, e.response.statusMessage, e.error);
+        }
     }
 
     redirectToPayping(requestToken, response) {
@@ -117,6 +105,7 @@ module.exports = class PaypingService {
         response.redirect(url);
     }
 
+
     //public method
 
     register(branchId, data) {
@@ -124,17 +113,21 @@ module.exports = class PaypingService {
             username = data.username;
 
         try {
-            result = await(this.getUserKey(username));
+            result = await(this.setUserKey(username));
         } catch (e) {
 
             if (e.statusCode === 401) {
-                await(this.getServiceToken());
+                await(this.setServiceToken());
                 result = await(this.getUserKey(username));
             }
-            else throw new Error(e);
+            else
+                throw new HttpException(e.statusCode, e.statusMessage, e.error);
         }
 
-        await(branchThirdParty.create(branchId, 'payping', {username, userKey: result.data}));
+        const bankId = await(instanceOf('service.detailAccount', branchId)
+            .create('حساب پی پینگ', 'bank'));
+
+        await(branchThirdParty.create(branchId, 'payping', {username, userKey: result.data, bankId}));
     }
 
     pay(branchId, parameters, response) {
@@ -150,39 +143,47 @@ module.exports = class PaypingService {
             paymentToken;
 
         try {
-            paymentToken = await(this.getRequestToken(paymentParams)).data;
+            paymentToken = await(this.getRequestToken(paymentParams));
         } catch (e) {
             if (e.statusCode == 401) {
-                await(this.getServiceToken());
-                paymentToken = await(this.getRequestToken(paymentParams)).data;
-            } else throw new Error(e);
+                await(this.setServiceToken());
+                paymentToken = await(this.getRequestToken(paymentParams));
+            } else
+                throw new HttpException(e.statusCode, e.response.statusMessage, e.error);
         }
 
         this.redirectToPayping(paymentToken, response);
     }
 
-    verify(userKey, reference) {
-        const options = {
-            uri: paypingConfig.verifyPayment,
-            form: {RefId: reference.refId, UserKey: userKey},
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-                'Accept': 'application/json',
-                'Authorization': await(persistedConfigRepository.get(this.key))
-            }
-        };
+    savePayment(branchId, reference) {
+        const userKey = await(branchThirdParty.get(branchId, 'payping')).data.userKey,
+            referenceId = reference.refid,
+            options = {
+                uri: paypingConfig.verifyPayment,
+                form: {RefId: referenceId, UserKey: userKey},
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Accept': 'application/json',
+                    'Authorization': this.serviceToken
+                }
+            };
 
-        return new Promise((resolve, reject) => {
-            request(options, function (error, response, body) {
-                if (response.statusCode == 401)
-                    return reject({statusCode: 401, statusMessage: 'Unauthorized'});
+        try {
+            let body = await(rp(options)),
+                amount = JSON.parse(body) * 10;
 
-                if (response.statusCode == 400)
-                    return reject({statusCode: 400, statusMessage: 'Bad Request'});
-
-                return resolve({statusCode: 200, data: {amount: body * 10, referenceId: reference.refId}});
-            });
-        });
+            return {
+                number: referenceId,
+                date: utility.PersianDate.current(),
+                amount,
+                paymentType: 'receipt',
+                receiveOrPay: 'receive',
+                bankId: await(branchThirdParty.get(branchId, 'payping')).data.bankId
+            };
+        }
+        catch (e) {
+            throw new HttpException(e.statusCode, e.response.statusMessage, e.error);
+        }
     }
 };
