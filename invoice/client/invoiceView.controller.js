@@ -183,4 +183,9 @@ export default class InvoiceViewController{
 
     }
 
+    goToPayment(){
+        let url = `/invoice/${this.invoiceId}/pay/payping`;
+        this.$window.open(url, '_self');
+    }
+
 }

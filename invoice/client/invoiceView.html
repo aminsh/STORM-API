@@ -99,7 +99,7 @@
             <h3 style="padding: 0 10px;color: #707070" >پرداخت با:</h3>
             <ul class="invoice-print-sidebar-pay-list" >
                 <li>
-                    <a href="" >
+                    <a href="" ng-click="model.goToPayment()">
                         <img src="/public/images/payping-logo.png" />
                     </a>
                 </li>
@@ -115,7 +115,7 @@
                 </lx-button>
             </lx-fab-trigger>
             <lx-fab-actions>
-                <lx-button lx-size="l" lx-type="fab" lx-tooltip="PayPing" lx-tooltip-position="right" >
+                <lx-button  lx-size="l" lx-type="fab" lx-tooltip="PayPing" lx-tooltip-position="right" >
                     <img src="/public/images/payping-favicon2.png" />
                 </lx-button>
             </lx-fab-actions>
