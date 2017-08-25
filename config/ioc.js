@@ -27,6 +27,8 @@ container.register('Crypto', require('../shared/services/cryptoService'));
 container.register('Enums', require('../shared/enums'));
 container.register('captcha', require('../integration/reCaptcha/service'));
 
+container.register('httpException', require('../shared/utilities/httpException'));
+
 container.singleton('Authentication', function () {
     let Authentication = require('../shared/services/service.authentication');
     return new Authentication();
