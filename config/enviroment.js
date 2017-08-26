@@ -18,7 +18,7 @@ module.exports = {
         connection: process.env.DATABASE_URL,
         debug: true
     },
-    port: 2000,
+    port: process.env.PORT,
     version: {
         vendor: '1.0.0',
         acc: '1.0.0',
