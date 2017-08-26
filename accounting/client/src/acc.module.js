@@ -16,6 +16,8 @@ import 'adm-dtp';
 import 'chart.js';
 import 'angular-image-perloader';
 
+import translate from './services/translate';
+
 Object.defineProperty(Array.prototype, 'toNumber', { enumerable: false });
 Object.defineProperty(Array.prototype, 'dtp_toDate', { enumerable: false });
 
@@ -46,5 +48,7 @@ accModule.init = () => {
         angular.bootstrap(document, ['acc.module']);
     });
 };
+
+accModule.factory('translate', translate);
 
 export default accModule;

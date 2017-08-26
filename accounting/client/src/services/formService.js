@@ -1,6 +1,5 @@
-import accModule from '../acc.module';
 
-function formService() {
+export default function formService() {
 
     function setDirty(form) {
         angular.forEach(form.$error, function (type) {
@@ -24,5 +23,3 @@ function formService() {
         setClean: setClean
     }
 }
-
-accModule.service('formService', formService);

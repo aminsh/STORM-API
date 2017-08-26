@@ -1,7 +1,6 @@
-import accModule from '../acc.module';
+"use strict";
 
-
-function translateStorageService() {
+export default function translateStorageService() {
 
     return {
         put: (name, value)=> {
@@ -12,5 +11,3 @@ function translateStorageService() {
         }
     }
 }
-
-accModule.factory('translateStorageService', translateStorageService);

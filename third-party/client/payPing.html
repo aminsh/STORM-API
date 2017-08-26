@@ -11,12 +11,12 @@
                    name="username"
                    ng-model="model.payping.username" />
         </div>
-        <div ng-messages="form.username.$error" ng-if="form.username.$dirty" >
+        <div ng-messages="form.username.$error" ng-if="form.username.$dirty">
             <div ng-message="required" class="text-danger" >وارد کردن نام کاربری الزامیست</div>
         </div>
         <div class="form-group" >
-            <button ng-submit="model.submitPayPingUserName(form)"
-                    ng-disabled="form.$invalid"
+            <button ng-click="model.send(form)"
+                    type="button"
                     class="btn btn--flat btn--m btn--green"
                     lx-ripple >فعال سازی</button>
         </div>

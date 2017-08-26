@@ -127,7 +127,7 @@ module.exports = class PaypingService {
         const bankId = await(instanceOf('service.detailAccount', branchId)
             .create('حساب پی پینگ', 'bank'));
 
-        await(branchThirdParty.create(branchId, 'payping', {username, userKey: result.data, bankId}));
+        await(branchThirdParty.create(branchId, 'payping', {username, userKey: result, bankId}));
     }
 
     pay(branchId, parameters, response) {

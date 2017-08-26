@@ -4,7 +4,40 @@ const express = require('express'),
     router = express.Router(),
     async = require('asyncawait/async'),
     await = require('asyncawait/await'),
-    branchThirdPartyRepository = instanceOf('branchThirdParty.repository');
+    branchThirdPartyRepository = instanceOf('branchThirdParty.repository'),
+    branchThirdPartyQuery = instanceOf('branchThirdParty.query');
+
+router.route('/')
+    .get(async((req, res) => {
+
+        let branchId,
+            thirdPartyList;
+
+        try{
+
+            branchId = req.cookies['branch-id'];
+
+        } catch(err) {
+
+            console.log(err);
+            return res.json({isValid: false, error: ["Please enter to a branch"]});
+
+        }
+
+        try{
+
+           thirdPartyList = await(branchThirdPartyQuery.getSelected(branchId));
+
+        } catch(err) {
+
+            console.log(err);
+            return res.json({isValid: false, error: ["Your branch ID is wrong"]});
+
+        }
+
+        return res.json({isValid: true, returnValue: thirdPartyList});
+
+    }));
 
 router.route('/:key')
     .get(async((req, res) => {

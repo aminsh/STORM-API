@@ -2,51 +2,27 @@
 <br/>
 <div class="third-party-container" >
     <ul class="mt+ mb+ so-color-cyan-green" >
-        <li class="list-row list-row--multi-line list-row--has-separator" >
+        <li class="list-row list-row--multi-line list-row--has-separator"
+            ng-repeat="item in model.thirdPartyList" >
             <div class="list-row__primary" style="width: 18%;" >
-                <img src="/public/images/payping-logo.png" class="pl+" width="100%" />
+                <img ng-src="/public/images/{{item.logo}}" class="pl+" width="100%" />
             </div>
             <div class="list-row__content" >
-                <span class="display-block" >پی پینگ</span>
+                <span class="display-block" >{{item.display}}</span>
                 <span class="display-block fs-body-1 tc-black-2" >
-                    <span>کیف پول آنلاین PayPing</span><br/>
-                    <span>با استفاده از این افزونه، مشتریان شما می توانند صورت حساب های شما را پرداخت کنند.</span>
+                    <span>{{item.title}}</span><br/>
+                    <span>{{item.description}}</span>
                 </span>
             </div>
             <div class="list-row__secondary" style="text-align: center;" >
-                <button style="display: block;"
-                        class="btn btn--flat btn--m btn--blue"
+                <button ui-sref="{{item.key}}"
+                        style="display: block;"
+                        class="btn btn--flat btn--m"
+                        ng-class="{ 'btn btn--flat btn--m btn--red' : item.isActivated, 'btn btn--flat btn--m btn--blue' : !item.isActivated}"
                         lx-ripple
                         lx-tooltip="فعال سازی"
                         lx-tooltip-position="right" >
-                    <i class="glyphicon glyphicon-plus" ></i>
-                </button>
-                <button class="btn btn--flat btn--m btn--green"
-                        lx-ripple
-                        lx-tooltip="آموزش"
-                        lx-tooltip-position="right" >
-                    <i class="glyphicon glyphicon-education" ></i>
-                </button>
-            </div>
-        </li>
-        <li class="list-row list-row--multi-line list-row--has-separator" >
-            <div class="list-row__primary" style="width: 18%;" >
-                <img src="/public/images/payping-logo.png" class="pl+" width="100%" />
-            </div>
-            <div class="list-row__content" >
-                <span class="display-block" >پی پینگ</span>
-                <span class="display-block fs-body-1 tc-black-2" >
-                    <span>کیف پول آنلاین PayPing</span><br/>
-                    <span>با استفاده از این افزونه، مشتریان شما می توانند صورت حساب های شما را پرداخت کنند.</span>
-                </span>
-            </div>
-            <div class="list-row__secondary" style="text-align: center;" >
-                <button style="display: block;"
-                        class="btn btn--flat btn--m btn--red"
-                        lx-ripple
-                        lx-tooltip="غیر فعال سازی"
-                        lx-tooltip-position="right" >
-                    <i class="glyphicon glyphicon-minus" ></i>
+                    <i ng-class="{ 'glyphicon glyphicon-minus' : item.isActivated, 'glyphicon glyphicon-plus' : !item.isActivated}" ></i>
                 </button>
                 <button class="btn btn--flat btn--m btn--green"
                         lx-ripple

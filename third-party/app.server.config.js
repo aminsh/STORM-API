@@ -9,15 +9,9 @@ const async = require('asyncawait/async'),
     config = require('../accounting/server/config'),
     reports = require('../accounting/reporting/report.config.json'),
     Crypto = require('../shared/services/cryptoService'),
-    Enums = instanceOf('Enums');
-
-let thirdParty = [
-    {
-        key: "PayPing",
-        display: "پی پینگ"
-    }
-];
-
+    Enums = instanceOf('Enums'),
+    thirdPartyRepository = new (require('../storm/server/features/thirdParty/branchThirdPary.repository')),
+    thirdPartyQuery = new (require('../storm/server/features/thirdParty/branchThirdParty.query'));
 
 
 module.exports = app;

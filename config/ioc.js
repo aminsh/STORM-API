@@ -61,6 +61,11 @@ container.singleton('branchThirdParty.repository', function () {
     return new BranchThirdPartyRepository();
 });
 
+container.singleton('branchThirdParty.query', function () {
+    let BranchThirdPartyQuery = require('../storm/server/features/thirdParty/branchThirdParty.query');
+    return new BranchThirdPartyQuery();
+});
+
 require('../accounting/server/bootstrap.ioc')(container);
 
 
