@@ -30,6 +30,8 @@ import BranchThirdPartyApi from "./client/branchThirdPartyApi";
 import logger from "../accounting/client/src/services/logger";
 import translateStorageService from "../accounting/client/src/services/translateStorageService";
 import translate from "../accounting/client/src/services/translate";
+import Promise from "../accounting/client/src/services/promise";
+import confirm from "../accounting/client/src/services/confirm";
 
 // Controllers
 import ThirdPartyController from "./client/thirdParty.controller";
@@ -98,11 +100,13 @@ thirdPartyModule
     .service('formService', formService)
     .service('branchThirdPartyApi', BranchThirdPartyApi)
     .service('translate', translate)
+    .service('promise', Promise)
     .factory('apiPromise', apiPromise)
     .factory('navigate', navigate)
     .factory('saleApi', saleApi)
     .factory('logger', logger)
     .factory('translateStorageService', translateStorageService)
+    .factory('confirm', confirm)
     .directive('devTagContent', content)
     .directive('devTagContentBody', body)
     .directive('devTagContentHeading', heading)

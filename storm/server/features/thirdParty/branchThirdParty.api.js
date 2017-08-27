@@ -13,20 +13,14 @@ router.route('/')
         let branchId,
             thirdPartyList;
 
-        try{
+        if(!(req.cookies['branch-id']))
+            return res.status(400).send("Sorry, You have no branch id !");
 
-            branchId = req.cookies['branch-id'];
-
-        } catch(err) {
-
-            console.log(err);
-            return res.json({isValid: false, error: ["Please enter to a branch"]});
-
-        }
+        branchId = req.cookies['branch-id'];
 
         try{
 
-           thirdPartyList = await(branchThirdPartyQuery.getSelected(branchId));
+            thirdPartyList = await(branchThirdPartyQuery.getSelected(branchId));
 
         } catch(err) {
 
@@ -60,9 +54,30 @@ router.route('/:key')
             if (e instanceof Error)
                 message = e.message;
             else
-                message = 'خطای سیستمی';
+                message = 'System error';
 
             res.json({isValid: false, errors: [message]});
+        }
+
+    }))
+    .delete(async((req, res) => {
+
+        let branchId = req.cookies['branch-id'],
+            key = req.params.key;
+
+        if(!(branchId))
+            return res.status(400).send("Sorry, You have no branch id !");
+
+        try{
+
+            await(branchThirdPartyRepository.remove(branchId, key));
+            return res.json({isValid: true});
+
+        } catch(err) {
+
+            console.log(err);
+            res.json({isValid: false, error: ["The Branch ID or The Third-party key is wrong"]});
+
         }
 
     }));

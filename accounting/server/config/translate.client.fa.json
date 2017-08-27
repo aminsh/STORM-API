@@ -364,5 +364,8 @@
   "Your request is invalid": "درخواست شما نامعتبر است",
   "The user is already in the list": "کاربر مورد نظر هم اکنون در لیست است",
   "No user exists with this email address": "کاربری با آدرس ایمیل موردنظر وجود ندارد",
-  "This user is the branch owner": "کاربر موردنظر صاحب کسب و کار است"
+  "This user is the branch owner": "کاربر موردنظر صاحب کسب و کار است",
+  "A system error occurred": "یک خطای سیستمی رخ داده است",
+  "Wrong username": "نام کاربری صحیح نیست",
+  "System error": "خطای سیستمی"
 }

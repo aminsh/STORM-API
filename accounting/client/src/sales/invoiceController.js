@@ -371,9 +371,25 @@ export default class invoiceController {
 
     openSendEmailModal(){
 
-        this.sendInvoiceEmail.show({
-            invoiceId: this.invoice.id
-        });
+        this.peopleApi
+            .getById(this.invoice.detailAccountId)
+            .then((data) => {
+
+                this.sendInvoiceEmail.show({
+                    invoiceId: this.invoice.id,
+                    email: data.email
+                });
+
+            })
+            .catch((err) => {
+
+                console.log(err);
+                this.sendInvoiceEmail.show({
+                    invoiceId: this.invoice.id,
+                    email: null
+                });
+
+            });
 
     }
 

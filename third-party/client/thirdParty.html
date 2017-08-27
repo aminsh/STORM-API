@@ -15,7 +15,7 @@
                 </span>
             </div>
             <div class="list-row__secondary" style="text-align: center;" >
-                <button ui-sref="{{item.key}}"
+                <button ng-click="model.toggleThirdParty(item.key, item.isActivated)"
                         style="display: block;"
                         class="btn btn--flat btn--m"
                         ng-class="{ 'btn btn--flat btn--m btn--red' : item.isActivated, 'btn btn--flat btn--m btn--blue' : !item.isActivated}"

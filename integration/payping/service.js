@@ -121,7 +121,7 @@ module.exports = class PaypingService {
                 result = await(this.getUserKey(username));
             }
             else if(e.statusCode === 400){
-                throw new Error('نام کاربری صحیح نیست');
+                throw new Error('Wrong username');
             }
             else
                 throw new HttpException(e.statusCode, e.statusMessage, e.error);

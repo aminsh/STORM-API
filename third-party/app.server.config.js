@@ -26,6 +26,9 @@ app.use('/api', (req, res, next) => {
 
 app.get('*', async((req, res) => {
 
+    if(!(req.cookies['branch-id']) || !(req.isAuthenticated()))
+        return res.redirect("/404");
+
     res.render('index.ejs',{
         version: config.version,
         translates

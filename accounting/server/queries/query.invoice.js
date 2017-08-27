@@ -13,6 +13,7 @@ const BaseQuery = require('./query.base'),
 module.exports = class InvoiceQuery extends BaseQuery {
     constructor(branchId) {
         super(branchId);
+        this.check = async(this.check);
     }
 
     getById(id) {
@@ -220,4 +221,10 @@ module.exports = class InvoiceQuery extends BaseQuery {
             .max('number')
             .first();
     }
+
+    check(invoiceId){
+        return !!(await(this.knex('invoices').where("id", invoiceId).first()))
+    }
+
+
 };

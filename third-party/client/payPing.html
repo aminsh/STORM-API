@@ -2,23 +2,27 @@
 <div class="third-party-container-s" >
     <form name="form" novalidate >
         <div class="form-group" >
-            <label for="payping-username" >نام کاربری پی پینگ:</label>
-            <input id="payping-username"
-                   type="text"
-                   required
-                   class="form-control"
-                   dir="ltr"
-                   name="username"
-                   ng-model="model.payping.username" />
-        </div>
-        <div ng-messages="form.username.$error" ng-if="form.username.$dirty">
-            <div ng-message="required" class="text-danger" >وارد کردن نام کاربری الزامیست</div>
+            <lx-text-field lx-label="نام کاربری پی پینگ:"
+                           lx-focus="true"
+                           lx-error="!(model.payping.username) && form.username.$dirty" >
+                <input id="payping-username"
+                       type="text"
+                       class="form-control"
+                       dir="ltr"
+                       name="username"
+                       ng-model="model.payping.username" />
+            </lx-text-field>
+            <span class="text-danger" ng-show="!(model.payping.username) && form.username.$dirty" >وارد کردن نام کاربری الزامیست</span>
         </div>
         <div class="form-group" >
-            <button ng-click="model.send(form)"
-                    type="button"
-                    class="btn btn--flat btn--m btn--green"
+            <button type="button"
+                    ng-click="model.send(form)"
+                    class="btn btn--raised btn--m btn--green"
                     lx-ripple >فعال سازی</button>
+            <button ui-sref="third-party"
+                    type="button"
+                    class="btn btn--flat btn--m btn--blue"
+                    lx-ripple >بازگشت</button>
         </div>
     </form>
 </div>

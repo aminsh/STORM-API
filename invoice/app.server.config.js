@@ -39,13 +39,38 @@ app.use(async((req, res, next) => {
 
 app.get('/token/:token', async((req, res) => {
 
-    let token = req.params.token;
-    let tokenObj = Crypto.verify(token);
-    let branchId = tokenObj.branchId;
-    let invoiceId = tokenObj.invoiceId;
+    try{
 
-    res.cookie('branch-id', branchId);
-    res.redirect(`/invoice/${invoiceId}`);
+        let token = req.params.token;
+        let tokenObj = Crypto.verify(token);
+        let branchId = tokenObj.branchId;
+        let invoiceId = tokenObj.invoiceId;
+
+        res.cookie('branch-id', branchId);
+        res.redirect(`/invoice/${invoiceId}`);
+
+    } catch(err) {
+
+        console.log(err);
+        res.redirect('/404');
+
+    }
+
+}));
+
+app.get('/check/:id', async((req, res) => {
+
+    try{
+
+        let exists = await(instanceOf('query.invoice', req.branchId).check(req.params.id));
+        return res.json({isValid: true, returnValue: exists});
+
+    } catch(err) {
+
+        console.log(err);
+        return res.status(400).send("Sorry, You have no branch id !");
+
+    }
 
 }));
 
@@ -55,7 +80,7 @@ app.get('/:id/pay/:paymentMethod', async((req, res) => {
         paymentParameters = {
             customerName: invoice.detailAccountDisplay,
             amount: invoice.sumRemainder,
-            description: translate('For payment invoice number ...').formate(invoice.number),
+            description: translate('For payment invoice number ...').format(invoice.number),
             returnUrl: `${instanceOf('config').url.origin}/invoice/${invoice.id}/pay/${paymentMethod}/return`
         };
 
@@ -95,10 +120,21 @@ app.post('/:id/pay/:paymentMethod/return', (req, res) => {
     res.redirect(`${config.url.origin}/invoice/${req.params.id}`);
 });
 
-app.get('*', async((req, res) =>
-    res.render('invoice.ejs', {
-        reports,
-        version: config.version,
-        translates,
-        currentBranch: await(instanceOf('branch.repository').getById(req.cookies['branch-id']))
-    })));
+app.get('*', async((req, res) => {
+
+        try{
+
+            res.render('invoice.ejs', {
+                reports,
+                version: config.version,
+                translates,
+                currentBranch: await(instanceOf('branch.repository').getById(req.cookies['branch-id']))
+            });
+
+        } catch(err) {
+
+            console.log(err);
+            res.redirect("/404");
+
+        }
+    }));

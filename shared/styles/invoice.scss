@@ -48,6 +48,8 @@
     overflow: hidden;
     @include transition(width ease 0.3s);
 
+    &.whole-page{ width: calc(100% - 25px); }
+
     & > div.invoice-print-content-body{
       display: block;
       position: relative;
@@ -165,7 +167,7 @@
   @media screen and (max-width: 800px){
     padding: 0;
     & > div.invoice-print-content{
-      width: 100%;
+      width: 100% !important;
     }
     & > div.invoice-print-sidebar{
       display: none;
