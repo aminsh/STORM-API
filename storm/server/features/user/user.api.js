@@ -48,7 +48,7 @@ router.route('/register').post(async((req, res) => {
 
     await(userRepository.create(user));
 
-    render("email-user-register-template.ejs", {
+    render("/storm/server/templates/email-user-register-template.ejs", {
         user: {
             name: user.name
         },
@@ -238,7 +238,7 @@ router.route('/forgot-password')
 
             let error = null;
 
-            await(render("email-reset-password-template.ejs", {
+            await(render("/storm/server/templates/email-reset-password-template.ejs", {
                         user: {
                             name: user.name
                         },

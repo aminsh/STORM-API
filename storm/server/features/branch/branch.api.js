@@ -71,8 +71,8 @@ router.route('/:id/activate')
         res.json({isValid: true});
 
         let branch = await(branchRepository.getById(branchId));
-        let date = new Date();
-        render("email-activated-template.ejs", {
+
+        render("/storm/server/templates/email-activated-template.ejs", {
             user: {
                 name: branch.ownerName
             },

@@ -13,7 +13,7 @@ function renderFile(fileName, data) {
 
     data = Object.assign(defaultData, data);
 
-    fileName = path.normalize('{0}/{1}'.format(`${config.rootPath}/server/templates`, fileName));
+    fileName = path.normalize(`${config.rootPath}/${fileName}`);
 
     return new Promise(function (resolve, reject) {
         ejs.renderFile(fileName, data, function (err, html) {

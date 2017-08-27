@@ -9,6 +9,10 @@
 
     <link href="/public/css/acc.min.css?v=<%- version.app %>" rel="stylesheet"/>
     <link href="/public/css/invoice.min.css?v=<%- version.app %>" rel="stylesheet" />
+    <script>
+        Object.defineProperty(Array.prototype, 'toNumber', { enumerable: false });
+        Object.defineProperty(Array.prototype, 'dtp_toDate', { enumerable: false });
+    </script>
 
     <base href="/invoice/">
 </head>
@@ -42,6 +46,10 @@
 
 
 <script>
+
+    Object.defineProperty(Array.prototype, 'toNumber', { enumerable: false });
+    Object.defineProperty(Array.prototype, 'dtp_toDate', { enumerable: false });
+
     Stimulsoft.Base.Localization.StiLocalization.setLocalizationFile('/public/fa.xml', true);
 
     let fonts = [

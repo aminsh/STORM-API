@@ -19,10 +19,10 @@ const async = require('asyncawait/async'),
     SettingRepository = require('../data/repository.setting'),
     EventEmitter = require('../services/shared').service.EventEmitter,
     Crypto = require('../services/shared').service.Crypto,
-    stormConfig = require('../../../storm/server/config'),
+    config = instanceOf('config'),
     md5 = require('md5'),
     BranchRepository = require('../../../storm/server/features/branch/branch.repository'),
-    emailService = instanceOf('Email'),
+    Email = instanceOf('Email'),
     render = instanceOf('htmlRender').renderFile,
     branchRepository = instanceOf('branch.repository');
 
@@ -135,7 +135,7 @@ router.route('/')
 
         let sale = saleDomain.create(cmd),
             returnValue = {
-                id: sale.id, printUrl: `${stormConfig.url.origin}/print/?token=${Crypto.sign({
+                id: sale.id, printUrl: `${config.url.origin}/print/?token=${Crypto.sign({
                     branchId: req.branchId,
                     id: sale.id,
                     reportId: 700
@@ -361,7 +361,7 @@ router.route('/:invoiceId/send-email')
                 branchId: branchId,
                 invoiceId: invoiceId
             });
-            link = `${stormConfig.url.origin}/invoice/token/${token}`;
+            link = `${config.url.origin}/invoice/token/${token}`;
 
         } catch(err) {
 
@@ -375,7 +375,7 @@ router.route('/:invoiceId/send-email')
         // Send Email
         try{
 
-            render("../email-templates/invoice customer/template.ejs", {
+            render("/accounting/server/email-template/invoice customer/template.ejs", {
                 invoiceUrl: link,
                 branchLogo: branch.logo,
                 branchName: branch.name,
@@ -384,7 +384,7 @@ router.route('/:invoiceId/send-email')
                 detailAccountDisplay: invoice.detailAccountDisplay
             }).then(function (html) {
 
-                email.send({
+                Email.send({
                     from: config.email.from,
                     to: userEmail,
                     subject: `فاکتور شماره ی ${invoice.number} از طرف ${branch.name}`,
