@@ -50,9 +50,21 @@ router.route('/:key')
         const branchId = req.cookies['branch-id'],
             key = req.params.key;
 
-        await(instanceOf('PaymentService', key).register(branchId, req.body));
+        try {
+            await(instanceOf('PaymentService', key).register(branchId, req.body));
+            res.json({isValid: true});
+        }
+        catch (e) {
+            let message;
 
-        res.json({isValid: true});
+            if (e instanceof Error)
+                message = e.message;
+            else
+                message = 'خطای سیستمی';
+
+            res.json({isValid: false, errors: [message]});
+        }
+
     }));
 
 module.exports = router;

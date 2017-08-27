@@ -120,8 +120,12 @@ module.exports = class PaypingService {
                 await(this.setServiceToken());
                 result = await(this.getUserKey(username));
             }
+            else if(e.statusCode === 400){
+                throw new Error('نام کاربری صحیح نیست');
+            }
             else
                 throw new HttpException(e.statusCode, e.statusMessage, e.error);
+
         }
 
         const bankId = await(instanceOf('service.detailAccount', branchId)
