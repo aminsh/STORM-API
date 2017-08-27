@@ -10,8 +10,18 @@ export default class InvoiceViewController{
                 ,saleApi
                 ,branchApi
                 ,navigate
-                ,$filter){
-
+                ,$filter
+                ,branchThirdPartyApi
+                ,invoiceApi){
+        
+        this.hasPayPing = false;
+        this.showPaySection = false;
+        this.showPaymentTable = false;
+        branchThirdPartyApi.hasPayPing()
+            .then(data => {
+                console.log();
+                this.hasPayPing = data;
+            });
         this.$filter = $filter;
         this.$rootScope = $rootScope;
         this.navigate = navigate;
@@ -21,7 +31,11 @@ export default class InvoiceViewController{
         this.$stateParams = $stateParams;
         this.saleApi = saleApi;
         this.branchApi = branchApi;
+        this.invoiceApi = invoiceApi;
+
         this.invoiceId = $stateParams.id;
+        this.isRealInvoiceId(this.invoiceId);
+
         this.invoice = {};
         this.payments = {};
         this.branch = {
@@ -32,11 +46,12 @@ export default class InvoiceViewController{
             thead: [],
             tbody: []
         };
-
+        
         this.tHeadInit();
         this.tBodyInit();
         this.getPayments();
         this.currentBranchInit();
+        this.canShowPaymentSection();
 
     }
 
@@ -153,24 +168,6 @@ export default class InvoiceViewController{
             {key: 700},
             {"id": this.invoiceId});
 
-        /*let printWindow = this.$window.open('', 'چاپ فاکتور', 'height=600,width=800');
-
-        printWindow
-            .document
-            .write(`<html>
-                    <head>
-                        <meta http-equiv="Content-Type" content="text/html" charset="utf-8"/>
-                        <title>چاپ فاکتور</title>
-                        <link href="/public/css/acc.min.css" rel="stylesheet"/>
-                        <link href="/public/css/invoice.min.css" rel="stylesheet" />
-                    </head>
-                    <body>${content}</body>
-                    </html>`);
-        printWindow.document.close();
-        printWindow.focus();
-        printWindow.print();
-        printWindow.close();*/
-
         return true;
 
     }
@@ -186,6 +183,28 @@ export default class InvoiceViewController{
     goToPayment(){
         let url = `/invoice/${this.invoiceId}/pay/payping`;
         this.$window.open(url, '_self');
+    }
+
+    isRealInvoiceId(id){
+
+        this.invoiceApi.check(id)
+            .then((data) => {
+                if(!data.returnValue) this.$window.location = "/404";
+            })
+            .catch((err) => this.$window.location = "/404")
+
+    }
+    
+    canShowPaymentSection(){
+        
+        this.showPaySection = this.hasPayPing && this.invoice.status !== "paid" && this.invoice.sumRemainder != '0';
+        
+    }
+
+    canShowPaymentTable(){
+
+        this.showPaymentTable = this.invoice.sumPaidAmount != "0";
+
     }
 
 }

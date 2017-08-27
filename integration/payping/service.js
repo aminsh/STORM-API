@@ -121,7 +121,7 @@ module.exports = class PaypingService {
                 result = await(this.getUserKey(username));
             }
             else if(e.statusCode === 400){
-                throw new Error('نام کاربری صحیح نیست');
+                throw new Error('Wrong username');
             }
             else
                 throw new HttpException(e.statusCode, e.statusMessage, e.error);
@@ -131,7 +131,7 @@ module.exports = class PaypingService {
         const bankId = await(instanceOf('service.detailAccount', branchId)
             .create('حساب پی پینگ', 'bank'));
 
-        await(branchThirdParty.create(branchId, 'payping', {username, userKey: result.data, bankId}));
+        await(branchThirdParty.create(branchId, 'payping', {username, userKey: result, bankId}));
     }
 
     pay(branchId, parameters, response) {

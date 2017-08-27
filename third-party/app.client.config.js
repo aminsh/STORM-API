@@ -7,6 +7,7 @@ import "string-prototypes";
 import "jquery-global-resolve";
 
 import angular from "angular";
+import 'angular-translate';
 import "angular-animate";
 import "angular-ui-router";
 import "angular-sanitize";
@@ -25,16 +26,26 @@ import reportViewer from "../accounting/client/src/directives/reportViewer";
 import {body, content, footer, heading} from "../accounting/client/src/directives/content";
 import BranchApi from "../accounting/client/src/branch/branchApi";
 import saleApi from "../accounting/client/src/sales/saleApi";
+import BranchThirdPartyApi from "./client/branchThirdPartyApi";
+import logger from "../accounting/client/src/services/logger";
+import translateStorageService from "../accounting/client/src/services/translateStorageService";
+import translate from "../accounting/client/src/services/translate";
+import Promise from "../accounting/client/src/services/promise";
+import confirm from "../accounting/client/src/services/confirm";
 
 // Controllers
 import ThirdPartyController from "./client/thirdParty.controller";
 import PayPingController from "./client/payPing.controller";
+
+// Configs
+import translateConfig from '../accounting/client/src/config/translate.config';
 
 let thirdPartyModule = angular.module('thirdParty.module', [
         'ngAnimate',
         'ngResource',
         'ngSanitize',
         'ui.router',
+        'pascalprecht.translate',
         'lumx'
     ]),
     devConstants = {
@@ -44,6 +55,7 @@ let thirdPartyModule = angular.module('thirdParty.module', [
     };
 
 thirdPartyModule
+    .config(translateConfig)
     .run(($rootScope,$location) => {
         $rootScope.user = {};
 
@@ -86,9 +98,15 @@ thirdPartyModule
     .constant('devConstants', devConstants)
     .service('branchApi', BranchApi)
     .service('formService', formService)
+    .service('branchThirdPartyApi', BranchThirdPartyApi)
+    .service('translate', translate)
+    .service('promise', Promise)
     .factory('apiPromise', apiPromise)
     .factory('navigate', navigate)
     .factory('saleApi', saleApi)
+    .factory('logger', logger)
+    .factory('translateStorageService', translateStorageService)
+    .factory('confirm', confirm)
     .directive('devTagContent', content)
     .directive('devTagContentBody', body)
     .directive('devTagContentHeading', heading)

@@ -10,7 +10,7 @@ export default class SendInvoiceEmailController{
         this.$scope = $scope;
         this.errors = [];
         this.sendEmailModel = {
-            email: null,
+            email: data.email,
             invoiceId: data.invoiceId
         };
 
@@ -19,8 +19,6 @@ export default class SendInvoiceEmailController{
     }
 
     send(form){
-
-        console.log(this.sendEmailModel.invoiceId);
 
         if (form.$invalid)
             return this.formService.setDirty(form);
@@ -35,7 +33,6 @@ export default class SendInvoiceEmailController{
                 this.logger.success();
 
             })
-            .catch(err => console.log(err))
             .finally(() => {
                 this.$scope.isSending = false;
                 this.close();

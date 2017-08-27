@@ -23,7 +23,8 @@ const async = require('asyncawait/async'),
     md5 = require('md5'),
     BranchRepository = require('../../../storm/server/features/branch/branch.repository'),
     emailService = instanceOf('Email'),
-    render = instanceOf('htmlRender').render;
+    render = instanceOf('htmlRender').renderFile,
+    branchRepository = instanceOf('branch.repository');
 
 
 router.route('/summary')
@@ -343,6 +344,7 @@ router.route('/:invoiceId/send-email')
             invoiceId,
             invoice,
             branchId,
+            branch,
             token,
             link;
 
@@ -354,6 +356,7 @@ router.route('/:invoiceId/send-email')
             invoiceId = req.params.invoiceId;
             invoice = await(invoiceQuery.getById(invoiceId));
             branchId = req.branchId;
+            branch = await(branchRepository.getById(branchId));
             token = Crypto.sign({
                 branchId: branchId,
                 invoiceId: invoiceId
@@ -372,12 +375,28 @@ router.route('/:invoiceId/send-email')
         // Send Email
         try{
 
-            emailService.send({
-                from: "info@storm-online.ir",
-                to: userEmail,
-                subject: `صورت حساب فروش ${invoice.description}`,
-                html: `<a href="${link}" target="_blank" >${link}</a>`
+            render("../email-templates/invoice customer/template.ejs", {
+                invoiceUrl: link,
+                branchLogo: branch.logo,
+                branchName: branch.name,
+                date: invoice.date,
+                number: invoice.number,
+                detailAccountDisplay: invoice.detailAccountDisplay
+            }).then(function (html) {
+
+                email.send({
+                    from: config.email.from,
+                    to: userEmail,
+                    subject: `فاکتور شماره ی ${invoice.number} از طرف ${branch.name}`,
+                    html: html
+                });
+
+            }).catch(function (err) {
+
+                console.log(`Error: The email DIDN'T send successfuly !!! `, err);
+
             });
+
             return res.json({isValid: true});
 
         } catch(err) {

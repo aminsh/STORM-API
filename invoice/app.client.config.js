@@ -24,9 +24,14 @@ import navigate from "../accounting/client/src/services/routeNavigatorService";
 import reportViewer from "../accounting/client/src/directives/reportViewer";
 import ReportPrintController from "../accounting/client/src/report/reportPrint";
 import {body, content, footer, heading} from "../accounting/client/src/directives/content";
-import BranchApi from "../accounting/client/src/branch/branchApi";
 import InvoiceViewController from "./client/invoiceView.controller";
 import saleApi from "../accounting/client/src/sales/saleApi";
+import Promise from "../accounting/client/src/services/promise";
+
+// Api
+import BranchApi from "../accounting/client/src/branch/branchApi";
+import BranchThirdPartyApi from "../third-party/client/branchThirdPartyApi";
+import InvoiceApi from "./client/invoiceApi";
 
 let invoiceModule = angular.module('invoice.module', [
         'ngAnimate',
@@ -83,6 +88,9 @@ invoiceModule
     .constant('devConstants', devConstants)
     .service('reportApi', ReportApi)
     .service('branchApi', BranchApi)
+    .service('promise', Promise)
+    .service('branchThirdPartyApi', BranchThirdPartyApi)
+    .service('invoiceApi', InvoiceApi)
     .factory('apiPromise', apiPromise)
     .factory('navigate', navigate)
     .factory('reportParameters', () => ({

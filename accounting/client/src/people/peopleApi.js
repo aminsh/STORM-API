@@ -1,6 +1,6 @@
-import accModule from '../acc.module';
+"use strict";
 
-function peopleApi(apiPromise,devConstants) {
+export default function(apiPromise,devConstants) {
     var urlPrefix = devConstants.urls.rootUrl;
 
     return {
@@ -26,6 +26,4 @@ function peopleApi(apiPromise,devConstants) {
     };
 
 
-}
-
-accModule.factory('peopleApi', peopleApi);
+};

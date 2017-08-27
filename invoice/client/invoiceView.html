@@ -8,11 +8,8 @@
             <i class="mdi mdi-24px mdi-printer" ></i>
         </button>
     </div>
-    <div class="invoice-print-top-pay-list" >
-        <ul></ul>
-    </div>
     <div class="invoice-print-wrapper" >
-        <div class="invoice-print-content" >
+        <div ng-class="{ 'invoice-print-content' : model.showPaySection, 'invoice-print-content whole-page' : !model.showPaySection }" >
             <div class="invoice-print-content-body" >
                 <div flex-container="row" flex-column="12" >
                     <div flex-item="2" >
@@ -54,7 +51,7 @@
                 <br/>
                 <div flex-container="row" flex-column="12" >
                     <div flex-item="6" class="invoice-print-pay-table-container" style="padding: 0 50px;" >
-                        <table class="invoice-print-table" >
+                        <table class="invoice-print-table" ng-show="model.showPaymentTable" >
                             <tr>
                                 <td>پرداخت:</td>
                                 <td>{{model.payments.number}}</td>
@@ -95,7 +92,7 @@
                 <a href="https://www.storm-online.ir/" >&copy; Copyright Storm-Online</a>
             </div>
         </div>
-        <div class="invoice-print-sidebar" >
+        <div class="invoice-print-sidebar" ng-show="model.showPaySection" >
             <h3 style="padding: 0 10px;color: #707070" >پرداخت با:</h3>
             <ul class="invoice-print-sidebar-pay-list" >
                 <li>
@@ -106,7 +103,7 @@
             </ul>
         </div>
     </div>
-    <div class="invoice-print-mobile-pay-list" >
+    <div class="invoice-print-mobile-pay-list" ng-show="model.showPaySection" >
         <lx-fab lx-direction="up" >
             <lx-fab-trigger>
                 <lx-button lx-size="xl" lx-type="fab" lx-tooltip="پرداخت با" lx-tooltip-position="right" >

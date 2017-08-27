@@ -4,7 +4,7 @@ import accModule from "../acc.module";
 import peopleListController from "./peopleListController";
 import peopleCreateController from "./peopleCreateController";
 import peopleMoreInfoController from "./peopleMoreInfoController"
-import "./peopleApi";
+import peopleApi from "./peopleApi";
 
 function createPersonService(modalBase) {
     return modalBase({
@@ -19,4 +19,5 @@ accModule
     .controller('peopleListController', peopleListController)
     .controller('peopleCreateController', peopleCreateController)
     .controller('peopleMoreInfoController',peopleMoreInfoController)
-    .factory('createPersonService', createPersonService);
+    .factory('createPersonService', createPersonService)
+    .factory('peopleApi', peopleApi);
