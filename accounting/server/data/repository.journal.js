@@ -181,7 +181,7 @@ class JournalRepository extends BaseRepository {
 
     batchUpdate(createJournalLines, updateJournalLine, deleteJournalLine, journal) {
         let knex = this.knex,
-            baseCreate = super.create;
+            branchId = this.branchId;
 
         return new Promise((resolve, reject) => {
             knex.transaction(async(function (trx) {
@@ -193,7 +193,8 @@ class JournalRepository extends BaseRepository {
 
                     if (createJournalLines.length != 0) {
                         createJournalLines.forEach(jl => {
-                            baseCreate(jl);
+                            jl.branchId = branchId;
+                            jl.id = Guid.new();
                             jl.journalId = journal.id
                         });
                         await(knex('journalLines')
