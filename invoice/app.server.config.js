@@ -59,6 +59,9 @@ app.get('/:id/pay/:paymentMethod', async((req, res) => {
             returnUrl: `${instanceOf('config').url.origin}/invoice/${invoice.id}/pay/${paymentMethod}/return`
         };
 
+    if(invoice.sumRemainder <= 0)
+        return res.status(400).send('مبلغ صحیح نیست');
+
     instanceOf('PaymentService', req.params.paymentMethod)
         .pay(req.branchId, paymentParameters, res);
 }));
