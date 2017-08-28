@@ -59,7 +59,7 @@ enums.InvoiceStatus = function () {
     return new Enum([
         {key: 'draft', display: 'پیش نویس'},
         {key: 'waitForPayment', display: 'منتظر برای پرداخت'},
-        {key: 'paid', display: 'پراخت شده'},
+        {key: 'paid', display: 'پرداخت شده'},
     ]);
 };
 

@@ -108,8 +108,7 @@ app.post('/:id/pay/:paymentMethod/return', (req, res) => {
     delete paymentData.bankId;
 
     paymentData.invoiceId = id;
-
-    await(instanceOf('repository.payment').create(paymentData));
+    await(instanceOf('repository.payment', req.branchId).create(paymentData));
 
     paymentData.bankId = bankId;
 
