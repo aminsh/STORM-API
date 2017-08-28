@@ -349,7 +349,7 @@ router.route('/:invoiceId/send-email')
             link;
 
         // Initialize Variables
-        try{
+        try {
 
             invoiceQuery = new InvoiceQuery(req.branchId);
             userEmail = req.body.email;
@@ -363,49 +363,38 @@ router.route('/:invoiceId/send-email')
             });
             link = `${config.url.origin}/invoice/token/${token}`;
 
-        } catch(err) {
-
+        } catch (err) {
             console.log(err);
             console.log("Invoice ID: " + req.params.invoiceId);
             console.log(`> ERROR: Wrong invoice id`);
             return res.json({isValid: false});
-
         }
 
         // Send Email
-        try{
+        try {
 
-            render("/accounting/server/email-template/invoice customer/template.ejs", {
+            let html = await(render("/accounting/server/email-template/invoice customer/template.ejs", {
                 invoiceUrl: link,
                 branchLogo: branch.logo,
                 branchName: branch.name,
                 date: invoice.date,
                 number: invoice.number,
                 detailAccountDisplay: invoice.detailAccountDisplay
-            }).then(function (html) {
+            }));
 
-                Email.send({
-                    from: config.email.from,
-                    to: userEmail,
-                    subject: `فاکتور شماره ی ${invoice.number} از طرف ${branch.name}`,
-                    html: html
-                });
-
-            }).catch(function (err) {
-
-                console.log(`Error: The email DIDN'T send successfuly !!! `, err);
-
-            });
+            await(Email.send({
+                from: config.email.from,
+                to: userEmail,
+                subject: `فاکتور شماره ی ${invoice.number} از طرف ${branch.name}`,
+                html: html
+            }));
 
             return res.json({isValid: true});
 
-        } catch(err) {
-
-            console.log(`> ERROR: Wrong email address`);
+        } catch (err) {
+            console.log(`Error: The email DIDN'T send successfuly !!! `, err);
             return res.json({isValid: false});
-
         }
-
 
     }));
 
