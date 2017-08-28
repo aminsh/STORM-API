@@ -9,7 +9,7 @@
         </button>
     </div>
     <div class="invoice-print-wrapper" >
-        <div ng-class="{ 'invoice-print-content' : model.showPaySection, 'invoice-print-content whole-page' : !model.showPaySection }" >
+        <div ng-class="{ 'invoice-print-content' : model.canShowPaymentSection(), 'invoice-print-content whole-page' : !model.canShowPaymentSection() }" >
             <div class="invoice-print-content-body" >
                 <div flex-container="row" flex-column="12" >
                     <div flex-item="2" >
@@ -34,7 +34,8 @@
                         <span style="font-size: 20px;" >قابل پرداخت:</span><br/>
                         <div style="display: block;position: relative;margin: 0 auto;text-align: center;"
                              class="so-tx-color-dark-blue" >
-                            <span style="font-size: 67px;" >{{model.invoice.sumRemainder | number}}</span><span style="font-size: 18px" >ریال</span>
+                            <span style="font-size: 67px;" >{{model.invoice.invoiceLines | totalSum: ('($.unitPrice * $.quantity) - $.discount + $.vat') | number}}</span><span style="font-size: 18px" >ریال</span>
+
                         </div>
                     </div>
                 </div>
@@ -70,19 +71,19 @@
                         <table class="invoice-print-table" >
                             <tr>
                                 <td>جمع مبلغ:</td>
-                                <td>{{model.invoice.sumTotalPrice}}</td>
+                                <td>{{model.invoice.invoiceLines | totalSum: ('$.unitPrice * $.quantity') | number}}</td>
                             </tr>
                             <tr>
                                 <td>جمع تخفیف:</td>
-                                <td>{{model.invoice.sumDiscount}}</td>
+                                <td>{{model.invoice.invoiceLines | totalSum: ('discount') | number}}</td>
                             </tr>
                             <tr>
                                 <td>جمع مالیات:</td>
-                                <td>{{model.invoice.sumVat}}</td>
+                                <td>{{model.invoice.invoiceLines | totalSum: ('vat') | number}}</td>
                             </tr>
                             <tr>
                                 <td>قابل پرداخت:</td>
-                                <td>{{model.invoice.sumRemainder}}</td>
+                                <td>{{model.invoice.invoiceLines | totalSum: ('($.unitPrice * $.quantity) - $.discount + $.vat') | number}}</td>
                             </tr>
                         </table>
                     </div>
@@ -92,7 +93,7 @@
                 <a href="https://www.storm-online.ir/" >&copy; Copyright Storm-Online</a>
             </div>
         </div>
-        <div class="invoice-print-sidebar" ng-show="model.showPaySection" >
+        <div class="invoice-print-sidebar" ng-show="model.canShowPaymentSection()" >
             <h3 style="padding: 0 10px;color: #707070" >پرداخت با:</h3>
             <ul class="invoice-print-sidebar-pay-list" >
                 <li>
@@ -103,7 +104,7 @@
             </ul>
         </div>
     </div>
-    <div class="invoice-print-mobile-pay-list" ng-show="model.showPaySection" >
+    <div class="invoice-print-mobile-pay-list" ng-show="model.canShowPaymentSection()" >
         <lx-fab lx-direction="up" >
             <lx-fab-trigger>
                 <lx-button lx-size="xl" lx-type="fab" lx-tooltip="پرداخت با" lx-tooltip-position="right" >
@@ -112,7 +113,7 @@
                 </lx-button>
             </lx-fab-trigger>
             <lx-fab-actions>
-                <lx-button  lx-size="l" lx-type="fab" lx-tooltip="PayPing" lx-tooltip-position="right" >
+                <lx-button  ng-click="model.goToPayment()" lx-size="l" lx-type="fab" lx-tooltip="PayPing" lx-tooltip-position="right" >
                     <img src="/public/images/payping-favicon2.png" />
                 </lx-button>
             </lx-fab-actions>
