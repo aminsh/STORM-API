@@ -33,6 +33,8 @@ import BranchApi from "../accounting/client/src/branch/branchApi";
 import BranchThirdPartyApi from "../third-party/client/branchThirdPartyApi";
 import InvoiceApi from "./client/invoiceApi";
 
+import totalSum from '../accounting/client/src/filters/total';
+
 let invoiceModule = angular.module('invoice.module', [
         'ngAnimate',
         'ngResource',
@@ -102,6 +104,9 @@ invoiceModule
     .directive('devTagContentHeading', heading)
     .directive('devTagContentFooter', footer)
     .directive('devTagReportViewer', reportViewer)
+
+    .filter('totalSum', totalSum)
+
     .controller('reportPrintController', ReportPrintController)
     .controller('invoiceViewController', InvoiceViewController);
 
