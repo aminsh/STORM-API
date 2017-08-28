@@ -104,7 +104,10 @@ export default class InvoiceViewController {
         this.saleApi
             .getById(this.invoiceId)
             .then((data) => {
+                let row = 0;
+
                 this.invoice = data;
+                data.invoiceLines.forEach(item => item.row = ++row);
                 this.dataTable.tbody = data.invoiceLines;
 
             })
@@ -116,15 +119,7 @@ export default class InvoiceViewController {
 
         this.saleApi
             .payments(this.invoiceId)
-            .then((data) => {
-
-                this.payments = {
-                    amount: data.amount,
-                    date: data.date,
-                    number: data.number
-                };
-
-            })
+            .then(result => this.payments = result)
             .catch(err => console.log(err));
 
     }
