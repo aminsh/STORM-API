@@ -1,21 +1,20 @@
 "use strict";
 
 export default class LoginController {
-    constructor(
-        userApi,
-        setDirty, 
-        $rootScope, 
-        $scope, 
-        $state, 
-        $location, 
-        $window,
-        $cookies) {
-        
+    constructor(userApi,
+                setDirty,
+                $rootScope,
+                $scope,
+                $state,
+                $location,
+                $window,
+                $cookies) {
+
         $rootScope.noFooter = true;
         $scope.$on('$destroy', () => {
             $rootScope.noFooter = false;
         });
-        
+
         this.userApi = userApi;
         this.$rootScope = $rootScope;
         this.$state = $state;
@@ -31,7 +30,7 @@ export default class LoginController {
         this.$window = $window;
         this.returnUrl = $location.search().returnUrl;
 
-        if(this.returnUrl)
+        if (this.returnUrl)
             $cookies.put('return-url', this.returnUrl);
     }
 
@@ -55,14 +54,15 @@ export default class LoginController {
             .catch(err => this.isError = true);
     }
 
-    loginByGoogle(){
+    loginByGoogle() {
         let url = `${this.$window.location.origin}/auth/google`;
         this.$window.open(url, '_self');
     }
 
-    setRecaptchaData(){
-
+    setRecaptchaData() {
         let $window = this.$window;
+
+        if (this.$rootScope.isDevelopment) return;
         this.user.reCaptchaResponse = $window.grecaptcha.getResponse($window.reCaptchaWidget)
 
     }

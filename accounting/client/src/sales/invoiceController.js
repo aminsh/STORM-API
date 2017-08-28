@@ -12,10 +12,12 @@ export default class invoiceController {
                 $state,
                 $timeout,
                 $scope,
+                $window,
                 promise,
                 createPaymentService,
                 createPersonService,
-                productCreateService) {
+                productCreateService,
+                sendInvoiceEmail) {
 
 
         let regex = /^([^.]*)/;
@@ -28,6 +30,7 @@ export default class invoiceController {
             getAllProduct: devConstants.urls.products.getAll()
         };
 
+        this.sendInvoiceEmail = sendInvoiceEmail;
         this.isLoading = false;
         this.invoiceType = invoiceType;
         this.pageTitle = '';
@@ -41,6 +44,7 @@ export default class invoiceController {
         this.saleApi = saleApi;
         this.purchaseApi = purchaseApi;
         this.$timeout = $timeout;
+        this.$window = $window;
         this.logger = logger;
         this.translate = translate;
         this.navigate = navigate;
@@ -363,5 +367,35 @@ export default class invoiceController {
 
     onItemPropertyChanged(item) {
         item.vat = ((item.unitPrice * item.quantity) - item.discount) * 9 / 100;
+    }
+
+    openSendEmailModal(){
+
+        this.peopleApi
+            .getById(this.invoice.detailAccountId)
+            .then((data) => {
+
+                this.sendInvoiceEmail.show({
+                    invoiceId: this.invoice.id,
+                    email: data.email
+                });
+
+            })
+            .catch((err) => {
+
+                console.log(err);
+                this.sendInvoiceEmail.show({
+                    invoiceId: this.invoice.id,
+                    email: null
+                });
+
+            });
+
+    }
+
+
+    goToPayment(){
+        let url = `/invoice/${this.invoice.id}/pay/payping`;
+        this.$window.open(url, '_self');
     }
 }

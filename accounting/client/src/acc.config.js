@@ -118,7 +118,7 @@ import "./filters/amount";
 import totalSum from "./filters/total";
 //service
 import "./services/formService";
-import "./services/translateStorageService";
+import translateStorageService from "./services/translateStorageService";
 import apiPromise from "./services/apiPromise";
 import confirm from "./services/confirm";
 import "./services/gridFilterCellTypeProvider";
@@ -130,6 +130,7 @@ import "./services/prompt";
 import "./services/showReport";
 import $ModalFactory from "./services/$modalFactory";
 import Promise from "./services/promise";
+import formService from './services/formService';
 
 import "./journal";
 import "./report";
@@ -146,11 +147,16 @@ import "./receivableCheque";
 import "./payableCheque";
 import "./bankAndFund";
 import "./detailAccount";
+//factory
+import saleApi from "./sales/saleApi";
+// Configs
+import translateConfig from './config/translate.config';
 
 accModule
     .config(uiRouteConfig)
     .config(ADMdtpConfig)
     .config(localStorageConfig)
+    .config(translateConfig)
 
     .run(routeSaveLocationSearch)
     .run(setDefaults)
@@ -191,11 +197,14 @@ accModule
     .service('branchApi', BranchApi)
     .service('settingsApi', SettingsApi)
     .service('userApi', UserApi)
+    .service('formService', formService)
 
     .factory('navigate', routeNavigatorService)
     .factory('apiPromise', apiPromise)
     .factory('logger', logger)
     .factory('confirm', confirm)
+    .factory('saleApi', saleApi)
+    .factory('translateStorageService', translateStorageService)
 
     .controller('chequePrintController', chequePrintController)
     .controller('reportController', reportController)

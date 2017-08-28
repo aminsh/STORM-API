@@ -1,32 +1,30 @@
-import accModule from '../acc.module';
+export default function saleApi(apiPromise, devConstants){
 
-function saleApi(apiPromise,devConstants) {
-    var urlPrefix = devConstants.urls.rootUrl;
+    let urlPrefix = devConstants.urls.rootUrl;
 
     return {
-
         getAll(){
             return apiPromise.get(`${urlPrefix}/sales/`);
         },
         getMaxNumber(){
             return apiPromise.get(`${urlPrefix}/sales/max/number`);
         },
-        getById: function (id) {
+        getById(id) {
             return apiPromise.get(`${urlPrefix}/sales/${id}`);
         },
-        create: function (data) {
+        create(data) {
             return apiPromise.post(`${urlPrefix}/sales`,data);
         },
-        update: function (id,data) {
+        update(id,data) {
             return apiPromise.put(`${urlPrefix}/sales/${id}/`,data);
         },
-        remove: function (id) {
+        remove(id) {
             return apiPromise.delete(`${urlPrefix}/sales/${id}`);
         },
-        pay: function (id,data) {
+        pay(id,data) {
             return apiPromise.post(`${urlPrefix}/sales/${id}/pay`,data);
         },
-        payments:function (id) {
+        payments(id) {
             return apiPromise.get(`${urlPrefix}/sales/${id}/payments`);
         },
         summary(){
@@ -38,9 +36,11 @@ function saleApi(apiPromise,devConstants) {
         summaryByProduct(){
             return apiPromise.get(`${urlPrefix}/sales/summary/by-product`);
         },
+        // [START] SMRSAN
+        sendInvoiceEmail(id, email){
+            return apiPromise.post(`${urlPrefix}/sales/${id}/send-email`, { email });
+        }
+        // [-END-] SMRSAN
     };
 
-
 }
-
-accModule.factory('saleApi', saleApi);

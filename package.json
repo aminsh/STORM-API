@@ -57,6 +57,7 @@
     "gulp-css-inliner": "^0.1.0",
     "gulp-flatten": "^0.3.1",
     "html-pdf": "^2.1.0",
+    "inverse": "^1.0.0",
     "jquery": "^3.2.1",
     "jsdom": "^9.8.3",
     "jsonwebtoken": "^7.4.1",
@@ -68,6 +69,8 @@
     "linq": "^3.0.5",
     "lodash": "^4.14.2",
     "lodash.clone": "^4.5.0",
+    "lumx": "^1.0.0",
+    "material-components-web": "^0.17.0",
     "md5": "^2.2.1",
     "metismenu": "^2.7.0",
     "moment": "^2.18.1",
@@ -117,6 +120,7 @@
     "gulp-if": "^2.0.2",
     "gulp-inject": "^4.2.0",
     "gulp-minify": "0.0.14",
+    "gulp-nodemon": "^2.2.1",
     "gulp-notify": "^2.2.0",
     "gulp-rename": "^1.2.2",
     "gulp-sass": "^3.1.0",
@@ -130,7 +134,9 @@
     "uglifyjs-webpack-plugin": "^0.4.6",
     "webpack": "^3.3.0",
     "webpack-obfuscator": "^0.9.3",
-    "yargs": "^6.6.0"
+    "yargs": "^6.6.0",
+    "velocity-animate": "^1.5.0",
+    "bourbon": "^4.3.4"
   },
   "browserify": {
     "transform": [
@@ -175,7 +181,8 @@
     "bootstrap": "./node_modules/bootstrap-sass-directional/assets/javascripts/bootstrap.js",
     "metisMenu": "./vendors/jquery.metisMenu.js",
     "angular-ui-select": "./node_modules/ui-select/dist/select.js",
-    "angular-image-perloader": "./vendors/angular-image-perloader"
+    "angular-image-perloader": "./vendors/angular-image-perloader",
+    "storm-lumx": "./vendors/storm-lumx/js/lumx.js"
   },
   "browserify-shim": {
     "ladda": "global:Ladda",

@@ -1,20 +1,19 @@
 "use strict";
 
 const express = require('express'),
-    config = require('../../config'),
+    config = instanceOf('config'),
     router = express.Router(),
     async = require('asyncawait/async'),
     await = require('asyncawait/await'),
     jwt = require('jsonwebtoken'),
-    branchRepository = require('./branch.repository'),
+    branchRepository = instanceOf("branch.repository"),
     userRepository = new (require('../user/user.repository')),
     branchQuery = require('./branch.query'),
-    superSecret = require('../../../../shared/services/cryptoService').superSecret,
-    Image = require('../../services/shared').utility.Image,
-    EventEmitter = require('../../services/shared').service.EventEmitter,
-    render = require('../../services/shared').service.render.renderFile,
-    persianDate = require('../../services/shared').service.PersianDate,
-    email = require('../../services/emailService.js');
+    superSecret = instanceOf('Crypto').superSecret,
+    EventEmitter = instanceOf('EventEmitter'),
+    render = instanceOf('htmlRender').renderFile,
+    persianDate = instanceOf('utility').PersianDate,
+    email = instanceOf('Email');
 
 router.route('/')
     .get(async((req, res) => {
@@ -50,10 +49,10 @@ router.route('/')
 router.route('/:id').delete(async((req, res) => {
     let id = req.params.id;
 
-    if(!req.isAuthenticated())
+    if (!req.isAuthenticated())
         return res.json({isValid: false});
 
-    if(req.user.role !== "admin")
+    if (req.user.role !== "admin")
         return res.json({isValid: false});
 
     await(branchRepository.remove(id));
@@ -72,8 +71,8 @@ router.route('/:id/activate')
         res.json({isValid: true});
 
         let branch = await(branchRepository.getById(branchId));
-        let date = new Date();
-        render("email-activated-template.ejs", {
+
+        render("/storm/server/templates/email-activated-template.ejs", {
             user: {
                 name: branch.ownerName
             },
@@ -185,39 +184,35 @@ router.route('/:id/default-logo').put(async((req, res) => {
 router.route('/users/is-owner')
     .get(async((req, res) => {
 
-        if(!req.isAuthenticated())
+        if (!req.isAuthenticated())
             return res.json({isValid: false});
 
         let currentBranch = await(branchRepository.getById(req.cookies['branch-id']));
 
-        try{
-
-            return res.json({ isValid: currentBranch.ownerId === req.user.id });
-
-        } catch(err) {
-
+        try {
+            return res.json({isValid: currentBranch.ownerId === req.user.id});
+        } catch (err) {
             console.log(err);
             return res.json({isValid: false});
-
         }
 
     }));
 router.route('/users')
     .get(async((req, res) => {
 
-        if(!req.isAuthenticated())
+        if (!req.isAuthenticated())
             return res.json({isValid: false});
 
         let currentBranch = await(branchRepository.getById(req.cookies['branch-id']));
 
-        try{
+        try {
 
-            if(currentBranch.ownerId !== req.user.id){
+            if (currentBranch.ownerId !== req.user.id) {
                 console.log(">>> Not Owner");
                 return res.json({isValid: false});
             }
 
-        } catch(err) {
+        } catch (err) {
 
             console.log(">>> Error: ", err);
             return res.json({isValid: false});
@@ -232,7 +227,7 @@ router.route('/users')
 router.route('/users/:email')
     .put((req, res) => {
 
-        if(!req.isAuthenticated())
+        if (!req.isAuthenticated())
             return res.json({isValid: false});
 
         let branchId = req.cookies['branch-id'],
@@ -242,42 +237,42 @@ router.route('/users/:email')
             userRecordInList = null;
 
         // Try to get user and it's record in branch members
-        try{
+        try {
 
             user = await(userRepository.getUserByEmail(newUserEmail));
             userRecordInList = await(branchRepository.getUserInBranch(branchId, user.id));
 
-        } catch(err) {
+        } catch (err) {
 
             return res.json({isValid: false});
 
         }
 
         // Check if the user is not the branch owner
-        if(currentBranch.ownerId !== req.user.id)
+        if (currentBranch.ownerId !== req.user.id)
             return res.json({isValid: false});
 
         // Check if the user is activated
-        if(user.state !== "active")
+        if (user.state !== "active")
             return res.json({isValid: false});
 
         // Chack if the new member is the owner
-        if(currentBranch.ownerId === user.id)
+        if (currentBranch.ownerId === user.id)
             return res.json({isValid: true, returnValue: "This user is the branch owner"});
 
         // Check if the user is already in list
-        if(userRecordInList)
+        if (userRecordInList)
             return res.json({isValid: true, returnValue: "The user is already in the list"});
 
         // Check if user is the owner
-        try{
+        try {
 
-            if(currentBranch.ownerId !== req.user.id){
+            if (currentBranch.ownerId !== req.user.id) {
                 // Not The Owner
                 return res.json({isValid: false, errors: ["You have no permission"]});
             }
 
-        } catch(err) {
+        } catch (err) {
 
             console.log(err);
             res.json({isValid: false});
@@ -285,12 +280,12 @@ router.route('/users/:email')
         }
 
         // Add the member
-        try{
+        try {
 
             await(branchRepository.addMember(currentBranch.id, user.id));
             res.json({isValid: true});
 
-        } catch(err) {
+        } catch (err) {
 
             console.log(err);
             res.json({isValid: false});
@@ -301,7 +296,7 @@ router.route('/users/:email')
 router.route("/users/:email")
     .delete(async((req, res) => {
 
-        if(!req.isAuthenticated())
+        if (!req.isAuthenticated())
             return res.json({isValid: false});
 
         let userEmail = req.params.email,
@@ -309,11 +304,11 @@ router.route("/users/:email")
             user = null;
 
         // Get User By Email
-        try{
+        try {
 
             user = await(userRepository.getUserByEmail(userEmail));
 
-        } catch(err) {
+        } catch (err) {
 
             console.log(err);
             return res.json({isValid: false, errors: ["User not found"]});
@@ -324,10 +319,26 @@ router.route("/users/:email")
         console.log(`user.id: ${user.id}`);
 
         // Delete user from branch
-        try{
+        try {
 
             await(branchRepository.deleteUserInBranch(branchId, user.id));
             return res.json({isValid: true});
+
+        } catch (err) {
+
+            console.log(err);
+            return res.json({isValid: false});
+
+        }
+
+    }));
+router.route("/logo")
+    .get(async((req, res) => {
+
+        try{
+
+            let branch = await(branchQuery.getById(req.cookies['branch-id']));
+            return res.json({isValid: true, returnValue: branch.logo});
 
         } catch(err) {
 

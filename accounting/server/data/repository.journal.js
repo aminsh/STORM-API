@@ -231,11 +231,30 @@ class JournalRepository extends BaseRepository {
         });
     }
 
-    isExistsDetailAccount(detailAccountId){
+    isExistsDetailAccount(detailAccountId) {
         return this.knex.select('id').from('journalLines')
             .modify(this.modify, this.branchId)
             .where('detailAccountId', detailAccountId)
             .first()
+    }
+
+    orderingTemporaryNumberByTemporaryDate(fiscalPeriodId) {
+        const branchId = this.branchId,
+            query = `update journals
+                        set "temporaryNumber" = subquery.row
+                    from(
+                        select 
+                            id,
+                            ROW_NUMBER () OVER (ORDER BY "temporaryDate") as row
+                        from journals as j 
+                        where "branchId" = '${branchId}'
+                        and "periodId" = '${fiscalPeriodId}'
+                        ) as subquery
+                    where "branchId" = '${branchId}'
+                    and "periodId" = '${fiscalPeriodId}'
+                    and journals.id = subquery.id`;
+
+        return this.knex.raw(query);
     }
 }
 

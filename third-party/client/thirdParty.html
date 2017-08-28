@@ -1,0 +1,36 @@
+<h1 class="third-party-title" >لیست <span class="so-tx-color-cyan-green" >افزونه های</span> استورم</h1>
+<br/>
+<div class="third-party-container" >
+    <ul class="mt+ mb+ so-color-cyan-green" >
+        <li class="list-row list-row--multi-line list-row--has-separator"
+            ng-repeat="item in model.thirdPartyList" >
+            <div class="list-row__primary" style="width: 18%;" >
+                <img ng-src="/public/images/{{item.logo}}" class="pl+" width="100%" />
+            </div>
+            <div class="list-row__content" >
+                <span class="display-block" >{{item.display}}</span>
+                <span class="display-block fs-body-1 tc-black-2" >
+                    <span>{{item.title}}</span><br/>
+                    <span>{{item.description}}</span>
+                </span>
+            </div>
+            <div class="list-row__secondary" style="text-align: center;" >
+                <button ng-click="model.toggleThirdParty(item.key, item.isActivated)"
+                        style="display: block;"
+                        class="btn btn--flat btn--m"
+                        ng-class="{ 'btn btn--flat btn--m btn--red' : item.isActivated, 'btn btn--flat btn--m btn--blue' : !item.isActivated}"
+                        lx-ripple
+                        lx-tooltip="فعال سازی"
+                        lx-tooltip-position="right" >
+                    <i ng-class="{ 'glyphicon glyphicon-minus' : item.isActivated, 'glyphicon glyphicon-plus' : !item.isActivated}" ></i>
+                </button>
+                <button class="btn btn--flat btn--m btn--green"
+                        lx-ripple
+                        lx-tooltip="آموزش"
+                        lx-tooltip-position="right" >
+                    <i class="glyphicon glyphicon-education" ></i>
+                </button>
+            </div>
+        </li>
+    </ul>
+</div>

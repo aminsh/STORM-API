@@ -1,7 +1,5 @@
-import accModule from '../acc.module';
+"use strict";
 
-function translate($filter) {
+export default function translate($filter) {
     return (key) => $filter('translate')(key);
 }
-
-accModule.factory('translate', translate);

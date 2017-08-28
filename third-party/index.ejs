@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+
+<html ng-cloak ng-app="thirdParty.module" >
+<head>
+    <meta name="viewport" content="width=device-width"/>
+    <meta http-equiv="Content-Type" content="text/html" charset="utf-8"/>
+
+    <title>نرم افزار حسابداری آنلاین استورم</title>
+
+    <!--<link href="/public/css/acc.min.css?v=<%- version.app %>" rel="stylesheet"/>-->
+    <link href="/public/css/thirdParty.min.css?v=<%- version.app %>" rel="stylesheet" />
+
+    <base href="/third-party/">
+</head>
+<body class="rtl" >
+<ui-view>
+    <div class="waiting-overley">
+        <div class="start-waiting-block">
+            <div style="margin-bottom: 30px">
+                <img src="/public/images/logo.png" style="height: 70px">
+            </div>
+            <div class="progress-line"></div>
+        </div>
+    </div>
+</ui-view>
+
+
+</body>
+
+</html>
+
+
+<script>
+    localStorage.setItem('translate', '<%- JSON.stringify(translates) %>');
+</script>
+
+<!--<script src="/public/js/stimulsoft.all.min.js"></script>-->
+<script src="/public/js/thirdParty.bundle.min.js"></script>
+<script src="/public/js/thirdParty.template.bundle.js"></script>
+
+
+<script>
+    /*Stimulsoft.Base.Localization.StiLocalization.setLocalizationFile('/public/fa.xml', true);
+
+    let fonts = [
+        {"fileName": "BBadr.ttf", "name": "BBadr"},
+        {"fileName": "BBaran.ttf", "name": "BBaran"},
+        {"fileName": "BBardiya.ttf", "name": "BBardiya"},
+        {"fileName": "BCompset.ttf", "name": "BCompset"},
+        {"fileName": "BElham.ttf", "name": "BElham"},
+        {"fileName": "BKoodakBold.ttf", "name": "BKoodakBold"},
+        {"fileName": "BLotus.ttf", "name": "BLotus"},
+        {"fileName": "BTraffic.ttf", "name": "BTraffic"},
+        {"fileName": "BZar.ttf", "name": "BZar"}
+    ];
+
+    fonts.forEach(f => Stimulsoft
+        .Base
+        .StiFontCollection
+        .addOpentypeFontFile(`/public/fonts/${f.fileName}`, f.name));*/
+</script>
+
+

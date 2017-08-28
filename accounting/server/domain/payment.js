@@ -26,7 +26,6 @@ module.exports = class Payment {
         this.payableJournalLine = async(this.payableJournalLine);
     }
 
-
     save(invoiceId, list) {
         let invoice = await(this.invoiceRepository.findById(invoiceId));
         list.forEach(e => e.journalLineId = Guid.new());

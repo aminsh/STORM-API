@@ -1,10 +1,9 @@
 "use strict";
 
 const express = require('express'),
-    router = express.Router(),
-    authenticate = require('../../config/auth').authenticate;
+    router = express.Router();
 
-router.route('/login').post(authenticate);
+router.route('/login').post(instanceOf('Authentication').authenticate);
 
 router.route('/logout').post((req, res) => {
     if (req.isAuthenticated())

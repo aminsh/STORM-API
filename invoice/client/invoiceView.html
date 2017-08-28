@@ -1,0 +1,180 @@
+<div class="invoice-print-main-wrapper rtl">
+    <div class="invoice-print-header">
+        <img class="invoice-print-header-log" src="/public/images/logo-black.png" alt="storm-logo"/>
+        <button class="btn btn--flat btn--blue-grey btn--l"
+                ng-click="model.printInvoiceContent()"
+                lx-ripple
+                lx-tooltip="چاپ فاکتور" lx-tooltip-position="bottom">
+            <i class="mdi mdi-24px mdi-printer"></i>
+        </button>
+    </div>
+    <div class="invoice-print-wrapper">
+        <div ng-class="{ 'invoice-print-content' : model.canShowPaymentSection(), 'invoice-print-content whole-page' : !model.canShowPaymentSection() }">
+            <div class="invoice-print-content-body">
+                <div flex-container="row" flex-column="12">
+                    <div flex-item="2">
+                        <img class="invoice-print-branch-logo" ng-src="{{ model.branch.logo }}" alt="branch-logo"/>
+                        <div class="so-align-center" style="font-size: 16px;padding: 5px 0;">{{model.branch.name}}</div>
+                    </div>
+                    <div flex-item="2">
+                        <br/><br/>
+                        <span>مشتری:</span>
+                        <span>{{model.invoice.customerDisplay}}</span>
+                    </div>
+                    <div flex-item="4">
+                        <br/><br/>
+                        <span class="so-tx-color-cyan-green">شماره فاکتور</span>:
+                        <span>{{model.invoice.number}}</span>
+                        <br/>
+                        <span class="so-tx-color-cyan-green">تاریخ فاکتور</span>:
+                        <span>{{model.invoice.date}}</span>
+                    </div>
+                    <div flex-item="4">
+                        <br/>
+                        <span style="font-size: 20px;">قابل پرداخت:</span><br/>
+                        <div style="display: block;position: relative;margin: 0 auto;text-align: center;"
+                             class="so-tx-color-dark-blue">
+                            <span style="font-size: 67px;">{{model.invoice.invoiceLines | totalSum: ('($.unitPrice * $.quantity) - $.discount + $.vat') | number}}</span><span
+                                style="font-size: 18px">ریال</span>
+
+                        </div>
+                    </div>
+                </div>
+                <div flex-container="row" flex-column="12">
+                    <div flex-item="12">
+                        <lx-data-table
+                                lx-selectable="false"
+                                lx-thead="model.dataTable.thead"
+                                lx-tbody="model.dataTable.tbody"></lx-data-table>
+                    </div>
+                </div>
+                <div class="divider divider--dark"></div>
+                <br/>
+                <br/>
+                <div flex-container="row" flex-column="12">
+                    <div
+                            flex-item="6"
+                            class="invoice-print-pay-table-container"
+                            style="padding: 0 50px;">
+
+                        <div ng-if="model.invoice.sumPaidAmount !== 0">
+                            <div flex-container="row" flex-column="12">
+                                <h3 flex-column="3">پرداختی ها</h3>
+                                <h5 flex-column="3" ng-show="model.invoice.sumRemainder === 0">(کل مبلغ فاکتور پرداخت
+                                    شده)</h5>
+                            </div>
+
+
+                            <ul class="list mt++">
+                                <li class="list-row list-row--has-separator">
+                                    <div class="list-row__content">
+                                        <span>مبلغ</span>
+                                    </div>
+
+                                    <div class="list-row__content">
+                                        <span>تاریخ</span>
+                                    </div>
+
+                                    <div class="list-row__content">
+                                        <span>سند</span>
+                                    </div>
+
+                                    <div class="list-row__content">
+
+                                    </div>
+                                </li>
+                                <li class="list-row list-row--has-separator" ng-repeat="p in model.payments">
+
+                                    <div class="list-row__content">
+                                        <span>{{p.number}}</span>
+                                    </div>
+
+                                    <div class="list-row__content">
+                                        <span>{{p.date}}</span>
+                                    </div>
+
+                                    <div class="list-row__content">
+                                        <span>{{p.amount | number}}</span>
+                                    </div>
+
+                                    <div class="list-row__content">
+                                        <span>{{p.bankDisplay}}</span>
+                                    </div>
+
+                                </li>
+
+                                <li class="list-row list-row--has-separator">
+                                    <div class="list-row__content">
+
+                                    </div>
+                                    <div class="list-row__content">
+                                        <h4>جمع پرداختی ها :</h4>
+                                    </div>
+                                    <div class="list-row__content">
+                                        <h4>{{model.payments | totalSum:('amount')| number}}</h4>
+                                    </div>
+                                    <div class="list-row__content">
+
+                                    </div>
+                                </li>
+                            </ul>
+
+                        </div>
+                    </div>
+                    <div flex-item="6" class="invoice-print-avg-table-container" style="padding: 0 50px 0 0">
+                        <table class="invoice-print-table">
+                            <tr>
+                                <td>جمع مبلغ:</td>
+                                <td>{{model.invoice.invoiceLines | totalSum: ('$.unitPrice * $.quantity') | number}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>جمع تخفیف:</td>
+                                <td>{{model.invoice.invoiceLines | totalSum: ('discount') | number}}</td>
+                            </tr>
+                            <tr>
+                                <td>جمع مالیات:</td>
+                                <td>{{model.invoice.invoiceLines | totalSum: ('vat') | number}}</td>
+                            </tr>
+                            <tr>
+                                <td>قابل پرداخت:</td>
+                                <td>{{model.invoice.invoiceLines | totalSum: ('($.unitPrice * $.quantity) - $.discount +
+                                    $.vat') | number}}
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="invoice-print-content-footer">
+                <a href="https://www.storm-online.ir/">&copy; Copyright Storm-Online</a>
+            </div>
+        </div>
+        <div class="invoice-print-sidebar" ng-show="model.canShowPaymentSection()">
+            <h3 style="padding: 0 10px;color: #707070">پرداخت با:</h3>
+            <ul class="invoice-print-sidebar-pay-list">
+                <li>
+                    <a href="" ng-click="model.goToPayment()">
+                        <img src="/public/images/payping-logo.png"/>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="invoice-print-mobile-pay-list" ng-show="model.canShowPaymentSection()">
+        <lx-fab lx-direction="up">
+            <lx-fab-trigger>
+                <lx-button lx-size="xl" lx-type="fab" lx-tooltip="پرداخت با" lx-tooltip-position="right">
+                    <i class="mdi mdi-coin"></i>
+                    <i class="mdi mdi-plus"></i>
+                </lx-button>
+            </lx-fab-trigger>
+            <lx-fab-actions>
+                <lx-button ng-click="model.goToPayment()" lx-size="l" lx-type="fab" lx-tooltip="PayPing"
+                           lx-tooltip-position="right">
+                    <img src="/public/images/payping-favicon2.png"/>
+                </lx-button>
+            </lx-fab-actions>
+        </lx-fab>
+    </div>
+</div>

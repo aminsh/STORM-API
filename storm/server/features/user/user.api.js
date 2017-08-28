@@ -4,23 +4,19 @@ const express = require('express'),
     router = express.Router(),
     async = require('asyncawait/async'),
     await = require('asyncawait/await'),
-    config = require('../../config'),
+    config = instanceOf('config'),
     md5 = require('md5'),
-    Guid = require('../../services/shared').utility.Guid,
+    Guid = instanceOf('utility').Guid,
     UserRepository = require('./user.repository'),
     UserQuery = require('./user.query'),
-    translate = require('../../services/translateService'),
-    emailService = require('../../services/emailService'),
-    crypto = require('../../../../shared/services/cryptoService'),
-    render = require('../../services/shared').service.render.renderFile,
+    Email = instanceOf('Email'),
+    crypto = instanceOf('Crypto'),
+    render = instanceOf('htmlRender').renderFile,
     TokenRepository = require('../token/token.repository');
 
 router.route('/').get(async((req, res) => {
 
-    if(!req.isAuthenticated())
-        return res.json({ isValid: false });
-
-    if(req.user.role !== "admin")
+    if(!req.isAuthenticated() || req.user.role !== "admin")
         return res.json({ isValid: false });
 
     let userQuery = new UserQuery(),
@@ -52,7 +48,7 @@ router.route('/register').post(async((req, res) => {
 
     await(userRepository.create(user));
 
-    render("email-user-register-template.ejs", {
+    render("/storm/server/templates/email-user-register-template.ejs", {
         user: {
             name: user.name
         },
@@ -60,7 +56,7 @@ router.route('/register').post(async((req, res) => {
 
     }).then((html) => {
 
-        emailService.send({
+        Email.send({
             from: "info@storm-online.ir",
             to: user.email,
             subject: "لینک فعال سازی حساب کاربری در استورم",
@@ -72,13 +68,6 @@ router.route('/register').post(async((req, res) => {
         console.log(`Error: The email DIDN'T send successfuly !!! `, err);
 
     });
-
-    /*emailService.send({
-        to: user.email,
-        subject: translate('Activation link'),
-        html: `<p><h3>${translate('Hello')}</h3></p>
-               <p>${url}</p>`
-    });*/
 
     res.json({isValid: true});
 }));
@@ -249,7 +238,7 @@ router.route('/forgot-password')
 
             let error = null;
 
-            await(render("email-reset-password-template.ejs", {
+            await(render("/storm/server/templates/email-reset-password-template.ejs", {
                         user: {
                             name: user.name
                         },
@@ -258,7 +247,7 @@ router.route('/forgot-password')
                     })
                     .then((html) => {
 
-                        emailService.send({
+                        Email.send({
                             from: "info@storm-online.ir",
                             to: user.email,
                             subject: "لینک تغییر رمز عبور در استورم",

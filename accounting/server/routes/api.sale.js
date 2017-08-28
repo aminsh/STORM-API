@@ -18,8 +18,13 @@ const async = require('asyncawait/async'),
     PaymentQuery = require('../queries/query.payment'),
     SettingRepository = require('../data/repository.setting'),
     EventEmitter = require('../services/shared').service.EventEmitter,
-    Crypro = require('../services/shared').service.Crypto,
-    stormConfig = require('../../../storm/server/config');
+    Crypto = require('../services/shared').service.Crypto,
+    config = instanceOf('config'),
+    md5 = require('md5'),
+    BranchRepository = require('../../../storm/server/features/branch/branch.repository'),
+    Email = instanceOf('Email'),
+    render = instanceOf('htmlRender').renderFile,
+    branchRepository = instanceOf('branch.repository');
 
 
 router.route('/summary')
@@ -130,7 +135,7 @@ router.route('/')
 
         let sale = saleDomain.create(cmd),
             returnValue = {
-                id: sale.id, printUrl: `${stormConfig.url.origin}/print/?token=${Crypro.sign({
+                id: sale.id, printUrl: `${config.url.origin}/print/?token=${Crypto.sign({
                     branchId: req.branchId,
                     id: sale.id,
                     reportId: 700
@@ -329,6 +334,68 @@ router.route('/max/number')
             result = await(invoiceQuery.maxNumber('sale'));
 
         res.json(result.max);
+    }));
+
+router.route('/:invoiceId/send-email')
+    .post(async((req, res) => {
+
+        let invoiceQuery,
+            userEmail,
+            invoiceId,
+            invoice,
+            branchId,
+            branch,
+            token,
+            link;
+
+        // Initialize Variables
+        try {
+
+            invoiceQuery = new InvoiceQuery(req.branchId);
+            userEmail = req.body.email;
+            invoiceId = req.params.invoiceId;
+            invoice = await(invoiceQuery.getById(invoiceId));
+            branchId = req.branchId;
+            branch = await(branchRepository.getById(branchId));
+            token = Crypto.sign({
+                branchId: branchId,
+                invoiceId: invoiceId
+            });
+            link = `${config.url.origin}/invoice/token/${token}`;
+
+        } catch (err) {
+            console.log(err);
+            console.log("Invoice ID: " + req.params.invoiceId);
+            console.log(`> ERROR: Wrong invoice id`);
+            return res.json({isValid: false});
+        }
+
+        // Send Email
+        try {
+
+            let html = await(render("/accounting/server/email-template/invoice customer/template.ejs", {
+                invoiceUrl: link,
+                branchLogo: branch.logo,
+                branchName: branch.name,
+                date: invoice.date,
+                number: invoice.number,
+                detailAccountDisplay: invoice.detailAccountDisplay
+            }));
+
+            await(Email.send({
+                from: config.email.from,
+                to: userEmail,
+                subject: `فاکتور شماره ی ${invoice.number} از طرف ${branch.name}`,
+                html: html
+            }));
+
+            return res.json({isValid: true});
+
+        } catch (err) {
+            console.log(`Error: The email DIDN'T send successfuly !!! `, err);
+            return res.json({isValid: false});
+        }
+
     }));
 
 module.exports = router;

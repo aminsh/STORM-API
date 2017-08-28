@@ -6,7 +6,7 @@ const async = require('asyncawait/async'),
     SubsidiaryLedgerAccountRepository = require('../../../../accounting/server/data/repository.subsidiaryLedgerAccount'),
     defaultGeneralLedgerAccounts = require('../../../../accounting/server/config/generalLedgerAccounts.json').RECORDS,
     defaultSubsidiaryLedgerAccounts = require('../../../../accounting/server/config/subsidiaryLedgerAccounts.json').RECORDS,
-    enums = require('../../../../accounting/shared/enums'),
+    enums = require('../../../../shared/enums'),
     groups = getChartOfAccount();
 
 

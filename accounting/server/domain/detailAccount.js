@@ -13,7 +13,7 @@ module.exports = class DetailAccountDomain {
     }
 
     findPersonByIdOrCreate(cmd) {
-        if(!cmd)
+        if (!cmd)
             return null;
 
         let entity;
@@ -31,7 +31,7 @@ module.exports = class DetailAccountDomain {
             if (entity) return entity;
         }
 
-        if(!cmd.title)
+        if (!cmd.title)
             return null;
 
         entity = {
@@ -42,5 +42,16 @@ module.exports = class DetailAccountDomain {
         await(this.detailAccountRepository.create(entity));
 
         return entity;
+    }
+
+    create(title, type) {
+        const entity = {
+            title,
+            detailAccountType: type
+        };
+
+        await(this.detailAccountRepository.create(entity));
+
+        return entity.id;
     }
 };

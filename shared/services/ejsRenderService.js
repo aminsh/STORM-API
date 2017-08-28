@@ -2,17 +2,18 @@
 
 const ejs = require('ejs'),
     Promise = require('promise'),
-    config = require('../../storm/server/config'),
+    config = instanceOf('config'),
     path = require('path');
 
 function renderFile(fileName, data) {
     const defaultData = {
-        staticRootPath: `${config.url.origin}/public`
+        staticRootPath: `${config.url.origin}/public`,
+        config
     };
 
     data = Object.assign(defaultData, data);
 
-    fileName = path.normalize('{0}/{1}'.format(`${config.rootPath}/server/templates`, fileName));
+    fileName = path.normalize(`${config.rootPath}/${fileName}`);
 
     return new Promise(function (resolve, reject) {
         ejs.renderFile(fileName, data, function (err, html) {

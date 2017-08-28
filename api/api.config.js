@@ -73,5 +73,5 @@ app.use('/transfer-money', require('../accounting/server/routes/api.moneyTransfe
 app.use('/receive', require('../accounting/server/routes/api.receive'));
 app.use('/pay', require('../accounting/server/routes/api.pay'));
 app.use('/bank-and-fund', require('../accounting/server/routes/api.bankAndFund'));
-app.use('/api/scales', require('../accounting/server/routes/api.scale'));
+app.use('/scales', require('../accounting/server/routes/api.scale'));
 

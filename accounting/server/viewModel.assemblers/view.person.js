@@ -2,7 +2,7 @@
 
 "use strict";
 
-const enums = require('../../shared/enums');
+const enums = require('../../../shared/enums');
 
 function personAssembler(entity) {
     var viewModel = {

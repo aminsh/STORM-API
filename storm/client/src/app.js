@@ -43,6 +43,11 @@ angular.module('app', [
     .config(appTranslate)
 
     .run(authInit)
+    .run(($rootScope) => {
+
+        $rootScope.isDevelopment = localStorage.getItem('env') === 'development';
+
+    })
 
     .directive('shell', shell)
     .directive('logoUploader', uploader)

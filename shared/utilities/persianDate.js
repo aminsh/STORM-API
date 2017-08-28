@@ -7,6 +7,9 @@ module.exports = {
     toDay(){
         return moment().format('jYYYY/jMM/jDD');
     },
+    current: function () {
+        return moment().format('jYYYY/jMM/jDD');
+    },
     dateToWord(date){
         const months = {
                 1: "فروردین",

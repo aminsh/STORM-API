@@ -7,12 +7,13 @@ const BaseQuery = require('./query.base'),
     lineView = require('../viewModel.assemblers/view.invoiceLine'),
     FiscalPeriodQuery = require('./query.fiscalPeriod'),
     kendoQueryResolve = require('../services/kendoQueryResolve'),
-    enums = require('../../shared/enums');
+    enums = require('../../../shared/enums');
 
 
 module.exports = class InvoiceQuery extends BaseQuery {
     constructor(branchId) {
         super(branchId);
+        this.check = async(this.check);
     }
 
     getById(id) {
@@ -28,11 +29,10 @@ module.exports = class InvoiceQuery extends BaseQuery {
                     'invoiceStatus',
                     'description',
                     knex.raw('"sum"("totalPrice") as "sumTotalPrice"'),
-                    knex.raw('"sum"("paidAmount") as "sumPaidAmount"'),
-                    knex.raw('"sum"("totalPrice"-"paidAmount") as "sumRemainder"'))
+                    knex.raw('(select coalesce("sum"("amount"),0) from "payments" where "invoiceId" = "base"."id" limit 1) as "sumPaidAmount"'),
+                    knex.raw('"sum"("totalPrice") - (select coalesce("sum"("amount"),0) from "payments" where "invoiceId" = "base"."id" limit 1) as "sumRemainder"'))
                     .from(function () {
                         this.select('invoices.*',
-                            knex.raw('(select coalesce("sum"("amount"),0) from "payments" where "invoiceId" = "invoices"."id" limit 1) as "paidAmount"'),
                             knex.raw('"detailAccounts"."title" as "detailAccountDisplay"'),
                             knex.raw('(("invoiceLines"."unitPrice" * "invoiceLines"."quantity") - "invoiceLines"."discount" + "invoiceLines"."vat") as "totalPrice"'))
                             .from('invoices')
@@ -82,11 +82,10 @@ module.exports = class InvoiceQuery extends BaseQuery {
                     'invoiceStatus',
                     'description',
                     knex.raw('"sum"("totalPrice") as "sumTotalPrice"'),
-                    knex.raw('"sum"("paidAmount") as "sumPaidAmount"'),
-                    knex.raw('"sum"("totalPrice"-"paidAmount") as "sumRemainder"'))
+                    knex.raw('(select coalesce("sum"("amount"),0) from "payments" where "invoiceId" = "base"."id" limit 1) as "sumPaidAmount"'),
+                    knex.raw('"sum"("totalPrice")-(select coalesce("sum"("amount"),0) from "payments" where "invoiceId" = "base"."id" limit 1) as "sumRemainder"'))
                     .from(function () {
                         this.select('invoices.*',
-                            knex.raw('(select coalesce("sum"("amount"),0) from "payments" where "invoiceId" = "invoices"."id" limit 1) as "paidAmount"'),
                             knex.raw('"detailAccounts"."title" as "detailAccountDisplay"'),
                             knex.raw('(("invoiceLines"."unitPrice" * "invoiceLines"."quantity") - "invoiceLines"."discount" + "invoiceLines"."vat") as "totalPrice"'))
                             .from('invoices')
@@ -220,4 +219,10 @@ module.exports = class InvoiceQuery extends BaseQuery {
             .max('number')
             .first();
     }
+
+    check(invoiceId){
+        return !!(await(this.knex('invoices').where("id", invoiceId).first()))
+    }
+
+
 };

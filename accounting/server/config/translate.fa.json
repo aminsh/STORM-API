@@ -44,6 +44,8 @@
   "Debtor and creditor are not allowed to have value , both of them": "بدهکار و بستانکار نباید هر دو دارای مقدار باشد",
   "From date can not be greater than to date":"تاریخ پایان دوره نمیتواند از تاریخ آغاز دوره کوچکتر باشد",
 
+  "For payment invoice number ...":"بابت پرداخت فاکتور شماره {0}",
+
   "For Cash sale invoice number ...":"بابت فاکتور فروش شماره {0}",
   "received payment for invoice number ... ": "دریافت وجه بابت فاکتور شماره {0}",
   "received cash for invoice number ... ": "دریافت وجه نقد بابت فاکتور شماره {0}",
