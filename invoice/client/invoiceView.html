@@ -52,67 +52,74 @@
                 <br/>
                 <br/>
                 <div flex-container="row" flex-column="12">
-                    <div flex-item="6" class="invoice-print-pay-table-container" style="padding: 0 50px;">
+                    <div
+                            flex-item="6"
+                            class="invoice-print-pay-table-container"
+                            style="padding: 0 50px;">
 
-                        <div flex-container="row" flex-column="12">
-                            <h3 flex-column="3">پرداختی ها</h3>
-                            <h5 flex-column="3" ng-show="model.invoice.sumRemainder === 0">(کل مبلغ فاکتور پرداخت شده)</h5>
+                        <div ng-if="model.invoice.sumPaidAmount !== 0">
+                            <div flex-container="row" flex-column="12">
+                                <h3 flex-column="3">پرداختی ها</h3>
+                                <h5 flex-column="3" ng-show="model.invoice.sumRemainder === 0">(کل مبلغ فاکتور پرداخت
+                                    شده)</h5>
+                            </div>
+
+
+                            <ul class="list mt++">
+                                <li class="list-row list-row--has-separator">
+                                    <div class="list-row__content">
+                                        <span>مبلغ</span>
+                                    </div>
+
+                                    <div class="list-row__content">
+                                        <span>تاریخ</span>
+                                    </div>
+
+                                    <div class="list-row__content">
+                                        <span>سند</span>
+                                    </div>
+
+                                    <div class="list-row__content">
+
+                                    </div>
+                                </li>
+                                <li class="list-row list-row--has-separator" ng-repeat="p in model.payments">
+
+                                    <div class="list-row__content">
+                                        <span>{{p.number}}</span>
+                                    </div>
+
+                                    <div class="list-row__content">
+                                        <span>{{p.date}}</span>
+                                    </div>
+
+                                    <div class="list-row__content">
+                                        <span>{{p.amount | number}}</span>
+                                    </div>
+
+                                    <div class="list-row__content">
+                                        <span>{{p.bankDisplay}}</span>
+                                    </div>
+
+                                </li>
+
+                                <li class="list-row list-row--has-separator">
+                                    <div class="list-row__content">
+
+                                    </div>
+                                    <div class="list-row__content">
+                                        <h4>جمع پرداختی ها :</h4>
+                                    </div>
+                                    <div class="list-row__content">
+                                        <h4>{{model.payments | totalSum:('amount')| number}}</h4>
+                                    </div>
+                                    <div class="list-row__content">
+
+                                    </div>
+                                </li>
+                            </ul>
+
                         </div>
-
-
-                        <ul class="list mt++">
-                            <li class="list-row list-row--has-separator">
-                                <div class="list-row__content">
-                                    <span>مبلغ</span>
-                                </div>
-
-                                <div class="list-row__content">
-                                    <span>تاریخ</span>
-                                </div>
-
-                                <div class="list-row__content">
-                                    <span>سند</span>
-                                </div>
-
-                                <div class="list-row__content">
-
-                                </div>
-                            </li>
-                            <li class="list-row list-row--has-separator" ng-repeat="p in model.payments">
-
-                                <div class="list-row__content">
-                                    <span>{{p.number}}</span>
-                                </div>
-
-                                <div class="list-row__content">
-                                    <span>{{p.date}}</span>
-                                </div>
-
-                                <div class="list-row__content">
-                                    <span>{{p.amount | number}}</span>
-                                </div>
-
-                                <div class="list-row__content">
-                                    <span>{{p.bankDisplay}}</span>
-                                </div>
-
-                            </li>
-
-                            <li class="list-row list-row--has-separator">
-                                <div class="list-row__content">
-
-                                </div>
-                                <div class="list-row__content">
-                                    <h3>جمع پرداختی ها :</h3>
-                                </div>
-                                <div class="list-row__content">
-                                    <h3>{{model.payments | totalSum:('amount')| number}}</h3>
-                                </div>
-                                <div class="list-row__content">
-
-                                </div>
-                            </li>
-                        </ul>
                     </div>
                     <div flex-item="6" class="invoice-print-avg-table-container" style="padding: 0 50px 0 0">
                         <table class="invoice-print-table">
