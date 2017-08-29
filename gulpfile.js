@@ -311,6 +311,10 @@ gulp.task('thirdParty-build-sass', function(){
         .pipe(gulp.dest(`${config.publicDir}/css`));
 
 });
+gulp.task('thirdParty-docs-copy-images', function () {
+    return gulp.src(`${config.thirdPartyDir}/docs/assets/images/**.*`)
+        .pipe(gulp.dest(`${config.publicDir}/docs/images`));
+});
 // [-END-] SMRSAN
 
 gulp.task('minfy', function () {

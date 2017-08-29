@@ -25,6 +25,7 @@
                     <i ng-class="{ 'glyphicon glyphicon-minus' : item.isActivated, 'glyphicon glyphicon-plus' : !item.isActivated}" ></i>
                 </button>
                 <button class="btn btn--flat btn--m btn--green"
+                        ui-sref="help.{{item.key}}"
                         lx-ripple
                         lx-tooltip="آموزش"
                         lx-tooltip-position="right" >
