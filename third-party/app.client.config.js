@@ -85,14 +85,23 @@ thirdPartyModule
                 controller: 'thirdPartyController',
                 controllerAs: 'model',
                 templateUrl: 'partials/templates/thirdParty.html'
-            });
-        $stateProvider
+            })
             .state('payping', {
                 url: '/payping',
                 controller: 'payPingController',
                 controllerAs: 'model',
                 templateUrl: 'partials/templates/payPing.html'
+            })
+            // [START] HELP
+            .state('help', {
+                url: '/help',
+                template: '<ui-view></ui-view>'
+            })
+            .state('help.payping', {
+                url: '/payping',
+                templateUrl: 'partials/templates/docs/pages/payping/help.payping.html'
             });
+            // [-END-] HELP
 
     })
     .constant('devConstants', devConstants)
