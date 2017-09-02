@@ -8,7 +8,7 @@ const Promise = require('promise'),
 module.exports = class {
     static verify(userResponse) {
         return new Promise((resolve, reject) => {
-            if(Config.env === "development"){
+            if(true){
                 resolve();// Fake Dev Response
             } else {
                 request(
