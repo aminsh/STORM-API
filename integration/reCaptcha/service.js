@@ -8,6 +8,8 @@ const Promise = require('promise'),
 module.exports = class {
     static verify(userResponse) {
         return new Promise((resolve, reject) => {
+            
+            //TODO this is disabled teporamry
             if(true){
                 resolve();// Fake Dev Response
             } else {
