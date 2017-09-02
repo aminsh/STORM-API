@@ -486,7 +486,8 @@ gulp.task('copy-assets', [
     'copy-mdi-fonts',
     'copy-persian-fonts',
     'copy-stimulsoft-files',
-    'storm-copy-images'
+    'storm-copy-images',
+    'thirdParty-docs-copy-images'
 ]);
 
 gulp.task('default', [
