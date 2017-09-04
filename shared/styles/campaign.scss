@@ -5,6 +5,17 @@ body{
   background-color: #eeeeee;
 }
 
+.so-camp-top-bar{
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 200px;
+  @include gradient("#{$color-dark-cyan-green}, #{$color-cyan-green}", bottom right, $color-cyan-green);
+}
+
 .main-sign-up-container{
 
   $response-size: 1024px;
@@ -19,7 +30,7 @@ body{
     padding: 0;
   }
 
-  .camp-main-wrapper{
+  .so-camp-main-wrapper{
     position: relative;
     margin: 0 auto 0 auto;
     width: 1024px;
@@ -32,11 +43,11 @@ body{
       min-height: 100vh;
     }
 
-    .camp-sign-up-right-side, .camp-sign-up-left-side{
+    .so-camp-sign-up-right-side, .so-camp-sign-up-left-side{
       position: relative;
     }
 
-    .camp-sign-up-right-side{
+    .so-camp-sign-up-right-side{
       @media screen and (max-width: $response-size){
         display: none;
       }
@@ -51,11 +62,11 @@ body{
           content: ' ';
           display: block;
           position: absolute;
-          width: 98%;
-          height: 98%;
+          width: 100%;
+          height: 100%;
           top: 50%;
           left: 50%;
-          opacity: 0.40;
+          opacity: 0.5;
           @include transform( translate(-50%, -50%) );
           @include bg-img(url("/public/images/camp-line-chart-laptop.svg"));
           @include bg-size(99% auto);
@@ -63,12 +74,21 @@ body{
           background-position: center center;
         }
         .campaign-imgs-text{
+          display: block;
+          position: relative;
+          line-height: 28px;
+          width: 75%;
+          height: 65%;
+          // border: 2px solid red;
           font-size: 16px;
+          @include border-radius();
+          margin: 0 auto;
+          padding: 0;
         }
       }
 
     }
-    .camp-sign-up-left-side{
+    .so-camp-sign-up-left-side{
       // border-right: 1px solid red;
       @media screen and (max-width: $response-size){
         @include flex-item(12);
@@ -94,7 +114,7 @@ body{
     }
 
   }
-  .camp-footer-wrapper{
+  .so-camp-footer-wrapper{
     position: relative;
     margin: 0 auto 0 auto;
     width: 1024px;
