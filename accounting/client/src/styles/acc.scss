@@ -76,6 +76,8 @@ $dir: rtl;
 }
 
 body{
+  display: block;
+  position: relative;
   margin: 0;
   width: 100%;
   min-height: 100vh;

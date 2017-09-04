@@ -6,6 +6,7 @@ const path = require('path'),
     gulp = require('gulp'),
     util = require('gulp-util'),
     gulpif = require('gulp-if'),
+    gulpforeach = require('gulp-foreach'),
     sass = require('gulp-sass'),
     rename = require('gulp-rename'),
     compass = require('gulp-compass'),
@@ -31,7 +32,9 @@ const path = require('path'),
         publicDir: './public',
         adminDir: './admin/client',
         invoiceDir: './invoice/client',
-        thirdPartyDir: './third-party/client'
+        thirdPartyDir: './third-party/client',
+        campaignDir: './campaign/client',
+        campaignPrefix: 'camp-'
     },
     nodemon = require('gulp-nodemon');
 
@@ -315,6 +318,71 @@ gulp.task('thirdParty-docs-copy-images', function () {
     return gulp.src(`${config.thirdPartyDir}/docs/assets/images/**.*`)
         .pipe(gulp.dest(`${config.publicDir}/docs/images`));
 });
+
+gulp.task('campaign-build-template', function(){
+
+    return gulp.src([`${config.campaignDir}/**/*.html`])
+        .pipe(templateCache(
+            {
+                module: 'campaign.module',
+                filename: 'campaign.template.bundle.js',
+                root: 'partials/templates'
+            }))
+        .pipe(gulp.dest(`${config.publicDir}/js`));
+
+});
+gulp.task('campaign-build-js', function(){
+
+    const distPath = `${config.publicDir}/js`;
+
+    mkdirp(`${config.publicDir}/js`, err => {
+        if (err) {
+            return util.log(util.colors.green.bold(JSON.stringify(err)));
+        }
+
+        return browserify(
+            {
+                entries: `./campaign/app.client.config.js`,
+                debug: !config.isProduction
+            })
+            .transform({
+                global: true,
+                mangle: false,
+                comments: true,
+                compress: {
+                    angular: true
+                }
+            }, 'uglifyify')
+            .bundle()
+            .pipe(gulpif(!config.isProduction, exorcist(path.join(distPath, `campaign.bundle.min.map`)))
+                .pipe(fs.createWriteStream(path.join(distPath, 'campaign.bundle.min.js'), 'utf8')));
+
+        process.exit();
+    });
+
+});
+gulp.task('campaign-build-sass', function (){
+
+    return gulp.src('./shared/styles/campaign.scss')
+        .pipe(sourcemaps.init())
+        .pipe(sass({
+            outputStyle: 'compressed',
+            includePaths: ['./node_modules']
+        }).on('error', sass.logError))
+        .pipe(gulpif(!config.isProduction, sourcemaps.write()))
+        .pipe(rename('campaign.min.css'))
+        .pipe(gulp.dest(`${config.publicDir}/css`));
+
+});
+gulp.task('campaign-copy-images', function () {
+    return gulp.src(`${config.campaignDir}/assets/images/**.*`)
+        .pipe(gulpforeach(function(stream, file){
+            let fileProps = path.parse(file.path);
+            return stream
+                .pipe(rename(config.campaignPrefix + fileProps.name + fileProps.ext))
+                .pipe(gulp.dest(`${config.publicDir}/images`));
+        }));
+});
 // [-END-] SMRSAN
 
 gulp.task('minfy', function () {
@@ -436,6 +504,11 @@ gulp.task('default', [
     'thirdParty-build-template',
     'thirdParty-build-js',
     'thirdParty-build-sass',
+    'thirdParty-docs-copy-images',
+    'campaign-build-template',
+    'campaign-build-js',
+    'campaign-build-sass',
+    'campaign-copy-images',
     'admin-build-template',
     'admin-build-js'
 ]);
