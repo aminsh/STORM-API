@@ -38,16 +38,6 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
 
-app.use(function (req, res, next) {
-    res.locals = {
-        isAuthenticated: req.isAuthenticated(),
-        user: req.isAuthenticated() ? req.user : null,
-        today: instanceOf('utility').PersianDate.current()
-    };
-
-    next();
-});
-
 ejs.filters.translate = key => require('./config/translate.fa.json')[key];
 
 app.use(compression());
