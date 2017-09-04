@@ -9,19 +9,21 @@ export default class ProductController {
         this.gridOption = {
             columns: [
                 {
-                    name: 'referenceId', title: translate('Reference Code'), width: '20%',
+                    name: 'referenceId', title: translate('Reference Code'), width: '20%',type: 'string'
                 },
                 {
                     name: 'title',
                     title: translate('Title'),
                     width: '70%',
+                    type: 'string',
                     template: `<a ui-sref=".info({id: item.id})">{{item.title}}</a>`
                 },
                 {
                     name: 'productType',
                     title: translate('Type'),
                     width: '10%',
-                    template: '{{item.productTypeDisplay}}'
+                    template: '{{item.productTypeDisplay}}',
+                    type: 'productType'
                 }
             ],
             commands: [
