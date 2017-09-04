@@ -159,6 +159,28 @@ accModule.config(function (gridFilterCellTypeProvider,
         </li>`
     };
 
+    let productType = {
+        data: devConstants.enums.ProductType().data,
+        template: `<li ng-repeat="item in items">
+        <dev-tag-radio 
+            ng-class="{'checked': item.key == filter.value}"
+            ng-model="filter.value" 
+            k-value="{{item.key}}"></dev-tag-radio>
+        {{item.display}}
+        </li>`
+    };
+
+    let chequeStatus = {
+        data: devConstants.enums.ChequeStatus().data,
+        template: `<li ng-repeat="item in items">
+        <dev-tag-radio 
+            ng-class="{'checked': item.key == filter.value}"
+            ng-model="filter.value" 
+            k-value="{{item.key}}"></dev-tag-radio>
+        {{item.display}}
+        </li>`
+    };
+
     gridFilterCellTypeProvider.set({
         postingType: postingType,
         groupingType: groupingType,
@@ -172,6 +194,8 @@ accModule.config(function (gridFilterCellTypeProvider,
         journalType: journalType,
         journalStatus: journalStatus,
         person,
-        invoiceStatus
+        invoiceStatus,
+        productType,
+        chequeStatus
     });
 });

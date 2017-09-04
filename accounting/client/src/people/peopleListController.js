@@ -25,12 +25,14 @@ export default class peopleListController {
             columns: [
                 {
                     name: 'title', title: translate('Title'), width: '70%',
-                    template: `<a ui-sref=".info({id: item.id})">{{item.title}}</a>`
+                    template: `<a ui-sref=".info({id: item.id})">{{item.title}}</a>`,
+                    type: 'string'
                 },
                 {
                     name: 'phone',
                     title: translate('Phone'),
                     width: '30%',
+                    type: 'string'
                 }
             ],
             commands: [

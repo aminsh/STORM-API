@@ -1,6 +1,7 @@
 "use strict";
 
-const app = require('./bootstrap').app;
+const app = require('./bootstrap').app,
+    config = instanceOf('config');
 
 /* middlewares */
 app.use(require('./middlewares/locals'));
@@ -27,8 +28,10 @@ app.post('/upload', (req, res) => {
     });
 });
 
-app.get('/', (req, res) => res.render('webSite/index.html'));
-app.get('/policy', (req, res) => res.render('webSite/index.html'));
+if (config.env !== 'dedicated') {
+    app.get('/', (req, res) => res.render('webSite/index.html'));
+    app.get('/policy', (req, res) => res.render('webSite/index.html'));
+}
 
 app.get('/new-site', (req, res) => res.render('new-site.ejs'));
 
