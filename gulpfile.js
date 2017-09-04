@@ -87,6 +87,19 @@ gulp.task('admin-build-js', function () {
     });
 });
 
+gulp.task('admin-build-sass', function () {
+    return gulp.src('./shared/styles/admin.scss')
+        .pipe(sourcemaps.init())
+        .pipe(sass({
+            outputStyle: 'compressed',
+            includePaths: ['./node_modules', './accounting/client/src/styles']
+        }).on('error', sass.logError))
+        .pipe(gulpif(!config.isProduction, sourcemaps.write()))
+        .pipe(rename('admin.min.css'))
+        .pipe(gulp.dest(`${config.publicDir}/css`));
+
+});
+
 gulp.task('acc-build-template', function () {
     return gulp.src([`${config.accSrcDir}/partials/**/*.html`, `${config.accSrcDir}/src/**/*.html`])
         .pipe(templateCache(

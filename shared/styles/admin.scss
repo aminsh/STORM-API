@@ -1,114 +1,43 @@
-$image-path: '/public/images';
-$font-path: '/public/fonts';
-$font-family: 'IRANSans';
-$header-profile: '#{$image-path}/storm-header-profile.jpg';
-$fa-font-path: $font-path;
-$icon-font-path: '#{$font-path}/';
+@import "general";
 
-$primary-color: #1ab394;
-$primary-select-color: #87c56f;
+.so-admin-widget-box{
+  display: inline-block;
+  position: relative;
+  min-width: 150px;
+  height: 75px;
+  padding: 0 15px;
+  @include border-radius();
+  background-color: lighten($color-gray-milk-white,20%);
+  color: $color-black;
+  border-bottom: 2px solid $color-cyan-green;
+  @mixin sides(){
+    display: block;
+    line-height: 75px;
+    text-align: center;
+  }
 
-$bootstrap-sass-asset-helper: false;
-$dir: rtl;
-
-@import "resources/mixins";
-
-@import "loadingbar.start";
-@import "bootstrap-sass-directional/assets/stylesheets/bootstrap";
-@import "bootstrap.override";
-
-@import "select";
-@import "select.override";
-
-/*@import "kendo.common";
-@import "kendo.custom";
-@import "keno.rtl";
-@import "kendo.override";*/
-
-@import "sweetalert/dev/sweetalert";
-@import "sweet-alert.override";
-
-@import "ADM-dateTimePicker";
-@import "ADMdtp.override";
-
-@import "ladda/css/ladda";
-@import "ladda.override";
-
-@import "dropzone";
-@import "dropzone.override";
-
-@import "stimulsoft.viewer.office2013.whitegreen";
-@import "stimulsoft.designer.office2013.whitegreen";
-@import "font-awesome/scss/font-awesome";
-@import "fonts";
-@import "animate";
-@import "inspina.style";
-
-@import "checkbox-redio";
-@import "fonts";
-@import "grid";
-@import "loader";
-@import "pace.override";
-@import "sk-loading";
-
-@import "error_404";
-@import "landing";
-@import "success";
-@import "settings";
-
-@import "../journal/journalLine-style";
-
-// For Each Defined Color
-@each $key , $val in $color-map {
-  .so-tx-#{$key}{ color: $val; }
-  .so-bg-#{$key}{ background-color: $val; }
-}
-// Make Property Classes
-@each $className, $cssPropName in $propNames {
-  .so-#{$className}{
-    #{$cssPropName}: #{map_get($propValues, $className)} !important;
+  div:nth-of-type(1){
+    @include sides();
+    float: right;
+    width: 25%;
+    .so-admin-widget-box-icon{
+      display: block;
+      margin: 0 auto;
+      font-size: 32px;
+    }
+  }
+  div:nth-of-type(2){
+    @include sides();
+    float: left;
+    width: 75%;
+    .so-admin-widget-box-text{
+      font-size: 24px;
+    }
   }
 }
 
-*, *::before, *::after{
-  @include box-sizing(border-box);
-  //font-family: "IRANSans", sans-serif, tahoma, "FontAwesome", "Glyphicons Halflings";
-}
 
-body{
-  display: block;
-  position: relative;
-  margin: 0;
-  width: 100%;
-  min-height: 100vh;
-}
-
-body, h1, a,
-.panel-title,
-.modal-title, * {
-  font-family: $font-family;
-
-}
-
-// [START] SMRSAN
-.so-md-form-container{
-  display: block;
-  position: absolute;
-  width: 500px;
-  max-width: 100%;
-  min-height: 50px;
-  //max-height: 100vh;
-  margin: 0 auto;
-  padding: 25px;
-  @include overflow-x(hidden);
-  //@include overflow-y(auto);
-  @include border-radius();
-  top: 50%;
-  left: 50%;
-  @include transform(translate(-50%,-50%));
-}
-// [-END-] SMRSAN
-
+// Others
 .button-click-menu {
   padding: 5px;
   color: rgb(221, 221, 221);
@@ -1321,5 +1250,3 @@ label.error {
   left: 0 !important;
   right: auto !important;
 }
-
-
