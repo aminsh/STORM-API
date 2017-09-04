@@ -1,0 +1,43 @@
+
+
+
+<div class="row">
+    <div class="col-md-6">
+        <dev-tag-content dev-attr-title="{{'Stocks'|translate}}">
+
+            <div class="row" style="margin-bottom: 30px">
+                <dev-tag-button
+                        ui-sref=".create"
+                        icon="fa fa-plus"
+                        style-type="primary"
+                        title="{{'New stock' | translate}}"></dev-tag-button>
+
+            </div>
+
+            <div class="feed-activity-list">
+                <div class="feed-element"
+                     ng-repeat="item in model.stocks">
+                    <div>
+                        <strong>{{item.title}}</strong> <br>
+
+                        <small class="pull-left">
+                            <dev-tag-button
+                                    ng-click="model.remove(item)"
+                                    icon="fa fa-trash"
+                                    style-type="danger"
+                                    title="{{'Remove' | translate}}"></dev-tag-button>
+                            <dev-tag-button
+                                    ui-sref=".edit({id: item.id})"
+                                    icon="fa fa-edit"
+                                    style-type="primary"
+                                    title="{{'Edit' | translate}}"></dev-tag-button>
+                        </small>
+
+
+                    </div>
+                </div>
+            </div>
+
+        </dev-tag-content>
+    </div>
+</div>

@@ -367,5 +367,9 @@
   "This user is the branch owner": "کاربر موردنظر صاحب کسب و کار است",
   "A system error occurred": "یک خطای سیستمی رخ داده است",
   "Wrong username": "نام کاربری صحیح نیست",
-  "System error": "خطای سیستمی"
+  "System error": "خطای سیستمی",
+  "Stocks": "انبارها",
+  "Edit stock": "ویرایش انبار",
+  "New stock": "انبار جدید",
+  "Remove stock": "حذف انبار"
 }

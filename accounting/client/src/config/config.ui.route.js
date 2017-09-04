@@ -554,6 +554,36 @@ export default function ($stateProvider, $urlRouterProvider, $locationProvider, 
             controllerAs: 'model',
             templateUrl: 'partials/financialOperations/createExpense.html'
         })
+
+        .state('stocks', {
+            url: '/stocks',
+            controller: 'stocksController',
+            controllerAs: 'model',
+            templateUrl: 'partials/inventory/stocks.html'
+        })
+        .state('stocks.create', {
+            url: '/create',
+            onEnter: $modelFactory => {
+                $modelFactory.create({
+                    controller: 'stockEntryController',
+                    controllerAs: 'model',
+                    templateUrl: 'partials/inventory/stockEntry.html',
+                    resolve: {data: () => ({})}
+                });
+            }
+        })
+        .state('stocks.edit', {
+            url: '/edit/:id',
+            onEnter: ($modelFactory, $stateParams) => {
+                $modelFactory.create({
+                    controller: 'stockEntryController',
+                    controllerAs: 'model',
+                    templateUrl: 'partials/inventory/stockEntry.html',
+                    resolve: {data: () => ({id: $stateParams.id})}
+                });
+            }
+        })
+
         .state('not-found', {
             url: '/not-found',
             templateUrl: 'partials/views/notFound.html'

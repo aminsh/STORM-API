@@ -91,6 +91,10 @@ accModule.config(menuItemsProvider => {
                 {
                     title: 'بانک و صندوق',
                     url: 'banks-and-funds'
+                },
+                {
+                    title: 'انبار',
+                    url: 'stocks'
                 }
             ]
         });
