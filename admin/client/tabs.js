@@ -22,6 +22,11 @@ export default class Tabs{
                 label: "Branches",
                 icon: "briefcase",
                 state: "branches"
+            },
+            {
+                label: "API Docs",
+                icon: "book-open-page-variant",
+                state: "apiDocs"
             }
         ];
 

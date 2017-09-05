@@ -39,6 +39,7 @@ import BranchesController from "./client/branches";
 import UserApi from "./client/userApi";
 import UsersController from "./client/users";
 import HomeController from "./client/home";
+import ApiDocsController from "./client/apiDocs";
 import PubSub from './client/pubSub';
 import Tabs from "./client/tabs";
 
@@ -81,6 +82,12 @@ adminModule
                 controller: 'usersController',
                 controllerAs: 'model',
                 templateUrl: 'partials/templates/users.html'
+            })
+            .state('apiDocs', {
+                url: '/api-docs',
+                controller: 'apiDocsController',
+                controllerAs: 'model',
+                templateUrl: 'partials/templates/apiDocs.html'
             });
     })
     .service('branchApi', BranchApi)
@@ -122,7 +129,8 @@ adminModule
 
     .controller('homeController', HomeController)
     .controller('branchesController', BranchesController)
-    .controller('usersController', UsersController);
+    .controller('usersController', UsersController)
+    .controller('apiDocsController', ApiDocsController);
 
 
 
