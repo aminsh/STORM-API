@@ -6,10 +6,10 @@ function inventoryApi(apiPromise, devConstants) {
     return {
 
         getAll(){
-            return apiPromise.get(`${urlPrefix}/products/`);
+            return apiPromise.get(`${urlPrefix}/inventories/`);
         },
         getById: function (id) {
-            return apiPromise.get(`${urlPrefix}/products/${id}`);
+            return apiPromise.get(`${urlPrefix}/inventories/${id}`);
         },
         create: function (data) {
             return apiPromise.post(`${urlPrefix}/products`, data);
@@ -19,6 +19,9 @@ function inventoryApi(apiPromise, devConstants) {
         },
         remove: function (id) {
             return apiPromise.delete(`${urlPrefix}/products/${id}`);
+        },
+        addToFirstInput(data){
+            return apiPromise.post(`${urlPrefix}/inventories/add-to-first-input`, data);
         }
     };
 

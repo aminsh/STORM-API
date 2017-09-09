@@ -23,11 +23,6 @@ accModule.config(menuItemsProvider => {
                 title: 'لیست اسناد حسابداری',
                 url: 'journals/list',
                 icon: ''
-            },
-            {
-                title: 'مدیریت اسناد',
-                url: 'journal-management',
-                icon: ''
             }
         ],
 
@@ -64,10 +59,6 @@ accModule.config(menuItemsProvider => {
                     title: 'پیش فرض',
                     url: 'settings',
                     icon: ''
-                },
-                {
-                    title: 'سرفصل حسابها',
-                    url: 'general-ledger-accounts'
                 }
             ]
         });
@@ -91,8 +82,19 @@ accModule.config(menuItemsProvider => {
                 {
                     title: 'بانک و صندوق',
                     url: 'banks-and-funds'
+                },
+                {
+                    title: 'انبار',
+                    url: 'stocks'
                 }
             ]
+        });
+
+    menuItemsProvider
+        .add({
+            title: 'انبار',
+            url: 'inventory/inputs',
+            icon: 'fa fa-cubes'
         });
 
     menuItemsProvider

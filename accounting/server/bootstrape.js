@@ -44,6 +44,8 @@ app.use('/api/receive', require('./routes/api.receive'));
 app.use('/api/pay', require('./routes/api.pay'));
 app.use('/api/bank-and-fund', require('./routes/api.bankAndFund'));
 app.use('/api/scales', require('./routes/api.scale'));
+app.use('/api/stocks', require('./routes/api.stock'));
+app.use('/api/inventories', require('./routes/api.inventory'));
 
 app.use('/upload', require('./routes/api.upload'));
 
