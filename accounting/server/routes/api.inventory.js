@@ -30,6 +30,14 @@ router.route('/:id')
         return res.json(result);
     }));
 
+router.route('/:id/lines')
+    .get(async((req, res) => {
+        let inventoryQuery = new InventoryQuery(req.branchId),
+            result = await(inventoryQuery.getDetailById(req.params.id, req.query));
+
+        return res.json(result);
+    }));
+
 router.route('/add-to-first-input')
     .post(async((req, res) => {
         let inventoryDomain = new InventoryDomain(req.branchId, req.fiscalPeriodId),

@@ -117,7 +117,8 @@ let payableCheques = {
 
 let inventory = {
     getAllInputs: ()=> `${rootUrl()}/inventories/inputs`,
-    getAllOutputs: ()=> `${rootUrl()}/inventories/outputs`
+    getAllOutputs: ()=> `${rootUrl()}/inventories/outputs`,
+    getLinesById:(id)=> `${rootUrl()}/inventories/${id}/lines`
 };
 
 let stock = {

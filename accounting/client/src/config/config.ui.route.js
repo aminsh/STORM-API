@@ -598,9 +598,39 @@ export default function ($stateProvider, $urlRouterProvider, $locationProvider, 
         })
         .state('inventory.inputs', {
             url: '/inputs',
-            controller: 'inventoryInputsController',
+            controller: 'inventoriesController',
             controllerAs: 'model',
-            templateUrl: 'partials/inventory/inventoryInputs.html'
+            templateUrl: 'partials/inventory/inventories.html'
+        })
+        .state('inventory.inputs.detail', {
+            url: '/detail/:id',
+            onEnter: ($modelFactory, $stateParams) => {
+                $modelFactory.create({
+                    controller: 'inventoryDetailController',
+                    controllerAs: 'model',
+                    size: 'lg',
+                    templateUrl: 'partials/inventory/inventoryDetail.html',
+                    resolve: {data: {id: $stateParams.id}}
+                });
+            }
+        })
+        .state('inventory.outputs', {
+            url: '/outputs',
+            controller: 'inventoriesController',
+            controllerAs: 'model',
+            templateUrl: 'partials/inventory/inventories.html'
+        })
+        .state('inventory.outputs.detail', {
+            url: '/detail/:id',
+            onEnter: ($modelFactory, $stateParams) => {
+                $modelFactory.create({
+                    controller: 'inventoryDetailController',
+                    controllerAs: 'model',
+                    size: 'lg',
+                    templateUrl: 'partials/inventory/inventoryDetail.html',
+                    resolve: {data: {id: $stateParams.id}}
+                });
+            }
         })
 
         .state('not-found', {

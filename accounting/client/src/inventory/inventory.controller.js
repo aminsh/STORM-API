@@ -11,6 +11,10 @@ class InventoryController {
             {
                 heading: `<i>${translate('Inventory inputs')}</i>`,
                 route: 'inventory.inputs'
+            },
+            {
+                heading: `<i>${translate('Inventory outputs')}</i>`,
+                route: 'inventory.outputs'
             }
         ];
     }

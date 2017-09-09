@@ -5,7 +5,8 @@ import StockApi from './stockApi';
 import StocksController from './stocks.controller';
 import StockEntryController from './stockEntry';
 import InventoryController from './inventory.controller';
-import InventoryInputsController from './inventoryInputs.controller';
+import InventoriesController from './inventories.controller';
+import InventoryDetailController from './inventoryDetail';
 
 import './inventoryApi';
 
@@ -14,5 +15,6 @@ accModule
     .controller('stocksController', StocksController)
     .controller('stockEntryController', StockEntryController)
     .controller('inventoryController', InventoryController)
-    .controller('inventoryInputsController', InventoryInputsController)
+    .controller('inventoriesController', InventoriesController)
+    .controller('inventoryDetailController', InventoryDetailController);
 
