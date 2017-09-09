@@ -165,6 +165,18 @@ enums.InventoryType = function () {
     ]);
 };
 
+enums.InventoryIOType = function () {
+    return new Enum([
+        { key: 'inputFirst', display: 'اول دوره' },
+        { key: 'inputPurchase', display: 'خرید' },
+        { key: 'inputStockToStock', display: 'انبار به انبار' },
+        { key: 'inputBackFromSaleOrConsuming', display: 'برگشت از مصرف / فروش' },
+
+        { key: 'outputSale', display: 'فروش' },
+        { key: 'outputWaste', display: 'ضایعات' }
+    ])
+};
+
 enums.ReceiveOrPay = function () {
     return new Enum([
         {key: 'receive', display: 'دریافت'},

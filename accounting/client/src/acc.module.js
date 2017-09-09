@@ -38,11 +38,11 @@ let accModule = angular.module('acc.module', [
     'angular-image-preloader'
 ]);
 
-accModule.factory('$exceptionHandler', function () {
+/*accModule.factory('$exceptionHandler', function () {
     return function (exception, cause) {
         Raven.captureException(exception);
     };
-});
+});*/
 accModule.init = () => {
     angular.element(document).ready(function () {
         angular.bootstrap(document, ['acc.module']);

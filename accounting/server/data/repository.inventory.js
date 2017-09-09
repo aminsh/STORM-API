@@ -13,15 +13,31 @@ module.exports = class InventoryRepository extends BaseRepository {
         this.createInventoryLines = async(this.createInventoryLines);
         this.updateInventory = async(this.updateInventory);
         this.updateInventoryLines = async(this.updateInventoryLines);
+        this.findFirst = async(this.findFirst);
     }
 
     findById(id) {
-        let inventory = await(this.knex.table('inventories').where('id', id).first()),
-            inventoryLines = await(this.knex.table('inventoryLines').where('inventoryId', id));
+        let inventory = await(this.knex.table('inventories').where('id', id).first());
 
-        inventory.inventoryLines = invoiceLines;
+        if(!inventory) return null;
+
+         let inventoryLines = await(this.knex.table('inventoryLines').where('inventoryId', id));
+
+        inventory.inventoryLines = inventoryLines;
 
         return inventory;
+    }
+
+    findFirst(stockId){
+        const first = await(this.knex.select('id')
+            .from('inventories')
+            .where('branchId', this.branchId)
+            .where('inventoryType', 'input')
+            .where('ioType', 'inputFirst')
+            .where('stockId', stockId)
+            .first());
+
+        return first ? this.findById(first.id) : null;
     }
 
     findInvoiceLinesByInvoiceId(id) {
@@ -88,7 +104,7 @@ module.exports = class InventoryRepository extends BaseRepository {
 
                     await(this.createInventory(entity, trx));
 
-                    await(this.createInventoryLines(lines, entity.id, trx));
+                    (lines && lines.length) && await(this.createInventoryLines(lines, entity.id, trx));
 
                     entity.inventoryLines = lines;
 

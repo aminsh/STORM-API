@@ -584,6 +584,25 @@ export default function ($stateProvider, $urlRouterProvider, $locationProvider, 
             }
         })
 
+        .state('inventory', {
+            url: '/inventory',
+            controller: 'inventoryController',
+            controllerAs: 'model',
+            templateUrl: 'partials/inventory/inventory.html'
+        })
+        .state('inventory.stocks', {
+            url: '/stocks',
+            controller: 'stocksController',
+            controllerAs: 'model',
+            templateUrl: 'partials/inventory/stocks.html'
+        })
+        .state('inventory.inputs', {
+            url: '/inputs',
+            controller: 'inventoryInputsController',
+            controllerAs: 'model',
+            templateUrl: 'partials/inventory/inventoryInputs.html'
+        })
+
         .state('not-found', {
             url: '/not-found',
             templateUrl: 'partials/views/notFound.html'

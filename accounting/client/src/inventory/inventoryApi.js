@@ -19,6 +19,9 @@ function inventoryApi(apiPromise, devConstants) {
         },
         remove: function (id) {
             return apiPromise.delete(`${urlPrefix}/products/${id}`);
+        },
+        addToFirstInput(data){
+            return apiPromise.post(`${urlPrefix}/inventories/add-to-first-input`, data);
         }
     };
 

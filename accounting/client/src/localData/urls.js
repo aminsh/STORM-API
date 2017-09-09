@@ -115,6 +115,15 @@ let payableCheques = {
     getAll: () => `${rootUrl()}/pay/cheques`
 };
 
+let inventory = {
+    getAllInputs: ()=> `${rootUrl()}/inventories/inputs`,
+    getAllOutputs: ()=> `${rootUrl()}/inventories/outputs`
+};
+
+let stock = {
+  getAll: ()=> `${rootUrl()}/stocks`
+};
+
 let apiUrls = {
     rootUrl: rootUrl(),
     userApiUrl: userApiUrl(),
@@ -140,7 +149,9 @@ let apiUrls = {
     people,
     fund,
     receivableCheques,
-    payableCheques
+    payableCheques,
+    inventory,
+    stock
 };
 
 export default apiUrls;

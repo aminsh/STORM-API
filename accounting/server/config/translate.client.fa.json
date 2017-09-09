@@ -263,7 +263,7 @@
   "Sales invoice": "فاکتور فروش",
   "Purchase invoice":"فاکتور خرید",
   "Item title": "عنوان کالا",
-  "Quantity": "تعداد کالا",
+  "Quantity": "مقدار",
   "Unit price": "قیمت واحد",
   "Discount": "مبلغ تخفیف",
   "Tax": "مبلغ مالیات",
@@ -290,6 +290,7 @@
   "RegistrationNumber":"شماره ثبت",
   "Economic Code":"کد اقتصادی",
   "Products": "کالا / خدمات",
+  "Product properties": "مشخصات کالا / خدمات",
   "Product category":"گروه کالا / خدمات",
   "New product category": "ایجاد گروه کالا/خدمات",
   "Enter product category title": "عنوان گروه کالا/خدمات وارد کنید",
@@ -371,5 +372,10 @@
   "Stocks": "انبارها",
   "Edit stock": "ویرایش انبار",
   "New stock": "انبار جدید",
-  "Remove stock": "حذف انبار"
+  "Remove stock": "حذف انبار",
+  "Select stock": "انتخاب انبار ...",
+  "New row": "ردیف جدید",
+  "First input": "رسید اول دوره",
+  "Remove first input": "حذف رسید اول دوره",
+  "Stock is duplicated":"انبار تکراری است"
 }
