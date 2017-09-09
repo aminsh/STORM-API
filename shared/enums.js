@@ -33,6 +33,15 @@ enums.PersonType = function () {
     ]);
 };
 
+enums.AssignmentStatus = function () {
+    return new Enum([
+        {key: 'Required', display: 'اجباری است'},
+        {key: 'NotRequired', display: 'انتخابی است'},
+        {key: 'DoesNotHave', display: 'ندارد'}
+    ]);
+};
+
+
 enums.AccountGroupingType = function () {
     return new Enum([
         {key: '1', display: 'دارایی ها'},

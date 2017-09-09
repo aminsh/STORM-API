@@ -1,5 +1,9 @@
 "use strict";
 
+require('./shared/utilities/string.prototypes');
+require('./shared/utilities/array.prototypes');
+require('./shared/utilities/function.prototypes');
+
 const path = require('path'),
     fs = require('fs'),
     mkdirp = require('mkdirp'),
