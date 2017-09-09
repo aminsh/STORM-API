@@ -2,13 +2,14 @@ $image-path: '/public/images';
 $font-path: '/public/fonts';
 $fa-font-path: $font-path;
 
+@import "general";
 @import "bootstrap-sass-directional/assets/stylesheets/bootstrap";
 @import "bootstrap.override";
 @import "angular-material/angular-material.scss";
 @import "sweetalert/dev/sweetalert";
 @import "font-awesome/scss/font-awesome";
-@import "fonts";
-@import "animate";
+@import "general.components/fonts";
+@import "general.components/animate";
 
 
 

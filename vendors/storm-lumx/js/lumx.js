@@ -6189,7 +6189,7 @@ angular.module("lumx.dropdown").run(['$templateCache', function(a) { a.put('drop
     '');
 	a.put('dropdown-toggle.html', '<div class="dropdown-toggle" ng-transclude></div>\n' +
     '');
-	a.put('dropdown-menu.html', '<div class="dropdown-menu">\n' +
+	a.put('dropdown-menu.html', '<div class="lx-dropdown-menu">\n' +
     '    <div class="dropdown-menu__content" ng-transclude ng-if="lxDropdownMenu.parentCtrl.isOpen"></div>\n' +
     '</div>\n' +
     '');
