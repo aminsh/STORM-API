@@ -1,10 +1,4 @@
-@import "../../accounting/client/src/styles/acc";
-@import "resources/mixins";
-@import "general.components/fonts";
-@import "general.components/animate";
-@import "general.components/classes";
-@import "../../vendors/storm-lumx/css/lumx.scss";
-@import "help";
+// @import "../../accounting/client/src/styles/acc";
 
 $image-path: '/public/images';
 $font-path: '/public/fonts';
@@ -12,6 +6,37 @@ $font-family: 'IRANSans';
 $header-profile: '#{$image-path}/storm-header-profile.jpg';
 $fa-font-path: $font-path;
 $icon-font-path: '#{$font-path}/';
+
+$primary-color: #1ab394;
+$primary-select-color: #87c56f;
+
+$bootstrap-sass-asset-helper: false;
+$dir: rtl;
+
+@import "loadingbar.start";
+@import "bootstrap-sass-directional/assets/stylesheets/bootstrap";
+@import "bootstrap.override";
+@import "select";
+@import "select.override";
+@import "sweetalert/dev/sweetalert";
+@import "sweet-alert.override";
+@import "ADM-dateTimePicker";
+@import "ADMdtp.override";
+@import "ladda/css/ladda";
+@import "ladda.override";
+@import "dropzone";
+@import "dropzone.override";
+@import "stimulsoft.viewer.office2013.whitegreen";
+@import "stimulsoft.designer.office2013.whitegreen";
+@import "font-awesome/scss/font-awesome";
+
+@import "resources/mixins";
+@import "general.components/fonts";
+@import "general.components/animate";
+@import "general.components/classes";
+@import "../../vendors/storm-lumx/css/lumx.scss";
+@import "help";
+@import "inspina.style";
 
 // For Each Defined Color
 @each $key , $val in $color-map {
@@ -32,9 +57,15 @@ $icon-font-path: '#{$font-path}/';
 ::-moz-selection{ @include global-selection() }
 ::selection{ @include global-selection() }
 
+*, *::before, *::after{
+  @include box-sizing(border-box);
+}
+
 body{
   display: block;
   position: relative;
+  margin: 0;
   width: 100%;
   min-height: 100vh;
+  font-family: $font-family;
 }

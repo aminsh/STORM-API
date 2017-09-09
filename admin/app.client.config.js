@@ -14,6 +14,12 @@ import "angular-resource";
 import "angular-translate";
 import 'angular-ui-bootstrap';
 
+// [START] Storm Lumx Dependencies
+import "moment";
+import "velocity-animate";
+import "storm-lumx";
+// [-END-] Storm Lumx Dependencies
+
 import apiPromise from "../accounting/client/src/services/apiPromise";
 import {body, content, footer, heading} from "../accounting/client/src/directives/content";
 import logger from "../accounting/client/src/services/logger";
@@ -34,6 +40,7 @@ import UserApi from "./client/userApi";
 import UsersController from "./client/users";
 import HomeController from "./client/home";
 import PubSub from './client/pubSub';
+import Tabs from "./client/tabs";
 
 let adminModule = angular.module('admin.module', [
     'ngAnimate',
@@ -41,7 +48,8 @@ let adminModule = angular.module('admin.module', [
     'ngSanitize',
     'ui.router',
     'pascalprecht.translate',
-    'ui.bootstrap'
+    'ui.bootstrap',
+    'lumx'
 ]);
 
 
@@ -78,6 +86,7 @@ adminModule
     .service('branchApi', BranchApi)
     .service('userApi', UserApi)
     .service('pubSub', PubSub)
+    .service('tabs', Tabs)
     .factory('apiPromise', apiPromise)
     .factory('logger', logger)
     .factory('confirm', confirm)

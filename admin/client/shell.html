@@ -42,10 +42,16 @@
             <div class="ibox">
                 <div class="ibox-content">
                     <div class="clients-list">
-                        <ul class="nav nav-tabs">
+                        <!--<ul class="nav nav-tabs">
                             <li ng-class="{'active' : tab == 1}"><a ui-sref="branches"><i class="fa fa-building"></i> Branches</a></li>
                             <li ng-class="{'active' : tab == 2}"><a ui-sref="users"><i class="fa fa-user"></i>Users </a></li>
-                        </ul>
+                        </ul>-->
+                        <lx-tabs lx-layout="inline" lx-color="green" lx-active-tab="tabNum" >
+                            <lx-tab ng-repeat="tab in tabs"
+                                    lx-go-state="{{tab.state}}"
+                                    lx-label="{{tab.label}}"
+                                    lx-icon="{{tab.icon}}" ></lx-tab>
+                        </lx-tabs>
                         <ui-view></ui-view>
                     </div>
                 </div>

@@ -1,10 +1,11 @@
 "use strict";
 
 export default class BranchesController {
-    constructor(branchApi, logger, confirm) {
+    constructor(branchApi, logger, confirm, tabs) {
         this.branchApi = branchApi;
         this.logger = logger;
         this.confirm = confirm;
+        tabs.setTab("branches");
 
         this.gridOption = {
             columns: [
