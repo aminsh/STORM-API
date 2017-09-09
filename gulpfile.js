@@ -38,7 +38,9 @@ const path = require('path'),
         invoiceDir: './invoice/client',
         thirdPartyDir: './third-party/client',
         campaignDir: './campaign/client',
-        campaignPrefix: 'camp-'
+        campaignPrefix: 'camp-',
+        docsDir: './documents/client',
+        docsPrefix: 'docs-'
     },
     nodemon = require('gulp-nodemon');
 
@@ -163,7 +165,7 @@ gulp.task('storm-build-sass', () => {
         .pipe(sourcemaps.init())
         .pipe(sass({
             outputStyle: 'compressed',
-            includePaths: ['./node_modules', './vendors', './shared/styles']
+            includePaths: ['./node_modules', './vendors', './shared/styles', './accounting/client/src/styles']
         }).on('error', sass.logError))
         .pipe(gulpif(!config.isProduction, sourcemaps.write()))
         .pipe(rename('storm.min.css'))
@@ -384,7 +386,7 @@ gulp.task('campaign-build-sass', function (){
         .pipe(sourcemaps.init())
         .pipe(sass({
             outputStyle: 'compressed',
-            includePaths: ['./node_modules']
+            includePaths: ['./node_modules', './accounting/client/src/styles']
         }).on('error', sass.logError))
         .pipe(gulpif(!config.isProduction, sourcemaps.write()))
         .pipe(rename('campaign.min.css'))
@@ -397,6 +399,73 @@ gulp.task('campaign-copy-images', function () {
             let fileProps = path.parse(file.path);
             return stream
                 .pipe(rename(config.campaignPrefix + fileProps.name + fileProps.ext))
+                .pipe(gulp.dest(`${config.publicDir}/images`));
+        }));
+});
+
+// DOCS
+
+gulp.task('docs-build-template', function(){
+
+    return gulp.src([`${config.docsDir}/**/*.html`])
+        .pipe(templateCache(
+            {
+                module: 'docs.module',
+                filename: 'docs.template.bundle.js',
+                root: 'partials/templates'
+            }))
+        .pipe(gulp.dest(`${config.publicDir}/js`));
+
+});
+gulp.task('docs-build-js', function(){
+
+    const distPath = `${config.publicDir}/js`;
+
+    mkdirp(`${config.publicDir}/js`, err => {
+        if (err) {
+            return util.log(util.colors.green.bold(JSON.stringify(err)));
+        }
+
+        return browserify(
+            {
+                entries: `./documents/app.client.config.js`,
+                debug: !config.isProduction
+            })
+            .transform({
+                global: true,
+                mangle: false,
+                comments: true,
+                compress: {
+                    angular: true
+                }
+            }, 'uglifyify')
+            .bundle()
+            .pipe(gulpif(!config.isProduction, exorcist(path.join(distPath, `docs.bundle.min.map`)))
+                .pipe(fs.createWriteStream(path.join(distPath, 'docs.bundle.min.js'), 'utf8')));
+
+        process.exit();
+    });
+
+});
+gulp.task('docs-build-sass', function (){
+
+    return gulp.src('./shared/styles/docs.scss')
+        .pipe(sourcemaps.init())
+        .pipe(sass({
+            outputStyle: 'compressed',
+            includePaths: ['./node_modules', './accounting/client/src/styles']
+        }).on('error', sass.logError))
+        .pipe(gulpif(!config.isProduction, sourcemaps.write()))
+        .pipe(rename('docs.min.css'))
+        .pipe(gulp.dest(`${config.publicDir}/css`));
+
+});
+gulp.task('docs-copy-images', function () {
+    return gulp.src(`${config.docsDir}/assets/images/**.*`)
+        .pipe(gulpforeach(function(stream, file){
+            let fileProps = path.parse(file.path);
+            return stream
+                .pipe(rename(config.docsPrefix + fileProps.name + fileProps.ext))
                 .pipe(gulp.dest(`${config.publicDir}/images`));
         }));
 });
@@ -504,7 +573,9 @@ gulp.task('copy-assets', [
     'copy-persian-fonts',
     'copy-stimulsoft-files',
     'storm-copy-images',
-    'thirdParty-docs-copy-images'
+    'thirdParty-docs-copy-images',
+    'campaign-copy-images',
+    'docs-copy-images'
 ]);
 
 gulp.task('default', [
@@ -521,11 +592,12 @@ gulp.task('default', [
     'thirdParty-build-template',
     'thirdParty-build-js',
     'thirdParty-build-sass',
-    'thirdParty-docs-copy-images',
     'campaign-build-template',
     'campaign-build-js',
     'campaign-build-sass',
-    'campaign-copy-images',
+    'docs-build-template',
+    'docs-build-js',
+    'docs-build-sass',
     'admin-build-template',
     'admin-build-js'
 ]);

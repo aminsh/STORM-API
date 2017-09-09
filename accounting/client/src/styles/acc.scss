@@ -20,10 +20,10 @@ $dir: rtl;
 @import "select";
 @import "select.override";
 
-/*@import "kendo.common";
+@import "kendo.common";
 @import "kendo.custom";
 @import "keno.rtl";
-@import "kendo.override";*/
+@import "kendo.override";
 
 @import "sweetalert/dev/sweetalert";
 @import "sweet-alert.override";

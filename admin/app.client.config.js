@@ -39,6 +39,9 @@ import BranchesController from "./client/branches";
 import UserApi from "./client/userApi";
 import UsersController from "./client/users";
 import HomeController from "./client/home";
+import DocsApi from "./client/docsApi";
+import DocsController from "./client/docs";
+import AddDocController from "./client/addDoc";
 import PubSub from './client/pubSub';
 import Tabs from "./client/tabs";
 
@@ -81,12 +84,25 @@ adminModule
                 controller: 'usersController',
                 controllerAs: 'model',
                 templateUrl: 'partials/templates/users.html'
+            })
+            .state('docs', {
+                url: '/docs',
+                controller: 'docsController',
+                controllerAs: 'model',
+                templateUrl: 'partials/templates/docs.html'
+            })
+            .state('addDoc', {
+                url: '/docs/add',
+                controller: 'addDocController',
+                controllerAs: 'model',
+                templateUrl: 'partials/templates/addDoc.html'
             });
     })
     .service('branchApi', BranchApi)
     .service('userApi', UserApi)
     .service('pubSub', PubSub)
     .service('tabs', Tabs)
+    .service('docsApi', DocsApi)
     .factory('apiPromise', apiPromise)
     .factory('logger', logger)
     .factory('confirm', confirm)
@@ -122,7 +138,9 @@ adminModule
 
     .controller('homeController', HomeController)
     .controller('branchesController', BranchesController)
-    .controller('usersController', UsersController);
+    .controller('usersController', UsersController)
+    .controller('docsController', DocsController)
+    .controller('addDocController', AddDocController);
 
 
 

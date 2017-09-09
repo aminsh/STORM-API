@@ -67,6 +67,7 @@ container.singleton('branchThirdParty.query', function () {
 });
 
 require('../accounting/server/bootstrap.ioc')(container);
+require('../storm/server/bootstrap.ioc')(container);
 
 
 

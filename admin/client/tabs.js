@@ -22,6 +22,11 @@ export default class Tabs{
                 label: "Branches",
                 icon: "briefcase",
                 state: "branches"
+            },
+            {
+                label: "Documents",
+                icon: "book-open-page-variant",
+                state: "docs"
             }
         ];
 
@@ -30,7 +35,7 @@ export default class Tabs{
 
         this.$rootScope.tabNum = 0;
         for(let i=0; i<this.$rootScope.tabs.length; i++, this.$rootScope.tabNum++){
-            if(this.$state.current.name === this.$rootScope.tabs[i].state) break;
+            if(stateName === this.$rootScope.tabs[i].state) break;
         }
 
     }
