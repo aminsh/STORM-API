@@ -7,7 +7,7 @@ class StockApi {
         this.urlPrefix = devConstants.urls.rootUrl;
     }
 
-    getAll(id){
+    getAll(){
         return this.apiPromise.get(`${this.urlPrefix}/stocks`);
     }
 
