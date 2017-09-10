@@ -25,12 +25,11 @@ router.route('/')
                           elem => { return { id: elem.id, title: elem.title } },
                           (key, elem) => {
 
-                              let arrayString = ``;
+                              let arrayString = [];
                               elem.forEach(item => {
-                                  arrayString += `{ "id": "${item.id}", "title": "${item.title}" },`;
+                                  arrayString.push(item);
                               });
-                              arrayString = arrayString.slice(0, arrayString.length - 1);
-                              return JSON.parse(`{ "${key}" : [${arrayString}] }`);
+                              return JSON.parse(`{ "${key}" : ${JSON.stringify(arrayString)} }`);
 
                           }
                       )
