@@ -8,25 +8,26 @@
         </div>
     </div>
     <div style="background-color: #eeeeee;border: 1px solid #303030;padding: 10px 25px;" >
-        <ol class="so-admin-category-rtl" >
-            <li>APIs
-                <span class="so-admin-category-edit" ><i class="mdi mdi-pencil" ></i></span>
-                <span class="so-admin-category-delete" ><i class="mdi mdi-cancel" ></i></span>
-                <ol>
-                    <li>PayPing
-                        <span class="so-admin-category-edit" ><i class="mdi mdi-pencil" ></i></span>
-                        <span class="so-admin-category-delete" ><i class="mdi mdi-cancel" ></i></span>
-                    </li>
-                    <li>PayPing
-                        <span class="so-admin-category-edit" ><i class="mdi mdi-pencil" ></i></span>
-                        <span class="so-admin-category-delete" ><i class="mdi mdi-cancel" ></i></span>
-                    </li>
-                    <li>PayPing
-                        <span class="so-admin-category-edit" ><i class="mdi mdi-pencil" ></i></span>
-                        <span class="so-admin-category-delete" ><i class="mdi mdi-cancel" ></i></span>
-                    </li>
-                </ol>
-            </li>
-        </ol>
+        <docs-category-dir
+                ng-if="model.docsTree.root"
+                so-category="model.docsTree" ></docs-category-dir>
+        <!--<li>APIs
+            <span class="so-admin-category-edit" ><i class="mdi mdi-pencil" ></i></span>
+            <span class="so-admin-category-delete" ><i class="mdi mdi-cancel" ></i></span>
+            <ol>
+                <li>PayPing
+                    <span class="so-admin-category-edit" ><i class="mdi mdi-pencil" ></i></span>
+                    <span class="so-admin-category-delete" ><i class="mdi mdi-cancel" ></i></span>
+                </li>
+                <li>PayPing
+                    <span class="so-admin-category-edit" ><i class="mdi mdi-pencil" ></i></span>
+                    <span class="so-admin-category-delete" ><i class="mdi mdi-cancel" ></i></span>
+                </li>
+                <li>PayPing
+                    <span class="so-admin-category-edit" ><i class="mdi mdi-pencil" ></i></span>
+                    <span class="so-admin-category-delete" ><i class="mdi mdi-cancel" ></i></span>
+                </li>
+            </ol>
+        </li>-->
     </div>
 </div>

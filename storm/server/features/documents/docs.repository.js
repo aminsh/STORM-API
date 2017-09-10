@@ -46,9 +46,8 @@ module.exports = class{
 
     getList() {
 
-        return knex
-            .select('id', 'title', 'pageContent', 'parentId')
-            .from('documentPages');
+        return knex('documentPages')
+            .select('id', 'title', 'parentId');
 
     }
 

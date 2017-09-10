@@ -11,7 +11,7 @@ module.exports = class{
     getParentList(){
         return knex('documentPages')
                 .select('id', 'title')
-                .where('parentId', '');
+                .whereNull('parentId');
     }
 
 };
