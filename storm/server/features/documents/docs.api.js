@@ -26,11 +26,9 @@ router.route('/')
                           (key, elem) => {
 
                               let arrayString = [];
-                              elem.forEach(item => {
-                                  arrayString.push(item);
-                              });
+                              elem.forEach(item => arrayString.push(item));
                               return JSON.parse(`{ "${key}" : ${JSON.stringify(arrayString)} }`);
-
+                              
                           }
                       )
                       .toObject(key => Object.keys(key)[0], elem => elem[Object.keys(elem)[0]]);
