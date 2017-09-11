@@ -18,7 +18,21 @@ router.route('/')
     .get(async((req, res) => {
 
         let list = await(docsRepository.getList());
-        res.send({isValid: true, returnValue: list});
+        let tree = list
+                      .asEnumerable()
+                      .groupBy(
+                          key => key.parentId || "root",
+                          elem => { return { id: elem.id, title: elem.title } },
+                          (key, elem) => {
+
+                              let arrayString = [];
+                              elem.forEach(item => arrayString.push(item));
+                              return JSON.parse(`{ "${key}" : ${JSON.stringify(arrayString)} }`);
+                              
+                          }
+                      )
+                      .toObject(key => Object.keys(key)[0], elem => elem[Object.keys(elem)[0]]);
+        res.send({isValid: true, returnValue: tree});
 
     }))
     .post(async((req, res) => {

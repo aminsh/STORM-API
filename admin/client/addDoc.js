@@ -20,43 +20,41 @@ export default class AddDocController{
             LxNotificationService.info(`"${value}" Selected`);
             this.settings.groupName = value;
         };
+        this.groupAutoComplete = (_newValue, _cb, _errCb) => {
 
-        this.updateParentList();
+            if (_newValue) {
 
-    }
+                try{
 
+                    let foundItems = [];
 
-    groupAutoComplete(_newValue, _cb, _errCb) {
+                    JSON.parse( $window.localStorage.getItem("parentList") )
+                        .map(item => {
+                            if (item.title.toLowerCase().search(_newValue.toLowerCase()) !== -1) {
+                                foundItems.push(item.title);
+                            }
+                        });
 
-        if (_newValue) {
+                    _cb(foundItems);
 
-            try{
+                } catch(err) {
 
-                let foundItems = [];
+                    _errCb("Error");
+                    console.log(err);
 
-                JSON.parse( this.$window.localStorage.getItem("parentList") )
-                    .map(item => {
-                        if (item.title.toLowerCase().search(_newValue.toLowerCase()) !== -1) {
-                            foundItems.push(item.title);
-                        }
-                    });
+                }
 
-                _cb(foundItems);
-
-            } catch(err) {
-
-                _errCb("Error");
-                console.log(err);
-
+            } else {
+                _cb(
+                    JSON.parse(
+                        $window.localStorage.getItem("parentList")
+                    )
+                );
             }
 
-        } else {
-            _cb(
-                JSON.parse(
-                    this.$window.localStorage.getItem("parentList")
-                )
-            );
-        }
+        };
+
+        this.updateParentList();
 
     }
 
@@ -69,7 +67,7 @@ export default class AddDocController{
                     .localStorage
                     .setItem(
                         "parentList"
-                        , JSON.stringify({ list: data.returnValue })
+                        , JSON.stringify(data.returnValue)
                     )
             )
             .catch((err) => console.log(err));

@@ -32,7 +32,9 @@ import dataTable from "../accounting/client/src/directives/dataTable";
 import paging from "../accounting/client/src/directives/paging";
 import ngHtmlCompile from "../accounting/client/src/directives/ngHtmlCompile";
 
-import shell from "./client/shell";
+import shell from "./client/directives/shell";
+import DocsTreeDir from "./client/directives/docsTreeDir";
+import DocsCategoryDir from "./client/directives/docsCategoryDir";
 
 import BranchApi from "../accounting/client/src/branch/branchApi";
 import BranchesController from "./client/branches";
@@ -121,6 +123,8 @@ adminModule
     .directive('ngHtmlCompile', ngHtmlCompile)
     .directive('devTagButton', button)
     .directive('shell', shell)
+    .directive('docsTreeDir', DocsTreeDir)
+    .directive('docsCategoryDir', DocsCategoryDir)
 
     .provider('gridFilterCellType', function () {
         let type = {
