@@ -373,7 +373,7 @@ router.route('/:invoiceId/send-email')
         // Send Email
         try {
 
-            let html = await(render("/accounting/server/email-template/invoice customer/template.ejs", {
+            let html = await(render("/accounting/server/templates/send.invoice.template.ejs", {
                 invoiceUrl: link,
                 branchLogo: branch.logo,
                 branchName: branch.name,
