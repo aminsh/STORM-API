@@ -19,16 +19,16 @@ module.exports = class InventoryRepository extends BaseRepository {
     findById(id) {
         let inventory = await(this.knex.table('inventories').where('id', id).first());
 
-        if(!inventory) return null;
+        if (!inventory) return null;
 
-         let inventoryLines = await(this.knex.table('inventoryLines').where('inventoryId', id));
+        let inventoryLines = await(this.knex.table('inventoryLines').where('inventoryId', id));
 
         inventory.inventoryLines = inventoryLines;
 
         return inventory;
     }
 
-    findFirst(stockId){
+    findFirst(stockId) {
         const first = await(this.knex.select('id')
             .from('inventories')
             .where('branchId', this.branchId)
@@ -44,22 +44,37 @@ module.exports = class InventoryRepository extends BaseRepository {
         return this.knex.table('inventoryLines').where('inventoryId', id);
     }
 
-    inventoryByProduct(productId, fiscalPeriodId) {
+    getInventoryByProduct(productId, fiscalPeriodId, stockId) {
 
-        let knex = this.knex;
+        let knex = this.knex,
+            branchId = this.branchId;
 
         return knex.from(function () {
-            this.select(`((case
+            this.select(knex.raw(`((case
          when "inventories"."inventoryType" = 'input' then 1
          when "inventories"."inventoryType" = 'output' then -1
-         end) * "inventoryLines"."quantity") as "countOfProduct"`).from('inventories')
+         end) * "inventoryLines"."quantity") as "countOfProduct"`))
+                .from('inventories')
                 .leftJoin('inventoryLines', 'inventories.id', 'inventoryLines.inventoryId')
-                .where('branchId', this.branchId)
+                .where('branchId', branchId)
                 .andWhere('fiscalPeriodId', fiscalPeriodId)
                 .andWhere('productId', productId)
+                .andWhere('stockId', stockId)
+                .as('base');
         })
             .sum('countOfProduct')
             .first();
+    }
+
+    getInventoriesByProductId(productId, fiscalPeriodId, stockId) {
+
+        return this.knex.select('inventoryLines.*', 'inventories.inventoryType', 'inventories.ioType').from('inventories')
+            .leftJoin('inventoryLines', 'inventories.id', 'inventoryLines.inventoryId')
+            .where('inventoryLines.branchId', this.branchId)
+            .andWhere('fiscalPeriodId', fiscalPeriodId)
+            .andWhere('productId', productId)
+            .andWhere('stockId', stockId)
+            .orderBy('inventories.createdAt')
     }
 
     inputMaxNumber(fiscalPeriodId) {
@@ -210,7 +225,7 @@ module.exports = class InventoryRepository extends BaseRepository {
 
         if (shouldDeletedLines.asEnumerable().any())
             shouldDeletedLines.forEach(e => await(this.knex('inventoryLines')
-                .transacting(trx).where('id', e.id).del(e)));
+                .transacting(trx).where('id', e.id).del()));
 
         if (shouldUpdatedLines.asEnumerable().any())
             shouldUpdatedLines.forEach(e => await(this.knex('inventoryLines')

@@ -76,12 +76,15 @@ export default class ProductEntryController {
         promise
             .then(result => {
                 this.$rootScope.$broadcast('onProductChanged');
-                this.$scope.$close(result);
 
                 this.id = this.id ? this.id : result.id;
 
-                this.sendFirstInput()
-                    .then(() => console.log('first input created'));
+                if (this.isFirstInputActive)
+                    this.sendFirstInput()
+                        .then(() => this.$scope.$close(result))
+                        .catch(errors => this.errors = errors);
+                else
+                    this.$scope.$close();
             })
             .catch(errors => this.errors = errors)
             .finally(() => this.isSaving = false);
@@ -202,6 +205,11 @@ export default class ProductEntryController {
     }
 
     canShowFirstInput() {
+        if (!this.product) {
+            this.isFirstInputActive = false;
+            return false;
+        }
+
         if (this.product.productType === 'service') {
             this.isFirstInputActive = false;
             return false;

@@ -4,7 +4,8 @@ const async = require('asyncawait/async'),
     await = require('asyncawait/await'),
     router = require('express').Router(),
     InventoryDomain = require('../domain/inventory'),
-    InventoryQuery = require('../queries/query.inventory');
+    InventoryQuery = require('../queries/query.inventory'),
+    DomainException = instanceOf('domainException');
 
 router.route('/inputs')
     .get(async((req, res) => {
@@ -43,9 +44,17 @@ router.route('/add-to-first-input')
         let inventoryDomain = new InventoryDomain(req.branchId, req.fiscalPeriodId),
             cmd = req.body;
 
-        await(inventoryDomain.addProductToInputFirst(cmd));
+        try {
+            await(inventoryDomain.addProductToInputFirst(cmd));
+            return res.json({isValid: true});
+        }
+        catch (e) {
+            if (e instanceof DomainException)
+                return res.json({isValid: false, errors: e.errors});
 
-        return res.json({invalid: true});
+            return res.json({isValid: false, errors: ['System error']});
+        }
+
     }));
 
 
