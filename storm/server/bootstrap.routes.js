@@ -29,12 +29,12 @@ app.post('/upload', (req, res) => {
     });
 });
 
-if (config.env !== 'dedicated') {
+if (config.env === 'dedicated')
+    app.get('/', (req, res) => res.redirect('/profile'));
+else {
     app.get('/', (req, res) => res.render('webSite/index.html'));
     app.get('/policy', (req, res) => res.render('webSite/index.html'));
 }
-
-app.get('/new-site', (req, res) => res.render('new-site.ejs'));
 
 ///  rest of routes should handled by angular
 app.get('*', (req, res) => res.render('index.ejs'));

@@ -1,7 +1,7 @@
 "use strict";
 
 const express = require('express'),
-    ejs =require('ejs'),
+    ejs = require('ejs'),
     bodyParser = require('body-parser'),
     cookieParser = require('cookie-parser'),
     session = require('express-session'),
@@ -44,10 +44,14 @@ app.use(compression());
 app.set('views', config.rootPath + '/storm/server/views');
 app.engine('html', ejs.renderFile);
 app.use('/public', express.static(config.rootPath + '/public'));
-app.use('/assets', express.static(config.rootPath + '/server/views/webSite/assets'));
-app.use('/images', express.static(config.rootPath + '/server/views/webSite/images'));
 app.use('/data', express.static(config.rootPath + '/data'));
-app.use('/', express.static(config.rootPath + '/storm/server/views/webSite'));
+
+if (config.env !== 'dedicated') {
+    app.use('/assets', express.static(config.rootPath + '/server/views/webSite/assets'));
+    app.use('/images', express.static(config.rootPath + '/server/views/webSite/images'));
+    app.use('/', express.static(config.rootPath + '/storm/server/views/webSite'));
+}
+
 
 app.use(multer({dest: './data/uploads/;'}));
 
