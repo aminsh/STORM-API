@@ -19,9 +19,9 @@ fs.readdirSync('node_modules')
 
 module.exports = {
     node: {
-        console: false,
+        console: true,
         global: false,
-        process: false,
+        process: true,
         Buffer: false,
         __filename: true,
         __dirname: true
@@ -37,15 +37,20 @@ module.exports = {
     plugins: [
         new JavaScriptObfuscator({rotateUnicodeArray: true}, ['excluded_bundle_name.js']),
         new CopyWebpackPlugin([
-            {from: 'storm/server/views', to: 'storm/server/views'},
+            {from: 'package.json', to: 'package.json'},
+            {from: 'config/dedicated', to: ''},
+            {from: 'database/migrations', to: 'migrations'},
+            {from: 'shared/enums.js', to: ''},
+            {from: 'shared/utilities/array.prototypes.js', to: ''},
+            {from: 'storm/server/views/index.ejs', to: 'storm/server/templates'},
+            {from: 'storm/server/templates', to: 'storm/server/templates'},
             {from: 'accounting/server/views', to: 'accounting/server/views'},
+            {from: 'accounting/server/templates', to: 'accounting/server/templates'},
             {from: 'accounting/reporting/files', to: 'accounting/reporting/files'},
             {from: 'admin/admin.ejs', to: 'admin'},
             {from: 'invoice/invoice.ejs', to: 'invoice'},
-            {from: 'third-party/index.ejs', to: 'third-party'}
+            {from: 'third-party/index.ejs', to: 'third-party'},
+            {from: 'public', to: 'public'}
         ])
-        /* new webpack.BannerPlugin('require("source-map-support").install();',
-             { raw: true, entryOnly: false })*/
-
     ]
-}
+};

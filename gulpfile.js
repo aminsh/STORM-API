@@ -42,7 +42,8 @@ const path = require('path'),
         docsDir: './documents/client',
         docsPrefix: 'docs-'
     },
-    nodemon = require('gulp-nodemon');
+    nodemon = require('gulp-nodemon'),
+    replace = require('gulp-replace');
 
 gulp.task('admin-build-template', function () {
 
@@ -595,9 +596,9 @@ gulp.task('default', [
     'campaign-build-template',
     'campaign-build-js',
     'campaign-build-sass',
-    'docs-build-template',
+    /*'docs-build-template',
     'docs-build-js',
-    'docs-build-sass',
+    'docs-build-sass',*/
     'admin-build-template',
     'admin-build-js'
 ]);
@@ -631,7 +632,17 @@ gulp.task('run-server', function () {
     nodemon({
         script: 'index.js'
         , ext: 'js html'
+        , exec: '--inspect'
         , env: env//{ 'NODE_ENV': 'development' }
     });
+});
+
+
+gulp.task('replace-shared-path', function(){
+    gulp.src(['./dest/migrations/**/*.js'])
+        .pipe(replace(
+            '../../shared',
+            '..'))
+        .pipe(gulp.dest('./dest/migrations'));
 });
 
