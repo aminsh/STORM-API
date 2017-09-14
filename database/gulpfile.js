@@ -44,7 +44,7 @@ gulp.task('make-migrate', () => {
 gulp.task('migrate-latest', () => {
     knex.migrate.latest(options)
         .then(results => {
-            if (results[1].length == 0) {
+            if (results[1].length === 0) {
                 Util.log(Util.colors.gray('No migrations to run'));
             } else {
                 Util.log(Util.colors.green.bold(`Migrating group ${results[0]}`));
