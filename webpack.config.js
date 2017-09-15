@@ -3,8 +3,6 @@ var path = require('path');
 var fs = require('fs');
 var CopyWebpackPlugin = require('copy-webpack-plugin');
 
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
-
 var JavaScriptObfuscator = require('webpack-obfuscator');
 
 
