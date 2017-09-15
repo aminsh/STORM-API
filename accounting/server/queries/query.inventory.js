@@ -90,6 +90,30 @@ class InventoryQuery extends BaseQuery {
         return result;
 
     }
+
+    getInventoriesByStock(productId, fiscalPeriodId) {
+        const knex = this.knex,
+            branchId = this.branchId;
+
+        return knex.select(
+            'stockId',
+            'stockDisplay',
+            knex.raw('sum(quantity) as "sumQuantity"'))
+            .from(function () {
+                this.select(knex.raw('case when "inventories"."inventoryType" = \'input\' then "quantity" else "quantity" * -1 end as "quantity"'),
+                    'stockId',
+                    knex.raw('stocks.title as "stockDisplay"')
+                )
+                    .from('inventories')
+                    .leftJoin('inventoryLines', 'inventoryLines.inventoryId', 'inventories.id')
+                    .leftJoin('stocks', 'stocks.id', 'inventories.stockId')
+                    .where('inventories.branchId', branchId)
+                    .where('fiscalPeriodId', fiscalPeriodId)
+                    .where('productId', productId)
+                    .as('base');
+            })
+            .groupBy('stockId', 'stockDisplay');
+    }
 }
 
 module.exports = InventoryQuery;

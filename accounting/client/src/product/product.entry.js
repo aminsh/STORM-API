@@ -79,12 +79,14 @@ export default class ProductEntryController {
 
                 this.id = this.id ? this.id : result.id;
 
+                Object.assign(this.product, result);
+
                 if (this.isFirstInputActive)
                     this.sendFirstInput()
-                        .then(() => this.$scope.$close(result))
+                        .then(() => this.$scope.$close(this.product))
                         .catch(errors => this.errors = errors);
                 else
-                    this.$scope.$close();
+                    this.$scope.$close(this.product);
             })
             .catch(errors => this.errors = errors)
             .finally(() => this.isSaving = false);

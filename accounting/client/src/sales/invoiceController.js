@@ -17,6 +17,7 @@ export default class invoiceController {
                 createPaymentService,
                 createPersonService,
                 productCreateService,
+                selectProductFromStockService,
                 sendInvoiceEmail) {
 
 
@@ -41,6 +42,7 @@ export default class invoiceController {
         this.peopleApi = peopleApi;
         this.createPersonService = createPersonService;
         this.productCreateService = productCreateService;
+        this.selectProductFromStockService = selectProductFromStockService;
         this.saleApi = saleApi;
         this.purchaseApi = purchaseApi;
         this.$timeout = $timeout;
@@ -167,12 +169,25 @@ export default class invoiceController {
     createNewProduct(item, title) {
         return this.promise.create((resolve, reject) => {
             this.productCreateService.show({title})
-                .then(result => {
-                    item.productId = result.id;
-                    item.description = title;
+                .then(product => {
+
+                    this.onProductChanged(item , product);
+
                     resolve({id: result.id, title});
                 });
         });
+    }
+
+    selectStock(invoiceLine) {
+        this.selectProductFromStockService.show({
+            productId: invoiceLine.productId,
+            productDisplay: invoiceLine.description
+
+        })
+            .then(result => {
+                invoiceLine.stockId = result.stockId;
+                invoiceLine.stockDisplay = result.stockDisplay;
+            });
     }
 
     onProductChanged(item, product) {
@@ -180,6 +195,11 @@ export default class invoiceController {
         item.description = product.title;
         item.unitPrice = product.salePrice;
         item.scale = product.scaleDisplay;
+
+        if (product.productType === 'good')
+            this.selectStock(item);
+
+        this.onItemPropertyChanged(item);
     }
 
     createNewCustomer(title) {
@@ -194,9 +214,9 @@ export default class invoiceController {
 
     createInvoiceLine() {
 
-        let maxRow = this.invoice.invoiceLines.length == 0
-                ? 0
-                : this.invoice.invoiceLines.asEnumerable().max(line => line.row),
+        let maxRow = this.invoice.invoiceLines.length === 0
+            ? 0
+            : this.invoice.invoiceLines.asEnumerable().max(line => line.row),
             newInvoice = {
                 id: Guid.new(),
                 row: ++maxRow,
@@ -261,7 +281,7 @@ export default class invoiceController {
                         })
                     })
                     .catch(err => {
-                        this.errors=err;
+                        this.errors = err;
                     })
                     .finally(() => this.isSaving = false);
             }
@@ -279,7 +299,7 @@ export default class invoiceController {
                         })
                     })
                     .catch(err => {
-                        this.errors=err;
+                        this.errors = err;
                     })
                     .finally(() => this.isSaving = false);
             }
@@ -299,7 +319,7 @@ export default class invoiceController {
                         })
                     })
                     .catch(err => {
-                        this.errors=err;
+                        this.errors = err;
                     })
                     .finally(() => this.isSaving = false);
             }
@@ -316,7 +336,7 @@ export default class invoiceController {
                             })
                         })
                     })
-                    .catch(err =>  this.errors=err)
+                    .catch(err => this.errors = err)
                     .finally(() => this.isSaving = false);
             }
         }
@@ -369,7 +389,7 @@ export default class invoiceController {
         item.vat = ((item.unitPrice * item.quantity) - item.discount) * 9 / 100;
     }
 
-    openSendEmailModal(){
+    openSendEmailModal() {
 
         this.peopleApi
             .getById(this.invoice.detailAccountId)
@@ -394,7 +414,7 @@ export default class invoiceController {
     }
 
 
-    goToPayment(){
+    goToPayment() {
         let url = `/invoice/${this.invoice.id}/pay/payping`;
         this.$window.open(url, '_self');
     }

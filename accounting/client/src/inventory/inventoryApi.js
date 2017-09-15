@@ -5,11 +5,14 @@ function inventoryApi(apiPromise, devConstants) {
 
     return {
 
-        getAll(){
+        getAll() {
             return apiPromise.get(`${urlPrefix}/inventories/`);
         },
         getById: function (id) {
             return apiPromise.get(`${urlPrefix}/inventories/${id}`);
+        },
+        getProductInventoryByStock(productId) {
+            return apiPromise.get(`${urlPrefix}/inventories//by-stock/${productId}`);
         },
         create: function (data) {
             return apiPromise.post(`${urlPrefix}/products`, data);
@@ -20,7 +23,7 @@ function inventoryApi(apiPromise, devConstants) {
         remove: function (id) {
             return apiPromise.delete(`${urlPrefix}/products/${id}`);
         },
-        addToFirstInput(data){
+        addToFirstInput(data) {
             return apiPromise.post(`${urlPrefix}/inventories/add-to-first-input`, data);
         }
     };

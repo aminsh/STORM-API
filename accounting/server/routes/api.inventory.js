@@ -57,5 +57,13 @@ router.route('/add-to-first-input')
 
     }));
 
+router.route('/by-stock/:productId')
+    .get(async((req, res) => {
+        let inventoryQuery = new InventoryQuery(req.branchId),
+            result = await(inventoryQuery.getInventoriesByStock(req.params.productId, req.fiscalPeriodId));
+
+        return res.json(result);
+    }));
+
 
 module.exports = router;

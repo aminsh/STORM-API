@@ -106,6 +106,8 @@ module.exports = class InventoryDomain {
     }
 
     isValidControl(inventories) {
+        if(inventories.length === 0) return true;
+
         let inventoryTurnover = inventories
             .map(item => {
                 item.total = item.quantity * (item.inventoryType === 'input' ? 1 : -1);
