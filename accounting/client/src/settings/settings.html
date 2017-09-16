@@ -45,6 +45,11 @@
                     <dev-tag-check-box ng-model="model.settings.canControlInventory">
                         کنترل موجودی کالا انجام شود ؟
                     </dev-tag-check-box>
+
+                    <dev-tag-check-box  ng-model="model.settings.canCreateSaleOnNoEnoughInventory"
+                                        ng-disabled="!model.settings.canControlInventory">
+                    در زمان نبود موجودی کافی فاکتور فروش  صادر شود ؟
+                    </dev-tag-check-box>
                 </div>
             </dev-tag-content>
         </form>

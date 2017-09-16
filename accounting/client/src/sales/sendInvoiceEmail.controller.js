@@ -1,6 +1,6 @@
-export default class SendInvoiceEmailController{
+export default class SendInvoiceEmailController {
 
-    constructor($scope, $stateParams, data, saleApi, formService, logger){
+    constructor($scope, $stateParams, data, saleApi, formService, logger, peopleApi) {
 
         this.$stateParams = $stateParams;
         this.logger = logger;
@@ -10,15 +10,18 @@ export default class SendInvoiceEmailController{
         this.$scope = $scope;
         this.errors = [];
         this.sendEmailModel = {
-            email: data.email,
+            email: '',
             invoiceId: data.invoiceId
         };
+
+        peopleApi.getById(data.personId)
+            .then(result => this.sendEmailModel.email = result.email);
 
         $scope.isSending = false;
 
     }
 
-    send(form){
+    send(form) {
 
         if (form.$invalid)
             return this.formService.setDirty(form);
@@ -40,7 +43,7 @@ export default class SendInvoiceEmailController{
 
     }
 
-    close(){
+    close() {
         this.$scope.$dismiss()
     }
 

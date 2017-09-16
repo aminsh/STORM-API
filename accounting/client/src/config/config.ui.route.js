@@ -302,21 +302,21 @@ export default function ($stateProvider, $urlRouterProvider, $locationProvider, 
         })
         .state('sales.create', {
             url: '/create',
-            controller: 'invoiceController',
+            controller: 'saleInvoiceEntryController',
             controllerAs: 'model',
-            templateUrl: 'partials/sales/invoiceCreate.html'
+            templateUrl: 'partials/sales/invoiceEntry.html'
         })
         .state('sales.edit', {
             url: '/:id/edit',
-            controller: 'invoiceController',
+            controller: 'saleInvoiceEntryController',
             controllerAs: 'model',
-            templateUrl: 'partials/sales/invoiceCreate.html'
+            templateUrl: 'partials/sales/invoiceEntry.html'
         })
         .state('sales.view', {
             url: '/:id/view',
-            controller: 'invoiceController',
+            controller: 'saleViewController',
             controllerAs: 'model',
-            templateUrl: 'partials/sales/invoice.html'
+            templateUrl: 'partials/sales/invoiceView.html'
         })
         .state('payment', {
             url: '/payment',

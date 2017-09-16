@@ -71,7 +71,7 @@ module.exports = class InventoryDomain {
                     inputFirst.quantity = item.quantity;
 
                 return {
-                    isValid: this.isValidControl(inventories),
+                    isValid: this.isValidInventoryTurnover(inventories),
                     stockId: item.stockId
                 };
             })
@@ -105,7 +105,7 @@ module.exports = class InventoryDomain {
 
     }
 
-    isValidControl(inventories) {
+    isValidInventoryTurnover(inventories) {
         if(inventories.length === 0) return true;
 
         let inventoryTurnover = inventories
@@ -130,6 +130,10 @@ module.exports = class InventoryDomain {
             });
 
         return inventoryTurnover.asEnumerable().all(item => item.remainder >= 0);
+    }
+
+    invalidValidInventoryControl(fiscalPeriodId, productId, quantity ,stockId){
+
     }
 
     create() {

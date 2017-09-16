@@ -31,6 +31,10 @@ export default class {
             })
             .catch(error => console.log(error));
 
+        $scope.$watch(
+            () => this.settings.canControlInventory,
+            newValue => {if(!newValue) this.settings.canCreateSaleOnNoEnoughInventory = false;});
+
         this.changeUserPasswordData = {
             currentPassword: null,
             newPassword: null,
@@ -209,11 +213,11 @@ export default class {
 
                     this.logger.success();
 
-                } else if(data === "The user is already in the list"){
+                } else if (data === "The user is already in the list") {
 
                     this.changeUsersInBranchData.errors = [this.translate("The user is already in the list")];
 
-                } else if(data === "This user is the branch owner"){
+                } else if (data === "This user is the branch owner") {
 
                     this.changeUsersInBranchData.errors = [this.translate("This user is the branch owner")];
 

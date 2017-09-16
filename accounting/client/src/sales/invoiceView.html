@@ -1,16 +1,6 @@
-<!--
-<div class="row">
-    <div class="col-lg-12">
-        <div class="wrapper wrapper-content animated fadeInRight">
-            <div class="ibox-content p-xl">
 
-            </div>
-        </div>
-    </div>
-</div>
--->
 
-<dev-tag-content-body is-loading="model.isLoading">
+<dev-tag-content-body is-loading="model.isLoading" class="animated bounceInUp">
     <div class="row">
         <div class="col-sm-6">
             <h3>
@@ -97,7 +87,7 @@
                 <tbody class="pull-left text-left">
                 <tr>
                     <td><strong>جمع:</strong></td>
-                    <td>{{model.invoice.invoiceLines | totalPrice | number}}</td>
+                    <td>{{model.invoice.invoiceLines|totalSum:('$.quantity * $.unitPrice')|number}}</td>
                 </tr>
                 <tr>
                     <td><strong>جمع تخفیف :</strong></td>
@@ -109,7 +99,7 @@
                 </tr>
                 <tr>
                     <td><strong>جمع کل :</strong></td>
-                    <td>{{model.invoice.invoiceLines | sumTotalPrice| number}}</td>
+                    <td>{{model.invoice.invoiceLines | totalSum: ('($.quantity * $.unitPrice) - $.discount + $.vat')| number}}</td>
                 </tr>
                 </tbody>
             </table>
@@ -118,22 +108,18 @@
 
 
     <div class="text-right">
-        <button ng-click="model.newInvoice(form)" class="btn btn-info"><i class="fa fa-paper"></i> {{'New '
-            |
-            translate}}
-        </button>
 
         <button ng-click="model.print()" class="btn btn-primary"><i class="fa fa-print"></i> {{'Print ' |
             translate}}
         </button>
 
-        <button ng-click="model.openSendEmailModal()"
+        <button ng-click="model.sendEmail()"
                 ng-if="model.invoice.status != 'draft'"
                 class="btn btn-primary" ><i class="fa fa-send" ></i>
             {{'Send' | translate}}
         </button>
 
-        <button ng-click="model.cashPaymentShow()"
+        <button ng-click="model.recordPayment()"
                 ng-if="model.invoice.status != 'paid'"
                 class="btn btn-primary"><i class="fa fa-money"></i>
             {{'Payment ' | translate}}

@@ -1,13 +1,7 @@
 <form name="form" novalidate>
     <dev-tag-content>
         <dev-tag-content-heading>
-            <h5 class="panel-title" ng-if="!model.editMode">
-               {{model.pageTitle}}
-            </h5>
-
-            <h5 class="panel-title" ng-if="model.editMode">
-                {{model.pageTitle}}
-            </h5>
+            <h5 class="panel-title">{{model.pageTitle|translate}}</h5>
         </dev-tag-content-heading>
         <dev-tag-content-body>
             <div class="row">
@@ -16,10 +10,10 @@
                 </div>
 
                 <div class="col-sm-4">
-                    <div ng-if="!model.isPayment" class="form-group">
-                        <label for="detailAccountId" class="title1">مشتری</label>
+                    <div class="form-group">
+                        <label for="detailAccountId" >{{'Customer'|translate}}</label>
                         <div class="input-group" style="width: 100%">
-                            <dev-tag-combo-box id="detailAccountId" style="width: 100%" ng-disabled="model.isPayment"
+                            <dev-tag-combo-box id="detailAccountId" style="width: 100%"
                                                name="detailAccountId"
                                                k-placeholder="{{'Select ...'|translate}}"
                                                k-data-value-field="id"
@@ -40,14 +34,14 @@
                         </div>
                     </div>
 
-                    <div ng-if="model.isPayment" class="form-group">
+                    <div class="form-group">
                         <label for="detailAccountId" class="title1">مشتری</label>
                         <span style="width: 100%">{{model.invoice.detailAccountDisplay}}</span>
                     </div>
                 </div>
 
                 <div class="col-sm-2">
-                    <div ng-if="!model.isPayment" class="form-group">
+                    <div class="form-group">
                         <label for="invoiceDate">تاریخ فاکتور</label>
                         <dev-tag-datepicker id="invoiceDate" ng-disabled="model.isPayment"
                                             ng-model="model.invoice.date"
@@ -66,7 +60,7 @@
                 </div>
 
                 <div class="col-sm-2">
-                    <div ng-if="!model.isPayment" class="form-group">
+                    <div class="form-group">
                         <label for="invoiceNumber" class="title1">شماره فاکتور</label>
                         <dev-tag-numeric id="invoiceNumber" ng-disabled="model.isPayment"
                                          ng-model="model.invoice.number"
@@ -80,14 +74,14 @@
                         </div>
                     </div>
 
-                    <div ng-if="model.isPayment" class="form-group">
-                        <label for="invoiceNumber" class="title1">شماره فاکتور</label>
+                    <div class="form-group">
+                        <label>شماره فاکتور</label>
                         <span  style="width: 100%">{{model.invoice.number}}</span>
                     </div>
                 </div>
 
                 <div class="row">
-                    <div ng-if="!model.isPayment" class="col-sm-12">
+                    <div class="col-sm-12">
                         <div  class="form-group">
                             <label class="label-control" for="description">{{'Title' | translate}}</label>
                             <textarea class="form-control" rows="4" id="description" ng-model="model.invoice.description"></textarea>

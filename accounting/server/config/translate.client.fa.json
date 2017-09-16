@@ -267,9 +267,9 @@
   "Quantity": "مقدار",
   "Unit price": "قیمت واحد",
   "Total price": "قیمت کل",
-  "Discount": "مبلغ تخفیف",
-  "Tax": "مبلغ مالیات",
-  "Vat": "مبلغ عوارض",
+  "Discount": "تخفیف",
+  "Tax": "مالیات",
+  "Vat": "مالیات و عوارش",
   "UntiPrice is not allowed to be zero": "مبلغ کالا نمیتواند صفر باشد",
   "Item quantity is not allowed to be zero": "تعداد کالا نمیتواند صفر باشد",
   "Create sale": "فروش جدید",
@@ -353,6 +353,7 @@
   "Count Of Buy Quantity":"تعداد کل خرید",
   "Bank and fund": "بانک و صندوق",
   "Scale": "واحد اندازه گیری",
+  "Scale 2": "واحد",
   "New scale": "واحد انداره گیری جدید",
   "Enter scale title": "عنوان واحد اندازه گیری را وارد کنید",
   "Reference Code":"کد مرجع",
@@ -388,5 +389,6 @@
   "Inventory outputs": "حواله (خروجی) ها",
   "Input type": "نوع رسید",
   "Inventory": "کنترل موجودی",
-  "Inventory detail": ""
+  "Inventory detail": "",
+  "Inventory quantity": "موجودی"
 }

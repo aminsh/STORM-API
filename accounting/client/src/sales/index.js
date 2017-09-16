@@ -2,12 +2,13 @@
 
 import accModule from '../acc.module';
 import {notShouldBeZero} from './invoiceLines.validations';
-import invoiceController from './invoiceController';
+import SaleInvoiceEntryController from './saleEntryController';
+import SaleViewController from './saleViewConroller';
 import invoiceListController from './invoiceListController';
-import {totalPrice,sumTotalPrice} from  './invoice.filter';
 import saleApi from "./saleApi";
 import './purchaseApi';
 import SendInvoiceEmailController from "./sendInvoiceEmail.controller";
+
 
 function sendInvoiceEmail(modalBase){
 
@@ -22,11 +23,12 @@ function sendInvoiceEmail(modalBase){
 
 accModule
 
-    .filter('totalPrice', totalPrice)
-    .filter('sumTotalPrice', sumTotalPrice)
     .directive('notShouldBeZero', notShouldBeZero)
-    .controller('invoiceController', invoiceController)
+
+    .controller('saleInvoiceEntryController', SaleInvoiceEntryController)
+    .controller('saleViewController', SaleViewController)
     .controller('invoiceListController', invoiceListController)
     .controller('sendInvoiceEmailController', SendInvoiceEmailController)
+
     .factory('saleApi', saleApi)
     .factory('sendInvoiceEmail', sendInvoiceEmail);
