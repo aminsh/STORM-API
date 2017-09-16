@@ -6,7 +6,8 @@ const async = require('asyncawait/async'),
     kendoQueryResolve = require('../services/kendoQueryResolve'),
     view = item => ({
         id: item.id,
-        title: item.title
+        title: item.title,
+        address: item.address
     });
 
 class StockQuery extends BaseQuery {

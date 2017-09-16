@@ -33,9 +33,14 @@ router.route('/:id')
     }))
     .put(async((req, res) => {
         let stockRepository = new StockRepository(req.branchId),
-            id = req.params.id;
+            id = req.params.id,
+            cmd = req.body,
+            entity = {
+                title: cmd.title,
+                address: cmd.address
+            };
 
-        await(stockRepository.update(id, {title: req.body.title}));
+        await(stockRepository.update(id, entity));
 
         res.json({isValid: true});
     }))

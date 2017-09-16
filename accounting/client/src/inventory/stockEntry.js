@@ -11,7 +11,8 @@ export default class StockController {
         this.isSaving = false;
 
         this.stock = {
-            title: ''
+            title: '',
+            address: ''
         };
 
         this.id = data.id;

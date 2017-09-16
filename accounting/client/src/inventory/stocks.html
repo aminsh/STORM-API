@@ -15,6 +15,12 @@
             <div>
                 <strong>{{item.title}}</strong> <br>
 
+                <span class="text-muted">
+                    {{'Address'|translate}} :
+                    {{item.address}}
+                </span>
+
+
                 <small class="pull-left">
                     <dev-tag-button
                             ng-click="model.remove(item)"
