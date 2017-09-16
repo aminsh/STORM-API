@@ -6,6 +6,8 @@ import "number-prototypes";
 import "string-prototypes";
 import "jquery-global-resolve";
 
+import "ckeditor";
+
 import angular from "angular";
 import "angular-animate";
 import "angular-ui-router";
@@ -34,7 +36,7 @@ import ngHtmlCompile from "../accounting/client/src/directives/ngHtmlCompile";
 
 import shell from "./client/directives/shell";
 import DocsTreeDir from "./client/directives/docsTreeDir";
-import DocsCategoryDir from "./client/directives/docsCategoryDir";
+import CkEditor from "./client/directives/ckeditor";
 
 import BranchApi from "../accounting/client/src/branch/branchApi";
 import BranchesController from "./client/branches";
@@ -44,6 +46,7 @@ import HomeController from "./client/home";
 import DocsApi from "./client/docsApi";
 import DocsController from "./client/docs";
 import AddDocController from "./client/addDoc";
+import EditDocController from "./client/editDoc";
 import PubSub from './client/pubSub';
 import Tabs from "./client/tabs";
 
@@ -98,6 +101,12 @@ adminModule
                 controller: 'addDocController',
                 controllerAs: 'model',
                 templateUrl: 'partials/templates/addDoc.html'
+            })
+            .state('editDoc', {
+                url: '/docs/edit/:pageId',
+                controller: 'editDocController',
+                controllerAs: 'model',
+                templateUrl: 'partials/templates/editDoc.html'
             });
     })
     .service('branchApi', BranchApi)
@@ -124,7 +133,7 @@ adminModule
     .directive('devTagButton', button)
     .directive('shell', shell)
     .directive('docsTreeDir', DocsTreeDir)
-    .directive('docsCategoryDir', DocsCategoryDir)
+    .directive('ckEditor', CkEditor)
 
     .provider('gridFilterCellType', function () {
         let type = {
@@ -144,8 +153,6 @@ adminModule
     .controller('branchesController', BranchesController)
     .controller('usersController', UsersController)
     .controller('docsController', DocsController)
-    .controller('addDocController', AddDocController);
-
-
-
+    .controller('addDocController', AddDocController)
+    .controller('editDocController', EditDocController);
 

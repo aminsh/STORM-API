@@ -8,6 +8,10 @@ export default class DocsApi{
 
     }
 
+    getById(id){
+        return this.apiPromise.get(`/api/docs/${id}`);
+    }
+
     getList() {
         return this.apiPromise.get(`/api/docs`);
     }
@@ -22,6 +26,10 @@ export default class DocsApi{
 
     updatePage(id, data){
         return this.apiPromise.put(`/api/docs/${id}`, data);
+    }
+
+    deletePage(id){
+        return this.apiPromise.delete(`/api/docs/${id}`);
     }
 
 }

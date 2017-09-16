@@ -60,16 +60,19 @@ export default class AddDocController{
 
     updateParentList(){
 
-        this.docsApi
+        return this.docsApi
             .getParentList()
-            .then(data =>
+            .then(data => {
+
                 this.$window
                     .localStorage
                     .setItem(
                         "parentList"
                         , JSON.stringify(data.returnValue)
-                    )
-            )
+                    );
+                this.parentList = data.returnValue;
+
+            })
             .catch((err) => console.log(err));
 
     }

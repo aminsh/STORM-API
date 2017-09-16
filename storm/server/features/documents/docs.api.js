@@ -17,49 +17,62 @@ const express = require('express'),
 router.route('/')
     .get(async((req, res) => {
 
-        let list = await(docsRepository.getList());
-        let tree = list
-                      .asEnumerable()
-                      .groupBy(
-                          key => key.parentId || "root",
-                          elem => { return { id: elem.id, title: elem.title } },
-                          (key, elem) => {
+        try {
 
-                              let arrayString = [];
-                              elem.forEach(item => arrayString.push(item));
-                              return JSON.parse(`{ "${key}" : ${JSON.stringify(arrayString)} }`);
-                              
-                          }
-                      )
-                      .toObject(key => Object.keys(key)[0], elem => elem[Object.keys(elem)[0]]);
-        res.send({isValid: true, returnValue: tree});
+            let list = await(docsRepository.getList());
+            let tree = list
+                         .asEnumerable()
+                         .groupBy(
+                             key => key.parentId || "root",
+                             elem => { return { id: elem.id, title: elem.title } },
+                             (key, elem) => {
+
+                                 let arrayString = [];
+                                 elem.forEach(item => arrayString.push(item));
+                                 return JSON.parse(`{ "${key}" : ${JSON.stringify(arrayString)} }`);
+
+                             }
+                         )
+                         .toObject(
+                             key => Object.keys(key)[0],
+                             elem => elem[Object.keys(elem)[0]]
+                         );
+            res.json({ isValid: true, returnValue: tree });
+
+        } catch (err) {
+
+            console.log(err);
+            res.status(503).send("Service Unavailable");
+
+        }
 
     }))
     .post(async((req, res) => {
 
         if (!req.isAuthenticated() || req.user.role !== "admin")
-            res.send({isValid: false});
+            res.status(403).send("Forbidden");
 
-        try{
+        try {
 
             let title = req.body.title,
                 groupId = req.body.groupId,
                 content = req.body.content;
 
-            if(
+            if (
                 await(docsRepository.save({
                     title,
                     groupId,
-                    content}))
-                )
-                res.send({isValid: true});
+                    content
+                }))
+            )
+                res.json({ isValid: true });
             else
-                res.send({isValid: false, error: ["Something is wrong !"]});
+                res.status(400).send("Bad Request");
 
-        } catch(err) {
+        } catch (err) {
 
             console.log(err);
-            res.send({isValid: false, error: [err]});
+            res.json({isValid: false, error: [err]});
 
         }
 
@@ -68,18 +81,90 @@ router.route('/')
 router.route('/parent')
     .get(async((req, res) => {
 
-        try{
+        try {
 
             let parentList = await(docsQuery.getParentList());
-            res.send({isValid: true, returnValue: parentList});
+            res.json({ isValid: true, returnValue: parentList });
+
+        } catch (err) {
+
+            console.log(err);
+            res.status(500).send("Internal Error");
+
+        }
+
+    }));
+
+router.route('/:id')
+    .get(async((req, res) => {
+
+        try {
+
+            let pageId = req.params.id,
+                page = await(docsQuery.getById(pageId));
+
+            res.json({ isValid: true, returnValue: page });
+
+        } catch (err) {
+
+            console.log(err);
+            res.status(400).send("Bad Request");
+
+        }
+
+    }))
+    .put(async((req, res) => {
+
+        if (!req.isAuthenticated() || req.user.role !== "admin")
+            res.status(403).send("Forbidden");
+
+        try {
+
+            let pageId = req.params.id,
+                newData = {
+                    title: req.body.title,
+                    groupId: req.body.groupId,
+                    content: req.body.content
+                };
+
+            if(
+                await(docsRepository.update(pageId, newData))
+            )
+                res.json({ isValid: true });
+            else
+                res.status(400).send("Bad Request");
+
+        } catch (err) {
+
+            console.log(err);
+            res.status(400).send("Bad Request");
+
+        }
+
+    }))
+    .delete(async((req, res) => {
+
+        if (!req.isAuthenticated() || req.user.role !== "admin")
+            res.status(403).send("Forbidden");
+
+        try{
+
+            let pageId = req.params.id;
+
+            if( await(docsRepository.delete(pageId)) )
+                res.json({ isValid: true });
+            else
+                res.status(400).send("Bad Request");
 
         } catch(err) {
 
             console.log(err);
+            res.status(400).send("Bad Request");
 
         }
 
-
     }));
+
+
 
 module.exports = router;

@@ -6,13 +6,15 @@
   min-height: 50px;
   margin: 20px auto 0 auto;
   padding: 15px 10px;
-  border: 1px solid $color-dark-cyan-green;
+  //border: 1px solid $color-dark-cyan-green;
   @include border-radius();
 }
 
 .so-admin-category-rtl{
-  list-style-type: none;
-  counter-reset: section;
+  &, & *{
+    list-style-type: none !important;
+  }
+  //counter-reset: section;
   direction: rtl !important;
   text-align: right;
   max-height: 360px;
@@ -23,8 +25,8 @@
 
   li{
     &::before{
-      counter-increment: section;
-      content: counters(section, ".");
+      /*counter-increment: section;
+      content: counters(section, ".");*/
 
       display: inline-block;
       margin-left: 5px;
@@ -40,6 +42,9 @@
       height: 32px;
       text-align: center;
       line-height: 32px;
+      @include border-radius(50%);
+      $trans-time: 0.1s;
+      @include transition(#{ color ease $trans-time, background-color ease $trans-time });
     }
     span.so-admin-category-edit{
       @extend %buttons;

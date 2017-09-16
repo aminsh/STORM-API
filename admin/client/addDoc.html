@@ -1,5 +1,5 @@
 <div class="so-admin-docs-wrapper animated fadeInRight" >
-    <h1>Add Document</h1>
+    <h1><i class="mdi mdi-plus so-tx-color-green" ></i> Add Document</h1>
     <div class="flex-container flex-column flex-row" >
         <div class="flex-item-12 pt+" >
             <button class="btn btn--m btn--orange btn--flat" lx-ripple ui-sref="docs" >
@@ -10,7 +10,7 @@
     <div class="flex-container flex-column flex-row" >
         <div class="flex-item-12" >
             <div class="row" >
-                <div class="col-lg-6 pt+" >
+                <div class="col-lg-6 pt+" ng-if="model.parentList.length > 0" >
                     <div class="card" style="width: 95%;display: block;margin: 0 auto;" >
                         <lx-search-filter lx-autocomplete="model.groupAutoComplete"
                                           lx-on-select="model.onSelectGroupName" >

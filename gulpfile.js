@@ -1,9 +1,5 @@
 "use strict";
 
-require('./shared/utilities/string.prototypes');
-require('./shared/utilities/array.prototypes');
-require('./shared/utilities/function.prototypes');
-
 const path = require('path'),
     fs = require('fs'),
     mkdirp = require('mkdirp'),
@@ -42,8 +38,7 @@ const path = require('path'),
         docsDir: './documents/client',
         docsPrefix: 'docs-'
     },
-    nodemon = require('gulp-nodemon'),
-    replace = require('gulp-replace');
+    nodemon = require('gulp-nodemon');
 
 gulp.task('admin-build-template', function () {
 
@@ -106,6 +101,13 @@ gulp.task('admin-build-sass', function () {
         .pipe(gulp.dest(`${config.publicDir}/css`));
 
 });
+
+// [START] SMRSAN
+gulp.task('admin-build-ckeditor', function () {
+    return gulp.src(`./vendors/ckeditor/**/*.*`)
+        .pipe(gulp.dest(`${config.publicDir}/js/ckeditor`));
+});
+// [-END-] SMRSAN
 
 gulp.task('acc-build-template', function () {
     return gulp.src([`${config.accSrcDir}/partials/**/*.html`, `${config.accSrcDir}/src/**/*.html`])
@@ -596,9 +598,9 @@ gulp.task('default', [
     'campaign-build-template',
     'campaign-build-js',
     'campaign-build-sass',
-    /*'docs-build-template',
+    'docs-build-template',
     'docs-build-js',
-    'docs-build-sass',*/
+    'docs-build-sass',
     'admin-build-template',
     'admin-build-js'
 ]);
@@ -632,17 +634,7 @@ gulp.task('run-server', function () {
     nodemon({
         script: 'index.js'
         , ext: 'js html'
-        , exec: '--inspect'
         , env: env//{ 'NODE_ENV': 'development' }
     });
-});
-
-
-gulp.task('replace-shared-path', function(){
-    gulp.src(['./dest/migrations/**/*.js'])
-        .pipe(replace(
-            '../../shared',
-            '..'))
-        .pipe(gulp.dest('./dest/migrations'));
 });
 

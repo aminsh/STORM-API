@@ -1,33 +1,37 @@
-<div class="so-admin-docs-wrapper animated fadeInLeft" >
-    <h1>Documents</h1>
-    <div class="flex-container flex-column flex-row" >
-        <div class="flex-item-12 pv+" >
+<div class="so-admin-docs-wrapper animated fadeInLeft" style="width: 100%;border-right: 1px solid #E7EAEC;border-radius: 0" >
+    <div class="row" >
+        <div class="col-lg-6 col-lg-push-6 pv+" >
+            <h1>Documents</h1>
             <button class="btn btn--m btn--green btn--flat" lx-ripple ui-sref="addDoc" >
                 <i class="mdi mdi-arrow-right" ></i> Add Page/Group
             </button>
         </div>
-    </div>
-    <div style="background-color: #eeeeee;border: 1px solid #303030;padding: 10px 25px;" >
-        <docs-category-dir
-                ng-if="model.docsTree.root"
-                so-category="model.docsTree" ></docs-category-dir>
-        <!--<li>APIs
-            <span class="so-admin-category-edit" ><i class="mdi mdi-pencil" ></i></span>
-            <span class="so-admin-category-delete" ><i class="mdi mdi-cancel" ></i></span>
-            <ol>
-                <li>PayPing
-                    <span class="so-admin-category-edit" ><i class="mdi mdi-pencil" ></i></span>
-                    <span class="so-admin-category-delete" ><i class="mdi mdi-cancel" ></i></span>
-                </li>
-                <li>PayPing
-                    <span class="so-admin-category-edit" ><i class="mdi mdi-pencil" ></i></span>
-                    <span class="so-admin-category-delete" ><i class="mdi mdi-cancel" ></i></span>
-                </li>
-                <li>PayPing
-                    <span class="so-admin-category-edit" ><i class="mdi mdi-pencil" ></i></span>
-                    <span class="so-admin-category-delete" ><i class="mdi mdi-cancel" ></i></span>
-                </li>
-            </ol>
-        </li>-->
+        <div class="col-lg-6 col-lg-pull-6 pv+" >
+            <div style="padding: 10px 25px;" >
+                <ol class="so-admin-category-rtl" >
+                    <li ng-repeat="item in model.docsTree.root" >
+                <span ng-class="{ 'so-tx-color-red' : model.docsTree.hasOwnProperty(item.id), 'so-tx-color-dark-blue' : !model.docsTree.hasOwnProperty(item.id) }" >
+                    {{item.title}}
+                </span>
+                        <span class="so-admin-category-edit" ng-click="model.editPage(item.id)" >
+                    <i class="mdi mdi-pencil" ></i>
+                </span>
+                        <span class="so-admin-category-delete" ng-click="model.deletePage(item.id)" >
+                    <i class="mdi mdi-cancel" ></i>
+                </span>
+                        <ol ng-if="model.docsTree.hasOwnProperty(item.id)" >
+                            <li ng-repeat="innerItem in model.docsTree[item.id]" >{{innerItem.title}}
+                                <span class="so-admin-category-edit" ng-click="model.editPage(innerItem.id)" >
+                            <i class="mdi mdi-pencil" ></i>
+                        </span>
+                                <span class="so-admin-category-delete" ng-click="model.deletePage(innerItem.id)" >
+                            <i class="mdi mdi-cancel" ></i>
+                        </span>
+                            </li>
+                        </ol>
+                    </li>
+                </ol>
+            </div>
+        </div>
     </div>
 </div>
