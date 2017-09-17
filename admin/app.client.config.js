@@ -6,7 +6,7 @@ import "number-prototypes";
 import "string-prototypes";
 import "jquery-global-resolve";
 
-import "ckeditor";
+// import "ckeditor";
 
 import angular from "angular";
 import "angular-animate";
@@ -36,7 +36,7 @@ import ngHtmlCompile from "../accounting/client/src/directives/ngHtmlCompile";
 
 import shell from "./client/directives/shell";
 import DocsTreeDir from "./client/directives/docsTreeDir";
-import CkEditor from "./client/directives/ckeditor";
+import Editor from "./client/directives/editor";
 
 import BranchApi from "../accounting/client/src/branch/branchApi";
 import BranchesController from "./client/branches";
@@ -133,7 +133,7 @@ adminModule
     .directive('devTagButton', button)
     .directive('shell', shell)
     .directive('docsTreeDir', DocsTreeDir)
-    .directive('ckEditor', CkEditor)
+    .directive('editor', Editor)
 
     .provider('gridFilterCellType', function () {
         let type = {
