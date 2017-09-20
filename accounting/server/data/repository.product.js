@@ -17,6 +17,18 @@ module.exports = class ProductRepository extends BaseRepository {
             .first();
     }
 
+
+    /*
+    * @return products by id array list
+    * @param ids
+    */
+
+    findByIds(ids) {
+        return this.knex.table('products')
+            .modify(this.modify, this.branchId)
+            .whereIn('id', ids);
+    }
+
     isGood(id){
         return this.knex.table('products')
             .modify(this.modify, this.branchId)

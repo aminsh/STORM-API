@@ -6,38 +6,44 @@ const async = require('asyncawait/async'),
     utility = instanceOf('utility'),
     String = utility.String,
     Guid = utility.Guid,
-    PersianDate = utility.PersianDate,
     DomainException = instanceOf('domainException'),
-    Crypto = instanceOf('Crypto'),
-    translate = require('../services/translateService'),
-    FiscalPeriodRepository = require('../data/repository.fiscalPeriod'),
-    InvoiceRepository = require('../data/repository.invoice'),
-    SettingRepository = require('../data/repository.setting'),
-    DetailAccountDomain = require('../domain/detailAccount'),
-    ProductDomain = require('../domain/product'),
-    InventoryDomain = require('../domain/inventory');
+    translate = require('../../../services/translateService'),
+    FiscalPeriodRepository = require('../../../data/repository.fiscalPeriod'),
+    InvoiceRepository = require('../../../data/repository.invoice'),
+    SettingRepository = require('../../../data/repository.setting'),
+    DetailAccountDomain = require('../../detailAccount'),
+    ProductDomain = require('../../product'),
+    SaleDomain = require('../../sale');
 
+class CreateSaleValidator {
 
-module.exports = class SaleDomain {
+    constructor(state, command) {
 
-    constructor(branchId, fiscalPeriodId) {
-        this.branchId = branchId;
+        const branchId = state.branchId,
+            fiscalPeriodId = state.fiscalPeriodId;
+
+        this.command = command;
+
         this.invoiceRepository = new InvoiceRepository(branchId);
         this.fiscalPeriodRepository = new FiscalPeriodRepository(branchId);
         this.detailAccountDomain = new DetailAccountDomain(branchId);
         this.productDomain = new ProductDomain(branchId);
-        this.inventoryDomain = new InventoryDomain(branchId, fiscalPeriodId);
         this.settingsRepository = new SettingRepository(branchId);
+        this.saleDomain = new SaleDomain(branchId, fiscalPeriodId);
 
         this.currentFiscalPeriod = await(this.fiscalPeriodRepository.findById(fiscalPeriodId));
+        //this.inventoryControl = instanceOf('inventory.control', {branchId, fiscalPeriodId});
+
+        this.run = async(this.run);
     }
 
-    createValidator(cmd) {
-        let errors = [],
+    run() {
+        let cmd = this.command,
+
+            errors = [],
             temporaryDateIsInPeriodRange =
                 cmd.date >= this.currentFiscalPeriod.minDate &&
                 cmd.date <= this.currentFiscalPeriod.maxDate;
-
 
 
         if (!temporaryDateIsInPeriodRange)
@@ -48,10 +54,10 @@ module.exports = class SaleDomain {
         if (!cmd.customer)
             errors.push('مشتری نباید خالی باشد');
 
-        if (cmd.number && await(this.isInvoiceNumberDuplicated(cmd.number)))
+        if (cmd.number && await(this.saleDomain.isInvoiceNumberDuplicated(cmd.number)))
             errors.push('شماره فاکتور تکراری است');
 
-        let linesErrors = this.createLinesValidator(cmd.invoiceLines);
+        const linesErrors = this.createLinesValidator(cmd.invoiceLines);
 
         if (cmd.status === 'paid') {
             const bankId = await(this.settingsRepository.get()).bankId;
@@ -61,7 +67,12 @@ module.exports = class SaleDomain {
 
         errors = errors.concat(linesErrors);
 
-        return errors;
+        //const inventoryErrors = this.inventoryControl.control(cmd.invoiceLines);
+
+        //errors = errors.concat(inventoryErrors);
+
+        if (errors.length > 0)
+            throw new DomainException(errors);
     }
 
     createLinesValidator(lines) {
@@ -69,8 +80,6 @@ module.exports = class SaleDomain {
 
         if (!(lines && lines.length !== 0))
             errors.push('ردیف های فاکتور وجود ندارد');
-
-
 
         if (errors.length > 0)
             return errors;
@@ -95,59 +104,6 @@ module.exports = class SaleDomain {
 
         return errors;
     }
+}
 
-    create(cmd) {
-
-        const errors = this.createValidator(cmd);
-
-        if (errors.length > 0)
-            throw new DomainException(errors);
-
-        cmd.date = cmd.date || PersianDate.current();
-        cmd.detailAccountId = cmd.customer.id;
-        cmd.status = (cmd.status === 'confirm' || cmd.status === 'paid')
-            ? 'waitForPayment'
-            : 'draft';
-
-        let entity = {
-            date: cmd.date,
-            description: cmd.description,
-            detailAccountId: cmd.detailAccountId,
-            invoiceType: 'sale',
-            invoiceStatus: cmd.status,
-            orderId: cmd.orderId
-        };
-
-        entity.number = cmd.number || (await(this.invoiceRepository.saleMaxNumber()).max || 0) + 1;
-
-        entity.invoiceLines = cmd.invoiceLines.asEnumerable()
-            .select(line => ({
-                productId: line.productId,
-                description: line.description,
-                quantity: line.quantity,
-                unitPrice: line.unitPrice,
-                discount: line.discount || 0,
-                vat: line.vat || 0
-            }))
-            .toArray();
-
-        await(this.invoiceRepository.create(entity));
-
-        return {
-            id: entity.id,
-            printUrl: this.getPrintUrl(entity.id)
-        };
-    }
-
-    isInvoiceNumberDuplicated(number, id) {
-        return this.invoiceRepository.findByNumber(number, 'sale', id);
-    }
-
-    getPrintUrl(id) {
-       return `${config.url.origin}/print/?token=${Crypto.sign({
-            branchId: this.branchId,
-            id: id,
-            reportId: 700
-        })}`;
-    }
-};
+module.exports = CreateSaleValidator;

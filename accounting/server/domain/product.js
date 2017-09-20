@@ -12,6 +12,10 @@ module.exports = class ProductDomain {
         this.findByIdOrCreate = async.result(this.findByIdOrCreate);
     }
 
+    isGood(productId){
+        return this.productRepository.isGood(productId);
+    }
+
     findByIdOrCreate(cmd) {
         if (!cmd)
             return null;

@@ -12,7 +12,6 @@ const async = require('asyncawait/async'),
     DetailAccountDomain = require('../domain/detailAccount'),
     ProductDomain = require('../domain/product'),
     InvoiceRepository = require('../data/repository.invoice'),
-    ProductRepository = require('../data/repository.product'),
     InvoiceQuery = require('../queries/query.invoice'),
     PaymentRepository = require('../data/repository.payment'),
     PaymentQuery = require('../queries/query.payment'),
@@ -21,7 +20,6 @@ const async = require('asyncawait/async'),
     Crypto = require('../services/shared').service.Crypto,
     config = instanceOf('config'),
     md5 = require('md5'),
-    BranchRepository = require('../../../storm/server/features/branch/branch.repository'),
     Email = instanceOf('Email'),
     render = instanceOf('htmlRender').renderFile,
     branchRepository = instanceOf('branch.repository');
@@ -59,7 +57,23 @@ router.route('/')
     }))
 
     .post(async((req, res) => {
-        let branchId = req.branchId,
+
+        let CreateSaleWorkflow = require('../domain/sale/workflows/createSaleWorkflow'),
+            instance = new CreateSaleWorkflow(
+                {branchId: req.branchId, fiscalPeriodId: req.fiscalPeriodId},
+                req.body);
+        EventEmitter.once(instance.id, (errors, result) => {
+            if (errors)
+                return res.json({isValid: false, errors});
+
+            return res.json({isValid: true, returnValue: result});
+        });
+
+        instance.build();
+
+        instance.start();
+
+        /*let branchId = req.branchId,
             saleDomain = new SaleDomain(req.branchId),
             detailAccountDomain = new DetailAccountDomain(req.branchId),
             productDomain = new ProductDomain(req.branchId),
@@ -78,7 +92,7 @@ router.route('/')
         if (!temporaryDateIsInPeriodRange)
             errors.push(translate('The temporaryDate is not in current period date range'));
 
-        if (!(cmd.invoiceLines && cmd.invoiceLines.length != 0))
+        if (!(cmd.invoiceLines && cmd.invoiceLines.length !== 0))
             errors.push('ردیف های فاکتور وجود ندارد');
         else checkLinesValidation();
 
@@ -125,7 +139,7 @@ router.route('/')
                 userId: req.user.id
             },
 
-            status = (cmd.status == 'confirm' || cmd.status == 'paid')
+            status = (cmd.status === 'confirm' || cmd.status === 'paid')
                 ? 'waitForPayment'
                 : 'draft';
 
@@ -169,7 +183,7 @@ router.route('/')
 
                 EventEmitter.emit('on-invoice-paid', sale.id, req.branchId);
             }), 1000);
-        }
+        }*/
     }));
 
 router.route('/:id/confirm')
