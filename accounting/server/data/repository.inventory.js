@@ -47,23 +47,25 @@ module.exports = class InventoryRepository extends BaseRepository {
     getInventoryByProduct(productId, fiscalPeriodId, stockId) {
 
         let knex = this.knex,
-            branchId = this.branchId;
+            branchId = this.branchId,
 
-        return knex.from(function () {
-            this.select(knex.raw(`((case
-         when "inventories"."inventoryType" = 'input' then 1
-         when "inventories"."inventoryType" = 'output' then -1
-         end) * "inventoryLines"."quantity") as "countOfProduct"`))
-                .from('inventories')
-                .leftJoin('inventoryLines', 'inventories.id', 'inventoryLines.inventoryId')
-                .where('branchId', branchId)
-                .andWhere('fiscalPeriodId', fiscalPeriodId)
-                .andWhere('productId', productId)
-                .andWhere('stockId', stockId)
-                .as('base');
-        })
-            .sum('countOfProduct')
-            .first();
+            query = await(knex.from(function () {
+                this.select(knex.raw(`((case
+                     when "inventories"."inventoryType" = 'input' then 1
+                     when "inventories"."inventoryType" = 'output' then -1
+                     end) * "inventoryLines"."quantity") as "countOfProduct"`))
+                    .from('inventories')
+                    .leftJoin('inventoryLines', 'inventories.id', 'inventoryLines.inventoryId')
+                    .where('branchId', branchId)
+                    .andWhere('fiscalPeriodId', fiscalPeriodId)
+                    .andWhere('productId', productId)
+                    .andWhere('stockId', stockId)
+                    .as('base');
+            })
+                .sum('countOfProduct')
+                .first());
+
+        return query.sum;
     }
 
     getInventoriesByProductId(productId, fiscalPeriodId, stockId) {
@@ -86,11 +88,12 @@ module.exports = class InventoryRepository extends BaseRepository {
             .first();
     }
 
-    outputMaxNumber(fiscalPeriodId) {
+    outputMaxNumber(fiscalPeriodId, stockId) {
         return this.knex.table('inventories')
             .modify(this.modify, this.branchId)
             .where('inventoryType', 'output')
             .andWhere('fiscalPeriodId', fiscalPeriodId)
+            .andWhere('stockId', stockId)
             .max('number')
             .first();
     }

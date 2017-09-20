@@ -3,6 +3,7 @@
 const async = require('asyncawait/async'),
     await = require('asyncawait/await'),
     InventoryRepository = require('../data/repository.inventory'),
+    SettingRepository = require('../data/repository.setting'),
     StockRepository = require('../data/repository.stock'),
     PersianDate = instanceOf('utility').PersianDate,
     DomainException = instanceOf('domainException');
@@ -15,6 +16,9 @@ module.exports = class InventoryDomain {
 
         this.inventoryRepository = new InventoryRepository(branchId);
         this.stockRepository = new StockRepository(branchId);
+        this.settingsRepository = new SettingRepository(branchId);
+
+        this.settings = await(this.settingsRepository.get());
 
         this.getPrice = async(this.getPrice);
         this.getInputFirst = async(this.getInputFirst);
@@ -30,9 +34,9 @@ module.exports = class InventoryDomain {
         return sumPrice / sumQuantity;
     }
 
-    getInventory(productId) {
-        let result = await(this.inventoryRepository.getInventoryByProduct(productId, this.fiscalPeriodId));
-        return result.sum || 0;
+    getInventory(productId, stockId) {
+        let result = await(this.inventoryRepository.getInventoryByProduct(productId, this.fiscalPeriodId, stockId));
+        return result || 0;
     }
 
     getInputFirst(stockId) {
@@ -106,7 +110,7 @@ module.exports = class InventoryDomain {
     }
 
     isValidInventoryTurnover(inventories) {
-        if(inventories.length === 0) return true;
+        if (inventories.length === 0) return true;
 
         let inventoryTurnover = inventories
             .map(item => {
@@ -132,8 +136,17 @@ module.exports = class InventoryDomain {
         return inventoryTurnover.asEnumerable().all(item => item.remainder >= 0);
     }
 
-    invalidValidInventoryControl(fiscalPeriodId, productId, quantity ,stockId){
+    isValidInventoryControl(productId, quantity, stockId) {
 
+        if(!this.settings.canControlInventory)
+            return true;
+
+        if(this.settings.canCreateSaleOnNoEnoughInventory)
+            return true;
+
+        const inventory = await(this.getInventory(productId, stockId));
+
+        return inventory >= quantity;
     }
 
     create() {
