@@ -390,5 +390,11 @@
   "Input type": "نوع رسید",
   "Inventory": "کنترل موجودی",
   "Inventory detail": "",
-  "Inventory quantity": "موجودی"
+  "Inventory quantity": "موجودی",
+  "Invoice date": "تاریخ فاکتور",
+  "Invoice number": "شماره ی فاکتور",
+  "Invoice title": "عنوان فاکتور",
+  "Sum discount": "جمع تخفیف",
+  "Sum tax": "جمع مالیات",
+  "Payable amount": "قابل پرداخت"
 }

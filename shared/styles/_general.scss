@@ -37,6 +37,7 @@ $dir: rtl;
 @import "../../vendors/storm-lumx/css/lumx.scss";
 @import "help";
 @import "inspina.style";
+@import "./resources/materializecss/materializecss";
 
 // For Each Defined Color
 @each $key , $val in $color-map {

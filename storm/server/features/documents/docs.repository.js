@@ -97,4 +97,14 @@ module.exports = class{
 
     }
 
+    deleteParent(pageId) {
+
+        return knex('documentPages')
+            .update({
+                parentId: null
+            })
+            .where('id', pageId);
+
+    }
+
 };

@@ -32,4 +32,8 @@ export default class DocsApi{
         return this.apiPromise.delete(`/api/docs/${id}`);
     }
 
+    deleteParent(id){
+        return this.apiPromise.delete(`/api/docs/parent/${id}`);
+    }
+
 }

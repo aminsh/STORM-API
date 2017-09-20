@@ -303,3 +303,37 @@
   -ms-transform-origin: $val
   -o-transform-origin: $val
   transform-origin: $val
+
+/*
+ * placeholder
+ * Makes cross browser placeholder elements
+ */
+=placeholder()
+  &::placeholder
+    @content
+  &:-moz-placeholder
+    @content
+  &::-moz-placeholder
+    @content
+  &:-ms-input-placeholder
+    @content
+  &::-webkit-input-placeholder
+    @content
+
+/*
+ * keyframes
+ * Makes cross browser keyframes
+ */
+=keyframes($animName)
+  @keyframes #{$animName}
+    @content
+  @-o-keyframes #{$animName}
+    @content
+  @-ms-keyframes #{$animName}
+    @content
+  @-moz-keyframes #{$animName}
+    @content
+  @-khtml-keyframes #{$animName}
+    @content
+  @-webkit-keyframes #{$animName}
+    @content

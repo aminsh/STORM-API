@@ -1,0 +1,12 @@
+<ul class="so-docs-items" ng-if="!model.loadingTree" >
+    <li ng-repeat="item in model.docsTree.root" ng-if="model.isExists(item, model.searchText)" >
+        <a href="/docs/subject/{{item.id}}" >{{item.title}}</a>
+
+        <ul ng-if="model.docsTree.hasOwnProperty(item.id)" >
+            <li ng-repeat="innerItem in model.docsTree[item.id] | filter : model.searchText" >
+                <a href="/docs/page/{{innerItem.id}}" >{{innerItem.title}}</a>
+            </li>
+        </ul>
+
+    </li>
+</ul>
