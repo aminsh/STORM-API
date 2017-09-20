@@ -10,9 +10,15 @@
     <div class="flex-container flex-column flex-row" >
         <div class="flex-item-12" >
             <div class="row" >
-                <div class="col-lg-6 pt+" ng-if="model.parentList.length > 0" >
-                    <div class="card" style="width: 95%;display: block;margin: 0 auto;" >
-                        <lx-search-filter lx-autocomplete="model.groupAutoComplete"
+                <div class="col-lg-6 pt+" >
+                    <div class="card"
+                         style="width: 95%;display: block;margin: 0 auto;"
+                         ng-if="model.parentList.length > 0" >
+                        <lx-checkbox ng-model="model.hasParent" lx-color="green" >
+                            Join to Group
+                        </lx-checkbox>
+                        <lx-search-filter ng-if="model.hasParent"
+                                          lx-autocomplete="model.groupAutoComplete"
                                           lx-on-select="model.onSelectGroupName" >
                             <input type="text"
                                    ng-model="model.settings.groupName"
@@ -30,8 +36,7 @@
             <div class="p+" >
                 <label for="pageContentEditor" >Page Content</label>
                 <editor id="pageContentEditor"
-                        ng-model="model.settings.pageContent"
-                        style="display: block;width: 100%" ></editor>
+                        ng-model="model.settings.pageContent" ></editor>
             </div>
             <div class="p+" >
                 <button ng-click="model.save()"

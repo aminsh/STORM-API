@@ -6,7 +6,7 @@ import "number-prototypes";
 import "string-prototypes";
 import "jquery-global-resolve";
 
-// import "ckeditor";
+import "ckeditor";
 
 import angular from "angular";
 import "angular-animate";

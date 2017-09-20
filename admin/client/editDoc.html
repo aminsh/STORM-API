@@ -1,0 +1,54 @@
+<div class="so-admin-docs-wrapper animated fadeInRight" >
+    <h1><i class="mdi mdi-pencil so-tx-color-blue" ></i> Edit Document</h1>
+    <div class="flex-container flex-column flex-row" >
+        <div class="flex-item-12 pt+" >
+            <button class="btn btn--m btn--orange btn--flat" lx-ripple ui-sref="docs" >
+                <i class="mdi mdi-arrow-left" ></i> Back to List
+            </button>
+        </div>
+    </div>
+    <div class="flex-container flex-column flex-row" >
+        <div class="flex-item-12" >
+            <div class="row" >
+                <div class="col-lg-12 pt+"
+                     ng-if="!model.settings.hasChild && !!(model.settings.currentGroupId)" >
+                    <lx-checkbox ng-model="model.shouldDeleteParent" lx-color="red" >
+                        <lx-checkbox-label>Delete Parent of This Page</lx-checkbox-label>
+                        <lx-checkbox-help>
+                            After this action, it's parent will be NULL.
+                        </lx-checkbox-help>
+                    </lx-checkbox>
+                </div>
+            </div>
+            <div class="row" >
+                <div class="col-lg-6 pt+" >
+                    <div class="card" style="width: 95%;display: block;margin: 0 auto;"
+                         ng-if="!model.settings.hasChild && !model.shouldDeleteParent" >
+                        <lx-search-filter lx-autocomplete="model.groupAutoComplete"
+                                          lx-on-select="model.onSelectGroupName" >
+                            <input type="text"
+                                   ng-model="model.settings.groupName"
+                                   placeholder="Group Name" />
+                        </lx-search-filter>
+                    </div>
+                </div>
+                <div class="col-lg-6" >
+                    <lx-text-field lx-label="Page Title"
+                                   style="width: 95%;display: block;margin: 0 auto;" >
+                        <input type="text" ng-model="model.settings.pageTitle" />
+                    </lx-text-field>
+                </div>
+            </div>
+            <div class="p+" >
+                <label>Page Content</label>
+                <editor ng-model="model.settings.pageContent" ></editor>
+                <!--<ck-editor ng-model="model.settings.pageContent" ></ck-editor>-->
+            </div>
+            <div class="p+" >
+                <button ng-click="model.update()"
+                        class="btn btn--raised btn--green btn--xl"
+                        style="width: 100%;" >Update</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -20,7 +20,7 @@ export default class DocsController{
             .getList()
             .then(data => this.docsTree = data.returnValue)
             .catch(err => console.log(err));
-        
+
     }
 
     editPage(pageId){

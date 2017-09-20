@@ -95,6 +95,27 @@ router.route('/parent')
 
     }));
 
+router.route('/parent/:id')
+    .delete(async((req, res) => {
+
+        if (!req.isAuthenticated() || req.user.role !== "admin")
+            res.status(403).send("Forbidden");
+
+        try {
+
+            if ( await(docsRepository.deleteParent(req.params.id)) )
+                return res.json({ isValid: true });
+            return res.json({isValid: false});
+
+        } catch (err) {
+
+            console.log(err);
+            res.status(400).send("Bad Request");
+
+        }
+
+    }));
+
 router.route('/:id')
     .get(async((req, res) => {
 

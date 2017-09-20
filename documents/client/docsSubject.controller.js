@@ -1,27 +1,25 @@
 "use strict";
 
-export default class DocsController{
+export default class DocsSubjectController{
 
-    constructor($scope
+    constructor($state
+                ,$stateParams
+                ,$scope
                 ,$filter
-                ,$timeout
                 ,docsApi){
 
-        this.$scope = $scope;
-        this.$filter = $filter;
-        this.$timeout = $timeout;
+        this.$state = $state;
         this.docsApi = docsApi;
         this.docsTree = null;
-        this.searchText = "";
-        this.loadingTree = true;
+        this.subjectId = $stateParams.subjectId;
+        this.$filter = $filter;
+        this.loadingPage = true;
+        if (!this.subjectId)
+            $state.go("docs");
 
-        this.init();
-
-    }
-
-    init(){
-
-        this.getTree();
+        $scope.menuOpen = true;
+        this.getPageById(this.subjectId)
+            .finally(() => this.getTree());
 
     }
 
@@ -31,11 +29,18 @@ export default class DocsController{
             .getList()
             .then(data => {
                 this.docsTree = data.returnValue;
-                this.$timeout(() => {
-                    this.loadingTree = false;
-                }, 300);
+                this.loadingPage = false;
             })
             .catch(err => console.log(err));
+
+    }
+
+    getPageById(pageId){
+
+        return this.docsApi
+            .getById(pageId)
+            .then(data => this.page = data.returnValue)
+            .catch(() => this.$state.go("docs"));
 
     }
 
@@ -62,10 +67,10 @@ export default class DocsController{
             idTitles.push(this.docsTree[parentItem.id][i].title);
 
         return this.$filter('filter')
-                    (
-                        idTitles
-                        ,searchChildTitle
-                    ).length !== 0;
+        (
+            idTitles
+            ,searchChildTitle
+        ).length !== 0;
 
     }
 

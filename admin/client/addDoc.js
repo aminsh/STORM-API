@@ -11,6 +11,7 @@ export default class AddDocController{
         this.LxNotificationService = LxNotificationService;
         this.logger = logger;
         this.parentList = [];
+        this.hasParent = false;
         this.settings = {
             pageTitle: "",
             groupName: "",
@@ -105,7 +106,7 @@ export default class AddDocController{
         this.docsApi
             .savePage({
                 title: this.settings.pageTitle,
-                groupId: groupId,
+                groupId: (this.hasParent) ? groupId:"",
                 content: this.settings.pageContent
             })
             .then(data => {

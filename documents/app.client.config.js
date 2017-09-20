@@ -30,9 +30,15 @@ import translateStorageService from "../accounting/client/src/services/translate
 import translate from "../accounting/client/src/services/translate";
 import Promise from "../accounting/client/src/services/promise";
 import confirm from "../accounting/client/src/services/confirm";
+import DocsApi from "../admin/client/docsApi";
+import HtmlContent from "./client/htmlContent";
+import SpinnerPreloader from "./client/spinnerPreloader";
+import DocsSearch from "./client/docsSearch";
 
 // Controllers
-import DocsController from './clients/docs.controller';
+import DocsController from './client/docs.controller';
+import DocsPageController from './client/docsPage.controller';
+import DocsSubjectController from './client/docsSubject.controller';
 
 // Configs
 import translateConfig from '../accounting/client/src/config/translate.config';
@@ -82,6 +88,18 @@ docsModule
                 controller: 'docsController',
                 controllerAs: 'model',
                 templateUrl: 'partials/templates/docs.html'
+            })
+            .state('docsPage', {
+                url: '/page/:pageId',
+                controller: 'docsPageController',
+                controllerAs: 'model',
+                templateUrl: 'partials/templates/docsPage.html'
+            })
+            .state('docsSubject', {
+                url: '/subject/:subjectId',
+                controller: 'docsSubjectController',
+                controllerAs: 'model',
+                templateUrl: 'partials/templates/docsSubject.html'
             });
 
     })
@@ -89,6 +107,7 @@ docsModule
     .service('formService', formService)
     .service('translate', translate)
     .service('promise', Promise)
+    .service('docsApi', DocsApi)
     .factory('apiPromise', apiPromise)
     .factory('navigate', navigate)
     .factory('saleApi', saleApi)
@@ -100,4 +119,9 @@ docsModule
     .directive('devTagContentHeading', heading)
     .directive('devTagContentFooter', footer)
     .directive('devTagReportViewer', reportViewer)
-    .controller('docsController', DocsController);
+    .directive('htmlContent', HtmlContent)
+    .directive('spinnerPreloader', SpinnerPreloader)
+    .directive('docsSearch', DocsSearch)
+    .controller('docsController', DocsController)
+    .controller('docsPageController', DocsPageController)
+    .controller('docsSubjectController', DocsSubjectController);

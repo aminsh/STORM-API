@@ -10,23 +10,23 @@
             <div style="padding: 10px 25px;" >
                 <ol class="so-admin-category-rtl" >
                     <li ng-repeat="item in model.docsTree.root" >
-                <span ng-class="{ 'so-tx-color-red' : model.docsTree.hasOwnProperty(item.id), 'so-tx-color-dark-blue' : !model.docsTree.hasOwnProperty(item.id) }" >
-                    {{item.title}}
-                </span>
+                        <span ng-class="{ 'so-tx-color-red' : model.docsTree.hasOwnProperty(item.id), 'so-tx-color-dark-blue' : !model.docsTree.hasOwnProperty(item.id) }" >
+                            {{item.title}}
+                        </span>
                         <span class="so-admin-category-edit" ng-click="model.editPage(item.id)" >
-                    <i class="mdi mdi-pencil" ></i>
-                </span>
+                            <i class="mdi mdi-pencil" ></i>
+                        </span>
                         <span class="so-admin-category-delete" ng-click="model.deletePage(item.id)" >
-                    <i class="mdi mdi-cancel" ></i>
-                </span>
+                            <i class="mdi mdi-cancel" ></i>
+                        </span>
                         <ol ng-if="model.docsTree.hasOwnProperty(item.id)" >
                             <li ng-repeat="innerItem in model.docsTree[item.id]" >{{innerItem.title}}
                                 <span class="so-admin-category-edit" ng-click="model.editPage(innerItem.id)" >
-                            <i class="mdi mdi-pencil" ></i>
-                        </span>
+                                    <i class="mdi mdi-pencil" ></i>
+                                </span>
                                 <span class="so-admin-category-delete" ng-click="model.deletePage(innerItem.id)" >
-                            <i class="mdi mdi-cancel" ></i>
-                        </span>
+                                    <i class="mdi mdi-cancel" ></i>
+                                </span>
                             </li>
                         </ol>
                     </li>
