@@ -16,12 +16,24 @@ module.exports = function (container) {
     });
 
     container.bind('query.fiscalPeriod', function (branchId) {
-       const FiscalPeriodQuery = require('./queries/query.fiscalPeriod');
-       return new FiscalPeriodQuery(branchId);
+        const FiscalPeriodQuery = require('./queries/query.fiscalPeriod');
+        return new FiscalPeriodQuery(branchId);
     });
 
     container.bind('service.detailAccount', function (branchId) {
-       const DetailAccountService = require('./domain/detailAccount');
-       return new DetailAccountService(branchId);
+        const DetailAccountService = require('./domain/detailAccount');
+        return new DetailAccountService(branchId);
+    });
+
+    container.bind('inventory.control', function (branchId, fiscalPeriodId, settings) {
+        if (settings.productOutputCreationMethod === 'defaultStock') {
+            const DefaultStockInventoryControl = require('./domain/inventory/inventory.control/inventory.control.defaultStock');
+            return new DefaultStockInventoryControl(branchId, fiscalPeriodId);
+        }
+
+        if (settings.productOutputCreationMethod === 'stockOnRequest') {
+            const StockOnRequestInventoryControl = require('./domain/inventory/inventory.control/inventory.control.stockOnRequet');
+            return new StockOnRequestInventoryControl(branchId, fiscalPeriodId);
+        }
     });
 };

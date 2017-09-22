@@ -31,8 +31,10 @@ class CreateSaleValidator {
         this.settingsRepository = new SettingRepository(branchId);
         this.saleDomain = new SaleDomain(branchId, fiscalPeriodId);
 
+        this.settings = await(this.settingsRepository.get());
+
         this.currentFiscalPeriod = await(this.fiscalPeriodRepository.findById(fiscalPeriodId));
-        //this.inventoryControl = instanceOf('inventory.control', {branchId, fiscalPeriodId});
+        this.inventoryControl = instanceOf('inventory.control', {branchId, fiscalPeriodId, settings: this.settings});
 
         this.run = async(this.run);
     }
@@ -60,7 +62,7 @@ class CreateSaleValidator {
         const linesErrors = this.createLinesValidator(cmd.invoiceLines);
 
         if (cmd.status === 'paid') {
-            const bankId = await(this.settingsRepository.get()).bankId;
+            const bankId = this.settings.bankId;
             if (!bankId)
                 errors.push('اطلاعات بانک پیش فرض تعریف نشده - ثبت پرداخت برای این فاکتور امکانپذیر نیست')
         }
