@@ -2,13 +2,13 @@
 
 const enums = {};
 
-class Enum{
+class Enum {
     constructor(enums) {
         this.data = enums;
     }
 
     getDisplay(key) {
-        if (!key)return '';
+        if (!key) return '';
 
         return this.data
             .asEnumerable()
@@ -188,27 +188,27 @@ enums.ProductType = function () {
 
 enums.BranchStatus = function () {
     return new Enum([
-        { key: 'pending', display: 'انتظار' },
-        { key: 'active', display: 'فعال' }
+        {key: 'pending', display: 'انتظار'},
+        {key: 'active', display: 'فعال'}
     ]);
 };
 
 enums.InventoryType = function () {
     return new Enum([
-        { key: 'input', display: 'رسید' },
-        { key: 'output', display: 'حواله' }
+        {key: 'input', display: 'رسید'},
+        {key: 'output', display: 'حواله'}
     ]);
 };
 
 enums.InventoryIOType = function () {
     return new Enum([
-        { key: 'inputFirst', display: 'اول دوره' },
-        { key: 'inputPurchase', display: 'خرید' },
-        { key: 'inputStockToStock', display: 'انبار به انبار' },
-        { key: 'inputBackFromSaleOrConsuming', display: 'برگشت از مصرف / فروش' },
+        {key: 'inputFirst', display: 'اول دوره'},
+        {key: 'inputPurchase', display: 'خرید'},
+        {key: 'inputStockToStock', display: 'انبار به انبار'},
+        {key: 'inputBackFromSaleOrConsuming', display: 'برگشت از مصرف / فروش'},
 
-        { key: 'outputSale', display: 'فروش' },
-        { key: 'outputWaste', display: 'ضایعات' }
+        {key: 'outputSale', display: 'فروش'},
+        {key: 'outputWaste', display: 'ضایعات'}
     ])
 };
 
@@ -226,7 +226,6 @@ enums.UserRole = function () {
     ]);
 };
 
-// [START] SMRSAN
 enums.ThirdParty = function () {
     return new Enum([
         {
@@ -240,6 +239,22 @@ enums.ThirdParty = function () {
         }
     ]);
 };
-// [-END-] SMRSAN
+
+enums.ProductOutputCreationMethod = function () {
+    return new Enum([
+        {key: 'defaultStock', display: 'انبارپیش فرض'},
+        {key: 'stockOnRequest', display: 'انتخاب انبار در فاکتور فروش'},
+        {key: 'stockListOnRequest', display: 'انتخاب لیست انبارها در فاکتور فروش'},
+        {key: 'byPriority', display: 'براساس اولویت بندی انبارها'},
+        {key: 'byProductCategory', display: 'براساس گروه کالایی'}
+    ]);
+};
+
+enums.JournalGenerationTemplateSourceType = function () {
+    return new Enum([
+        {key: 'sale', display: 'فاکتور فروش'}
+    ]);
+};
+
 
 module.exports = enums;

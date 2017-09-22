@@ -59,6 +59,10 @@ accModule.config(menuItemsProvider => {
                     title: 'پیش فرض',
                     url: 'settings',
                     icon: ''
+                },
+                {
+                    title: 'تنظیمات سند اتوماتیک',
+                    url: 'journal-generation-template'
                 }
             ]
         });

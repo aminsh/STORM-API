@@ -7,6 +7,17 @@ exports.up = function (knex, Promise) {
         })
         .table('settings', table => {
             table.boolean('canCreateSaleOnNoEnoughInventory');
+            table.string('productOutputCreationMethod');
+            table.boolean('canSaleGenerateAutomaticJournal');
+        })
+        .createTable('journalGenerationTemplates', table => {
+            table.timestamp('createdAt').defaultTo(knex.fn.now());
+            table.timestamp('updatedAt').defaultTo(knex.fn.now());
+            table.string('id').primary();
+            table.string('branchId');
+            table.string('title');
+            table.string('sourceType');
+            table.json('data');
         });
 };
 
@@ -17,5 +28,8 @@ exports.down = function (knex, Promise) {
         })
         .table('settings', table => {
             table.dropColumn('canCreateSaleOnNoEnoughInventory');
-        });
+            table.dropColumn('productOutputCreationMethod');
+            table.dropColumn('canSaleGenerateAutomaticJournal');
+        })
+        .dropTable('journalGenerationTemplates');
 };

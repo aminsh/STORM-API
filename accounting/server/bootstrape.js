@@ -46,6 +46,7 @@ app.use('/api/bank-and-fund', require('./routes/api.bankAndFund'));
 app.use('/api/scales', require('./routes/api.scale'));
 app.use('/api/stocks', require('./routes/api.stock'));
 app.use('/api/inventories', require('./routes/api.inventory'));
+app.use('/api/journal-generation-templates', require('./routes/api.journalGenerationTemplate'));
 
 app.use('/upload', require('./routes/api.upload'));
 

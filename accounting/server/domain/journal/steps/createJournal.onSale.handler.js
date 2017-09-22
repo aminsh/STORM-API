@@ -2,93 +2,82 @@
 
 const async = require('asyncawait/async'),
     await = require('asyncawait/await'),
-    translate = require('../../../services/translateService'),
+    _ = require('lodash'),
     JournalRepository = require('../../../data/repository.journal'),
     JournalLineRepository = require('../../../data/repository.journalLine'),
     InvoiceRepository = require('../../../data/repository.invoice'),
-    DetailAccountRepository = require('../../../data/repository.detailAccount'),
-    SubLedger = require('../../subledger');
+    JournalGenerationTemplateRepository = require('../../../data/repository.journalGenerationTemplate'),
 
-class CreateJournalOnSale{
+    SubLedgerDomain = require('../../subledger');
 
-    constructor(state, command){
+_.templateSettings.interpolate = /#([\s\S]+?)#/g;
+
+class CreateJournalOnSale {
+
+    constructor(state, command) {
         this.fiscalPeriodId = state.fiscalPeriodId;
 
         this.journalRepository = new JournalRepository(state.branchId);
         this.journalLineRepositroy = new JournalLineRepository(state.branchId);
         this.invoiceRepository = new InvoiceRepository(state.branchId);
-        this.detailAccountRepository = new DetailAccountRepository(state.branchId);
-        this.subLedger = new SubLedger(state.branchId);
+        this.journalGenerationTemplateRepository = new JournalGenerationTemplateRepository(state.branchId);
+
+        this.subLedger = new SubLedgerDomain(state.branchId);
 
         this.command = command;
     }
 
-    run(){
+    run() {
         let cmd = this.command,
-            journal = await(this.getJournal(
-            cmd.date,
-            translate('For Cash sale invoice number ...').format(cmd.number))),
+            journal = await(this.getJournal(cmd.date)),
+
+            saleGenerationTemplate = await(this.journalGenerationTemplateRepository.findBySourceType('sale')).data,
 
             invoiceLines = cmd.invoiceLines,
-            sumAmount = invoiceLines.asEnumerable().sum(line => line.unitPrice * line.quantity),
-            sumDiscount = invoiceLines.asEnumerable().sum(line => line.discount),
-            sumVat = invoiceLines.asEnumerable().sum(line => line.vat),
 
-            receivableAccount = await(this.subLedger.receivableAccount()),
-            saleAccount = await(this.subLedger.saleAccount()),
+            model = {
+                number: cmd.number,
+                date: cmd.date,
+                title: cmd.title,
+                amount: invoiceLines.asEnumerable().sum(line => line.unitPrice * line.quantity),
+                discount: invoiceLines.asEnumerable().sum(line => line.discount),
+                vat: invoiceLines.asEnumerable().sum(line => line.vat),
+                customer: cmd.detailAccountId
+            };
 
-            journalLines = [
-                {
-                    generalLedgerAccountId: receivableAccount.generalLedgerAccountId,
-                    subsidiaryLedgerAccountId: receivableAccount.id,
-                    detailAccountId: sale.detailAccountId,
-                    debtor: sumAmount - sumDiscount + sumVat,
-                    creditor: 0,
-                    article: journal.description,
-                    row: 1
-                }, {
-                    generalLedgerAccountId: saleAccount.generalLedgerAccountId,
-                    subsidiaryLedgerAccountId: saleAccount.id,
-                    debtor: 0,
-                    creditor: sumAmount,
-                    article: journal.description,
-                    row: 3
-                }];
+        journal = Object.assign(journal, saleGenerationTemplate);
 
-        if (sumDiscount > 0) {
-            let discountAccount = await(this.subLedger.saleDiscountAccount());
+        journal.description = this.render(journal.description, model);
 
-            journalLines.push({
-                generalLedgerAccountId: discountAccount.generalLedgerAccountId,
-                subsidiaryLedgerAccountId: discountAccount.id,
-                debtor: sumDiscount,
-                creditor: 0,
-                article: journal.description,
-                row: 2
-            });
-        }
+        journal.lines = journal.lines.asEnumerable()
+            .select(item => ({
+                subsidiaryLedgerAccountId: item.subsidiaryLedgerAccountId,
+                detailAccountId: this.render(item.detailAccountId, model),
+                article: this.render(item.article, model),
+                debtor: parseInt(this.render(item.debtor, model)),
+                creditor: parseInt(this.render(item.creditor, model))
+            }))
+            .where(item => (item.debtor + item.creditor) !== 0)
+
+            .orderByDescending(item => item.debtor)
+
+            .toArray();
 
 
-        if (sumVat > 0) {
-            let vatAccount = await(this.subLedger.saleVatAccount());
+        journal.lines.forEach(async.result((e, i) => {
+            e.row = i + 1;
+            e.generalLedgerAccountId = await(this.subLedger.getById(e.subsidiaryLedgerAccountId))
+                .generalLedgerAccountId
+        }));
 
-            journalLines.push({
-                generalLedgerAccountId: vatAccount.generalLedgerAccountId,
-                subsidiaryLedgerAccountId: vatAccount.id,
-                debtor: 0,
-                creditor: sumVat,
-                article: journal.description,
-                row: 4
-            });
-        }
+        const lines = journal.lines;
 
-        journalLines = journalLines.asEnumerable().orderBy(e => e.row).toArray();
-        journalLines.forEach((e, i) => e.row = i + 1);
+        delete journal.lines;
 
-        await(this.journalRepository.batchCreate(journalLines, journal));
+        await(this.journalRepository.batchCreate(lines, journal));
     }
 
-    getJournal(date, description) {
+    getJournal(date) {
         let maxNumber = await(this.journalRepository.maxTemporaryNumber(this.fiscalPeriodId)).max || 0;
 
         return {
@@ -96,9 +85,12 @@ class CreateJournalOnSale{
             journalStatus: 'Fixed',
             temporaryNumber: ++maxNumber,
             temporaryDate: date,
-            description: description,
             isInComplete: false
         };
+    }
+
+    render(template, model) {
+        return _.template(template)(model);
     }
 }
 

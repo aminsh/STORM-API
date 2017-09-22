@@ -149,6 +149,7 @@ import "./receivableCheque";
 import "./payableCheque";
 import "./bankAndFund";
 import "./detailAccount";
+import "./journalTemplateGeneration";
 //factory
 import saleApi from "./sales/saleApi";
 // Configs

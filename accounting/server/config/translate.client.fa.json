@@ -396,5 +396,6 @@
   "Invoice title": "عنوان فاکتور",
   "Sum discount": "جمع تخفیف",
   "Sum tax": "جمع مالیات",
-  "Payable amount": "قابل پرداخت"
+  "Payable amount": "قابل پرداخت",
+  "Run on test": "اجرای تستی"
 }

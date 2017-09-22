@@ -1,0 +1,71 @@
+{
+  "title": "الگوی صدور سند اتوماتیک برای فاکتور فروش",
+  "fields": [
+    {
+      "key": "number",
+      "display": "شماره فاکتور",
+      "value": 1
+    },
+    {
+      "key": "date",
+      "display": "تاریخ فاکتور",
+      "value": "1396/01/01"
+    },
+    {
+      "key": "title",
+      "display": "عنوان فاکتور",
+      "value": "تست"
+    },
+    {
+      "key": "amount",
+      "display": "مبلغ فاکتور (مقدار * مبلغ واحد)",
+      "value": 10000
+    },
+    {
+      "key": "vat",
+      "display": "ارزش افزوده",
+      "value": 90
+    },
+    {
+      "key": "discount",
+      "display": "تخفیف",
+      "value": 30
+    },
+    {
+      "key": "customer",
+      "display": "خریدار (تفصیل)",
+      "value": "6001 - مشتری نمونه"
+    }
+  ],
+  "data": {
+    "description": "بابت فاکتور شماره # number # ",
+    "lines": [
+      {
+        "subsidiaryLedgerAccountId": "",
+        "detailAccountId": "# customer #",
+        "debtor": "# amount - discount + vat #",
+        "creditor": "0",
+        "article": "بابت فاکتور شماره # number # "
+      },
+      {
+        "subsidiaryLedgerAccountId": "",
+        "debtor": "0",
+        "creditor": "# amount - discount #",
+        "article": "بابت فاکتور شماره # number # "
+      },
+      {
+        "subsidiaryLedgerAccountId": "",
+        "debtor": "# discount #",
+        "creditor": "0",
+        "article": "بابت فاکتور شماره # number # "
+      },
+      {
+        "subsidiaryLedgerAccountId": "",
+        "debtor": "0",
+        "creditor": "# vat #",
+        "article": "بابت فاکتور شماره # number # "
+      }
+
+    ]
+  }
+}

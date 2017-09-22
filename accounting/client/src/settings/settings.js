@@ -54,7 +54,8 @@ export default class {
             errors: []
         };
         this.urls = {
-            getAllBanks: devConstants.urls.bank.getAll()
+            getAllBanks: devConstants.urls.bank.getAll(),
+            getAllJournalGenerationTemplates: devConstants.urls.journalGenerationTemplate.all()
         };
 
     }

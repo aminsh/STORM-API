@@ -121,6 +121,10 @@ let inventory = {
     getLinesById:(id)=> `${rootUrl()}/inventories/${id}/lines`
 };
 
+let journalGenerationTemplate = {
+    all: ()=> `${rootUrl()}/journal-generation-templates`
+};
+
 let stock = {
   getAll: ()=> `${rootUrl()}/stocks`
 };
@@ -152,7 +156,8 @@ let apiUrls = {
     receivableCheques,
     payableCheques,
     inventory,
-    stock
+    stock,
+    journalGenerationTemplate
 };
 
 export default apiUrls;
