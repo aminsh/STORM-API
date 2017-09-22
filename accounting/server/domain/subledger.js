@@ -3,7 +3,7 @@
 const SubsidiaryLedgerAccountRepository = require('../data/repository.subsidiaryLedgerAccount');
 
 
-module.exports = class SubLedger {
+class SubLedger {
     constructor(branchId) {
         this.subsidiaryLedgerAccountRepository = new SubsidiaryLedgerAccountRepository(branchId);
     }
@@ -60,3 +60,5 @@ module.exports = class SubLedger {
         return this.subsidiaryLedgerAccountRepository.findByCode('2102');
     }
 };
+
+module.exports = SubLedger;
