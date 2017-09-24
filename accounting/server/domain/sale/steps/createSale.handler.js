@@ -64,7 +64,15 @@ class CreateSaleHandler {
 
         this.result = {
             id: entity.id,
-            printUrl: this.saleDomain.getPrintUrl(entity.id)
+            printUrl: this.saleDomain.getPrintUrl(entity.id),
+            invoiceLines: entity.invoiceLines.asEnumerable()
+                .select(item => ({
+                    id: item.id,
+                    productId: item.productId,
+                    unitPrice: item.unitPrice,
+                    quantity: item.quantity
+                }))
+                .toArray()
         };
     }
 }

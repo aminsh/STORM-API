@@ -2,8 +2,8 @@
 
 const async = require('asyncawait/async'),
     await = require('asyncawait/await'),
-    SettingRepository = require('../../data/repository.setting'),
-    InventoryRepository = require('../../data/repository.inventory');
+    SettingRepository = require('../../../data/repository.setting'),
+    InventoryRepository = require('../../../data/repository.inventory');
 
 class InventoryControlBase {
 
@@ -21,7 +21,7 @@ class InventoryControlBase {
     }
 
     hasInventory(stockId, productId, quantity) {
-        const inventory = await(this.inventoryRepository.getInventoryByProduct(productId, stockId));
+        const inventory = await(this.inventoryRepository.getInventoryByProduct(productId, this.fiscalPeriodId, stockId));
         return inventory >= quantity;
     }
 

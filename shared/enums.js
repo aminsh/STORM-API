@@ -242,17 +242,22 @@ enums.ThirdParty = function () {
 
 enums.ProductOutputCreationMethod = function () {
     return new Enum([
-        {key: 'defaultStock', display: 'انبارپیش فرض'},
-        {key: 'stockOnRequest', display: 'انتخاب انبار در فاکتور فروش'},
-        {key: 'stockListOnRequest', display: 'انتخاب لیست انبارها در فاکتور فروش'},
+        {key: 'defaultStock', display: 'انبار پیش فرض'},
+        {key: 'stockOnRequest', display: 'انتخاب انبار در فاکتور فروش'}
+
+        /*
+        * these are not implemented
+        */
+        /*{key: 'stockListOnRequest', display: 'انتخاب لیست انبارها در فاکتور فروش'},
         {key: 'byPriority', display: 'براساس اولویت بندی انبارها'},
-        {key: 'byProductCategory', display: 'براساس گروه کالایی'}
+        {key: 'byProductCategory', display: 'براساس گروه کالایی'}*/
     ]);
 };
 
 enums.JournalGenerationTemplateSourceType = function () {
     return new Enum([
-        {key: 'sale', display: 'فاکتور فروش'}
+        {key: 'sale', display: 'فاکتور فروش'},
+        {key: 'inventoryOutputSale', display: 'حواله فروش'}
     ]);
 };
 

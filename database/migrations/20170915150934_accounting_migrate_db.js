@@ -8,6 +8,7 @@ exports.up = function (knex, Promise) {
         .table('settings', table => {
             table.boolean('canCreateSaleOnNoEnoughInventory');
             table.string('productOutputCreationMethod');
+            table.string('stockId');
             table.boolean('canSaleGenerateAutomaticJournal');
         })
         .createTable('journalGenerationTemplates', table => {

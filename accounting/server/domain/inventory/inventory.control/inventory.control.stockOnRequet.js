@@ -25,7 +25,7 @@ class InventoryControlStockOnRequest extends InventoryControlBase {
             return errors;
         }
 
-        const inventoryStatusList = cmd.lines.asEnumerable()
+        const inventoryStatusList = cmd.invoiceLines.asEnumerable()
             .select(line => async.result(({
                 productId: line.productId,
                 quantity: line.quantity,
@@ -55,4 +55,4 @@ class InventoryControlStockOnRequest extends InventoryControlBase {
     }
 }
 
-module.exports = InventoryControlDefaultStock;
+module.exports = InventoryControlStockOnRequest;

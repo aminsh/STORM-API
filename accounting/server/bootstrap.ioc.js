@@ -36,4 +36,16 @@ module.exports = function (container) {
             return new StockOnRequestInventoryControl(branchId, fiscalPeriodId);
         }
     });
+
+    container.bind('createOutput', function (branchId, fiscalPeriodId, settings) {
+        if (settings.productOutputCreationMethod === 'defaultStock') {
+            const DefaultStockHandler = require('./domain/inventory/inventory.createOutput.bySale/defaultStock');
+            return new DefaultStockHandler(branchId, fiscalPeriodId);
+        }
+
+        if (settings.productOutputCreationMethod === 'stockOnRequest') {
+            const StockOnRequestHandler = require('./domain/inventory/inventory.createOutput.bySale/stockOnRequest');
+            return new StockOnRequestHandler(branchId, fiscalPeriodId);
+        }
+    });
 };

@@ -3,6 +3,7 @@
 const async = require('asyncawait/async'),
     await = require('asyncawait/await'),
     Promise = require('promise'),
+    config = instanceOf('config'),
     Guid = instanceOf('utility').Guid,
     DomainException = instanceOf('domainException');
 
@@ -36,7 +37,8 @@ class WorkflowBase {
             data, instance;
 
         if (step.canExecute) {
-            const canExecute = async(step.canExecute)(this.data);
+            const func = async(step.canExecute);
+            const canExecute = await(func(this.state, this.data));
             if (!canExecute) return;
         }
 
@@ -62,6 +64,7 @@ class WorkflowBase {
     }
 
     start() {
+
         try {
             this.steps.forEach(async.result(step => await(this.handle(step))));
         }
@@ -69,8 +72,12 @@ class WorkflowBase {
 
             const error = e instanceof DomainException ? e.errors : e;
 
+            if (config.env === 'development')
+                return console.log(e);
+
             this.errorHandler && this.errorHandler(error);
         }
+
     }
 }
 

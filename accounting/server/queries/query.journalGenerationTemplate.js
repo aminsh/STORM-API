@@ -6,8 +6,12 @@ const async = require('asyncawait/async'),
     kendoQueryResolve = require('../services/kendoQueryResolve');
 
 const templateSale = require('../config/defaultJournalGenerationTemplates/sale.json'),
+    templateInventoryOutputSale = require('../config/defaultJournalGenerationTemplates/inventoryOutputSale.json'),
 
-    templates = {sale: templateSale};
+    templates = {
+        sale: templateSale,
+        inventoryOutputSale: templateInventoryOutputSale
+    };
 
 
 class JournalGenerationTemplateQuery extends BaseQuery {

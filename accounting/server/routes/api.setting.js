@@ -12,7 +12,7 @@ router.route('/')
             settingRepository = new SettingRepository(req.branchId),
             result = await(settingQuery.get());
 
-        if(!result){
+        if (!result) {
             let entity = {vat: 9};
             await(settingRepository.create(entity));
             result = entity;
@@ -31,15 +31,27 @@ router.route('/')
         res.json({isValid: true});
 
     }))
-    .put(async((req, res)=> {
+    .put(async((req, res) => {
         let settingRepository = new SettingRepository(req.branchId),
-            cmd = req.body,
+            cmd = req.body;
 
-            entity = {
-                vat: cmd.vat,
-                bankId: cmd.bankId,
-                canControlInventory: cmd.canControlInventory
-            };
+        cmd.canCreateSaleOnNoEnoughInventory = cmd.canControlInventory
+            ? cmd.canCreateSaleOnNoEnoughInventory
+            : false;
+
+        cmd.stockId = cmd.productOutputCreationMethod === 'defaultStock'
+            ? cmd.stockId
+            : null;
+
+        let entity = {
+            vat: cmd.vat,
+            bankId: cmd.bankId,
+            canControlInventory: cmd.canControlInventory,
+            canCreateSaleOnNoEnoughInventory: cmd.canCreateSaleOnNoEnoughInventory,
+            productOutputCreationMethod: cmd.productOutputCreationMethod,
+            canSaleGenerateAutomaticJournal: cmd.canSaleGenerateAutomaticJournal,
+            stockId: cmd.stockId
+        };
 
         await(settingRepository.update(entity));
 

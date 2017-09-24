@@ -7,19 +7,23 @@ const async = require('asyncawait/async'),
 
 class CreateOutputOnSale {
 
-    constructor(branchId, fiscalPeriodId) {
+    constructor(state, command) {
 
-        const settingRepository = new SettingRepository(branchId);
+        const settingRepository = new SettingRepository(state.branchId);
 
         this.settings = await(settingRepository.get());
 
-        this.inventoryRepository = new InventoryRepository(branchId);
+        this.inventoryRepository = new InventoryRepository(state.branchId);
 
-        this.createOutputBySale = instanceOf('createOutput', { branchId, fiscalPeriodId, settings: this.settings });
-        
+        this.createOutputBySale = instanceOf('createOutput', state.branchId, state.fiscalPeriodId, this.settings);
+
+        this.command = command;
+
     }
 
-    run(cmd) {
+    run() {
+        const cmd = this.command;
+
         let output = this.createOutputBySale.set(cmd);
 
         await(this.inventoryRepository.create(output));
@@ -31,7 +35,7 @@ class CreateOutputOnSale {
                     .toArray()
             };
         else
-            this.result = {id: output.id};
+            this.result = {id: output.id, number: output.number};
     }
 }
 

@@ -34,7 +34,7 @@ class CreateSaleValidator {
         this.settings = await(this.settingsRepository.get());
 
         this.currentFiscalPeriod = await(this.fiscalPeriodRepository.findById(fiscalPeriodId));
-        this.inventoryControl = instanceOf('inventory.control', {branchId, fiscalPeriodId, settings: this.settings});
+        this.inventoryControl = instanceOf('inventory.control', branchId, fiscalPeriodId, this.settings);
 
         this.run = async(this.run);
     }
@@ -69,9 +69,18 @@ class CreateSaleValidator {
 
         errors = errors.concat(linesErrors);
 
-        //const inventoryErrors = this.inventoryControl.control(cmd.invoiceLines);
+        const linesInventoryControl = cmd.invoiceLines.asEnumerable()
+            .where(async.result(item => await(this.productDomain.isGood(item.productId))))
+            .toArray();
 
-        //errors = errors.concat(inventoryErrors);
+        let inventoryErrors = [];
+
+        if(linesInventoryControl.length !== 0){
+            const command = {stockId: cmd.stockId, invoiceLines: linesInventoryControl};
+            inventoryErrors = this.inventoryControl.control(command);
+        }
+
+        errors = errors.concat(inventoryErrors);
 
         if (errors.length > 0)
             throw new DomainException(errors);

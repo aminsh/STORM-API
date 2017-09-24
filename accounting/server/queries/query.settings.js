@@ -10,7 +10,14 @@ class SettingQuery extends BaseQuery {
     }
 
     get() {
-        return this.knex.select('vat', 'bankId', 'canControlInventory')
+        return this.knex.select(
+            'vat',
+            'bankId',
+            'canControlInventory',
+            'canCreateSaleOnNoEnoughInventory',
+            'canSaleGenerateAutomaticJournal',
+            'productOutputCreationMethod',
+            'stockId')
             .from('settings')
             .where('branchId', this.branchId)
             .first();

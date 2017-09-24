@@ -23,6 +23,10 @@ export default class {
         this.translate = translate;
         this.confirm = confirm;
 
+        this.settings = {};
+
+        this.productOutputCreationMethods = devConstants.enums.ProductOutputCreationMethod().data;
+
         settingsApi.get().then(result => this.settings = result);
         this.updateUserImage();
         this.isBranchOwnerUser()
@@ -33,7 +37,9 @@ export default class {
 
         $scope.$watch(
             () => this.settings.canControlInventory,
-            newValue => {if(!newValue) this.settings.canCreateSaleOnNoEnoughInventory = false;});
+            newValue => {
+                if (!newValue) this.settings.canCreateSaleOnNoEnoughInventory = false;
+            });
 
         this.changeUserPasswordData = {
             currentPassword: null,
@@ -55,7 +61,8 @@ export default class {
         };
         this.urls = {
             getAllBanks: devConstants.urls.bank.getAll(),
-            getAllJournalGenerationTemplates: devConstants.urls.journalGenerationTemplate.all()
+            getAllJournalGenerationTemplates: devConstants.urls.journalGenerationTemplate.all(),
+            getAllStocks: devConstants.urls.stock.getAll()
         };
 
     }

@@ -58,6 +58,31 @@
                             صدور سند حسابداری اتوماتیک برای فاکتور فروش ؟
                         </dev-tag-check-box>
 
+                        <div class="row" style="">
+                            <div class="col-md-6" style="padding-right: 50px">
+                                <label>روش صدور حواله برای فاکتور فروش :</label>
+                                <div ng-repeat="item in model.productOutputCreationMethods" class="row">
+                                    <dev-tag-radio
+                                            class="col-md-1"
+                                            ng-class="{'checked': item.key == model.settings.productOutputCreationMethod}"
+
+                                            k-value="{{item.key}}"
+                                            ng-model="model.settings.productOutputCreationMethod"></dev-tag-radio>
+                                    <div class="col-md-5">{{item.display}}</div>
+
+                                    <dev-tag-combo-box
+                                            ng-if="model.settings.productOutputCreationMethod === 'defaultStock' && item.key === 'defaultStock'"
+                                            class="col-md-6"
+                                            name="stockId"
+                                            k-placeholder="{{'Select stock'|translate}}"
+                                            k-data-value-field="id"
+                                            k-data-text-field="title"
+                                            ng-model="model.settings.stockId"
+                                            url="{{model.urls.getAllStocks}}"
+                                            required></dev-tag-combo-box>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </dev-tag-content>
             </form>
