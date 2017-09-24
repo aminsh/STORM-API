@@ -24,6 +24,7 @@ class OneStockBase {
 
         this.branchId = branchId;
         this.fiscalPeriodId = fiscalPeriodId;
+        this.stockId = null;
     }
 
     set(cmd) {

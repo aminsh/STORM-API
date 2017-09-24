@@ -6,7 +6,7 @@ const async = require('asyncawait/async'),
     kendoQueryResolve = require('../services/kendoQueryResolve'),
     enums = require('../../../shared/enums');
 
-module.exports = class PaymentQuery extends BaseQuery {
+class PaymentQuery extends BaseQuery {
     constructor(branchId) {
         super(branchId);
     }
@@ -117,10 +117,12 @@ module.exports = class PaymentQuery extends BaseQuery {
                 paymentTypeDisplay: entity.paymentType
                     ? enums.paymentType().getDisplay(entity.paymentType)
                     : '',
-                bankId: entity.paymentType == 'receipt' ? entity.detailAccountId : undefined,
-                bankDisplay: entity.paymentType == 'receipt' ? entity.detailAccountDisplay : undefined,
-                fundId: entity.paymentType == 'cash' ? entity.detailAccountId : undefined,
-                fundDisplay: entity.paymentType == 'cash' ? entity.detailAccountDisplay : undefined,
+                bankId: entity.paymentType === 'receipt' ? entity.detailAccountId : undefined,
+                bankDisplay: entity.paymentType === 'receipt' ? entity.detailAccountDisplay : undefined,
+                fundId: entity.paymentType === 'cash' ? entity.detailAccountId : undefined,
+                fundDisplay: entity.paymentType === 'cash' ? entity.detailAccountDisplay : undefined,
             }));
     }
 };
+
+module.exports = PaymentQuery;

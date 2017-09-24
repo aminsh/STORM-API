@@ -4,7 +4,7 @@ let async = require('asyncawait/async'),
     await = require('asyncawait/await'),
     BaseRepository = require('./repository.base');
 
-module.exports = class InventoryRepository extends BaseRepository {
+class InventoryRepository extends BaseRepository {
     constructor(branchId) {
         super(branchId);
         this.findById = async(this.findById);
@@ -56,7 +56,7 @@ module.exports = class InventoryRepository extends BaseRepository {
                      end) * "inventoryLines"."quantity") as "countOfProduct"`))
                     .from('inventories')
                     .leftJoin('inventoryLines', 'inventories.id', 'inventoryLines.inventoryId')
-                    .where('branchId', branchId)
+                    .where('inventories.branchId', branchId)
                     .andWhere('fiscalPeriodId', fiscalPeriodId)
                     .andWhere('productId', productId)
                     .andWhere('stockId', stockId)
@@ -235,3 +235,5 @@ module.exports = class InventoryRepository extends BaseRepository {
                 .transacting(trx).where('id', e.id).update(e)));
     }
 };
+
+module.exports = InventoryRepository;

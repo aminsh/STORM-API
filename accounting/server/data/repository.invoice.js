@@ -4,7 +4,7 @@ let async = require('asyncawait/async'),
     await = require('asyncawait/await'),
     BaseRepository = require('./repository.base');
 
-module.exports = class InvoiceRepository extends BaseRepository {
+class InvoiceRepository extends BaseRepository {
     constructor(branchId) {
         super(branchId);
         this.findById = async(this.findById);
@@ -232,3 +232,5 @@ module.exports = class InvoiceRepository extends BaseRepository {
             .first();
     }
 };
+
+module.exports = InvoiceRepository;

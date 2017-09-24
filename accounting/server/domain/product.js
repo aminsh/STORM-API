@@ -4,7 +4,7 @@ const async = require('asyncawait/async'),
     await = require('asyncawait/await'),
     ProductRepository = require('../data/repository.product');
 
-module.exports = class ProductDomain {
+class ProductDomain {
     constructor(branchId) {
         this.branchId = branchId;
 
@@ -49,3 +49,5 @@ module.exports = class ProductDomain {
         return entity;
     }
 };
+
+module.exports = ProductDomain;
