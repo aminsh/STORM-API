@@ -10,7 +10,7 @@ const BaseQuery = require('./query.base'),
     enums = require('../../../shared/enums');
 
 
-module.exports = class InvoiceQuery extends BaseQuery {
+class InvoiceQuery extends BaseQuery {
     constructor(branchId) {
         super(branchId);
         this.check = async(this.check);
@@ -226,3 +226,5 @@ module.exports = class InvoiceQuery extends BaseQuery {
 
 
 };
+
+module.exports = InvoiceQuery;

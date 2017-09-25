@@ -14,100 +14,21 @@ const async = require('asyncawait/async'),
     InvoiceRepository = require('../data/repository.invoice'),
     SettingRepository = require('../data/repository.setting'),
     DetailAccountDomain = require('../domain/detailAccount'),
-    ProductDomain = require('../domain/product'),
-    InventoryDomain = require('../domain/inventory');
+    ProductDomain = require('../domain/product');
 
 
-module.exports = class SaleDomain {
+class SaleDomain {
 
-    constructor(branchId, fiscalPeriodId) {
+    constructor(branchId) {
         this.branchId = branchId;
         this.invoiceRepository = new InvoiceRepository(branchId);
         this.fiscalPeriodRepository = new FiscalPeriodRepository(branchId);
         this.detailAccountDomain = new DetailAccountDomain(branchId);
         this.productDomain = new ProductDomain(branchId);
-        this.inventoryDomain = new InventoryDomain(branchId, fiscalPeriodId);
         this.settingsRepository = new SettingRepository(branchId);
-
-        this.currentFiscalPeriod = await(this.fiscalPeriodRepository.findById(fiscalPeriodId));
-    }
-
-    createValidator(cmd) {
-        let errors = [],
-            temporaryDateIsInPeriodRange =
-                cmd.date >= this.currentFiscalPeriod.minDate &&
-                cmd.date <= this.currentFiscalPeriod.maxDate;
-
-
-
-        if (!temporaryDateIsInPeriodRange)
-            errors.push(translate('The temporaryDate is not in current period date range'));
-
-        cmd.customer = this.detailAccountDomain.findPersonByIdOrCreate(cmd.customer);
-
-        if (!cmd.customer)
-            errors.push('مشتری نباید خالی باشد');
-
-        if (cmd.number && await(this.isInvoiceNumberDuplicated(cmd.number)))
-            errors.push('شماره فاکتور تکراری است');
-
-        let linesErrors = this.createLinesValidator(cmd.invoiceLines);
-
-        if (cmd.status === 'paid') {
-            const bankId = await(this.settingsRepository.get()).bankId;
-            if (!bankId)
-                errors.push('اطلاعات بانک پیش فرض تعریف نشده - ثبت پرداخت برای این فاکتور امکانپذیر نیست')
-        }
-
-        errors = errors.concat(linesErrors);
-
-        return errors;
-    }
-
-    createLinesValidator(lines) {
-        let errors = [];
-
-        if (!(lines && lines.length !== 0))
-            errors.push('ردیف های فاکتور وجود ندارد');
-
-
-
-        if (errors.length > 0)
-            return errors;
-
-        lines.forEach(async.result(e => {
-            e.product = this.productDomain.findByIdOrCreate(e.product);
-
-            if (e.product) {
-                e.productId = e.product.id;
-                if (!e.description) e.description = e.product.title;
-            }
-
-            if (Guid.isEmpty(e.productId) && String.isNullOrEmpty(e.description))
-                errors.push('کالا یا شرح کالا نباید خالی باشد');
-
-            if (!(e.quantity && e.quantity !== 0))
-                errors.push('مقدار نباید خالی یا صفر باشد');
-
-            if (!(e.unitPrice && e.unitPrice !== 0))
-                errors.push('قیمت واحد نباید خالی یا صفر باشد');
-        }));
-
-        return errors;
     }
 
     create(cmd) {
-
-        const errors = this.createValidator(cmd);
-
-        if (errors.length > 0)
-            throw new DomainException(errors);
-
-        cmd.date = cmd.date || PersianDate.current();
-        cmd.detailAccountId = cmd.customer.id;
-        cmd.status = (cmd.status === 'confirm' || cmd.status === 'paid')
-            ? 'waitForPayment'
-            : 'draft';
 
         let entity = {
             date: cmd.date,
@@ -151,3 +72,5 @@ module.exports = class SaleDomain {
         })}`;
     }
 };
+
+module.exports = SaleDomain;

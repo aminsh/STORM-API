@@ -9,7 +9,7 @@ const async = require('asyncawait/async'),
     DomainException = instanceOf('domainException');
 
 
-module.exports = class InventoryDomain {
+class InventoryDomain {
     constructor(branchId, fiscalPeriodId) {
         this.branchId = branchId;
         this.fiscalPeriodId = fiscalPeriodId;
@@ -109,6 +109,18 @@ module.exports = class InventoryDomain {
 
     }
 
+    checkIsValidTurnoverByProductAndStockAfterUpdate(productId, stockId, quantity, inputId) {
+        let inventories = await(this.inventoryRepository.getInventoriesByProductId(productId, this.fiscalPeriodId, stockId)),
+            input = inventories.asEnumerable().singleOrDefault(item => item.id === inputId);
+
+        if(!input)
+            return true;
+
+        input.quantity = quantity;
+
+        return this.isValidInventoryTurnover(inventories);
+    }
+
     isValidInventoryTurnover(inventories) {
         if (inventories.length === 0) return true;
 
@@ -138,20 +150,16 @@ module.exports = class InventoryDomain {
 
     isValidInventoryControl(productId, quantity, stockId) {
 
-        if(!this.settings.canControlInventory)
+        if (!this.settings.canControlInventory)
             return true;
 
-        if(this.settings.canCreateSaleOnNoEnoughInventory)
+        if (this.settings.canCreateSaleOnNoEnoughInventory)
             return true;
 
         const inventory = await(this.getInventory(productId, stockId));
 
         return inventory >= quantity;
     }
-
-    create() {
-
-    }
-
-
 };
+
+module.exports = InventoryDomain;

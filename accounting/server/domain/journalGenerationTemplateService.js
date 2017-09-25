@@ -5,9 +5,9 @@ const async = require('asyncawait/async'),
     _ = require('lodash'),
     PersianDate = instanceOf('utility').PersianDate,
     String = instanceOf('utility').String,
-    JournalGenerationTemplateRepository = require('../../data/repository.journalGenerationTemplate'),
-    JournalRepository = require('../../data/repository.journal'),
-    SubLedgerDomain = require('../subledger');
+    JournalGenerationTemplateRepository = require('../data/repository.journalGenerationTemplate'),
+    JournalRepository = require('../data/repository.journal'),
+    SubLedgerDomain = require('./subledger');
 
 _.templateSettings.interpolate = /#([\s\S]+?)#/g;
 

@@ -2,7 +2,7 @@
 
 const async = require('asyncawait/async'),
     await = require('asyncawait/await'),
-    JournalGenerationTemplateService = require('../journalGenerationTemplateService'),
+    JournalGenerationTemplateService = require('../../journalGenerationTemplateService'),
     JournalRepository = require('../../../data/repository.journal'),
     InvoiceRepository = require('../../../data/repository.invoice');
 

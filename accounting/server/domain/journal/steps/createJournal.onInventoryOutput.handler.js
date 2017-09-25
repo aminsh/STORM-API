@@ -5,7 +5,7 @@ const async = require('asyncawait/async'),
     _ = require('lodash'),
     JournalRepository = require('../../../data/repository.journal'),
     InventoryRepository = require('../../../data/repository.inventory'),
-    JournalGenerationTemplateService = require('../journalGenerationTemplateService');
+    JournalGenerationTemplateService = require('../../journalGenerationTemplateService');
 
 class CreateJournalOnSale {
 

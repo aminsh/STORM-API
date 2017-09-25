@@ -58,23 +58,8 @@ router.route('/')
 
     .post(async((req, res) => {
 
-        let CreateSaleWorkflow = require('../domain/sale/workflows/createSaleWorkflow'),
-            instance = new CreateSaleWorkflow(
-                {branchId: req.branchId, fiscalPeriodId: req.fiscalPeriodId},
-                req.body);
-        EventEmitter.once(instance.id, (errors, result) => {
-            if (errors)
-                return res.json({isValid: false, errors});
-
-            return res.json({isValid: true, returnValue: result});
-        });
-
-        instance.build();
-
-        instance.start();
-
-        /*let branchId = req.branchId,
-            saleDomain = new SaleDomain(req.branchId),
+        let branchId = req.branchId,
+            saleDomain = new SaleDomain(req.branchId, req.fiscalPeriodId),
             detailAccountDomain = new DetailAccountDomain(req.branchId),
             productDomain = new ProductDomain(req.branchId),
             settingRepository = new SettingRepository(branchId),
@@ -116,21 +101,21 @@ router.route('/')
                 if (Guid.isEmpty(e.productId) && String.isNullOrEmpty(e.description))
                     errors.push('کالا یا شرح کالا نباید خالی باشد');
 
-                if (!(e.quantity && e.quantity != 0))
+                if (!(e.quantity && e.quantity !== 0))
                     errors.push('مقدار نباید خالی یا صفر باشد');
 
-                if (!(e.unitPrice && e.unitPrice != 0))
+                if (!(e.unitPrice && e.unitPrice !== 0))
                     errors.push('قیمت واحد نباید خالی یا صفر باشد');
             }));
         }
 
-        if (cmd.status == 'paid') {
+        if (cmd.status === 'paid') {
             bankId = await(settingRepository.get()).bankId;
             if (!bankId)
                 errors.push('اطلاعات بانک پیش فرض تعریف نشده - ثبت پرداخت برای این فاکتور امکانپذیر نیست')
         }
 
-        if (errors.length != 0)
+        if (errors.length !== 0)
             return res.json({isValid: false, errors});
 
         let current = {
@@ -147,21 +132,14 @@ router.route('/')
         cmd.detailAccountId = customer.id;
         cmd.status = status;
 
-        let sale = saleDomain.create(cmd),
-            returnValue = {
-                id: sale.id, printUrl: `${config.url.origin}/print/?token=${Crypto.sign({
-                    branchId: req.branchId,
-                    id: sale.id,
-                    reportId: 700
-                })}`
-            };
+        const sale = saleDomain.create(cmd);
 
-        res.json({isValid: true, returnValue});
+        res.json({isValid: true, returnValue: sale});
 
-        if (status == 'waitForPayment')
+        if (status === 'waitForPayment')
             EventEmitter.emit('on-sale-created', sale, current);
 
-        if (cmd.status == 'paid') {
+        if (cmd.status === 'paid') {
 
             setTimeout(async(() => {
                 let paymentRepository = new PaymentRepository(req.branchId),
@@ -183,7 +161,7 @@ router.route('/')
 
                 EventEmitter.emit('on-invoice-paid', sale.id, req.branchId);
             }), 1000);
-        }*/
+        }
     }));
 
 router.route('/:id/confirm')

@@ -4,7 +4,7 @@ const async = require('asyncawait/async'),
     await = require('asyncawait/await'),
     DetailAccountRepository = require('../data/repository.detailAccount');
 
-module.exports = class DetailAccountDomain {
+class DetailAccountDomain {
     constructor(branchId) {
         this.branchId = branchId;
 
@@ -55,3 +55,5 @@ module.exports = class DetailAccountDomain {
         return entity.id;
     }
 };
+
+module.exports = DetailAccountDomain;
