@@ -64,15 +64,18 @@ router.route('/')
             productDomain = new ProductDomain(req.branchId),
             settingRepository = new SettingRepository(branchId),
             fiscalPeriodRepository = new FiscalPeriodRepository(req.branchId),
-            currentFiscalPeriod = await(fiscalPeriodRepository.findById(req.cookies['current-period'])),
+            currentFiscalPeriod = await(fiscalPeriodRepository.findById(req.fiscalPeriodId)),
             cmd = req.body,
             errors = [],
 
-            bankId;
+            bankId,
+            temporaryDateIsInPeriodRange = true;
 
-        let temporaryDateIsInPeriodRange =
-            cmd.date >= currentFiscalPeriod.minDate &&
-            cmd.date <= currentFiscalPeriod.maxDate;
+
+        if (!String.isNullOrEmpty(cmd.date))
+            temporaryDateIsInPeriodRange =
+                cmd.date >= currentFiscalPeriod.minDate &&
+                cmd.date <= currentFiscalPeriod.maxDate;
 
         if (!temporaryDateIsInPeriodRange)
             errors.push(translate('The temporaryDate is not in current period date range'));
