@@ -14,7 +14,8 @@ const BaseQuery = require('./query.base'),
         inventoryType: item.inventoryType,
         inventoryTypeDisplay: item.inventoryType ? Enums.InventoryType().getDisplay(item.inventoryType) : null,
         ioType: item.ioType,
-        ioTypeDisplay: item.ioType ? Enums.InventoryIOType().getDisplay(item.ioType) : null
+        ioTypeDisplay: item.ioType ? Enums.InventoryIOType().getDisplay(item.ioType) : null,
+        stockId: item.stockId
     }),
 
     viewLine = item => ({
@@ -54,15 +55,15 @@ class InventoryQuery extends BaseQuery {
 
     getById(id) {
         let knex = this.knex,
-            inventory = await(knex.select('*').from('inventories').where('id', id).first());
-        /* inventoryLines = await(
+            inventory = await(knex.select('*').from('inventories').where('id', id).first()),
+         inventoryLines = await(
              knex.select('*')
                  .from('inventoryLines')
                  .leftJoin('products', 'inventoryLines.productId', 'products.id')
-                 .where('inventoryId', inventory.id));*/
+                 .where('inventoryId', inventory.id));
 
         inventory = view(inventory);
-        //inventory.inventoryLines = inventoryLines.select(viewLine).toArray();
+        inventory.inventoryLines = inventoryLines.asEnumerable().select(viewLine).toArray();
 
         return inventory;
     }
@@ -113,6 +114,21 @@ class InventoryQuery extends BaseQuery {
                     .as('base');
             })
             .groupBy('stockId', 'stockDisplay');
+    }
+
+    getMaxNumber(inventoryType, fiscalPeriodId) {
+
+        const maxNumber = await(this.knex.table('inventories')
+            .modify(this.modify, this.branchId)
+            .where('inventoryType', inventoryType)
+            .andWhere('fiscalPeriodId', fiscalPeriodId)
+            .max('number')
+            .first());
+
+        if (maxNumber)
+            return maxNumber.max;
+
+        return 1;
     }
 }
 

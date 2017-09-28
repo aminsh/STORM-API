@@ -1,0 +1,121 @@
+
+
+<div class="row">
+    <table class="table table-striped table-hover">
+        <thead>
+        <tr style="font-size: 9pt; font-weight: bold;">
+            <th>#</th>
+            <th class="text-center" style="width: 30%">{{'Good'|translate}}</th>
+            <th class="text-center" style="width: 120px" ng-if="model.inventoryType === 'output'"></th>
+            <th class="text-center" style="width: 100px">{{'Quantity'|translate}}</th>
+            <th class="text-center" style="width: 100px"></th>
+            <th class="text-center" style="width: 100px">{{'Unit price'|translate}}</th>
+            <th class="text-center">{{'Total price'|translate}}</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr name="form-{{$index}}"
+            id="{{item.id}}"
+            ng-form
+            ng-repeat="item in model.inventory.inventoryLines"
+            ng-class-odd="'grid-row-striped'">
+
+            <td style="width: 30px; padding: 0px; vertical-align: middle; text-align: center;">{{$index + 1}}</td>
+
+            <td style="width: 20%; padding: 0px;" class="invoice-td">
+                <dev-tag-combo-box style="width: 500px;"
+                                   name="productId"
+                                   k-placeholder="{{'Select ...'|translate}}"
+                                   k-data-value-field="id"
+                                   k-data-text-field="title"
+                                   k-on-created="model.createNewProduct(item,$search, form['form-'+ $index])"
+                                   k-on-changed="model.onProductChanged(item, $item, form['form-'+ $index])"
+                                   k-on-bound="model.onProductChanged(item, $item, form['form-'+ $index])"
+                                   show-no-data-template
+                                   url="{{model.urls.getAllProduct}}"
+                                   ng-model="item.productId"
+                                   required></dev-tag-combo-box>
+
+                <div ng-messages="form['form-'+ $index].productId.$error"
+                     ng-if="form['form-'+ $index].productId.$dirty">
+                    <label ng-message="required" class="error">{{'This field is required'|translate}}</label>
+                </div>
+            </td>
+
+            <td class="text-success" style="font-weight: bold" ng-if="model.inventoryType === 'output'">
+                {{'Inventory quantity'|translate}} : {{item.inventory}} {{item.scale}}
+            </td>
+
+            <td style="width: 120px; padding: 0px;" class="invoice-td">
+                <dev-tag-numeric
+                        ng-model="item.quantity"
+                        name="quantity"
+                        required
+                        not-should-be-zero="item.quantity"
+                        required></dev-tag-numeric>
+
+                <div ng-messages="form['form-'+ $index].quantity.$error" ng-if="form['form-'+ $index].quantity.$dirty">
+                    <label ng-message="required" class="error">
+                        {{'This field is required'|translate}}
+                    </label>
+                    <label ng-message="notShouldBeZero" class="error">
+                        {{'Item quantity is not allowed to be zero'|translate}}
+                    </label>
+                </div>
+            </td>
+
+            <td style="width: 120px; padding: 0px;vertical-align: middle;" class="invoice-td">
+                <span style="margin-right: 10px">{{item.scale}}</span>
+            </td>
+
+            <td style="width: 120px; padding: 0px;" class="invoice-td">
+                <dev-tag-numeric
+                        ng-model="item.unitPrice"
+                        name="unitPrice"></dev-tag-numeric>
+            </td>
+
+
+            <td style="width: 120px;padding: 0px; vertical-align: middle; text-align: center;">
+                <span>{{(item.quantity * item.unitPrice) - item.discount + item.vat | number}}</span>
+            </td>
+
+            <td style="width: 20px; padding: 0px; vertical-align: middle; text-align: center;">
+                <button
+                        style="margin-left: 5px"
+                        type="button"
+                        ng-click="model.removeRow(item)"
+                        class="close"
+                        title="{{'Remove'| translate}}">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                </a>
+            </td>
+
+        </tr>
+        </tbody>
+    </table>
+    <div class="row" style="padding-left: 15px;">
+        <div class="col-md-9">
+            <div class="row">
+                <div class="col-md-12">
+                    <dev-tag-button
+                            ng-click="model.addRow()"
+                            icon="fa fa-plus fa-lg"
+                            style-type="outline btn btn-primary btn-sm"
+                            title="{{'New Journal line' | translate}}"></dev-tag-button>
+                </div>
+            </div>
+
+        </div>
+        <div class="col-md-3">
+            <div class="row text-left" style="border-bottom: 1px solid #DDDDDD;">
+                <div class="col-xs-5 title1 so-align-right"><h3>{{'Sum'|translate}}</h3></div>
+                <div class="col-xs-7 title1" >
+                    <h3>{{model.inventory.inventoryLines | totalSum: ('$.quantity * $.unitPrice') | number}}</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

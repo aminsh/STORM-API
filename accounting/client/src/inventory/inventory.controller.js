@@ -1,7 +1,7 @@
 "use strict";
 
 class InventoryController {
-    constructor($scope, $rootScope, inventoryApi, translate) {
+    constructor($scope, $rootScope, inventoryApi, translate, $state) {
 
         this.tabs = [
             {

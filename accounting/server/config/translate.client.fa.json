@@ -380,11 +380,17 @@
   "Remove stock": "حذف انبار",
   "Select stock ...": "انتخاب انبار ...",
   "New row": "ردیف جدید",
+  "Input": "رسید",
+  "New input": "رسید جدید",
+  "Edit input": "ویرایش جدید",
   "First input": "رسید اول دوره",
   "Remove first input": "حذف رسید اول دوره",
   "Stock is duplicated":"انبار تکراری است",
   "Select stock": "انتخاب انبار",
   "Filtered by stock": "فیلتر بر اساس انبار ",
+  "Output": "حواله",
+  "New output": "حواله جدید",
+  "Edit output": "ویرایش حواله",
   "Inventory inputs": "رسید (ورودی) ها",
   "Inventory outputs": "حواله (خروجی) ها",
   "Input type": "نوع رسید",
@@ -397,5 +403,6 @@
   "Sum discount": "جمع تخفیف",
   "Sum tax": "جمع مالیات",
   "Payable amount": "قابل پرداخت",
-  "Run on test": "اجرای تستی"
+  "Run on test": "اجرای تستی",
+  "Percent share":"درصد سهام"
 }

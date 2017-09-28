@@ -559,7 +559,10 @@ export default function ($stateProvider, $urlRouterProvider, $locationProvider, 
             url: '/inventory',
             controller: 'inventoryController',
             controllerAs: 'model',
-            templateUrl: 'partials/inventory/inventory.html'
+            templateUrl: 'partials/inventory/inventory.html',
+            /*templateProvider: function ($state, $timeout) {
+                console.log($state);
+            }*/
         })
         .state('inventory.stocks', {
             url: '/stocks',
@@ -596,6 +599,18 @@ export default function ($stateProvider, $urlRouterProvider, $locationProvider, 
             controllerAs: 'model',
             templateUrl: 'partials/inventory/inventories.html'
         })
+        .state('inventoryInputsCreate', {
+            url: '/inventory/input/create/on-stock/:stockId',
+            controller: 'inputEntryController',
+            controllerAs: 'model',
+            templateUrl: 'partials/inventory/inventoryEntry.html'
+        })
+        .state('inventoryInputsUpdate', {
+            url: '/inventory/inputs/edit/:id',
+            controller: 'inputEntryController',
+            controllerAs: 'model',
+            templateUrl: 'partials/inventory/inventoryEntry.html'
+        })
         .state('inventory.inputs.detail', {
             url: '/detail/:id',
             onEnter: ($modelFactory, $stateParams) => {
@@ -614,6 +629,19 @@ export default function ($stateProvider, $urlRouterProvider, $locationProvider, 
             controllerAs: 'model',
             templateUrl: 'partials/inventory/inventories.html'
         })
+        .state('inventoryOutputsCreate', {
+            url: '/inventory/outputs/create/on-stock/:stockId',
+            controller: 'outputEntryController',
+            controllerAs: 'model',
+            templateUrl: 'partials/inventory/inventoryEntry.html'
+        })
+        .state('inventoryOutputsUpdate', {
+            url: '/inventory/outputs/edit/:id',
+            controller: 'outputEntryController',
+            controllerAs: 'model',
+            templateUrl: 'partials/inventory/inventoryEntry.html'
+        })
+
         .state('inventory.outputs.detail', {
             url: '/detail/:id',
             onEnter: ($modelFactory, $stateParams) => {

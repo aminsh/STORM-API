@@ -13,6 +13,54 @@ router.route('/inputs')
             result = await(inventoryQuery.getAll('input', req.query));
 
         return res.json(result);
+    }))
+    .post(async((req, res) => {
+        let cmd = req.body;
+
+        const inventoryDomain = new InventoryDomain(req.branchId, req.fiscalPeriodId);
+
+        cmd.inventoryType = 'input';
+
+        try {
+            const id = await(inventoryDomain.create(cmd));
+            res.json({isValid: true, returnValue: {id}});
+        }
+        catch (e) {
+            if (e instanceof DomainException)
+                return res.json({isValid: false, errors: e.errors});
+
+            console.log(e);
+
+            res.json({isValid: false, errors: ['System error']});
+        }
+
+    }));
+
+router.route('/inputs/:id')
+    .put(async((req, res) => {
+
+        const inventoryDomain = new InventoryDomain(req.branchId, req.fiscalPeriodId);
+
+        try {
+            await(inventoryDomain.update(req.params.id, req.body));
+            res.json({isValid: true});
+        }
+        catch (e) {
+            if (e instanceof DomainException)
+                return res.json({isValid: false, errors: e.errors});
+
+            console.log(e);
+
+            res.json({isValid: false, errors: ['System error']});
+        }
+    }));
+
+router.route('/inputs/max-number')
+    .get(async((req, res) => {
+        const inventoryQuery = new InventoryQuery(req.branchId),
+            result = await(inventoryQuery.getMaxNumber('input', req.fiscalPeriodId));
+
+        res.json(result);
     }));
 
 router.route('/outputs')
@@ -21,6 +69,53 @@ router.route('/outputs')
             result = await(inventoryQuery.getAll('output', req.query));
 
         return res.json(result);
+    }))
+    .post(async((req, res) => {
+        let cmd = req.body;
+
+        const inventoryDomain = new InventoryDomain(req.branchId, req.fiscalPeriodId);
+
+        cmd.inventoryType = 'output';
+
+        try {
+            await(inventoryDomain.create(cmd))
+        }
+        catch (e) {
+            if (e instanceof DomainException)
+                return res.json({isValid: false, errors: e.errors});
+
+            console.log(e);
+
+            res.json({isValid: false, errors: ['System error']});
+        }
+
+    }));
+
+router.route('/outputs/:id')
+    .put(async((req, res) => {
+
+        const inventoryDomain = new InventoryDomain(req.branchId, req.fiscalPeriodId);
+
+        try {
+            await(inventoryDomain.update(req.params.id, req.body));
+            res.json({isValid: true});
+        }
+        catch (e) {
+            if (e instanceof DomainException)
+                return res.json({isValid: false, errors: e.errors});
+
+            console.log(e);
+
+            res.json({isValid: false, errors: ['System error']});
+        }
+    }));
+
+router.route('/outputs/max-number')
+    .get(async((req, res) => {
+        const inventoryQuery = new InventoryQuery(req.branchId),
+            result = await(inventoryQuery.getMaxNumber('output', req.fiscalPeriodId));
+
+        res.json(result);
     }));
 
 router.route('/:id')
@@ -64,6 +159,5 @@ router.route('/by-stock/:productId')
 
         return res.json(result);
     }));
-
 
 module.exports = router;

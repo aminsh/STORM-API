@@ -3,6 +3,7 @@
 const async = require('asyncawait/async'),
     await = require('asyncawait/await'),
     InventoryRepository = require('../data/repository.inventory'),
+    ProductRepostitory = require('../data/repository.product'),
     SettingRepository = require('../data/repository.setting'),
     StockRepository = require('../data/repository.stock'),
     PersianDate = instanceOf('utility').PersianDate,
@@ -17,6 +18,7 @@ class InventoryDomain {
         this.inventoryRepository = new InventoryRepository(branchId);
         this.stockRepository = new StockRepository(branchId);
         this.settingsRepository = new SettingRepository(branchId);
+        this.productRepository = new ProductRepostitory(branchId);
 
         this.settings = await(this.settingsRepository.get());
 
@@ -113,7 +115,7 @@ class InventoryDomain {
         let inventories = await(this.inventoryRepository.getInventoriesByProductId(productId, this.fiscalPeriodId, stockId)),
             input = inventories.asEnumerable().singleOrDefault(item => item.id === inputId);
 
-        if(!input)
+        if (!input)
             return true;
 
         input.quantity = quantity;
@@ -148,17 +150,88 @@ class InventoryDomain {
         return inventoryTurnover.asEnumerable().all(item => item.remainder >= 0);
     }
 
-    isValidInventoryControl(productId, quantity, stockId) {
+    create(cmd) {
 
-        if (!this.settings.canControlInventory)
-            return true;
+        if(cmd.inventoryType === 'output'){
+            let errors = await(this.inventoryControl(cmd.inventoryLines, cmd.stockId));
 
-        if (this.settings.canCreateSaleOnNoEnoughInventory)
-            return true;
+            if(errors.length > 0)
+                throw new DomainException(errors);
+        }
 
-        const inventory = await(this.getInventory(productId, stockId));
+        const maxNumber = await(this.inventoryRepository[
+            cmd.inventoryType === 'input'
+                ? 'inputMaxNumber'
+                : 'outputMaxNumber'
+            ](this.fiscalPeriodId, cmd.stockId)).max;
 
-        return inventory >= quantity;
+        let entity = {
+            number: cmd.number || (maxNumber ? maxNumber + 1 : 2),
+            date: cmd.date,
+            ioType: cmd.ioType,
+            inventoryType: cmd.inventoryType,
+            description: cmd.description,
+            fiscalPeriodId: this.fiscalPeriodId,
+            stockId: cmd.stockId,
+            inventoryLines: cmd.inventoryLines.asEnumerable()
+                .select(item => ({
+                    productId: item.productId,
+                    quantity: item.quantity,
+                    unitPrice: item.unitPrice,
+                }))
+                .toArray()
+        };
+
+        await(this.inventoryRepository.create(entity));
+
+        return entity.id;
+    }
+
+    update(id, cmd) {
+
+        if(cmd.inventoryType === 'output'){
+            let errors = await(this.inventoryControl(cmd.inventoryLines, cmd.stockId));
+
+            if(errors.length > 0)
+                throw new DomainException(errors);
+        }
+
+        let entity = {
+            number: cmd.number,
+            date: cmd.date || PersianDate.current(),
+            ioType: cmd.ioType,
+            inventoryType: cmd.inventoryType,
+            description: cmd.description,
+            fiscalPeriodId: this.fiscalPeriodId,
+            inventoryLines: cmd.inventoryLines.asEnumerable()
+                .select(item => ({
+                    productId: item.productId,
+                    quantity: item.quantity,
+                    unitPrice: item.unitPrice,
+                }))
+                .toArray()
+        };
+
+        await(this.inventoryRepository.updateBatch(id, entity));
+    }
+
+    inventoryControl(lines, stockId){
+        const inventoryList = lines.asEnumerable()
+            .select(async.result(item => ({
+                productId: item.productId,
+                inventory: await(this.inventoryRepository
+                    .getInventoryByProduct(item.productId, this.fiscalPeriodId, stockId, item.id)),
+                quantity: item.quantity
+            })))
+            .toArray();
+
+        return inventoryList.asEnumerable()
+            .where(item => item.quantity > item.inventory)
+            .select(async.result(item => {
+                const productDisplay = await(this.productRepository.findById(item.productId)).title;
+                return `کالای ${productDisplay} به مقدار درخواست شده موجود نیست`;
+            }))
+            .toArray();
     }
 };
 

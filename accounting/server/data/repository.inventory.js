@@ -68,22 +68,28 @@ class InventoryRepository extends BaseRepository {
         return query.sum;
     }
 
-    getInventoriesByProductId(productId, fiscalPeriodId, stockId) {
+    getInventoriesByProductId(productId, fiscalPeriodId, stockId, expectInventoryLineId) {
 
-        return this.knex.select('inventoryLines.*', 'inventories.inventoryType', 'inventories.ioType').from('inventories')
+        let query = this.knex.select('inventoryLines.*', 'inventories.inventoryType', 'inventories.ioType').from('inventories')
             .leftJoin('inventoryLines', 'inventories.id', 'inventoryLines.inventoryId')
             .where('inventoryLines.branchId', this.branchId)
             .andWhere('fiscalPeriodId', fiscalPeriodId)
             .andWhere('productId', productId)
             .andWhere('stockId', stockId)
-            .orderBy('inventories.createdAt')
+            .orderBy('inventories.createdAt');
+
+        if(expectInventoryLineId)
+            query.whereNot('id', expectInventoryLineId);
+
+        return query;
     }
 
-    inputMaxNumber(fiscalPeriodId) {
+    inputMaxNumber(fiscalPeriodId, stockId) {
         return this.knex.table('inventories')
             .modify(this.modify, this.branchId)
             .where('inventoryType', 'input')
             .andWhere('fiscalPeriodId', fiscalPeriodId)
+            .andWhere('stockId', stockId)
             .max('number')
             .first();
     }

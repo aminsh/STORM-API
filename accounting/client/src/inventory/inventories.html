@@ -1,5 +1,15 @@
 <div class="=row">
     <div class="row">
+        <div class="col-md-1" style="margin-top: 10px">
+            <dev-tag-button
+                    ng-click="model.create()"
+                    title="{{'New'| translate}}"
+                    style-type="primary"
+                    icon="fa fa-plus fa-lg"></dev-tag-button>
+        </div>
+
+    </div>
+    <div class="row">
        <div class="col-md-4" style="margin-top: 10px">
            <label class="label-control">{{'Filtered by stock' | translate}}</label>
            <dev-tag-combo-box name="stockId"

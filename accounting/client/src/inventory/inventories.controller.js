@@ -43,8 +43,23 @@ class InventoriesController {
                     icon: 'fa fa-eye text-success fa-lg',
                     action: current => this.showDetail(current),
                 },
+                {
+                    title: translate('Edit'),
+                    icon: 'fa fa-edit text-success fa-lg',
+                    action: current => {
+
+                        if(this.inventoryType === 'input')
+                            this.$state.go('inventoryInputsUpdate', {id: current.id});
+
+                        if(this.inventoryType === 'output')
+                            this.$state.go('inventoryOutputsUpdate', {id: current.id});
+                    }
+                }
             ],
-            readUrl: ''
+            readUrl: '',
+            sort: [
+                {dir: 'desc', field: 'number'}
+            ]
         };
 
         stockApi.getAll()
@@ -62,6 +77,15 @@ class InventoriesController {
             });
 
         this.getAllStockUrl = devConstants.urls.stock.getAll();
+    }
+
+    create(){
+
+        if(this.inventoryType === 'input')
+            this.$state.go('inventoryInputsCreate', {stockId: this.stockId});
+
+        if(this.inventoryType === 'output')
+            this.$state.go('inventoryOutputsCreate', {stockId: this.stockId});
     }
 
     onStockChanged(item) {
