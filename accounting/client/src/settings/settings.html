@@ -17,6 +17,16 @@
                             title="{{'Save' | translate}}"
                             ng-disabled="form.$invalid"></dev-tag-button>
 
+                    <uib-tabset active="active" >
+                        <uib-tab index="0" heading="Vertical 1">Vertical content 1</uib-tab>
+                        <uib-tab index="1" heading="حسابهای معین">
+                            <div ng-include="'partials/settings/default.subsidiaryLedgerAccount.html'"></div>
+                        </uib-tab>
+                        <uib-tab index="2" heading="سهامداران">
+                             <div ng-include="'partials/settings/stakeholders.html'"></div>
+                        </uib-tab>
+                    </uib-tabset>
+
                     <div class="row" style="margin-top: 50px">
                         <div class="form-group col-md-3">
                             <label class="label-control">نرخ ارزش افزوده</label>

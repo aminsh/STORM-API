@@ -4,7 +4,8 @@ const async = require('asyncawait/async'),
     await = require('asyncawait/await'),
     router = require('express').Router(),
     SettingRepository = require('../data/repository.setting'),
-    SettingQuery = require('../queries/query.settings');
+    SettingQuery = require('../queries/query.settings'),
+    defaultSubsidiaryLedgerAccountTemplate = require('../config/settings/subsidiaryLedgerAccounts.json');
 
 router.route('/')
     .get(async((req, res) => {
@@ -17,6 +18,9 @@ router.route('/')
             await(settingRepository.create(entity));
             result = entity;
         }
+
+        if(!result.subsidiaryLedgerAccounts)
+            result.subsidiaryLedgerAccounts = defaultSubsidiaryLedgerAccountTemplate;
 
         res.json(result);
     }))
@@ -50,6 +54,8 @@ router.route('/')
             canCreateSaleOnNoEnoughInventory: cmd.canCreateSaleOnNoEnoughInventory,
             productOutputCreationMethod: cmd.productOutputCreationMethod,
             canSaleGenerateAutomaticJournal: cmd.canSaleGenerateAutomaticJournal,
+            stakeholders: JSON.stringify(cmd.stakeholders),
+            subsidiaryLedgerAccounts: JSON.stringify(cmd.subsidiaryLedgerAccounts),
             stockId: cmd.stockId
         };
 

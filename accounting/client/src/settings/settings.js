@@ -27,7 +27,11 @@ export default class {
 
         this.productOutputCreationMethods = devConstants.enums.ProductOutputCreationMethod().data;
 
-        settingsApi.get().then(result => this.settings = result);
+        settingsApi.get().then(result => {
+            this.settings = result;
+            this.stakeholders = result.stakeholders || [];
+            this.subsidiaryLedgerAccounts = result.subsidiaryLedgerAccounts;
+        });
         this.updateUserImage();
         this.isBranchOwnerUser()
             .then((isOwner) => {
@@ -62,7 +66,9 @@ export default class {
         this.urls = {
             getAllBanks: devConstants.urls.bank.getAll(),
             getAllJournalGenerationTemplates: devConstants.urls.journalGenerationTemplate.all(),
-            getAllStocks: devConstants.urls.stock.getAll()
+            getAllStocks: devConstants.urls.stock.getAll(),
+            getAllDetailAccount: devConstants.urls.people.getAll(),
+            getAllAccounts: devConstants.urls.subsidiaryLedgerAccount.all()
         };
 
     }
@@ -70,6 +76,12 @@ export default class {
     save(form) {
         if (form.$invalid)
             return this.formService.setDirty(form);
+
+        this.validateStakeholder();
+
+        this.settings.stakeholders = this.stakeholders;
+        this.settings.subsidiaryLedgerAccounts = this.subsidiaryLedgerAccounts;
+
         this.errors = [];
         this.isSaving = true;
 
@@ -106,6 +118,39 @@ export default class {
                 this.changeUserPasswordData.showChangePassMsg = true;
             })
             .finally(() => this.isSaving = false);
+    }
+
+    addStakeholder() {
+        this.stakeholders.push({rate: 0});
+    }
+
+    removeStakeholder(item) {
+        this.stakeholders.asEnumerable().remove(item);
+    }
+
+    validateStakeholder(){
+        const total = this.stakeholders.asEnumerable()
+            .sum(item => item.rate);
+
+        if(total === 100)
+            return;
+
+        if(total < 100){
+            this.logger.error('ترکیب سهامدارن کمتر از ۱۰۰ درصد است');
+            throw new Error('total rate is smaller than 100');
+        }
+
+        this.logger.error('ترکیب سهامدارن بیشتر از ۱۰۰ درصد است');
+        throw new Error('total rate is bigger 100');
+    }
+
+    onDetailAccountChanged(item, row, form){
+        form.detailAccountId.$setViewValue(item.id);
+        row.detailAccountId = item.id;
+    }
+
+    onSubsidiaryLedgerAccountChanged(item, row){
+        row.id = item.id;
     }
 
     changeUserImage(form) {

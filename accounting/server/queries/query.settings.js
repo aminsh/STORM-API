@@ -17,7 +17,9 @@ class SettingQuery extends BaseQuery {
             'canCreateSaleOnNoEnoughInventory',
             'canSaleGenerateAutomaticJournal',
             'productOutputCreationMethod',
-            'stockId')
+            'stockId',
+            'stakeholders',
+            'subsidiaryLedgerAccounts')
             .from('settings')
             .where('branchId', this.branchId)
             .first();

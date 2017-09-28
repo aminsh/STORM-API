@@ -1,0 +1,22 @@
+[
+  {
+    "key": "openingBalanceSheet",
+    "display": "تراز افتتاحیه",
+    "id": ""
+  },
+  {
+    "key": "closingBalanceSheet",
+    "display": "تراز اختتامیه",
+    "id": ""
+  },
+  {
+    "key": "initialInvestment",
+    "display": "سرمایه اولیه",
+    "id": ""
+  },
+  {
+    "key": "inventory",
+    "display": "موجودی کالا",
+    "id": ""
+  }
+]

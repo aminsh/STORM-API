@@ -1,0 +1,28 @@
+
+<div class="row ">
+    <ul class="list-group  clear-list m-t col-md-8" >
+
+        <li class="list-group-item"
+            ng-repeat="item in model.subsidiaryLedgerAccounts"
+            ng-class="{'fist-item': $index == 0}">
+
+            <div class="row">
+                <div class="col-md-4">{{item.display}}</div>
+                <div class="col-md-8">
+                    <dev-tag-combo-box
+                            name="subsidiaryLedgerAccountId"
+                            k-placeholder="{{'Select ...'|translate}}"
+                            k-data-value-field="id"
+                            k-data-text-field="account"
+                            url="{{model.urls.getAllAccounts}}"
+                            k-on-changed="model.onSubsidiaryLedgerAccountChanged($item, item, form['form-'+$index])"
+                            k-on-bound="model.onSubsidiaryLedgerAccountChanged($item, item, form['form-'+$index])"
+                            group-by="generalLedgerAccountDisplay"
+                            ng-model="item.id"
+                            ></dev-tag-combo-box>
+                </div>
+            </div>
+
+        </li>
+    </ul>
+</div>
