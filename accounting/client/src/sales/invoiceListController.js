@@ -22,13 +22,13 @@ export default class invoiceListController {
 
         let invoiceType = this.invoiceType;
 
-        this.api = invoiceType == 'sales' ? saleApi : purchaseApi;
+        this.api = invoiceType === 'sales' ? saleApi : purchaseApi;
 
-        let detailAccountTitle = invoiceType == 'sales'
+        let detailAccountTitle = invoiceType === 'sales'
                 ? translate('Customer')
                 : translate('Vendor'),
 
-            readUrl = invoiceType == 'sales'
+            readUrl = invoiceType === 'sales'
                 ? devConstants.urls.sales.getAll()
                 : devConstants.urls.purchase.getAll()
 
