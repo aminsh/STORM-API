@@ -40,6 +40,14 @@ router.route('/')
         res.json({isValid: true, returnValue: {id: entity.id}});
     }));
 
+router.route('/goods')
+    .get(async((req, res) => {
+        let productQuery = new ProductQuery(req.branchId),
+            result = await(productQuery.getAllGoods(req.query));
+
+        res.json(result);
+    }));
+
 
 router.route('/:id')
     .get(async((req, res) => {

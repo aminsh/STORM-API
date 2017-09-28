@@ -96,7 +96,8 @@ let purchase = {
 };
 
 let products = {
-    getAll: () => `${rootUrl()}/products`
+    getAll: () => `${rootUrl()}/products`,
+    getAllGoods: ()=> `${rootUrl()}/products/goods`,
 };
 
 let scale = {
