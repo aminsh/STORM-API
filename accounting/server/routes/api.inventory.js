@@ -78,7 +78,8 @@ router.route('/outputs')
         cmd.inventoryType = 'output';
 
         try {
-            await(inventoryDomain.create(cmd))
+            await(inventoryDomain.create(cmd));
+            res.json({isValid: true});
         }
         catch (e) {
             if (e instanceof DomainException)
