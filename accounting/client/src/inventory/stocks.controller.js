@@ -23,15 +23,18 @@ class StocksController {
             .then(result => this.stocks = result.data);
     }
 
-    remove(id) {
+    remove(item) {
         let translate = this.translate;
 
         this.confirm(
             translate('Are you sure ?'),
             translate('Remove stock')
         ).then(() => {
-            this.stockApi.remove(id)
-                .then(() => this.logger.success())
+            this.stockApi.remove(item.id)
+                .then(() => {
+                    this.logger.success();
+                    this.fetch();
+                })
                 .catch(errors => this.errors = errors);
         });
     }
