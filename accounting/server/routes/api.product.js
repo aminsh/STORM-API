@@ -63,9 +63,11 @@ router.route('/:id')
                 code: cmd.code,
                 title: cmd.title,
                 reorderPoint: cmd.reorderPoint,
+                productType: cmd.productType,
                 salePrice: cmd.salePrice,
                 categoryId: cmd.categoryId,
-                scaleId: cmd.scaleId
+                scaleId: cmd.scaleId,
+                referenceId: cmd.referenceId
             };
 
         entity = await(productRepository.update(req.params.id, entity));
