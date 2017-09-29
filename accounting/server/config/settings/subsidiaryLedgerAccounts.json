@@ -18,5 +18,10 @@
     "key": "inventory",
     "display": "موجودی کالا",
     "id": ""
+  },
+  {
+    "key": "businessDebtors",
+    "display": "حساب های دریافتنی (بدهکاران) تجاری",
+    "id": ""
   }
 ]

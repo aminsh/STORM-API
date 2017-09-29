@@ -128,6 +128,9 @@ class Journal {
             if (p.paymentType == 'cheque')
                 return 'دریافت چک به شماره {0} سررسید {1} بانک {2} شعبه {3} بابت فاکتور شماره {4}'
                     .format(p.number, p.date, p.bankName, p.bankBranch, invoice.number);
+
+            if (p.paymentType === 'person')
+                return 'دریافت توسط شخص بابت فاکتور شماره {0}'.format(invoice.number);
         }
 
         function getSubLedgerForDebtor(p) {
@@ -139,6 +142,9 @@ class Journal {
 
             if (p.paymentType == 'cheque')
                 return subLedger.receivableDocument();
+
+            if(p.paymentType === 'person')
+                return subLedger.receivableAccount();
         }
 
         function getDetailAccountForDebtor(p) {
@@ -150,6 +156,9 @@ class Journal {
 
             if (p.paymentType == 'cheque')
                 return invoice.detailAccountId;
+
+            if(p.paymentType === 'person')
+                return p.personId;
         }
     }
 

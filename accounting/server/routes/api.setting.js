@@ -21,6 +21,15 @@ router.route('/')
 
         if(!result.subsidiaryLedgerAccounts)
             result.subsidiaryLedgerAccounts = defaultSubsidiaryLedgerAccountTemplate;
+        else {
+            const accountNotExits = defaultSubsidiaryLedgerAccountTemplate.asEnumerable()
+                .where(item => !result.subsidiaryLedgerAccounts
+                    .asEnumerable()
+                    .any(p => p.key === item.key))
+                .toArray();
+
+            result.subsidiaryLedgerAccounts = result.subsidiaryLedgerAccounts.concat(accountNotExits);
+        }
 
         res.json(result);
     }))

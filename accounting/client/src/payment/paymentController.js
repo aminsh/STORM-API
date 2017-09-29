@@ -8,14 +8,12 @@ export default class paymentController {
                 promise,
                 devConstants,
                 data,
-                createFundService,
                 fundApi,
                 bankApi) {
 
         this.$scope = $scope;
         this.$timeout = $timeout;
         this.promise = promise;
-        this.createFundService = createFundService;
         this.logger = logger;
         this.$uibModalInstance = $uibModalInstance;
         this.logger = logger;
@@ -33,6 +31,7 @@ export default class paymentController {
         this.urls = {
             getAllFunds: devConstants.urls.fund.getAll(),
             getAllBanks: devConstants.urls.bank.getAll(),
+            getAllPeople: devConstants.urls.people.getAll()
         };
     }
 
@@ -108,6 +107,21 @@ export default class paymentController {
         this.setFocus(newPayment);
     }
 
+    newPersonPayment() {
+        if (this.amount && this.getRemainder() <= 0) return;
+
+        let newPayment = {
+            style: "panel-default",
+            date: null,
+            amount: this.getRemainder(),
+            personId: null,
+            paymentType: 'person',
+            paymentDisplay: this.devConstants.enums.paymentType().getDisplay('person')
+        };
+        this.payment.push(newPayment);
+        this.setFocus(newPayment);
+    }
+
     onBankChanged(bank, item) {
         item.bankName = bank.bank;
         item.bankBranch = bank.bankBranch;
@@ -126,7 +140,7 @@ export default class paymentController {
             return;
 
         let remainder = this.amount - (this.payment.asEnumerable()
-                .where(e => e != item) || 0).sum(e => e.amount);
+            .where(e => e != item) || 0).sum(e => e.amount);
 
         if (item.amount > remainder)
             item.amount = remainder;

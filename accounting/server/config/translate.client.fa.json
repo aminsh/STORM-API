@@ -313,6 +313,7 @@
   "New Receipt": "پرداخت به بانک",
   "New Cheque": "پرداخت با چک",
   "New Cash": "پرداخت نقدی",
+  "New Payment to person": "پرداخت به شخص",
   "Vendor":"فروشنده",
   "Total Remaining Amount:":"جمع مبلغ باقیمانده:",
   "The sum of the amount You entered is more than the amount":"جمع مبلغ وارد شده بیشتر از مبلغ مانده است",

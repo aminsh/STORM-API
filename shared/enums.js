@@ -103,6 +103,8 @@ enums.paymentType = function () {
         {key: 'cheque', display: 'چک'},
         {key: 'receipt', display: 'رسید بانکی'},
         {key: 'cash', display: 'نقدی'},
+
+        {key: 'person', display: 'شخص'}
     ]);
 };
 
