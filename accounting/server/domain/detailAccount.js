@@ -34,19 +34,15 @@ class DetailAccountDomain {
         if (!cmd.title)
             return null;
 
-        entity = {
-            title: cmd.title,
-            referenceId: cmd.referenceId
-        };
+        const id  = await(this.create(cmd.title, cmd.referenceId, 'person'));
 
-        await(this.detailAccountRepository.create(entity));
-
-        return entity;
+        return {id};
     }
 
-    create(title, type) {
+    create(title,referenceId, type) {
         const entity = {
             title,
+            referenceId,
             detailAccountType: type
         };
 
