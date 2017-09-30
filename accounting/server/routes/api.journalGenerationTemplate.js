@@ -23,7 +23,7 @@ router.route('/:sourceType')
                 title: cmd.title,
                 data: cmd.data
             },
-            isExits = await(this.journalGenerationRepository.findBySourceType(sourceType));
+            isExits = await(journalGenerationTemplateRepository.findBySourceType(sourceType));
 
         if (isExits)
             await(journalGenerationTemplateRepository.update(sourceType, entity));

@@ -47,6 +47,7 @@ app.use('/api/scales', require('./routes/api.scale'));
 app.use('/api/stocks', require('./routes/api.stock'));
 app.use('/api/inventories', require('./routes/api.inventory'));
 app.use('/api/journal-generation-templates', require('./routes/api.journalGenerationTemplate'));
+app.use('/api/return-sales', require('./routes/api.returnSale'));
 
 app.use('/upload', require('./routes/api.upload'));
 

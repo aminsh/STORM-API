@@ -99,6 +99,13 @@ accModule.config(menuItemsProvider => {
 
     menuItemsProvider
         .add({
+            title: 'فروش',
+            url: 'sale/sales',
+            icon: 'fa fa-shopping-cart'
+        });
+
+    menuItemsProvider
+        .add({
             title: 'عملیات',
             url: '',
             icon: 'fa fa-hand-pointer-o',

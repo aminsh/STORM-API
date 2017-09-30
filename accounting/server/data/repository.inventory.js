@@ -40,8 +40,17 @@ class InventoryRepository extends BaseRepository {
         return first ? this.findById(first.id) : null;
     }
 
-    findInvoiceLinesByInvoiceId(id) {
-        return this.knex.table('inventoryLines').where('inventoryId', id);
+    findByInvoiceId(invoiceId, inventoryType) {
+        const ids = await(this.knex.select('id').from('inventories')
+            .where('invoiceId', invoiceId)
+            .where('inventoryType', inventoryType));
+
+        if(!(ids && ids.length > 0))
+            return [];
+
+        return ids.asEnumerable()
+            .select(async.result(item => await(this.findById(item.id))))
+            .toArray();
     }
 
     getInventoryByProduct(productId, fiscalPeriodId, stockId) {

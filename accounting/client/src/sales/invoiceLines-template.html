@@ -6,7 +6,7 @@
         <tr style="font-size: 9pt; font-weight: bold;">
             <td>#</td>
             <td>{{'Products'|translate}}</td>
-            <td>{{'Description 2'|translate}}</td>
+            <td ng-if="!model.isReturnSale">{{'Description 2'|translate}}</td>
             <td>{{'Quantity'|translate}}</td>
             <td></td>
             <td>{{'Unit price'|translate}}</td>
@@ -23,10 +23,10 @@
             ng-repeat-start="item in model.invoice.invoiceLines"
             ng-class-odd="'grid-row-striped'">
 
-            <td style="width: 30px; padding: 0px; vertical-align: middle; text-align: center;">{{item.row}}</td>
+            <td style="width: 30px; padding: 0px; vertical-align: middle; text-align: center;">{{$index + 1}}</td>
 
-            <td style="width: 20%; padding: 0px;" class="invoice-td">
-                <dev-tag-combo-box style="width: 500px;" ng-disabled="model.isPayment"
+            <td style="width: 20%; padding: 0px;" class="invoice-td" ng-if="!model.isReturnSale">
+                <dev-tag-combo-box style="width: 500px;"
                                    name="product"
                                    k-placeholder="{{'Select ...'|translate}}"
                                    k-data-value-field="id"
@@ -37,14 +37,12 @@
                                    show-no-data-template
                                    url="{{model.urls.getAllProduct}}"
                                    ng-model="item.productId"></dev-tag-combo-box>
-
-
-
-
             </td>
 
-            <td style="width: 25%; padding: 0px;">
+            <td style="width: 25%; padding: 0px;vertical-align: middle">
+                <span ng-if="model.isReturnSale">{{item.description}}</span>
                 <dev-tag-text-box
+                        ng-if="!model.isReturnSale"
                         ng-model="item.description"
                         name="description"></dev-tag-text-box>
 
@@ -72,7 +70,7 @@
                 </div>
             </td>
 
-            <td style="width: 120px; padding: 0px;" class="invoice-td">
+            <td style="width: 120px; padding-right: 3px;vertical-align: middle" class="invoice-td">
                 <span>{{item.scale}}</span>
             </td>
 
@@ -157,7 +155,8 @@
             <div class="row">
                 <div class="col-md-12">
                     <dev-tag-button
-                            ng-click="model.createInvoiceLine()" ng-if="!model.isPayment"
+                            ng-if="!model.isReturnSale"
+                            ng-click="model.createInvoiceLine()"
                             icon="glyphicon glyphicon-plus"
                             style-type="outline btn btn-primary btn-sm"
                             title="{{'New Journal line' | translate}}"></dev-tag-button>

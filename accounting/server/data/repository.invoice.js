@@ -40,6 +40,7 @@ class InvoiceRepository extends BaseRepository {
                 invoiceStatus: first.invoiceStatus,
                 orderId: first.orderId,
                 invoiceType: first.invoiceType,
+                ofInvoiceId: first.ofInvoiceId
             };
 
         invoice.invoiceLines = data.asEnumerable().select(line => ({

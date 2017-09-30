@@ -49,6 +49,29 @@ class Journal {
         return {journal, journalLines};
     }
 
+    generateForReturnSale(cmd) {
+
+        let sale = await(this.invoiceRepository.findById(cmd.id)),
+
+            model = {
+                number: sale.number,
+                date: sale.date,
+                title: sale.title,
+                amount: sale.invoiceLines.asEnumerable().sum(line => line.unitPrice * line.quantity),
+                discount: sale.invoiceLines.asEnumerable().sum(line => line.discount),
+                vat: sale.invoiceLines.asEnumerable().sum(line => line.vat),
+                customer: sale.detailAccountId
+            },
+
+            journal = await(this.journalGenerationTemplateService.set(model, 'returnSale')),
+
+            journalLines = journal.lines;
+
+        delete  journal.lines;
+
+        return {journal, journalLines};
+    }
+
     generateOutputFromSale(outputId){
 
         const output = await(this.inventoryRepository.findById(outputId)),

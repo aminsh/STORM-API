@@ -1,12 +1,12 @@
-import InvoiceViewControllerBase from './invoiceViewBase';
+import InvoiceViewBase from "./invoiceViewBase";
 
-class SaleViewController extends InvoiceViewControllerBase {
+class ReturnSaleViewController extends InvoiceViewBase {
     constructor($scope,
                 $state,
                 $stateParams,
                 navigate,
                 logger,
-                saleApi,
+                returnSaleApi,
                 createPaymentService,
                 sendInvoiceEmail) {
 
@@ -15,7 +15,7 @@ class SaleViewController extends InvoiceViewControllerBase {
             $stateParams,
             navigate,
             logger,
-            saleApi,
+            returnSaleApi,
             createPaymentService,
             sendInvoiceEmail);
     }
@@ -23,9 +23,9 @@ class SaleViewController extends InvoiceViewControllerBase {
     get recordPaymentParameters(){
         return {
             amount: this.invoice.sumRemainder,
-            receiveOrPay: 'receive'
+            receiveOrPay: 'pay'
         }
     }
 }
 
-export default SaleViewController;
+export default ReturnSaleViewController;

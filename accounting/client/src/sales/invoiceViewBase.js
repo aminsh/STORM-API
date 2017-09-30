@@ -40,10 +40,7 @@ class InvoiceViewBaseController {
     recordPayment() {
 
         this.createPaymentService
-            .show({
-                amount: this.invoice.sumRemainder,
-                receiveOrPay: 'receive'
-            })
+            .show(this.recordPaymentParameters)
             .then(result => {
                 this.isLoading = true;
 
@@ -56,6 +53,10 @@ class InvoiceViewBaseController {
                     .catch(errors => this.errors = errors)
                     .finally(() => this.isLoading = false);
             });
+    }
+
+    get recordPaymentParameters(){
+        throw new Error('Not implemented this method');
     }
 
     print() {

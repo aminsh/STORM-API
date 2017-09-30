@@ -60,8 +60,39 @@ class SaleDomain {
         };
     }
 
-    isInvoiceNumberDuplicated(number, id) {
-        return this.invoiceRepository.findByNumber(number, 'sale', id);
+    createReturnSale(cmd){
+
+        let entity = {
+            date: cmd.date,
+            description: cmd.description,
+            detailAccountId: cmd.detailAccountId,
+            invoiceType: 'returnSale',
+            invoiceStatus: cmd.status,
+            ofInvoiceId: cmd.ofInvoiceId
+        };
+
+        entity.number = cmd.number || (await(this.invoiceRepository.saleMaxNumber()).max || 0) + 1;
+
+        entity.invoiceLines = cmd.invoiceLines.asEnumerable()
+            .select(line => ({
+                productId: line.productId,
+                description: line.description,
+                quantity: line.quantity,
+                unitPrice: line.unitPrice,
+                discount: line.discount || 0,
+                vat: line.vat || 0
+            }))
+            .toArray();
+
+        await(this.invoiceRepository.create(entity));
+
+        return {
+            id: entity.id,
+        };
+    }
+
+    isInvoiceNumberDuplicated(number, id, type) {
+        return this.invoiceRepository.findByNumber(number, type || 'sale', id);
     }
 
     getPrintUrl(id) {

@@ -6,10 +6,12 @@ const async = require('asyncawait/async'),
     kendoQueryResolve = require('../services/kendoQueryResolve');
 
 const templateSale = require('../config/defaultJournalGenerationTemplates/sale.json'),
+    templateReturnSale = require('../config/defaultJournalGenerationTemplates/returnSale.json'),
     templateInventoryOutputSale = require('../config/defaultJournalGenerationTemplates/inventoryOutputSale.json'),
 
     templates = {
         sale: templateSale,
+        returnSale: templateReturnSale,
         inventoryOutputSale: templateInventoryOutputSale
     };
 

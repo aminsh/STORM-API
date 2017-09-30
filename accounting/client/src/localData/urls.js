@@ -91,6 +91,10 @@ let sales = {
     getAll: () => `${rootUrl()}/sales`
 };
 
+let returnSale = {
+  getAll: ()=> `${rootUrl()}/return-sales`
+};
+
 let purchase = {
     getAll: () => `${rootUrl()}/purchases`
 };
@@ -158,7 +162,8 @@ let apiUrls = {
     payableCheques,
     inventory,
     stock,
-    journalGenerationTemplate
+    journalGenerationTemplate,
+    returnSale
 };
 
 export default apiUrls;

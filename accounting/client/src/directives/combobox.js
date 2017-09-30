@@ -3,7 +3,7 @@
 import accModule from "../acc.module";
 import angular from "angular";
 
-function combo($parse, apiPromise) {
+function combo($parse, apiPromise, promise) {
     return {
         restrict: 'E',
         require: ['ngModel'],
@@ -28,7 +28,7 @@ function combo($parse, apiPromise) {
                                 title="{{'Create' | translate}} {{$select.search}}"></dev-tag-button>
         </ui-select-no-choice>
     </ui-select>`,
-        compile(tElement, tAttrs){
+        compile(tElement, tAttrs) {
             let displayPropSufix = tAttrs.kDataTextField ? '.' + tAttrs.kDataTextField : '',
                 isMultiple = angular.isDefined(tAttrs.multiple);
 
@@ -75,6 +75,8 @@ function combo($parse, apiPromise) {
                 scope.disabled = false;
                 scope.items = [];
 
+                const mapper = attrs.mapper;
+
                 scope.isMultiple = angular.isDefined(attrs.multiple);
                 scope.itemsGetter = $parse(attrs.kDataSource);
                 if (angular.isDefined(attrs.kDataValueField) && attrs.kDataValueField !== '') {
@@ -104,7 +106,7 @@ function combo($parse, apiPromise) {
                          scope.selectionModel = selectionArray;*/
                     } else {
 
-                        if (!modelValue){
+                        if (!modelValue) {
                             scope.selectionModel = modelValue;
                             return;
                         }
@@ -220,7 +222,16 @@ function combo($parse, apiPromise) {
                 }
 
                 function getData(parameters) {
-                    return apiPromise.get(attrs.url, parameters);
+                    if (!mapper)
+                        return apiPromise.get(attrs.url, parameters);
+
+                    return promise.create(resolve => {
+                        apiPromise.get(attrs.url, parameters)
+                            .then(result => {
+                                result.data = result.data.asEnumerable().select(mapper).toArray();
+                                resolve(result);
+                            });
+                    });
                 }
             }
         }

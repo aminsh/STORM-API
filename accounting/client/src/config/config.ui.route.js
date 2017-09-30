@@ -290,34 +290,7 @@ export default function ($stateProvider, $urlRouterProvider, $locationProvider, 
                 }
             }
         })
-        .state('sales', {
-            url: '/sales',
-            template: '<ui-view></ui-view>'
-        })
-        .state('sales.list', {
-            url: '/list',
-            controller: 'invoiceListController',
-            controllerAs: 'model',
-            templateUrl: 'partials/sales/list.html'
-        })
-        .state('sales.create', {
-            url: '/create',
-            controller: 'saleInvoiceEntryController',
-            controllerAs: 'model',
-            templateUrl: 'partials/sales/invoiceEntry.html'
-        })
-        .state('sales.edit', {
-            url: '/:id/edit',
-            controller: 'saleInvoiceEntryController',
-            controllerAs: 'model',
-            templateUrl: 'partials/sales/invoiceEntry.html'
-        })
-        .state('sales.view', {
-            url: '/:id/view',
-            controller: 'saleViewController',
-            controllerAs: 'model',
-            templateUrl: 'partials/sales/invoiceView.html'
-        })
+
         .state('payment', {
             url: '/payment',
             onEnter: ($modelFactory, $stateParams) => {

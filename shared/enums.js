@@ -259,6 +259,7 @@ enums.ProductOutputCreationMethod = function () {
 enums.JournalGenerationTemplateSourceType = function () {
     return new Enum([
         {key: 'sale', display: 'فاکتور فروش'},
+        {key: 'returnSale', display: 'فاکتور برگشت از فروش'},
         {key: 'inventoryOutputSale', display: 'حواله فروش'}
     ]);
 };

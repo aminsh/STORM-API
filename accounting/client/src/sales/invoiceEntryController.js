@@ -182,11 +182,14 @@ export default class InvoiceEntryControllerBase {
             .then(() => {
                 logger.success();
 
-                this.$state.go('^.list');
-
+                this.goAfterSave();
             })
             .catch(errors => this.errors = errors)
             .finally(() => this.isSaving = false);
+    }
+
+    goAfterSave() {
+        throw new Error('This method is not implemented');
     }
 
     print() {
