@@ -13,7 +13,8 @@ container.register('utility', {
     Number: require('../shared/utilities/number'),
     Object: require('../shared/utilities/object'),
     Guid: require('../shared/utilities/guidService'),
-    Image: require('../shared/utilities/image')
+    Image: require('../shared/utilities/image'),
+    Common: require('../shared/utilities/common')
 });
 container.register('config', require('./enviroment'));
 //container.register('io', require('../storm/server/bootstrap').io);
