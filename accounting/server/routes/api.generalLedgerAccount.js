@@ -64,6 +64,13 @@ router.route('/')
         });
     }));
 
+router.route('/chart-of-accounts')
+    .get(async((req, res) => {
+        const generalLedgerAccountQuery = new GeneralLedgerAccountQuery(req.branchId),
+            result = await(generalLedgerAccountQuery.chartOfAccount());
+        res.json(result);
+    }));
+
 router.route('/default/chart-of-accounts')
     .get((req, res) => {
         res.json(groups);

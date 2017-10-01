@@ -5,14 +5,65 @@
             icon="glyphicon glyphicon-plus"
             title="{{'New General ledger accounts' | translate}}"></dev-tag-button>
 
-    <dev-tag-grid option="gridOption"
-                  detail-option="gridOptionSubsidiaryLedgerAccount"
-                  on-current-changed="selectGeneralLedgerAccount(current)">
-    </dev-tag-grid>
+    <!-- <dev-tag-grid option="gridOption"
+                   detail-option="gridOptionSubsidiaryLedgerAccount"
+                   on-current-changed="selectGeneralLedgerAccount(current)">
+     </dev-tag-grid>-->
+
+
+    <ul class="todo-list m-t ui-sortable">
+
+        <li ng-repeat-start="g in chartOfAccounts"
+            style="width: 30%">
+
+            <i class="fa fa-lg pointer"
+               ng-click="collapse(g)"
+               ng-class="{'fa-plus-square-o': !g.canShow, 'fa-minus-square-o': g.canShow}"></i>
+
+            <span>{{g.display}}</span>
+        </li>
+        <li ng-repeat-start="gla in g.generalLedgerAccounts"
+            ng-if="g.canShow"
+            style="width: 30%; margin-right: 100px;">
+
+            <i class="fa fa-lg pointer "
+               ng-click="collapse(gla)"
+               ng-class="{'fa-plus-square-o': !gla.canShow, 'fa-minus-square-o': gla.canShow}"></i>
+
+            <span>{{gla.display}}</span>
+
+
+            <i class="fa fa-edit fa-lg pointer text-success pull-left"
+               title="{{'Edit'|translate}}"
+               ui-sref=".edit({id: gla.id})"></i>
+
+            <i class="fa fa-trash fa-lg pointer text-danger pull-left"
+               title="{{'Remove'|translate}}"
+               ng-click="removeGeneralLedgerAccount(gla)"></i>
+
+            <i class="fa fa-plus fa-lg pointer text-success pull-left"
+               title="{{'New Subsidiary ledger account' | translate}}"
+               ui-sref=".subsidiary-ledger-accounts.create({generalLedgerAccountId: gla.id})"></i>
+        </li>
+        <li ng-repeat-end ng-repeat="sla in gla.subsidiaryLedgerAccounts"
+            ng-if="gla.canShow"
+            class="pointer"
+            style="width: 30%; margin-right: 200px;">
+            <span>{{sla.display}}</span>
+
+            <i class="fa fa-edit fa-lg pointer text-success pull-left"
+               ui-sref=".subsidiary-ledger-accounts.edit({id: sla.id})"></i>
+
+            <i class="fa fa-trash fa-lg pointer text-danger pull-left"
+               ng-click="removeSubsidiaryLedgerAccount(sla)"></i>
+        </li>
+        <li ng-repeat-end ng-show="false"></li>
+    </ul>
+
 
 </dev-tag-content>
 
-<dev-tag-content dev-attr-title="{{'Subsidiary ledger accounts' | translate}}">
+<!--<dev-tag-content dev-attr-title="{{'Subsidiary ledger accounts' | translate}}">
     <dev-tag-button
             ui-sref=".subsidiary-ledger-accounts.create({generalLedgerAccountId: current.id})"
             style-type="primary"
@@ -22,6 +73,6 @@
 
     <dev-tag-grid option="gridOptionSubsidiaryLedgerAccount"></dev-tag-grid>
 
-</dev-tag-content>
+</dev-tag-content>-->
 
 

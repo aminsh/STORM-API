@@ -12,6 +12,9 @@ function generalLedgerAccountApi(apiPromise, devConstants) {
         getAll(){
             return apiPromise.get(`${urlPrefix}/general-ledger-accounts`);
         },
+        getChartOfAccounts(){
+            return apiPromise.get(`${urlPrefix}/general-ledger-accounts/chart-of-accounts`);
+        },
         getById: function (id) {
             return apiPromise.get('{0}/general-ledger-accounts/{1}'
                 .format(urlPrefix, id));
