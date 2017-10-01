@@ -409,5 +409,6 @@
   "Sum tax": "جمع مالیات",
   "Payable amount": "قابل پرداخت",
   "Run on test": "اجرای تستی",
-  "Percent share":"درصد سهام"
+  "Percent share":"درصد سهام",
+  "Journal generation templates": "الگوهای صدور سند اتوماتیک"
 }

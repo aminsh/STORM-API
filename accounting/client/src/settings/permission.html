@@ -1,0 +1,75 @@
+<div class="row">
+    <form name="changeUsersInBranchForm" novalidate >
+        <div class="row" >
+            <div class="col-" ></div>
+        </div>
+        <div class="row" >
+            <div class="col-md-12" >
+                <div>
+                    <dev-tag-validation-summary
+                            errors="model.changeUsersInBranchData.errors" ></dev-tag-validation-summary>
+                </div>
+                <div class="row" >
+                    <div class="col-md-9" >
+                        <label class="label-control" >ایمیل</label>
+                        <dev-tag-email-box
+                                name="newUserEmail"
+                                ng-model="model.changeUsersInBranchData.newUserEmail"
+                                required
+                                id="changeUsersInBranchForm-email"
+                                style="direction: ltr !important;" ></dev-tag-email-box>
+                        <div ng-messages="changeUsersInBranchForm.newUserEmail.$error" ng-if="changeUsersInBranchForm.email.$dirty">
+                            <div ng-message="required" class="text-danger">وارد کردن ایمیل الزامیست</div>
+                            <div ng-message="email" class="text-danger">یک ایمیل مجاز وارد کنید</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3" style="padding-top: 23px;text-align: center" >
+                        <dev-tag-button
+                                ng-click="model.addUserToBranch(changeUsersInBranchForm)"
+                                icon="glyphicon glyphicon-plus"
+                                ng-disabled="model.isSaving"
+                                is-waiting="model.isSaving"
+                                style-type="primary"
+                                title="{{'Add' | translate}}" ></dev-tag-button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row" >
+            <div class="col-md-12" >
+                <div class="table-responsive m-t" >
+                    <table class="table" ng-show="model.changeUsersInBranchData.branchUsers.length > 0" >
+                        <thead>
+                        <tr>
+                            <th></th>
+                            <th class="so-align-center" >{{'Email' | translate}}</th>
+                            <th class="so-align-center" >{{'name' | translate}}</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="item in model.changeUsersInBranchData.branchUsers"
+                            class="so-vert-align-middle" >
+                            <td class="so-align-center so-vert-align-middle" >
+                                <img class="img-circle" ng-src="{{item.image}}"
+                                     style="width: 50px;height: 50px"
+                                     alt="member: {{item.name}}"
+                                     preload-image
+                                     default-image="/public/images/user.png"
+                                     fallback-image="/public/images/user.png"/>
+                            </td>
+                            <td class="so-align-center so-vert-align-middle" >{{item.email}}</td>
+                            <td class="so-align-center so-vert-align-middle" >{{item.name}}</td>
+                            <td class="so-align-center so-vert-align-middle" >
+                                <i class="fa fa-trash-o so-tx-color-red"
+                                   style="cursor: pointer;font-size: 18pt;"
+                                   ng-click="model.deleteUserFromBranchByEmail(item.email)" ></i>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

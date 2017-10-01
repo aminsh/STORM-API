@@ -1,0 +1,15 @@
+<div class="row">
+    <div class="form-group col-md-3">
+        <label class="label-control">نرخ ارزش افزوده</label>
+        <dev-tag-numeric
+                required
+                not-zero
+                name="vat"
+                ng-model="model.settings.vat"></dev-tag-numeric>
+
+        <div ng-messages="form.vat.$error" ng-if="form.vat.$dirty">
+            <label ng-message="required" class="error">{{'This field is required'|translate}}</label>
+            <label ng-message="notZero" class="error">{{'This field should have a value not equal tozero'|translate}}</label>
+        </div>
+    </div>
+</div>

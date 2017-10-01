@@ -1,0 +1,14 @@
+
+<div class="row">
+
+    <div class="form-group col-md-3">
+        <label class="label-control">بانک</label>
+        <dev-tag-combo-box
+                name="bankId"
+                k-placeholder="{{'Select ...'|translate}}"
+                k-data-value-field="id"
+                k-data-text-field="title"
+                ng-model="model.settings.bankId"
+                url="{{model.urls.getAllBanks}}"></dev-tag-combo-box>
+    </div>
+</div>
