@@ -92,6 +92,24 @@ class Journal {
 
     }
 
+    generateForInputReturnSale(inputId){
+        const input = await(this.inventoryRepository.findById(inputId)),
+
+            model = {
+                number: input.number,
+                date: input.date,
+                amount: input.inventoryLines.asEnumerable().sum(line => line.unitPrice * line.quantity)
+            },
+
+            journal = await(this.journalGenerationTemplateService.set(model, 'inventoryInputReturnSale'));
+
+        const journalLines = journal.lines;
+
+        delete journal.lines;
+
+        return {journal, journalLines};
+    }
+
     generateReceivablePayment(payments, invoiceId) {
 
         let invoice,
@@ -409,6 +427,9 @@ class Journal {
                         bankDetailAccount.title,
                         bankDetailAccount.bankAccountNumber,
                         invoice.number);
+
+            if (p.paymentType === 'person')
+                return 'پرداخت از شخص بابت فاکتور شماره {0}'.format(invoice.number);
         }
 
         function getSubLedgerForCreditor(p) {
@@ -420,6 +441,9 @@ class Journal {
 
             if (p.paymentType == 'cheque')
                 return subLedger.payableDocument();
+
+            if(p.paymentType === 'person')
+                return subLedger.receivableAccount();
         }
 
         function getDetailAccountForCreditor(p) {
@@ -431,6 +455,9 @@ class Journal {
 
             if (p.paymentType == 'cheque')
                 return p.bankId;
+
+            if(p.paymentType === 'person')
+                return p.personId;
         }
     }
 

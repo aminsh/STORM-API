@@ -1,0 +1,37 @@
+{
+  "title": "الگوی صدور سند اتوماتیک برای رسید برگشت از فروش",
+  "fields": [
+    {
+      "key": "number",
+      "display": "شماره رسید",
+      "value": 1
+    },
+    {
+      "key": "date",
+      "display": "تاریخ رسید",
+      "value": "1396/01/01"
+    },
+    {
+      "key": "amount",
+      "display": "مبلغ رسید (مقدار * مبلغ واحد)",
+      "value": 10000
+    }
+  ],
+  "data": {
+    "description": "بابت رسید برگشت از فروش شماره # number # ",
+    "lines": [
+      {
+        "subsidiaryLedgerAccountId": "",
+        "debtor": "# amount  #",
+        "creditor": "0",
+        "article": "بابت رسید برگشت از فروش شماره # number #"
+      },
+      {
+        "subsidiaryLedgerAccountId": "",
+        "debtor": "0",
+        "creditor": "# amount #",
+        "article": "بابت رسید برگشت از فروش شماره # number #"
+      }
+    ]
+  }
+}

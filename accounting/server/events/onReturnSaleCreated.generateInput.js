@@ -4,7 +4,8 @@ const async = require('asyncawait/async'),
     await = require('asyncawait/await'),
     InventoryRepository = require('../data/repository.inventory'),
     StockRepository = require('../data/repository.stock'),
-    EventEmitter = require('../services/shared').service.EventEmitter;
+    EventEmitter = require('../services/shared').service.EventEmitter,
+    Common = instanceOf('utility').Common;
 
 EventEmitter.on('on-returnSale-created', async((returnSale, current) => {
     let inventoryRepository = new InventoryRepository(current.branchId),
@@ -55,4 +56,8 @@ EventEmitter.on('on-returnSale-created', async((returnSale, current) => {
         .toArray();
 
     await(inventoryRepository.create(input));
+
+    await(Common.waitFor(1000));
+
+    EventEmitter.emit('on-inputReturnSale-created', input.id, current);
 }));

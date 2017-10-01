@@ -8,11 +8,13 @@ const async = require('asyncawait/async'),
 const templateSale = require('../config/defaultJournalGenerationTemplates/sale.json'),
     templateReturnSale = require('../config/defaultJournalGenerationTemplates/returnSale.json'),
     templateInventoryOutputSale = require('../config/defaultJournalGenerationTemplates/inventoryOutputSale.json'),
+    templateInventoryInputReturnSale = require('../config/defaultJournalGenerationTemplates/inventoryInputReturnSale.json'),
 
     templates = {
         sale: templateSale,
         returnSale: templateReturnSale,
-        inventoryOutputSale: templateInventoryOutputSale
+        inventoryOutputSale: templateInventoryOutputSale,
+        inventoryInputReturnSale: templateInventoryInputReturnSale
     };
 
 

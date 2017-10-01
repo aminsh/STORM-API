@@ -15,3 +15,13 @@ EventEmitter.on('on-output-created', async((outputId, current) => {
     await(journalRepository.batchCreate(result.journalLines, result.journal));
 
 }));
+
+EventEmitter.on('on-inputReturnSale-created', async((inputId, current) => {
+
+    const journalRepository = new JournalRepository(current.branchId),
+        journalDomain = new Journal(current.branchId, current.fiscalPeriodId),
+        result = await(journalDomain.generateForInputReturnSale(inputId));
+
+    await(journalRepository.batchCreate(result.journalLines, result.journal));
+
+}));
