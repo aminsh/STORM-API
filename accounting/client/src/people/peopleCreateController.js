@@ -29,15 +29,16 @@ export default class peopleCreateController {
             nationalCode: '',
             economicCode: '',
             email: '',
-            personType: null,
-            referenceId:null
+            personType: 'real',
+            referenceId:null,
+            contacts: []
         };
         this.personType = devConstants.enums.PersonType().data;
         this.editMode = false;
 
         this.id = data.id;
 
-        if (this.id != undefined)
+        if (this.id !== undefined)
             this.editMode = true;
 
         if (this.editMode) {
@@ -46,6 +47,19 @@ export default class peopleCreateController {
         }
     }
 
+    addContact(){
+        this.people.contacts = this.people.contacts || [];
+
+        this.people.contacts.push({
+            value: '',
+            description: ''
+        });
+    }
+
+    removeContact(item){
+        this.people.contacts.asEnumerable()
+            .remove(item);
+    }
 
     save(form) {
         let logger = this.logger,

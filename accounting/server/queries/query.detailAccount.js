@@ -10,7 +10,7 @@ const async = require('asyncawait/async'),
     fundView = require('../viewModel.assemblers/view.fund');
 
 
-module.exports = class DetailAccountQuery extends BaseQuery {
+class DetailAccountQuery extends BaseQuery {
     constructor(branchId) {
         super(branchId);
 
@@ -178,3 +178,5 @@ module.exports = class DetailAccountQuery extends BaseQuery {
         return kendoQueryResolve(query, parameters, view);
     }
 };
+
+module.exports = DetailAccountQuery;

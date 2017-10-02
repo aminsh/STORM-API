@@ -249,7 +249,8 @@
   "Debtor and creditor are not allowed to be zero , both of them": "بدهکار و بستانکار هر دو نباید صفر باشد",
   "Debtor and creditor are not allowed to have value , both of them": "بدهکار و بستانکار نباید هر دو دارای مقدار باشد",
   "Total of debtor and creditor is not equal": "جمع بدهکار و بستانکار برابر نیست",
-  "NationalCode": "کد  / شناسه ملی",
+  "NationalCode": "کد ملی",
+  "National identity": "شناسه ملی",
   "Address": "آدرس",
   "Add": "افزودن",
   "Addons": "افزودنی ها",
@@ -410,5 +411,7 @@
   "Payable amount": "قابل پرداخت",
   "Run on test": "اجرای تستی",
   "Percent share":"درصد سهام",
-  "Journal generation templates": "الگوهای صدور سند اتوماتیک"
+  "Journal generation templates": "الگوهای صدور سند اتوماتیک",
+  "Contacts": "اطلاعات تماس",
+  "New Contact": "اطلاعات تماس جدید"
 }

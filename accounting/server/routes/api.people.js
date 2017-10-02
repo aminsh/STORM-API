@@ -38,7 +38,8 @@ router.route('/')
                 personType: cmd.personType,
                 detailAccountType: 'person',
                 economicCode: cmd.economicCode,
-                referenceId: cmd.referenceId
+                referenceId: cmd.referenceId,
+                contacts: JSON.stringify(cmd.contacts)
             },
             errors = [];
 
@@ -81,6 +82,7 @@ router.route('/:id')
         entity.email = cmd.email;
         entity.personType = cmd.personType;
         entity.economicCode = cmd.economicCode;
+        entity.contacts = JSON.stringify(cmd.contacts);
 
         if (String.isNullOrEmpty(entity.title))
             errors.push('عنوان نمیتواند خالی باشد');
