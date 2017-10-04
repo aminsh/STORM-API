@@ -22,12 +22,14 @@
     "lines": [
       {
         "subsidiaryLedgerAccountId": "",
+        "key": "inventory",
         "debtor": "# amount  #",
         "creditor": "0",
         "article": "بابت رسید برگشت از فروش شماره # number #"
       },
       {
         "subsidiaryLedgerAccountId": "",
+        "key": "costOfSoldGood",
         "debtor": "0",
         "creditor": "# amount #",
         "article": "بابت رسید برگشت از فروش شماره # number #"

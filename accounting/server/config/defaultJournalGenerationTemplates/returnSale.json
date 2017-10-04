@@ -42,6 +42,7 @@
     "lines": [
       {
         "subsidiaryLedgerAccountId": "",
+        "key": "businessCreditors",
         "detailAccountId": "# customer #",
         "debtor": "0",
         "creditor": "# amount - discount + vat #",
@@ -49,12 +50,14 @@
       },
       {
         "subsidiaryLedgerAccountId": "",
+        "key": "returnSaleGood",
         "debtor": "# amount #",
         "creditor": "0",
         "article": "بابت فاکتور برگشت از فروش شماره # number # "
       },
       {
         "subsidiaryLedgerAccountId": "",
+        "key": "purchaseTax",
         "debtor": "0",
         "creditor": "# discount #",
         "article": "بابت فاکتور برگشت از فروش شماره # number # "

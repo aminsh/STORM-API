@@ -30,7 +30,7 @@ class GeneralLedgerAccountQuery extends BaseQuery {
 
     chartOfAccount() {
         const subsidiaryLedgerAccountQuery = new SubdidiaryLedgerAccountQuery(this.branchId),
-            groups = Enums.AccountGroupingType().data,
+            groups = await(this.knex.select('*').from('accountCategories').where('branchId', this.branchId)),
             generalLedgerAccounts = await(this.getAll()).data,
             subsidiaryLedgerAccounts = await(subsidiaryLedgerAccountQuery.getAll()).data;
 

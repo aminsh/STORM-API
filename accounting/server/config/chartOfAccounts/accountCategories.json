@@ -1,0 +1,21 @@
+{
+  "categories": [
+    {"key": "1", "display": "دارایی ها"},
+    {"key": "2", "display": "بدهی ها"},
+    {"key": "3", "display": "حقوق صاحبان سهام"},
+    {"key": "4", "display": "درآمدها و هزینه ها"},
+    {"key": "9", "display": "انتظامی و کنترلی"}
+  ],
+  "groups": [
+    {"key": "11", "category":"1",  "postingType": "balanceSheet", "display": "داراییهای جاری"},
+    {"key": "12", "category":"1",  "postingType": "balanceSheet", "display": "داراییهای غیرجاری"},
+    {"key": "21", "category":"2",  "postingType": "balanceSheet", "display": "بدهی های جاری"},
+    {"key": "22", "category":"2",  "postingType": "balanceSheet", "display": "بدهی های غیرجاری"},
+    {"key": "31", "category":"3",  "postingType": "balanceSheet", "display": "حقوق صاحبان سهام"},
+    {"key": "41", "category":"4",  "postingType": "benefitAndLoss", "display": "درآمدها"},
+    {"key": "51", "category":"5",  "postingType": "benefitAndLoss", "display": "بهای تمام شده"},
+    {"key": "61", "category":"6",  "postingType": "benefitAndLoss", "display": "هزینه ها"},
+    {"key": "91", "category":"9",  "postingType": "entezami", "display": "حسابهای انتظامی"},
+    {"key": "92", "category":"9",  "postingType": "", "display": "حسابهای کنترلی"}
+  ]
+}
