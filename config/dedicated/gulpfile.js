@@ -49,3 +49,10 @@ gulp.task('migrate-latest', () => {
             process.exit();
         });
 });
+
+gulp.task('run-seed', () => {
+    knex.seed.run().then(() => {
+        Util.log(Util.colors.green('seed ran successfully'));
+        process.exit();
+    });
+});
