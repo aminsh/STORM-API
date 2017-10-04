@@ -11,14 +11,16 @@ const gulp = require('gulp'),
         tableName: 'accounitng_schema_migrations',
         seeds: {directory: path.resolve(`${__dirname}/seeds`)}
     },
-    optionsForOldCustomers = {
-        seeds: {directory: path.resolve(`${__dirname}/seeds-for-old-customers`)}
-    },
-    dbConfig = Object.assign(require('../config/enviroment').db, options),
+    dbConfig = Object.assign({
+        client: 'pg',
+        connection: require('../config/enviroment').db.connection
+            ? require('../config/enviroment').db.connection
+            : require('../eviroment.json').DATABASE_URL,
+        debug: true
+    }, options),
     argv = require('yargs').argv,
     Kenx = require('knex'),
     knex = Kenx(dbConfig),
-    knexForFrkCustomer = Kenx(Object.assign(dbConfig, optionsForOldCustomers)),
     fs = require('fs'),
     convertConfig = require('./convert/config.json'),
     async = require('asyncawait/async'),
