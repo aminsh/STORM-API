@@ -59,15 +59,19 @@ router.route('/')
     .post(async((req, res) => {
 
         let branchId = req.branchId,
+            fiscalPeriodId =req.fiscalPeriodId,
             saleDomain = new SaleDomain(req.branchId, req.fiscalPeriodId),
             detailAccountDomain = new DetailAccountDomain(req.branchId),
             productDomain = new ProductDomain(req.branchId),
             settingRepository = new SettingRepository(branchId),
             fiscalPeriodRepository = new FiscalPeriodRepository(req.branchId),
             currentFiscalPeriod = await(fiscalPeriodRepository.findById(req.fiscalPeriodId)),
+
             cmd = req.body,
             errors = [],
 
+            settings = await(settingRepository.get()),
+            inventoryControl = instanceOf('inventory.control', branchId, fiscalPeriodId, settings),
             bankId,
             temporaryDateIsInPeriodRange = true;
 
@@ -113,10 +117,16 @@ router.route('/')
         }
 
         if (cmd.status === 'paid') {
-            bankId = await(settingRepository.get()).bankId;
+            bankId = settings.bankId;
             if (!bankId)
                 errors.push('اطلاعات بانک پیش فرض تعریف نشده - ثبت پرداخت برای این فاکتور امکانپذیر نیست')
         }
+
+
+        if (errors.length !== 0)
+            return res.json({isValid: false, errors});
+
+        errors = await(inventoryControl.control(cmd));
 
         if (errors.length !== 0)
             return res.json({isValid: false, errors});

@@ -26,7 +26,7 @@ class InventoryControlStockOnRequest extends InventoryControlBase {
         }
 
         const inventoryStatusList = cmd.invoiceLines.asEnumerable()
-            .select(line => async.result(({
+            .select(async.result(line => ({
                 productId: line.productId,
                 quantity: line.quantity,
                 hasInventory: await(this.hasInventory(stockId, line.productId, line.quantity))
