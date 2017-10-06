@@ -40,7 +40,6 @@ class ReturnSaleEntryController extends InvoiceEntryControllerBase {
         this.pageTitle = this.onEditMode ? 'Edit return sale' : 'Create return sale';
 
         this.urls.getAllSales = devConstants.urls.sales.getAll();
-        this.urls.getAllStocks = devConstants.urls.stock.getAll();
 
         this.isReturnSale = true;
 

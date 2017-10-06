@@ -54,7 +54,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="form-group" ng-if="model.isReturnSale">
+                    <div class="form-group" ng-if="model.isReturnSale || model.settings.productOutputCreationMethod === 'stockOnRequest'">
                         <label for="stockId" >{{'Stock'|translate}}</label>
                         <div class="input-group" style="width: 100%">
                             <dev-tag-combo-box id="stockId" style="width: 100%"

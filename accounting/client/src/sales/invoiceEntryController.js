@@ -22,7 +22,8 @@ export default class InvoiceEntryControllerBase {
 
         this.urls = {
             getAllPeople: devConstants.urls.people.getAll(),
-            getAllProduct: devConstants.urls.products.getAll()
+            getAllProduct: devConstants.urls.products.getAll(),
+            getAllStocks: devConstants.urls.stock.getAll()
         };
 
         this.onEditMode = $stateParams.id;
