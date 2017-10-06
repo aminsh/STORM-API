@@ -4,13 +4,13 @@
     <div class="row">
         <div class="col-sm-6">
             <h3>
-                {{model.personType}} : {{model.invoice.customerDisplay}}
+                {{'Customer'|translate}} : {{model.invoice.customerDisplay}}
             </h3>
 
         </div>
 
         <div class="col-sm-6 text-right">
-            <h4 class="text-navy">شماره فاکتور : {{model.invoice.number}}</h4>
+            <h4>شماره فاکتور : {{model.invoice.number}}</h4>
             <p>
                 <span><strong>تاریخ فاکتور:</strong> {{model.invoice.date}}</span><br/>
             </p>
