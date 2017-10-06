@@ -22,6 +22,17 @@ export default function ($stateProvider, $urlRouterProvider, $locationProvider, 
             templateUrl: 'partials/settings/settings.html'
         })
 
+        .state('settings.createFiscalPeriod', {
+            url: '/create-fiscal-period',
+            onEnter: $modelFactory => {
+                $modelFactory.create({
+                    controller: 'createFiscalPeriodController',
+                    controllerAs: 'model',
+                    templateUrl: 'partials/fiscalPeriod/createFiscalPeriod.html'
+                });
+            }
+        })
+
         .state('chooseBranch', {
             url: '/branch/choose',
             controller: 'chooseBranchController',
@@ -242,22 +253,8 @@ export default function ($stateProvider, $urlRouterProvider, $locationProvider, 
             controller: 'accountReviewTurnoverController',
             templateUrl: 'partials/views/accountReviewTurnover.html'
         })
-        .state('fiscal-periods', {
-            url: '/fiscal-periods',
-            controller: 'fiscalPeriodController',
-            controllerAs: 'model',
-            templateUrl: 'partials/fiscalPeriod/fiscalPeriods.html'
-        })
-        .state('fiscal-periods.new', {
-            url: '/new',
-            onEnter: $modelFactory => {
-                $modelFactory.create({
-                    controller: 'createFiscalPeriodController',
-                    controllerAs: 'model',
-                    templateUrl: 'partials/fiscalPeriod/createFiscalPeriod.html'
-                });
-            }
-        })
+
+
         .state('report', {
             url: '/report',
             template: '<ui-view></ui-view>'
