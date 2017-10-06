@@ -19,6 +19,11 @@
                             style-type="primary"
                             title="{{'Save' | translate}}"
                             ng-disabled="form.$invalid"></dev-tag-button>
+
+                    <dev-tag-button
+                            ui-sref="journalTemplateGeneration"
+                            style-type="white"
+                            title="{{'Journal generation templates' | translate}}"></dev-tag-button>
                 </div>
 
                 <div class="row">
@@ -75,6 +80,11 @@
                             <div ng-controller="branchInfoController as model"
                                  ng-include="'partials/branch/branchInfo.html'"
                                  style="padding: 20px"></div>
+                        </uib-tab>
+
+                        <uib-tab index="8" heading="{{'Fiscal periods'|translate}}">
+                            <div ng-controller="fiscalPeriodController as model"
+                                 ng-include="'partials/fiscalPeriod/fiscalPeriods.html'"></div>
                         </uib-tab>
                     </uib-tabset>
                 </div>
