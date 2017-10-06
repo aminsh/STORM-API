@@ -19,7 +19,8 @@ class SettingQuery extends BaseQuery {
             'productOutputCreationMethod',
             'stockId',
             'stakeholders',
-            'subsidiaryLedgerAccounts')
+            'subsidiaryLedgerAccounts',
+            'saleCosts')
             .from('settings')
             .where('branchId', this.branchId)
             .first();

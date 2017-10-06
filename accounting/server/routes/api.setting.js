@@ -65,7 +65,8 @@ router.route('/')
             canSaleGenerateAutomaticJournal: cmd.canSaleGenerateAutomaticJournal,
             stakeholders: JSON.stringify(cmd.stakeholders),
             subsidiaryLedgerAccounts: JSON.stringify(cmd.subsidiaryLedgerAccounts),
-            stockId: cmd.stockId
+            stockId: cmd.stockId,
+            saleCosts: JSON.stringify(cmd.saleCosts)
         };
 
         await(settingRepository.update(entity));

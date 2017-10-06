@@ -319,4 +319,15 @@ export default class {
 
     }
 
+    addSaleCost() {
+
+        this.settings.saleCosts = this.settings.saleCosts || [];
+
+        this.settings.saleCosts.push({display: ''});
+    }
+
+    removeSaleCost(item) {
+        this.settings.saleCosts.asEnumerable().remove(item);
+    }
+
 }

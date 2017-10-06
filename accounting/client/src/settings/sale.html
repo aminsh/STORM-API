@@ -13,3 +13,48 @@
         </div>
     </div>
 </div>
+
+<div class="row">
+    <div class="col-md-7 ">
+        <label style="display: block">هزینه های فروش</label>
+
+        <dev-tag-button style-type="primary btn-outline"
+                        style="margin-top: 30px"
+                        title="{{'New row' | translate}}"
+                        ng-click="model.addSaleCost()"></dev-tag-button>
+
+        <ul class="list-group  clear-list m-t" >
+
+            <li class="list-group-item fist-item">
+                <div class="md-col-10">
+                   عنوان هزینه
+                </div>
+            </li>
+            <li class="list-group-item"
+                ng-repeat="item in model.settings.saleCosts">
+
+                <div class="row">
+                    <div class="col-md-11">
+                        <dev-tag-text-box ng-model="item.display"
+                                          name="display"></dev-tag-text-box>
+                    </div>
+
+
+                    <div class="col-md-1"
+                         style="vertical-align: middle">
+                        <button
+                                style="margin-left: 5px"
+                                type="button"
+                                ng-click="model.removeSaleCost(item)"
+                                class="close"
+                                title="{{'Remove'| translate}}">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                </div>
+
+            </li>
+        </ul>
+
+    </div>
+</div>
