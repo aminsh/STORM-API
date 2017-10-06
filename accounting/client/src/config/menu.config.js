@@ -42,29 +42,8 @@ accModule.config(menuItemsProvider => {
     menuItemsProvider
         .add({
             title: 'تنظیمات',
-            url: '',
-            icon: 'fa fa-gear',
-            children: [
-                {
-                    title: 'دوره های مالی',
-                    url: 'fiscal-periods',
-                    icon: ''
-                },
-                {
-                    title: 'اطلاعات کسب و کار',
-                    url: 'branch-info',
-                    icon: ''
-                },
-                {
-                    title: 'پیش فرض',
-                    url: 'settings',
-                    icon: ''
-                },
-                {
-                    title: 'تنظیمات سند اتوماتیک',
-                    url: 'journal-generation-template'
-                }
-            ]
+            url: 'settings',
+            icon: 'fa fa-gear'
         });
 
     menuItemsProvider
@@ -134,16 +113,6 @@ accModule.config(menuItemsProvider => {
             url: '',
             icon: 'fa fa-list',
             children: [
-                {
-                    title: 'فاکتور فروش',
-                    url: 'sales/list',
-                    icon: ''
-                },
-                {
-                    title: 'فاکتور خرید',
-                    url: 'purchases/list',
-                    icon: ''
-                },
                 {
                     title: 'چک های دریافتی',
                     url: 'receivable-cheques',
