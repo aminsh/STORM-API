@@ -1,5 +1,7 @@
 "use strict";
 
+const DomainException = instanceOf('domainException');
+
 module.exports = function (container) {
     container.singleton('translate', function () {
         return require('./services/translateService');
@@ -35,6 +37,8 @@ module.exports = function (container) {
             const StockOnRequestInventoryControl = require('./domain/inventory/inventory.control/inventory.control.stockOnRequet');
             return new StockOnRequestInventoryControl(branchId, fiscalPeriodId);
         }
+
+        throw new DomainException(['تنظیمات انبار انجام نشده']);
     });
 
     container.bind('createOutput', function (branchId, fiscalPeriodId, settings) {

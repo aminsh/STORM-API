@@ -59,7 +59,7 @@ router.route('/')
     .post(async((req, res) => {
 
         let branchId = req.branchId,
-            fiscalPeriodId =req.fiscalPeriodId,
+            fiscalPeriodId = req.fiscalPeriodId,
             saleDomain = new SaleDomain(req.branchId, req.fiscalPeriodId),
             detailAccountDomain = new DetailAccountDomain(req.branchId),
             productDomain = new ProductDomain(req.branchId),
@@ -71,7 +71,7 @@ router.route('/')
             errors = [],
 
             settings = await(settingRepository.get()),
-            inventoryControl = instanceOf('inventory.control', branchId, fiscalPeriodId, settings),
+
             bankId,
             temporaryDateIsInPeriodRange = true;
 
@@ -126,7 +126,9 @@ router.route('/')
         if (errors.length !== 0)
             return res.json({isValid: false, errors});
 
-        errors = await(inventoryControl.control(cmd));
+        if (settings.canControlInventory)
+            errors = await(instanceOf('inventory.control',
+                branchId, fiscalPeriodId, settings).control(cmd));
 
         if (errors.length !== 0)
             return res.json({isValid: false, errors});
@@ -217,6 +219,8 @@ router.route('/:id')
     .put(async((req, res) => {
         let invoiceRepository = new InvoiceRepository(req.branchId),
             saleDomain = new SaleDomain(req.branchId),
+            settingRepository = new SettingRepository(req.branchId),
+            settings = await(settingRepository.get()),
             id = req.params.id,
             errors = [],
             invoice = await(invoiceRepository.findById(id)),
@@ -243,7 +247,14 @@ router.route('/:id')
         if (invoice.invoiceStatus != 'draft')
             errors.push('فاکتور جاری قابل ویرایش نمیباشد');
 
-        if (errors.length != 0)
+        if (errors.length !== 0)
+            return res.json({isValid: false, errors});
+
+        if (settings.canControlInventory)
+            errors = await(instanceOf('inventory.control',
+                branchId, fiscalPeriodId, settings).control(cmd));
+
+        if (errors.length !== 0)
             return res.json({isValid: false, errors});
 
         entity.invoiceLines = cmd.invoiceLines.asEnumerable()
