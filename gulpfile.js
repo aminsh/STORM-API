@@ -584,6 +584,7 @@ gulp.task('copy-assets', [
 gulp.task('default', [
     'admin-build-template',
     'admin-build-js',
+    'admin-build-sass',
     'acc-build-js',
     'acc-build-template',
     'acc-build-sass',
