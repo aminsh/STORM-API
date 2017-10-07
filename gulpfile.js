@@ -609,7 +609,11 @@ gulp.task('default', [
 ]);
 
 gulp.task('logo-to-file', function () {
-    let knex = require('./storm/server/services/knex'),
+    let knex = require('knex')({
+            client: 'pg',
+            connection: process.env.DATABASE_URL,
+            debug: true
+        }),
         base64 = require('file-base64');
 
     knex.select('id', 'logo')
