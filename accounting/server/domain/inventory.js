@@ -7,10 +7,12 @@ const async = require('asyncawait/async'),
     SettingRepository = require('../data/repository.setting'),
     StockRepository = require('../data/repository.stock'),
     PersianDate = instanceOf('utility').PersianDate,
-    DomainException = instanceOf('domainException');
+    DomainException = instanceOf('domainException'),
+    EventEmitter = instanceOf('EventEmitter');
 
 
 class InventoryDomain {
+
     constructor(branchId, fiscalPeriodId) {
         this.branchId = branchId;
         this.fiscalPeriodId = fiscalPeriodId;
@@ -152,10 +154,10 @@ class InventoryDomain {
 
     create(cmd) {
 
-        if(cmd.inventoryType === 'output'){
+        if (cmd.inventoryType === 'output') {
             let errors = await(this.inventoryControl(cmd.inventoryLines, cmd.stockId));
 
-            if(errors.length > 0)
+            if (errors.length > 0)
                 throw new DomainException(errors);
         }
 
@@ -184,15 +186,20 @@ class InventoryDomain {
 
         await(this.inventoryRepository.create(entity));
 
+        EventEmitter.emit(
+            'onInventoryInputChanged',
+            {branchId: this.branchId, fiscalPeriodId: this.fiscalPeriodId},
+            entity.id);
+
         return entity.id;
     }
 
     update(id, cmd) {
 
-        if(cmd.inventoryType === 'output'){
+        if (cmd.inventoryType === 'output') {
             let errors = await(this.inventoryControl(cmd.inventoryLines, cmd.stockId));
 
-            if(errors.length > 0)
+            if (errors.length > 0)
                 throw new DomainException(errors);
         }
 
@@ -213,9 +220,14 @@ class InventoryDomain {
         };
 
         await(this.inventoryRepository.updateBatch(id, entity));
+
+        EventEmitter.emit(
+            'onInventoryInputChanged',
+            {branchId: this.branchId, fiscalPeriodId: this.fiscalPeriodId},
+            entity.id);
     }
 
-    inventoryControl(lines, stockId){
+    inventoryControl(lines, stockId) {
         const inventoryList = lines.asEnumerable()
             .select(async.result(item => ({
                 productId: item.productId,

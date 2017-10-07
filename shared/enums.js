@@ -265,5 +265,17 @@ enums.JournalGenerationTemplateSourceType = function () {
     ]);
 };
 
+enums.NotificationEvent = function () {
+    return new Enum([
+        {
+            key: 'onInventoryInputChanged',
+            display: 'تغییر در ورودی های کالا',
+            fields: [
+                {key: 'productId', display: 'کالا #'},
+                {key: 'quantity', display: 'مقدار موجودی'}
+            ]
+        }
+    ]);
+};
 
 module.exports = enums;

@@ -43,6 +43,11 @@ container.bind('PaymentService', function (key) {
     }
 });
 
+container.singleton('webhook', function () {
+    let Webhook = require('../shared/services/webhook');
+    return new Webhook();
+});
+
 container.singleton('user.repository', function () {
     let UserRepository = require('../storm/server/features/user/user.repository');
     return new UserRepository();
@@ -67,6 +72,7 @@ container.singleton('branchThirdParty.query', function () {
     let BranchThirdPartyQuery = require('../storm/server/features/thirdParty/branchThirdParty.query');
     return new BranchThirdPartyQuery();
 });
+
 
 require('../accounting/server/bootstrap.ioc')(container);
 require('../storm/server/bootstrap.ioc')(container);

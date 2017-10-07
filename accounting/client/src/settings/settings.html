@@ -52,7 +52,10 @@
                                  style="padding: 20px"></div>
                         </uib-tab>
 
-
+                        <uib-tab index="5" heading="Webhooks" ng-if="false">
+                            <div ng-include="'partials/settings/webhooks.html'"
+                                 style="padding: 20px"></div>
+                        </uib-tab>
 
                     </uib-tabset>
                 </div>
@@ -65,24 +68,24 @@
             <div >
                 <div class="row">
                     <uib-tabset type="pills">
-                        <uib-tab index="5" heading="کاربری" >
+                        <uib-tab index="10" heading="کاربری" >
                             <div ng-include="'partials/settings/userAccount.html'"
                                  style="padding: 20px"></div>
                         </uib-tab>
 
                         <uib-tab ng-show="model.changeUsersInBranchData.isOwnerUser"
-                                 index="6" heading="دسترسی کاربر" >
+                                 index="11" heading="دسترسی کاربر" >
                             <div ng-include="'partials/settings/permission.html'"
                                  style="padding: 20px"></div>
                         </uib-tab>
 
-                        <uib-tab index="7" heading="اطلاعات کسب و کار" >
+                        <uib-tab index="12" heading="اطلاعات کسب و کار" >
                             <div ng-controller="branchInfoController as model"
                                  ng-include="'partials/branch/branchInfo.html'"
                                  style="padding: 20px"></div>
                         </uib-tab>
 
-                        <uib-tab index="8" heading="{{'Fiscal periods'|translate}}">
+                        <uib-tab index="13" heading="{{'Fiscal periods'|translate}}">
                             <div ng-controller="fiscalPeriodController as model"
                                  ng-include="'partials/fiscalPeriod/fiscalPeriods.html'"></div>
                         </uib-tab>

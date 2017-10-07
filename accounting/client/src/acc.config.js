@@ -150,6 +150,8 @@ import "./payableCheque";
 import "./bankAndFund";
 import "./detailAccount";
 import "./journalTemplateGeneration";
+import "./settings";
+
 //factory
 import saleApi from "./sales/saleApi";
 // Configs

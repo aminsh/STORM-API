@@ -66,7 +66,8 @@ router.route('/')
             stakeholders: JSON.stringify(cmd.stakeholders),
             subsidiaryLedgerAccounts: JSON.stringify(cmd.subsidiaryLedgerAccounts),
             stockId: cmd.stockId,
-            saleCosts: JSON.stringify(cmd.saleCosts)
+            saleCosts: JSON.stringify(cmd.saleCosts),
+            webhooks: JSON.stringify(cmd.webhooks),
         };
 
         await(settingRepository.update(entity));

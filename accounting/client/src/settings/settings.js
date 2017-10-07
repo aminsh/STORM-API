@@ -10,7 +10,8 @@ export default class {
         , $scope
         , $timeout
         , translate
-        , confirm) {
+        , confirm
+        , webhookEntryService) {
         this.settingsApi = settingsApi;
         this.userApi = userApi;
         this.branchApi = branchApi;
@@ -22,6 +23,7 @@ export default class {
         this.$timeout = $timeout;
         this.translate = translate;
         this.confirm = confirm;
+        this.webhookEntryService = webhookEntryService;
 
         this.settings = {};
 
@@ -128,14 +130,17 @@ export default class {
         this.stakeholders.asEnumerable().remove(item);
     }
 
-    validateStakeholder(){
+    validateStakeholder() {
+        if(this.stakeholders.length === 0)
+            return;
+
         const total = this.stakeholders.asEnumerable()
             .sum(item => item.rate);
 
-        if(total === 100)
+        if (total === 100)
             return;
 
-        if(total < 100){
+        if (total < 100) {
             this.logger.error('ترکیب سهامدارن کمتر از ۱۰۰ درصد است');
             throw new Error('total rate is smaller than 100');
         }
@@ -144,12 +149,12 @@ export default class {
         throw new Error('total rate is bigger 100');
     }
 
-    onDetailAccountChanged(item, row, form){
+    onDetailAccountChanged(item, row, form) {
         form.detailAccountId.$setViewValue(item.id);
         row.detailAccountId = item.id;
     }
 
-    onSubsidiaryLedgerAccountChanged(item, row){
+    onSubsidiaryLedgerAccountChanged(item, row) {
         row.id = item.id;
     }
 
@@ -328,6 +333,22 @@ export default class {
 
     removeSaleCost(item) {
         this.settings.saleCosts.asEnumerable().remove(item);
+    }
+
+    addWebhook() {
+        this.settings.wehhooks = this.settings.wehhooks || [];
+
+        this.webhookEntryService.show()
+            .then(result => this.settings.wehhooks.push(result));
+    }
+
+    editWebhook(config){
+        this.webhookEntryService.show({config})
+            .then(result => config = result);
+    }
+
+    removeWebhook(item) {
+        this.settings.wehhooks.asEnumerable().remove(item);
     }
 
 }
