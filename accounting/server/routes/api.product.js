@@ -40,6 +40,14 @@ router.route('/')
         res.json({isValid: true, returnValue: {id: entity.id}});
     }));
 
+router.route('/goods')
+    .get(async((req, res) => {
+        let productQuery = new ProductQuery(req.branchId),
+            result = await(productQuery.getAllGoods(req.query));
+
+        res.json(result);
+    }));
+
 
 router.route('/:id')
     .get(async((req, res) => {
@@ -55,9 +63,11 @@ router.route('/:id')
                 code: cmd.code,
                 title: cmd.title,
                 reorderPoint: cmd.reorderPoint,
+                productType: cmd.productType,
                 salePrice: cmd.salePrice,
                 categoryId: cmd.categoryId,
-                scaleId: cmd.scaleId
+                scaleId: cmd.scaleId,
+                referenceId: cmd.referenceId
             };
 
         entity = await(productRepository.update(req.params.id, entity));

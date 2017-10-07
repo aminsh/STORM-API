@@ -8,80 +8,104 @@ const Guid = require('../services/shared').utility.Guid,
     JournalRepository = require('../data/repository.journal'),
     JournalLineRepository = require('../data/repository.journalLine'),
     InvoiceRepository = require('../data/repository.invoice'),
+    InventoryRepository = require('../data/repository.inventory'),
     DetailAccountRepository = require('../data/repository.detailAccount'),
-    SubLedger = require('./subledger');
+    SubLedger = require('./subledger'),
+    JournalGenerationTemplateService = require('./journalGenerationTemplateService');
 
-module.exports = class Journal {
+class Journal {
     constructor(branchId, fiscalPeriodId) {
         this.fiscalPeriodId = fiscalPeriodId;
 
         this.journalRepository = new JournalRepository(branchId);
         this.journalLineRepositroy = new JournalLineRepository(branchId);
         this.invoiceRepository = new InvoiceRepository(branchId);
+        this.inventoryRepository = new InventoryRepository(branchId);
         this.detailAccountRepository = new DetailAccountRepository(branchId);
         this.subLedger = new SubLedger(branchId);
+        this.journalGenerationTemplateService = new JournalGenerationTemplateService(branchId, fiscalPeriodId);
     }
 
-    generateForSale(sale) {
-        let journal = await(this.getJournal(
-            sale.date,
-            translate('For Cash sale invoice number ...').format(sale.number))),
+    generateForSale(cmd) {
 
-            invoiceLines = sale.invoiceLines,
-            sumAmount = invoiceLines.asEnumerable().sum(line => line.unitPrice * line.quantity),
-            sumDiscount = invoiceLines.asEnumerable().sum(line => line.discount),
-            sumVat = invoiceLines.asEnumerable().sum(line => line.vat),
+        let sale = await(this.invoiceRepository.findById(cmd.id)),
 
-            receivableAccount = await(this.subLedger.receivableAccount()),
-            saleAccount = await(this.subLedger.saleAccount()),
+            model = {
+                number: sale.number,
+                date: sale.date,
+                title: sale.title,
+                amount: sale.invoiceLines.asEnumerable().sum(line => line.unitPrice * line.quantity),
+                discount: sale.invoiceLines.asEnumerable().sum(line => line.discount),
+                vat: sale.invoiceLines.asEnumerable().sum(line => line.vat),
+                customer: sale.detailAccountId
+            },
 
-            journalLines = [
-                {
-                    generalLedgerAccountId: receivableAccount.generalLedgerAccountId,
-                    subsidiaryLedgerAccountId: receivableAccount.id,
-                    detailAccountId: sale.detailAccountId,
-                    debtor: sumAmount - sumDiscount + sumVat,
-                    creditor: 0,
-                    article: journal.description,
-                    row: 1
-                }, {
-                    generalLedgerAccountId: saleAccount.generalLedgerAccountId,
-                    subsidiaryLedgerAccountId: saleAccount.id,
-                    debtor: 0,
-                    creditor: sumAmount,
-                    article: journal.description,
-                    row: 3
-                }];
+            journal = await(this.journalGenerationTemplateService.set(model, 'sale')),
 
-        if (sumDiscount > 0) {
-            let discountAccount = await(this.subLedger.saleDiscountAccount());
+            journalLines = journal.lines;
 
-            journalLines.push({
-                generalLedgerAccountId: discountAccount.generalLedgerAccountId,
-                subsidiaryLedgerAccountId: discountAccount.id,
-                debtor: sumDiscount,
-                creditor: 0,
-                article: journal.description,
-                row: 2
-            });
-        }
+        delete  journal.lines;
 
+        return {journal, journalLines};
+    }
 
-        if (sumVat > 0) {
-            let vatAccount = await(this.subLedger.saleVatAccount());
+    generateForReturnSale(cmd) {
 
-            journalLines.push({
-                generalLedgerAccountId: vatAccount.generalLedgerAccountId,
-                subsidiaryLedgerAccountId: vatAccount.id,
-                debtor: 0,
-                creditor: sumVat,
-                article: journal.description,
-                row: 4
-            });
-        }
+        let sale = await(this.invoiceRepository.findById(cmd.id)),
 
-        journalLines = journalLines.asEnumerable().orderBy(e => e.row).toArray();
-        journalLines.forEach((e, i) => e.row = i + 1);
+            model = {
+                number: sale.number,
+                date: sale.date,
+                title: sale.title,
+                amount: sale.invoiceLines.asEnumerable().sum(line => line.unitPrice * line.quantity),
+                discount: sale.invoiceLines.asEnumerable().sum(line => line.discount),
+                vat: sale.invoiceLines.asEnumerable().sum(line => line.vat),
+                customer: sale.detailAccountId
+            },
+
+            journal = await(this.journalGenerationTemplateService.set(model, 'returnSale')),
+
+            journalLines = journal.lines;
+
+        delete  journal.lines;
+
+        return {journal, journalLines};
+    }
+
+    generateOutputFromSale(outputId){
+
+        const output = await(this.inventoryRepository.findById(outputId)),
+
+            model = {
+                number: output.number,
+                date: output.date,
+                amount: output.inventoryLines.asEnumerable().sum(line => line.unitPrice * line.quantity)
+            },
+
+            journal = await(this.journalGenerationTemplateService.set(model, 'inventoryOutputSale'));
+
+        const journalLines = journal.lines;
+
+        delete journal.lines;
+
+        return {journal, journalLines};
+
+    }
+
+    generateForInputReturnSale(inputId){
+        const input = await(this.inventoryRepository.findById(inputId)),
+
+            model = {
+                number: input.number,
+                date: input.date,
+                amount: input.inventoryLines.asEnumerable().sum(line => line.unitPrice * line.quantity)
+            },
+
+            journal = await(this.journalGenerationTemplateService.set(model, 'inventoryInputReturnSale'));
+
+        const journalLines = journal.lines;
+
+        delete journal.lines;
 
         return {journal, journalLines};
     }
@@ -95,8 +119,8 @@ module.exports = class Journal {
             invoice = await(this.invoiceRepository.findById(invoiceId));
 
         let description = invoice
-                ? `دریافت بابت فاکتور فروش شماره ${invoice.number}`
-                : 'دریافت وجه',
+            ? `دریافت بابت فاکتور فروش شماره ${invoice.number}`
+            : 'دریافت وجه',
 
             journal = await(this.getJournal(persianDate.current(), description)),
 
@@ -145,6 +169,9 @@ module.exports = class Journal {
             if (p.paymentType == 'cheque')
                 return 'دریافت چک به شماره {0} سررسید {1} بانک {2} شعبه {3} بابت فاکتور شماره {4}'
                     .format(p.number, p.date, p.bankName, p.bankBranch, invoice.number);
+
+            if (p.paymentType === 'person')
+                return 'دریافت توسط شخص بابت فاکتور شماره {0}'.format(invoice.number);
         }
 
         function getSubLedgerForDebtor(p) {
@@ -156,6 +183,9 @@ module.exports = class Journal {
 
             if (p.paymentType == 'cheque')
                 return subLedger.receivableDocument();
+
+            if(p.paymentType === 'person')
+                return subLedger.receivableAccount();
         }
 
         function getDetailAccountForDebtor(p) {
@@ -167,6 +197,9 @@ module.exports = class Journal {
 
             if (p.paymentType == 'cheque')
                 return invoice.detailAccountId;
+
+            if(p.paymentType === 'person')
+                return p.personId;
         }
     }
 
@@ -333,8 +366,8 @@ module.exports = class Journal {
             invoice = await(this.invoiceRepository.findById(invoiceId));
 
         let description = invoice
-                ? `دریافت بابت فاکتور خرید شماره ${invoice.number}`
-                : 'دریافت وجه',
+            ? `دریافت بابت فاکتور خرید شماره ${invoice.number}`
+            : 'دریافت وجه',
 
             journal = await(this.getJournal(persianDate.current(), description)),
 
@@ -394,6 +427,9 @@ module.exports = class Journal {
                         bankDetailAccount.title,
                         bankDetailAccount.bankAccountNumber,
                         invoice.number);
+
+            if (p.paymentType === 'person')
+                return 'پرداخت از شخص بابت فاکتور شماره {0}'.format(invoice.number);
         }
 
         function getSubLedgerForCreditor(p) {
@@ -405,6 +441,9 @@ module.exports = class Journal {
 
             if (p.paymentType == 'cheque')
                 return subLedger.payableDocument();
+
+            if(p.paymentType === 'person')
+                return subLedger.receivableAccount();
         }
 
         function getDetailAccountForCreditor(p) {
@@ -416,6 +455,9 @@ module.exports = class Journal {
 
             if (p.paymentType == 'cheque')
                 return p.bankId;
+
+            if(p.paymentType === 'person')
+                return p.personId;
         }
     }
 
@@ -482,8 +524,8 @@ module.exports = class Journal {
             payableAccount = await(subLedger.payableAccount()),
             payableAccountDetailAccountId = allPaymentJournalLines.asEnumerable()
                 .first(line =>
-                line.subsidiaryLedgerAccountId == payableAccount.id &&
-                line.debtor == paymentJournalLine.creditor).detailAccountId;
+                    line.subsidiaryLedgerAccountId == payableAccount.id &&
+                    line.debtor == paymentJournalLine.creditor).detailAccountId;
 
         journalLines.push({
             row: 1,
@@ -650,3 +692,5 @@ module.exports = class Journal {
     }
 
 };
+
+module.exports = Journal;

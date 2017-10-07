@@ -1,11 +1,15 @@
 "use strict";
 
 export default class UsersController {
-    constructor(logger, confirm, userApi) {
+    constructor(logger, confirm, userApi, $state, tabs) {
+
+        console.log($state.current.name);
+
         this.logger = logger;
         this.confirm = confirm;
         this.userApi = userApi;
-
+        tabs.setTab("users");
+        
         this.gridOption = {
             columns: [
                 {

@@ -14,6 +14,7 @@ function productAssembler(entity) {
         categoryId: entity.categoryId,
         scaleId: entity.scaleId,
         scaleDisplay: entity.scaleDisplay,
+        referenceId: entity.referenceId,
         sumSalePrice: entity.sumSalePrice,
         sumDiscount: entity.sumDiscount,
         countOnSale: entity.countOnSale,

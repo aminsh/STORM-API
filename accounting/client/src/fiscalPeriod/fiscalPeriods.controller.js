@@ -8,20 +8,20 @@ export default class FiscalPeriodController {
                 {
                     name: 'title',
                     title: translate('Title'),
-                    width: '80%',
-                    type: 'string'
+                    type: 'string',
+                    width: '60%'
                 },
                 {
                     name: 'minDate',
                     title: translate('From date'),
-                    width: '10%',
-                    type: 'date'
+                    type: 'date',
+                    width: '20%'
                 },
                 {
                     name: 'maxDate',
                     title: translate('To date'),
                     type: 'date',
-                    width: '10%'
+                    width: '20%'
                 }
             ],
             commands: [],

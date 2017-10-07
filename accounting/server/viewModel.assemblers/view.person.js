@@ -24,6 +24,7 @@ function personAssembler(entity) {
         personTypeDisplay: entity.personType
             ? enums.PersonType().getDisplay(entity.personType)
             : '',
+        contacts: entity.contacts,
 
         countOfSale: entity.countOfSale,
         lastSaleDate: entity.lastSaleDate,

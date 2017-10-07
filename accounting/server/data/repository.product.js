@@ -4,7 +4,7 @@ const async = require('asyncawait/async'),
     await = require('asyncawait/await'),
     BaseRepository = require('./repository.base');
 
-module.exports = class ProductRepository extends BaseRepository {
+class ProductRepository extends BaseRepository {
 
     constructor(branchId) {
         super(branchId)
@@ -17,7 +17,19 @@ module.exports = class ProductRepository extends BaseRepository {
             .first();
     }
 
-    isGood(id){
+
+    /*
+    * @return products by id array list
+    * @param ids
+    */
+
+    findByIds(ids) {
+        return this.knex.table('products')
+            .modify(this.modify, this.branchId)
+            .whereIn('id', ids);
+    }
+
+    isGood(id) {
         return this.knex.table('products')
             .modify(this.modify, this.branchId)
             .where('id', id)
@@ -49,3 +61,5 @@ module.exports = class ProductRepository extends BaseRepository {
             .where('id', id).del();
     }
 };
+
+module.exports = ProductRepository;

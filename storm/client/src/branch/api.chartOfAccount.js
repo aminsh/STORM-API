@@ -1,7 +1,5 @@
 "use strict";
 
-"use strict";
-
 export default class ChartOfAccountApi {
     constructor(Api) {
         this.Api = Api;

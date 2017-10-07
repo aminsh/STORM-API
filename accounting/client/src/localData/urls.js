@@ -91,12 +91,17 @@ let sales = {
     getAll: () => `${rootUrl()}/sales`
 };
 
+let returnSale = {
+  getAll: ()=> `${rootUrl()}/return-sales`
+};
+
 let purchase = {
     getAll: () => `${rootUrl()}/purchases`
 };
 
 let products = {
-    getAll: () => `${rootUrl()}/products`
+    getAll: () => `${rootUrl()}/products`,
+    getAllGoods: ()=> `${rootUrl()}/products/goods`,
 };
 
 let scale = {
@@ -113,6 +118,20 @@ let receivableCheques = {
 
 let payableCheques = {
     getAll: () => `${rootUrl()}/pay/cheques`
+};
+
+let inventory = {
+    getAllInputs: ()=> `${rootUrl()}/inventories/inputs`,
+    getAllOutputs: ()=> `${rootUrl()}/inventories/outputs`,
+    getLinesById:(id)=> `${rootUrl()}/inventories/${id}/lines`
+};
+
+let journalGenerationTemplate = {
+    all: ()=> `${rootUrl()}/journal-generation-templates`
+};
+
+let stock = {
+  getAll: ()=> `${rootUrl()}/stocks`
 };
 
 let apiUrls = {
@@ -140,7 +159,11 @@ let apiUrls = {
     people,
     fund,
     receivableCheques,
-    payableCheques
+    payableCheques,
+    inventory,
+    stock,
+    journalGenerationTemplate,
+    returnSale
 };
 
 export default apiUrls;

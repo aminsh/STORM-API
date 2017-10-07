@@ -1,14 +1,15 @@
-export default class invoiceListController {
+export default class invoiceListControllerBase {
+
     constructor(translate,
                 confirm,
                 devConstants,
                 logger,
                 $timeout,
                 $state,
-                saleApi,
-                purchaseApi,
+                api,
                 navigate,
-                $scope) {
+                $scope,
+                invoiceType) {
 
         this.confirm = confirm;
         this.translate = translate;
@@ -19,19 +20,19 @@ export default class invoiceListController {
         this.logger = logger;
         this.translate = translate;
         this.errors = [];
+        this.api = api;
 
-        let invoiceType = this.invoiceType;
+        let detailAccountTitle = ['sales', 'returnSale'].includes(invoiceType)
+            ? translate('Customer')
+            : translate('Vendor'),
 
-        this.api = invoiceType == 'sales' ? saleApi : purchaseApi;
+            urls= {
+                sales: devConstants.urls.sales.getAll(),
+                purchase: devConstants.urls.purchase.getAll(),
+                returnSale: devConstants.urls.returnSale.getAll()
+            },
 
-        let detailAccountTitle = invoiceType == 'sales'
-                ? translate('Customer')
-                : translate('Vendor'),
-
-            readUrl = invoiceType == 'sales'
-                ? devConstants.urls.sales.getAll()
-                : devConstants.urls.purchase.getAll()
-
+            readUrl = urls[invoiceType];
 
         this.gridOption = {
             columns: [
@@ -112,13 +113,6 @@ export default class invoiceListController {
         };
     }
 
-
-    get invoiceType() {
-        let regex = /^([^.]*)/;
-        let strToMatch = this.$state.current.name;
-        return regex.exec(strToMatch)[0];
-    }
-
     remove(current) {
         let translate = this.translate;
 
@@ -140,11 +134,11 @@ export default class invoiceListController {
         this.navigate('report.print', {key: 700}, reportParam);
     }
 
-    edit(current) {
-        this.$state.go('^.edit', {id: current.id});
+    edit() {
+       throw new Error('Not implemented this method');
     }
 
-    view(current){
-        this.$state.go('^.view', {id: current.id});
+    view() {
+        throw new Error('Not implemented this method');
     }
 }

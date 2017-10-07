@@ -20,6 +20,8 @@ app.use('/acc', require('./accounting/server/bootstrape'));
 app.use('/api/v1', require('./api/api.config'));
 app.use('/invoice', require('./invoice/app.server.config'));
 app.use('/third-party', require('./third-party/app.server.config'));
+app.use('/campaign', require('./campaign/app.server.config'));
+app.use('/docs', require('./documents/app.server.config'));
 app.use('/admin', require('./admin/app.server.config'));
 
 require('./storm/server/bootstrap.routes');

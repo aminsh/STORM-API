@@ -4,7 +4,7 @@ const async = require('asyncawait/async'),
     await = require('asyncawait/await'),
     BaseRepository = require('./repository.base');
 
-module.exports = class PaymentRepository extends BaseRepository {
+class PaymentRepository extends BaseRepository {
     constructor(branchId) {
         super(branchId);
     }
@@ -42,3 +42,5 @@ module.exports = class PaymentRepository extends BaseRepository {
         return this.knex('payments').where('id', id).update(entity);
     }
 };
+
+module.exports = PaymentRepository;

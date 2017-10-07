@@ -1,0 +1,156 @@
+<form name="form" novalidate>
+    <dev-tag-content>
+        <dev-tag-content-heading>
+            <h5 class="panel-title">{{model.pageTitle|translate}}</h5>
+        </dev-tag-content-heading>
+        <dev-tag-content-body>
+            <div class="row">
+                <div class="row">
+                    <dev-tag-validation-summary errors="model.errors" class="col-md-12"></dev-tag-validation-summary>
+                </div>
+
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label for="detailAccountId" >{{'Customer'|translate}}</label>
+                        <div class="input-group" style="width: 100%">
+                            <dev-tag-combo-box id="detailAccountId" style="width: 100%"
+                                               name="detailAccountId"
+                                               class="combobox-directive-margin-top"
+                                               k-placeholder="{{'Select ...'|translate}}"
+                                               k-data-value-field="id"
+                                               k-data-text-field="title"
+                                               k-data-source="model.detailAccount"
+                                               k-suggest="true"
+                                               k-minLength="0"
+                                               k-filter="'contains'"
+                                               k-on-created="model.createNewCustomer($search)"
+                                               show-no-data-template
+                                               ng-model="model.invoice.detailAccountId"
+                                               url="{{model.urls.getAllPeople}}"
+                                               required></dev-tag-combo-box>
+
+                            <div ng-messages="form.detailAccountId.$error" ng-if="form.detailAccountId.$dirty">
+                                <label ng-message="required" class="error">{{'This field is required'|translate}}</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group" ng-if="model.isReturnSale">
+                        <label for="saleId" >{{'Sales invoice'|translate}}</label>
+                        <div class="input-group" style="width: 100%">
+                            <dev-tag-combo-box id="saleId" style="width: 100%"
+                                               name="saleId"
+                                               class="combobox-directive-margin-top"
+                                               k-placeholder="{{'Select ...'|translate}}"
+                                               k-data-value-field="id"
+                                               k-data-text-field="display"
+                                               mapper="$=>({id:$.id,display:'{0} - {1} - {2}'.format($.number,$.date,$.customerDisplay)})"
+                                               k-on-changed="model.onSaleChanged($item)"
+                                               ng-model="model.invoice.detailAccountId"
+                                               url="{{model.urls.getAllSales}}"
+                                               required></dev-tag-combo-box>
+
+                            <div ng-messages="form.saleId.$error" ng-if="form.saleId.$dirty">
+                                <label ng-message="required" class="error">{{'This field is required'|translate}}</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group" ng-if="model.isReturnSale || model.settings.productOutputCreationMethod === 'stockOnRequest'">
+                        <label for="stockId" >{{'Stock'|translate}}</label>
+                        <div class="input-group" style="width: 100%">
+                            <dev-tag-combo-box id="stockId" style="width: 100%"
+                                               name="stockId"
+                                               class="combobox-directive-margin-top"
+                                               k-placeholder="{{'Select ...'|translate}}"
+                                               k-data-value-field="id"
+                                               k-data-text-field="title"
+                                               ng-model="model.invoice.stockId"
+                                               url="{{model.urls.getAllStocks}}"
+                                               required></dev-tag-combo-box>
+
+                            <div ng-messages="form.stockId.$error" ng-if="form.stockId.$dirty">
+                                <label ng-message="required" class="error">{{'This field is required'|translate}}</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label for="invoiceDate">{{'Date'|translate}}</label>
+                        <dev-tag-datepicker id="invoiceDate" ng-disabled="model.isPayment"
+                                            ng-model="model.invoice.date"
+                                            name="invoiceDate"
+                                            required></dev-tag-datepicker>
+
+                        <div ng-messages="form.invoiceDate.$error" ng-if="form.invoiceDate.$dirty">
+                            <label ng-message="required" class="error">{{'This field is required'|translate}}</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="invoiceNumber" class="title1">{{'Number'|translate}}</label>
+                        <dev-tag-numeric id="invoiceNumber" ng-disabled="model.isPayment"
+                                         ng-model="model.invoice.number"
+                                         style="width: 100%"
+                                         name="invoiceNumber"
+                                         required></dev-tag-numeric>
+
+                        <div ng-messages="form.invoiceNumber.$error" ng-if="form.invoiceNumber.$dirty">
+                            <label ng-message="required" class="error">
+                                {{'This field is required'|translate}}</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-5">
+                    <div class="form-group">
+                        <label class="label-control" for="title">{{'Invoice title' | translate}}</label>
+                        <textarea class="form-control" rows="4" id="title" ng-model="model.invoice.title"></textarea>
+                    </div>
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+
+                    <dev-tag-content-body is-loading="model.isInvoiceSaleLoading">
+                        <div style="padding: 10px"
+                             ng-include="'partials/sales/invoiceLines-template.html'"></div>
+                    </dev-tag-content-body>
+
+                </div>
+            </div>
+        </dev-tag-content-body>
+        <dev-tag-content-footer>
+
+            <div class="row">
+                <div class="col-sm-12 text-right so-align-center">
+                        <dev-tag-button style-type="primary"
+                                        ng-disabled="model.isSaving"
+                                        is-waiting="model.isSaving"
+                                        title="{{'Save as draft' | translate}}"
+                                        icon="glyphicon glyphicon-floppy-disk"
+                                        ng-click="model.saveInvoice(form, 'draft')"></dev-tag-button>
+
+                        <dev-tag-button style-type="primary"
+                                        ng-disabled="model.isSaving"
+                                        is-waiting="model.isSaving"
+                                        title="{{'Confirm' | translate}}"
+                                        icon="glyphicon glyphicon-ok"
+                                        ng-click="model.saveInvoice(form)"></dev-tag-button>
+
+                </div>
+                <div class="col-sm-4"></div>
+                <div class="col-sm-4 text-left">
+                </div>
+            </div>
+
+        </dev-tag-content-footer>
+    </dev-tag-content>
+</form>
+
+
+
+
+
+
+

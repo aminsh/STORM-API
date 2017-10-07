@@ -23,11 +23,6 @@ accModule.config(menuItemsProvider => {
                 title: 'لیست اسناد حسابداری',
                 url: 'journals/list',
                 icon: ''
-            },
-            {
-                title: 'مدیریت اسناد',
-                url: 'journal-management',
-                icon: ''
             }
         ],
 
@@ -47,29 +42,8 @@ accModule.config(menuItemsProvider => {
     menuItemsProvider
         .add({
             title: 'تنظیمات',
-            url: '',
-            icon: 'fa fa-gear',
-            children: [
-                {
-                    title: 'دوره های مالی',
-                    url: 'fiscal-periods',
-                    icon: ''
-                },
-                {
-                    title: 'اطلاعات کسب و کار',
-                    url: 'branch-info',
-                    icon: ''
-                },
-                {
-                    title: 'پیش فرض',
-                    url: 'settings',
-                    icon: ''
-                },
-                {
-                    title: 'سرفصل حسابها',
-                    url: 'general-ledger-accounts'
-                }
-            ]
+            url: 'settings',
+            icon: 'fa fa-gear'
         });
 
     menuItemsProvider
@@ -93,6 +67,20 @@ accModule.config(menuItemsProvider => {
                     url: 'banks-and-funds'
                 }
             ]
+        });
+
+    menuItemsProvider
+        .add({
+            title: 'انبار',
+            url: 'inventory/inputs',
+            icon: 'fa fa-cubes'
+        });
+
+    menuItemsProvider
+        .add({
+            title: 'فروش',
+            url: 'sale/sales',
+            icon: 'fa fa-shopping-cart'
         });
 
     menuItemsProvider
@@ -125,16 +113,6 @@ accModule.config(menuItemsProvider => {
             url: '',
             icon: 'fa fa-list',
             children: [
-                {
-                    title: 'فاکتور فروش',
-                    url: 'sales/list',
-                    icon: ''
-                },
-                {
-                    title: 'فاکتور خرید',
-                    url: 'purchases/list',
-                    icon: ''
-                },
                 {
                     title: 'چک های دریافتی',
                     url: 'receivable-cheques',

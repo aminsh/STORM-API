@@ -13,7 +13,8 @@ container.register('utility', {
     Number: require('../shared/utilities/number'),
     Object: require('../shared/utilities/object'),
     Guid: require('../shared/utilities/guidService'),
-    Image: require('../shared/utilities/image')
+    Image: require('../shared/utilities/image'),
+    Common: require('../shared/utilities/common')
 });
 container.register('config', require('./enviroment'));
 //container.register('io', require('../storm/server/bootstrap').io);
@@ -28,6 +29,7 @@ container.register('Enums', require('../shared/enums'));
 container.register('captcha', require('../integration/reCaptcha/service'));
 
 container.register('httpException', require('../shared/utilities/httpException'));
+container.register('domainException', require('../shared/utilities/domainException'));
 
 container.singleton('Authentication', function () {
     let Authentication = require('../shared/services/service.authentication');
@@ -39,6 +41,11 @@ container.bind('PaymentService', function (key) {
         const PaypingService = require('../integration/payping/service');
         return new PaypingService();
     }
+});
+
+container.singleton('webhook', function () {
+    let Webhook = require('../shared/services/webhook');
+    return new Webhook();
 });
 
 container.singleton('user.repository', function () {
@@ -66,7 +73,9 @@ container.singleton('branchThirdParty.query', function () {
     return new BranchThirdPartyQuery();
 });
 
+
 require('../accounting/server/bootstrap.ioc')(container);
+require('../storm/server/bootstrap.ioc')(container);
 
 
 

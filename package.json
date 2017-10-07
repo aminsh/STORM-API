@@ -38,6 +38,7 @@
     "bootstrap": "^4.0.0-alpha.6",
     "bootstrap-sass": "^3.3.7",
     "bootstrap-sass-directional": "^2.1.1",
+    "ckeditor": "^4.7.2",
     "compression": "^1.6.2",
     "connect-flash": "^0.1.1",
     "connect-redis": "^3.1.0",
@@ -52,6 +53,7 @@
     "express-session": "^1.11.1",
     "file-base64": "^1.0.0",
     "font-awesome": "^4.7.0",
+    "froala-editor": "^2.6.5",
     "get-parameter-names": "^0.3.0",
     "gulp": "^3.9.1",
     "gulp-css-inliner": "^0.1.0",
@@ -109,14 +111,17 @@
     "babel-preset-es2015": "^6.9.0",
     "babel-preset-react": "^6.5.0",
     "babelify": "^7.3.0",
+    "bourbon": "^4.3.4",
     "browserify": "^13.0.1",
     "browserify-shim": "^3.8.14",
     "exorcist": "^0.4.0",
+    "gulp": "^3.9.1",
     "gulp-angular-templatecache": "^1.8.0",
     "gulp-beautify": "^2.0.1",
     "gulp-bower": "0.0.13",
     "gulp-compass": "^2.1.0",
     "gulp-concat": "^2.6.1",
+    "gulp-foreach": "^0.1.0",
     "gulp-if": "^2.0.2",
     "gulp-inject": "^4.2.0",
     "gulp-minify": "0.0.14",
@@ -132,11 +137,10 @@
     "main-bower-files": "^2.13.1",
     "uglifyify": "^3.0.2",
     "uglifyjs-webpack-plugin": "^0.4.6",
+    "velocity-animate": "^1.5.0",
     "webpack": "^3.3.0",
     "webpack-obfuscator": "^0.9.3",
-    "yargs": "^6.6.0",
-    "velocity-animate": "^1.5.0",
-    "bourbon": "^4.3.4"
+    "yargs": "^6.6.0"
   },
   "browserify": {
     "transform": [
@@ -182,7 +186,8 @@
     "metisMenu": "./vendors/jquery.metisMenu.js",
     "angular-ui-select": "./node_modules/ui-select/dist/select.js",
     "angular-image-perloader": "./vendors/angular-image-perloader",
-    "storm-lumx": "./vendors/storm-lumx/js/lumx.js"
+    "storm-lumx": "./vendors/storm-lumx/js/lumx.js",
+    "ckeditor": "./vendors/ckeditor/ckeditor.js"
   },
   "browserify-shim": {
     "ladda": "global:Ladda",

@@ -78,7 +78,7 @@ export default function (apiPromise, $timeout) {
                         let selector = `#${scope.gridId}`;
                         let table;
 
-                        if ($.fn.dataTable.isDataTable(selector)) {
+                        /*if ($.fn.dataTable.isDataTable(selector)) {
                             table = $(selector).DataTable();
                         }
                         else {
@@ -90,10 +90,10 @@ export default function (apiPromise, $timeout) {
                                 ordering: false,
                                 "bInfo": false
                             });
-                        }
+                        }*/
 
-                        $timeout(() => {
-                            /* var $table = $('table.scroll'),
+                        /*$timeout(() => {
+                            /!* var $table = $('table.scroll'),
                              $bodyCells = $table.find('tbody tr:first').children(),
                              colWidth;
 
@@ -104,10 +104,10 @@ export default function (apiPromise, $timeout) {
                              // Set the width of thead columns
                              $table.find('thead tr').children().each(function (i, v) {
                              $(v).width(colWidth[i]);
-                             });*/
+                             });*!/
 
                             table = $(selector).DataTable();
-                        });
+                        });*/
 
                         scope.isWaiting = false;
                     });

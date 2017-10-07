@@ -1,11 +1,19 @@
 "use strict";
 
-const SubsidiaryLedgerAccountRepository = require('../data/repository.subsidiaryLedgerAccount');
+const  async = require('asyncawait/async'),
+    await = require('asyncawait/await'),
+    SubsidiaryLedgerAccountRepository = require('../data/repository.subsidiaryLedgerAccount'),
+    SettingsRepository = require('../data/repository.setting');
 
 
-module.exports = class SubLedger {
+class SubLedger {
     constructor(branchId) {
         this.subsidiaryLedgerAccountRepository = new SubsidiaryLedgerAccountRepository(branchId);
+
+        const settingsRepository = new SettingsRepository(branchId),
+            subsidiaryLedgerAccounts = await(settingsRepository.get()).subsidiaryLedgerAccounts;
+
+        this.subLedger = subsidiaryLedgerAccounts.asEnumerable().toObject(item => item.key, item=> item.id);
     }
 
     getById(id) {
@@ -13,7 +21,7 @@ module.exports = class SubLedger {
     }
 
     receivableAccount() {
-        return this.subsidiaryLedgerAccountRepository.findByCode('1104');
+        return this.getById(this.subLedger.businessDebtors);
     }
 
     payableAccount() {
@@ -60,3 +68,5 @@ module.exports = class SubLedger {
         return this.subsidiaryLedgerAccountRepository.findByCode('2102');
     }
 };
+
+module.exports = SubLedger;

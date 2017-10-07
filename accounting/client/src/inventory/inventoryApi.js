@@ -5,11 +5,20 @@ function inventoryApi(apiPromise, devConstants) {
 
     return {
 
-        getAll(){
-            return apiPromise.get(`${urlPrefix}/products/`);
+        getAll() {
+            return apiPromise.get(`${urlPrefix}/inventories/`);
         },
         getById: function (id) {
-            return apiPromise.get(`${urlPrefix}/products/${id}`);
+            return apiPromise.get(`${urlPrefix}/inventories/${id}`);
+        },
+        getProductInventoryByStock(productId) {
+            return apiPromise.get(`${urlPrefix}/inventories//by-stock/${productId}`);
+        },
+        getInputMaxNumber(){
+            return apiPromise.get(`${urlPrefix}/inventories/inputs/max-number`);
+        },
+        getOutputMaxNumber(){
+            return apiPromise.get(`${urlPrefix}/inventories/outputs/max-number`);
         },
         create: function (data) {
             return apiPromise.post(`${urlPrefix}/products`, data);
@@ -17,8 +26,28 @@ function inventoryApi(apiPromise, devConstants) {
         update: function (id, data) {
             return apiPromise.put(`${urlPrefix}/${id}/products/`, data);
         },
+
+        createInput(data){
+            return apiPromise.post(`${urlPrefix}/inventories/inputs`, data);
+        },
+
+        updateInput(id, data){
+            return apiPromise.put(`${urlPrefix}/inventories/inputs/${id}`, data);
+        },
+
+        createOutput(data){
+            return apiPromise.post(`${urlPrefix}/inventories/outputs`, data);
+        },
+
+        updateOutput(id, data){
+            return apiPromise.put(`${urlPrefix}/inventories/outputs/${id}`, data);
+        },
+
         remove: function (id) {
             return apiPromise.delete(`${urlPrefix}/products/${id}`);
+        },
+        addToFirstInput(data) {
+            return apiPromise.post(`${urlPrefix}/inventories/add-to-first-input`, data);
         }
     };
 

@@ -22,6 +22,17 @@ export default function ($stateProvider, $urlRouterProvider, $locationProvider, 
             templateUrl: 'partials/settings/settings.html'
         })
 
+        .state('settings.createFiscalPeriod', {
+            url: '/create-fiscal-period',
+            onEnter: $modelFactory => {
+                $modelFactory.create({
+                    controller: 'createFiscalPeriodController',
+                    controllerAs: 'model',
+                    templateUrl: 'partials/fiscalPeriod/createFiscalPeriod.html'
+                });
+            }
+        })
+
         .state('chooseBranch', {
             url: '/branch/choose',
             controller: 'chooseBranchController',
@@ -242,22 +253,8 @@ export default function ($stateProvider, $urlRouterProvider, $locationProvider, 
             controller: 'accountReviewTurnoverController',
             templateUrl: 'partials/views/accountReviewTurnover.html'
         })
-        .state('fiscal-periods', {
-            url: '/fiscal-periods',
-            controller: 'fiscalPeriodController',
-            controllerAs: 'model',
-            templateUrl: 'partials/fiscalPeriod/fiscalPeriods.html'
-        })
-        .state('fiscal-periods.new', {
-            url: '/new',
-            onEnter: $modelFactory => {
-                $modelFactory.create({
-                    controller: 'createFiscalPeriodController',
-                    controllerAs: 'model',
-                    templateUrl: 'partials/fiscalPeriod/createFiscalPeriod.html'
-                });
-            }
-        })
+
+
         .state('report', {
             url: '/report',
             template: '<ui-view></ui-view>'
@@ -290,34 +287,7 @@ export default function ($stateProvider, $urlRouterProvider, $locationProvider, 
                 }
             }
         })
-        .state('sales', {
-            url: '/sales',
-            template: '<ui-view></ui-view>'
-        })
-        .state('sales.list', {
-            url: '/list',
-            controller: 'invoiceListController',
-            controllerAs: 'model',
-            templateUrl: 'partials/sales/list.html'
-        })
-        .state('sales.create', {
-            url: '/create',
-            controller: 'invoiceController',
-            controllerAs: 'model',
-            templateUrl: 'partials/sales/invoiceCreate.html'
-        })
-        .state('sales.edit', {
-            url: '/:id/edit',
-            controller: 'invoiceController',
-            controllerAs: 'model',
-            templateUrl: 'partials/sales/invoiceCreate.html'
-        })
-        .state('sales.view', {
-            url: '/:id/view',
-            controller: 'invoiceController',
-            controllerAs: 'model',
-            templateUrl: 'partials/sales/invoice.html'
-        })
+
         .state('payment', {
             url: '/payment',
             onEnter: ($modelFactory, $stateParams) => {
@@ -554,6 +524,107 @@ export default function ($stateProvider, $urlRouterProvider, $locationProvider, 
             controllerAs: 'model',
             templateUrl: 'partials/financialOperations/createExpense.html'
         })
+
+        .state('inventory', {
+            url: '/inventory',
+            controller: 'inventoryController',
+            controllerAs: 'model',
+            templateUrl: 'partials/inventory/inventory.html',
+            /*templateProvider: function ($state, $timeout) {
+                console.log($state);
+            }*/
+        })
+        .state('inventory.stocks', {
+            url: '/stocks',
+            controller: 'stocksController',
+            controllerAs: 'model',
+            templateUrl: 'partials/inventory/stocks.html'
+        })
+        .state('inventory.stocks.create', {
+            url: '/create',
+            onEnter: $modelFactory => {
+                $modelFactory.create({
+                    controller: 'stockEntryController',
+                    controllerAs: 'model',
+                    templateUrl: 'partials/inventory/stockEntry.html',
+                    resolve: {data: () => ({})}
+                });
+            }
+        })
+        .state('inventory.stocks.edit', {
+            url: '/edit/:id',
+            onEnter: ($modelFactory, $stateParams) => {
+                $modelFactory.create({
+                    controller: 'stockEntryController',
+                    controllerAs: 'model',
+                    templateUrl: 'partials/inventory/stockEntry.html',
+                    resolve: {data: () => ({id: $stateParams.id})}
+                });
+            }
+        })
+
+        .state('inventory.inputs', {
+            url: '/inputs',
+            controller: 'inventoriesController',
+            controllerAs: 'model',
+            templateUrl: 'partials/inventory/inventories.html'
+        })
+        .state('inventoryInputsCreate', {
+            url: '/inventory/input/create/on-stock/:stockId',
+            controller: 'inputEntryController',
+            controllerAs: 'model',
+            templateUrl: 'partials/inventory/inventoryEntry.html'
+        })
+        .state('inventoryInputsUpdate', {
+            url: '/inventory/inputs/edit/:id',
+            controller: 'inputEntryController',
+            controllerAs: 'model',
+            templateUrl: 'partials/inventory/inventoryEntry.html'
+        })
+        .state('inventory.inputs.detail', {
+            url: '/detail/:id',
+            onEnter: ($modelFactory, $stateParams) => {
+                $modelFactory.create({
+                    controller: 'inventoryDetailController',
+                    controllerAs: 'model',
+                    size: 'lg',
+                    templateUrl: 'partials/inventory/inventoryDetail.html',
+                    resolve: {data: {id: $stateParams.id}}
+                });
+            }
+        })
+        .state('inventory.outputs', {
+            url: '/outputs',
+            controller: 'inventoriesController',
+            controllerAs: 'model',
+            templateUrl: 'partials/inventory/inventories.html'
+        })
+        .state('inventoryOutputsCreate', {
+            url: '/inventory/outputs/create/on-stock/:stockId',
+            controller: 'outputEntryController',
+            controllerAs: 'model',
+            templateUrl: 'partials/inventory/inventoryEntry.html'
+        })
+        .state('inventoryOutputsUpdate', {
+            url: '/inventory/outputs/edit/:id',
+            controller: 'outputEntryController',
+            controllerAs: 'model',
+            templateUrl: 'partials/inventory/inventoryEntry.html'
+        })
+
+        .state('inventory.outputs.detail', {
+            url: '/detail/:id',
+            onEnter: ($modelFactory, $stateParams) => {
+                $modelFactory.create({
+                    controller: 'inventoryDetailController',
+                    controllerAs: 'model',
+                    size: 'lg',
+                    templateUrl: 'partials/inventory/inventoryDetail.html',
+                    resolve: {data: {id: $stateParams.id}}
+                });
+            }
+        })
+
         .state('not-found', {
             url: '/not-found',
             templateUrl: 'partials/views/notFound.html'

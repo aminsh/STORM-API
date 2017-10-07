@@ -5,6 +5,8 @@ require('./events/onSaleCreated.generateJournal');
 require('./events/onPurchaseCreated.generateJournal');
 require('./events/onPurchaseCreated.generateInput');
 require('./events/onSaleCreated.generateOutput');
+require('./events/onOutputCreated.generateJournal');
+require('./events/onReturnSaleCreated.generateInput');
 
 require('./events/onInvoicePaid');
 require('./events/onPaymentCreated');

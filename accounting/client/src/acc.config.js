@@ -113,6 +113,8 @@ import doughnutChart from "./directives/chart.doughnut";
 import focusMeOn from "./directives/focusMeOn";
 import guide from './directives/guide';
 import {directiveId, matchPasswordValidator} from './settings/matchPasswordValidator';
+import tab from './directives/tab';
+
 //filter
 import "./filters/amount";
 import totalSum from "./filters/total";
@@ -147,6 +149,9 @@ import "./receivableCheque";
 import "./payableCheque";
 import "./bankAndFund";
 import "./detailAccount";
+import "./journalTemplateGeneration";
+import "./settings";
+
 //factory
 import saleApi from "./sales/saleApi";
 // Configs
@@ -183,6 +188,7 @@ accModule
     .directive('devTagButton', button)
     .directive('devTagGuide', guide)
     .directive(directiveId, matchPasswordValidator)
+    .directive('devTagTab', tab)
 
 
     .directive('devTagReportViewer', reportViewer)

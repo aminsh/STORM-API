@@ -1,14 +1,8 @@
-<dev-tag-content dev-attr-title="{{'Fiscal periods' | translate}}">
-    <div class="row">
+<dev-tag-button
+        ui-sref=".createFiscalPeriod"
+        title="{{'New'| translate}}"
+        style-type="primary"
+        icon="fa fa-plus"></dev-tag-button>
 
-        <dev-tag-button
-                ui-sref=".new"
-                title="{{'New'| translate}}"
-                style-type="primary"
-                icon="fa fa-plus"></dev-tag-button>
-    </div>
 
-    <div class="=row">
-        <dev-tag-grid option="model.gridOption"></dev-tag-grid>
-    </div>
-</dev-tag-content>
+<dev-tag-grid option="model.gridOption"></dev-tag-grid>

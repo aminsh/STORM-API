@@ -4,7 +4,7 @@ let async = require('asyncawait/async'),
     await = require('asyncawait/await'),
     BaseRepository = require('./repository.base');
 
-module.exports = class InvoiceRepository extends BaseRepository {
+class InvoiceRepository extends BaseRepository {
     constructor(branchId) {
         super(branchId);
         this.findById = async(this.findById);
@@ -40,6 +40,7 @@ module.exports = class InvoiceRepository extends BaseRepository {
                 invoiceStatus: first.invoiceStatus,
                 orderId: first.orderId,
                 invoiceType: first.invoiceType,
+                ofInvoiceId: first.ofInvoiceId
             };
 
         invoice.invoiceLines = data.asEnumerable().select(line => ({
@@ -232,3 +233,5 @@ module.exports = class InvoiceRepository extends BaseRepository {
             .first();
     }
 };
+
+module.exports = InvoiceRepository;

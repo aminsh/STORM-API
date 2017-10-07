@@ -32,82 +32,41 @@
         <div class="row">
             <div class="col-sm-6">
                 <label for="inputName" class="title1">{{'Person Type'| translate}}</label>
-                <select ng-model="model.people.personType"
-                        ng-options="p.key as p.display for p in model.personType"
-                        class="form-control">
-                    <option value="">{{'Select ...'|translate}}</option>
-                </select>
-            </div>
-            <div class="col-sm-6">
                 <div class="form-group">
-                    <label for="inputNationalCode" class="title1">{{'NationalCode'| translate}}</label>
-                    <input type="text" class="form-control input-sm" id="inputNationalCode"
-                           ng-model="model.people.nationalCode">
+                    <span ng-repeat="item in model.personType" style="margin-left: 10px">
+                       <dev-tag-radio
+                               ng-class="{'checked': item.key == model.people.personType}"
+
+                               k-value="{{item.key}}"
+                               ng-model="model.people.personType"></dev-tag-radio>
+                               {{item.display}}
+                    </span>
                 </div>
             </div>
         </div>
+
+        <div ng-if="model.people.personType === 'real'"
+             ng-include="'partials/people/person.real.entry.template.html'"></div>
+
+        <div ng-if="model.people.personType === 'legal'"
+             ng-include="'partials/people/person.legal.entry.template.html'"></div>
+
+
         <div class="row">
-            <div class="col-sm-6">
-                <div class="form-group">
-                    <label for="inputRegistrationNumber" class="title1">{{'RegistrationNumber'| translate}}</label>
-                    <input type="text"
-                           class="form-control input-sm"
-                           id="inputRegistrationNumber" ng-model="model.people.registrationNumber">
-                </div>
-            </div>
-            <div class="col-sm-6">
-                <div class="form-group">
-                    <label for="inputEconomicCode" class="title1">{{'Economic Code'| translate}}</label>
-                    <input type="text" class="form-control input-sm" id="inputEconomicCode"
-                           ng-model="model.people.economicCode">
-                </div>
-            </div>
+            <uib-tabset active="active">
+                <uib-tab index="0" heading="{{'Address'|translate}}">
+                    <div style="padding: 20px"
+                         ng-include="'partials/people/person.entry.address.template.html'"></div>
+                </uib-tab>
+                <uib-tab index="1" heading="{{'Contacts'|translate}}">
+                    <div style="padding: 20px"
+                         ng-include="'partials/people/person.entry.contacts.template.html'"></div>
+                </uib-tab>
+            </uib-tabset>
         </div>
-        <div class="row">
-            <div class="col-sm-6">
-                <div class="form-group">
-                    <label for="inputPhone" class="title1">{{'Phone'| translate}}</label>
-                    <input type="text" class="form-control input-sm" id="inputPhone" ng-model="model.people.phone">
-                </div>
-            </div>
-            <div class="col-sm-6">
-                <div class="form-group">
-                    <label for="inputContactEmail" class="title1">{{'Email'| translate}}</label>
-                    <input type="email" class="form-control input-sm " id="inputContactEmail"
-                           ng-model="model.people.email">
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-6">
-                <div class="form-group">
-                    <label>{{'Province'| translate}}</label>
-                    <dev-tag-text-box name="province"
-                                      ng-model="model.people.province">
-                </div>
-            </div>
-            <div class="col-sm-6">
-                <div class="form-group">
-                    <label>{{'City'| translate}}</label>
-                    <dev-tag-text-box name="city"
-                                      ng-model="model.people.city">
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="form-group col-sm-6">
-                <label>{{'Address'| translate}}</label>
-                <textarea class="form-control input-sm" rows="2" style="height: 100px"
-                          ng-model="model.people.address"></textarea>
-            </div>
-            <div class="col-sm-6">
-                <div class="form-group">
-                    <label>{{'Postal code'| translate}}</label>
-                    <dev-tag-text-box name="postalCode"
-                                      ng-model="model.people.postalCode">
-                </div>
-            </div>
-        </div>
+
+
+
     </form>
 </div>
 <div class="modal-footer">

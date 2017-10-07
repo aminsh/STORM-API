@@ -1,7 +1,33 @@
 ﻿"use strict";
 
-const Enum = require('./utilities/Enum'),
-    enums = {};
+const enums = {};
+
+class Enum {
+    constructor(enums) {
+        this.data = enums;
+    }
+
+    getDisplay(key) {
+        if (!key) return '';
+
+        return this.data
+            .asEnumerable()
+            .single(e => e.key == key)
+            .display;
+    }
+
+    getKey(key) {
+        return this.data
+            .asEnumerable()
+            .single(e => e.key == key);
+    }
+
+    getKeys() {
+        return this.data.asEnumerable()
+            .select(e => e.key)
+            .toArray();
+    }
+}
 
 enums.AccountPostingType = function () {
     return new Enum([
@@ -32,6 +58,15 @@ enums.PersonType = function () {
         {key: 'real', display: 'حقیقی'},
     ]);
 };
+
+enums.AssignmentStatus = function () {
+    return new Enum([
+        {key: 'Required', display: 'اجباری است'},
+        {key: 'NotRequired', display: 'انتخابی است'},
+        {key: 'DoesNotHave', display: 'ندارد'}
+    ]);
+};
+
 
 enums.AccountGroupingType = function () {
     return new Enum([
@@ -68,6 +103,8 @@ enums.paymentType = function () {
         {key: 'cheque', display: 'چک'},
         {key: 'receipt', display: 'رسید بانکی'},
         {key: 'cash', display: 'نقدی'},
+
+        {key: 'person', display: 'شخص'}
     ]);
 };
 
@@ -153,16 +190,28 @@ enums.ProductType = function () {
 
 enums.BranchStatus = function () {
     return new Enum([
-        { key: 'pending', display: 'انتظار' },
-        { key: 'active', display: 'فعال' }
+        {key: 'pending', display: 'انتظار'},
+        {key: 'active', display: 'فعال'}
     ]);
 };
 
 enums.InventoryType = function () {
     return new Enum([
-        { key: 'input', display: 'رسید' },
-        { key: 'output', display: 'حواله' }
+        {key: 'input', display: 'رسید'},
+        {key: 'output', display: 'حواله'}
     ]);
+};
+
+enums.InventoryIOType = function () {
+    return new Enum([
+        {key: 'inputFirst', display: 'اول دوره'},
+        {key: 'inputPurchase', display: 'خرید'},
+        {key: 'inputStockToStock', display: 'انبار به انبار'},
+        {key: 'inputBackFromSaleOrConsuming', display: 'برگشت از مصرف / فروش'},
+
+        {key: 'outputSale', display: 'فروش'},
+        {key: 'outputWaste', display: 'ضایعات'}
+    ])
 };
 
 enums.ReceiveOrPay = function () {
@@ -179,7 +228,6 @@ enums.UserRole = function () {
     ]);
 };
 
-// [START] SMRSAN
 enums.ThirdParty = function () {
     return new Enum([
         {
@@ -193,6 +241,41 @@ enums.ThirdParty = function () {
         }
     ]);
 };
-// [-END-] SMRSAN
+
+enums.ProductOutputCreationMethod = function () {
+    return new Enum([
+        {key: 'defaultStock', display: 'انبار پیش فرض'},
+        {key: 'stockOnRequest', display: 'انتخاب انبار در فاکتور فروش'}
+
+        /*
+        * these are not implemented
+        */
+        /*{key: 'stockListOnRequest', display: 'انتخاب لیست انبارها در فاکتور فروش'},
+        {key: 'byPriority', display: 'براساس اولویت بندی انبارها'},
+        {key: 'byProductCategory', display: 'براساس گروه کالایی'}*/
+    ]);
+};
+
+enums.JournalGenerationTemplateSourceType = function () {
+    return new Enum([
+        {key: 'sale', display: 'فاکتور فروش'},
+        {key: 'returnSale', display: 'فاکتور برگشت از فروش'},
+        {key: 'inventoryOutputSale', display: 'حواله فروش'},
+        {key: 'inventoryInputReturnSale', display: 'رسید برگشت از فروش'}
+    ]);
+};
+
+enums.NotificationEvent = function () {
+    return new Enum([
+        {
+            key: 'onInventoryInputChanged',
+            display: 'تغییر در ورودی های کالا',
+            fields: [
+                {key: 'productId', display: 'کالا #'},
+                {key: 'quantity', display: 'مقدار موجودی'}
+            ]
+        }
+    ]);
+};
 
 module.exports = enums;

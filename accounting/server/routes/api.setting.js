@@ -4,7 +4,8 @@ const async = require('asyncawait/async'),
     await = require('asyncawait/await'),
     router = require('express').Router(),
     SettingRepository = require('../data/repository.setting'),
-    SettingQuery = require('../queries/query.settings');
+    SettingQuery = require('../queries/query.settings'),
+    defaultSubsidiaryLedgerAccountTemplate = require('../config/settings/subsidiaryLedgerAccounts.json');
 
 router.route('/')
     .get(async((req, res) => {
@@ -12,10 +13,22 @@ router.route('/')
             settingRepository = new SettingRepository(req.branchId),
             result = await(settingQuery.get());
 
-        if(!result){
+        if (!result) {
             let entity = {vat: 9};
             await(settingRepository.create(entity));
             result = entity;
+        }
+
+        if(!result.subsidiaryLedgerAccounts)
+            result.subsidiaryLedgerAccounts = defaultSubsidiaryLedgerAccountTemplate;
+        else {
+            const accountNotExits = defaultSubsidiaryLedgerAccountTemplate.asEnumerable()
+                .where(item => !result.subsidiaryLedgerAccounts
+                    .asEnumerable()
+                    .any(p => p.key === item.key))
+                .toArray();
+
+            result.subsidiaryLedgerAccounts = result.subsidiaryLedgerAccounts.concat(accountNotExits);
         }
 
         res.json(result);
@@ -31,15 +44,31 @@ router.route('/')
         res.json({isValid: true});
 
     }))
-    .put(async((req, res)=> {
+    .put(async((req, res) => {
         let settingRepository = new SettingRepository(req.branchId),
-            cmd = req.body,
+            cmd = req.body;
 
-            entity = {
-                vat: cmd.vat,
-                bankId: cmd.bankId,
-                canControlInventory: cmd.canControlInventory
-            };
+        cmd.canCreateSaleOnNoEnoughInventory = cmd.canControlInventory
+            ? cmd.canCreateSaleOnNoEnoughInventory
+            : false;
+
+        cmd.stockId = cmd.productOutputCreationMethod === 'defaultStock'
+            ? cmd.stockId
+            : null;
+
+        let entity = {
+            vat: cmd.vat,
+            bankId: cmd.bankId,
+            canControlInventory: cmd.canControlInventory,
+            canCreateSaleOnNoEnoughInventory: cmd.canCreateSaleOnNoEnoughInventory,
+            productOutputCreationMethod: cmd.productOutputCreationMethod,
+            canSaleGenerateAutomaticJournal: cmd.canSaleGenerateAutomaticJournal,
+            stakeholders: JSON.stringify(cmd.stakeholders),
+            subsidiaryLedgerAccounts: JSON.stringify(cmd.subsidiaryLedgerAccounts),
+            stockId: cmd.stockId,
+            saleCosts: JSON.stringify(cmd.saleCosts),
+            webhooks: JSON.stringify(cmd.webhooks),
+        };
 
         await(settingRepository.update(entity));
 

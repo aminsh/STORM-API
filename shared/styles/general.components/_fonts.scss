@@ -1,0 +1,336 @@
+$font-path: "../fonts";
+
+@font-face {
+  font-family: 'FontAwesome';
+  src: url('#{$font-path}/fontawesome-webfont.eot?v=4.2.0');
+  src: url('#{$font-path}/fontawesome-webfont.eot?#iefix&v=4.2.0') format('embedded-opentype'),
+  url('#{$font-path}/fontawesome-webfont.woff?v=4.2.0') format('woff'),
+  url('#{$font-path}/fontawesome-webfont.ttf?v=4.2.0') format('truetype'),
+  url('#{$font-path}/fontawesome-webfont.svg?v=4.2.0#fontawesomeregular') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "foundation-icons";
+  src: url("#{$font-path}/foundation-icons.eot");
+  src: url("#{$font-path}/foundation-icons.eot?#iefix") format("embedded-opentype"),
+  url("#{$font-path}/foundation-icons.woff") format("woff"),
+  url("#{$font-path}/foundation-icons.ttf") format("truetype"),
+  url("#{$font-path}/foundation-icons.svg#fontcustom") format("svg");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'IRANSans';
+  font-style: normal;
+  font-weight: normal;
+  src: url('#{$font-path}/IRANSans.eot');
+  src: url('#{$font-path}/iransans/IRANSansWeb.eot?#iefix') format('embedded-opentype'), /* IE6-8 */
+  url('#{$font-path}/IRANSans.woff2') format('woff2'), /* FF39+,Chrome36+, Opera24+*/
+  url('#{$font-path}/IRANSans.woff') format('woff'), /* FF3.6+, IE9, Chrome6+, Saf5.1+*/
+  url('#{$font-path}/IRANSans.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'BBadr';
+  src: url('#{$font-path}/BBadr.eot?#') format('eot'),
+  url('#{$font-path}/BBadr.woff') format('woff'),
+  url('#{$font-path}/BBadr.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'BBaran';
+  src: url('#{$font-path}/BBaran.eot?#') format('eot'),
+  url('#{$font-path}/BBaran.woff') format('woff'),
+  url('#{$font-path}/BBaran.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'BBardiya';
+  src: url('#{$font-path}/BBardiya.eot?#') format('eot'),
+  url('#{$font-path}/BBardiya.woff') format('woff'),
+  url('#{$font-path}/BBardiya.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'BCompset';
+  src: url('#{$font-path}/BCompset.eot?#') format('eot'),
+  url('#{$font-path}/BCompset.woff') format('woff'),
+  url('#{$font-path}/BCompset.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'BDavat';
+  src: url('#{$font-path}/BDavat.eot?#') format('eot'),
+  url('#{$font-path}/BDavat.woff') format('woff'),
+  url('#{$font-path}/BDavat.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'BElham';
+  src: url('#{$font-path}/BElham.eot?#') format('eot'),
+  url('#{$font-path}/BElham.woff') format('woff'),
+  url('#{$font-path}/BElham.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'BEsfehanBold';
+  src: url('#{$font-path}/BEsfehanBold.eot?#') format('eot'), url('#{$font-path}/BEsfehanBold.woff') format('woff'), url('#{$font-path}/BEsfehanBold.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'BFantezy';
+  src: url('#{$font-path}/BFantezy.eot?#') format('eot'),
+  url('#{$font-path}/BFantezy.woff') format('woff'),
+  url('#{$font-path}/BFantezy.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'BFarnaz';
+  src: url('#{$font-path}/BFarnaz.eot?#') format('eot'), url('#{$font-path}/BFarnaz.woff') format('woff'), url('#{$font-path}/BFarnaz.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'BFerdosi';
+  src: url('#{$font-path}/BFerdosi.eot?#') format('eot'),
+  url('#{$font-path}/BFerdosi.woff') format('woff'),
+  url('#{$font-path}/BFerdosi.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'BHamid';
+  src: url('#{$font-path}/BHamid.eot?#') format('eot'),
+  url('#{$font-path}/BHamid.woff') format('woff'),
+  url('#{$font-path}/BHamid.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'BHelal';
+  src: url('#{$font-path}/BHelal.eot?#') format('eot'),
+  url('#{$font-path}/BHelal.woff') format('woff'),
+  url('#{$font-path}/BHelal.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'BHoma';
+  src: url('#{$font-path}/BHoma.eot?#') format('eot'), url('#{$font-path}/BHoma.woff') format('woff'), url('#{$font-path}/BHoma.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'BJadidBold';
+  src: url('#{$font-path}/BJadidBold.eot?#') format('eot'),
+  url('#{$font-path}/BJadidBold.woff') format('woff'),
+  url('#{$font-path}/BJadidBold.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'BJalal';
+  src: url('#{$font-path}/BJalal.eot?#') format('eot'),
+  url('#{$font-path}/BJalal.woff') format('woff'),
+  url('#{$font-path}/BJalal.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'BKoodakBold';
+  src: url('#{$font-path}/BKoodakBold.eot?#') format('eot'),
+  url('#{$font-path}/BKoodakBold.woff') format('woff'),
+  url('#{$font-path}/BKoodakBold.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'BKourosh';
+  src: url('#{$font-path}/BKourosh.eot?#') format('eot'),
+  url('#{$font-path}/BKourosh.woff') format('woff'),
+  url('#{$font-path}/BKourosh.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'BLotus';
+  src: url('#{$font-path}/BLotus.eot?#') format('eot'),
+  url('#{$font-path}/BLotus.woff') format('woff'),
+  url('#{$font-path}/BLotus.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'BMahsa';
+  src: url('#{$font-path}/BMahsa.eot?#') format('eot'),
+  url('#{$font-path}/BMahsa.woff') format('woff'),
+  url('#{$font-path}/BMahsa.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'BMehrBold';
+  src: url('#{$font-path}/BMehrBold.eot?#') format('eot'),
+  url('#{$font-path}/BMehrBold.woff') format('woff'),
+  url('#{$font-path}/BMehrBold.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'BMitra';
+  src: url('#{$font-path}/BMitra.eot?#') format('eot'),
+  url('#{$font-path}/BMitra.woff') format('woff'),
+  url('#{$font-path}/BMitra.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'BMorvarid';
+  src: url('#{$font-path}/BMorvarid.eot?#') format('eot'),
+  url('#{$font-path}/BMorvarid.woff') format('woff'),
+  url('#{$font-path}/BMorvarid.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'BNarm';
+  src: url('#{$font-path}/BNarm.eot?#') format('eot'), url('#{$font-path}/BNarm.woff') format('woff'), url('#{$font-path}/BNarm.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'BNasimBold';
+  src: url('#{$font-path}/BNasimBold.eot?#') format('eot'),
+  url('#{$font-path}/BNasimBold.woff') format('woff'),
+  url('#{$font-path}/BNasimBold.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'BNazanin';
+  src: url('#{$font-path}/BNazanin.eot?#') format('eot'),
+  url('#{$font-path}/BNazanin.woff') format('woff'),
+  url('#{$font-path}/BNazanin.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'BRoya';
+  src: url('#{$font-path}/BRoya.eot?#') format('eot'), url('#{$font-path}/BRoya.woff') format('woff'), url('#{$font-path}/BRoya.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'BSetarehBold';
+  src: url('#{$font-path}/BSetarehBold.eot?#') format('eot'), url('#{$font-path}/BSetarehBold.woff') format('woff'), url('#{$font-path}/BSetarehBold.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'BShiraz';
+  src: url('#{$font-path}/BShiraz.eot?#') format('eot'), url('#{$font-path}/BShiraz.woff') format('woff'), url('#{$font-path}/BShiraz.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'BSinaBold';
+  src: url('#{$font-path}/BSinaBold.eot?#') format('eot'), url('#{$font-path}/BSinaBold.woff') format('woff'), url('#{$font-path}/BSinaBold.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'BTabassom';
+  src: url('#{$font-path}/BTabassom.eot?#') format('eot'), url('#{$font-path}/BTabassom.woff') format('woff'), url('#{$font-path}/BTabassom.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'BTehran';
+  src: url('#{$font-path}/BTehran.eot?#') format('eot'), url('#{$font-path}/BTehran.woff') format('woff'), url('#{$font-path}/BTehran.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'BTitrBold';
+  src: url('#{$font-path}/BTitrBold.eot?#') format('eot'), url('#{$font-path}/BTitrBold.woff') format('woff'), url('#{$font-path}/BTitrBold.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'BTitrTGEBold';
+  src: url('#{$font-path}/BTitrTGEBold.eot?#') format('eot'), url('#{$font-path}/BTitrTGEBold.woff') format('woff'), url('#{$font-path}/BTitrTGEBold.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'BTraffic';
+  src: url('#{$font-path}/BTraffic.eot?#') format('eot'), url('#{$font-path}/BTraffic.woff') format('woff'), url('#{$font-path}/BTraffic.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'BVahidBold';
+  src: url('#{$font-path}/BVahidBold.eot?#') format('eot'), url('#{$font-path}/BVahidBold.woff') format('woff'), url('#{$font-path}/BVahidBold.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'BYagut';
+  src: url('#{$font-path}/BYagut.eot?#') format('eot'), url('#{$font-path}/BYagut.woff') format('woff'), url('#{$font-path}/BYagut.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'BYas';
+  src: url('#{$font-path}/BYas.eot?#') format('eot'), url('#{$font-path}/BYas.woff') format('woff'), url('#{$font-path}/BYas.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'BYekan';
+  src: url('#{$font-path}/BYekan.eot?#') format('eot'), url('#{$font-path}/BYekan.woff') format('woff'), url('#{$font-path}/BYekan.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'BZar';
+  src: url('#{$font-path}/BZar.eot?#') format('eot'), url('#{$font-path}/BZar.woff') format('woff'), url('#{$font-path}/BZar.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'BZiba';
+  src: url('#{$font-path}/BZiba.eot?#') format('eot'), url('#{$font-path}/BZiba.woff') format('woff'), url('#{$font-path}/BZiba.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'IranianSans';
+  src: url('#{$font-path}/IranianSans.eot?#') format('eot'), url('#{$font-path}/IranianSans.woff') format('woff'), url('#{$font-path}/IranianSans.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'storm-font';
+  src: url('#{$font-path}/storm-font.eot?9245601');
+  src: url('#{$font-path}/storm-font.eot?9245601#iefix') format('embedded-opentype'),
+  url('#{$font-path}/storm-font.woff2?9245601') format('woff2'),
+  url('#{$font-path}/storm-font.woff?9245601') format('woff'),
+  url('#{$font-path}/storm-font.ttf?9245601') format('truetype'),
+  url('#{$font-path}/storm-font.svg?9245601#storm-font') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+[class^="storm-"]:before, [class*=" storm-"]:before {
+  font-family: "storm-font";
+  font-style: normal;
+  font-weight: normal;
+  speak: none;
+
+  display: inline-block;
+  text-decoration: inherit;
+  width: 1em;
+  margin-right: .2em;
+  text-align: center;
+  /* opacity: .8; */
+
+  /* For safety - reset parent styles, that can break glyph codes*/
+  font-variant: normal;
+  text-transform: none;
+
+  /* fix buttons height, for twitter bootstrap */
+  line-height: 1em;
+
+  /* Animation center compensation - margins should be symmetric */
+  /* remove if not needed */
+  margin-left: .2em;
+
+  /* you can be more comfortable with increased icons size */
+  /* font-size: 120%; */
+
+  /* Font smoothing. That was taken from TWBS */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  /* Uncomment for 3D effect */
+  /* text-shadow: 1px 1px 1px rgba(127, 127, 127, 0.3); */
+}
+
+.storm-heart:before { content: '\e800'; } /* '' */
+.storm-left-open:before { content: '\e801'; } /* '' */
+.storm-doc-new:before { content: '\e802'; } /* '' */
+.storm-chart:before { content: '\e803'; } /* '' */
+.storm-emo-thumbsup:before { content: '\e804'; } /* '' */
+.storm-emo-devil:before { content: '\e805'; } /* '' */
+.storm-search:before { content: '\e806'; } /* '' */

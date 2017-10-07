@@ -5393,9 +5393,9 @@
         };
     }
 
-    LxTabsController.$inject = ['LxUtils', '$element', '$scope', '$timeout'];
+    LxTabsController.$inject = ['LxUtils', '$element', '$scope', '$timeout', '$state'];
 
-    function LxTabsController(LxUtils, $element, $scope, $timeout)
+    function LxTabsController(LxUtils, $element, $scope, $timeout, $state)
     {
         var lxTabs = this;
         var tabsLength;
@@ -5505,6 +5505,8 @@
             if (!_tab.disabled)
             {
                 lxTabs.activeTab = _tab.index;
+                if(!(_tab.goState) || typeof _tab.goState !== "string") return;
+                $state.go(_tab.goState);
             }
         }
 
@@ -5581,6 +5583,7 @@
                     tab.uuid = _tab.uuid;
                     tab.icon = _tab.icon;
                     tab.label = _tab.label;
+                    tab.goState = _tab.goState;
                 }
             });
 
@@ -5621,6 +5624,13 @@
         {
             ctrls[0].init(ctrls[1], element.index());
 
+            // [START] STORM DEV
+            attrs.$observe('lxGoState', function(_newStateName)
+            {
+                ctrls[0].setState(_newStateName);
+            });
+            // [-END-] STORM DEV
+
             attrs.$observe('lxLabel', function(_newLabel)
             {
                 ctrls[0].setLabel(_newLabel);
@@ -5644,12 +5654,14 @@
             index: undefined,
             label: undefined,
             icon: undefined,
+            goState: undefined,
             disabled: false
         };
 
         lxTab.init = init;
         lxTab.setIcon = setIcon;
         lxTab.setLabel = setLabel;
+        lxTab.setState = setState;
         lxTab.tabIsActive = tabIsActive;
 
         $scope.$watch(function()
@@ -5694,6 +5706,13 @@
         function setLabel(_label)
         {
             tab.label = _label;
+
+            parentCtrl.updateTabs(tab);
+        }
+
+        function setState(_goState)
+        {
+            tab.goState = _goState;
 
             parentCtrl.updateTabs(tab);
         }
@@ -6170,7 +6189,7 @@ angular.module("lumx.dropdown").run(['$templateCache', function(a) { a.put('drop
     '');
 	a.put('dropdown-toggle.html', '<div class="dropdown-toggle" ng-transclude></div>\n' +
     '');
-	a.put('dropdown-menu.html', '<div class="dropdown-menu">\n' +
+	a.put('dropdown-menu.html', '<div class="lx-dropdown-menu">\n' +
     '    <div class="dropdown-menu__content" ng-transclude ng-if="lxDropdownMenu.parentCtrl.isOpen"></div>\n' +
     '</div>\n' +
     '');

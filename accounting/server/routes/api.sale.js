@@ -12,7 +12,6 @@ const async = require('asyncawait/async'),
     DetailAccountDomain = require('../domain/detailAccount'),
     ProductDomain = require('../domain/product'),
     InvoiceRepository = require('../data/repository.invoice'),
-    ProductRepository = require('../data/repository.product'),
     InvoiceQuery = require('../queries/query.invoice'),
     PaymentRepository = require('../data/repository.payment'),
     PaymentQuery = require('../queries/query.payment'),
@@ -21,7 +20,6 @@ const async = require('asyncawait/async'),
     Crypto = require('../services/shared').service.Crypto,
     config = instanceOf('config'),
     md5 = require('md5'),
-    BranchRepository = require('../../../storm/server/features/branch/branch.repository'),
     Email = instanceOf('Email'),
     render = instanceOf('htmlRender').renderFile,
     branchRepository = instanceOf('branch.repository');
@@ -59,26 +57,34 @@ router.route('/')
     }))
 
     .post(async((req, res) => {
+
         let branchId = req.branchId,
-            saleDomain = new SaleDomain(req.branchId),
+            fiscalPeriodId = req.fiscalPeriodId,
+            saleDomain = new SaleDomain(req.branchId, req.fiscalPeriodId),
             detailAccountDomain = new DetailAccountDomain(req.branchId),
             productDomain = new ProductDomain(req.branchId),
             settingRepository = new SettingRepository(branchId),
             fiscalPeriodRepository = new FiscalPeriodRepository(req.branchId),
-            currentFiscalPeriod = await(fiscalPeriodRepository.findById(req.cookies['current-period'])),
+            currentFiscalPeriod = await(fiscalPeriodRepository.findById(req.fiscalPeriodId)),
+
             cmd = req.body,
             errors = [],
 
-            bankId;
+            settings = await(settingRepository.get()),
 
-        let temporaryDateIsInPeriodRange =
-            cmd.date >= currentFiscalPeriod.minDate &&
-            cmd.date <= currentFiscalPeriod.maxDate;
+            bankId,
+            temporaryDateIsInPeriodRange = true;
+
+
+        if (!String.isNullOrEmpty(cmd.date))
+            temporaryDateIsInPeriodRange =
+                cmd.date >= currentFiscalPeriod.minDate &&
+                cmd.date <= currentFiscalPeriod.maxDate;
 
         if (!temporaryDateIsInPeriodRange)
             errors.push(translate('The temporaryDate is not in current period date range'));
 
-        if (!(cmd.invoiceLines && cmd.invoiceLines.length != 0))
+        if (!(cmd.invoiceLines && cmd.invoiceLines.length !== 0))
             errors.push('ردیف های فاکتور وجود ندارد');
         else checkLinesValidation();
 
@@ -102,21 +108,29 @@ router.route('/')
                 if (Guid.isEmpty(e.productId) && String.isNullOrEmpty(e.description))
                     errors.push('کالا یا شرح کالا نباید خالی باشد');
 
-                if (!(e.quantity && e.quantity != 0))
+                if (!(e.quantity && e.quantity !== 0))
                     errors.push('مقدار نباید خالی یا صفر باشد');
 
-                if (!(e.unitPrice && e.unitPrice != 0))
+                if (!(e.unitPrice && e.unitPrice !== 0))
                     errors.push('قیمت واحد نباید خالی یا صفر باشد');
             }));
         }
 
-        if (cmd.status == 'paid') {
-            bankId = await(settingRepository.get()).bankId;
+        if (cmd.status === 'paid') {
+            bankId = settings.bankId;
             if (!bankId)
                 errors.push('اطلاعات بانک پیش فرض تعریف نشده - ثبت پرداخت برای این فاکتور امکانپذیر نیست')
         }
 
-        if (errors.length != 0)
+
+        if (errors.length !== 0)
+            return res.json({isValid: false, errors});
+
+        if (settings.canControlInventory)
+            errors = await(instanceOf('inventory.control',
+                branchId, fiscalPeriodId, settings).control(cmd));
+
+        if (errors.length !== 0)
             return res.json({isValid: false, errors});
 
         let current = {
@@ -125,7 +139,7 @@ router.route('/')
                 userId: req.user.id
             },
 
-            status = (cmd.status == 'confirm' || cmd.status == 'paid')
+            status = (cmd.status === 'confirm' || cmd.status === 'paid')
                 ? 'waitForPayment'
                 : 'draft';
 
@@ -133,21 +147,14 @@ router.route('/')
         cmd.detailAccountId = customer.id;
         cmd.status = status;
 
-        let sale = saleDomain.create(cmd),
-            returnValue = {
-                id: sale.id, printUrl: `${config.url.origin}/print/?token=${Crypto.sign({
-                    branchId: req.branchId,
-                    id: sale.id,
-                    reportId: 700
-                })}`
-            };
+        const sale = saleDomain.create(cmd);
 
-        res.json({isValid: true, returnValue});
+        res.json({isValid: true, returnValue: sale});
 
-        if (status == 'waitForPayment')
+        if (status === 'waitForPayment')
             EventEmitter.emit('on-sale-created', sale, current);
 
-        if (cmd.status == 'paid') {
+        if (cmd.status === 'paid') {
 
             setTimeout(async(() => {
                 let paymentRepository = new PaymentRepository(req.branchId),
@@ -212,6 +219,8 @@ router.route('/:id')
     .put(async((req, res) => {
         let invoiceRepository = new InvoiceRepository(req.branchId),
             saleDomain = new SaleDomain(req.branchId),
+            settingRepository = new SettingRepository(req.branchId),
+            settings = await(settingRepository.get()),
             id = req.params.id,
             errors = [],
             invoice = await(invoiceRepository.findById(id)),
@@ -238,7 +247,14 @@ router.route('/:id')
         if (invoice.invoiceStatus != 'draft')
             errors.push('فاکتور جاری قابل ویرایش نمیباشد');
 
-        if (errors.length != 0)
+        if (errors.length !== 0)
+            return res.json({isValid: false, errors});
+
+        if (settings.canControlInventory)
+            errors = await(instanceOf('inventory.control',
+                branchId, fiscalPeriodId, settings).control(cmd));
+
+        if (errors.length !== 0)
             return res.json({isValid: false, errors});
 
         entity.invoiceLines = cmd.invoiceLines.asEnumerable()
@@ -373,7 +389,7 @@ router.route('/:invoiceId/send-email')
         // Send Email
         try {
 
-            let html = await(render("/accounting/server/email-template/invoice customer/template.ejs", {
+            let html = await(render("/accounting/server/templates/send.invoice.template.ejs", {
                 invoiceUrl: link,
                 branchLogo: branch.logo,
                 branchName: branch.name,

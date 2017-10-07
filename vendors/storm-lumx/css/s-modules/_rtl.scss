@@ -20,5 +20,8 @@
     @include position(absolute, $base-spacing-unit 0 null auto);
     @include transform-origin(bottom right);
   }
+  .text-field__icon {
+    @include position(absolute, 2px -68px null null);
+  }
 
 }

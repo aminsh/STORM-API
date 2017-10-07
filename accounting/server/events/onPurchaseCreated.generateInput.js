@@ -17,7 +17,7 @@ EventEmitter.on('on-purchase-created', async((purchase, current) => {
 
     if (!purchase.invoiceLines
             .asEnumerable()
-            .any(async(line => await(productRepository.isGood(line.productId)))))
+            .any(async.result(line => await(productRepository.isGood(line.productId)))))
         return;
 
     if(!await(settingRepository.get()).canControlInventory)
@@ -33,7 +33,7 @@ EventEmitter.on('on-purchase-created', async((purchase, current) => {
                 invoiceId: purchase.id
             },
             inputLines = purchase.invoiceLines.asEnumerable()
-                .where(async(line => await(productRepository.isGood(line.productId))))
+                .where(async.result(line => await(productRepository.isGood(line.productId))))
                 .select(line => ({
                     productId: line.productId,
                     quantity: line.quantity,

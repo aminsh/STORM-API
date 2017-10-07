@@ -1,68 +1,51 @@
 "use strict";
 
-const async = require('asyncawait/async'),
+const
+    async = require('asyncawait/async'),
     await = require('asyncawait/await'),
-    GeneralLedgerAccountRepository = require('../../../../accounting/server/data/repository.generalLedgerAccount'),
-    SubsidiaryLedgerAccountRepository = require('../../../../accounting/server/data/repository.subsidiaryLedgerAccount'),
-    defaultGeneralLedgerAccounts = require('../../../../accounting/server/config/generalLedgerAccounts.json').RECORDS,
-    defaultSubsidiaryLedgerAccounts = require('../../../../accounting/server/config/subsidiaryLedgerAccounts.json').RECORDS,
-    enums = require('../../../../shared/enums'),
-    groups = getChartOfAccount();
+    Guid = instanceOf('utility').Guid,
+    Common = instanceOf('utility').Common,
+    knex = instanceOf('knex')
 
+
+let defaultAccountCategories = require('../../../../accounting/server/config/chartOfAccounts/accountCategories.json').groups,
+    defaultGeneralLedgerAccounts = require('../../../../accounting/server/config/chartOfAccounts/generalLedgerAccounts.json'),
+    defaultSubsidiaryLedgerAccounts = require('../../../../accounting/server/config/chartOfAccounts/subsidiatyLedgerAccounts.json');
 
 
 module.exports = async.result(function (branchId) {
-    let generalLedgerAccountRepository = new GeneralLedgerAccountRepository(branchId),
-        subsidiaryLedgerAccountRepository = new SubsidiaryLedgerAccountRepository(branchId);
 
-    groups.forEach(g => {
-        g.generalLedgerAccounts.forEach(async.result(gla => {
-            let newGla = {
-                title: gla.title,
-                code: gla.code,
-                groupingType: g.key,
-                balanceType: gla.balanceType,
-                postingType: gla.postingType,
-                isLocked: gla.isLocked
-            };
-
-            await(generalLedgerAccountRepository.create(newGla));
-
-            gla.subsidiaryLedgerAccounts.forEach(async.result(sla => {
-                let entity = {
-                    title: sla.title,
-                    code: sla.code,
-                    generalLedgerAccountId: newGla.id,
-                    hasDetailAccount: sla.hasDetailAccount,
-                    isLocked: sla.isLocked,
-                    branchId
-                };
-
-                await(subsidiaryLedgerAccountRepository.create(entity));
-            }));
-        }));
+    defaultAccountCategories.forEach(item => item.branchId = branchId);
+    defaultGeneralLedgerAccounts.forEach(item => {
+        item.branchId = branchId;
+        item.id = Guid.new();
     });
+
+    let subsidiaryLedgerAccounts = defaultSubsidiaryLedgerAccounts.asEnumerable().join(
+        defaultGeneralLedgerAccounts,
+        sla => sla.parentCode,
+        gla => gla.code,
+        (sla, gla) => ({
+            id: Guid.new(),
+            branchId,
+            generalLedgerAccountId: gla.id,
+            code: sla.code,
+            title: sla.title,
+            key: sla.key,
+            hasDetailAccount: sla.hasDetailAccount
+        }))
+        .toArray();
+
+
+    defaultAccountCategories.forEach(item => delete item.category);
+    subsidiaryLedgerAccounts.forEach(item => delete item.key);
+
+    await(knex('accountCategories').insert(defaultAccountCategories));
+    await(knex('generalLedgerAccounts').insert(defaultGeneralLedgerAccounts));
+
+    await(Common.waitFor(1000));
+
+    await(knex('subsidiaryLedgerAccounts').insert(subsidiaryLedgerAccounts));
 
 });
 
-function getChartOfAccount() {
-    defaultGeneralLedgerAccounts.forEach(gla => {
-        let subs = defaultSubsidiaryLedgerAccounts
-            .asEnumerable()
-            .where(sla => sla.generalLedgerAccountId == parseInt(gla.code))
-            .toArray();
-        gla.subsidiaryLedgerAccounts = subs;
-    });
-
-    let groups = enums.AccountGroupingType().data;
-
-    groups.forEach(g => {
-        let generals = defaultGeneralLedgerAccounts
-            .asEnumerable()
-            .where(gla => gla.groupLedgerAccountId == parseInt(g.key))
-            .toArray();
-        g.generalLedgerAccounts = generals;
-    });
-
-    return groups;
-}

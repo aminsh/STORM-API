@@ -18,8 +18,16 @@ export default function formService() {
         });
     }
 
+    function setDirtySubForm(form) {
+        Object.keys(form).asEnumerable()
+            .where(key => key.includes('form-'))
+            .toArray()
+            .forEach(key => setDirty(form[key]));
+    }
+
     return {
         setDirty: setDirty,
+        setDirtySubForm: setDirtySubForm,
         setClean: setClean
     }
 }

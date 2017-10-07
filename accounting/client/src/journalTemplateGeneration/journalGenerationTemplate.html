@@ -1,0 +1,19 @@
+<dev-tag-content dev-attr-title="{{'Journal generation templates'|translate}}">
+    <dev-tag-content-body>
+        <div class="row">
+            <div class="col-md-3"
+                 ng-repeat="item in model.journalGenerationTemplateSourceType">
+                <dev-tag-button
+                        style-type="primary btn-outline btn-block"
+                        title="{{item.display}}"
+                        ui-sref=".edit({type: item.key})"></dev-tag-button>
+            </div>
+
+        </div>
+
+
+    </dev-tag-content-body>
+
+    <ui-view></ui-view>
+
+</dev-tag-content>

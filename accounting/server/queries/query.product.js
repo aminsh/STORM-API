@@ -8,7 +8,7 @@ const async = require('asyncawait/async'),
     enums = require('../../../shared/enums'),
     view = require('../viewModel.assemblers/view.product');
 
-module.exports = class ProductQuery extends BaseQuery {
+class ProductQuery extends BaseQuery {
     constructor(branchId) {
         super(branchId);
         this.getById = async(this.getById);
@@ -22,13 +22,28 @@ module.exports = class ProductQuery extends BaseQuery {
         let knex = this.knex,
             branchId = this.branchId,
             query = this.knex.select()
-            .from(function () {
-                this.select('products.*', knex.raw('scales.title as "scaleDisplay"'))
-                    .from('products')
-                    .leftJoin('scales', 'products.scaleId', 'scales.id')
-                    .where('products.branchId', branchId)
-                    .as('base');
-            });
+                .from(function () {
+                    this.select('products.*', knex.raw('scales.title as "scaleDisplay"'))
+                        .from('products')
+                        .leftJoin('scales', 'products.scaleId', 'scales.id')
+                        .where('products.branchId', branchId)
+                        .as('base');
+                });
+        return kendoQueryResolve(query, parameters, view);
+    }
+
+    getAllGoods(parameters) {
+        let knex = this.knex,
+            branchId = this.branchId,
+            query = this.knex.select()
+                .from(function () {
+                    this.select('products.*', knex.raw('scales.title as "scaleDisplay"'))
+                        .from('products')
+                        .leftJoin('scales', 'products.scaleId', 'scales.id')
+                        .where('products.branchId', branchId)
+                        .where('productType', 'good')
+                        .as('base');
+                });
         return kendoQueryResolve(query, parameters, view);
     }
 
@@ -126,3 +141,5 @@ module.exports = class ProductQuery extends BaseQuery {
         return result;
     }
 };
+
+module.exports = ProductQuery;

@@ -1,0 +1,74 @@
+{
+  "title": "الگوی صدور سند اتوماتیک برای فاکتور برگشت از فروش",
+  "fields": [
+    {
+      "key": "number",
+      "display": "شماره فاکتور",
+      "value": 1
+    },
+    {
+      "key": "date",
+      "display": "تاریخ فاکتور",
+      "value": "1396/01/01"
+    },
+    {
+      "key": "title",
+      "display": "عنوان فاکتور",
+      "value": "تست"
+    },
+    {
+      "key": "amount",
+      "display": "مبلغ فاکتور (مقدار * مبلغ واحد)",
+      "value": 10000
+    },
+    {
+      "key": "vat",
+      "display": "ارزش افزوده",
+      "value": 90
+    },
+    {
+      "key": "discount",
+      "display": "تخفیف",
+      "value": 30
+    },
+    {
+      "key": "customer",
+      "display": "خریدار (تفصیل)",
+      "value": "6001 - مشتری نمونه"
+    }
+  ],
+  "data": {
+    "description": "بابت فاکتور برگشت از فروش شماره # number # ",
+    "lines": [
+      {
+        "subsidiaryLedgerAccountId": "",
+        "key": "businessCreditors",
+        "detailAccountId": "# customer #",
+        "debtor": "0",
+        "creditor": "# amount - discount + vat #",
+        "article": "بابت فاکتور برگشت از فروش شماره # number # "
+      },
+      {
+        "subsidiaryLedgerAccountId": "",
+        "key": "returnSaleGood",
+        "debtor": "# amount #",
+        "creditor": "0",
+        "article": "بابت فاکتور برگشت از فروش شماره # number # "
+      },
+      {
+        "subsidiaryLedgerAccountId": "",
+        "key": "purchaseTax",
+        "debtor": "0",
+        "creditor": "# discount #",
+        "article": "بابت فاکتور برگشت از فروش شماره # number # "
+      },
+      {
+        "subsidiaryLedgerAccountId": "",
+        "debtor": "# vat #",
+        "creditor": "0",
+        "article": "بابت فاکتور برگشت از فروش شماره # number # "
+      }
+
+    ]
+  }
+}

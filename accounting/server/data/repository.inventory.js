@@ -4,7 +4,7 @@ let async = require('asyncawait/async'),
     await = require('asyncawait/await'),
     BaseRepository = require('./repository.base');
 
-module.exports = class InventoryRepository extends BaseRepository {
+class InventoryRepository extends BaseRepository {
     constructor(branchId) {
         super(branchId);
         this.findById = async(this.findById);
@@ -13,53 +13,102 @@ module.exports = class InventoryRepository extends BaseRepository {
         this.createInventoryLines = async(this.createInventoryLines);
         this.updateInventory = async(this.updateInventory);
         this.updateInventoryLines = async(this.updateInventoryLines);
+        this.findFirst = async(this.findFirst);
     }
 
     findById(id) {
-        let inventory = await(this.knex.table('inventories').where('id', id).first()),
-            inventoryLines = await(this.knex.table('inventoryLines').where('inventoryId', id));
+        let inventory = await(this.knex.table('inventories').where('id', id).first());
 
-        inventory.inventoryLines = invoiceLines;
+        if (!inventory) return null;
+
+        let inventoryLines = await(this.knex.table('inventoryLines').where('inventoryId', id));
+
+        inventory.inventoryLines = inventoryLines;
 
         return inventory;
     }
 
-    findInvoiceLinesByInvoiceId(id) {
-        return this.knex.table('inventoryLines').where('inventoryId', id);
+    findFirst(stockId) {
+        const first = await(this.knex.select('id')
+            .from('inventories')
+            .where('branchId', this.branchId)
+            .where('inventoryType', 'input')
+            .where('ioType', 'inputFirst')
+            .where('stockId', stockId)
+            .first());
+
+        return first ? this.findById(first.id) : null;
     }
 
-    inventoryByProduct(productId, fiscalPeriodId) {
+    findByInvoiceId(invoiceId, inventoryType) {
+        const ids = await(this.knex.select('id').from('inventories')
+            .where('invoiceId', invoiceId)
+            .where('inventoryType', inventoryType));
 
-        let knex = this.knex;
+        if(!(ids && ids.length > 0))
+            return [];
 
-        return knex.from(function () {
-            this.select(`((case
-         when "inventories"."inventoryType" = 'input' then 1
-         when "inventories"."inventoryType" = 'output' then -1
-         end) * "inventoryLines"."quantity") as "countOfProduct"`).from('inventories')
-                .leftJoin('inventoryLines', 'inventories.id', 'inventoryLines.inventoryId')
-                .where('branchId', this.branchId)
-                .andWhere('fiscalPeriodId', fiscalPeriodId)
-                .andWhere('productId', productId)
-        })
-            .sum('countOfProduct')
-            .first();
+        return ids.asEnumerable()
+            .select(async.result(item => await(this.findById(item.id))))
+            .toArray();
     }
 
-    inputMaxNumber(fiscalPeriodId) {
+    getInventoryByProduct(productId, fiscalPeriodId, stockId) {
+
+        let knex = this.knex,
+            branchId = this.branchId,
+
+            query = await(knex.from(function () {
+                this.select(knex.raw(`((case
+                     when "inventories"."inventoryType" = 'input' then 1
+                     when "inventories"."inventoryType" = 'output' then -1
+                     end) * "inventoryLines"."quantity") as "countOfProduct"`))
+                    .from('inventories')
+                    .leftJoin('inventoryLines', 'inventories.id', 'inventoryLines.inventoryId')
+                    .where('inventories.branchId', branchId)
+                    .andWhere('fiscalPeriodId', fiscalPeriodId)
+                    .andWhere('productId', productId)
+                    .andWhere('stockId', stockId)
+                    .as('base');
+            })
+                .sum('countOfProduct')
+                .first());
+
+        return query.sum;
+    }
+
+    getInventoriesByProductId(productId, fiscalPeriodId, stockId, expectInventoryLineId) {
+
+        let query = this.knex.select('inventoryLines.*', 'inventories.inventoryType', 'inventories.ioType').from('inventories')
+            .leftJoin('inventoryLines', 'inventories.id', 'inventoryLines.inventoryId')
+            .where('inventoryLines.branchId', this.branchId)
+            .andWhere('fiscalPeriodId', fiscalPeriodId)
+            .andWhere('productId', productId)
+            .andWhere('stockId', stockId)
+            .orderBy('inventories.createdAt');
+
+        if(expectInventoryLineId)
+            query.whereNot('id', expectInventoryLineId);
+
+        return query;
+    }
+
+    inputMaxNumber(fiscalPeriodId, stockId) {
         return this.knex.table('inventories')
             .modify(this.modify, this.branchId)
             .where('inventoryType', 'input')
             .andWhere('fiscalPeriodId', fiscalPeriodId)
+            .andWhere('stockId', stockId)
             .max('number')
             .first();
     }
 
-    outputMaxNumber(fiscalPeriodId) {
+    outputMaxNumber(fiscalPeriodId, stockId) {
         return this.knex.table('inventories')
             .modify(this.modify, this.branchId)
             .where('inventoryType', 'output')
             .andWhere('fiscalPeriodId', fiscalPeriodId)
+            .andWhere('stockId', stockId)
             .max('number')
             .first();
     }
@@ -88,7 +137,7 @@ module.exports = class InventoryRepository extends BaseRepository {
 
                     await(this.createInventory(entity, trx));
 
-                    await(this.createInventoryLines(lines, entity.id, trx));
+                    (lines && lines.length) && await(this.createInventoryLines(lines, entity.id, trx));
 
                     entity.inventoryLines = lines;
 
@@ -194,10 +243,12 @@ module.exports = class InventoryRepository extends BaseRepository {
 
         if (shouldDeletedLines.asEnumerable().any())
             shouldDeletedLines.forEach(e => await(this.knex('inventoryLines')
-                .transacting(trx).where('id', e.id).del(e)));
+                .transacting(trx).where('id', e.id).del()));
 
         if (shouldUpdatedLines.asEnumerable().any())
             shouldUpdatedLines.forEach(e => await(this.knex('inventoryLines')
                 .transacting(trx).where('id', e.id).update(e)));
     }
 };
+
+module.exports = InventoryRepository;

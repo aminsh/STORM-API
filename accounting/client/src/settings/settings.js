@@ -10,7 +10,8 @@ export default class {
         , $scope
         , $timeout
         , translate
-        , confirm) {
+        , confirm
+        , webhookEntryService) {
         this.settingsApi = settingsApi;
         this.userApi = userApi;
         this.branchApi = branchApi;
@@ -22,14 +23,29 @@ export default class {
         this.$timeout = $timeout;
         this.translate = translate;
         this.confirm = confirm;
+        this.webhookEntryService = webhookEntryService;
 
-        settingsApi.get().then(result => this.settings = result);
+        this.settings = {};
+
+        this.productOutputCreationMethods = devConstants.enums.ProductOutputCreationMethod().data;
+
+        settingsApi.get().then(result => {
+            this.settings = result;
+            this.stakeholders = result.stakeholders || [];
+            this.subsidiaryLedgerAccounts = result.subsidiaryLedgerAccounts;
+        });
         this.updateUserImage();
         this.isBranchOwnerUser()
             .then((isOwner) => {
                 if (isOwner) this.getBranchUsers();
             })
             .catch(error => console.log(error));
+
+        $scope.$watch(
+            () => this.settings.canControlInventory,
+            newValue => {
+                if (!newValue) this.settings.canCreateSaleOnNoEnoughInventory = false;
+            });
 
         this.changeUserPasswordData = {
             currentPassword: null,
@@ -50,7 +66,11 @@ export default class {
             errors: []
         };
         this.urls = {
-            getAllBanks: devConstants.urls.bank.getAll()
+            getAllBanks: devConstants.urls.bank.getAll(),
+            getAllJournalGenerationTemplates: devConstants.urls.journalGenerationTemplate.all(),
+            getAllStocks: devConstants.urls.stock.getAll(),
+            getAllDetailAccount: devConstants.urls.people.getAll(),
+            getAllAccounts: devConstants.urls.subsidiaryLedgerAccount.all()
         };
 
     }
@@ -58,6 +78,12 @@ export default class {
     save(form) {
         if (form.$invalid)
             return this.formService.setDirty(form);
+
+        this.validateStakeholder();
+
+        this.settings.stakeholders = this.stakeholders;
+        this.settings.subsidiaryLedgerAccounts = this.subsidiaryLedgerAccounts;
+
         this.errors = [];
         this.isSaving = true;
 
@@ -94,6 +120,42 @@ export default class {
                 this.changeUserPasswordData.showChangePassMsg = true;
             })
             .finally(() => this.isSaving = false);
+    }
+
+    addStakeholder() {
+        this.stakeholders.push({rate: 0});
+    }
+
+    removeStakeholder(item) {
+        this.stakeholders.asEnumerable().remove(item);
+    }
+
+    validateStakeholder() {
+        if(this.stakeholders.length === 0)
+            return;
+
+        const total = this.stakeholders.asEnumerable()
+            .sum(item => item.rate);
+
+        if (total === 100)
+            return;
+
+        if (total < 100) {
+            this.logger.error('ترکیب سهامدارن کمتر از ۱۰۰ درصد است');
+            throw new Error('total rate is smaller than 100');
+        }
+
+        this.logger.error('ترکیب سهامدارن بیشتر از ۱۰۰ درصد است');
+        throw new Error('total rate is bigger 100');
+    }
+
+    onDetailAccountChanged(item, row, form) {
+        form.detailAccountId.$setViewValue(item.id);
+        row.detailAccountId = item.id;
+    }
+
+    onSubsidiaryLedgerAccountChanged(item, row) {
+        row.id = item.id;
     }
 
     changeUserImage(form) {
@@ -209,11 +271,11 @@ export default class {
 
                     this.logger.success();
 
-                } else if(data === "The user is already in the list"){
+                } else if (data === "The user is already in the list") {
 
                     this.changeUsersInBranchData.errors = [this.translate("The user is already in the list")];
 
-                } else if(data === "This user is the branch owner"){
+                } else if (data === "This user is the branch owner") {
 
                     this.changeUsersInBranchData.errors = [this.translate("This user is the branch owner")];
 
@@ -260,6 +322,33 @@ export default class {
 
             });
 
+    }
+
+    addSaleCost() {
+
+        this.settings.saleCosts = this.settings.saleCosts || [];
+
+        this.settings.saleCosts.push({display: ''});
+    }
+
+    removeSaleCost(item) {
+        this.settings.saleCosts.asEnumerable().remove(item);
+    }
+
+    addWebhook() {
+        this.settings.wehhooks = this.settings.wehhooks || [];
+
+        this.webhookEntryService.show()
+            .then(result => this.settings.wehhooks.push(result));
+    }
+
+    editWebhook(config){
+        this.webhookEntryService.show({config})
+            .then(result => config = result);
+    }
+
+    removeWebhook(item) {
+        this.settings.wehhooks.asEnumerable().remove(item);
     }
 
 }

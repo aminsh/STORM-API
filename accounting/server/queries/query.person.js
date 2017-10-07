@@ -8,7 +8,7 @@ const async = require('asyncawait/async'),
     enums = require('../../../shared/enums'),
     view = require('../viewModel.assemblers/view.person');
 
-module.exports = class PersonQuery extends BaseQuery {
+class PersonQuery extends BaseQuery {
     constructor(branchId) {
         super(branchId);
     }
@@ -108,3 +108,5 @@ module.exports = class PersonQuery extends BaseQuery {
         return result;
     }
 };
+
+module.exports = PersonQuery;

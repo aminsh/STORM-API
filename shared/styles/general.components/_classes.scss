@@ -1,0 +1,88 @@
+// General Component
+// Classes
+@import "classes.spacing";
+
+.so-login-box{
+  display: block;
+  width: 500px;
+  max-width: 100%;
+  min-height: 50px;
+  padding: 10px 25px;
+  margin: 0 auto;
+  background-color: white;
+  border-bottom: 2px solid $color-cyan-green;
+  @include border-radius();
+  @media screen and (max-width: 500px){
+    min-height: 100vh;
+    @include border-radius(0);
+    border-bottom: none;
+  }
+}
+
+/*ANIMATED AND CIRCLED ICONS*/
+.so-anim-circled-icon{
+  display: inline-block;
+  position: relative;
+  // [START] Relative to size
+  width: 50px;
+  height: 50px;
+  line-height: 50px;
+  font-size: 16pt;
+  // [-END-] Relative to size
+  text-align: center;
+  padding: 0;
+  margin: 0;
+
+  @include border-radius(50%);
+
+  @include transition(#{"transform ease 0.3s"});
+
+  cursor: pointer;
+
+  background-color: rgba(255,255,255,0.5);
+  &:hover{
+    @include transform(scale(1.2,1.2));
+    background-color: lighten(#5efaf7,20%);
+    &::after{
+      $add-size: 10px;
+      top: -1 * $add-size;
+      left: -1 * $add-size;
+      right: -1 * $add-size;
+      bottom: -1 * $add-size;
+      border: $add-size solid fade_out(#39d5ff,0.5);
+    }
+  }
+
+  &::before{ vertical-align: middle; }
+  &::after{
+    content: ' ';
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: 0 solid fade_out(#3498db,1);
+
+    @include transition(#{"border ease 0.3s, top ease 0.3s, left ease 0.3s, right ease 0.3s, bottom ease 0.3s"});
+
+    @include border-radius(50%);
+
+  }
+
+
+  // Size Classes
+  &.so-small{
+    width: 32px;
+    height: 32px;
+    line-height: 32px;
+    font-size: 13pt;
+  }
+  &.so-large{
+    width: 75px;
+    height: 75px;
+    line-height: 75px;
+    font-size: 20pt;
+  }
+
+}

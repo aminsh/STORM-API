@@ -24,4 +24,5 @@ function removeAll() {
     return this;
 }
 
+
 Object.defineProperty(Array.prototype, 'asEnumerable', { enumerable: false });
