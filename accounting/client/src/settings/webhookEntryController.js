@@ -1,3 +1,5 @@
+import Guid from "guid";
+
 class WebhookEntryController {
     constructor($scope,devConstants, data, formService) {
 
@@ -17,6 +19,7 @@ class WebhookEntryController {
         this.config = data && data.config
             ? data.config
             : {
+                id: Guid.new(),
                 title: '',
                 event: '',
                 method: 'POST',

@@ -336,10 +336,13 @@ export default class {
     }
 
     addWebhook() {
-        this.settings.wehhooks = this.settings.wehhooks || [];
+        this.settings.webhooks = this.settings.webhooks || [];
 
         this.webhookEntryService.show()
-            .then(result => this.settings.wehhooks.push(result));
+            .then(result => {
+                console.log(result);
+                this.settings.webhooks.push(result);
+            });
     }
 
     editWebhook(config){
@@ -348,7 +351,7 @@ export default class {
     }
 
     removeWebhook(item) {
-        this.settings.wehhooks.asEnumerable().remove(item);
+        this.settings.webhooks.asEnumerable().remove(item);
     }
 
 }
