@@ -1,13 +1,37 @@
 
 
 <div class="row">
-    <div class="col-md-6">
+    <dev-tag-guide>
+برای نمایش عملکرد فروش به ازای هر کالا، برروی نام کالا در فرم کالا/خدمات کلیک نمایید.
+    </dev-tag-guide>
+    <div class="col-md-7">
         <dev-tag-content dev-attr-title="{{'Products' | translate}}">
             <div class="row">
+                <dev-tag-guide>
+                    <ul>
+                        <li>
+                            <a href="#" class="btn btn-primary btn-circle">
+                                <i class="fa fa-ellipsis-v fa-lg "></i>
+                            </a>
+                              جهت حذف و یا ویرایش کالا از این دکمه استفاده نمایید.
+                        </li>
+                        <li>
+                            برای مرتب سازی صعودی/نزولی از
+                            <i class="fa fa-sort-alpha-asc" style="font-size: 15px;"></i>
+                            و برای فیلتر ستونها از
+                            <i class="fa fa-filter" style="font-size: 15px;"></i>
+                            استفاده نمایید.
+                        </li>
+                        <li>
+درصورت تمایل برای ثبت رسید اول دوره به ازای هر کالا وارد محیط ویرایش و یا کالای جدید شوید و با استفاده از دکمه ی رسید اول دوره در پایین فرم کالای جدید/ویرایش آن را ثبت نمایید.
+                        </li>
+                    </ul>
+
+                </dev-tag-guide>
 
                 <dev-tag-button
                         ui-sref=".create"
-                        title="{{'New'| translate}}"
+                        title="{{'New Product'| translate}}"
                         style-type="primary"
                         icon="fa fa-plus"></dev-tag-button>
 
@@ -23,7 +47,7 @@
             </div>
         </dev-tag-content>
     </div>
-    <div class="col-md-6">
+    <div class="col-md-5">
         <ui-view></ui-view>
     </div>
 </div>

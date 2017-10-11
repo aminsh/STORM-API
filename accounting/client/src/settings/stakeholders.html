@@ -1,4 +1,20 @@
 <div class="row">
+    <dev-tag-guide>
+        <ul>
+            <li>
+              جهت محاسبه ی سود و زیان صاحبان سهام نام آنها در این بخش افزوده شود.
+            </li>
+        </ul>
+    </dev-tag-guide>
+    <dev-tag-button
+            ng-click="model.save(form)"
+            icon="glyphicon glyphicon-floppy-disk"
+            ng-disabled="model.isSaving"
+            is-waiting="model.isSaving"
+            style-type="primary"
+            title="{{'Save' | translate}}"
+            ng-disabled="form.$invalid">
+    </dev-tag-button>
     <dev-tag-button style-type="primary btn-outline"
                     title="{{'New row' | translate}}"
                     ng-click="model.addStakeholder()"></dev-tag-button>

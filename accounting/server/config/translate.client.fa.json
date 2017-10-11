@@ -400,6 +400,7 @@
   "Inventory inputs": "رسید (ورودی) ها",
   "Inventory outputs": "حواله (خروجی) ها",
   "Input type": "نوع رسید",
+  "Output type": "نوع حواله",
   "Inventory": "کنترل موجودی",
   "Inventory detail": "",
   "Inventory quantity": "موجودی",
@@ -411,7 +412,7 @@
   "Payable amount": "قابل پرداخت",
   "Run on test": "اجرای تستی",
   "Percent share":"درصد سهام",
-  "Journal generation templates": "الگوهای صدور سند اتوماتیک",
+  "Journal generation templates": "ویرایش الگوهای صدور سند اتوماتیک",
   "Contacts": "اطلاعات تماس",
   "New Contact": "اطلاعات تماس جدید",
   "Import from excel": "ورود از فایل اکسل",
@@ -422,6 +423,8 @@
   "Reference code": "کد مرجع",
   "Product name": "نام کالا",
   "Has first input": "اول دوره دارد ؟",
-  "Run": "اجرا"
-
+  "Run": "اجرا",
+  "New Product": "کالای جدید",
+  "New Input": "رسید جدید",
+  "New Output": "حواله جدید"
 }

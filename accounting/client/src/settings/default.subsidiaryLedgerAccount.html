@@ -1,5 +1,24 @@
 
 <div class="row ">
+    <dev-tag-guide>
+        <ul>
+            <li>
+               در این بخش اتصال حسابهای معین به عملیات، جهت صدور اسناد خودکار انجام می شود.
+            </li>
+            <li>
+              نکته: درصورت تغییر حسابهای معین در سرفصل حسابها، تنظیمات زیر باید براساس عملیات مورد نظر اصلاح گردند تا صدور اسناد خودکار بدرستی انجام شود.
+            </li>
+        </ul>
+    </dev-tag-guide>
+    <dev-tag-button
+                            ng-click="model.save(form)"
+                            icon="glyphicon glyphicon-floppy-disk"
+                            ng-disabled="model.isSaving"
+                            is-waiting="model.isSaving"
+                            style-type="primary"
+                            title="{{'Save' | translate}}"
+                            ng-disabled="form.$invalid">
+    </dev-tag-button>
     <ul class="list-group  clear-list m-t" >
 
         <li class="list-group-item"
