@@ -14,5 +14,4 @@ EventEmitter.on('on-branch-created', async(function (branchId) {
     fiscalPeriod(branchId);
     firstFund(branchId);
     firstStock(branchId);
-    makeOrder(branchId);
 }));
