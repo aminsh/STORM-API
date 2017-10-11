@@ -114,6 +114,7 @@ import focusMeOn from "./directives/focusMeOn";
 import guide from './directives/guide';
 import {directiveId, matchPasswordValidator} from './settings/matchPasswordValidator';
 import tab from './directives/tab';
+import fileBrowserButton from './directives/fileBrowserButton';
 
 //filter
 import "./filters/amount";
@@ -133,6 +134,7 @@ import "./services/showReport";
 import $ModalFactory from "./services/$modalFactory";
 import Promise from "./services/promise";
 import formService from './services/formService';
+import FileService from './services/fileService';
 
 import "./journal";
 import "./report";
@@ -189,6 +191,7 @@ accModule
     .directive('devTagGuide', guide)
     .directive(directiveId, matchPasswordValidator)
     .directive('devTagTab', tab)
+    .directive('devTagFileBrowserButton', fileBrowserButton)
 
 
     .directive('devTagReportViewer', reportViewer)
@@ -204,6 +207,7 @@ accModule
     .service('settingsApi', SettingsApi)
     .service('userApi', UserApi)
     .service('formService', formService)
+    .service('fileService', FileService)
 
     .factory('navigate', routeNavigatorService)
     .factory('apiPromise', apiPromise)

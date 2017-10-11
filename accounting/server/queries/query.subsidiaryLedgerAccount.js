@@ -92,7 +92,7 @@ class SubsidiaryLedgerAccountQuery extends BaseQuery {
     getAllExpense(parameters){
         let knex = this.knex,
             subquery = knex.select('id').from('generalLedgerAccounts')
-                .where('groupingType', '8'),
+                .whereIn('groupingType', ['8', '61']),
 
             query = knex.from('subsidiaryLedgerAccounts')
                 .where('branchId', this.branchId)

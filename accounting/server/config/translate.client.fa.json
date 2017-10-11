@@ -413,5 +413,15 @@
   "Percent share":"درصد سهام",
   "Journal generation templates": "الگوهای صدور سند اتوماتیک",
   "Contacts": "اطلاعات تماس",
-  "New Contact": "اطلاعات تماس جدید"
+  "New Contact": "اطلاعات تماس جدید",
+  "Import from excel": "ورود از فایل اکسل",
+  "Select file": "فایل را انتخاب کنید",
+  "Field name": "نام فیلد",
+  "Excel header": "نام سرتیتر اکسل",
+  "Product code": "کد کالا",
+  "Reference code": "کد مرجع",
+  "Product name": "نام کالا",
+  "Has first input": "اول دوره دارد ؟",
+  "Run": "اجرا"
+
 }

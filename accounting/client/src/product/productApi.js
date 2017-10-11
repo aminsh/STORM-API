@@ -23,6 +23,10 @@ export default class {
         return this.apiPromise.put(`${this.baseUrl}/${id}`, data);
     }
 
+    createBatch(data){
+        return this.apiPromise.post(`${this.baseUrl}/batch`, data);
+    }
+
     remove(id) {
         return this.apiPromise.delete(`${this.baseUrl}/${id}`);
     }
