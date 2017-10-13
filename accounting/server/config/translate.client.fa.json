@@ -417,5 +417,7 @@
   "New Contact": "اطلاعات تماس جدید",
   "New Product": "کالای جدید",
   "New Input": "رسید جدید",
-  "New Output": "حواله جدید"
+  "New Output": "حواله جدید",
+  "New SalesInvoice": "فاکتور فروش جدید",
+  "New ReturnSalesInvoice": "فاکتور برگشت از فروش جدید"
 }

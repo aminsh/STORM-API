@@ -1,9 +1,10 @@
 <div class="=row">
     <dev-tag-validation-summary errors="model.errors" class="col-md-12"></dev-tag-validation-summary>
 </div>
-
+<br/>
 <div class="row">
 
+    <div ng-include="'partials/sales/salesGuide.html'"></div>
     <dev-tag-button
             ui-sref="{{model.createStateName}}"
             title="{{'New'| translate}}"
