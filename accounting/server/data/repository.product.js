@@ -45,7 +45,12 @@ class ProductRepository extends BaseRepository {
     }
 
     create(entity) {
-        super.create(entity);
+
+        if (Array.isArray(entity))
+            entity.forEach(item => super.create(item));
+        else
+            super.create(entity);
+
         return this.knex('products').insert(entity);
     }
 

@@ -608,29 +608,6 @@ gulp.task('default', [
     'admin-build-js'
 ]);
 
-gulp.task('logo-to-file', function () {
-    let knex = require('./storm/server/services/knex'),
-        base64 = require('file-base64');
-
-    knex.select('id', 'logo')
-        .from('branches')
-        .where('logo', 'like', 'data%')
-        .then(items => {
-            items.forEach(item => {
-                let fileName = `./data/uploads/;/${item.id}`,
-                    logo = `/data/uploads/;/${item.id}`;
-                base64.decode(
-                    item.logo.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/)[2],
-                    fileName,
-                    function (err, output) {
-                        knex.table('branches').where('id', item.id).update({logo})
-                            .then(() => console.log('logo saved'));
-                        console.log('success');
-                    });
-            });
-        });
-});
-
 gulp.task('run-server', function () {
     var env = require('./eviroment.json');
 

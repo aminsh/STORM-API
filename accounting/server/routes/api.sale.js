@@ -76,13 +76,13 @@ router.route('/')
             temporaryDateIsInPeriodRange = true;
 
 
-        if (!String.isNullOrEmpty(cmd.date))
+        /*if (!String.isNullOrEmpty(cmd.date))
             temporaryDateIsInPeriodRange =
                 cmd.date >= currentFiscalPeriod.minDate &&
-                cmd.date <= currentFiscalPeriod.maxDate;
+                cmd.date <= currentFiscalPeriod.maxDate;*/
 
-        if (!temporaryDateIsInPeriodRange)
-            errors.push(translate('The temporaryDate is not in current period date range'));
+       /* if (!temporaryDateIsInPeriodRange)
+            errors.push(translate('The temporaryDate is not in current period date range'));*/
 
         if (!(cmd.invoiceLines && cmd.invoiceLines.length !== 0))
             errors.push('ردیف های فاکتور وجود ندارد');
