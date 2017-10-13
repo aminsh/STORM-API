@@ -109,7 +109,7 @@ accModule.config(menuItemsProvider => {
 
     menuItemsProvider
         .add({
-            title: 'فهرست',
+            title: 'مدیریت چک',
             url: '',
             icon: 'fa fa-list',
             children: [

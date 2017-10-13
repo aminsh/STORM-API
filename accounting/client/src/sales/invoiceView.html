@@ -1,6 +1,30 @@
 
 
 <dev-tag-content-body is-loading="model.isLoading" class="animated bounceInUp">
+    <dev-tag-guide ng-if="!model.isReturnSale">
+        <i class="fa fa-info-circle fa-2x" aria-hidden="true"></i><br/>
+        <ul>
+            <li>
+                <b>پرداخت: </b>
+                پس از تایید فاکتور این دکمه نمایش داده می شود که پرداخت به ازای فاکتور را با استفاده از این دکمه انجام دهید.
+            </li>
+            <li>
+                <b>ارسال: </b>
+                درصورت استفاده از افزونه ی پرداخت آنلاین، با استفاده از این دکمه می توانید لینک پرداخت را برای مشتری خود ارسال نمایید و تا زمانی که مشتری با استفاده از این لینک عملیات پرداخت را انجام ندهد فاکتور در وضعیت منتظر برای پرداخت می ماند به محض پرداخت مشتری با استفاده از لینک ارسالی سند پرداخت آن بصورت خودکار صادر شده و وضعیت فاکتور به پرداخت شده تغییر می نماید.
+            </li>
+        </ul>
+    </dev-tag-guide>
+
+    <dev-tag-guide ng-if="model.isReturnSale">
+        <i class="fa fa-info-circle fa-2x" aria-hidden="true"></i><br/>
+        <ul>
+            <li>
+                <b>پرداخت: </b>
+                پس از تایید فاکتور این دکمه نمایش داده می شود که پرداخت به خریدار را با استفاده از این دکمه انجام دهید.
+            </li>
+        </ul>
+    </dev-tag-guide>
+
     <div class="row">
         <div class="col-sm-6">
             <h3>
