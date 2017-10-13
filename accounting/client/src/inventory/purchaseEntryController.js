@@ -1,8 +1,6 @@
-import InvoiceEntryControllerBase from './invoiceEntryController';
+import InvoiceEntryController from '../sales/invoiceEntryController';
 
-
-class SaleEntryController extends InvoiceEntryControllerBase {
-
+class PurchaseEntryController extends InvoiceEntryController{
     constructor($scope,
                 $state,
                 $stateParams,
@@ -13,11 +11,11 @@ class SaleEntryController extends InvoiceEntryControllerBase {
                 promise,
                 translate,
                 settingsApi,
-                saleApi,
+                purchaseApi,
                 formService,
                 createPersonService,
                 productCreateService,
-                selectProductFromStockService) {
+                selectProductFromStockService){
 
         super(
             $scope,
@@ -30,34 +28,30 @@ class SaleEntryController extends InvoiceEntryControllerBase {
             promise,
             translate,
             settingsApi,
-            saleApi,
+            purchaseApi,
             formService,
             createPersonService,
             productCreateService,
             selectProductFromStockService);
 
-       this.pageTitle = this.onEditMode ? 'Edit sale' : 'Create sale';
+        this.pageTitle = this.onEditMode ? 'Edit purchase' : 'Create purchase';
     }
 
-    onProductChanged(item, product) {
-        item.unitPrice = product.salePrice;
+    get personTypePropertyName(){
+        return 'vendor';
+    }
 
-        product.productType === 'good' && this.selectStock(item);
-
-        super.onProductChanged(item, product);
+    get personTypeTitle(){
+        return 'Vendor';
     }
 
     goAfterSave(){
-        this.$state.go('sale.sales');
+        this.$state.go('inventory.purchases');
     }
 
     canShowStock(){
-
-        if(!this.settings)
-            return super.canShowStock();
-
-        return this.settings.productOutputCreationMethod === 'stockOnRequest';
+        return true;
     }
 }
 
-export default SaleEntryController;
+export default PurchaseEntryController;

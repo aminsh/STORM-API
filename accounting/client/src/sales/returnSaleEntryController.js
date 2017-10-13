@@ -73,6 +73,10 @@ class ReturnSaleEntryController extends InvoiceEntryControllerBase {
     goAfterSave(){
         this.$state.go('sale.returnSales');
     }
+
+    canShowStock(){
+        return true;
+    }
 }
 
 export default ReturnSaleEntryController;

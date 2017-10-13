@@ -22,11 +22,7 @@ export default class invoiceListControllerBase {
         this.errors = [];
         this.api = api;
 
-        let detailAccountTitle = ['sales', 'returnSale'].includes(invoiceType)
-            ? translate('Customer')
-            : translate('Vendor'),
-
-            urls= {
+        let urls = {
                 sales: devConstants.urls.sales.getAll(),
                 purchase: devConstants.urls.purchase.getAll(),
                 returnSale: devConstants.urls.returnSale.getAll()
@@ -51,7 +47,7 @@ export default class invoiceListControllerBase {
                 },
                 {
                     name: 'detailAccountId',
-                    title: detailAccountTitle,
+                    title: translate('Customer'),
                     width: '15%',
                     type: 'person',
                     template: '<span>{{item.detailAccountDisplay}}</span>'
@@ -135,7 +131,7 @@ export default class invoiceListControllerBase {
     }
 
     edit() {
-       throw new Error('Not implemented this method');
+        throw new Error('Not implemented this method');
     }
 
     view() {

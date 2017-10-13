@@ -15,6 +15,10 @@ class InventoryController {
             {
                 heading: `<i>${translate('Inventory outputs')}</i>`,
                 route: 'inventory.outputs'
+            },
+            {
+                heading: `<i>${translate('Purchase invoice')}</i>`,
+                route: 'inventory.purchases'
             }
         ];
     }
