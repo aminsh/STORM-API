@@ -25,47 +25,47 @@ class SubLedger {
     }
 
     payableAccount() {
-        return this.subLedger.businessCreditors;
+        return this.getById(this.subLedger.businessCreditors);
     }
 
     saleAccount() {
-        return this.subLedger.saleGood;
+        return this.getById(this.subLedger.saleGood);
     }
 
     saleDiscountAccount() {
-        return this.subLedger.saleDiscountGood;
+        return this.getById(this.subLedger.saleDiscountGood);
     }
 
     saleVatAccount() {
-        return this.subLedger.saleTax;
+        return this.getById(this.subLedger.saleTax);
     }
 
     purchaseAccount() {
-        return this.subLedger.inventory;
+        return this.getById(this.subLedger.inventory);
     }
 
     purchaseDiscountAccount() {
-        return this.subLedger.purchaseDiscountGood;
+        return this.getById(this.subLedger.purchaseDiscountGood);
     }
 
     purchaseVatAccount() {
-        return this.subLedger.purchaseTax;
+        return this.getById(this.subLedger.purchaseTax);
     }
 
     fundAccount() {
-        return this.subLedger.fund;
+        return this.getById(this.subLedger.fund);
     }
 
     bankAccount() {
-        return this.subLedger.bank;
+        return this.getById(this.subLedger.bank);
     }
 
     receivableDocument() {
-        return this.subLedger.businessNotesReceivables;
+        return this.getById(this.subLedger.businessNotesReceivables);
     }
 
     payableDocument() {
-        return this.subLedger.businessNotesPayables;
+        return this.getById(this.subLedger.businessNotesPayables);
     }
 };
 
