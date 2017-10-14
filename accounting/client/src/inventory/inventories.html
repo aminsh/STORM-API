@@ -4,11 +4,17 @@
     <div ng-include="'partials/inventory/guide.html'"></div>
 
     <div class="row">
-        <div ng-if="model.inventoryType === 'input'" class="col-md-1" style="margin-top: 10px">
+        <div ng-if="model.inventoryType === 'input'" class="col-md-6" style="margin-top: 10px">
             <dev-tag-button
                     ng-click="model.create()"
                     title="{{'New Input'| translate}}"
                     style-type="primary"
+                    icon="fa fa-plus fa-lg"></dev-tag-button>
+
+            <dev-tag-button
+                    ui-sref="createPurchase"
+                    title="{{'New purchase'| translate}}"
+                    style-type="primary btn-outline"
                     icon="fa fa-plus fa-lg"></dev-tag-button>
         </div>
 
