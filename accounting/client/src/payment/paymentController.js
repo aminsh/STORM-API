@@ -26,10 +26,30 @@ export default class paymentController {
         this.amount = $scope.amount;
         this.receiveOrPay = $scope.receiveOrPay;
 
+        this.label = this.receiveOrPay === 'pay' ? this.payLabel : this.receiveLabel;
+
         this.urls = {
             getAllFunds: devConstants.urls.fund.getAll(),
             getAllBanks: devConstants.urls.bank.getAll(),
             getAllPeople: devConstants.urls.people.getAll()
+        };
+    }
+
+    get payLabel(){
+        return {
+            newCash: 'New Cash',
+            newBank: 'New Receipt',
+            newCheque: 'New Cheque',
+            newPerson: 'New Payment to person'
+        };
+    }
+
+    get receiveLabel(){
+        return {
+            newCash: 'New Cash receive',
+            newBank: 'New Receipt receive',
+            newCheque: 'New Cheque receive',
+            newPerson: 'New Payment to person receive'
         };
     }
 

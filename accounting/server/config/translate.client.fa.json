@@ -318,6 +318,10 @@
   "New Cheque": "پرداخت با چک",
   "New Cash": "پرداخت نقدی",
   "New Payment to person": "پرداخت به شخص",
+  "New Receipt receive": "واریز به بانک",
+  "New Cheque receive": "دریافت چک",
+  "New Cash receive": "دریافت نقدی",
+  "New Payment to person receive": "دریافت توسط شخص",
   "Vendor":"فروشنده",
   "Total Remaining Amount:":"جمع مبلغ باقیمانده:",
   "The sum of the amount You entered is more than the amount":"جمع مبلغ وارد شده بیشتر از مبلغ مانده است",
@@ -427,7 +431,7 @@
   "New Product": "کالای جدید",
   "New Input": "رسید جدید",
   "Show purchase detail": "نمایش جزییات خرید",
-  "Create purchase": "خرید جدید"
+  "Create purchase": "خرید جدید",
   "New Output": "حواله جدید",
   "New SalesInvoice": "فاکتور فروش جدید",
   "New ReturnSalesInvoice": "فاکتور برگشت از فروش جدید"
