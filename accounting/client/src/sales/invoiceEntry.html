@@ -1,4 +1,5 @@
 <form name="form" novalidate>
+<div ng-include="'partials/sales/invoiceEntryGuide.html'"></div>
     <dev-tag-content>
         <dev-tag-content-heading>
             <h5 class="panel-title">{{model.pageTitle|translate}}</h5>
@@ -10,8 +11,29 @@
                 </div>
 
                 <div class="col-sm-4">
+                    <div class="form-group" ng-if="model.isReturnSale">
+                        <label for="saleId" >{{'Sales invoice'|translate}}</label>
+                        <div class="input-group" style="width: 100%">
+                            <dev-tag-combo-box id="saleId" style="width: 100%"
+                                               name="saleId"
+                                               class="combobox-directive-margin-top"
+                                               k-placeholder="{{'Select ...'|translate}}"
+                                               k-data-value-field="id"
+                                               k-data-text-field="display"
+                                               mapper="$=>({id:$.id,display:'{0} - {1} - {2}'.format($.number,$.date,$.customerDisplay)})"
+                                               k-on-changed="model.onSaleChanged($item)"
+                                               ng-model="model.invoice.detailAccountId"
+                                               url="{{model.urls.getAllSales}}"
+                                               required></dev-tag-combo-box>
+
+                            <div ng-messages="form.saleId.$error" ng-if="form.saleId.$dirty">
+                                <label ng-message="required" class="error">{{'This field is required'|translate}}</label>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="form-group">
-                        <label for="detailAccountId" >{{'Customer'|translate}}</label>
+                        <label for="detailAccountId" >{{model.personTypeTitle|translate}}</label>
                         <div class="input-group" style="width: 100%">
                             <dev-tag-combo-box id="detailAccountId" style="width: 100%"
                                                name="detailAccountId"
@@ -34,27 +56,8 @@
                             </div>
                         </div>
                     </div>
-                    <div class="form-group" ng-if="model.isReturnSale">
-                        <label for="saleId" >{{'Sales invoice'|translate}}</label>
-                        <div class="input-group" style="width: 100%">
-                            <dev-tag-combo-box id="saleId" style="width: 100%"
-                                               name="saleId"
-                                               class="combobox-directive-margin-top"
-                                               k-placeholder="{{'Select ...'|translate}}"
-                                               k-data-value-field="id"
-                                               k-data-text-field="display"
-                                               mapper="$=>({id:$.id,display:'{0} - {1} - {2}'.format($.number,$.date,$.customerDisplay)})"
-                                               k-on-changed="model.onSaleChanged($item)"
-                                               ng-model="model.invoice.detailAccountId"
-                                               url="{{model.urls.getAllSales}}"
-                                               required></dev-tag-combo-box>
 
-                            <div ng-messages="form.saleId.$error" ng-if="form.saleId.$dirty">
-                                <label ng-message="required" class="error">{{'This field is required'|translate}}</label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group" ng-if="model.isReturnSale || model.settings.productOutputCreationMethod === 'stockOnRequest'">
+                    <div class="form-group" ng-if="model.canShowStock()">
                         <label for="stockId" >{{'Stock'|translate}}</label>
                         <div class="input-group" style="width: 100%">
                             <dev-tag-combo-box id="stockId" style="width: 100%"

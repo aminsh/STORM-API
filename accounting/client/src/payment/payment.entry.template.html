@@ -1,0 +1,73 @@
+<form name="form" class="form-horizontal">
+    <dev-tag-guide>
+        <i class="fa fa-info-circle fa-2x" aria-hidden="true"></i>
+        عملیات پرداخت را می توانید با چند روش ثبت نمایید به عنوان مثال بخشی را با بانک و بخشی را توسط چک انجام دهید.
+
+    </dev-tag-guide>
+
+    <dev-tag-content-body>
+
+        <div class="row">
+
+            <div class="btn-group" role="group">
+                <button type="button" ng-click="model.newReceiptPayment()" class="btn btn-primary btn-outline">{{model.label.newBank|translate}}
+                </button>
+                <button type="button" ng-click="model.newChequePayment()" class="btn btn-primary btn-outline">{{model.label.newCheque|translate}}
+                </button>
+                <button type="button" ng-click="model.newCashPayment()" class="btn btn-primary btn-outline">{{model.label.newCash|translate}}
+                </button>
+                <button type="button" ng-click="model.newPersonPayment()" class="btn btn-primary btn-outline">{{model.label.newPerson|translate}}
+                </button>
+            </div>
+        </div>
+        <br>
+
+        <dev-tag-validation-summary errors="model.errors" class="col-md-8"></dev-tag-validation-summary>
+        <br>
+
+        <ul class="list-group  clear-list m-t">
+            <li class="list-group-item "
+                name="form-{{$index}}"
+                ng-form
+                ng-repeat="item in model.payment"
+                ng-class="{'fist-item': $index == 0}">
+
+                <span ng-include="'partials/payment/cashPayment.template.html'"></span>
+                <span ng-include="'partials/payment/chequePayment.template.html'"></span>
+                <span ng-include="'partials/payment/receiptPayment.template.html'"></span>
+                <span ng-include="'partials/payment/personPayment.template.html'"></span>
+            </li>
+            <li class="list-group-item" ng-show="model.payment.length > 0">
+                <div class="row">
+                    <div class="col-md-1"></div>
+                    <div class="col-md-1">
+                        <h3>{{'Sum'|translate}}</h3>
+                    </div>
+                    <div class="col-md-3">
+                        <h3>{{model.payment|totalSum:('amount')|number}}</h3>
+                    </div>
+                </div>
+            </li>
+            <li class="list-group-item" ng-show="model.payment.length > 0 && model.amount > 0">
+                <div class="row">
+                    <div class="col-md-1"></div>
+                    <div class="col-md-1">
+                        <h3>{{'Remainder' | translate}}</h3>
+                    </div>
+                    <div class="col-md-3">
+                        <h3>{{model.amount - (model.payment | totalSum: ('amount')) | number }}</h3>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </dev-tag-content-body>
+    <dev-tag-content-footer>
+        <dev-tag-button
+                ng-click="model.save(form)"
+                icon="glyphicon glyphicon-floppy-disk"
+                ng-disabled="model.isSaving"
+                is-waiting="model.isSaving"
+                style-type="primary"
+                title="{{'Save' | translate}}"></dev-tag-button>
+    </dev-tag-content-footer>
+</form>

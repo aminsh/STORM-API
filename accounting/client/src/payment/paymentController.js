@@ -1,21 +1,19 @@
 export default class paymentController {
     constructor($scope,
+                $rootScope,
                 $timeout,
                 translate,
-                $uibModalInstance,
                 formService,
                 logger,
                 promise,
                 devConstants,
-                data,
                 fundApi,
                 bankApi) {
 
         this.$scope = $scope;
+        this.$rootScope = $rootScope;
         this.$timeout = $timeout;
         this.promise = promise;
-        this.logger = logger;
-        this.$uibModalInstance = $uibModalInstance;
         this.logger = logger;
         this.formService = formService;
         this.errors = [];
@@ -25,13 +23,33 @@ export default class paymentController {
         this.payment = [];
         this.fundApi = fundApi;
         this.bankApi = bankApi;
-        this.amount = data.amount;
-        this.receiveOrPay = data.receiveOrPay;
+        this.amount = $scope.amount;
+        this.receiveOrPay = $scope.receiveOrPay;
+
+        this.label = this.receiveOrPay === 'pay' ? this.payLabel : this.receiveLabel;
 
         this.urls = {
             getAllFunds: devConstants.urls.fund.getAll(),
             getAllBanks: devConstants.urls.bank.getAll(),
             getAllPeople: devConstants.urls.people.getAll()
+        };
+    }
+
+    get payLabel(){
+        return {
+            newCash: 'New Cash',
+            newBank: 'New Receipt',
+            newCheque: 'New Cheque',
+            newPerson: 'New Payment to person'
+        };
+    }
+
+    get receiveLabel(){
+        return {
+            newCash: 'New Cash receive',
+            newBank: 'New Receipt receive',
+            newCheque: 'New Cheque receive',
+            newPerson: 'New Payment to person receive'
         };
     }
 
@@ -169,16 +187,11 @@ export default class paymentController {
 
         this.errors.asEnumerable().removeAll();
 
-        if (this.amount != 0 && payment.asEnumerable().sum(item => item.amount) > this.amount) {
+        if (this.amount !== 0 && payment.asEnumerable().sum(item => item.amount) > this.amount) {
             logger.error(this.translate('The sum of the amount You entered is more than the amount'));
             return;
         }
 
-        this.$scope.$close(payment);
-
-    }
-
-    close() {
-        this.$uibModalInstance.dismiss()
+        this.$scope.onSave({$payment: payment});
     }
 }

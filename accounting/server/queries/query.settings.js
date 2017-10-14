@@ -20,7 +20,8 @@ class SettingQuery extends BaseQuery {
             'stockId',
             'stakeholders',
             'subsidiaryLedgerAccounts',
-            'saleCosts')
+            'saleCosts',
+            'webhooks')
             .from('settings')
             .where('branchId', this.branchId)
             .first();

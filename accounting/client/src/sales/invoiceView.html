@@ -1,6 +1,30 @@
 
 
 <dev-tag-content-body is-loading="model.isLoading" class="animated bounceInUp">
+    <dev-tag-guide ng-if="model.invoiceType === 'sale'">
+        <i class="fa fa-info-circle fa-2x" aria-hidden="true"></i><br/>
+        <ul>
+            <li>
+                <b>پرداخت: </b>
+                پس از تایید فاکتور این دکمه نمایش داده می شود که پرداخت به ازای فاکتور را با استفاده از این دکمه انجام دهید.
+            </li>
+            <li>
+                <b>ارسال: </b>
+                درصورت استفاده از افزونه ی پرداخت آنلاین، با استفاده از این دکمه می توانید لینک پرداخت را برای مشتری خود ارسال نمایید و تا زمانی که مشتری با استفاده از این لینک عملیات پرداخت را انجام ندهد فاکتور در وضعیت منتظر برای پرداخت می ماند به محض پرداخت مشتری با استفاده از لینک ارسالی سند پرداخت آن بصورت خودکار صادر شده و وضعیت فاکتور به پرداخت شده تغییر می نماید.
+            </li>
+        </ul>
+    </dev-tag-guide>
+
+    <dev-tag-guide ng-if="model.invoiceType === 'returnSale'">
+        <i class="fa fa-info-circle fa-2x" aria-hidden="true"></i><br/>
+        <ul>
+            <li>
+                <b>پرداخت: </b>
+                پس از تایید فاکتور این دکمه نمایش داده می شود که پرداخت به خریدار را با استفاده از این دکمه انجام دهید.
+            </li>
+        </ul>
+    </dev-tag-guide>
+
     <div class="row">
         <div class="col-sm-6">
             <h3>
@@ -17,6 +41,10 @@
         </div>
     </div>
 
+    <div class="row">
+        <h4>{{'Invoice title'|translate}} :</h4>
+        {{model.invoice.description}}
+    </div>
     <div class="table-responsive m-t">
         <table class="table invoice-table">
             <thead>
@@ -109,24 +137,29 @@
 
     <div class="text-right">
 
-        <button ng-click="model.print()" class="btn btn-primary"><i class="fa fa-print"></i> {{'Print ' |
-            translate}}
-        </button>
+        <dev-tag-button
+                ng-if="model.invoiceType === 'sale'"
+                ng-click="model.print()"
+                title="{{'Print'|translate}}"
+                style-type="primary"
+                icon="fa fa-print fa-lg"></dev-tag-button>
 
-        <button ng-click="model.sendEmail()"
-                ng-if="model.invoice.status != 'draft'"
-                class="btn btn-primary" ><i class="fa fa-send" ></i>
-            {{'Send' | translate}}
-        </button>
 
-        <button ng-click="model.recordPayment()"
+        <dev-tag-button
+                ng-if="model.invoiceType === 'sale'"
+                ng-click="model.sendEmail()"
+                title="{{'Send' | translate}}"
+                style-type="primary btn-outline"
+                icon="fa fa-send fa-lg"></dev-tag-button>
+
+
+        <dev-tag-button
                 ng-if="model.invoice.status != 'paid'"
-                class="btn btn-primary"><i class="fa fa-money"></i>
-            {{'Payment ' | translate}}
-        </button>
+                ng-click="model.recordPayment()"
+                title="{{'Payment' | translate}}"
+                style-type="primary btn-outline"
+                icon="fa fa-money fa-lg"></dev-tag-button>
+
     </div>
 
-    <div class="well m-t ">
-        {{model.invoice.description}}
-    </div>
 </dev-tag-content-body>

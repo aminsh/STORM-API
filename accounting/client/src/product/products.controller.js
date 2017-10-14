@@ -1,9 +1,21 @@
 "use strict";
 
+
 export default class ProductController {
-    constructor($scope, $rootScope, productApi, translate, devConstants, logger, confirm, $timeout, $state) {
+    constructor(
+        $scope,
+        $rootScope,
+        productApi,
+        translate,
+        devConstants,
+        logger,
+        confirm,
+        $timeout,
+        $state,
+        productImportFromExcelService) {
 
         this.productApi = productApi;
+        this.productImportFromExcelService = productImportFromExcelService;
         this.logger = logger;
         this.$state = $state;
         this.gridOption = {
@@ -70,6 +82,11 @@ export default class ProductController {
         this.productApi.remove(id)
             .then(result => this.logger.success())
             .catch(errors => this.logger.error(errors));
+    }
+
+    importFormExcelFile(){
+        this.productImportFromExcelService.show()
+            .then(()=> this.gridOption.refresh());
     }
 
 }

@@ -3,16 +3,12 @@
 const async = require('asyncawait/async'),
     await = require('asyncawait/await'),
     router = require('express').Router(),
-    string = require('../utilities/string'),
-    translate = require('../services/translateService'),
     InvoiceRepository = require('../data/repository.invoice'),
-    ProductRepository = require('../data/repository.product'),
     ProductDomain = require('../domain/product'),
     DetailAccountDomain = require('../domain/detailAccount'),
     InvoiceQuery = require('../queries/query.invoice'),
     EventEmitter = require('../services/shared').service.EventEmitter,
     PaymentQuery = require('../queries/query.payment'),
-    FiscalPeriodRepository = require('../data/repository.fiscalPeriod'),
     Guid = require('../services/shared').utility.Guid,
     PaymentRepository = require('../data/repository.payment');
 
@@ -32,39 +28,34 @@ router.route('/')
         res.json(result);
     }))
     .post(async((req, res) => {
-        let branchId = req.cookies['branch-id'],
+        let branchId = req.branchId,
+            fiscalPeriodId = req.fiscalPeriodId,
             invoiceRepository = new InvoiceRepository(branchId),
             cmd = req.body,
             detailAccountDomain = new DetailAccountDomain(req.branchId),
             productDomain = new ProductDomain(req.branchId),
-            fiscalPeriodRepository = new FiscalPeriodRepository(req.branchId),
-            currentFiscalPeriod = await(fiscalPeriodRepository.findById(req.cookies['current-period'])),
             errors = [],
             current = {
                 branchId,
-                fiscalPeriodId: req.cookies['current-period'],
+                fiscalPeriodId,
                 userId: req.user.id
             },
 
 
-            status = cmd.status == 'confirm' ? 'waitForPayment' : 'draft';
+            status = cmd.status === 'confirm' ? 'waitForPayment' : 'draft';
 
-        let temporaryDateIsInPeriodRange =
-            cmd.date >= currentFiscalPeriod.minDate &&
-            cmd.date <= currentFiscalPeriod.maxDate;
-
-        if (!temporaryDateIsInPeriodRange)
-            errors.push(translate('The temporaryDate is not in current period date range'));
-
-        if (!(cmd.invoiceLines && cmd.invoiceLines.length != 0))
+        if (!(cmd.invoiceLines && cmd.invoiceLines.length !== 0))
             errors.push('ردیف های فاکتور وجود ندارد');
         else checkLinesValidation();
 
 
-        let customer = detailAccountDomain.findPersonByIdOrCreate(cmd.customer);
+        let vendor = detailAccountDomain.findPersonByIdOrCreate(cmd.vendor);
 
-        if (!customer)
-            errors.push('مشتری نباید خالی باشد');
+        if (!vendor)
+            errors.push('فروشنده نباید خالی باشد');
+
+        if (!cmd.stockId)
+            errors.push('انبار را مشخص کنید');
 
         function checkLinesValidation() {
             cmd.invoiceLines.forEach(async.result(e => {
@@ -75,18 +66,18 @@ router.route('/')
                     if (!e.description) e.description = e.product.title;
                 }
 
-                if (Guid.isEmpty(e.productId) && String.isNullOrEmpty(e.description))
-                    errors.push('کالا یا شرح کالا نباید خالی باشد');
+                if (Guid.isEmpty(e.productId))
+                    errors.push('کالا یانباید خالی باشد');
 
-                if (!(e.quantity && e.quantity != 0))
+                if (!(e.quantity && e.quantity !== 0))
                     errors.push('مقدار نباید خالی یا صفر باشد');
 
-                if (!(e.unitPrice && e.unitPrice != 0))
+                if (!(e.unitPrice && e.unitPrice !== 0))
                     errors.push('قیمت واحد نباید خالی یا صفر باشد');
             }));
         }
 
-        if (errors.length != 0)
+        if (errors.length !== 0)
             return res.json({isValid: false, errors});
 
         let entity = createInvoice(status, cmd, invoiceRepository),
@@ -95,34 +86,39 @@ router.route('/')
 
         res.json({isValid: true, returnValue: {id: result.id}});
 
-        if (status == 'waitForPayment')
-            EventEmitter.emit('on-purchase-created', result, current);
+        if (status === 'waitForPayment')
+            EventEmitter.emit('on-purchase-created',
+                {purchaseId: result.id, stockId: cmd.stockId},
+                current);
     }));
 
 router.route('/:id/confirm')
     .post(async((req, res) => {
 
-        let branchId = req.cookies['branch-id'],
+        let branchId = req.branchId,
             invoiceRepository = new InvoiceRepository(branchId),
             entity = {statue: 'waitForPayment'},
             id = req.params.id,
+            cmd = req.body,
+            errors = [],
 
             current = {
                 branchId,
-                fiscalPeriodId: req.cookies['current-period'],
+                fiscalPeriodId: req.fiscalPeriodId,
                 userId: req.user.id
             };
 
+        if (!cmd.stockId)
+            errors.push('انبار را مشخص کنید');
+
+        if (errors.length !== 0)
+            return res.json({isValid: false, errors});
+
         await(invoiceRepository.update(id, entity));
-
-        let purchase = await(invoiceRepository.findById(id)),
-            purchaseLines = await(invoiceRepository.findInvoiceLinesByInvoiceId(id));
-
-        purchase.invoiceLines = purchaseLines;
 
         res.json({isValid: true});
 
-        EventEmitter.emit('on-purchase-created', purchase, current);
+        EventEmitter.emit('on-purchase-created', {purchaseId: id, stockId: cmd.stockId}, current);
     }));
 
 router.route('/:id')
@@ -136,7 +132,8 @@ router.route('/:id')
         let invoiceRepository = new InvoiceRepository(req.branchId),
             id = req.params.id,
             cmd = req.body,
-            status = cmd.status == 'confirm' ? 'waitForPayment' : 'draft',
+            errors = [],
+            status = cmd.status === 'confirm' ? 'waitForPayment' : 'draft',
 
             current = {
                 branchId: req.branchId,
@@ -150,6 +147,12 @@ router.route('/:id')
                 detailAccountId: cmd.detailAccountId,
                 invoiceStatus: status
             };
+
+        if (!cmd.stockId)
+            errors.push('انبار را مشخص کنید');
+
+        if(errors.length !== 0)
+            return res.json({isValid: false, errors});
 
         entity.invoiceLines = cmd.invoiceLines.asEnumerable()
             .select(line => ({
@@ -167,7 +170,7 @@ router.route('/:id')
 
         res.json({isValid: true});
 
-        if (status == 'waitForPayment')
+        if (status === 'waitForPayment')
             EventEmitter.emit('on-purchase-created', await(invoiceRepository.findById(id)), current);
 
     }))

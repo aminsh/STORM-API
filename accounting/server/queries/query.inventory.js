@@ -80,8 +80,9 @@ class InventoryQuery extends BaseQuery {
 
             result = await(kendoQueryResolve(query, parameters, viewLine)),
 
-            aggregatesQuery = query.clone(),
-            sumTotalPrice = await(aggregatesQuery.select(knex.raw('SUM(CAST("unitPrice" * quantity as FLOAT)) as "sumTotalPrice"'))
+            sumTotalPrice = await(knex
+                .select(knex.raw('SUM(CAST("unitPrice" * quantity as FLOAT)) as "sumTotalPrice"'))
+                .from('inventoryLines').where('inventoryId', id)
                 .first())
                 .sumTotalPrice,
             aggregates = {sumTotalPrice};

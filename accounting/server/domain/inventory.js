@@ -165,7 +165,7 @@ class InventoryDomain {
             cmd.inventoryType === 'input'
                 ? 'inputMaxNumber'
                 : 'outputMaxNumber'
-            ](this.fiscalPeriodId, cmd.stockId)).max;
+            ](this.fiscalPeriodId, cmd.stockId, cmd.ioType)).max;
 
         let entity = {
             number: cmd.number || (maxNumber ? maxNumber + 1 : 2),

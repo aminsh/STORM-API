@@ -25,47 +25,47 @@ class SubLedger {
     }
 
     payableAccount() {
-        return this.subsidiaryLedgerAccountRepository.findByCode('2101');
+        return this.getById(this.subLedger.businessCreditors);
     }
 
     saleAccount() {
-        return this.subsidiaryLedgerAccountRepository.findByCode('6101');
+        return this.getById(this.subLedger.saleGood);
     }
 
     saleDiscountAccount() {
-        return this.subsidiaryLedgerAccountRepository.findByCode('8305');
+        return this.getById(this.subLedger.saleDiscountGood);
     }
 
     saleVatAccount() {
-        return this.subsidiaryLedgerAccountRepository.findByCode('2106');
+        return this.getById(this.subLedger.saleTax);
     }
 
     purchaseAccount() {
-        return this.subsidiaryLedgerAccountRepository.findByCode('5101');
+        return this.getById(this.subLedger.inventory);
     }
 
     purchaseDiscountAccount() {
-        return this.subsidiaryLedgerAccountRepository.findByCode('7203');
+        return this.getById(this.subLedger.purchaseDiscountGood);
     }
 
     purchaseVatAccount() {
-        return this.subsidiaryLedgerAccountRepository.findByCode('1111');
+        return this.getById(this.subLedger.purchaseTax);
     }
 
     fundAccount() {
-        return this.subsidiaryLedgerAccountRepository.findByCode('1101');
+        return this.getById(this.subLedger.fund);
     }
 
     bankAccount() {
-        return this.subsidiaryLedgerAccountRepository.findByCode('1103');
+        return this.getById(this.subLedger.bank);
     }
 
     receivableDocument() {
-        return this.subsidiaryLedgerAccountRepository.findByCode('1105');
+        return this.getById(this.subLedger.businessNotesReceivables);
     }
 
     payableDocument() {
-        return this.subsidiaryLedgerAccountRepository.findByCode('2102');
+        return this.getById(this.subLedger.businessNotesPayables);
     }
 };
 

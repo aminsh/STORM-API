@@ -1,0 +1,127 @@
+<div class="modal-header">
+    <button type="button" ng-click="model.close()" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+    <h3 class="modal-title">{{'Show purchase detail'| translate}}</h3>
+</div>
+<div class="modal-body">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-6">
+                <h3>
+                    {{'Customer'|translate}} : {{model.invoice.customerDisplay}}
+                </h3>
+
+            </div>
+
+            <div class="col-sm-6 text-right">
+                <h4>شماره فاکتور : {{model.invoice.number}}</h4>
+                <p>
+                    <span><strong>تاریخ فاکتور:</strong> {{model.invoice.date}}</span><br/>
+                </p>
+            </div>
+        </div>
+        <div class="table-responsive m-t">
+            <table class="table invoice-table">
+                <thead>
+                <tr>
+                    <th>کالا / خدمات</th>
+                    <th>تعداد</th>
+                    <th>مبلغ واحد</th>
+                    <th>تخفیف</th>
+                    <th>مالیات</th>
+                    <th>جمع کل</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="item in model.invoice.invoiceLines">
+                    <td>
+                        <div><strong>{{item.description}}</strong></div>
+                    </td>
+                    <td>{{item.quantity | number}}</td>
+                    <td>{{item.unitPrice | number}}</td>
+                    <td>{{item.discount | number}}</td>
+                    <td>{{item.vat | number}}</td>
+                    <td>{{(item.quantity * item.unitPrice) - item.discount + item.vat | number}}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <!-- /table-responsive -->
+        <div class="row">
+            <div class="col-md-8">
+                <div class="col-md-8" ng-if="model.payments.length > 0">
+                    <h5>
+                        {{'Payments'|translate}}
+                        <span style="margin-right: 5px"
+                              ng-if="model.invoice.status == 'paid'">(کل مبلغ این فاکتور پرداخت شده)</span>
+                    </h5>
+                    <ul class="list-group clear-list m-t">
+                        <li class="list-group-item" ng-repeat="payment in model.payments">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <p>{{payment.date}}</p>
+                                </div>
+                                <div class="col-md-2">
+                                    <p>{{payment.amount|number}}</p>
+                                </div>
+                                <div class="col-md-2">
+                                    <p>{{payment.paymentTypeDisplay}}</p>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div class="row">
+                                <div class="col-md-3">
+
+                                </div>
+                                <div class="col-md-2">
+                                    <p>{{model.payments| totalSum: ('amount') | number}}</p>
+                                </div>
+                                <div class="col-md-2">
+
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <table class="table invoice-total">
+                    <tbody class="pull-left text-left">
+                    <tr>
+                        <td><strong>جمع:</strong></td>
+                        <td>{{model.invoice.invoiceLines|totalSum:('$.quantity * $.unitPrice')|number}}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>جمع تخفیف :</strong></td>
+                        <td> {{model.invoice.invoiceLines | totalSum: ('discount') | number}}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>جمع مالیات :</strong></td>
+                        <td>{{model.invoice.invoiceLines | totalSum: ('vat') | number}}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>جمع کل :</strong></td>
+                        <td>{{model.invoice.invoiceLines | totalSum: ('($.quantity * $.unitPrice) - $.discount + $.vat')| number}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-body" ng-if="model.canShowPayment">
+   <dev-tag-payment amount="{{model.recordPaymentParameters.amount}}"
+                    receive-or-pay="{{model.recordPaymentParameters.receiveOrPay}}"
+                    on-save="model.savePayment($payment)"></dev-tag-payment>
+
+
+</div>
+<div class="modal-footer" ng-if="!(model.canShowPayment || model.invoice.status === 'paid')">
+    <dev-tag-button
+            ng-click="model.recordPayment()"
+            icon="fa fa-money fa-lg"
+            style-type="primary"
+            title="{{'Payment' | translate}}"></dev-tag-button>
+</div>

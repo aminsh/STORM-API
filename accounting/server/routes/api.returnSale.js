@@ -251,7 +251,7 @@ router.route('/:id/pay')
                 paymentType: e.paymentType,
                 bankName: e.bankName,
                 bankBranch: e.bankBranch,
-                receiveOrPay: 'receive',
+                receiveOrPay: 'pay',
                 chequeStatus: e.paymentType == 'cheque' ? 'normal' : null
             };
 

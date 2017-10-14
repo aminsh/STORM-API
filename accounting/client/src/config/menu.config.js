@@ -11,11 +11,11 @@ accModule.config(menuItemsProvider => {
             {
                 title: 'حساب تفصیل',
                 url: 'detail-accounts'
-            },
+            }/*,
             {
                 title: 'سطوح',
                 url: 'dimensions'
-            }
+            }*/
         ],
 
         journal = [
@@ -109,7 +109,7 @@ accModule.config(menuItemsProvider => {
 
     menuItemsProvider
         .add({
-            title: 'فهرست',
+            title: 'مدیریت چک',
             url: '',
             icon: 'fa fa-list',
             children: [

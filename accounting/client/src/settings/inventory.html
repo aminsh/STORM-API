@@ -1,4 +1,25 @@
 <div class="row">
+
+    <dev-tag-guide>
+        <i class="fa fa-info-circle fa-2x" aria-hidden="true"></i><br/>
+        <ul>
+            <li>
+                کنترل موجودی کالا: جهت افزایش موجودی کالا با ثبت رسید انبار و کاهش موجودی با ثبت حواله انبار این گزینه انتخاب شود.
+            </li>
+            <li>
+                روش صدور حواله برای فاکتور فروش : جهت صدور حواله اتوماتیک، انبار پیش فرض تعیین شود.
+            </li>
+        </ul>
+    </dev-tag-guide>
+    <dev-tag-button
+            ng-click="model.save(form)"
+            icon="glyphicon glyphicon-floppy-disk"
+            ng-disabled="model.isSaving"
+            is-waiting="model.isSaving"
+            style-type="primary"
+            title="{{'Save' | translate}}"
+            ng-disabled="form.$invalid">
+    </dev-tag-button>
     <dev-tag-check-box ng-model="model.settings.canControlInventory">
         کنترل موجودی کالا انجام شود ؟
     </dev-tag-check-box>

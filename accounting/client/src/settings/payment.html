@@ -1,6 +1,19 @@
 
 <div class="row">
-
+    <dev-tag-guide>
+        <i class="fa fa-info-circle fa-2x" aria-hidden="true"></i>
+               بانک: تعیین بانک پیشفرض در عملیات پرداخت و دریافت، در زمان صدور سند پرداخت خودکار
+    </dev-tag-guide>
+    <dev-tag-button
+            ng-click="model.save(form)"
+            icon="glyphicon glyphicon-floppy-disk"
+            ng-disabled="model.isSaving"
+            is-waiting="model.isSaving"
+            style-type="primary"
+            title="{{'Save' | translate}}"
+            ng-disabled="form.$invalid">
+    </dev-tag-button>
+    <br/><br/>
     <div class="form-group col-md-3">
         <label class="label-control">بانک</label>
         <dev-tag-combo-box

@@ -37,4 +37,8 @@ String.prototype.replaceAll = function (token, newToken, ignoreCase) {
     return str;
 };
 
+String.prototype.toNumber = function () {
+    return Number(this.replace(/[\.,]/g, ''));
+};
+
 

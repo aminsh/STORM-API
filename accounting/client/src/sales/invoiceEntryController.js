@@ -113,8 +113,6 @@ export default class InvoiceEntryControllerBase {
         item.description = product.title;
         item.scale = product.scaleDisplay;
 
-        product.productType === 'good' && this.selectStock(item);
-
         this.onItemPropertyChanged(item);
     }
 
@@ -155,7 +153,7 @@ export default class InvoiceEntryControllerBase {
             formService = this.formService,
             invoice = this.invoice;
 
-        invoice.customer = {
+        invoice[this.personTypePropertyName] = {
             id: invoice.detailAccountId
         };
 
@@ -206,5 +204,17 @@ export default class InvoiceEntryControllerBase {
         const vat = this.settings.vat;
 
         item.vat = ((item.unitPrice * item.quantity) - item.discount) * vat / 100;
+    }
+
+    canShowStock(){
+        return false;
+    }
+
+    get personTypePropertyName(){
+        return 'customer';
+    }
+
+    get personTypeTitle(){
+        return 'Customer';
     }
 }

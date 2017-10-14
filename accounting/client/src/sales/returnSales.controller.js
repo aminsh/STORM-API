@@ -24,6 +24,7 @@ class SalesController extends InvoiceListControllerBase {
             'returnSale');
 
         this.createStateName = 'createReturnSale';
+        this.isReturnSale = true;
     }
 
     edit(current) {

@@ -93,22 +93,30 @@ class InventoryRepository extends BaseRepository {
         return query;
     }
 
-    inputMaxNumber(fiscalPeriodId, stockId) {
+    inputMaxNumber(fiscalPeriodId, stockId, ioType) {
+        if(!ioType)
+            throw new Error('ioType is undefined');
+
         return this.knex.table('inventories')
             .modify(this.modify, this.branchId)
             .where('inventoryType', 'input')
             .andWhere('fiscalPeriodId', fiscalPeriodId)
             .andWhere('stockId', stockId)
+            .andWhere('ioType', ioType)
             .max('number')
             .first();
     }
 
-    outputMaxNumber(fiscalPeriodId, stockId) {
+    outputMaxNumber(fiscalPeriodId, stockId, ioType) {
+        if(!ioType)
+            throw new Error('ioType is undefined');
+
         return this.knex.table('inventories')
             .modify(this.modify, this.branchId)
             .where('inventoryType', 'output')
             .andWhere('fiscalPeriodId', fiscalPeriodId)
             .andWhere('stockId', stockId)
+            .andWhere('ioType', ioType)
             .max('number')
             .first();
     }

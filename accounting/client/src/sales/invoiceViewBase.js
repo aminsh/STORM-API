@@ -28,6 +28,8 @@ class InvoiceViewBaseController {
         this.api.getById(this.id)
             .then(result => this.invoice = result)
             .finally(() => this.isLoading = false);
+
+        this.getPayments();
     }
 
     getPayments() {
@@ -53,6 +55,10 @@ class InvoiceViewBaseController {
                     .catch(errors => this.errors = errors)
                     .finally(() => this.isLoading = false);
             });
+    }
+
+    get invoiceType(){
+        throw new Error('Not implemented this method');
     }
 
     get recordPaymentParameters(){
