@@ -11,11 +11,11 @@ accModule.config(menuItemsProvider => {
             {
                 title: 'حساب تفصیل',
                 url: 'detail-accounts'
-            },
+            }/*,
             {
                 title: 'سطوح',
                 url: 'dimensions'
-            }
+            }*/
         ],
 
         journal = [
