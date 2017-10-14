@@ -71,6 +71,14 @@ router.route('/chart-of-accounts')
         res.json(result);
     }));
 
+router.route('/account-categories')
+    .get((req, res) => {
+        let generalLedgerAccountQuery = new GeneralLedgerAccountQuery(req.branchId),
+            result = await(generalLedgerAccountQuery.accountCategory());
+
+        res.json(result);
+    });
+
 router.route('/default/chart-of-accounts')
     .get((req, res) => {
         res.json(groups);
@@ -211,6 +219,14 @@ router.route('/:id/deactivate').put(async((req, res) => {
 
     return res.json({isValid: true});
 }));
+
+router.route('/account-categories')
+    .get((req, res) => {
+        let generalLedgerAccountQuery = new GeneralLedgerAccountQuery(req.branchId),
+            result = await(generalLedgerAccountQuery.accountCategory());
+
+        res.json(result);
+    });
 
 
 module.exports = router;

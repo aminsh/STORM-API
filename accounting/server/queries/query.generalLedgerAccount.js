@@ -64,6 +64,12 @@ class GeneralLedgerAccountQuery extends BaseQuery {
                 .first());
         return view(generalLedgerAccount);
     }
+
+    accountCategory(){
+        return this.knex.select('key', 'display')
+            .from('accountCategories')
+            .where('branchId', this.branchId);
+    }
 };
 
 module.exports = GeneralLedgerAccountQuery;

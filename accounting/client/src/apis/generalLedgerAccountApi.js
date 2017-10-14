@@ -19,6 +19,10 @@ function generalLedgerAccountApi(apiPromise, devConstants) {
             return apiPromise.get('{0}/general-ledger-accounts/{1}'
                 .format(urlPrefix, id));
         },
+        getAccountCategories(){
+            return apiPromise.get('{0}/general-ledger-accounts/account-categories'
+                .format(urlPrefix));
+        },
         create: function (data) {
             return apiPromise.post('{0}/general-ledger-accounts'.format(urlPrefix), data);
         },

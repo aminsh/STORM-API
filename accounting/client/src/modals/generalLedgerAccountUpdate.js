@@ -81,7 +81,9 @@ function generalLedgerAccountUpdateModalController($scope,
 
     $scope.accountPostingType = devConstants.enums.AccountPostingType();
     $scope.accountBalanceType = devConstants.enums.AccountBalanceType();
-    $scope.accountGroupingType = devConstants.enums.AccountGroupingType();
+
+    generalLedgerAccountApi.getAccountCategories()
+        .then(result => $scope.accountGroupingType = result);
 }
 
 function generalLedgerAccountUpdateModalService(modalBase) {
