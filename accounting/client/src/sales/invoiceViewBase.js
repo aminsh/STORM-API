@@ -57,6 +57,10 @@ class InvoiceViewBaseController {
             });
     }
 
+    get invoiceType(){
+        throw new Error('Not implemented this method');
+    }
+
     get recordPaymentParameters(){
         throw new Error('Not implemented this method');
     }

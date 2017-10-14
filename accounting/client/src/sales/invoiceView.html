@@ -1,7 +1,7 @@
 
 
 <dev-tag-content-body is-loading="model.isLoading" class="animated bounceInUp">
-    <dev-tag-guide ng-if="!model.isReturnSale">
+    <dev-tag-guide ng-if="model.invoiceType === 'sale'">
         <i class="fa fa-info-circle fa-2x" aria-hidden="true"></i><br/>
         <ul>
             <li>
@@ -15,7 +15,7 @@
         </ul>
     </dev-tag-guide>
 
-    <dev-tag-guide ng-if="model.isReturnSale">
+    <dev-tag-guide ng-if="model.invoiceType === 'returnSale'">
         <i class="fa fa-info-circle fa-2x" aria-hidden="true"></i><br/>
         <ul>
             <li>
@@ -41,6 +41,10 @@
         </div>
     </div>
 
+    <div class="row">
+        <h4>{{'Invoice title'|translate}} :</h4>
+        {{model.invoice.description}}
+    </div>
     <div class="table-responsive m-t">
         <table class="table invoice-table">
             <thead>
@@ -133,24 +137,29 @@
 
     <div class="text-right">
 
-        <button ng-click="model.print()" class="btn btn-primary"><i class="fa fa-print"></i> {{'Print ' |
-            translate}}
-        </button>
+        <dev-tag-button
+                ng-if="model.invoiceType === 'sale'"
+                ng-click="model.print()"
+                title="{{'Print'|translate}}"
+                style-type="primary"
+                icon="fa fa-print fa-lg"></dev-tag-button>
 
-        <button ng-click="model.sendEmail()"
-                ng-if="model.invoice.status != 'draft'"
-                class="btn btn-primary" ><i class="fa fa-send" ></i>
-            {{'Send' | translate}}
-        </button>
 
-        <button ng-click="model.recordPayment()"
+        <dev-tag-button
+                ng-if="model.invoiceType === 'sale'"
+                ng-click="model.sendEmail()"
+                title="{{'Send' | translate}}"
+                style-type="primary btn-outline"
+                icon="fa fa-send fa-lg"></dev-tag-button>
+
+
+        <dev-tag-button
                 ng-if="model.invoice.status != 'paid'"
-                class="btn btn-primary"><i class="fa fa-money"></i>
-            {{'Payment ' | translate}}
-        </button>
+                ng-click="model.recordPayment()"
+                title="{{'Payment' | translate}}"
+                style-type="primary btn-outline"
+                icon="fa fa-money fa-lg"></dev-tag-button>
+
     </div>
 
-    <div class="well m-t ">
-        {{model.invoice.description}}
-    </div>
 </dev-tag-content-body>

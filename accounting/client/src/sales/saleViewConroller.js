@@ -20,6 +20,10 @@ class SaleViewController extends InvoiceViewControllerBase {
             sendInvoiceEmail);
     }
 
+    get invoiceType(){
+        return 'sale';
+    }
+
     get recordPaymentParameters(){
         return {
             amount: this.invoice.sumRemainder,
