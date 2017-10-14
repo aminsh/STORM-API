@@ -6,71 +6,10 @@
         {{'Payment'| translate}}
     </h3>
 </div>
-<div class="modal-body k-rtl">
+<div class="modal-body">
 
-    <div class="row">
+    <dev-tag-payment on-save="model.save($payment)"
+                     amount="{{model.data.amount}}"
+                     receive-or-pay="{{model.data.receiveOrPay}}"></dev-tag-payment>
 
-        <div class="btn-group" role="group">
-            <button type="button" ng-click="model.newReceiptPayment()" class="btn btn-white">{{'New Receipt'|translate}}
-            </button>
-            <button type="button" ng-click="model.newChequePayment()" class="btn btn-white">{{'New Cheque'|translate}}
-            </button>
-            <button type="button" ng-click="model.newCashPayment()" class="btn btn-white">{{'New Cash'|translate}}
-            </button>
-            <button type="button" ng-click="model.newPersonPayment()" class="btn btn-white">{{'New Payment to person'|translate}}
-            </button>
-        </div>
-    </div>
-    <br>
-
-    <form name="form" class="form-horizontal">
-        <dev-tag-validation-summary errors="model.errors" class="col-md-8"></dev-tag-validation-summary>
-      <br>
-
-        <ul class="list-group  clear-list m-t" >
-            <li class="list-group-item "
-                name="form-{{$index}}"
-                ng-form
-                ng-repeat="item in model.payment"
-                ng-class="{'fist-item': $index == 0}">
-
-                <span ng-include="'partials/payment/cashPayment.template.html'"></span>
-                <span ng-include="'partials/payment/chequePayment.template.html'"></span>
-                <span ng-include="'partials/payment/receiptPayment.template.html'"></span>
-                <span ng-include="'partials/payment/personPayment.template.html'"></span>
-            </li>
-            <li class="list-group-item" ng-show="model.payment.length > 0">
-                <div class="row">
-                    <div class="col-md-1"></div>
-                    <div class="col-md-1">
-                        <h3>{{'Sum'|translate}}</h3>
-                    </div>
-                    <div class="col-md-3">
-                        <h3>{{model.payment|totalSum:('amount')|number}}</h3>
-                    </div>
-                </div>
-            </li>
-            <li class="list-group-item" ng-show="model.payment.length > 0 && model.amount > 0">
-              <div class="row">
-                  <div class="col-md-1"></div>
-                  <div class="col-md-1">
-                      <h3>{{'Remainder' | translate}}</h3>
-                  </div>
-                  <div class="col-md-3">
-                      <h3>{{model.amount - (model.payment |  totalSum: ('amount'))  | number }}</h3>
-                  </div>
-              </div>
-            </li>
-        </ul>
-    </form>
-
-</div>
-<div class="modal-footer">
-    <dev-tag-button
-            ng-click="model.save(form)"
-            icon="glyphicon glyphicon-floppy-disk"
-            ng-disabled="model.isSaving"
-            is-waiting="model.isSaving"
-            style-type="primary"
-            title="{{'Save' | translate}}"></dev-tag-button>
 </div>

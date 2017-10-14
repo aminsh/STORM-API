@@ -30,7 +30,7 @@ class OneStockBase {
     set(cmd) {
 
         let maxNumber = await(this.inventoryRepository
-                .outputMaxNumber(this.fiscalPeriodId, this.stockId))
+                .outputMaxNumber(this.fiscalPeriodId, this.stockId, 'outputSale'))
                 .max || 0,
 
             output = {

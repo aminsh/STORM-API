@@ -28,6 +28,8 @@ class InvoiceViewBaseController {
         this.api.getById(this.id)
             .then(result => this.invoice = result)
             .finally(() => this.isLoading = false);
+
+        this.getPayments();
     }
 
     getPayments() {

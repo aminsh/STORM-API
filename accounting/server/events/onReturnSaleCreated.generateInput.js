@@ -32,7 +32,10 @@ EventEmitter.on('on-returnSale-created', async((returnSale, current) => {
         .toArray();
 
     let input = {
-        number: (await(inventoryRepository.inputMaxNumber(current.fiscalPeriodId, stockId)).max || 0) + 1,
+        number: (await(inventoryRepository.inputMaxNumber(
+            current.fiscalPeriodId,
+            stockId,
+            'inputBackFromSaleOrConsuming')).max || 0) + 1,
         date: returnSale.date,
         stockId,
         description: `بابت فاکتور برگشت از فروش شماره ${returnSale.number}`,

@@ -36,7 +36,7 @@ class PurchasesController extends InvoiceListControllerBase{
     }
 
     view(current) {
-        this.$state.go('viewPurchase', {id: current.id});
+        this.$state.go('.detail', {id: current.id});
     }
 }
 
