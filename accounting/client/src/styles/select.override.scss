@@ -24,6 +24,12 @@
   overflow: hidden;
 }
 
+.ui-select-match-text  {
+  display: block;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
 .ui-select-dropdown{
   overflow-y: auto;
   height: 200px !important;
