@@ -50,7 +50,6 @@ export default class {
         return this.apiPromise.get(`/api/branches/total`);
     }
 
-    // [START] SMRSAN
     isOwnerUser(){
         return this.apiPromise.get('/api/branches/users/is-owner');
     }
@@ -66,6 +65,9 @@ export default class {
     getCurrentBranchLogo(){
         return this.apiPromise.get(`/api/branches/logo`);
     }
-    // [-END-] SMRSAN
+
+    renewChartOfAccounts(id){
+        return this.apiPromise.post(`/api/branches/${id}/renew-chart-of-accounts`);
+    }
 
 }

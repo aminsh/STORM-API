@@ -30,8 +30,8 @@ class BranchQuery {
     getAll(parameters) {
         let query = knex.from(function () {
                 this.select(
-                    'id',
-                    'name',
+                    'branches.id',
+                    'branches.name',
                     'logo',
                     'apiKey',
                     'status',
@@ -39,9 +39,13 @@ class BranchQuery {
                     'phone',
                     'mobile',
                     'webSite',
-                    'ownerName')
+                    'ownerName',
+                    'ownerId',
+                    knex.raw('users.name as "userTitle"'),
+                    knex.raw('users.email as "userEmail"'))
                     .from('branches')
-                    .orderBy('createdAt', 'desc')
+                    .leftJoin('users', 'branches.ownerId', 'users.id')
+                    .orderBy('branches.createdAt', 'desc')
                     .as('base');
             }),
 
@@ -55,7 +59,12 @@ class BranchQuery {
                 phone: item.phone,
                 mobile: item.mobile,
                 webSite: item.webSite,
-                ownerName: item.ownerName
+                ownerName: item.ownerName,
+                owner: {
+                    id: item.ownerId,
+                    name: item.userTitle,
+                    email: item.userEmail
+                }
             });
 
         return kendoQueryResolve(query, parameters, view);

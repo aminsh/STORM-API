@@ -13,7 +13,8 @@ const express = require('express'),
     EventEmitter = instanceOf('EventEmitter'),
     render = instanceOf('htmlRender').renderFile,
     persianDate = instanceOf('utility').PersianDate,
-    email = instanceOf('Email');
+    email = instanceOf('Email'),
+    renewChartOfAccounts = require('../setup/setup.chartOfAccounts');
 
 router.route('/')
     .get(async((req, res) => {
@@ -61,6 +62,7 @@ router.route('/:id').delete(async((req, res) => {
 
     EventEmitter.emit('on-branch-removed', id);
 }));
+
 
 router.route('/:id/activate')
     .put(async((req, res) => {
@@ -114,6 +116,18 @@ router.route('/:id/add-me')
     .put(async((req, res) => {
         await(branchRepository.addMember(req.params.id, req.user.id));
         res.json({isValid: true});
+    }));
+
+router.route('/:id/renew-chart-of-accounts')
+    .post(async((req, res) => {
+        try{
+            renewChartOfAccounts(req.params.id);
+            res.json({isValid: true});
+        }
+        catch(e) {
+            res.json({isValid: false, errors: [e]});
+        }
+
     }));
 
 router.route('/current')
@@ -335,12 +349,12 @@ router.route("/users/:email")
 router.route("/logo")
     .get(async((req, res) => {
 
-        try{
+        try {
 
             let branch = await(branchQuery.getById(req.cookies['branch-id']));
             return res.json({isValid: true, returnValue: branch.logo});
 
-        } catch(err) {
+        } catch (err) {
 
             console.log(err);
             return res.json({isValid: false});
