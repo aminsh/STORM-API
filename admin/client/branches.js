@@ -80,6 +80,12 @@ export default class BranchesController {
                     icon: 'fa fa-file-photo-o text-success fa-lg',
                     action: current => this.setDefaultLogo(current)
                 },
+                {
+                    title: 'Renew chart of account',
+                    icon: 'fa fa-repeat text-success fa-lg',
+                    action: current => this.renewChartOfAccounts(current)
+                },
+
             ],
             gridSize: '700px',
             readUrl: '/api/branches'
@@ -125,6 +131,18 @@ export default class BranchesController {
             .then(() => {
                 this.logger.success();
                 this.gridOption.refresh();
+            });
+    }
+
+    renewChartOfAccounts(branch){
+        this.confirm(
+            'Are you sure ?',
+            'Renew chart of accounts')
+            .then(() => {
+                this.branchApi.renewChartOfAccounts(branch.id)
+                    .then(() => {
+                        this.logger.success();
+                    });
             });
     }
 

@@ -40,6 +40,10 @@ module.exports = async.result(function (branchId) {
     defaultAccountCategories.forEach(item => delete item.category);
     subsidiaryLedgerAccounts.forEach(item => delete item.key);
 
+    await(knex('subsidiaryLedgerAccounts').where('branchId', branchId).del());
+    await(knex('generalLedgerAccounts').where('branchId', branchId).del());
+    await(knex('accountCategories').where('branchId', branchId).del());
+
     await(knex('accountCategories').insert(defaultAccountCategories));
     await(knex('generalLedgerAccounts').insert(defaultGeneralLedgerAccounts));
 
