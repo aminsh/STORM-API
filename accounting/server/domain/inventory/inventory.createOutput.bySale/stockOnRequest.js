@@ -12,7 +12,7 @@ class StockOnRequest extends OneStockBase {
     set(cmd){
         this.stockId = cmd.stockId;
 
-        super.set(cmd);
+        return super.set(cmd);
     }
 }
 
