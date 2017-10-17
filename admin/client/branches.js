@@ -71,9 +71,9 @@ export default class BranchesController {
                     action: current => this.addMe(current),
                 },
                 {
-                    title: 'Remove',
-                    icon: 'fa fa-trash text-danger fa-lg',
-                    action: current => this.remove(current)
+                    title: 'Remove me',
+                    icon: 'fa fa-user-times text-danger fa-lg',
+                    action: current => this.removeMe(current),
                 },
                 {
                     title: 'Default logo',
@@ -84,6 +84,11 @@ export default class BranchesController {
                     title: 'Renew chart of account',
                     icon: 'fa fa-repeat text-success fa-lg',
                     action: current => this.renewChartOfAccounts(current)
+                },
+                {
+                    title: 'Remove',
+                    icon: 'fa fa-trash text-danger fa-lg',
+                    action: current => this.remove(current)
                 },
 
             ],
@@ -111,6 +116,11 @@ export default class BranchesController {
     addMe(branch) {
         this.branchApi.addMeToBranch(branch.id)
             .then(() => this.logger.success());
+    }
+
+    removeMe(branch){
+        this.branchApi.removeMeFromBranch(branch.id)
+            .then(()=> this.logger.success());
     }
 
     remove(branch) {

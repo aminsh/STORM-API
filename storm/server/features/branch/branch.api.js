@@ -118,6 +118,12 @@ router.route('/:id/add-me')
         res.json({isValid: true});
     }));
 
+router.route('/:id/remove-me')
+    .delete(async((req, res) => {
+        await(branchRepository.deleteUserInBranch(req.params.id, req.user.id));
+        res.json({isValid: true});
+    }));
+
 router.route('/:id/renew-chart-of-accounts')
     .post(async((req, res) => {
         try{

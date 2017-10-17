@@ -38,6 +38,10 @@ export default class {
         return this.apiPromise.put(`/api/branches/${id}/add-me`);
     }
 
+    removeMeFromBranch(id){
+        return this.apiPromise.delete(`/api/branches/${id}/remove-me`);
+    }
+
     remove(id){
         return this.apiPromise.delete(`/api/branches/${id}`);
     }

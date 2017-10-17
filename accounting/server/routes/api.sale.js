@@ -252,7 +252,7 @@ router.route('/:id')
 
         if (settings.canControlInventory)
             errors = await(instanceOf('inventory.control',
-                branchId, fiscalPeriodId, settings).control(cmd));
+                req.branchId, req.fiscalPeriodId, settings).control(cmd));
 
         if (errors.length !== 0)
             return res.json({isValid: false, errors});
