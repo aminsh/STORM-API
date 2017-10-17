@@ -8,7 +8,7 @@
   "EMAIL_PORT":465,
   "EMAIL_AUTH_USER": "info@storm-online.ir",
   "EMAIL_AUTH_PASSWORD": "rAEMtxezr3UN",
-  "ORIGIN_URL":"http://localhost:8080",
+  "ORIGIN_URL":"https://stormstore.ir",
   "GOOGLE_AUTH_CLIENTID":"44908669153-rgtap5scj693g240t9p3k69tplearpto.apps.googleusercontent.com",
   "GOOGLE_AUTH_SECRET":"ZAc3SYGLyKenCssgRzs0iY-1",
   "DATABASE_URL":"postgres://postgres:P@ssw0rd@localhost:5432/storm",
