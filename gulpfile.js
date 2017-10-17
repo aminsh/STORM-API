@@ -585,6 +585,7 @@ gulp.task('default', [
     'admin-build-template',
     'admin-build-js',
     'admin-build-sass',
+    'admin-build-ckeditor',
     'acc-build-js',
     'acc-build-template',
     'acc-build-sass',
