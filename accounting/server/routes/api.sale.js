@@ -147,12 +147,12 @@ router.route('/')
         cmd.detailAccountId = customer.id;
         cmd.status = status;
 
-        const sale = saleDomain.create(cmd);
+        const result = saleDomain.create(cmd);
 
-        res.json({isValid: true, returnValue: sale});
+        res.json({isValid: true, returnValue: result});
 
         if (status === 'waitForPayment')
-            EventEmitter.emit('on-sale-created', sale, current);
+            EventEmitter.emit('on-sale-created', Object.assign(cmd, result), current);
 
         if (cmd.status === 'paid') {
 
@@ -183,26 +183,33 @@ router.route('/:id/confirm')
     .post(async((req, res) => {
 
         let branchId = req.branchId,
+            fiscalPeriodId = req.fiscalPeriodId,
             invoiceRepository = new InvoiceRepository(branchId),
-            entity = {statue: 'waitForPayment'},
+            cmd = req.body,
+            entity = {invoiceStatus: 'waitForPayment'},
             id = req.params.id,
             invoice = await(invoiceRepository.findById(id)),
+            settingRepository = new SettingRepository(branchId),
             errors = [],
             current = {
                 branchId,
-                fiscalPeriodId: req.cookies['current-period'],
+                fiscalPeriodId: req.fiscalPeriodId,
                 userId: req.user.id
-            };
+            },
+            settings = await(settingRepository.get()),
+            sale = Object.assign(invoice, cmd);
 
-        if (invoice.status != 'draft')
+        if (invoice.invoiceStatus !== 'draft')
             errors.push('این فاکتور قبلا تایید شده');
 
-        if (errors.length != 0)
+        if (settings.canControlInventory)
+            errors = await(instanceOf('inventory.control',
+                branchId, fiscalPeriodId, settings).control(sale));
+
+        if (errors.length !== 0)
             return res.json({isValid: false, errors});
 
         await(invoiceRepository.update(id, entity));
-
-        let sale = await(invoiceRepository.findById(id));
 
         res.json({isValid: true});
 
@@ -271,8 +278,10 @@ router.route('/:id')
 
         await(invoiceRepository.updateBatch(id, entity));
 
+        invoice = await(invoiceRepository.findById(id));
+
         if (status == 'waitForPayment')
-            EventEmitter.emit('on-sale-created', await(invoiceRepository.findById(id)), current);
+            EventEmitter.emit('on-sale-created', Object.assign(invoice,cmd), current);
 
         res.json({isValid: true});
 
