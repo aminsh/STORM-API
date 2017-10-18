@@ -275,6 +275,14 @@ router.route('/:id')
                 vat: line.vat
             }))
             .toArray();
+    
+        try {
+            await(invoiceRepository.updateBatch(id, entity));
+            res.json({isValid: true});
+        }
+        catch (e){
+            return res.json(e);
+        }
 
         await(invoiceRepository.updateBatch(id, entity));
 
@@ -282,9 +290,6 @@ router.route('/:id')
 
         if (status == 'waitForPayment')
             EventEmitter.emit('on-sale-created', Object.assign(invoice,cmd), current);
-
-        res.json({isValid: true});
-
     }))
     .delete(async((req, res) => {
         let invoiceRepository = new InvoiceRepository(req.branchId),
