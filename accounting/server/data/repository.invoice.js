@@ -155,10 +155,9 @@ class InvoiceRepository extends BaseRepository {
     createInvoice(entity, trx) {
         super.create(entity);
 
-        entity.id = await(this.knex('invoices')
+        await(this.knex('invoices')
             .transacting(trx)
-            .returning('id')
-            .insert(entity))[0];
+            .insert(entity));
 
         return entity;
     }
