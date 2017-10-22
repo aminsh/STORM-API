@@ -271,7 +271,7 @@ gulp.task('invoice-build-sass', function(){
         .pipe(sourcemaps.init())
         .pipe(sass({
             outputStyle: 'compressed',
-            includePaths: ['./node_modules']
+            includePaths: ['./node_modules', './accounting/client/src/styles']
         }).on('error', sass.logError))
         .pipe(gulpif(!config.isProduction, sourcemaps.write()))
         .pipe(rename('invoice.min.css'))
@@ -279,7 +279,6 @@ gulp.task('invoice-build-sass', function(){
 
 });
 
-// [START] SMRSAN
 gulp.task('thirdParty-build-template', function(){
 
     return gulp.src([`${config.thirdPartyDir}/**/*.html`])
@@ -329,7 +328,7 @@ gulp.task('thirdParty-build-sass', function(){
         .pipe(sourcemaps.init())
         .pipe(sass({
             outputStyle: 'compressed',
-            includePaths: ['./node_modules']
+            includePaths: ['./node_modules', './accounting/client/src/styles']
         }).on('error', sass.logError))
         .pipe(gulpif(!config.isProduction, sourcemaps.write()))
         .pipe(rename('thirdParty.min.css'))
@@ -582,10 +581,6 @@ gulp.task('copy-assets', [
 ]);
 
 gulp.task('default', [
-    'admin-build-template',
-    'admin-build-js',
-    'admin-build-sass',
-    'admin-build-ckeditor',
     'acc-build-js',
     'acc-build-template',
     'acc-build-sass',
@@ -606,7 +601,9 @@ gulp.task('default', [
     'docs-build-js',
     'docs-build-sass',
     'admin-build-template',
-    'admin-build-js'
+    'admin-build-js',
+    'admin-build-sass',
+    'admin-build-ckeditor'
 ]);
 
 
