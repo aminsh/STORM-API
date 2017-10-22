@@ -15,21 +15,33 @@ class InventoryControlStockOnRequest extends InventoryControlBase {
     }
 
     control(cmd) {
-        let errors = [],
-            stockId = cmd.stockId;
+        let errors = [];
 
         super.control(cmd);
 
-        if (!stockId) {
-            errors.push('انبار انتخاب نشده');
+        let invoiceLines = await(this.productRepository.findByIds(cmd.invoiceLines.asEnumerable().select(item => item.productId).toArray()))
+            .asEnumerable()
+            .join(cmd.invoiceLines,
+                first => first.id,
+                second => second.productId,
+                (first, second) => ({
+                    product: first,
+                    quantity: second.quantity,
+                    stockId: second.stockId
+                }))
+            .where(item => item.product.productType === 'good')
+            .toArray();
+
+        if (!invoiceLines.asEnumerable().all(item => item.stockId)) {
+            errors.push('انبار در یکی از ردیفهای کالا انتخاب نشده');
             return errors;
         }
 
-        const inventoryStatusList = cmd.invoiceLines.asEnumerable()
+        const inventoryStatusList = invoiceLines.asEnumerable()
             .select(async.result(line => ({
-                productId: line.productId,
+                product: line.product,
                 quantity: line.quantity,
-                hasInventory: await(this.hasInventory(stockId, line.productId, line.quantity))
+                hasInventory: await(this.hasInventory(line.stockId, line.product.id, line.quantity))
             })))
             .toArray();
 
@@ -37,17 +49,12 @@ class InventoryControlStockOnRequest extends InventoryControlBase {
             return errors;
 
         if (inventoryStatusList.asEnumerable().any(item => !item.hasInventory)) {
-            const ids = inventoryStatusList.asEnumerable()
-                    .where(item => !item.hasInventory)
-                    .select(item => item.productId)
-                    .toArray(),
 
-                products = await(this.productRepository.findByIds(ids));
-
-            errors = errors.concat(products.asEnumerable()
-                .select(item => `کالای ${item.title} به مقدار درخواست شده موجود نیست`)
-                .toArray());
-
+            errors = inventoryStatusList
+                .asEnumerable()
+                .where(item => !item.hasInventory)
+                .select(item => `کالای ${item.product.title} به مقدار درخواست شده موجود نیست`)
+                .toArray();
         }
 
         return errors;

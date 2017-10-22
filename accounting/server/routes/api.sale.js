@@ -163,7 +163,7 @@ router.route('/')
                         date: cmd.date,
                         amount: cmd.invoiceLines.asEnumerable().sum(e => (e.unitPrice * e.quantity) - e.discount + e.vat),
                         paymentType: 'receipt',
-                        invoiceId: sale.id
+                        invoiceId: result.id
                     };
 
                 await(paymentRepository.create(bankPayment));
@@ -171,10 +171,10 @@ router.route('/')
                 bankPayment.bankId = bankId;
                 EventEmitter.emit('on-receive-created',
                     [bankPayment],
-                    sale.id,
+                    result.id,
                     {branchId: req.branchId, fiscalPeriodId: req.fiscalPeriodId});
 
-                EventEmitter.emit('on-invoice-paid', sale.id, req.branchId);
+                EventEmitter.emit('on-invoice-paid', result.id, req.branchId);
             }), 1000);
         }
     }));

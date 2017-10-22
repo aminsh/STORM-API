@@ -34,6 +34,8 @@ class InputEntryController extends InventoryEntryControllerBase {
         }
 
 
+        this.inventoryType = 'input';
+
         this.pageTitle = this.id ? 'Edit input' : 'New input';
 
         if (!this.id)

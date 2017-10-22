@@ -139,11 +139,26 @@
             </td>
 
         </tr>
-        <tr ng-repeat-end  ng-if="item.stockId">
-            <td colspan="10">
-                <div class="text-success">
 
-                    <h5>{{item.stockDisplay}} - {{'Inventory quantity' | translate}} : {{item.stockInventory}}</h5>
+        <tr ng-repeat-end  ng-if="item.canShowStockSection">
+            <td colspan="3"></td>
+            <td colspan="7">
+                <div class="">
+
+                    <span class="text-success text-bold" ng-if="item.stockId">{{item.stockDisplay}} - {{'Inventory quantity' | translate}} : {{item.stockInventory}}</span>
+                    <span class="text-success text-bold" ng-if="!item.stockId">{{'Select stock'| translate}}</span>
+
+                    <a ng-if="!model.isReturnSale"
+                       ng-click="model.onShowSelectStock(item)"
+                       title="{{'Select stock'| translate}}"
+                       class="btn btn-circle btn-success btn-outline"
+                       uib-popover-template="'partials/sales/selectProductFromStock.template.html'"
+                       popover-title="{{'Select stock'| translate}}"
+                       popover-class="popover-select-stock"
+                       popover-placement="bottom"
+                       popover-trigger="'outsideClick'">
+                        <i class="fa fa-sort-desc fa-lg"></i>
+                    </a>
 
                 </div>
             </td>
