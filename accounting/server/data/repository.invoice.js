@@ -209,7 +209,7 @@ class InvoiceRepository extends BaseRepository {
 
         if (shouldDeletedLines.asEnumerable().any())
             shouldDeletedLines.forEach(e => await(this.knex('invoiceLines')
-                .transacting(trx).where('id', e.id).del(e)));
+                .transacting(trx).where('id', e.id).del()));
 
         if (shouldUpdatedLines.asEnumerable().any())
             shouldUpdatedLines.forEach(e => await(this.knex('invoiceLines')
