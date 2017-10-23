@@ -77,7 +77,7 @@ router.route('/is-unique-email/:email')
         let userQuery = new UserQuery(),
             user = await(userQuery.getByEmail(req.params.email));
 
-        res.json({isValid: user !== null});
+        res.json({isValid: !!user});
     }));
 
 router.route('/change-password')

@@ -1,0 +1,136 @@
+$so-btn-neon_color-default: $color-black;
+$so-btn-neon_res-width: 600px;
+
+$so-btn-neon_lg_height: 50px;
+$so-btn-neon_lg_padding: 50px;
+$so-btn-neon_lg_font-size: 30px;
+
+$so-btn-neon_md_height: 38px;
+$so-btn-neon_md_padding: 40px;
+$so-btn-neon_md_font-size: 18px;
+
+$so-btn-neon_sm_height: 30px;
+$so-btn-neon_sm_padding: 30px;
+$so-btn-neon_sm_font-size: 14px;
+
+$so-btn-neon_glass-fadeout: 0.50;
+
+.so-btn-neon{
+  display: inline-block;
+  height: $so-btn-neon_md_height;
+  line-height: $so-btn-neon_md_height;
+  margin: 3px 5px;
+  padding: $so-btn-neon_md_padding;
+  color: $so-btn-neon_color-default;
+  border: 1px solid $so-btn-neon_color-default;
+  cursor: pointer;
+  text-align: center;
+  overflow: hidden;
+  vertical-align: middle;
+  background-color: transparent;
+  text-decoration: none !important;
+  @include no-user-select();
+  @include border-radius();
+  $hover-sec: 0.3s;
+  @include transition(#{"color ease #{$hover-sec}, border ease #{$hover-sec}, background-color ease #{$hover-sec}"});
+
+  &:hover{
+    color: white;
+    border-color: fade_out($so-btn-neon_color-default, 0.75);
+    background-color: fade_out($so-btn-neon_color-default, 0.75);
+  }
+
+  &:focus{
+    outline: none;
+    border-style: dashed;
+    border-width: 2px;
+  }
+
+  & > *{ vertical-align: middle }
+
+  @each $name, $value in $color-map{
+    &.so-btn-neon_#{$name}{
+      color: $value;
+      border-color: $value;
+      &:hover{
+        color: white;
+        border-color: $value;
+        background-color: $value;
+      }
+      &.so-btn-neon_glass:hover{
+        color: white;
+        border-color: fade_out($value, $so-btn-neon_glass-fadeout);
+        background-color: fade_out($value, $so-btn-neon_glass-fadeout);
+      }
+    }
+  }
+  &.so-btn-neon_inverse-color{
+    color: white;
+    border-color: $so-btn-neon_color-default;
+    background-color: $so-btn-neon_color-default;
+    @each $name, $value in $color-map{
+      &.so-btn-neon_#{$name}{
+        color: white;
+        border-color: $value;
+        background-color: $value;
+        &:hover{
+          color: $value !important;
+          border-color: $value !important;
+          background-color: transparent !important;
+        }
+        &.so-btn-neon_glass{
+          color: white;
+          border-color: fade_out($value, $so-btn-neon_glass-fadeout);
+          background-color: fade_out($value, $so-btn-neon_glass-fadeout);
+        }
+      }
+    }
+  }
+
+  $minus-num: 2;
+  &.so-btn-neon_lg{
+    height: $so-btn-neon_lg_height;
+    line-height: $so-btn-neon_lg_height;
+    padding: 0 $so-btn-neon_lg_padding;
+    font-size: $so-btn-neon_lg_font-size;
+    @media screen and (max-width: $so-btn-neon_res-width){
+      height: $so-btn-neon_lg_height - $minus-num;
+      line-height: $so-btn-neon_lg_height - $minus-num;
+      padding: 0 $so-btn-neon_lg_padding - $minus-num;
+      font-size: $so-btn-neon_lg_font-size - $minus-num;
+    }
+  }
+
+  &.so-btn-neon_md{
+    height: $so-btn-neon_md_height;
+    line-height: $so-btn-neon_md_height;
+    padding: 0 $so-btn-neon_md_padding;
+    font-size: $so-btn-neon_md_font-size;
+    @media screen and (max-width: $so-btn-neon_res-width){
+      height: $so-btn-neon_md_height - $minus-num;
+      line-height: $so-btn-neon_md_height - $minus-num;
+      padding: 0 $so-btn-neon_md_padding - $minus-num;
+      font-size: $so-btn-neon_md_font-size - $minus-num;
+    }
+  }
+
+  &.so-btn-neon_sm{
+    height: $so-btn-neon_sm_height;
+    line-height: $so-btn-neon_sm_height;
+    padding: 0 $so-btn-neon_sm_padding;
+    font-size: $so-btn-neon_sm_font-size;
+    /*@media screen and (max-width: $so-btn-neon_res-width){
+      height: $so-btn-neon_sm_height - $minus-num;
+      line-height: $so-btn-neon_sm_height - $minus-num;
+      padding: 0 $so-btn-neon_sm_padding - $minus-num;
+      font-size: $so-btn-neon_sm_font-size - $minus-num;
+    }*/
+  }
+
+  &.so-btn-neon_block{
+    display: block;
+    width: 100%;
+    margin: 3px 0;
+  }
+
+}
