@@ -12,10 +12,6 @@
     "node": "6.10.x"
   },
   "dependencies": {
-    "bootstrap": "^3.3.7",
-    "bootstrap-rtl": "^3.3.4",
-    "bootstrap-sass": "^3.3.7",
-    "bootstrap-sass-directional": "^2.1.1",
     "jQuery": "^1.7.4",
     "jsdom": "^11.3.0",
     "mdi": "^2.0.46",

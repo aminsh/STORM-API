@@ -35,11 +35,13 @@ $so-btn-socials_hover-fg_colors: (
     cursor: pointer;
     background-color: transparent;
     vertical-align: middle !important;
+    text-decoration: none !important;
 
     &:hover{
       border-color: transparent;
       color: map-get($so-btn-socials_hover-fg_colors, $key);
       background-color: map-get($so-btn-socials_colors, $key);
+      text-decoration: none !important;
     }
 
     & > i{

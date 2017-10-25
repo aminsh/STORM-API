@@ -18,6 +18,7 @@ const fs = require("fs"),
             publicDir: "."
       };
 
+// HOME //
 gulp.task("theme-build-js", () => {
 
     const distPath = `${config.publicDir}/js`,

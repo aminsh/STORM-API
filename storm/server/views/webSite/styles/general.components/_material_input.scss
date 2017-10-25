@@ -1,7 +1,8 @@
 /* form starting stylings ------------------------------- */
 .so-material_input{
   position: relative;
-  margin-bottom: 45px;
+  margin-top: 30px;
+  margin-bottom: 10px;
 
   /* INPUT ======================================= */
   & > input{
@@ -26,24 +27,28 @@
     &:focus ~ span::before,
     &:focus ~ span::after { width: 50% }
 
-    &:not(:valid){
+    &:not(:valid):not(.so-empty){
 
-      color: $color-red !important;
+      // error
+      color: $color-red;
       & ~ label{
-        color: $color-red !important;
+        color: $color-red;
       }
       & ~ span::after,
       & ~ span::before{
-        background-color: $color-red !important;
+        width: 50%;
+        background-color: $color-red;
       }
+
+      // warning
       &:focus{
-        color: $color-white-yellow !important;
+        color: $color-yellow;
         & ~ label{
-          color: $color-white-yellow !important;
+          color: $color-yellow;
         }
         & ~ span::after,
         & ~ span::before{
-          background-color: $color-white-yellow !important;
+          background-color: $color-yellow;
         }
       }
 
@@ -93,7 +98,13 @@
     &::after{ right: 50% }
   }
 
-  @each $color, $value in $color-map{
+  $color-schemas: (
+    color-white: $color-white,
+    color-white-yellow: $color-white-yellow,
+    color-yellow: $color-yellow
+  );
+
+  @each $color, $value in $color-schemas{
     &.so-blur_#{$color}{
       & > input{
         color: $value;

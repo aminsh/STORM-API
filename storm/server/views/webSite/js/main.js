@@ -1,11 +1,7 @@
 "use strict";
 
 // General Dependencies
-import WOW from "./libs/wow/wow.js";
-import "bootstrap-rtl/dist/js/html5shiv.js";
-import "bootstrap-rtl/dist/js/holder.js";
 import text_typing from "./text-type.js";
-import $ from "./libs/jQuery/jquery-3.2.1.min.js";
 
 let wow = new WOW({
                 boxClass:     'wow',      // default
@@ -58,22 +54,22 @@ import auth from "./authentication.js";
 // code
 (function(window, document, $, menuBtn, topMenu){
 
-    let $topMenu = topMenu.get(),
+    let // $topMenu = topMenu.get(),
         $menuBtn = menuBtn.get(),
         $topMenu_toggle = $( ".so-top-menu_toggle" ),
-        $topMenu_close = $( ".so-top-menu_close, .so-top-menu .so-top-menu_list a[href^='#']" ),
-        $body = $( "body" );
+        $topMenu_close = $( ".so-top-menu_close, .so-top-menu .so-top-menu_list a[href^='#']" )
+        ;//$body = $( "body" );
 
     // start -- TopMenu
     function topMenu_close_fn(){
         topMenu.closeTopMenu();
         $menuBtn.removeClass("so-active");
-        $body[0].classList.remove("so-no-scroll");
+        // $body[0].classList.remove("so-no-scroll");
     }
     function topMenu_open_fn(){
         topMenu.openTopMenu();
         $menuBtn.addClass("so-active");
-        $body[0].classList.add("so-no-scroll");
+        // $body[0].classList.add("so-no-scroll");
     }
 
     $topMenu_toggle

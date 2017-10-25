@@ -1,8 +1,5 @@
 "use strict";
 
-import $ from "./libs/jQuery/jquery-3.2.1.min.js";
-import pageScroll from "./page-scroll.js";
-
 (function(window, document, $){
 
     let $topMenu = $( ".so-top-menu" );

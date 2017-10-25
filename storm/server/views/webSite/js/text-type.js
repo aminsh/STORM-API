@@ -1,7 +1,5 @@
 "use strict";
 
-import $ from "./libs/jQuery/jquery-3.2.1.min.js";
-
 //TextTyping Plugin By SMRSAN
 let text_typing = (function(window, document, $){
 

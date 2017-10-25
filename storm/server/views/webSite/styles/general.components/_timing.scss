@@ -1,5 +1,5 @@
 // Make Animation Duration and Delay Classes
-@for $v from 1 through 400{
+@for $v from 1 through 100{
   $sec: $v * 0.25s;
   @if ($sec - floor($sec)) == 0.25s{
     .so-anim-dly-#{strip-unit(floor($sec))}\.25s{

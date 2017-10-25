@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" ng-app="app">
 <head>
     <meta charset="UTF-8">
@@ -108,22 +108,39 @@
         <!--|SignUp/In Form|-->
         <div class="so-home-first-section_form animated fadeInUp so-anim-dly-0.5s">
             <!--|First Content|-->
-            <div class="so-home-first-section_form_content" data-num="0"
-                ng-controller="loginCtrl">
+            <div class="so-home-first-section_form_content" data-num="0">
                 <h4 class="so-align-center pb+">ورود به پنل نرم افزار حسابداری آنلاین</h4>
                 <!--|Login Form|-->
-                <form name="form" ng-submit="login(form)">
+                <form name="form"
+                      ng-submit="login(form)"
+                      ng-controller="loginCtrl"
+                      novalidate>
 
                     <div class="so-material_input so-blur_color-white so-focus_color-white">
-                        <input type="email" name="email" class="so-dir-ltr" ng-model="user.email"/>
+                        <input type="email" name="email" class="so-dir-ltr" ng-model="user.email" required/>
                         <label class="so-dir-rtl"><i class="mdi mdi-email"></i> ایمیل</label>
-                        <span></span>
+
+
+                        <span class="pv++ so-tx-color-red" ng-if="form.email.$error.required && form.email.$dirty">
+                            ایمیل را وارد کنید
+                        </span>
+
+                        <span class="pv++ so-tx-color-red" ng-if="form.email.$error.email && form.email.$dirty">
+قالب ایمیل صحیح نیست
+                        </span>
+
+
                     </div>
                     <div class="so-material_input so-blur_color-white so-focus_color-yellow">
-                        <input type="password" name="password" class="so-dir-ltr" ng-model="user.password"/>
+                        <input type="password" name="password" class="so-dir-ltr" ng-model="user.password" required/>
                         <label class="so-dir-rtl"><i class="mdi mdi-lock"></i> کلمه ی عبور</label>
-                        <span></span>
+                        <span class="pv++ so-tx-color-red"
+                              ng-if="form.password.$error.required && form.password.$dirty">
+کلمه ی عبور را وارد کنید                        </span>
                     </div>
+
+                    <span class="pv++ so-tx-color-red" ng-if="hasError">
+ایمیل یا کلمه ی عبور صحیح نیست                        </span>
                     <button class="so-btn-neon so-btn-neon_md so-btn-neon_color-light-green so-btn-neon_glass so-btn-neon_block so-btn-neon_inverse-color mv+"
                             type="submit">ورود
                     </button>
@@ -133,7 +150,8 @@
                         ورود با گوگل <i class="mdi mdi-google"></i>
                     </button>
                     <div class="so-line-h3"><span>یا</span></div>
-                    <button class="so-btn-neon so-btn-neon_md so-btn-neon_color-yellow so-btn-neon_glass so-btn-neon_block so-btn-neon_inverse-color mb+ so-sign-form_go-next">
+                    <button type="button"
+                            class="so-btn-neon so-btn-neon_md so-btn-neon_color-yellow so-btn-neon_glass so-btn-neon_block so-btn-neon_inverse-color mb+ so-sign-form_go-next">
                         ایجاد حساب کاربری
                     </button>
                     <h4 class="so-tx-color-yellow so-align-center">برای ثبت نام نسخه ی رایگان، ورود/ایجاد حساب کاربری
@@ -142,33 +160,71 @@
                 </form>
             </div>
             <!--|Second Content|-->
-            <div class="so-home-first-section_form_content" data-num="1">
-                <div class="so-material_input so-blur_color-white so-focus_color-white">
-                    <input type="text" class="so-dir-ltr"/>
-                    <label class="so-dir-rtl"><i class="mdi mdi-account-outline"></i> نام</label>
-                    <span></span>
+            <div class="so-home-first-section_form_content" data-num="1" ng-controller="registerCtrl">
+                <form  name="form" novalidate ng-submit="register(form)" ng-show="!success">
+                    <div class="so-material_input so-blur_color-white so-focus_color-white">
+                        <input type="text" class="so-dir-ltr" name="name" ng-model="user.name" required/>
+                        <label class="so-dir-rtl"><i class="mdi mdi-account-outline"></i> نام</label>
+                        <span class="pv++ so-tx-color-red" ng-if="form.name.$error.required && form.name.$dirty">
+نام را وارد کنید                        </span>
+                    </div>
+                    <div class="so-material_input so-blur_color-white so-focus_color-white">
+                        <input type="email" class="so-dir-ltr" name="email"
+                               ng-model="user.email"
+                               ng-model-options="{updateOn: 'blur'}"
+                               required
+                               ng-change="checkEmailIsValid(form)"/>
+                        <label class="so-dir-rtl"><i class="mdi mdi-email-outline"></i> ایمیل</label>
+
+                        <span class="pv++ so-tx-color-red" ng-if="form.email.$error.required && form.email.$dirty">
+ایمیل را وارد کنید                        </span>
+
+                        <span class="pv++ so-tx-color-red" ng-if="form.email.$error.email && form.email.$dirty">
+قالب ایمیل صحیح نیست                        </span>
+
+                        <span class="pv++ so-tx-color-red" ng-if="form.email.$error.check && form.email.$dirty">
+ایمیل قبلا وارد شده است
+                        </span>
+                    </div>
+                    <div class="so-material_input so-blur_color-white so-focus_color-yellow">
+                        <input type="password" class="so-dir-ltr" name="password" ng-model="user.password" required/>
+                        <label class="so-dir-rtl"><i class="mdi mdi-lock-outline"></i> کلمه ی عبور</label>
+
+                        <span class="pv++ so-tx-color-red" ng-if="form.password.$error.required && form.password.$dirty">
+کلمه ی عبور را وارد کنید                        </span>
+                    </div>
+                    <div class="so-material_input so-blur_color-white so-focus_color-yellow">
+                        <input type="password" class="so-dir-ltr" name="confirmPassword" ng-model="user.confirmPassword" required/>
+                        <label class="so-dir-rtl"><i class="mdi mdi-lock-outline"></i> تکرار کلمه ی عبور</label>
+
+                        <span class="pv++ so-tx-color-red" ng-if="form.confirmPassword.$error.required && form.confirmPassword.$dirty">
+تکرار کلمه عبور را وارد کنید                        </span>
+
+                        <span class="pv++ so-tx-color-red" ng-if="form.confirmPassword.$error.match && form.confirmPassword.$dirty">
+کلمه ی عبور و تکرار کلمه عبور صحیح نیست                        </span>
+                    </div>
+                    <button type="submit"
+                            class="so-btn-neon so-btn-neon_md so-btn-neon_color-light-green so-btn-neon_glass so-btn-neon_block so-btn-neon_inverse-color mv+">
+                        ثبت نام
+                    </button>
+                    <button type="button"
+                            class="so-btn-neon so-btn-neon_md so-btn-neon_color-yellow so-btn-neon_glass so-btn-neon_block so-btn-neon_inverse-color mv+ so-sign-form_go-prev">
+                        ورود
+                    </button>
+                </form>
+
+                <div style="text-align: center" ng-show="success">
+                    <p>
+                    <h4 class="pv++ so-tx-color-green">
+ثبت نام شما در استورم با موفقیت انجام شد                    </h4>
+                    </p>
+                    <p>
+                        <h4 class="pv++ so-tx-color-green">
+                            یک ایمیل جهت فعالسازی حساب کاربری برای شما ارسال خواهد شد
+                        </h4>
+                    </p>
+
                 </div>
-                <div class="so-material_input so-blur_color-white so-focus_color-white">
-                    <input type="email" class="so-dir-ltr"/>
-                    <label class="so-dir-rtl"><i class="mdi mdi-email-outline"></i> ایمیل</label>
-                    <span></span>
-                </div>
-                <div class="so-material_input so-blur_color-white so-focus_color-yellow">
-                    <input type="password" class="so-dir-ltr"/>
-                    <label class="so-dir-rtl"><i class="mdi mdi-lock-outline"></i> کلمه ی عبور</label>
-                    <span></span>
-                </div>
-                <div class="so-material_input so-blur_color-white so-focus_color-yellow">
-                    <input type="password" class="so-dir-ltr"/>
-                    <label class="so-dir-rtl"><i class="mdi mdi-lock-outline"></i> تکرار کلمه ی عبور</label>
-                    <span></span>
-                </div>
-                <button class="so-btn-neon so-btn-neon_md so-btn-neon_color-light-green so-btn-neon_glass so-btn-neon_block so-btn-neon_inverse-color mv+">
-                    ثبت نام
-                </button>
-                <button class="so-btn-neon so-btn-neon_md so-btn-neon_color-yellow so-btn-neon_glass so-btn-neon_block so-btn-neon_inverse-color mv+ so-sign-form_go-prev">
-                    ورود
-                </button>
             </div>
         </div>
     </div>
@@ -989,8 +1045,7 @@
                     <span class="so-tx-color-light-green" style="font-size: 40px" >نفر</span>
                 </div>
             </div>
-        </section>
-        -->
+        </section>-->
         <section id="pricing"
                  class="so-tx-color-white">
             <div class="so-home-content_section_bg">
@@ -1179,8 +1234,120 @@
 
 <script type="text/javascript" src="./js/home.bundle.min.js"></script>
 
+<script src="js/angular.min.js"></script>
+<script>
+    angular.module('app', [])
+        .factory('formService', function () {
 
+            function setDirty(form) {
+                angular.forEach(form.$error, function (type) {
+                    angular.forEach(type, function (field) {
+                        field.$setDirty();
+                    });
+                });
+                return form;
+            }
 
+            return {
+                setDirty: setDirty
+            };
+        })
+        .controller('loginCtrl', function ($scope, formService, $http, $window) {
+
+            $scope.user = {
+                email: '',
+                password: ''
+            };
+            $scope.hasError = false;
+
+            $scope.login = function (form) {
+                if($scope.googleLogin)
+                    return;
+
+                if (form.$invalid)
+                    return formService.setDirty(form);
+
+                $scope.hasError = false;
+
+                $http.post('/api/auth/login', $scope.user)
+                    .then(function (result) {
+                        if (result.data.isValid) {
+                            var url = $window.location.origin + '/profile';
+                            $window.open(url, '_self');
+                        }
+                        else {
+                            $scope.hasError = true;
+                        }
+
+                    })
+                    .catch(function () {
+
+                    });
+
+            };
+
+            $scope.loginByGoogle = function () {
+                $scope.googleLogin = true;
+
+                var url = $window.location.origin + '/auth/google';
+                $window.open(url, '_self');
+            };
+        })
+        .controller('registerCtrl', function ($scope, formService, $http) {
+            $scope.user = {
+                name: '',
+                email: '',
+                password: '',
+                confirmPassword: ''
+            };
+
+            $scope.success = false;
+            $scope.error = false;
+
+            $scope.register = function (form) {
+
+                if(form.$invalid)
+                    return formService.setDirty(form);
+
+                if ($scope.user.password !== $scope.user.confirmPassword) {
+                    form.confirmPassword.$error.match = true;
+                    return this.setDirty(form)
+                }
+
+                if (form.email.$error.check === true) {
+                    return this.setDirty(form);
+                }
+
+                $scope.success = false;
+                $scope.error = false;
+
+                $http.post('/api/users/register', $scope.user)
+                    .then(function (result) {
+                        if(result.data.isValid)
+                            $scope.success = true;
+                        else
+                            $scope.error = true;
+                    });
+            };
+
+            $scope.checkEmailIsValid = function (form) {
+
+                $http.get('/api/users/is-unique-email/'+ $scope.user.email)
+                    .then(function (result) {
+                        if (result.data.isValid === true) {
+                            form.email.$invalid = true;
+                            form.email.$error.check = true;
+                            form.email.$dirty = true
+                        } else {
+                            form.email.$error.check = false;
+                            form.email.$dirty = false;
+                            form.email.$invalid = false
+                        }
+                    });
+
+            }
+        });
+</script>
 
 </body>
 </html>

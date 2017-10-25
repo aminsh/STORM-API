@@ -24,7 +24,12 @@
     @include trans-time-fn(ease-out);
   }
 
-  @each $color, $value in $color-map{
+  $color-schemas: (
+    color-white: $color-white,
+    color-white-yellow: $color-white-yellow
+  );
+
+  @each $color, $value in $color-schemas{
 
     &.so-menu-btn_#{$color} > div{
       background-color: $value;

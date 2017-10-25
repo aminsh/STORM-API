@@ -1,21 +1,21 @@
-$so-btn-neon_color-default: $color-black;
-$so-btn-neon_res-width: 600px;
-
-$so-btn-neon_lg_height: 50px;
-$so-btn-neon_lg_padding: 50px;
-$so-btn-neon_lg_font-size: 30px;
-
-$so-btn-neon_md_height: 38px;
-$so-btn-neon_md_padding: 40px;
-$so-btn-neon_md_font-size: 18px;
-
-$so-btn-neon_sm_height: 30px;
-$so-btn-neon_sm_padding: 30px;
-$so-btn-neon_sm_font-size: 14px;
-
-$so-btn-neon_glass-fadeout: 0.50;
-
 .so-btn-neon{
+  $so-btn-neon_color-default: $color-black;
+  $so-btn-neon_res-width: 600px;
+
+  $so-btn-neon_lg_height: 50px;
+  $so-btn-neon_lg_padding: 50px;
+  $so-btn-neon_lg_font-size: 30px;
+
+  $so-btn-neon_md_height: 38px;
+  $so-btn-neon_md_padding: 40px;
+  $so-btn-neon_md_font-size: 18px;
+
+  $so-btn-neon_sm_height: 30px;
+  $so-btn-neon_sm_padding: 30px;
+  $so-btn-neon_sm_font-size: 14px;
+
+  $so-btn-neon_glass-fadeout: 0.50;
+
   display: inline-block;
   height: $so-btn-neon_md_height;
   line-height: $so-btn-neon_md_height;
@@ -48,7 +48,17 @@ $so-btn-neon_glass-fadeout: 0.50;
 
   & > *{ vertical-align: middle }
 
-  @each $name, $value in $color-map{
+  $color-schemas: (
+    color-yellow: $color-yellow,
+    color-white-yellow: $color-white-yellow,
+    color-red: $color-red,
+    color-green: $color-green,
+    color-light-green: $color-light-green,
+    color-cyan-green: $color-cyan-green,
+    color-dark-cyan-green: $color-dark-cyan-green,
+  );
+
+  @each $name, $value in $color-schemas{
     &.so-btn-neon_#{$name}{
       color: $value;
       border-color: $value;

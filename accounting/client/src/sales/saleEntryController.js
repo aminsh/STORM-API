@@ -59,7 +59,7 @@ class SaleEntryController extends InvoiceEntryControllerBase {
     onProductChanged(item, product) {
         item.unitPrice = product.salePrice;
 
-        item.canShowStockSection = this.canShowStock() && product.productType === 'good';
+        item.canShowStockSection = this.canShowStock() && product.productType === 'good' && !this.isReturnSale;
 
         super.onProductChanged(item, product);
     }
