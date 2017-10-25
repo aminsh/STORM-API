@@ -119,7 +119,7 @@ module.exports = class PaypingService {
                 await(this.setServiceToken());
                 result = await(this.getUserKey(username));
             }
-            else if(e.statusCode === 400){
+            else if (e.statusCode === 400) {
                 throw new Error('Wrong username');
             }
             else
@@ -128,7 +128,7 @@ module.exports = class PaypingService {
         }
 
         const bankId = await(instanceOf('service.detailAccount', branchId)
-            .create('حساب پی پینگ', 'bank'));
+            .create('حساب پی پینگ', 'payping', 'bank'));
 
         await(branchThirdParty.create(branchId, 'payping', {username, userKey: result, bankId}));
     }

@@ -1,0 +1,30 @@
+@each $color, $value in $color-map {
+  .so-tx-#{$color}{
+    color: $value;
+  }
+  .so-bg-#{$color}{
+    background-color: $value;
+  }
+}
+
+// HomePage Special Colors
+$so-home-colors: (
+        "sandstorm": #F9BF3B,
+        "madison": #2C3E50,
+        "silversand": #BDC3C7,
+        "bronze": #CD7F32,
+        "green-a1": #1ABC9C,
+        "green-a2": #16A085,
+        "green-a3": #2ECC71,
+        "green-a4": #27AE60
+);
+@each $color, $value in $so-home-colors{
+
+  .so-home-tx-#{$color}{
+    color: $value;
+  }
+  .so-home-bg-#{$color}{
+    background-color: $value;
+  }
+
+}

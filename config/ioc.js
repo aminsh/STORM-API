@@ -29,7 +29,8 @@ container.register('Enums', require('../shared/enums'));
 container.register('captcha', require('../integration/reCaptcha/service'));
 
 container.register('httpException', require('../shared/utilities/httpException'));
-container.register('domainException', require('../shared/utilities/domainException'));
+container.register('domainException', require('../shared/utilities/domain').DomainException);
+container.register('domainResponse', require('../shared/utilities/domain').DomainResponse);
 
 container.singleton('Authentication', function () {
     let Authentication = require('../shared/services/service.authentication');

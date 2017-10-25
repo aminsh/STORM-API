@@ -1,0 +1,67 @@
+[class^="so-line-h"], [class*=" so-line-h"]{
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: hidden;
+  text-align: center;
+  & > span{
+    display: inline-block;
+    position: relative;
+    width: auto;
+    height: auto;
+    margin: 0;
+    padding: 0 1%;
+    &::before,
+    &::after{
+      content: ' ';
+      display: block;
+      position: absolute;
+      width: 100px;
+      height: 1px;
+      background-color: white;
+      top: 50%;
+    }
+    &::before{
+      left: 100%;
+    }
+    &::after{
+      right: 100%;
+    }
+  }
+  @mixin so-line-h($size){
+    line-height: $size;
+    height: $size;
+    margin: ($size / 4) 0;
+  }
+
+  &.so-line-h1 > span{
+    $size: 36px;
+    font-size: $size;
+    @include so-line-h($size);
+  }
+  &.so-line-h2 > span{
+    $size: 30px;
+    font-size: $size;
+    @include so-line-h($size);
+  }
+  &.so-line-h3 > span{
+    $size: 24px;
+    font-size: $size;
+    @include so-line-h($size);
+  }
+  &.so-line-h4 > span{
+    $size: 18px;
+    font-size: $size;
+    @include so-line-h($size);
+  }
+  &.so-line-h5 > span{
+    $size: 14px;
+    font-size: $size;
+    @include so-line-h($size);
+  }
+  &.so-line-h6 > span{
+    $size: 12px;
+    font-size: $size;
+    @include so-line-h($size);
+  }
+}

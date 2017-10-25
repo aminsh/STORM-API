@@ -22,19 +22,45 @@ EventEmitter.on('on-sale-created', async((cmd, current) => {
 
     const sale = await(invoiceRepository.findById(cmd.id)),
 
-        settings = await(settingRepository.get());
+        settings = await(settingRepository.get()),
+        products = await(productRepository
+            .findByIds(sale.invoiceLines.asEnumerable()
+                .select(item => item.productId)
+                .toArray()));
 
 
-    if (!sale.invoiceLines
-            .asEnumerable()
-            .any(async(line => await(productRepository.isGood(line.productId)))))
+    if (!products.asEnumerable()
+            .any(item => item.productType === 'good'))
         return;
 
     if (!settings.canControlInventory)
         return;
 
+    const params = {
+        sale,
+        lines: cmd.invoiceLines.asEnumerable()
+            .join(
+                products,
+                first => first.productId,
+                second => second.id,
+                (first, second) => ({
+                    product: second,
+                    quantity: first.quantity,
+                    stockId: first.stockId,
+                    invoiceLine: sale.invoiceLines.asEnumerable().single(item => item.productId === second.id)
+                }))
+            .toArray()
+    };
+
     let output = await(instanceOf('createOutput', current.branchId, current.fiscalPeriodId, settings)
-        .set(Object.assign(cmd, sale)));
+        .set(params));
+
+    if (Array.isArray(output))
+        return output.forEach(item => {
+            await(inventoryRepository.create(item));
+            EventEmitter.emit('on-output-created', item.id, current);
+        });
+
 
     await(inventoryRepository.create(output));
 

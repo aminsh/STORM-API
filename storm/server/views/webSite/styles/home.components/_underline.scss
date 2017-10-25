@@ -1,0 +1,22 @@
+{
+
+  $color-schemas: (
+    color-cyan-green: $color-cyan-green,
+    color-yellow: $color-yellow,
+    color-white-yellow: $color-white-yellow
+  );
+
+  @each $color, $value in $color-schemas{
+    .so-underline_#{$color}{
+      display: block;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      width: auto;
+      height: 3px;
+      background-color: $value;
+    }
+  }
+
+}

@@ -37,19 +37,19 @@ class OneStockBase {
                 number: ++maxNumber,
                 date: cmd.date,
                 stockId: this.stockId,
-                description: translate('For Cash sale invoice number ...').format(cmd.number),
+                description: translate('For Cash sale invoice number ...').format(cmd.sale.number),
                 inventoryType: 'output',
                 ioType: 'outputSale',
-                invoiceId: cmd.id,
+                invoiceId: cmd.sale.id,
                 fiscalPeriodId: this.fiscalPeriodId
             };
 
-        output.inventoryLines = cmd.invoiceLines.asEnumerable()
+        output.inventoryLines = cmd.lines.asEnumerable()
             .select(line => ({
-                productId: line.productId,
+                productId: line.product.id,
                 quantity: line.quantity,
-                unitPrice: await(this.inventoryDomain.getPrice(line.productId)),
-                invoiceLineId: line.id
+                unitPrice: await(this.inventoryDomain.getPrice(line.product.id)),
+                invoiceLineId: line.invoiceLine.id
             })).toArray();
 
         return output;

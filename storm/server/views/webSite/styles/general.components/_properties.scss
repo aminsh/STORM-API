@@ -1,0 +1,25 @@
+$propNames: (
+        "align-left": "text-align",
+        "align-right": "text-align",
+        "align-center": "text-align",
+        "dir-rtl": "direction",
+        "dir-ltr": "direction",
+        "disp-block": "display",
+        "vert-align-middle": "vertical-align"
+);
+$propValues: (
+        "align-left": "left",
+        "align-right": "right",
+        "align-center": "center",
+        "dir-rtl": "rtl",
+        "dir-ltr": "ltr",
+        "disp-block": "block",
+        "vert-align-middle": "middle"
+);
+
+// Make Property Classes
+@each $className, $cssPropName in $propNames {
+  .so-#{$className}{
+    #{$cssPropName}: #{map_get($propValues, $className)} !important;
+  }
+}

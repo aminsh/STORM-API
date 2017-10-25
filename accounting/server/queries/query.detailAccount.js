@@ -146,6 +146,9 @@ class DetailAccountQuery extends BaseQuery {
     getAllSmallTurnoverById(id, type, fiscalPeriodId, parameters) {
         let knex = this.knex,
             branchId = this.branchId,
+            subsidiaryLedgerAccounts = await(knex.from('settings').where('branchId', this.branchId).first())
+                .subsidiaryLedgerAccounts,
+            subledger = subsidiaryLedgerAccounts.asEnumerable().toObject(item => item.key, item=> item.id),
 
             query = knex.from(function () {
                 this.select(
@@ -162,7 +165,7 @@ class DetailAccountQuery extends BaseQuery {
                     .andWhere('detailAccounts.branchId', branchId)
                     .andWhere('journals.periodId', fiscalPeriodId)
                     .andWhere('detailAccounts.detailAccountType', type)
-                    .whereIn('subsidiaryLedgerAccounts.code', ['1101', '1103'])
+                    .whereIn('subsidiaryLedgerAccounts.id', [subledger.bank, subledger.fund])
                     .orderBy('journals.temporaryNumber', 'desc')
                     .as('base');
 

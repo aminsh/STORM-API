@@ -13,6 +13,7 @@ class SaleEntryController extends InvoiceEntryControllerBase {
                 promise,
                 translate,
                 settingsApi,
+                inventoryApi,
                 saleApi,
                 formService,
                 createPersonService,
@@ -36,24 +37,40 @@ class SaleEntryController extends InvoiceEntryControllerBase {
             productCreateService,
             selectProductFromStockService);
 
-       this.pageTitle = this.onEditMode ? 'Edit sale' : 'Create sale';
+        this.pageTitle = this.onEditMode ? 'Edit sale' : 'Create sale';
+
+        this.inventoryApi = inventoryApi;
+    }
+
+    onShowSelectStock(item) {
+
+        this.inventoryApi.getProductInventoryByStock(item.productId)
+            .then(result => {
+                item.inventories = result;
+            });
+    }
+
+    onStockChanged(item, p) {
+        item.stockId = p.stockId;
+        item.stockDisplay = p.stockDisplay;
+        item.stockInventory = p.sumQuantity;
     }
 
     onProductChanged(item, product) {
         item.unitPrice = product.salePrice;
 
-        product.productType === 'good' && this.selectStock(item);
+        item.canShowStockSection = this.canShowStock() && product.productType === 'good' && !this.isReturnSale;
 
         super.onProductChanged(item, product);
     }
 
-    goAfterSave(){
+    goAfterSave() {
         this.$state.go('sale.sales');
     }
 
-    canShowStock(){
+    canShowStock() {
 
-        if(!this.settings)
+        if (!this.settings)
             return super.canShowStock();
 
         return this.settings.productOutputCreationMethod === 'stockOnRequest';

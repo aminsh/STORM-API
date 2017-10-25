@@ -1,0 +1,107 @@
+$color-white: #ffffff;
+$color-milk-white: #ecf0f1;
+$color-gray-milk-white: #bdc3c7;
+$color-gray: #95a5a6;
+$color-dark-gray: #7f8c8d;
+$color-red: #FF6C5C;
+$color-light-red: lighten($color-red, 10);
+$color-dark-red: darken($color-red, 25);
+$color-white-yellow: #FDE3A7;
+$color-yellow: #ffcf4b;
+$color-orange: #f39c12;
+$color-magenta: #ea4c88;
+$color-light-pink: #ff8cc8;
+$color-pink: #ff6ca8;
+$color-dark-pink: #da3c78;
+$color-light-cream: #ffdcb5;
+$color-cream: #ffb28b;
+$color-dark-cream: #ff926b;
+$color-light-brown: #9e6c4b;
+$color-brown: #7e4c2b;
+$color-dark-brown: #5e2c0b;
+$color-light-blue: #39d5ff;
+$color-blue: #3498db;
+$color-dark-blue: #004790;
+$color-cyan-green: #1abc9c;
+$color-dark-cyan-green: #16a085;
+$color-light-green: #5efca1;
+$color-green: #3edc81;
+$color-dark-green: #1ebc61;
+$color-light-purple: #BE90D4;
+$color-purple: #ab69c6;
+$color-dark-purple: #8E44AD;
+$color-dark-gray-blue: #34495e;
+$color-too-dark-gray: #2c3e50;
+$color-light-black: #404040;
+$color-black: #303030;
+$color-real-black: #000000;
+
+$color-map: (
+        color-white: #ffffff,
+        color-milk-white: #ecf0f1,
+        color-gray-milk-white: #bdc3c7,
+        color-gray: #95a5a6,
+        color-dark-gray: #7f8c8d,
+        color-red: #FF6C5C,
+        color-light-red: lighten($color-red, 10),
+        color-dark-red: darken($color-red, 25),
+        color-white-yellow: #FDE3A7,
+        color-yellow: #ffcf4b,
+        color-orange: #f39c12,
+        color-magenta: #ea4c88,
+        color-light-pink: #ff8cc8,
+        color-pink: #ff6ca8,
+        color-dark-pink: #da3c78,
+        color-light-cream: #ffdcb5,
+        color-cream: #ffb28b,
+        color-dark-cream: #ff926b,
+        color-light-brown: #9e6c4b,
+        color-brown: #7e4c2b,
+        color-dark-brown: #5e2c0b,
+        color-light-blue: #39d5ff,
+        color-blue: #3498db,
+        color-dark-blue: #004790,
+        color-cyan-green: #1abc9c,
+        color-dark-cyan-green: #16a085,
+        color-light-green: #5efca1,
+        color-green: #3edc81,
+        color-dark-green: #1ebc61,
+        color-light-purple: #BE90D4,
+        color-purple: #ab69c6,
+        color-dark-purple: #8E44AD,
+        color-dark-gray-blue: #34495e,
+        color-too-dark-gray: #2c3e50,
+        color-light-black: #404040,
+        color-black: #303030,
+        color-real-black: #000000
+);
+@each $color, $value in $color-map {
+  .so-tx-#{$color}{
+    color: $value;
+  }
+  .so-bg-#{$color}{
+    background-color: $value;
+  }
+}
+
+// HomePage Special Colors
+$so-home-colors: (
+  "sandstorm": #F9BF3B,
+  "madison": #2C3E50,
+  "silversand": #BDC3C7,
+  "bronze": #CD7F32,
+  "green-a1": #1ABC9C,
+  "green-a2": #16A085,
+  "green-a3": #2ECC71,
+  "green-a4": #27AE60
+);
+@each $color, $value in $so-home-colors{
+
+  .so-home-tx-#{$color}{
+    color: $value;
+  }
+  .so-home-bg-#{$color}{
+    background-color: $value;
+  }
+
+}

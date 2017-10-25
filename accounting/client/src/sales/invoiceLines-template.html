@@ -4,15 +4,15 @@
     <table class="table table-striped table-hover">
         <thead>
         <tr style="font-size: 9pt; font-weight: bold;">
-            <td>#</td>
-            <td>{{'Products'|translate}}</td>
-            <td ng-if="!model.isReturnSale">{{'Description 2'|translate}}</td>
-            <td>{{'Quantity'|translate}}</td>
+            <td class="text-center">#</td>
+            <td class="text-center">{{'Products'|translate}}</td>
+            <td class="text-center" ng-if="!model.isReturnSale">{{'Description 2'|translate}}</td>
+            <td class="text-center">{{'Quantity'|translate}}</td>
             <td></td>
-            <td>{{'Unit price'|translate}}</td>
-            <td>{{'Discount'|translate}}</td>
-            <td>{{'Vat'|translate}} ({{model.settings.vat}} %)</td>
-            <td>{{'Total price'|translate}}</td>
+            <td class="text-center">{{'Unit price'|translate}}</td>
+            <td class="text-center">{{'Discount'|translate}}</td>
+            <td class="text-center">{{'Vat'|translate}} ({{model.settings.vat}} %)</td>
+            <td class="text-center">{{'Total price'|translate}}</td>
             <td></td>
         </tr>
         </thead>
@@ -20,7 +20,7 @@
         <tr name="form-{{$index}}"
             id="{{item.id}}"
             ng-form
-            ng-repeat-start="item in model.invoice.invoiceLines"
+            ng-repeat="item in model.invoice.invoiceLines"
             ng-class-odd="'grid-row-striped'">
 
             <td style="width: 30px; padding: 0px; vertical-align: middle; text-align: center;">{{$index + 1}}</td>
@@ -34,12 +34,13 @@
                                    k-data-source="model.products"
                                    k-on-created="model.createNewProduct(item,$search, form['form-'+ $index])"
                                    k-on-changed="model.onProductChanged(item, $item, form['form-'+ $index])"
+                                   k-on-bound="model.onProductChanged(item, $item, form['form-'+ $index])"
                                    show-no-data-template
                                    url="{{model.urls.getAllProduct}}"
                                    ng-model="item.productId"></dev-tag-combo-box>
             </td>
 
-            <td style="width: 25%; padding: 0px;vertical-align: middle">
+            <td style="width: 25%; padding: 0px">
                 <span ng-if="model.isReturnSale">{{item.description}}</span>
                 <dev-tag-text-box
                         ng-if="!model.isReturnSale"
@@ -70,8 +71,25 @@
                 </div>
             </td>
 
-            <td style="width: 120px; padding-right: 3px;vertical-align: middle" class="invoice-td">
-                <span>{{item.scale}}</span>
+            <td style="width: 200px; padding-right: 3px;padding-top: 0;padding-bottom: 0" class="invoice-td">
+                <span style="vertical-align: middle">{{item.scale}}</span>
+
+                <a style="margin-top: 0;margin-bottom: 0"
+                   ng-if="item.canShowStockSection"
+                   ng-click="model.onShowSelectStock(item)"
+                   title="{{'Select stock'| translate}}"
+                   class="btn btn-white btn-sm"
+                   uib-popover-template="'partials/sales/selectProductFromStock.template.html'"
+                   popover-title="{{'Select stock'| translate}}"
+                   popover-class="popover-select-stock"
+                   popover-placement="bottom"
+                   popover-trigger="'outsideClick'">
+
+                    <span class="text-bold" ng-if="item.stockId">{{'Stock'| translate}}:{{item.stockDisplay}}</span>
+                    <span class="text-bold" ng-if="!item.stockId">{{'Select stock'| translate}}</span>
+
+                    <i class="fa fa-sort-desc fa-lg"></i>
+                </a>
             </td>
 
             <td style="width: 120px; padding: 0px;" class="invoice-td">
@@ -139,15 +157,6 @@
             </td>
 
         </tr>
-        <tr ng-repeat-end  ng-if="item.stockId">
-            <td colspan="10">
-                <div class="text-success">
-
-                    <h5>{{item.stockDisplay}} - {{'Inventory quantity' | translate}} : {{item.stockInventory}}</h5>
-
-                </div>
-            </td>
-        </tr>
         </tbody>
     </table>
     <div class="row" style="padding-left: 15px;">
@@ -183,31 +192,31 @@
             </div>
         </div>
         <div class="col-md-4">
-            <div class="row text-left">
-                <div class="col-xs-5 title1 so-align-right">{{'Sum'|translate}}</div>
+            <div class="row text-left" style="border-bottom: 1px solid #DDDDDD;">
+                <div class="col-xs-5 title1 so-align-right"><h3>{{'Sum'|translate}}</h3></div>
                 <div class="col-xs-7 title1">
-                    {{model.invoice.invoiceLines | totalSum: ('$.quantity * $.unitPrice') | number}}
+                    <h3>{{model.invoice.invoiceLines | totalSum: ('$.quantity * $.unitPrice') | number}}</h3>
                 </div>
             </div>
-            <div class="row text-left">
-                <div class="col-xs-5 title1 so-align-right">{{'Sum discount'|translate}}</div>
+            <div class="row text-left" style="border-bottom: 1px solid #DDDDDD;">
+                <div class="col-xs-5 title1 so-align-right"><h3>{{'Sum discount'|translate}}</h3></div>
                 <div class="col-xs-7 title1">
-                    {{model.invoice.invoiceLines | totalSum: ('discount') | number}}
+                    <h3>{{model.invoice.invoiceLines | totalSum: ('discount') | number}}</h3>
                 </div>
             </div>
-            <div class="row text-left">
-                <div class="col-xs-5 title1 so-align-right">{{'Sum tax'|translate}}</div>
+            <div class="row text-left" style="border-bottom: 1px solid #DDDDDD;">
+                <div class="col-xs-5 title1 so-align-right"><h3>{{'Sum tax'|translate}}</h3></div>
                 <div class="col-xs-7 title1">
-                    {{model.invoice.invoiceLines | totalSum: ('vat') | number}}
+                    <h3>{{model.invoice.invoiceLines | totalSum: ('vat') | number}}</h3>
                 </div>
             </div>
-            <div class="row" style="margin-top: 1px; margin-bottom: 1px;"></div>
+            <div class="row" style="margin-top: 1px; margin-bottom: 1px;border-bottom: 1px solid #DDDDDD;"></div>
             <div class="row text-left" >
-                <div class="col-xs-5 h5 txt-bold so-align-right">{{"Payable amount"|translate}}</div>
+                <div class="col-xs-5 h5 txt-bold so-align-right"><h3>{{"Payable amount"|translate}}</h3></div>
                 <div class="col-xs-7 h5 txt-bold "
                      ng-model="model.invoice.totalPrice">
 
-                    {{model.invoice.invoiceLines | totalSum: ('($.quantity * $.unitPrice) - $.discount + $.vat') | number}}
+                    <h3>{{model.invoice.invoiceLines | totalSum: ('($.quantity * $.unitPrice) - $.discount + $.vat') | number}}</h3>
                 </div>
             </div>
         </div>

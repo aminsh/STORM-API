@@ -1,0 +1,135 @@
+/* form starting stylings ------------------------------- */
+.so-material_input{
+  position: relative;
+  margin-top: 30px;
+  margin-bottom: 10px;
+
+  /* INPUT ======================================= */
+  & > input{
+    display: block;
+    position: relative;
+    font-size: 18px;
+    padding: 10px 10px 10px 5px;
+    width: 100%;
+    border: none;
+    border-bottom: 1px solid #757575;
+    background-color: transparent;
+    &:focus{ outline: none }
+
+    /* active state */
+    &.so-active ~ label{
+      top: -20px;
+      font-size: 16px;
+    }
+    &:focus ~ label{ color: #5264AE; }
+
+    /* active state */
+    &:focus ~ span::before,
+    &:focus ~ span::after { width: 50% }
+
+    &:not(:valid):not(.so-empty){
+
+      // error
+      color: $color-red;
+      & ~ label{
+        color: $color-red;
+      }
+      & ~ span::after,
+      & ~ span::before{
+        width: 50%;
+        background-color: $color-red;
+      }
+
+      // warning
+      &:focus{
+        color: $color-yellow;
+        & ~ label{
+          color: $color-yellow;
+        }
+        & ~ span::after,
+        & ~ span::before{
+          background-color: $color-yellow;
+        }
+      }
+
+    }
+
+  }
+
+  /* LABEL ======================================= */
+  & > label{
+    display: block;
+    @include no-user-select();
+    color: #999;
+    font-size: 18px;
+    font-weight: normal;
+    position: absolute;
+    pointer-events: none;
+    direction: ltr;
+    left: 5px;
+    top: 10px;
+    $trans-sec: 0.2s;
+    @include transition(#{"top ease #{$trans-sec}, font-size ease #{$trans-sec}, color ease #{$trans-sec}"});
+    &.so-dir-rtl{
+      right: 5px;
+      left: auto;
+    }
+  }
+
+  /* BOTTOM BARS ================================= */
+  & > span {
+    position: relative;
+    display: block;
+    @include no-user-select();
+    width: 100%;
+    &::before,
+    &::after{
+      content: ' ';
+      display: block;
+      position: absolute;
+      height: 2px;
+      width: 0;
+      bottom: 0;
+      background: #5264AE;
+      $trans-sec: 0.2s;
+      @include transition(#{"right ease #{$trans-sec}, left ease #{$trans-sec}, width ease #{$trans-sec}"});
+    }
+    &::before{ left: 50% }
+    &::after{ right: 50% }
+  }
+
+  $color-schemas: (
+    color-white: $color-white,
+    color-white-yellow: $color-white-yellow,
+    color-yellow: $color-yellow
+  );
+
+  @each $color, $value in $color-schemas{
+    &.so-blur_#{$color}{
+      & > input{
+        color: $value;
+        border-bottom-color: $value;
+      }
+      & > label{
+        color: $value;
+      }
+    }
+    &.so-focus_#{$color}{
+      & > input:focus{
+        color: $value;
+        & ~ label{
+          color: $value;
+        }
+        & ~ span::before,
+        & ~ span::after{
+          background-color: $value;
+        }
+      }
+      & > span::before,
+      & > span::after{
+        background: $value;
+      }
+    }
+  }
+
+}
