@@ -8,30 +8,29 @@ const async = require('asyncawait/async'),
     kendoQueryResolve = require('../services/kendoQueryResolve'),
     enums = require('../../../shared/enums');
 
-class BandQuery extends BaseQuery {
+class BankQuery extends BaseQuery {
     constructor(branchId) {
         super(branchId);
     }
 
     getSummary(fiscalPeriodId) {
-        let knex = this.knex;
+        let knex = this.knex,
+            subsidiaryLedgerAccounts = await(knex.from('settings').where('branchId', this.branchId).first())
+                .subsidiaryLedgerAccounts,
+            subledger = subsidiaryLedgerAccounts.asEnumerable().toObject(item => item.key, item=> item.id);
 
         return knex.select(
             'journalLines.detailAccountId',
             'detailAccounts.detailAccountType',
             knex.raw('"detailAccounts"."title" as "detailAccountDisplay"'),
-            knex.raw('"sum"("journalLines"."debtor" - "journalLines"."creditor") as "remainder"')
+            knex.raw('"sum"(CAST("journalLines"."debtor" - "journalLines"."creditor" as FLOAT)) as "remainder"')
         )
             .from('journalLines')
             .leftJoin('journals', 'journalLines.journalId', 'journals.id')
-            .leftJoin(
-                'subsidiaryLedgerAccounts',
-                'journalLines.subsidiaryLedgerAccountId',
-                'subsidiaryLedgerAccounts.id')
             .leftJoin('detailAccounts', 'journalLines.detailAccountId', 'detailAccounts.id')
             .where('journalLines.branchId', this.branchId)
             .andWhere('journals.periodId', fiscalPeriodId)
-            .andWhereBetween('subsidiaryLedgerAccounts.code', ['1101', '1103'])
+            .whereIn('journalLines.subsidiaryLedgerAccountId', [subledger.bank, subledger.fund])
             .whereIn('detailAccounts.detailAccountType', ['bank', 'fund'])
             .groupBy(
                 'journalLines.detailAccountId',
@@ -50,17 +49,20 @@ class BandQuery extends BaseQuery {
     }
 
     getAll(fiscalPeriodId) {
-        let knex = this.knex;
+        let knex = this.knex,
+            subsidiaryLedgerAccounts = await(knex.from('settings').where('branchId', this.branchId).first())
+                .subsidiaryLedgerAccounts,
+            subledger = subsidiaryLedgerAccounts.asEnumerable().toObject(item => item.key, item=> item.id);
 
         return knex.select(
             '*',
-            knex.raw(`(select sum(debtor-creditor) from journals 
+            knex.raw(`(select sum(CAST(debtor-creditor as FLOAT)) from journals 
                 left join "journalLines" on journals.id = "journalLines"."journalId"
                 left join "subsidiaryLedgerAccounts" on "journalLines"."subsidiaryLedgerAccountId" = "subsidiaryLedgerAccounts"."id"
                 where journals."periodId" = '${fiscalPeriodId}' 
                 and journals."branchId" = '${this.branchId}'
                 and "detailAccountId" = "detailAccounts"."id"
-                and "subsidiaryLedgerAccounts".code in ('1101','1103') ) as "remainder"`)
+                and "subsidiaryLedgerAccounts".id in ('${subledger.bank}', '${subledger.fund}') ) as "remainder"`)
         )
             .from('detailAccounts')
             .where('branchId', this.branchId)
@@ -79,4 +81,4 @@ class BandQuery extends BaseQuery {
 
 }
 
-module.exports = BandQuery;
+module.exports = BankQuery;
