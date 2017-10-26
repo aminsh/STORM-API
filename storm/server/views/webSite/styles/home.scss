@@ -692,30 +692,45 @@ $so-home-nav_links_list_hide-width: 1024px;
     // end --- team content
 
     // start --- features content
+    #features{
+      & > .so-home-content_section_bg{
+        & > .so-img{
+          @include trans-prop(#{"opacity"});
+          @include trans-dur(1s);
+          @include trans-time-fn(ease);
+        }
+        &.so-active{
+          & > .so-img{
+            opacity: 0.1;
+          }
+        }
+      }
+    }
     #features_title{
       @include transition(color ease 1s);
     }
-    .so-home_features_black-layer{
+    /*.so-home_features_black-layer{
       display: block;
       position: absolute;
-      z-index: 1;
-      top: 100%;
+      z-index: -1000;
+      top: 0;
       left: 0;
       right: 0;
-      bottom: -100%;
+      bottom: 0;
       width: 100%;
       height: 100%;
       background-color: fade_out($color-black, 0.25);
       opacity: 0;
-      @include trans-prop(#{"top, bottom, opacity"});
+      @include transform(scale(0.9));
+      @include trans-prop(#{"opacity, transform"});
       @include trans-dur(1s);
       @include trans-time-fn(ease);
       &.so-active{
-        top: 0;
-        bottom: 0;
+        z-index: 1;
         opacity: 1;
+        @include transform(scale(1));
       }
-    }
+    }*/
     .so-home_features_upper-layer{
       display: block;
       position: absolute;
@@ -789,12 +804,14 @@ $so-home-nav_links_list_hide-width: 1024px;
       // border: 1px solid red;
       @include no-user-select();
       overflow: hidden;
-      @include trans-prop(#{"filter, transform"});
+      opacity: 1;
+      @include trans-prop(#{"opacity, transform"});
       @include trans-dur(1s);
       @include trans-time-fn(ease);
 
-      &.so-blur{
-        @include filter(#{"blur(5px)"});
+      &.so-active{
+        opacity: 0.2;
+        // @include filter(#{"blur(5px)"});
         @include transform(scale(1.25))
       }
 
@@ -1141,7 +1158,7 @@ $so-home-nav_links_list_hide-width: 1024px;
         display: block;
         position: relative;
         width: 100%;
-        height: 75px;
+        min-height: 75px;
         margin: 0 0 15px 0;
         padding: 0;
         // border-bottom: 2px solid darken($color-milk-white, 10);
@@ -1193,7 +1210,7 @@ $so-home-nav_links_list_hide-width: 1024px;
           vertical-align: top;
           position: relative;
           width: calc(100% - 75px);
-          height: 75px;
+          min-height: 75px;
           line-height: 37px;
           margin: 0;
           padding: 0 10px;
