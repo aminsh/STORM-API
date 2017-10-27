@@ -6,7 +6,8 @@
     let $htmlBody = $( "html, body" );
     let $section = $( "#features" );
     let $boxes = $( ".so-home_features_content_box" );
-    let $blackLayer = $( ".so-home_features_black-layer" );
+    // let $blackLayer = $( ".so-home_features_black-layer" );
+    let $featuresBg = $section.children(".so-home-content_section_bg");
     let $upperLayer = $( ".so-home_features_upper-layer" );
     let $content = $( ".so-home_features_content" );
     let $title = $( "#features_title" );
@@ -32,8 +33,8 @@
     function openFeaturesLayer(num){
 
         $content
-            .addClass("so-blur");
-        $blackLayer
+            .addClass("so-active");
+        $featuresBg
             .addClass("so-active");
         $upperLayer
             .addClass("so-active");
@@ -78,8 +79,8 @@
     function closeFeaturesLayer(){
 
         $content
-            .removeClass("so-blur");
-        $blackLayer
+            .removeClass("so-active");
+        $featuresBg
             .removeClass("so-active");
         $upperLayer
             .removeClass("so-active");
