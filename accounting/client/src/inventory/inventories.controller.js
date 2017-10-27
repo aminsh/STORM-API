@@ -30,6 +30,13 @@ class InventoriesController {
                     template: '<span>{{item.ioTypeDisplay}}</span>'
                 },
                 {
+                    name: 'stockDisplay',
+                    title: translate('Stock'),
+                    width: '15%',
+                    type: 'string',
+                    filterable: false
+                },
+                {
                     name: 'description',
                     title: translate('Description'),
                     width: '20%',
@@ -66,10 +73,6 @@ class InventoriesController {
             .then(result => {
                 const item = result.data.length > 0 ? result.data[0] : null;
                 if (!item) return;
-
-                this.stockId = item.id;
-                this.onStockChanged(item);
-
 
                 this.gridOption.readUrl = this.inventoryType === 'input'
                     ? devConstants.urls.inventory.getAllInputs()
