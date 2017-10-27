@@ -68,13 +68,6 @@ class SaleEntryController extends InvoiceEntryControllerBase {
         this.$state.go('sale.sales');
     }
 
-    canShowStock() {
-
-        if (!this.settings)
-            return super.canShowStock();
-
-        return this.settings.productOutputCreationMethod === 'stockOnRequest';
-    }
 }
 
 export default SaleEntryController;
