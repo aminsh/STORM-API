@@ -59,21 +59,17 @@ class SaleEntryController extends InvoiceEntryControllerBase {
     onProductChanged(item, product) {
         item.unitPrice = product.salePrice;
 
-        item.canShowStockSection = this.canShowStock() && product.productType === 'good' && !this.isReturnSale;
+        item.stockId = null;
+        item.stockDisplay = null;
+
+        item.canShowStockSection = this.settings.productOutputCreationMethod === 'stockOnRequest'
+            && product.productType === 'good';
 
         super.onProductChanged(item, product);
     }
 
     goAfterSave() {
         this.$state.go('sale.sales');
-    }
-
-    canShowStock() {
-
-        if (!this.settings)
-            return super.canShowStock();
-
-        return this.settings.productOutputCreationMethod === 'stockOnRequest';
     }
 }
 

@@ -27,9 +27,9 @@ class InventoryControlDefaultStock extends InventoryControlBase {
 
         const inventoryStatusList = cmd.invoiceLines.asEnumerable()
             .select(async.result(line => ({
-                productId: line.productId,
+                product: line.product,
                 quantity: line.quantity,
-                hasInventory: await(this.hasInventory(stockId, line.productId, line.quantity))
+                hasInventory: await(this.hasInventory(stockId, line.product.id, line.quantity))
             })))
             .toArray();
 
@@ -37,20 +37,19 @@ class InventoryControlDefaultStock extends InventoryControlBase {
             return errors;
 
         if (inventoryStatusList.asEnumerable().any(item => !item.hasInventory)) {
-            const ids = inventoryStatusList.asEnumerable()
+            const products = inventoryStatusList.asEnumerable()
                     .where(item => !item.hasInventory)
-                    .select(item => item.productId)
+                    .select(item => item.product)
                     .toArray(),
 
-                products = await(this.productRepository.findByIds(ids));
+                errors = products.asEnumerable()
+                    .select(item => `کالای ${item.title} به مقدار درخواست شده موجود نیست`)
+                    .toArray();
 
-            errors = errors.concat(products.asEnumerable()
-                .select(item => `کالای ${item.title} به مقدار درخواست شده موجود نیست`)
-                .toArray());
+            return errors;
         }
 
         return errors;
-
     }
 }
 

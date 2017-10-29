@@ -34,6 +34,10 @@ class SalesController extends InvoiceListControllerBase {
     view(current){
         this.$state.go('viewReturnSale', {id: current.id});
     }
+
+    canShowStock(){
+        return true;
+    }
 }
 
 export default SalesController;

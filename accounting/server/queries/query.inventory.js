@@ -15,7 +15,8 @@ const BaseQuery = require('./query.base'),
         inventoryTypeDisplay: item.inventoryType ? Enums.InventoryType().getDisplay(item.inventoryType) : null,
         ioType: item.ioType,
         ioTypeDisplay: item.ioType ? Enums.InventoryIOType().getDisplay(item.ioType) : null,
-        stockId: item.stockId
+        stockId: item.stockId,
+        stockDisplay: item.stockDisplay
     }),
 
     viewLine = item => ({
@@ -34,10 +35,12 @@ class InventoryQuery extends BaseQuery {
     getAll(inventoryType, parameters) {
         const branchId = this.branchId,
             addFilter = this.addFilter,
+            knex = this.knex,
 
-            query = this.knex.from(function () {
-                let query = this.select('*').from('inventories')
-                    .where('branchId', branchId)
+            query = knex.from(function () {
+                let query = this.select('inventories.*', knex.raw('stocks.title as "stockDisplay"')).from('inventories')
+                    .leftJoin('stocks', 'stocks.id', 'inventories.stockId')
+                    .where('inventories.branchId', branchId)
                     .where('inventoryType', inventoryType)
                     .as('base');
 
