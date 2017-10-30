@@ -95,4 +95,11 @@ export default class {
         return this.apiPromise.get(`${this.urlPrefix}/invoices`, params);
     }
 
+    getInventoriesOutput(params){
+        return this.apiPromise.get(`${this.urlPrefix}/inventory-output`,params)
+    }
+
+    getInventoriesInput(params){
+        return this.apiPromise.get(`${this.urlPrefix}/inventory-input`,params)
+    }
 }

@@ -434,5 +434,7 @@
   "Create purchase": "خرید جدید",
   "New Output": "حواله جدید",
   "New SalesInvoice": "فاکتور فروش جدید",
-  "New ReturnSalesInvoice": "فاکتور برگشت از فروش جدید"
+  "New ReturnSalesInvoice": "فاکتور برگشت از فروش جدید",
+  "Select inventory input": "لطفا رسید/رسیدهای موردنظر را انتخاب نمایید!",
+  "Select inventory output": "لطفا حواله/حواله های موردنظر را انتخاب نمایید!"
 }

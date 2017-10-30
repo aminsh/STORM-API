@@ -2,7 +2,7 @@
     <i class="fa fa-info-circle fa-2x" aria-hidden="true"></i>
     جهت انتقال وجه بین بانک و صندوق از این فرم استفاده نمایید، با ذخیره عملیات سند حسابداری بصورت خودکار صادر می شود.
 </dev-tag-guide>
-<dev-tag-content dev-attr-title="{{'Transfer money'| translate}}" class="loginColumns">
+<dev-tag-content dev-attr-title="{{'Transfer money'| translate}}" class="col-md-9">
     <form name="form" novalidate>
         <dev-tag-validation-summary errors="model.errors" class="col-md-12"></dev-tag-validation-summary>
         <div class="row">
@@ -13,7 +13,7 @@
                         ng-model="model.transferMoney.date"></dev-tag-datepicker>
             </div>
 
-            <div class="col-md-4"></div>
+            <div class="col-md-1"></div>
 
             <div class="form-group col-md-4">
                 <label class="label-control">{{'Amount' | translate}}</label>

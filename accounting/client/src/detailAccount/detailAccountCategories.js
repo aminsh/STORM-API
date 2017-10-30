@@ -15,7 +15,11 @@ export default class DetailAccountCategoriesController {
                     name: 'title',
                     title: translate('Title'),
                     width: '80%',
-                    type: 'string'
+                    type: 'string',
+                    css: 'text-center',
+                    header: {
+                        css: 'text-center'
+                    }
                 }
             ],
             commands: [

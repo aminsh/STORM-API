@@ -329,5 +329,38 @@
         ]
       }
     ]
+  },
+  {
+    "key": "8",
+    "showOnAccounting": false,
+    "text": "انبار",
+    "items": [
+      {
+        "key": "800",
+        "text": "گزارش حواله (خروجی)ها",
+        "func": "getInventoriesOutput",
+        "fileName": "inventoryInput",
+        "useLayout": false,
+        "showOnAccounting": false,
+        "params": [
+          {
+
+          }
+          ]
+      },
+      {
+        "key": "801",
+        "text": "گزارش رسید (ورودی)ها",
+        "func": "getInventoriesInput",
+        "fileName": "inventoryOutput",
+        "useLayout": false,
+        "showOnAccounting": false,
+        "params": [
+          {
+
+          }
+        ]
+      }
+    ]
   }
 ]
