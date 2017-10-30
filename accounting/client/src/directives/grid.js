@@ -19,8 +19,8 @@ export default function (apiPromise, $timeout) {
 
             scope.gridId = Guid.new();
 
-            scope.$on(`${option.name}/execute-advanced-search`, (e, extra)=> {
-                parameters.extra=extra ;
+            scope.$on(`${option.name}/execute-advanced-search`, (e, extra) => {
+                parameters.extra = extra;
                 scope.pageOption.reset();
             });
 
@@ -28,8 +28,23 @@ export default function (apiPromise, $timeout) {
             scope.grid = {
                 sortable: (option.sortable == undefined) ? true : option.sortable,
                 filterable: (option.filterable == undefined) ? true : option.filterable,
-                selectable: option.selectable
+                selectable: option.selectable,
+                multiSelectable: option.multiSelectable
             };
+
+            option.getSelected = () => {
+                return scope.data.asEnumerable()
+                    .where(item => item.isSelected)
+                    .select(item => item.id)
+                    .toArray();
+            };
+
+            scope.isSelectedAll = false;
+
+            scope.onIsSelectedAllChanged = () => {
+                scope.data.forEach(item => item.isSelected = scope.isSelectedAll);
+            };
+
             scope.data = [];
             scope.total = 0;
             scope.pageOption = {};
@@ -79,35 +94,35 @@ export default function (apiPromise, $timeout) {
                         let table;
 
                         /*if ($.fn.dataTable.isDataTable(selector)) {
-                            table = $(selector).DataTable();
-                        }
-                        else {
-                            table = $(selector).DataTable({
-                                responsive: true,
-                                "scrollY": scope.option.gridSize || '500px',
-                                paging: false,
-                                searching: false,
-                                ordering: false,
-                                "bInfo": false
-                            });
-                        }*/
+                         table = $(selector).DataTable();
+                         }
+                         else {
+                         table = $(selector).DataTable({
+                         responsive: true,
+                         "scrollY": scope.option.gridSize || '500px',
+                         paging: false,
+                         searching: false,
+                         ordering: false,
+                         "bInfo": false
+                         });
+                         }*/
 
                         /*$timeout(() => {
-                            /!* var $table = $('table.scroll'),
-                             $bodyCells = $table.find('tbody tr:first').children(),
-                             colWidth;
+                         /!* var $table = $('table.scroll'),
+                         $bodyCells = $table.find('tbody tr:first').children(),
+                         colWidth;
 
-                             colWidth = $bodyCells.map(function () {
-                             return $(this).width();
-                             }).get();
+                         colWidth = $bodyCells.map(function () {
+                         return $(this).width();
+                         }).get();
 
-                             // Set the width of thead columns
-                             $table.find('thead tr').children().each(function (i, v) {
-                             $(v).width(colWidth[i]);
-                             });*!/
+                         // Set the width of thead columns
+                         $table.find('thead tr').children().each(function (i, v) {
+                         $(v).width(colWidth[i]);
+                         });*!/
 
-                            table = $(selector).DataTable();
-                        });*/
+                         table = $(selector).DataTable();
+                         });*/
 
                         scope.isWaiting = false;
                     });

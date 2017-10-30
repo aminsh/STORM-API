@@ -15,15 +15,26 @@
                     ui-sref="createPurchase"
                     title="{{'New purchase'| translate}}"
                     style-type="primary btn-outline"
-                    icon="fa fa-plus fa-lg"></dev-tag-button>
+                    icon="fa fa-lg"></dev-tag-button>
+
+            <dev-tag-button
+                    ng-click="model.inventoryInput()"
+                    title="{{'Print'| translate}}"
+                    style-type="primary btn-outline"
+                    icon="fa fa-print fa-lg"></dev-tag-button>
         </div>
 
-        <div ng-if="model.inventoryType === 'output'" class="col-md-1" style="margin-top: 10px">
+        <div ng-if="model.inventoryType === 'output'" class="col-md-6" style="margin-top: 10px">
             <dev-tag-button
                     ng-click="model.create()"
                     title="{{'New Output'| translate}}"
                     style-type="primary"
                     icon="fa fa-plus fa-lg"></dev-tag-button>
+            <dev-tag-button
+                    ng-click="model.inventoryOutput()"
+                    title="{{'Print'| translate}}"
+                    style-type="primary btn-outline"
+                    icon="fa fa-print fa-lg"></dev-tag-button>
         </div>
 
     </div>
@@ -39,5 +50,8 @@
                               url="{{model.getAllStockUrl}}"></dev-tag-combo-box>
        </div>
     </div>
+
+
+
     <dev-tag-grid option="model.gridOption"></dev-tag-grid>
 </div>

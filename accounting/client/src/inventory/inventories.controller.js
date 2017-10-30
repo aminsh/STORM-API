@@ -2,9 +2,12 @@
 
 class InventoriesController {
 
-    constructor($scope, $state, translate, devConstants, stockApi) {
+    constructor($scope, $state, translate, devConstants, stockApi, logger, navigate) {
         this.$scope = $scope;
         this.$state = $state;
+        this.logger = logger;
+        this.navigate = navigate;
+        this.translate = translate;
         this.inventoryType = $state.current.name.includes('input') ? 'input' : 'output';
 
         this.gridOption = {
@@ -14,13 +17,22 @@ class InventoriesController {
                     name: 'date',
                     title: translate('Date'),
                     width: '10%',
-                    type: 'date'
+                    type: 'date',
+                    css: 'text-center',
+                    header:{
+                        css:'text-center'
+                    },
                 },
                 {
                     name: 'number',
                     title: translate('Number'),
                     width: '10%',
-                    type: 'number'
+                    type: 'number',
+                    template: '<span>{{item.number}}</span>',
+                    css: 'text-center',
+                    header:{
+                        css:'text-center'
+                    },
                 },
                 {
                     name: 'ioType',
@@ -66,7 +78,8 @@ class InventoriesController {
             readUrl: '',
             sort: [
                 {dir: 'desc', field: 'number'}
-            ]
+            ],
+            multiSelectable: true
         };
 
         stockApi.getAll()
@@ -97,6 +110,32 @@ class InventoriesController {
 
     showDetail(current) {
         this.$state.go('.detail', {id: current.id});
+    }
+
+    inventoryOutput(){
+        const ids = this.gridOption.getSelected();
+        if(ids.length === 0){
+            this.logger.error(this.translate('Select inventory output'));}
+            else {
+            let reportParam = {ids};
+            this.navigate(
+                'report.print',
+                {key: 800},
+                reportParam);
+        }
+    }
+
+    inventoryInput(){
+        const ids = this.gridOption.getSelected();
+        if(ids.length === 0){
+            this.logger.error(this.translate('Select inventory input'));}
+        else {
+            let reportParam = {ids};
+            this.navigate(
+                'report.print',
+                {key: 800},
+                reportParam);
+        }
     }
 }
 

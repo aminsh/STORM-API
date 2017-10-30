@@ -24,15 +24,23 @@ export default class peopleListController {
         this.gridOption = {
             columns: [
                 {
-                    name: 'title', title: translate('Title'), width: '70%',
+                    name: 'title', title: translate('Title'), width: '50%',
                     template: `<a ui-sref=".info({id: item.id})">{{item.title}}</a>`,
-                    type: 'string'
+                    type: 'string',
+                    /*css: 'text-center',
+                    header:{
+                        css:'text-center'
+                    }*/
                 },
                 {
                     name: 'phone',
                     title: translate('Phone'),
-                    width: '30%',
-                    type: 'string'
+                    width: '40%',
+                    type: 'string',
+                    /*css: 'text-center',
+                    header:{
+                        css:'text-center'
+                    }*/
                 }
             ],
             commands: [

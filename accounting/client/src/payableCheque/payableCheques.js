@@ -16,19 +16,39 @@ export default class ReceivableChequesController {
 
         this.gridOption = {
             columns: [
-                {name: 'number', title: translate('Number'), type: 'string'},
-                {name: 'date', title: translate('Date'), type: 'date'},
+                {
+                    name: 'number',
+                    title: translate('Number'),
+                    type: 'string',
+                    css: 'text-center',
+                    header:{
+                        css:'text-center'
+                    },
+                    width:'10%'
+                },
+                {
+                    name: 'date',
+                    title: translate('Date'),
+                    type: 'date',
+                    css: 'text-center',
+                    header:{
+                        css:'text-center'
+                    },
+                    width:'30%'
+                },
                 {
                     name: 'detailAccountId',
                     title: translate('Bank'),
                     type: 'string',
-                    template: '{{item.detailAccountDisplay}}'
+                    template: '{{item.detailAccountDisplay}}',
+                    width:'40%'
                 },
                 {
                     name: 'chequeStatus',
                     title: translate('Status'),
                     type: 'chequeStatus',
-                    template: '{{item.chequeStatusDisplay}}'
+                    template: '{{item.chequeStatusDisplay}}',
+                    width:'20%'
                 }
             ],
             commands: [],
