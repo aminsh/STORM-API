@@ -7,7 +7,8 @@ const async = require('asyncawait/async'),
     StockRepository = require('../../../data/repository.stock'),
     translate = require('../../../services/translateService'),
     InventoryDomain = require('../../inventory'),
-    SettingRepository = require('../../../data/repository.setting');
+    SettingRepository = require('../../../data/repository.setting'),
+    PersianDate = instanceOf('utility').PersianDate;
 
 class OneStockBase {
 
@@ -35,7 +36,7 @@ class OneStockBase {
 
             output = {
                 number: ++maxNumber,
-                date: cmd.date,
+                date: cmd.date || PersianDate,
                 stockId: this.stockId,
                 description: translate('For Cash sale invoice number ...').format(cmd.sale.number),
                 inventoryType: 'output',
