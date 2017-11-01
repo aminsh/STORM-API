@@ -44,14 +44,14 @@ class InventoriesController {
                 {
                     name: 'stockDisplay',
                     title: translate('Stock'),
-                    width: '15%',
+                    width: '25%',
                     type: 'string',
                     filterable: false
                 },
                 {
                     name: 'description',
                     title: translate('Description'),
-                    width: '20%',
+                    width: '40%',
                     type: 'string'
                 }
 
