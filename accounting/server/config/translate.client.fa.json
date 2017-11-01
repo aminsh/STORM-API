@@ -397,6 +397,7 @@
   "Remove first input": "حذف رسید اول دوره",
   "Stock is duplicated":"انبار تکراری است",
   "Select stock": "انتخاب انبار",
+  "stock to stock": "انبار به انبار",
   "Filtered by stock": "فیلتر بر اساس انبار ",
   "Output": "حواله",
   "New output": "حواله جدید",
@@ -435,6 +436,8 @@
   "New Output": "حواله جدید",
   "New SalesInvoice": "فاکتور فروش جدید",
   "New ReturnSalesInvoice": "فاکتور برگشت از فروش جدید",
+  "ReturnSales": "برگشت از مصرف/ فروش",
   "Select inventory input": "لطفا رسید/رسیدهای موردنظر را انتخاب نمایید!",
-  "Select inventory output": "لطفا حواله/حواله های موردنظر را انتخاب نمایید!"
+  "Select inventory output": "لطفا حواله/حواله های موردنظر را انتخاب نمایید!",
+  "damages": "ضایعات"
 }

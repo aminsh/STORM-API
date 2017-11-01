@@ -36,7 +36,9 @@ class InventoriesController {
                 },
                 {
                     name: 'ioType',
-                    title: translate('Input type'),
+                    title: this.inventoryType === 'input'
+                        ? translate('Input type')
+                        : translate('Output type'),
                     width: '15%',
                     type: 'string',
                     template: '<span>{{item.ioTypeDisplay}}</span>'
