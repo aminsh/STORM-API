@@ -13,10 +13,20 @@
 
     </div>
 
+
+
     <table class="table table-hover" id="{{gridId}}">
         <thead>
         <tr>
+            <th style="width: 30px"
+                ng-show="grid.multiSelectable"
+                class="text-center">
+                <dev-tag-check-box
+                        ng-change="onIsSelectedAllChanged()"
+                        ng-model="isSelectedAll"></dev-tag-check-box>
+            </th>
             <th ng-repeat="column in columns"
+                class="{{column.header.css}}"
                 ng-class="{'command-cell': column.hasOwnProperty('commands')}"
                 style="{{(column.width) ? 'width: ' + column.width : ''}}">
                 {{column.title}}
@@ -45,9 +55,13 @@
                 ng-class="{'success': current == item, 'pointer':  grid.selectable}"
                 ng-class-odd="'grid-row-striped'">
 
-
+            <td class="text-center"
+                ng-show="grid.multiSelectable">
+                <dev-tag-check-box ng-model="item.isSelected"></dev-tag-check-box>
+            </td>
             <td ng-repeat="column in columns"
                 style="vertical-align: middle"
+                class="{{column.css}}"
                 ng-class="{'command-cell': column.hasOwnProperty('commands')}">
 
                 <i ng-if="detailTemplate && $index == 0"
@@ -107,12 +121,14 @@
         </tbody>
         <tfoot>
         <tr>
+            <td ng-show="grid.multiSelectable"></td>
             <td ng-repeat="column in columns"
                 ng-html-compile="column.footerTemplate"
                 style="font-weight: bold">
             </td>
         </tr>
         <tr ng-show="pageable">
+            <td></td>
             <td colspan="{{columns.length}}">
                 <dev-tag-paging
                         dev-attr-total="total"

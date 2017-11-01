@@ -18,10 +18,31 @@ function journalsController($scope, translate, journalApi, $state, logger, promp
                 width: '120px',
                 template: `<i ng-if="item.journalStatus == 'Fixed'"
                             title="{{item.journalStatusDisplay}}" 
-                            class="fa fa-lock fa-lg"></i>`
+                            class="fa fa-lock fa-lg"></i>`,
+                css:'text-center',
+                header:{
+                    css: 'text-center'
+                }
             },
-            {name: 'number', title: translate('Number'), width: '120px', type: 'number'},
-            {name: 'date', title: translate('Date'), type: 'date', width: '120px'},
+            {
+                name: 'number',
+                title: translate('Number'),
+                width: '120px',
+                type: 'number',
+                css:'text-center',
+                header:{
+                    css: 'text-center'
+                }
+            },
+            {name: 'date',
+                title: translate('Date'),
+                type: 'date',
+                width: '120px',
+                css:'text-center',
+                header:{
+                    css: 'text-center'
+                }
+            },
 
             {
                 name: 'description', title: translate('Journal description'), type: 'string', width: '40%',

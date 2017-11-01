@@ -16,6 +16,7 @@ export  default class JournalTemplateController {
                     name: 'title',
                     title: translate('Title'),
                     type: 'string'
+
                 }
             ],
             commands: [

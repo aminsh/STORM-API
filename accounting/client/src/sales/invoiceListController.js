@@ -36,14 +36,22 @@ export default class invoiceListControllerBase {
                     name: 'date',
                     title: translate('Date'),
                     width: '10%',
-                    type: 'date'
+                    type: 'date',
+                    css: 'text-center',
+                    header:{
+                        css:'text-center'
+                    }
                 },
                 {
                     name: 'number',
                     title: translate('Number'),
                     width: '10%',
                     type: 'number',
-                    template: '<a ui-sref="^.view({id: item.id})">{{item.number}}</a>'
+                    template: '<a ui-sref="^.view({id: item.id})">{{item.number}}</a>',
+                    css: 'text-center',
+                    header:{
+                        css:'text-center'
+                    }
                 },
                 {
                     name: 'detailAccountId',
@@ -54,7 +62,7 @@ export default class invoiceListControllerBase {
                 },
                 {
                     name: 'description',
-                    title: translate('Title'),
+                    title: translate('Description'),
                     width: '20%',
                     type: 'string'
                 },

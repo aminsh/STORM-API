@@ -21,7 +21,11 @@ export default class ProductController {
         this.gridOption = {
             columns: [
                 {
-                    name: 'referenceId', title: translate('Reference Code'), width: '20%',type: 'string'
+                    name: 'referenceId', title: translate('Reference Code'), width: '20%',type: 'string',
+                    css: 'text-center',
+                    header:{
+                        css:'text-center'
+                    }
                 },
                 {
                     name: 'title',
@@ -35,7 +39,11 @@ export default class ProductController {
                     title: translate('Type'),
                     width: '10%',
                     template: '{{item.productTypeDisplay}}',
-                    type: 'productType'
+                    type: 'productType',
+                    css: 'text-center',
+                    header:{
+                        css:'text-center'
+                    }
                 }
             ],
             commands: [
