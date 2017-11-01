@@ -102,4 +102,8 @@ export default class {
     getInventoriesInput(params){
         return this.apiPromise.get(`${this.urlPrefix}/inventory-input`,params)
     }
+
+    getInventoriesTurnover(params){
+        return this.apiPromise.get(`${this.urlPrefix}/inventory-turnover`,params)
+    }
 }

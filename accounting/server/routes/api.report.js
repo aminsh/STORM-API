@@ -15,7 +15,8 @@ const fs = require('fs'),
     ReportQueryTurnover = require('../queries/query.report.turnover'),
     ReportQueryJournal = require('../queries/query.report.journal'),
     ReportQueryInvoice = require('../queries/query.report.invoices'),
-    InventoriesReport = require('../reportQueries/inventoryReport');
+    InventoriesReport = require('../reportQueries/inventory.input-output'),
+    InventoriesTurnoverReport = require('../reportQueries/inventory.turnover');
 
 function getReport(fileName) {
     return JSON.parse(
@@ -298,6 +299,13 @@ router.route('/inventory-input')
         let ins = new InventoriesReport(req.branchId),
             result = await(ins.getInventories(req.query.ids));
 
+        res.json(result);
+    }));
+
+router.route('/inventory-turnover')
+    .get(async((req, res) => {
+        let ins = new InventoriesTurnoverReport(req.branchId),
+            result = await(ins.getInventoriesTurnover(req.query.ids));
         res.json(result);
     }))
 

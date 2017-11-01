@@ -133,7 +133,7 @@ class InventoriesController {
             let reportParam = {ids};
             this.navigate(
                 'report.print',
-                {key: 800},
+                {key: 801},
                 reportParam);
         }
     }
