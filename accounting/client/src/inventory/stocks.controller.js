@@ -2,11 +2,12 @@
 
 class StocksController {
 
-    constructor($scope, $rootScope, stockApi, logger, confirm, translate) {
+    constructor($scope, $rootScope, stockApi, logger, confirm, translate, navigate) {
         this.stockApi = stockApi;
         this.logger = logger;
         this.confirm = confirm;
         this.translate = translate;
+        this.navigate = navigate;
 
         this.errors = [];
 
@@ -38,6 +39,19 @@ class StocksController {
                 .catch(errors => this.errors = errors);
         });
     }
+
+/*    inventoryTurnover(){
+        //const ids = this.gridOption.getSelected();
+        if(ids.length === 0){
+            this.logger.error(this.translate('Select inventory input'));}
+        else {
+            let reportParam = {ids};
+            this.navigate(
+                'report.print',
+                {key: 802},
+                reportParam);
+        }
+    }*/
 }
 
 export default StocksController;

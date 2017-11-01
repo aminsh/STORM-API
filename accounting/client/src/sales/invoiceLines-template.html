@@ -6,7 +6,7 @@
         <tr style="font-size: 9pt; font-weight: bold;">
             <td class="text-center">#</td>
             <td class="text-center">{{'Products'|translate}}</td>
-            <td class="text-center" ng-if="!model.isReturnSale">{{'Description 2'|translate}}</td>
+            <td class="text-center" ng-if="!model.isReturnSale">{{'Description 2'|translate}} + 'text'</td>
             <td class="text-center">{{'Quantity'|translate}}</td>
             <td></td>
             <td class="text-center">{{'Unit price'|translate}}</td>
@@ -170,6 +170,7 @@
                             style-type="outline btn btn-primary btn-sm"
                             title="{{'New Journal line' | translate}}"></dev-tag-button>
                     <div class="form-group">
+                        <br/>
                         <label class="label-control" for="description">{{'Description' | translate}}</label>
                         <textarea class="form-control" rows="4" id="description" ng-model="model.invoice.description"></textarea>
                     </div>
@@ -192,6 +193,7 @@
             </div>
         </div>
         <div class="col-md-4">
+            <br/>
             <div class="row text-left" style="border-bottom: 1px solid #DDDDDD;">
                 <div class="col-xs-5 title1 so-align-right"><h3>{{'Sum'|translate}}</h3></div>
                 <div class="col-xs-7 title1">

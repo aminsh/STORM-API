@@ -55,10 +55,10 @@
                 ng-class="{'success': current == item, 'pointer':  grid.selectable}"
                 ng-class-odd="'grid-row-striped'">
 
-<td class="text-center"
-    ng-show="grid.multiSelectable">
-    <dev-tag-check-box ng-model="item.isSelected"></dev-tag-check-box>
-</td>
+            <td class="text-center"
+                ng-show="grid.multiSelectable">
+                <dev-tag-check-box ng-model="item.isSelected"></dev-tag-check-box>
+            </td>
             <td ng-repeat="column in columns"
                 style="vertical-align: middle"
                 class="{{column.css}}"
@@ -121,12 +121,14 @@
         </tbody>
         <tfoot>
         <tr>
+            <td ng-show="grid.multiSelectable"></td>
             <td ng-repeat="column in columns"
                 ng-html-compile="column.footerTemplate"
                 style="font-weight: bold">
             </td>
         </tr>
         <tr ng-show="pageable">
+            <td></td>
             <td colspan="{{columns.length}}">
                 <dev-tag-paging
                         dev-attr-total="total"

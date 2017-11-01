@@ -18,7 +18,7 @@ module.exports = class InventoriesReport extends BaseQuery{
             "inventoryLines".quantity, "inventoryLines"."unitPrice",
             "inventoryLines".quantity*"inventoryLines"."unitPrice" as "totalPrice",
             inventories.date, inventories.number, stocks.title as stock,
-            invoices.description`
+            "invoiceLines".description`
         ))
             .from('inventories')
             .where('inventories.branchId', branchId)
