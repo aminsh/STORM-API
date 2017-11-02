@@ -304,7 +304,10 @@ router.route('/inventory-input')
 
 router.route('/inventory-turnover')
     .get(async((req, res) => {
-        let ins = new InventoriesTurnoverReport(req.branchId),
+        let ins = new InventoriesTurnoverReport(req.branchId,
+            req.cookies['current-period'],
+            req.cookies['current-mode'],
+            req.query),
             result = await(ins.getInventoriesTurnover(req.query.ids));
         res.json(result);
     }))
