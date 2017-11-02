@@ -40,8 +40,9 @@ class StocksController {
         });
     }
 
-/*    inventoryTurnover(){
-        //const ids = this.gridOption.getSelected();
+
+    inventoryTurnover(){
+        /*const ids = ;
         if(ids.length === 0){
             this.logger.error(this.translate('Select inventory input'));}
         else {
@@ -50,8 +51,8 @@ class StocksController {
                 'report.print',
                 {key: 802},
                 reportParam);
-        }
-    }*/
+        }*/
+    }
 }
 
 export default StocksController;
