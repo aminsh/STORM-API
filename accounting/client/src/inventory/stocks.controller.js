@@ -2,12 +2,13 @@
 
 class StocksController {
 
-    constructor($scope, $rootScope, stockApi, logger, confirm, translate, navigate) {
+    constructor($scope, $rootScope, stockApi, logger, confirm, translate, navigate, reportParameters) {
         this.stockApi = stockApi;
         this.logger = logger;
         this.confirm = confirm;
         this.translate = translate;
         this.navigate = navigate;
+        this.reportParameters = reportParameters;
 
         this.errors = [];
 
@@ -41,17 +42,37 @@ class StocksController {
     }
 
 
-    inventoryTurnover(){
+    inventoryTurnover() {
+
+        let ids = this.stocks.asEnumerable()
+            .where(item => item.isSelected)
+            .select(item => item.id)
+            .toArray();
+
+        if(ids.length === 0)
+            return this.logger.error(this.translate('Select inventory'));
+
+        this.reportParameters.show([{name: "date"}])
+            .then(params => {
+
+                Object.assign(params, {ids});
+
+                this.navigate(
+                    'report.print',
+                    {key: 802},
+                    params);
+            });
+
         /*const ids = ;
-        if(ids.length === 0){
-            this.logger.error(this.translate('Select inventory input'));}
-        else {
-            let reportParam = {ids};
-            this.navigate(
-                'report.print',
-                {key: 802},
-                reportParam);
-        }*/
+         if(ids.length === 0){
+         this.logger.error(this.translate('Select inventory'));}
+         else {
+         let reportParam = {ids};
+         this.navigate(
+         'report.print',
+         {key: 802},
+         reportParam);
+         }*/
     }
 }
 
