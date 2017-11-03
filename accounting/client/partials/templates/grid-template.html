@@ -128,8 +128,8 @@
             </td>
         </tr>
         <tr ng-show="pageable">
-            <td></td>
-            <td colspan="{{columns.length}}">
+
+            <td colspan="{{columns.length + (grid.multiSelectable === true ? 1 : 0) }}" >
                 <dev-tag-paging
                         dev-attr-total="total"
                         dev-attr-set-page="fetch(page)"

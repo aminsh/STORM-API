@@ -14,7 +14,7 @@ class BranchQuery {
         return knex.select(
             'id', 'name', 'ownerName', 'logo',
             'apiKey', 'address', 'phone', 'mobile',
-            'nationalCode', 'postalCode')
+            'nationalCode', 'postalCode', 'fax', 'registrationNumber')
             .from('branches')
             .where('id', id).first();
     }
@@ -41,6 +41,8 @@ class BranchQuery {
                     'webSite',
                     'ownerName',
                     'ownerId',
+                    'fax',
+                    'registrationNumber',
                     knex.raw('users.name as "userTitle"'),
                     knex.raw('users.email as "userEmail"'))
                     .from('branches')
@@ -58,6 +60,7 @@ class BranchQuery {
                 address: item.address,
                 phone: item.phone,
                 mobile: item.mobile,
+                fax: item.fax,
                 webSite: item.webSite,
                 ownerName: item.ownerName,
                 owner: {

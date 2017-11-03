@@ -44,7 +44,12 @@
                                 ng-model="model.branch.nationalCode"></dev-tag-text-box>
                     </div>
 
-
+                    <div class="form-group">
+                        <label class="label-control">شماره ثبت شرکت</label>
+                        <dev-tag-text-box
+                                name="registrationNumber"
+                                ng-model="model.branch.registrationNumber"></dev-tag-text-box>
+                    </div>
                 </div>
 
 
@@ -79,6 +84,15 @@
                     <dev-tag-text-box
                             name="mobile"
                             ng-model="model.branch.mobile"></dev-tag-text-box>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="form-group col-md-6">
+                    <label class="label-control">فکس</label>
+                    <dev-tag-text-box
+                            name="fax"
+                            ng-model="model.branch.fax">
                 </div>
             </div>
 
