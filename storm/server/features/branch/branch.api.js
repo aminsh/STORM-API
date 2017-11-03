@@ -34,9 +34,11 @@ router.route('/')
                 address: cmd.address,
                 postalCode: cmd.postalCode,
                 nationalCode: cmd.nationalCode,
+                registrationNumber: cmd.registrationNumber,
                 ownerId: req.user.id,
                 webSite: cmd.webSite,
                 offCode: cmd.offCode,
+                fax: cmd.fax,
                 status: 'pending'
             };
 
@@ -151,7 +153,9 @@ router.route('/current')
                 mobile: cmd.mobile,
                 address: cmd.address,
                 postalCode: cmd.postalCode,
-                nationalCode: cmd.nationalCode
+                nationalCode: cmd.nationalCode,
+                registrationNumber: cmd.registrationNumber,
+                fax: cmd.fax
             };
 
         if (cmd.logoFileName)
