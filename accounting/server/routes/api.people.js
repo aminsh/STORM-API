@@ -33,6 +33,7 @@ router.route('/')
                 province: cmd.province,
                 city: cmd.city,
                 phone: cmd.phone,
+                fax: cmd.fax,
                 nationalCode: cmd.nationalCode,
                 email: cmd.email,
                 personType: cmd.personType,
@@ -78,6 +79,7 @@ router.route('/:id')
         entity.province = cmd.province;
         entity.city = cmd.city;
         entity.phone = cmd.phone;
+        entity.fax = cmd.fax;
         entity.nationalCode = cmd.nationalCode;
         entity.email = cmd.email;
         entity.personType = cmd.personType;
