@@ -40,6 +40,7 @@ router.route('/')
                 detailAccountType: 'person',
                 economicCode: cmd.economicCode,
                 referenceId: cmd.referenceId,
+                registrationNumber: cmd.registrationNumber,
                 contacts: JSON.stringify(cmd.contacts)
             },
             errors = [];
@@ -84,6 +85,7 @@ router.route('/:id')
         entity.email = cmd.email;
         entity.personType = cmd.personType;
         entity.economicCode = cmd.economicCode;
+        entity.registrationNumber = cmd.registrationNumber;
         entity.contacts = JSON.stringify(cmd.contacts);
 
         if (String.isNullOrEmpty(entity.title))
