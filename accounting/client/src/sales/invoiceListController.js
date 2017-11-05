@@ -62,7 +62,7 @@ export default class invoiceListControllerBase {
                 },
                 {
                     name: 'title',
-                    title: translate('Title'),
+                    title: translate('Invoice title'),
                     width: '20%',
                     type: 'string'
                 },

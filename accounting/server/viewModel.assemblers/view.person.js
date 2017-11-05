@@ -20,6 +20,7 @@ function personAssembler(entity) {
         fax: entity.fax,
         nationalCode: entity.nationalCode,
         economicCode: entity.economicCode,
+        registrationNumber: entity.registrationNumber,
         email: entity.email,
         personType: entity.personType,
         personTypeDisplay: entity.personType

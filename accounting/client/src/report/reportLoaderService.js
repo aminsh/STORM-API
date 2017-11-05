@@ -64,13 +64,13 @@ export default class {
             "digitToWord",
             "digitToWord", "", "",
             String, "", [Number], ["Amount"], [""],
-            window.digitToWord);
+            num => num.toWord());
 
         Stimulsoft.Report.Dictionary.StiFunctions.addFunction(
             "devFunction",
             "dateToWord",
             "dateToWord", "", "",
             String, "", [String], ["Date"], [""],
-            window.dateToWord);
+            num => num.toWord());
     }
 }
