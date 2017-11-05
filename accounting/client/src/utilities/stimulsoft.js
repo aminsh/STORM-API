@@ -15,7 +15,7 @@ export function viewerConfig() {
     let config = new Stimulsoft.Viewer.StiViewerOptions();
 
     config.toolbar.fontFamily = "IRANSans";
-    config.toolbar.showDesignButton = false
+    config.toolbar.showDesignButton = false;
     config.toolbar.printDestination = Stimulsoft.Viewer.StiPrintDestination.Pdf;
     config.appearance.htmlRenderMode = Stimulsoft.Report.Export.StiHtmlExportMode.Table;
 
