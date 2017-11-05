@@ -33,10 +33,11 @@ class SaleDomain {
         let entity = {
             date: cmd.date,
             description: cmd.description,
+            title: cmd.title,
             detailAccountId: cmd.detailAccountId,
             invoiceType: 'sale',
             invoiceStatus: cmd.status,
-            orderId: cmd.orderId
+            orderId: cmd.orderId,
         };
 
         entity.number = cmd.number || (await(this.invoiceRepository.saleMaxNumber()).max || 0) + 1;
@@ -65,6 +66,7 @@ class SaleDomain {
         let entity = {
             date: cmd.date,
             description: cmd.description,
+            title: cmd.title,
             detailAccountId: cmd.detailAccountId,
             invoiceType: 'returnSale',
             invoiceStatus: cmd.status,

@@ -9,6 +9,7 @@ module.exports = function(entity) {
         number: entity.number,
         date: entity.date,
         description: entity.description,
+        title: entity.title,
         detailAccountId: entity.detailAccountId,
         detailAccountDisplay: entity.detailAccountDisplay,
         customerId: entity.detailAccountId,

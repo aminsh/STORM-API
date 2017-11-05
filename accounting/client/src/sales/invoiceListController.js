@@ -61,8 +61,8 @@ export default class invoiceListControllerBase {
                     template: '<span>{{item.detailAccountDisplay}}</span>'
                 },
                 {
-                    name: 'description',
-                    title: translate('Description'),
+                    name: 'title',
+                    title: translate('Title'),
                     width: '20%',
                     type: 'string'
                 },
