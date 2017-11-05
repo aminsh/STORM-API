@@ -28,6 +28,8 @@ module.exports = class InvoicesQuery extends BaseQuery {
         "invoiceLines".description as "productName",
         "detailAccounts"."postalCode" as "postalCode",
         "detailAccounts".title as "customerName", "detailAccounts".address as "customerAddress",
+        products."referenceId", "detailAccounts".city as "customerCity", "detailAccounts".phone as "customerPhone",
+        "detailAccounts".fax as "customerFax", "detailAccounts"."registrationNumber" as "customerRegistrationNumber", 
         CASE WHEN "detailAccounts"."personType" = 'legal' THEN "detailAccounts"."economicCode" 
              WHEN "detailAccounts"."personType" = 'real' THEN "detailAccounts"."nationalCode" END as "personCode"`))
             .from('invoices')
