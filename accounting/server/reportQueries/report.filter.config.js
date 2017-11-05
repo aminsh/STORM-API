@@ -36,7 +36,6 @@ module.exports = class ReportFilterConfig extends BaseQuery {
                 .where('id', fiscalPeriodId).first()),
             filter = this.filter;
 
-/*
         if (!eval(filter.isNotPeriodIncluded))
             return {
                 fromDate: currentPeriod.minDate,
@@ -47,13 +46,14 @@ module.exports = class ReportFilterConfig extends BaseQuery {
                     ? filter.maxDate
                     : currentPeriod.maxDate
             };
-*/
 
-        if (!(filter.minDate && filter.maxDate))
+        if (!(filter.minDate && filter.maxDate)
+            || filter.minDate < currentPeriod.minDate
+            || filter.maxDate > currentPeriod.maxDate)
             return {
-                fromDate: "0",
-                fromMainDate: "0",
-                toDate: "9999/99/99"
+                fromDate:  currentPeriod.minDate,
+                fromMainDate: currentPeriod.minDate,
+                toDate: currentPeriod.maxDate
             };
 
         return {
