@@ -39,6 +39,8 @@ router.route('/')
                 webSite: cmd.webSite,
                 offCode: cmd.offCode,
                 fax: cmd.fax,
+                province: cmd.province,
+                city: cmd.city,
                 status: 'pending'
             };
 
@@ -155,6 +157,8 @@ router.route('/current')
                 postalCode: cmd.postalCode,
                 nationalCode: cmd.nationalCode,
                 registrationNumber: cmd.registrationNumber,
+                province: cmd.province,
+                city: cmd.city,
                 fax: cmd.fax
             };
 
