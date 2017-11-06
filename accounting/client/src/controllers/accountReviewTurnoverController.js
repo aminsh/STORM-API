@@ -18,7 +18,13 @@ function accountReviewTurnoverController($scope,
         tiny: translate('Tiny turnover journals')
     };
 
-    let reportName = $scope.reportName = $stateParams.name;
+    let reportName = $scope.reportName = $stateParams.name,
+        printData = {
+            generalLedgerAccount: 1000,
+            subsidiaryLedgerAccount: 1001,
+            detailAccount: 1002,
+            tiny: 1003
+        };
     let parameters = $location.search();
 
     $scope.commands = [
@@ -87,6 +93,14 @@ function accountReviewTurnoverController($scope,
             .show({
                 id: $scope.current.id
             });
+    };
+
+    $scope.print = ()=> {
+
+        navigate(
+            'report.print',
+            {key: printData[reportName]},
+            getParameters());
     };
 
     function getTitleParameters() {
@@ -189,6 +203,8 @@ function accountReviewTurnoverController($scope,
 
         return params;
     }
+
+
 }
 
 
