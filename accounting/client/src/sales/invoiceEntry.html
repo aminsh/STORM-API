@@ -106,8 +106,11 @@
 
                 <div class="col-sm-5">
                     <div class="form-group">
-                        <label class="label-control" for="title">{{'Invoice title' | translate}}</label>
-                        <textarea class="form-control" rows="4" id="title" ng-model="model.invoice.title"></textarea>
+                        <label class="label-control" >{{'Invoice title' | translate}}</label>
+
+                       <dev-tag-text-box
+                               ng-model="model.invoice.title"
+                               dev-attr-auto-complete options="model.autocompleteOptions"></dev-tag-text-box>
                     </div>
                 </div>
 

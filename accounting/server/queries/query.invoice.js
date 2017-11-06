@@ -28,6 +28,7 @@ class InvoiceQuery extends BaseQuery {
                     'detailAccountDisplay',
                     'invoiceStatus',
                     'description',
+                    'title',
                     knex.raw('"sum"("totalPrice") as "sumTotalPrice"'),
                     knex.raw('(select coalesce("sum"("amount"),0) from "payments" where "invoiceId" = "base"."id" limit 1) as "sumPaidAmount"'),
                     knex.raw('"sum"("totalPrice") - (select coalesce("sum"("amount"),0) from "payments" where "invoiceId" = "base"."id" limit 1) as "sumRemainder"'))
@@ -49,7 +50,8 @@ class InvoiceQuery extends BaseQuery {
                         'detailAccountId',
                         'detailAccountDisplay',
                         'invoiceStatus',
-                        'description')
+                        'description',
+                        'title')
                     .orderBy('number', 'desc')
 
             }).first()),
@@ -81,6 +83,7 @@ class InvoiceQuery extends BaseQuery {
                     'detailAccountDisplay',
                     'invoiceStatus',
                     'description',
+                    'title',
                     knex.raw('"sum"("totalPrice") as "sumTotalPrice"'),
                     knex.raw('(select coalesce("sum"("amount"),0) from "payments" where "invoiceId" = "base"."id" limit 1) as "sumPaidAmount"'),
                     knex.raw('"sum"("totalPrice")-(select coalesce("sum"("amount"),0) from "payments" where "invoiceId" = "base"."id" limit 1) as "sumRemainder"'))
@@ -102,7 +105,8 @@ class InvoiceQuery extends BaseQuery {
                         'detailAccountId',
                         'detailAccountDisplay',
                         'invoiceStatus',
-                        'description')
+                        'description',
+                        'title')
                     .orderBy('number', 'desc')
 
             });
