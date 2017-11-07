@@ -20,6 +20,20 @@ export default class InvoiceEntryControllerBase {
         settingsApi.get().then(settings => this.settings = settings);
         this.api = api;
 
+        this.autocompleteOptions = {
+            matcher: (q, cb) => {
+                let parameter = {
+                    filter: {logic: 'and', filters: [{field: 'title', operator: 'contains', value: q}]},
+                    skip: 0,
+                    take: 10
+                };
+
+                api.getAll(parameter)
+                    .then(result => cb(result.data));
+            },
+            displayField: 'title'
+        };
+
         this.urls = {
             getAllPeople: devConstants.urls.people.getAll(),
             getAllProduct: devConstants.urls.products.getAll(),
@@ -206,15 +220,15 @@ export default class InvoiceEntryControllerBase {
         item.vat = ((item.unitPrice * item.quantity) - item.discount) * vat / 100;
     }
 
-    canShowStock(){
+    canShowStock() {
         return false;
     }
 
-    get personTypePropertyName(){
+    get personTypePropertyName() {
         return 'customer';
     }
 
-    get personTypeTitle(){
+    get personTypeTitle() {
         return 'Customer';
     }
 }

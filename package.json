@@ -187,7 +187,8 @@
     "angular-ui-select": "./node_modules/ui-select/dist/select.js",
     "angular-image-perloader": "./vendors/angular-image-perloader",
     "storm-lumx": "./vendors/storm-lumx/js/lumx.js",
-    "ckeditor": "./vendors/ckeditor/ckeditor.js"
+    "ckeditor": "./vendors/ckeditor/ckeditor.js",
+    "bootstrap3-typeahead": "./vendors/bootstrap3-typeahead.js"
   },
   "browserify-shim": {
     "ladda": "global:Ladda",

@@ -101,6 +101,27 @@ export  default function reportViewer($rootScope, devConstants) {
                 value: scope.reportParameters
             }));
 
+            report.dictionary.variables.add(addVariable({
+                name: 'branchCity',
+                alias: 'Branch city',
+                category: "general",
+                value: $rootScope.branch.city
+            }));
+
+            report.dictionary.variables.add(addVariable({
+                name: 'branchFax',
+                alias: 'Branch fax',
+                category: "general",
+                value: $rootScope.branch.fax
+            }));
+
+            report.dictionary.variables.add(addVariable({
+                name: 'branchRegistrationNumber',
+                alias: 'Branch registrationNumber',
+                category: "general",
+                value: $rootScope.branch.registrationNumber
+            }));
+
             addTranslates(report);
 
             data[scope.reportDataSourceName] = scope.reportData;

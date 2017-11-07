@@ -14,7 +14,7 @@ class BranchQuery {
         return knex.select(
             'id', 'name', 'ownerName', 'logo',
             'apiKey', 'address', 'phone', 'mobile',
-            'nationalCode', 'postalCode', 'fax', 'registrationNumber')
+            'nationalCode', 'postalCode', 'fax', 'registrationNumber', 'province', 'city')
             .from('branches')
             .where('id', id).first();
     }
@@ -43,6 +43,8 @@ class BranchQuery {
                     'ownerId',
                     'fax',
                     'registrationNumber',
+                    'province',
+                    'city',
                     knex.raw('users.name as "userTitle"'),
                     knex.raw('users.email as "userEmail"'))
                     .from('branches')
@@ -67,7 +69,10 @@ class BranchQuery {
                     id: item.ownerId,
                     name: item.userTitle,
                     email: item.userEmail
-                }
+                },
+                registrationNumber: item.registrationNumber,
+                province: item.province,
+                city: item.city
             });
 
         return kendoQueryResolve(query, parameters, view);

@@ -246,6 +246,7 @@ router.route('/:id')
         let entity = {
             date: cmd.date,
             description: cmd.description,
+            title: cmd.title,
             detailAccountId: cmd.detailAccountId || cmd.customerId,
             invoiceStatus: status
         };

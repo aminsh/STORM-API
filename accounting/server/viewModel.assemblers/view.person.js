@@ -17,8 +17,10 @@ function personAssembler(entity) {
         province: entity.province,
         city: entity.city,
         phone: entity.phone,
+        fax: entity.fax,
         nationalCode: entity.nationalCode,
         economicCode: entity.economicCode,
+        registrationNumber: entity.registrationNumber,
         email: entity.email,
         personType: entity.personType,
         personTypeDisplay: entity.personType

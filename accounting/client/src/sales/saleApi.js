@@ -3,8 +3,8 @@ export default function saleApi(apiPromise, devConstants){
     let urlPrefix = devConstants.urls.rootUrl;
 
     return {
-        getAll(){
-            return apiPromise.get(`${urlPrefix}/sales/`);
+        getAll(parameters){
+            return apiPromise.get(`${urlPrefix}/sales/`, parameters);
         },
         getMaxNumber(){
             return apiPromise.get(`${urlPrefix}/sales/max/number`);

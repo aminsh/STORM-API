@@ -106,4 +106,31 @@ export default class {
     getInventoriesTurnover(params){
         return this.apiPromise.get(`${this.urlPrefix}/inventory-turnover`,params)
     }
+
+    getProductTurnover(params){
+        return this.apiPromise.get(`${this.urlPrefix}/product-turnover`,params)
+    }
+
+    generalLedgerAccountReview(params){
+        const  reportParam = {
+            extra: {filter: params},
+            filter: {logic: 'and', filters: []},
+           /* skip: 0,
+            take: 0*/
+        };
+
+        return this.apiPromise.get(`${this.constants.urls.rootUrl}/account-review/general-ledger-account`,reportParam)
+    }
+
+    subsidiaryAccountReview(params){
+        return this.apiPromise.get(`${this.constants.urls.rootUrl}/account-review/subsidiary-ledger-account`,params)
+    }
+
+    detailAccountReview(params){
+        return this.apiPromise.get(`${this.constants.urls.rootUrl}/account-review/detail-account`,params)
+    }
+
+    tinyAccountReview(params){
+        return this.apiPromise.get(`${this.constants.urls.rootUrl}/account-review/tiny`,params)
+    }
 }
