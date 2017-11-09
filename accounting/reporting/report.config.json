@@ -375,5 +375,81 @@
         ]
       }
     ]
+  },
+  {
+    "key": "9",
+    "showOnAccounting": false,
+    "text": "کالا",
+    "items": [
+      {
+        "key": "900",
+        "text": "گزارش گردش کالا",
+        "func": "getProductTurnover",
+        "fileName": "",
+        "useLayout": false,
+        "showOnAccounting": false,
+        "params": [
+          {
+
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "key": "10",
+    "showOnAccounting": false,
+    "text": "مرورحساب",
+    "items": [
+      {
+        "key": "1000",
+        "text": "گزارش مرورحساب- حساب کل",
+        "func": "generalLedgerAccountReview",
+        "fileName": "generalLedgerAccountReview",
+        "useLayout": false,
+        "showOnAccounting": false,
+        "params": [
+          {
+
+          }
+        ]
+      },
+      {
+        "key": "1001",
+        "text": "گزارش مرورحساب- معین",
+        "func": "subsidiaryAccountReview",
+        "fileName": "subsidiaryAccountReview",
+        "useLayout": false,
+        "showOnAccounting": false,
+        "params": [
+          {
+          }
+        ]
+      },
+      {
+        "key": "1002",
+        "text": "گزارش مرورحساب- تفصیل",
+        "func": "detailAccountReview",
+        "fileName": "detailAccountReview",
+        "useLayout": false,
+        "showOnAccounting": false,
+        "params": [
+          {
+          }
+        ]
+      },
+      {
+        "key": "1003",
+        "text": "گزارش مرورحساب- ریزگردش",
+        "func": "tinyAccountReview",
+        "fileName": "tinyAccountReview",
+        "useLayout": false,
+        "showOnAccounting": false,
+        "params": [
+          {
+          }
+        ]
+      }
+    ]
   }
 ]

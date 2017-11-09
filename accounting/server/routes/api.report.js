@@ -16,7 +16,8 @@ const fs = require('fs'),
     ReportQueryJournal = require('../queries/query.report.journal'),
     ReportQueryInvoice = require('../queries/query.report.invoices'),
     InventoriesReport = require('../reportQueries/inventory.input-output'),
-    InventoriesTurnoverReport = require('../reportQueries/inventory.turnover');
+    InventoriesTurnoverReport = require('../reportQueries/inventory.turnover'),
+    ProductReports = require('../reportQueries/ProductReports');
 
 function getReport(fileName) {
     return JSON.parse(
@@ -262,27 +263,6 @@ router.route('/invoices')
     .get(async((req, res) => {
         let ins = new ReportQueryInvoice(req.branchId),
             result = await(ins.invoice(req.query.id));
-        /*result = [
-                {
-                    number: 0,
-                    date: '',
-                    invoiceDescription: '',
-                    invoiceType: '',
-                    quantity: 0,
-                    unitPrice: 0,
-                    vat: 0,
-                    discount: 0,
-                    grossPrice: 0,
-                    vatPrice: 0,
-                    netPrice: 0,
-                    invoiceLineDescription: '',
-                    productName: '',
-                    postalCode: '',
-                    customerName:'',
-                    customerAddress: '',
-                    personCode: ''
-                }
-            ];*/
         res.json(result);
     }));
 
@@ -311,5 +291,16 @@ router.route('/inventory-turnover')
             result = await(ins.getInventoriesTurnover(req.query.ids));
         res.json(result);
     }))
+
+router.route('/product-turnover')
+    .get(async((req, res) => {
+        let ins = new ProductReports(req.branchId),
+            /*req.cookies['current-period'],
+            req.cookies['current-mode'],
+            req.query),*/
+            result = await(ins.getProductTurnovers(req.query.ids));
+        res.json(result);
+    }))
+
 
 module.exports = router;
