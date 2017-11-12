@@ -1,11 +1,21 @@
 "use strict";
 
-const enums = require('../../../shared/enums');
+const enums = instanceOf('Enums'),
+    Crypto = instanceOf('Crypto'),
+    config = instanceOf('config');
 
-module.exports = function(entity) {
+module.exports = function (entity) {
+
+    const printUrl = entity.invoiceType === 'sale' && entity.invoiceStatus !== 'draft'
+        ? `${config.url.origin}/invoice/token/${Crypto.sign({
+            branchId: entity.branchId,
+            invoiceId: entity.id
+        })}`
+        : undefined;
 
     return {
         id: entity.id,
+        printUrl,
         number: entity.number,
         date: entity.date,
         description: entity.description,
