@@ -30,11 +30,11 @@ class ProductRepository extends BaseRepository {
     }
 
     isGood(id) {
-        return this.knex.table('products')
+        return await(this.knex.table('products')
             .modify(this.modify, this.branchId)
             .where('id', id)
             .andWhere('productType', 'good')
-            .first();
+            .first());
     }
 
     findByReferenceId(referenceId) {

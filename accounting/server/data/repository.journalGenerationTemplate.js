@@ -13,11 +13,11 @@ class JournalGenerationTemplate extends BaseRepository {
     }
 
     findBySourceType(sourceType) {
-        return this.knex.select('*')
+        return await(this.knex.select('*')
             .from(this.tableName)
             .where('branchId', this.branchId)
             .where('sourceType', sourceType)
-            .first();
+            .first());
     }
 
     create(sourceType, entity) {
