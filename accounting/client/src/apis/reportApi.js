@@ -111,6 +111,10 @@ export default class {
         return this.apiPromise.get(`${this.urlPrefix}/product-turnover`,params)
     }
 
+    getProductTurnoverTotal(params){
+        return this.apiPromise.get(`${this.urlPrefix}/product-turnover-total`,params)
+    }
+
     generalLedgerAccountReview(params){
         const  reportParam = {
             extra: {filter: params},

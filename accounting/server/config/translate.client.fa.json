@@ -442,5 +442,10 @@
   "Select inventory output": "لطفا حواله/حواله های موردنظر را انتخاب نمایید!",
   "damages": "ضایعات",
   "Inventory Turnover": "گزارش گردش ورودی ها/خروجی های انبار",
-  "Select inventory": "لطفا انبار/ انبارهای مورد نظر را انتخاب نمایید!"
+  "Select inventory": "لطفا انبار/ انبارهای  مورد نظر را انتخاب نمایید!",
+  "Goods reports": "گزارشات کالا/ خدمات",
+  "Product turnover detail":"گزارش جزئیات گردش کالا/ خدمات",
+  "Product turnover total":"گزارش کل گردش کالا/ خدمات",
+  "Select product": "لطفا کالا/ خدمات(های) موردنظر را انتخاب نمایید.",
+  "All inventory": "همه انبار ها"
 }

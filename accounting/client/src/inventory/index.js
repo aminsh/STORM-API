@@ -13,6 +13,7 @@ import OutputEntryController from './outputEntry.controller';
 import PurchaseEntryController from "./purchaseEntryController";
 import PurchasesController from "./purchasesController";
 import PurchaseViewController from "./purchaseViewController";
+import InventoryProductsController from "./inventory.products.controller";
 
 function SelectProductFromStockService(modalBase) {
     return modalBase({
@@ -39,6 +40,7 @@ accModule
     .controller('purchaseEntryController', PurchaseEntryController)
     .controller('purchasesController', PurchasesController)
     .controller('purchaseViewController', PurchaseViewController)
+    .controller('inventoryProductsController',InventoryProductsController)
 
     .config($stateProvider => {
 
@@ -78,6 +80,12 @@ accModule
                 controller: 'purchaseEntryController',
                 controllerAs: 'model',
                 templateUrl: 'partials/sales/invoiceEntry.html'
-            });
+            })
+            .state('inventory.products', {
+                url: '/products',
+                controller: 'inventoryProductsController',
+                controllerAs: 'model',
+                templateUrl: 'partials/inventory/inventory.products.html'
+            })
     });
 
