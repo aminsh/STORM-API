@@ -5,9 +5,12 @@
 require('./shared/utilities/string.prototypes');
 require('./shared/utilities/array.prototypes');
 require('./shared/utilities/function.prototypes');
+require('./shared/exceptions');
 
 /* 2- loading ioc */
 require('./config/ioc');
+
+require('./application/bootstrap');
 
 const config = instanceOf('config'),
     app = require('./storm/server/bootstrap').app,
