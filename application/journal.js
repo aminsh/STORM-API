@@ -6,7 +6,9 @@ const async = require('asyncawait/async'),
     JournalRepository = require('./data').JournalRepository,
     SubsidiaryLedgerAccountRepository = require('./data').SubsidiaryLedgerAccountRepository,
     InvoiceRepository = require('./data').InvoiceRepository,
-    JournalGenerationTemplateService = require('./journalGenerationTemplate');
+    InventoryeRepository = require('./data').InventoryeRepository,
+    JournalGenerationTemplateService = require('./journalGenerationTemplate'),
+    SubsidiaryLedgerAccountService = require('./subsidiaryLedgerAccount');
 
 class JournalService {
     constructor(branchId, fiscalPeriodId, user) {
@@ -16,7 +18,8 @@ class JournalService {
 
         this.journalRepository = new JournalRepository(branchId);
 
-        this.journalGenerationTemplateService = new JournalGenerationTemplateService(branchId)
+        this.journalGenerationTemplateService = new JournalGenerationTemplateService(branchId);
+        this.SubsidiaryLedgerAccountService = new SubsidiaryLedgerAccountService(branchId);
     }
 
     create(cmd) {
@@ -69,6 +72,32 @@ class JournalService {
 
         return this.create(journal);
     }
+
+    generateForOutputSale(outputIds) {
+
+        return outputIds.asEnumerable()
+            .select(id => ({
+                id,
+                journalId: this._generateForOutputSale(id)
+            }))
+            .toArray();
+    }
+
+    _generateForOutputSale(outputId) {
+
+        const output = new InventoryeRepository(this.branchId).findById(outputId),
+
+            model = {
+                number: output.number,
+                date: output.date,
+                amount: output.inventoryLines.asEnumerable().sum(line => line.unitPrice * line.quantity)
+            },
+
+            journal = await(this.journalGenerationTemplateService.generate(model, 'inventoryOutputSale'));
+
+        return this.create(journal);
+    }
+
 }
 
 module.exports = JournalService;
