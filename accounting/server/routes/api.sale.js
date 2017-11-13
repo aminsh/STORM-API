@@ -89,9 +89,9 @@ router.route('/')
             });
 
             const outputService = new OutputService(req.branchId, req.fiscalPeriodId),
-                outputId = outputService.createForInvoice(invoice);
+                outputIds = outputService.createForInvoice(invoice);
 
-            EventEmitter.emit('onServiceSucceed', serviceId, outputId);
+            EventEmitter.emit('onServiceSucceed', serviceId, outputIds);
 
             /* confirm invoice */
             serviceId = Guid.new();
@@ -103,7 +103,7 @@ router.route('/')
             EventEmitter.emit('onServiceSucceed', serviceId);
 
             /* response */
-            res.json({isValid: true, returnValue: invoice});
+            res.json({isValid: true, returnValue: new InvoiceQuery(req.branchId).getById(invoice.id)});
 
             serviceId = Guid.new();
 
@@ -113,7 +113,7 @@ router.route('/')
                 service: 'setInvoiceToInventory'
             });
 
-            outputService.setInvoice(outputId, invoice.id);
+            outputService.setInvoice(outputIds, invoice.id);
 
             EventEmitter.emit('onServiceSucceed', serviceId);
 
@@ -126,10 +126,40 @@ router.route('/')
                 service: 'journalGenerateForInvoice'
             });
 
-            const journalId = new JournalService(req.branchId, req.fiscalPeriodId, req.user)
+            let journalId = new JournalService(req.branchId, req.fiscalPeriodId, req.user)
                 .generateForInvoice(invoice.id);
 
             invoiceService.setJournal(invoice.id, journalId);
+
+            EventEmitter.emit('onServiceSucceed', serviceId, journalId);
+
+
+            /* calculate price for output */
+            serviceId = Guid.new();
+
+            EventEmitter.emit('onServiceStarted', serviceId, {
+                command: cmd,
+                state: req,
+                service: 'calculateOutputPrice'
+            });
+
+            outputIds.asEnumerable().forEach(id => outputService.calculatePrice(id));
+
+            EventEmitter.emit('onServiceSucceed', serviceId);
+
+            /* generate output from output sale */
+            serviceId = Guid.new();
+
+            EventEmitter.emit('onServiceStarted', serviceId, {
+                command: cmd,
+                state: req,
+                service: 'journalGenerateForOutputSale'
+            });
+
+            const journalIds = new JournalService(req.branchId, req.fiscalPeriodId, req.user)
+                .generateForOutputSale(outputIds);
+
+            journalIds.forEach(item => outputService.setJournal(item.id, item.journalId));
 
             EventEmitter.emit('onServiceSucceed', serviceId, journalId);
 
@@ -194,14 +224,123 @@ router.route('/:id')
         res.json(result);
     }))
     .put(async((req, res) => {
+        let cmd = req.body,
+            serviceId = 1;
 
-        const invoiceService = new InvoiceService(req.branchId);
+        try {
 
-        invoiceService.update(cmd);
+            /* create invoice */
+            serviceId = Guid.new();
 
-        //invoice = await(invoiceRepository.findById(id));
+            EventEmitter.emit('onServiceStarted', serviceId, {command: cmd, state: req, service: 'updateInvoice'});
 
-        res.json({isValid: true});
+            const invoiceService = new InvoiceService(req.branchId);
+            invoiceService.update(req.params.id, cmd);
+
+            const invoice = new InvoiceQuery(req.branchId).getById(req.params.id);
+
+            EventEmitter.emit('onServiceSucceed', serviceId);
+
+            if (!['confirm', 'paid'].includes(cmd.status))
+                return res.json({isValid: true});
+
+            /* create output */
+            serviceId = Guid.new();
+
+            EventEmitter.emit('onServiceStarted', serviceId, {
+                command: cmd,
+                state: req,
+                service: 'createInventoryOutputForInvoice'
+            });
+
+            const outputService = new OutputService(req.branchId, req.fiscalPeriodId),
+                outputIds = outputService.createForInvoice(invoice);
+
+            EventEmitter.emit('onServiceSucceed', serviceId, outputIds);
+
+            /* confirm invoice */
+            serviceId = Guid.new();
+
+            EventEmitter.emit('onServiceStarted', serviceId, {command: cmd, state: req, service: 'confirmInvoice'});
+
+            invoiceService.confirm(invoice.id);
+
+            EventEmitter.emit('onServiceSucceed', serviceId);
+
+            /* response */
+            res.json({isValid: true, returnValue: invoice});
+
+            serviceId = Guid.new();
+
+            EventEmitter.emit('onServiceStarted', serviceId, {
+                command: cmd,
+                state: req,
+                service: 'setInvoiceToInventory'
+            });
+
+            outputService.setInvoice(outputIds, invoice.id);
+
+            EventEmitter.emit('onServiceSucceed', serviceId);
+
+
+            serviceId = Guid.new();
+
+            EventEmitter.emit('onServiceStarted', serviceId, {
+                command: cmd,
+                state: req,
+                service: 'journalGenerateForInvoice'
+            });
+
+            let journalId = new JournalService(req.branchId, req.fiscalPeriodId, req.user)
+                .generateForInvoice(invoice.id);
+
+            invoiceService.setJournal(invoice.id, journalId);
+
+            EventEmitter.emit('onServiceSucceed', serviceId, journalId);
+
+
+            /* calculate price for output */
+            serviceId = Guid.new();
+
+            EventEmitter.emit('onServiceStarted', serviceId, {
+                command: cmd,
+                state: req,
+                service: 'calculateOutputPrice'
+            });
+
+            outputIds.asEnumerable().forEach(id => outputService.calculatePrice(id));
+
+            EventEmitter.emit('onServiceSucceed', serviceId);
+
+            /* generate output from output sale */
+            serviceId = Guid.new();
+
+            EventEmitter.emit('onServiceStarted', serviceId, {
+                command: cmd,
+                state: req,
+                service: 'journalGenerateForOutputSale'
+            });
+
+            const journalIds = new JournalService(req.branchId, req.fiscalPeriodId, req.user)
+                .generateForOutputSale(outputIds);
+
+            journalIds.forEach(item => outputService.setJournal(item.id, item.journalId));
+
+            EventEmitter.emit('onServiceSucceed', serviceId, journalId);
+
+        }
+        catch (e) {
+
+            EventEmitter.emit('onServiceFailed', serviceId, e);
+
+            const errors = e instanceof ValidationException
+                ? e.errors
+                : ['internal errors'];
+
+            res['_headerSent'] === false && res.json({isValid: false, errors});
+
+            console.log(e);
+        }
 
     }))
     .delete(async((req, res) => {
@@ -342,6 +481,7 @@ router.route('/:invoiceId/send-email')
     }));
 
 module.exports = router;
+
 
 
 
