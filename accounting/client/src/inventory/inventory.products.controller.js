@@ -41,8 +41,12 @@ class InventoryProductsController {
             ],
             command: [],
             multiSelectable: true
-        }
+        };
 
+       this.stockResolver = result => {
+           result.data.unshift({id: 'all', title: translate('All inventory')});
+           return result;
+       };
     }
 
     onStockChanged(item) {
@@ -50,12 +54,6 @@ class InventoryProductsController {
         const extra = item.id === 'all' ? {} : {filter: {stockId: item.id}};
 
         this.$scope.$broadcast(`${this.gridOption.name}/execute-advanced-search`, extra);
-    }
-
-    stockResolver(result) {
-        result.data.unshift({id: 'all', title: this.translate('All inventory')});
-
-        return result;
     }
 
     inventoryProductsTurnover() {

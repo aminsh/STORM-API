@@ -7,7 +7,7 @@ const BaseQuery = require('../queries/query.base'),
     async = require('asyncawait/async'),
     await = require('asyncawait/await');
 
-module.exports = class ProductReports extends BaseQuery {
+class ProductReports extends BaseQuery {
     constructor(branchId, currentFiscalPeriodId, mode, filter) {
         super(branchId);
 
@@ -58,75 +58,85 @@ module.exports = class ProductReports extends BaseQuery {
     }
 
     getProductRemainders(inventories) {
-        let haveZeroUnitPrice = inventories.asEnumerable().firstOrDefault(item => item.unitPrice == 0) ? 0 : 1,
+        let haveZeroUnitPrice = inventories.asEnumerable().firstOrDefault(item => item.unitPrice == 0) ? 0 : 1;
 
-        query = inventories
-            .map(item => {
-                item.turnoverQuantity = item.quantity * (item.inventoryType === 'input' ? 1 : -1);
-                return item;
-            })
-            .reduce((memory, current) => {
-                if (Array.isArray(memory)) {
-                    let last = memory[memory.length - 1];
-                    current.quantityRemainder = current.turnoverQuantity + last.quantityRemainder;
-                    current.haveZeroUnitPrice = haveZeroUnitPrice;
+        if (inventories.length === 1) {
 
-                    if (current.inventoryType === 'input'
-                        && (current.unitPrice === 0 || last.unitPriceRemainder === 0)
-                        && current.productId === last.productId) {
-                        current.unitPriceRemainder = 0;
-                        current.totalPriceRemainder = 0;
+        }
+        else {
+            let query = inventories
+                .map(item => {
+                    item.turnoverQuantity = item.quantity * (item.inventoryType === 'input' ? 1 : -1);
+                    return item;
+                })
+                .reduce((memory, current) => {
+                    if (Array.isArray(memory)) {
+                        let last = memory[memory.length - 1];
+                        current.quantityRemainder = current.turnoverQuantity + last.quantityRemainder;
+                        current.haveZeroUnitPrice = haveZeroUnitPrice;
+
+                        if (current.inventoryType === 'input'
+                            && (current.unitPrice === 0 || last.unitPriceRemainder === 0)
+                            && current.productId === last.productId) {
+                            current.unitPriceRemainder = 0;
+                            current.totalPriceRemainder = 0;
+                        }
+                        else {
+                            current.unitPriceRemainder = current.inventoryType === 'output'
+                                ? last.unitPriceRemainder
+                                : (last.totalPriceRemainder + current.totalPrice) / current.quantityRemainder;
+
+                            current.totalPriceRemainder = current.unitPriceRemainder * current.quantityRemainder;
+                        }
+                        memory.push(current);
+                        return memory;
                     }
                     else {
-                        current.unitPriceRemainder = current.inventoryType === 'output'
-                            ? last.unitPriceRemainder
-                            : (last.totalPriceRemainder + current.totalPrice) / current.quantityRemainder;
+                        memory.quantityRemainder = memory.turnoverQuantity;
+                        current.quantityRemainder = memory.quantityRemainder + current.turnoverQuantity;
+                        memory.haveZeroUnitPrice = haveZeroUnitPrice;
+                        current.haveZeroUnitPrice = haveZeroUnitPrice;
 
-                        current.totalPriceRemainder = current.unitPriceRemainder * current.quantityRemainder;
-                    }
-                    memory.push(current);
-                    return memory;
-                }
-                else {
-                    memory.quantityRemainder = memory.turnoverQuantity;
-                    current.quantityRemainder = memory.quantityRemainder + current.turnoverQuantity;
-                    memory.haveZeroUnitPrice = haveZeroUnitPrice;
-                    current.haveZeroUnitPrice = haveZeroUnitPrice;
-
-                    memory.unitPriceRemainder = memory.inventoryType === 'output'
-                        ? memory.unitPriceRemainder
-                        : (memory.quantity * memory.unitPrice) / memory.quantity;
-                    memory.totalPriceRemainder = memory.unitPriceRemainder * memory.quantityRemainder;
-
-                    if (current.inventoryType === 'input'
-                        && (current.unitPrice === 0 || memory.unitPrice === 0)
-                        && current.productId === memory.productId) {
-                        current.unitPriceRemainder = 0;
-                        current.totalPriceRemainder = 0;
-                    }
-                    else {
-                        current.unitPriceRemainder = current.inventoryType === 'output'
+                        memory.unitPriceRemainder = memory.inventoryType === 'output'
                             ? memory.unitPriceRemainder
-                            : (memory.totalPriceRemainder + current.totalPrice) / current.quantityRemainder;
+                            : (memory.quantity * memory.unitPrice) / memory.quantity;
+                        memory.totalPriceRemainder = memory.unitPriceRemainder * memory.quantityRemainder;
 
-                        current.totalPriceRemainder = current.quantityRemainder * current.unitPriceRemainder;
+                        if (current.inventoryType === 'input'
+                            && (current.unitPrice === 0 || memory.unitPrice === 0)
+                            && current.productId === memory.productId) {
+                            current.unitPriceRemainder = 0;
+                            current.totalPriceRemainder = 0;
+                        }
+                        else {
+                            current.unitPriceRemainder = current.inventoryType === 'output'
+                                ? memory.unitPriceRemainder
+                                : (memory.totalPriceRemainder + current.totalPrice) / current.quantityRemainder;
+
+                            current.totalPriceRemainder = current.quantityRemainder * current.unitPriceRemainder;
+                        }
+                        ;
+                        return [memory, current];
                     }
-                    ;
-                    return [memory, current];
-                }
-            });
+                });
 
-        return query.asEnumerable()
-            .select(item => Object.assign(
-            {},
-            item,
-            {lastTotalPriceRemainder: query.asEnumerable()
-                .where(q => q.date >= this.options.fromDate && q.date <= this.options.toDate)
-                .lastOrDefault().totalPriceRemainder},
-            {lastQuantityRemainder: query.asEnumerable()
-                .where(q => q.date >= this.options.fromDate && q.date <= this.options.toDate)
-                .lastOrDefault().quantityRemainder}
-        ))
+            return query.asEnumerable()
+                .select(item => Object.assign(
+                    {},
+                    item,
+                    {
+                        lastTotalPriceRemainder: query.asEnumerable()
+                            .where(q => q.date >= this.options.fromDate && q.date <= this.options.toDate)
+                            .lastOrDefault().totalPriceRemainder
+                    },
+                    {
+                        lastQuantityRemainder: query.asEnumerable()
+                            .where(q => q.date >= this.options.fromDate && q.date <= this.options.toDate)
+                            .lastOrDefault().quantityRemainder
+                    }
+                ))
+        }
+
     }
 
     getProductTurnovers(productIds) {
@@ -155,3 +165,5 @@ module.exports = class ProductReports extends BaseQuery {
         return query;
     }
 }
+
+module.exports = ProductReports;
