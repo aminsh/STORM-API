@@ -123,7 +123,8 @@ let payableCheques = {
 let inventory = {
     getAllInputs: ()=> `${rootUrl()}/inventories/inputs`,
     getAllOutputs: ()=> `${rootUrl()}/inventories/outputs`,
-    getLinesById:(id)=> `${rootUrl()}/inventories/${id}/lines`
+    getLinesById:(id)=> `${rootUrl()}/inventories/${id}/lines`,
+    getAllInventoryProducts: ()=> `${rootUrl()}/inventories/products`
 };
 
 let journalGenerationTemplate = {

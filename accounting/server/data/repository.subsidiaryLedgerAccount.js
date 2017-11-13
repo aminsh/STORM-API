@@ -11,10 +11,10 @@ class SubsidiaryLedgerAccountRepository extends BaseRepository {
     }
 
     findById(id) {
-        return this.knex.table('subsidiaryLedgerAccounts')
+        return await(this.knex.table('subsidiaryLedgerAccounts')
             .modify(this.modify, this.branchId)
             .where('id', id)
-            .first();
+            .first());
     }
 
     findByCode(code, generalLedgerAccountId, notEqualId) {

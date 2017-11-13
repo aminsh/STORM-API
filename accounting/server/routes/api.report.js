@@ -43,12 +43,12 @@ router.route('/')
 
 router.route('/file/:fileName').get((req, res) => {
     let withLayout = reportConfig.asEnumerable()
-            .selectMany(rc=> rc.items)
+            .selectMany(rc => rc.items)
             .any(rc => [undefined, true].includes(rc.useLayout) && rc.fileName == req.params.fileName),
         report = getReport(req.params.fileName);
 
     if (withLayout) {
-      let reportComponents = report.Pages[0].Components,
+        let reportComponents = report.Pages[0].Components,
             reportComponentsMaxKeys = (Object.keys(reportComponents)
                     .asEnumerable()
                     .select(c => parseInt(c))
@@ -271,7 +271,7 @@ router.route('/inventory-output')
         let ins = new InventoriesReport(req.branchId),
             result = await(ins.getInventories(req.query.ids));
 
-            res.json(result);
+        res.json(result);
     }));
 
 router.route('/inventory-input')
@@ -294,13 +294,22 @@ router.route('/inventory-turnover')
 
 router.route('/product-turnover')
     .get(async((req, res) => {
-        let ins = new ProductReports(req.branchId),
-            /*req.cookies['current-period'],
-            req.cookies['current-mode'],
-            req.query),*/
+        let ins = new ProductReports(req.branchId,
+            req.cookies['current-period'],
+             req.cookies['current-mode'],
+             req.query),
             result = await(ins.getProductTurnovers(req.query.ids));
         res.json(result);
     }))
 
+router.route('/product-turnover-total')
+    .get(async((req, res) => {
+        let ins = new ProductReports(req.branchId,
+            req.cookies['current-period'],
+            req.cookies['current-mode'],
+            req.query),
+            result = await(ins.getProductTurnovers(req.query.ids));
+        res.json(result);
+    }))
 
 module.exports = router;

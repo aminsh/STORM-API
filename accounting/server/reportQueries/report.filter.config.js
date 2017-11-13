@@ -4,7 +4,7 @@ const BaseQuery = require('../queries/query.base'),
     async = require('asyncawait/async'),
     await = require('asyncawait/await');
 
-module.exports = class ReportFilterConfig extends BaseQuery {
+class ReportFilterConfig extends BaseQuery {
     constructor(branchId, currentFiscalPeriodId, mode, filter) {
         super(branchId);
         this.currentFiscalPeriodId = currentFiscalPeriodId;
@@ -19,7 +19,7 @@ module.exports = class ReportFilterConfig extends BaseQuery {
         let dateRange = await(this.getDateRange()),
             mode = this.mode;
         return {
-            fromDate: dateRange.fromDate,
+            fromDate: dateRange.fromMainDate,
             toDate: dateRange.toDate,
             fromMainDate: dateRange.fromMainDate,
             filter: this.filter,
@@ -57,9 +57,11 @@ module.exports = class ReportFilterConfig extends BaseQuery {
             };
 
         return {
-            fromDate: filter.minDate,
+            fromDate: "0",
             fromMainDate: filter.minDate,
             toDate: filter.maxDate
         };
     }
-};
+}
+
+module.exports =  ReportFilterConfig;

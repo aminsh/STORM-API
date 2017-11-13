@@ -12,11 +12,11 @@ class BankRepository extends BaseRepository {
     }
 
     findById(id) {
-        return this.knex
+        return await(this.knex
             .table('stocks')
             .modify(this.modify, this.branchId)
             .where('id', id)
-            .first();
+            .first());
     }
 
     isUsedOnInventory(id) {

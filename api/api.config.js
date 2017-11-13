@@ -29,19 +29,27 @@ app.use((req, res, next) => {
         req.branchId = decode.branchId;
         req.user = {id: decode.userId};
 
-        let currentPeriod = req.cookies['current-period'];
+        let currentPeriod = req.cookies['current-period'],
+            fiscalPeriodQuery = new FiscalPeriodQuery(req.branchId);
 
-        if (currentPeriod == null || currentPeriod == 0) {
-            let fiscalPeriodQuery = new FiscalPeriodQuery(req.branchId),
-                maxId = await(fiscalPeriodQuery.getMaxId());
+        if (currentPeriod === null || currentPeriod === 0) {
+            setFiscalPeriodId();
+        } else{
+            let isFiscalPeriodValid = await(fiscalPeriodQuery.getById(currentPeriod));
+
+            if(isFiscalPeriodValid)
+                req.fiscalPeriodId = currentPeriod;
+
+            else setFiscalPeriodId();
+        }
+
+        function setFiscalPeriodId() {
+            let maxId = await(fiscalPeriodQuery.getMaxId());
             maxId = maxId || 0;
 
             res.cookie('current-period', maxId);
-            currentPeriod = maxId;
+            req.fiscalPeriodId = maxId;
         }
-
-        req.fiscalPeriodId = currentPeriod;
-
 
         next();
     }));

@@ -27,6 +27,7 @@ class InvoiceQuery extends BaseQuery {
                     'detailAccountId',
                     'detailAccountDisplay',
                     'invoiceStatus',
+                    'invoiceType',
                     'description',
                     'title',
                     knex.raw('"sum"("totalPrice") as "sumTotalPrice"'),
@@ -50,6 +51,7 @@ class InvoiceQuery extends BaseQuery {
                         'detailAccountId',
                         'detailAccountDisplay',
                         'invoiceStatus',
+                        'invoiceType',
                         'description',
                         'title')
                     .orderBy('number', 'desc')
@@ -57,15 +59,18 @@ class InvoiceQuery extends BaseQuery {
             }).first()),
             invoiceLines = await(knex.select(
                 'invoiceLines.*',
-                knex.raw('scales.title as scale')
+                knex.raw('scales.title as scale'),
+                knex.raw('stocks.title as "stockDisplay"')
             )
                 .from('invoiceLines')
                 .leftJoin('products', 'invoiceLines.productId', 'products.id')
                 .leftJoin('scales', 'products.scaleId', 'scales.id')
+                .leftJoin('stocks', 'invoiceLines.stockId', 'stocks.id')
                 .where('invoiceLines.branchId', branchId)
                 .andWhere('invoiceId', id));
 
         invoice.invoiceLines = invoiceLines.asEnumerable().select(lineView).toArray();
+        invoice.branchId = branchId;
 
         return view(invoice);
     }

@@ -62,17 +62,6 @@ class StocksController {
                     {key: 802},
                     params);
             });
-
-        /*const ids = ;
-         if(ids.length === 0){
-         this.logger.error(this.translate('Select inventory'));}
-         else {
-         let reportParam = {ids};
-         this.navigate(
-         'report.print',
-         {key: 802},
-         reportParam);
-         }*/
     }
 }
 

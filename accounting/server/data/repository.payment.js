@@ -10,18 +10,18 @@ class PaymentRepository extends BaseRepository {
     }
 
     findById(id) {
-        return this.knex.select('*').table('payments')
+        return await(this.knex.select('*').table('payments')
             .where('branchId', this.branchId)
             .andWhere('id', id)
-            .first();
+            .first());
     }
 
     getBySumAmountByInvoiceId(invoiceId) {
-        return this.knex.table('payments')
+        return await(this.knex.table('payments')
             .where('branchId', this.branchId)
             .andWhere('invoiceId', invoiceId)
             .sum('amount')
-            .first();
+            .first());
     }
 
     create(entity, trx) {
@@ -35,11 +35,13 @@ class PaymentRepository extends BaseRepository {
         if (trx)
             query.transacting(trx);
 
-        return query.insert(entity);
+        await(query.insert(entity));
+
+        return entity;
     }
 
     update(id, entity) {
-        return this.knex('payments').where('id', id).update(entity);
+        await(this.knex('payments').where('id', id).update(entity)());
     }
 };
 
