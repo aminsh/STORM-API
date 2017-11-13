@@ -1,9 +1,11 @@
 "use strict";
 
 const knex = instanceOf('knex'),
+    async = require('asyncawait/async'),
+    await = require('asyncawait/await'),
     Guid = instanceOf('utility').Guid;
 
-module.exports = class RepositoryBase {
+class RepositoryBase {
     constructor(branchId) {
         this.knex = knex;
         this.branchId = branchId;
@@ -14,7 +16,13 @@ module.exports = class RepositoryBase {
         entity.branchId = this.branchId;
     }
 
-    modify(queryBuilder, branchId){
+    modify(queryBuilder, branchId) {
         queryBuilder.where('branchId', branchId);
     }
-};
+
+    get transaction() {
+        return new Promise(resolve => this.knex.transaction(trx => resolve(trx)));
+    }
+}
+
+module.exports = RepositoryBase;

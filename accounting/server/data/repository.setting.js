@@ -21,11 +21,11 @@ class SettingRepository extends BaseRepository {
     }
 
     get() {
-        return this.knex.table('settings')
+        return await(this.knex.table('settings')
             .where('branchId', this.branchId)
-            .first();
+            .first());
     }
 
-};
+}
 
 module.exports = SettingRepository;

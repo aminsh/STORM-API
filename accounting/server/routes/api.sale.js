@@ -2,11 +2,14 @@
 
 const async = require('asyncawait/async'),
     await = require('asyncawait/await'),
+    InvoiceService = ApplicationService.InvoiceService,
+    OutputService = ApplicationService.InventoryOutputService,
+    JournalService = ApplicationService.JournalService,
     FiscalPeriodRepository = require('../data/repository.fiscalPeriod'),
     router = require('express').Router(),
     String = require('../utilities/string'),
     translate = require('../services/translateService'),
-    Guid = require('../services/shared').utility.Guid,
+    Guid = instanceOf('utility').Guid,
     PersianDate = require('../services/persianDateService'),
     SaleDomain = require('../domain/sale'),
     DetailAccountDomain = require('../domain/detailAccount'),
@@ -58,125 +61,122 @@ router.route('/')
 
     .post(async((req, res) => {
 
-        let branchId = req.branchId,
-            fiscalPeriodId = req.fiscalPeriodId,
-            saleDomain = new SaleDomain(req.branchId, req.fiscalPeriodId),
-            detailAccountDomain = new DetailAccountDomain(req.branchId),
-            productDomain = new ProductDomain(req.branchId),
-            settingRepository = new SettingRepository(branchId),
-            fiscalPeriodRepository = new FiscalPeriodRepository(req.branchId),
-            currentFiscalPeriod = await(fiscalPeriodRepository.findById(req.fiscalPeriodId)),
+        let cmd = req.body,
+            serviceId = 1;
 
-            cmd = req.body,
-            errors = [],
+        try {
 
-            settings = await(settingRepository.get()),
+            /* create invoice */
+            serviceId = Guid.new();
 
-            bankId,
-            temporaryDateIsInPeriodRange = true;
+            EventEmitter.emit('onServiceStarted', serviceId, {command: cmd, state: req, service: 'createInvoice'});
+
+            const invoiceService = new InvoiceService(req.branchId),
+                invoice = invoiceService.create(cmd);
+
+            EventEmitter.emit('onServiceSucceed', serviceId, invoice);
+
+            if (!['confirm', 'paid'].includes(cmd.status))
+                return res.json({isValid: true, returnValue: invoice});
+
+            /* create output */
+            serviceId = Guid.new();
+
+            EventEmitter.emit('onServiceStarted', serviceId, {
+                command: cmd,
+                state: req,
+                service: 'createInventoryOutputForInvoice'
+            });
+
+            const outputService = new OutputService(req.branchId, req.fiscalPeriodId),
+                outputIds = outputService.createForInvoice(invoice);
+
+            EventEmitter.emit('onServiceSucceed', serviceId, outputIds);
+
+            /* confirm invoice */
+            serviceId = Guid.new();
+
+            EventEmitter.emit('onServiceStarted', serviceId, {command: cmd, state: req, service: 'confirmInvoice'});
+
+            invoiceService.confirm(invoice.id);
+
+            EventEmitter.emit('onServiceSucceed', serviceId);
+
+            /* response */
+            res.json({isValid: true, returnValue: new InvoiceQuery(req.branchId).getById(invoice.id)});
+
+            serviceId = Guid.new();
+
+            EventEmitter.emit('onServiceStarted', serviceId, {
+                command: cmd,
+                state: req,
+                service: 'setInvoiceToInventory'
+            });
+
+            outputService.setInvoice(outputIds, invoice.id);
+
+            EventEmitter.emit('onServiceSucceed', serviceId);
 
 
-        /*if (!String.isNullOrEmpty(cmd.date))
-            temporaryDateIsInPeriodRange =
-                cmd.date >= currentFiscalPeriod.minDate &&
-                cmd.date <= currentFiscalPeriod.maxDate;*/
+            serviceId = Guid.new();
 
-       /* if (!temporaryDateIsInPeriodRange)
-            errors.push(translate('The temporaryDate is not in current period date range'));*/
+            EventEmitter.emit('onServiceStarted', serviceId, {
+                command: cmd,
+                state: req,
+                service: 'journalGenerateForInvoice'
+            });
 
-        if (!(cmd.invoiceLines && cmd.invoiceLines.length !== 0))
-            errors.push('ردیف های فاکتور وجود ندارد');
-        else checkLinesValidation();
+            let journalId = new JournalService(req.branchId, req.fiscalPeriodId, req.user)
+                .generateForInvoice(invoice.id);
 
-        let customer = detailAccountDomain.findPersonByIdOrCreate(cmd.customer);
+            invoiceService.setJournal(invoice.id, journalId);
 
-        if (!customer)
-            errors.push('مشتری نباید خالی باشد');
+            EventEmitter.emit('onServiceSucceed', serviceId, journalId);
 
-        if (cmd.number && await(saleDomain.isInvoiceNumberDuplicated(cmd.number)))
-            errors.push('شماره فاکتور تکراری است');
 
-        function checkLinesValidation() {
-            cmd.invoiceLines.forEach(async.result(e => {
-                e.product = productDomain.findByIdOrCreate(e.product);
+            /* calculate price for output */
+            serviceId = Guid.new();
 
-                if (e.product) {
-                    e.productId = e.product.id;
-                    if (!e.description) e.description = e.product.title;
-                }
+            EventEmitter.emit('onServiceStarted', serviceId, {
+                command: cmd,
+                state: req,
+                service: 'calculateOutputPrice'
+            });
 
-                if (Guid.isEmpty(e.productId) && String.isNullOrEmpty(e.description))
-                    errors.push('کالا یا شرح کالا نباید خالی باشد');
+            outputIds.asEnumerable().forEach(id => outputService.calculatePrice(id));
 
-                if (!(e.quantity && e.quantity !== 0))
-                    errors.push('مقدار نباید خالی یا صفر باشد');
+            EventEmitter.emit('onServiceSucceed', serviceId);
 
-                if (!(e.unitPrice && e.unitPrice !== 0))
-                    errors.push('قیمت واحد نباید خالی یا صفر باشد');
-            }));
+            /* generate output from output sale */
+            serviceId = Guid.new();
+
+            EventEmitter.emit('onServiceStarted', serviceId, {
+                command: cmd,
+                state: req,
+                service: 'journalGenerateForOutputSale'
+            });
+
+            const journalIds = new JournalService(req.branchId, req.fiscalPeriodId, req.user)
+                .generateForOutputSale(outputIds);
+
+            journalIds.forEach(item => outputService.setJournal(item.id, item.journalId));
+
+            EventEmitter.emit('onServiceSucceed', serviceId, journalId);
+
+        }
+        catch (e) {
+
+            EventEmitter.emit('onServiceFailed', serviceId, e);
+
+            const errors = e instanceof ValidationException
+                ? e.errors
+                : ['internal errors'];
+
+            res['_headerSent'] === false && res.json({isValid: false, errors});
+
+            console.log(e);
         }
 
-        if (cmd.status === 'paid') {
-            bankId = settings.bankId;
-            if (!bankId)
-                errors.push('اطلاعات بانک پیش فرض تعریف نشده - ثبت پرداخت برای این فاکتور امکانپذیر نیست')
-        }
-
-
-        if (errors.length !== 0)
-            return res.json({isValid: false, errors});
-
-        if (settings.canControlInventory)
-            errors = await(instanceOf('inventory.control',
-                branchId, fiscalPeriodId, settings).control(cmd));
-
-        if (errors.length !== 0)
-            return res.json({isValid: false, errors});
-
-        let current = {
-                branchId,
-                fiscalPeriodId: req.fiscalPeriodId,
-                userId: req.user.id
-            },
-
-            status = (cmd.status === 'confirm' || cmd.status === 'paid')
-                ? 'waitForPayment'
-                : 'draft';
-
-        cmd.date = cmd.date || PersianDate.current();
-        cmd.detailAccountId = customer.id;
-        cmd.status = status;
-
-        const result = saleDomain.create(cmd);
-
-        res.json({isValid: true, returnValue: result});
-
-        if (status === 'waitForPayment')
-            EventEmitter.emit('on-sale-created', Object.assign(cmd, result), current);
-
-        if (cmd.status === 'paid') {
-
-            setTimeout(async(() => {
-                let paymentRepository = new PaymentRepository(req.branchId),
-
-                    bankPayment = {
-                        date: cmd.date,
-                        amount: cmd.invoiceLines.asEnumerable().sum(e => (e.unitPrice * e.quantity) - e.discount + e.vat),
-                        paymentType: 'receipt',
-                        invoiceId: result.id
-                    };
-
-                await(paymentRepository.create(bankPayment));
-
-                bankPayment.bankId = bankId;
-                EventEmitter.emit('on-receive-created',
-                    [bankPayment],
-                    result.id,
-                    {branchId: req.branchId, fiscalPeriodId: req.fiscalPeriodId});
-
-                EventEmitter.emit('on-invoice-paid', result.id, req.branchId);
-            }), 1000);
-        }
     }));
 
 router.route('/:id/confirm')
@@ -224,67 +224,123 @@ router.route('/:id')
         res.json(result);
     }))
     .put(async((req, res) => {
-        let invoiceRepository = new InvoiceRepository(req.branchId),
-            saleDomain = new SaleDomain(req.branchId),
-            settingRepository = new SettingRepository(req.branchId),
-            settings = await(settingRepository.get()),
-            id = req.params.id,
-            errors = [],
-            invoice = await(invoiceRepository.findById(id)),
-            cmd = req.body,
-            status = cmd.status == 'confirm' ? 'waitForPayment' : 'draft',
+        let cmd = req.body,
+            serviceId = 1;
 
-            current = {
-                branchId: req.branchId,
-                fiscalPeriodId: req.cookies['current-period'],
-                userId: req.user.id
-            };
+        try {
 
-        if (cmd.number && await(saleDomain.isInvoiceNumberDuplicated(cmd.number, id)))
-            errors.push('شماره فاکتور تکراری است');
+            /* create invoice */
+            serviceId = Guid.new();
 
-        let entity = {
-            date: cmd.date,
-            description: cmd.description,
-            title: cmd.title,
-            detailAccountId: cmd.detailAccountId || cmd.customerId,
-            invoiceStatus: status
-        };
+            EventEmitter.emit('onServiceStarted', serviceId, {command: cmd, state: req, service: 'updateInvoice'});
+
+            const invoiceService = new InvoiceService(req.branchId);
+            invoiceService.update(req.params.id, cmd);
+
+            const invoice = new InvoiceQuery(req.branchId).getById(req.params.id);
+
+            EventEmitter.emit('onServiceSucceed', serviceId);
+
+            if (!['confirm', 'paid'].includes(cmd.status))
+                return res.json({isValid: true});
+
+            /* create output */
+            serviceId = Guid.new();
+
+            EventEmitter.emit('onServiceStarted', serviceId, {
+                command: cmd,
+                state: req,
+                service: 'createInventoryOutputForInvoice'
+            });
+
+            const outputService = new OutputService(req.branchId, req.fiscalPeriodId),
+                outputIds = outputService.createForInvoice(invoice);
+
+            EventEmitter.emit('onServiceSucceed', serviceId, outputIds);
+
+            /* confirm invoice */
+            serviceId = Guid.new();
+
+            EventEmitter.emit('onServiceStarted', serviceId, {command: cmd, state: req, service: 'confirmInvoice'});
+
+            invoiceService.confirm(invoice.id);
+
+            EventEmitter.emit('onServiceSucceed', serviceId);
+
+            /* response */
+            res.json({isValid: true, returnValue: invoice});
+
+            serviceId = Guid.new();
+
+            EventEmitter.emit('onServiceStarted', serviceId, {
+                command: cmd,
+                state: req,
+                service: 'setInvoiceToInventory'
+            });
+
+            outputService.setInvoice(outputIds, invoice.id);
+
+            EventEmitter.emit('onServiceSucceed', serviceId);
 
 
-        if (invoice.invoiceStatus != 'draft')
-            errors.push('فاکتور جاری قابل ویرایش نمیباشد');
+            serviceId = Guid.new();
 
-        if (errors.length !== 0)
-            return res.json({isValid: false, errors});
+            EventEmitter.emit('onServiceStarted', serviceId, {
+                command: cmd,
+                state: req,
+                service: 'journalGenerateForInvoice'
+            });
 
-        if (settings.canControlInventory)
-            errors = await(instanceOf('inventory.control',
-                req.branchId, req.fiscalPeriodId, settings).control(cmd));
+            let journalId = new JournalService(req.branchId, req.fiscalPeriodId, req.user)
+                .generateForInvoice(invoice.id);
 
-        if (errors.length !== 0)
-            return res.json({isValid: false, errors});
+            invoiceService.setJournal(invoice.id, journalId);
 
-        entity.invoiceLines = cmd.invoiceLines.asEnumerable()
-            .select(line => ({
-                id: line.id,
-                productId: line.productId,
-                description: line.description,
-                quantity: line.quantity,
-                unitPrice: line.unitPrice,
-                discount: line.discount,
-                vat: line.vat
-            }))
-            .toArray();
+            EventEmitter.emit('onServiceSucceed', serviceId, journalId);
 
-        await(invoiceRepository.updateBatch(id, entity));
 
-        invoice = await(invoiceRepository.findById(id));
+            /* calculate price for output */
+            serviceId = Guid.new();
 
-        if (status == 'waitForPayment')
-            EventEmitter.emit('on-sale-created', Object.assign(invoice,cmd), current);
+            EventEmitter.emit('onServiceStarted', serviceId, {
+                command: cmd,
+                state: req,
+                service: 'calculateOutputPrice'
+            });
 
-        res.json({isValid: true});
+            outputIds.asEnumerable().forEach(id => outputService.calculatePrice(id));
+
+            EventEmitter.emit('onServiceSucceed', serviceId);
+
+            /* generate output from output sale */
+            serviceId = Guid.new();
+
+            EventEmitter.emit('onServiceStarted', serviceId, {
+                command: cmd,
+                state: req,
+                service: 'journalGenerateForOutputSale'
+            });
+
+            const journalIds = new JournalService(req.branchId, req.fiscalPeriodId, req.user)
+                .generateForOutputSale(outputIds);
+
+            journalIds.forEach(item => outputService.setJournal(item.id, item.journalId));
+
+            EventEmitter.emit('onServiceSucceed', serviceId, journalId);
+
+        }
+        catch (e) {
+
+            EventEmitter.emit('onServiceFailed', serviceId, e);
+
+            const errors = e instanceof ValidationException
+                ? e.errors
+                : ['internal errors'];
+
+            res['_headerSent'] === false && res.json({isValid: false, errors});
+
+            console.log(e);
+        }
 
     }))
     .delete(async((req, res) => {
@@ -425,6 +481,7 @@ router.route('/:invoiceId/send-email')
     }));
 
 module.exports = router;
+
 
 
 
