@@ -246,7 +246,7 @@ router.route('/:id')
 
             /* create output */
             serviceId = Guid.new();
-
+          
             EventEmitter.emit('onServiceStarted', serviceId, {
                 command: cmd,
                 state: req,
@@ -257,7 +257,7 @@ router.route('/:id')
                 outputIds = outputService.createForInvoice(invoice);
 
             EventEmitter.emit('onServiceSucceed', serviceId, outputIds);
-
+          
             /* confirm invoice */
             serviceId = Guid.new();
 
@@ -341,7 +341,6 @@ router.route('/:id')
 
             console.log(e);
         }
-
     }))
     .delete(async((req, res) => {
         let invoiceRepository = new InvoiceRepository(req.branchId),
