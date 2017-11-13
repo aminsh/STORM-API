@@ -36,7 +36,7 @@ class OneStockBase {
 
             output = {
                 number: ++maxNumber,
-                date: cmd.date || PersianDate,
+                date: cmd.date || PersianDate.current(),
                 stockId: this.stockId,
                 description: translate('For Cash sale invoice number ...').format(cmd.sale.number),
                 inventoryType: 'output',
