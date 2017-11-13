@@ -5,6 +5,8 @@ module.exports.ProductRepository = require('../../accounting/server/data/reposit
 module.exports.SettingsRepository = require('../../accounting/server/data/repository.setting');
 module.exports.StockRepository = require('../../accounting/server/data/repository.stock');
 
+module.exports.PaymentRepository = require('../../accounting/server/data/repository.payment');
+
 module.exports.InvoiceRepository = require('../../accounting/server/data/repository.invoice');
 module.exports.InventoryeRepository = require('../../accounting/server/data/repository.inventory');
 
