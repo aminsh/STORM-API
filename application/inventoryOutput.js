@@ -65,7 +65,10 @@ class OutputService {
 
     create(cmd) {
 
+        const number = this.inventoryRepository.outputMaxNumber(this.fiscalPeriodId,cmd.stockId, 'outputSale').max || 0;
+
         let output = {
+            number: number + 1,
             date: cmd.date || PersianDate.current(),
             stockId: cmd.stockId,
             inventoryType: 'output',
@@ -127,7 +130,7 @@ class OutputService {
         let inputs = await(this.inventoryRepository
             .getAllInputBeforeDate(this.fiscalPeriodId, productId, new Date));
 
-        if (inputs.asEnumerable().all(item => item.unitPrice && item.unitPrice > 0))
+        if (!inputs.asEnumerable().all(item => item.unitPrice && item.unitPrice > 0))
             throw new ValidationException(['رسید (ها) با قیمت صفر وجود دارد -  امکان محاسبه قیمت وجود ندارد']);
 
         const
@@ -136,6 +139,10 @@ class OutputService {
 
 
         return sumPrice / sumQuantity;
+    }
+
+    setJournal(id, journalId) {
+        return this.inventoryRepository.update(id, {journalId});
     }
 }
 
