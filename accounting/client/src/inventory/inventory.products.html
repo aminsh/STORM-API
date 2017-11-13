@@ -1,0 +1,42 @@
+<dev-tag-content-body is-loading="model.isLoading" class="animated bounceInUp">
+    <div class="=row">
+        <dev-tag-guide>
+            <i class="fa fa-info-circle fa-2x" aria-hidden="true"></i>
+            جهت نمایش گزارش کالا/ خدمات موردنظر، ابتدا آنها را با استفاده از
+            <i class="fa fa-check-square-o fa-2x"></i>
+            انتخاب نمایید سپس با دکمه ی
+            <i class="fa fa-print fa-2x"></i>
+            گزارش موردنظر را مشاهده و درصورت نیاز چاپ یا ذخیره سازی با فرمت های متفاوت، نمایید.
+        </dev-tag-guide>
+        <div class="row">
+            <div class="col-md-6" style="margin-top: 10px">
+                <dev-tag-button
+                        ng-click="model.inventoryProductsTurnover()"
+                        title="{{'Product turnover detail'| translate}}"
+                        style-type="primary btn-outline"
+                        icon="fa fa-print fa-lg"></dev-tag-button>
+
+                <dev-tag-button
+                        ng-click="model.inventoryProductsTurnoverTotal()"
+                        title="{{'Product turnover total'| translate}}"
+                        style-type="primary btn-outline"
+                        icon="fa fa-print fa-lg"></dev-tag-button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4" style="margin-top: 10px">
+                <label class="label-control">{{'Filtered by stock' | translate}}</label>
+                <dev-tag-combo-box name="stockId"
+                                   k-placeholder="{{'Select stock ...'|translate}}"
+                                   k-data-value-field="id"
+                                   k-data-text-field="title"
+                                   k-on-changed="model.onStockChanged($item)"
+                                   ng-model="model.stockId"
+                                   resolve="model.stockResolver"
+                                   url="{{model.getAllStockUrl}}"></dev-tag-combo-box>
+            </div>
+        </div>
+
+        <dev-tag-grid option="model.gridOption"></dev-tag-grid>
+    </div>
+</dev-tag-content-body>

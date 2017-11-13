@@ -7,12 +7,12 @@ let async = require('asyncawait/async'),
 class InvoiceRepository extends BaseRepository {
     constructor(branchId) {
         super(branchId);
-        this.findById = async(this.findById);
+        /*this.findById = async(this.findById);
         this.create = async(this.create);
         this.createInvoice = async(this.createInvoice);
         this.createInvoiceLines = async(this.createInvoiceLines);
         this.updateInvoice = async(this.updateInvoice);
-        this.updateInvoiceLines = async(this.updateInvoiceLines);
+        this.updateInvoiceLines = async(this.updateInvoiceLines);*/
     }
 
     findById(id) {
@@ -24,9 +24,9 @@ class InvoiceRepository extends BaseRepository {
                 knex.raw('"invoiceLines"."description" as "invoiceLineDescription"'),
                 knex.raw('"invoiceLines"."id" as "invoiceLineId"')
             ).from('invoices')
-            .leftJoin('invoiceLines', 'invoices.id', 'invoiceLines.invoiceId')
-            .where('invoices.branchId', this.branchId)
-            .andWhere('invoices.id', id));
+                .leftJoin('invoiceLines', 'invoices.id', 'invoiceLines.invoiceId')
+                .where('invoices.branchId', this.branchId)
+                .andWhere('invoices.id', id));
 
         let first = data[0],
             invoice = {
@@ -58,7 +58,7 @@ class InvoiceRepository extends BaseRepository {
         return invoice;
     }
 
-    findByNumber(number,type, notEqualId) {
+    findByNumber(number, type, notEqualId) {
         let query = this.knex.table('invoices')
             .modify(this.modify, this.branchId)
             .where('invoiceType', type)
@@ -75,11 +75,13 @@ class InvoiceRepository extends BaseRepository {
     }
 
     saleMaxNumber() {
-        return this.knex.table('invoices')
+        const result = await(this.knex.table('invoices')
             .modify(this.modify, this.branchId)
             .where('invoiceType', 'sale')
             .max('number')
-            .first();
+            .first());
+
+        return result && result.max ? result.max || 0 : 0;
     }
 
     purchaseMaxNumber() {
@@ -91,40 +93,37 @@ class InvoiceRepository extends BaseRepository {
     }
 
     create(entity) {
-        this.entity = entity;
 
-        return new Promise((resolve, reject) => {
-            this.knex.transaction(async(trx => {
-                let entity = this.entity;
+        const trx = await(this.transaction);
 
-                try {
-                    let lines = this.entity.invoiceLines;
+        try {
+            let lines = entity.invoiceLines;
 
-                    delete  entity.invoiceLines;
+            delete  entity.invoiceLines;
 
-                    await(this.createInvoice(entity, trx));
+            await(this.createInvoice(entity, trx));
 
-                    await(this.createInvoiceLines(lines, entity.id, trx));
+            await(this.createInvoiceLines(lines, entity.id, trx));
 
-                    entity.invoiceLines = lines;
+            entity.invoiceLines = lines;
 
-                    resolve(entity);
-                }
-                catch (e) {
-                    reject(e);
-                }
-            }));
-        });
+            trx.commit();
+
+            return entity;
+        }
+        catch (e) {
+            trx.rollback();
+        }
     }
 
     update(id, entity) {
-        return this.knex('invoices').where('id', id).update(entity);
+        await(this.knex('invoices').where('id', id).update(entity));
     }
 
     updateBatch(id, entity) {
         this.entity = entity;
 
-        return new Promise((resolve, reject) => {
+        return await(new Promise((resolve, reject) => {
             this.knex.transaction(async(trx => {
                 let entity = this.entity;
 
@@ -145,7 +144,7 @@ class InvoiceRepository extends BaseRepository {
                     reject(e);
                 }
             }));
-        });
+        }));
     }
 
     remove(id) {
@@ -231,6 +230,6 @@ class InvoiceRepository extends BaseRepository {
             .where('detailAccountId', customerId)
             .first();
     }
-};
+}
 
 module.exports = InvoiceRepository;

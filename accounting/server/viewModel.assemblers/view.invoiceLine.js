@@ -9,7 +9,10 @@ module.exports = function (entity) {
         unitPrice: entity.unitPrice,
         vat: entity.vat,
         discount: entity.discount,
-        scale: entity.scale
+        scale: entity.scale,
+        stockId: entity.stockId,
+        stockDisplay: entity.stockDisplay,
+
     };
 };
 

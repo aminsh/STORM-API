@@ -383,14 +383,27 @@
     "items": [
       {
         "key": "900",
-        "text": "گزارش گردش کالا",
+        "text": "گزارش جزئیات گردش کالا",
         "func": "getProductTurnover",
-        "fileName": "",
+        "fileName": "getProductTurnover",
         "useLayout": false,
         "showOnAccounting": false,
         "params": [
           {
-
+            "name": "date"
+          }
+        ]
+      },
+      {
+        "key": "901",
+        "text": "گزارش کل گردش کالا",
+        "func": "getProductTurnoverTotal",
+        "fileName": "getProductTurnoverTotal",
+        "useLayout": false,
+        "showOnAccounting": false,
+        "params": [
+          {
+            "name": "date"
           }
         ]
       }

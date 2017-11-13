@@ -72,5 +72,12 @@ export default class {
             "dateToWord", "", "",
             String, "", [String], ["Date"], [""],
             num => num.toWord());
+
+        Stimulsoft.Report.Dictionary.StiFunctions.addFunction(
+            "devFunction",
+            "toFloat",
+            "toFloat", "", "",
+            Number, "", [String], ["Amount"], [""],
+            num => parseFloat(num));
     }
 }
