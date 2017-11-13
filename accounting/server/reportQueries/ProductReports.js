@@ -61,6 +61,15 @@ class ProductReports extends BaseQuery {
         let haveZeroUnitPrice = inventories.asEnumerable().firstOrDefault(item => item.unitPrice == 0) ? 0 : 1;
 
         if (inventories.length === 1) {
+            return inventories.asEnumerable().select(item =>
+                Object.assign({}, item,
+                    {quantityRemainder: item.quantity},
+                    {haveZeroUnitPrice: haveZeroUnitPrice},
+                    {unitPriceRemainder: item.unitPrice},
+                    {totalPriceRemainder: item.totalPrice},
+                    {lastTotalPriceRemainder: item.totalPrice},
+                    {lastQuantityRemainder: item.quantity})
+            );
 
         }
         else {
