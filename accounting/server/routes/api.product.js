@@ -34,7 +34,8 @@ router.route('/')
                 salePrice: cmd.salePrice,
                 categoryId: cmd.categoryId,
                 scaleId: cmd.scaleId,
-                referenceId: cmd.referenceId
+                referenceId: cmd.referenceId,
+                barcode: cmd.barcode
             };
 
         await(productRepository.create(entity));
@@ -73,7 +74,8 @@ router.route('/batch')
                 salePrice: item.salePrice,
                 categoryId: item.categoryId,
                 scaleId: item.scaleId,
-                referenceId: item.referenceId
+                referenceId: item.referenceId,
+                barcode: item.barcode
             }))
             .toArray();
 
@@ -131,7 +133,8 @@ router.route('/:id')
                 salePrice: cmd.salePrice,
                 categoryId: cmd.categoryId,
                 scaleId: cmd.scaleId,
-                referenceId: cmd.referenceId
+                referenceId: cmd.referenceId,
+                barcode: cmd.barcode
             };
 
         entity = await(productRepository.update(req.params.id, entity));

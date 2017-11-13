@@ -447,5 +447,8 @@
   "Product turnover detail":"گزارش جزئیات گردش کالا/ خدمات",
   "Product turnover total":"گزارش کل گردش کالا/ خدمات",
   "Select product": "لطفا کالا/ خدمات(های) موردنظر را انتخاب نمایید.",
-  "All inventory": "همه انبار ها"
+  "All inventory": "همه انبار ها",
+  "IranCode": "ایران کد(کدکالا)",
+  "barcode":"بارکد",
+  "Display for seasonal report":"نمایش در گزارش فصلی"
 }

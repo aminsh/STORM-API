@@ -34,7 +34,24 @@
                         <span class="help-block small text text-success">{{'For communication with other systems'| translate}}</span>
                     </div>
 
-                    <div class="form-group col-md-8">
+                    <div class="form-group col-md-4">
+                        <label class="label-control">{{'IranCode' | translate}}</label>
+                        <dev-tag-text-box
+                                name="iranCode"
+                                ng-model="model.product.code"></dev-tag-text-box>
+                        <span class="help-block small text text-success">{{'Display for seasonal report'| translate}}</span>
+                    </div>
+
+                    <div class="form-group col-md-4">
+                        <label class="label-control">{{'barcode' | translate}}</label>
+                        <dev-tag-text-box
+                                name="barcode"
+                                ng-model="model.product.barcode"></dev-tag-text-box>
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-12">
                         <label class="label-control">{{'Title' | translate}}</label>
                         <dev-tag-text-box
                                 class="form-control"
