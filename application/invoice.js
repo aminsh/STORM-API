@@ -163,14 +163,6 @@ class InvoiceService {
     setJournal(id, journalId) {
         return this.invoiceRepository.update(id, {journalId});
     }
-
-    getPrintUrl(id) {
-        return `${config.url.origin}/print/?token=${Crypto.sign({
-            branchId: this.branchId,
-            id: id,
-            reportId: 700
-        })}`;
-    }
 }
 
 module.exports = InvoiceService;

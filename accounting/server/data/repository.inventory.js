@@ -7,13 +7,6 @@ let async = require('asyncawait/async'),
 class InventoryRepository extends BaseRepository {
     constructor(branchId) {
         super(branchId);
-        this.findById = async(this.findById);
-        this.create = async(this.create);
-        this.createInventory = async(this.createInventory);
-        this.createInventoryLines = async(this.createInventoryLines);
-        this.updateInventory = async(this.updateInventory);
-        this.updateInventoryLines = async(this.updateInventoryLines);
-        this.findFirst = async(this.findFirst);
     }
 
     findById(id) {
@@ -97,28 +90,28 @@ class InventoryRepository extends BaseRepository {
         if(!ioType)
             throw new Error('ioType is undefined');
 
-        return this.knex.table('inventories')
+        return await(this.knex.table('inventories')
             .modify(this.modify, this.branchId)
             .where('inventoryType', 'input')
             .andWhere('fiscalPeriodId', fiscalPeriodId)
             .andWhere('stockId', stockId)
             .andWhere('ioType', ioType)
             .max('number')
-            .first();
+            .first());
     }
 
     outputMaxNumber(fiscalPeriodId, stockId, ioType) {
         if(!ioType)
             throw new Error('ioType is undefined');
 
-        return this.knex.table('inventories')
+        return await( this.knex.table('inventories')
             .modify(this.modify, this.branchId)
             .where('inventoryType', 'output')
             .andWhere('fiscalPeriodId', fiscalPeriodId)
             .andWhere('stockId', stockId)
             .andWhere('ioType', ioType)
             .max('number')
-            .first();
+            .first());
     }
 
     getAllInputBeforeDate(fiscalPeriodId, productId, date) {
