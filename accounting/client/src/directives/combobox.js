@@ -232,7 +232,7 @@ function combo($parse, apiPromise, promise) {
                                 });
                         });
 
-                    if (!mapper)
+                    if (mapper)
                         return promise.create(resolve => {
                             apiPromise.get(attrs.url, parameters)
                                 .then(result => {
