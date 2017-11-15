@@ -23,6 +23,18 @@
 
     <dev-tag-content-body>
         <div class="form-group col-md-3">
+            <label class="label-control">توضیحات پیش فرض</label>
+            <textarea class="form-control"
+                      rows="10"
+                      style="width: 700px;"
+                      ng-model="model.settings.invoiceDescription"></textarea>
+
+            </div>
+        </div>
+    </dev-tag-content-body>
+
+    <dev-tag-content-body>
+        <div class="form-group col-md-3">
             <label class="label-control">نرخ ارزش افزوده</label>
             <dev-tag-numeric
                     required
