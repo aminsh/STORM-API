@@ -10,17 +10,17 @@ class DetailAccountRepository extends BaseRepository {
     }
 
     findById(id) {
-        return this.knex.table('detailAccounts')
+        return await(this.knex.table('detailAccounts')
             .modify(this.modify, this.branchId)
             .where('id', id)
-            .first();
+            .first());
     }
 
-    findByReferenceId(referenceId){
-        return this.knex.table('detailAccounts')
+    findByReferenceId(referenceId) {
+        return await(this.knex.table('detailAccounts')
             .modify(this.modify, this.branchId)
-            .orWhere('referenceId', referenceId)
-            .first();
+            .where('referenceId', referenceId)
+            .first());
     }
 
     findByCode(code, notEqualId) {
@@ -31,7 +31,7 @@ class DetailAccountRepository extends BaseRepository {
         if (notEqualId)
             query.andWhere('id', '!=', notEqualId);
 
-        return query.first();
+        return await(query.first());
     }
 
     findBankAccountNumber(bankAccountNumber) {
@@ -58,17 +58,10 @@ class DetailAccountRepository extends BaseRepository {
         return query.first();
     }
 
-    findByReferenceId(referenceId) {
-        return this.knex.table('detailAccounts')
-            .modify(this.modify, this.branchId)
-            .where('referenceId', referenceId)
-            .first();
-    }
-
     create(entity) {
         super.create(entity);
 
-        return this.knex('detailAccounts').insert(entity);
+        await(this.knex('detailAccounts').insert(entity));
     }
 
     update(entity) {

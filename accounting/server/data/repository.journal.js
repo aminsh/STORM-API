@@ -10,8 +10,6 @@ let async = require('asyncawait/async'),
 class JournalRepository extends BaseRepository {
     constructor(branchId) {
         super(branchId);
-        this.create = async(this.create);
-        this.checkIsComplete = async(this.checkIsComplete);
     }
 
     findByNumberExpectId(notEqualId, number, periodId) {
@@ -45,11 +43,11 @@ class JournalRepository extends BaseRepository {
     }
 
     maxTemporaryNumber(periodId) {
-        return this.knex.table('journals')
+        return await(this.knex.table('journals')
             .modify(this.modify, this.branchId)
             .where('periodId', periodId)
             .max('temporaryNumber')
-            .first();
+            .first());
     }
 
     create(entity) {
@@ -146,89 +144,78 @@ class JournalRepository extends BaseRepository {
     batchCreate(journalLines, journal) {
         super.create(journal);
 
-        let knex = this.knex,
-            baseCreate = super.create,
-            branchId = this.branchId,
-            journalLineRepository = new JournalLineRepository(this.branchId);
+        const trx = await(this.transaction),
+            knex = this.knex;
 
-        return new Promise((resolve, reject) => {
-            knex.transaction(async(function (trans) {
-                try {
-                    await(knex('journals')
-                        .transacting(trans)
-                        .insert(journal));
+        try {
 
-                    journalLines.forEach(line => {
-                        line.branchId = branchId;
-                        if (!line.id) line.id = Guid.new();
-                        line.journalId = journal.id;
-                    });
-                    await(knex('journalLines')
-                        .transacting(trans)
-                        .insert(journalLines));
+            await(knex('journals').transacting(trx).insert(journal));
 
-                    //trans.commit();
-                    resolve(journal.id);
-                }
-                catch (e) {
-                    //trans.rollback();
-                    reject(e);
-                }
+            journalLines.forEach(line => {
+                super.create(line);
+                line.journalId = journal.id;
+            });
 
-            }));
-        });
+            await(knex('journalLines').transacting(trx).insert(journalLines));
+
+            trx.commit();
+
+            return journal.id;
+        }
+        catch (e) {
+
+            trx.rollback();
+
+            throw new Error(e);
+        }
     }
 
     batchUpdate(createJournalLines, updateJournalLine, deleteJournalLine, journal) {
-        let knex = this.knex,
-            branchId = this.branchId;
+        const knex = this.knex,
+            trx = await(this.transaction);
 
-        return new Promise((resolve, reject) => {
-            knex.transaction(async(function (trx) {
-                try {
-                    await(knex('journals')
-                        .transacting(trx)
-                        .where('id', journal.id)
-                        .update(journal));
+        try {
+            await(knex('journals')
+                .transacting(trx)
+                .where('id', journal.id)
+                .update(journal));
 
-                    if (createJournalLines.length != 0) {
-                        createJournalLines.forEach(jl => {
-                            jl.branchId = branchId;
-                            jl.id = Guid.new();
-                            jl.journalId = journal.id
-                        });
+            if (createJournalLines.length !== 0) {
+                createJournalLines.forEach(line => {
+                    super.create(line);
+                    line.journalId = journal.id;
+                });
+
+                await(knex('journalLines')
+                    .transacting(trx)
+                    .insert(createJournalLines));
+            }
+
+            if (updateJournalLine.length !== 0) {
+                updateJournalLine.forEach(
+                    journalLine => {
                         await(knex('journalLines')
                             .transacting(trx)
-                            .insert(createJournalLines));
+                            .where('id', journalLine.id)
+                            .update(journalLine))
                     }
+                );
+            }
 
-                    if (updateJournalLine.length != 0) {
-                        updateJournalLine.forEach(
-                            journalLine => {
-                                await(knex('journalLines')
-                                    .transacting(trx)
-                                    .where('id', journalLine.id)
-                                    .update(journalLine))
-                            }
-                        );
-                    }
+            if (deleteJournalLine.length !== 0) {
+                await(knex('journalLines')
+                    .transacting(trx)
+                    .whereIn('id', deleteJournalLine)
+                    .del());
+            }
 
-                    if (deleteJournalLine.length != 0) {
-                        await(knex('journalLines')
-                            .transacting(trx)
-                            .whereIn('id', deleteJournalLine)
-                            .del());
-                    }
+            trx.commit();
+        }
+        catch (e) {
+            trx.rollback();
 
-                    // trx.commit();
-                    resolve();
-                }
-                catch (e) {
-                    //trx.rollback();
-                    reject(e);
-                }
-            }))
-        });
+            throw new Error(e);
+        }
     }
 
     isExistsDetailAccount(detailAccountId) {

@@ -21,7 +21,8 @@ class SettingQuery extends BaseQuery {
             'stakeholders',
             'subsidiaryLedgerAccounts',
             'saleCosts',
-            'webhooks')
+            'webhooks',
+            'invoiceDescription')
             .from('settings')
             .where('branchId', this.branchId)
             .first();
