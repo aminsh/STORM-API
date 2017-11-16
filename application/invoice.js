@@ -12,6 +12,7 @@ const async = require('asyncawait/async'),
     InvoiceRepository = require('./data').InvoiceRepository,
     InvoiceQuery = require('../queries').InvoiceQuery,
     SettingRepository = require('./data').SettingsRepository,
+    PaymentRepository = require('./data').PaymentRepository,
     DetailAccount = require('./detailAccount'),
     Product = require('./product');
 
@@ -128,6 +129,15 @@ class InvoiceService {
         this.invoiceRepository.updateBatch(id, entity);
     }
 
+    remove(id) {
+        const invoice = this.invoiceRepository.findById(id);
+
+        if (invoice.invoiceStatus !== 'draft')
+            throw new ValidationException(['فاکتور جاری قابل حذف نمیباشد']);
+
+        this.invoiceRepository.remove(id);
+    }
+
     createReturnSale(cmd) {
 
         let entity = {
@@ -162,6 +172,18 @@ class InvoiceService {
 
     setJournal(id, journalId) {
         return this.invoiceRepository.update(id, {journalId});
+    }
+
+    changeStatusIfPaidIsCompleted(id) {
+
+        let invoice = await(this.invoiceRepository.findById(id)),
+            sumPayments = new PaymentRepository(this.branchId).getBySumAmountByInvoiceId(invoiceId).sum || 0,
+
+            totalPrice = invoice.invoiceLines.asEnumerable()
+                .sum(e => (e.unitPrice * e.quantity) - e.discount + e.vat);
+
+        if (sumPayments >= totalPrice)
+            this.invoiceRepository.update(invoiceId, {invoiceStatus: 'paid'});
     }
 }
 

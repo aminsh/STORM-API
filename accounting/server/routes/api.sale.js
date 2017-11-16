@@ -5,6 +5,7 @@ const async = require('asyncawait/async'),
     InvoiceService = ApplicationService.InvoiceService,
     OutputService = ApplicationService.InventoryOutputService,
     JournalService = ApplicationService.JournalService,
+    PaymentService = ApplicationService.PaymentService,
     FiscalPeriodRepository = require('../data/repository.fiscalPeriod'),
     router = require('express').Router(),
     String = require('../utilities/string'),
@@ -344,56 +345,96 @@ router.route('/:id')
 
     }))
     .delete(async((req, res) => {
-        let invoiceRepository = new InvoiceRepository(req.branchId),
-            invoice = await(invoiceRepository.findById(req.params.id)),
-            errors = [];
+        let id = req.params.id,
+            serviceId = 1;
 
-        if (invoice.invoiceStatus != 'draft')
-            errors.push('فاکتور جاری تایید شده - نمیتوانید آنرا حذف کنید');
+            try {
+                serviceId = Guid.new();
 
-        if (errors.length != 0)
-            return res.json({isValid: false, errors});
+                EventEmitter.emit('onServiceStarted', serviceId, {command: {id}, state: req, service: 'invoiceRemove'});
 
-        await(invoiceRepository.remove(req.params.id));
+                new InvoiceService(req.branchId).remove(id);
 
-        res.json({isValid: true});
+                EventEmitter.emit('onServiceSucceed', serviceId);
+
+                res.json({isValid: true});
+            }
+            catch (e){
+
+                EventEmitter.emit('onServiceFailed', serviceId, e);
+
+                const errors = e instanceof ValidationException
+                    ? e.errors
+                    : ['internal errors'];
+
+                res['_headerSent'] === false && res.json({isValid: false, errors});
+
+                console.log(e);
+            }
     }));
 
 router.route('/:id/pay')
     .post(async((req, res) => {
 
-        let payments = req.body,
+        let cmd = req.body,
             id = req.params.id,
+            serviceId = 1,
+            paymentService = new PaymentService(req.branchId);
 
-            paymentRepository = new PaymentRepository(req.branchId);
+        try {
+            serviceId = Guid.new();
 
-        payments.forEach(e => {
+            EventEmitter.emit('onServiceStarted', serviceId, {command: cmd, state: req, service: 'paymentCreate'});
 
-            let entity = {
-                number: e.number,
-                date: e.date,
-                invoiceId: id,
-                amount: e.amount,
-                paymentType: e.paymentType,
-                bankName: e.bankName,
-                bankBranch: e.bankBranch,
-                receiveOrPay: 'receive',
-                chequeStatus: e.paymentType == 'cheque' ? 'normal' : null
-            };
+            const payments = paymentService.create(cmd, 'receive');
 
-            await(paymentRepository.create(entity));
+            EventEmitter.emit('onServiceSucceed', serviceId, payments);
 
-            e.id = entity.id;
-        });
+            res.json({isValid: true});
 
-        res.json({isValid: true});
+            serviceId = Guid.new();
 
-        EventEmitter.emit('on-receive-created',
-            payments,
-            id,
-            {branchId: req.branchId, fiscalPeriodId: req.fiscalPeriodId});
+            EventEmitter.emit('onServiceStarted', serviceId, {command: {payments, invoiceId: id}, state: req, service: 'setInvoiceForPayment'});
 
-        EventEmitter.emit('on-invoice-paid', req.params.id, req.branchId);
+            paymentService.setInvoiceForAll(payments, id);
+
+            EventEmitter.emit('onServiceSucceed', serviceId);
+
+            serviceId = Guid.new();
+
+            EventEmitter.emit('onServiceStarted', serviceId, {command: {payments, invoiceId: id}, state: req, service: 'journalGeneratePaymentForInvoice'});
+
+            const paymentWithJournalIds = new JournalService(req.branchId).generatePaymentForInvoice(payments, id);
+
+            EventEmitter.emit('onServiceSucceed', serviceId, paymentWithJournalIds);
+
+            serviceId = Guid.new();
+
+            EventEmitter.emit('onServiceStarted', serviceId, {command: {paymentWithJournalIds}, state: req, service: 'paymentSetJournalLine'});
+
+            paymentService.setJournalLineForAll(paymentWithJournalIds);
+
+            EventEmitter.emit('onServiceSucceed', serviceId);
+
+            serviceId = Guid.new();
+
+            EventEmitter.emit('onServiceStarted', serviceId, {command: {paymentWithJournalIds}, state: req, service: 'invoiceChangeStatusIfPaidIsCompleted'});
+
+            new InvoiceService(req.branchId).changeStatusIfPaidIsCompleted(id);
+
+            EventEmitter.emit('onServiceSucceed', serviceId);
+        }
+        catch (e){
+            EventEmitter.emit('onServiceFailed', serviceId, e);
+
+            const errors = e instanceof ValidationException
+                ? e.errors
+                : ['internal errors'];
+
+            res['_headerSent'] === false && res.json({isValid: false, errors});
+
+            console.log(e);
+        }
     }));
 
 router.route('/:id/payments').get(async((req, res) => {
