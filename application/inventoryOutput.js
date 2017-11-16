@@ -3,6 +3,7 @@
 const async = require('asyncawait/async'),
     await = require('asyncawait/await'),
     PersianDate = instanceOf('utility').PersianDate,
+    String = instanceOf('utility').String,
     Enums = instanceOf('Enums'),
     InventoryRepository = require('./data').InventoryeRepository,
     InvoiceRepository = require('./data').InvoiceRepository,
@@ -28,6 +29,17 @@ class OutputService {
 
         if (settings.productOutputCreationMethod === 'defaultStock')
             cmd.invoiceLines.forEach(item => item.stockId = settings.stockId);
+        else {
+
+            let errors = cmd.invoiceLines.asEnumerable()
+                .where(item => productService.shouldTrackInventory(item.productId))
+                .where(item => String.isNullOrEmpty(item.stockId))
+                .select(item => `برای کالای ${productService.findByIdOrCreate({id: item.productId}).title} انبار انتخاب نشده`)
+                .toArray();
+
+            if (errors.length > 0)
+                throw new ValidationException(errors);
+        }
 
         let errors = cmd.invoiceLines.asEnumerable()
             .select(item => ({

@@ -113,6 +113,8 @@ class InvoiceRepository extends BaseRepository {
         }
         catch (e) {
             trx.rollback();
+
+            throw new Error(e);
         }
     }
 
@@ -148,7 +150,7 @@ class InvoiceRepository extends BaseRepository {
     }
 
     remove(id) {
-        return this.knex('invoices').where('id', id).del();
+        return await(this.knex('invoices').where('id', id).del());
     }
 
     createInvoice(entity, trx) {

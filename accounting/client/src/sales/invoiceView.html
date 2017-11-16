@@ -43,7 +43,7 @@
 
     <div class="row">
         <h4>{{'Invoice title'|translate}} :</h4>
-        {{model.invoice.description}}
+        {{model.invoice.title}}
     </div>
     <div class="table-responsive m-t">
         <table class="table invoice-table">
@@ -73,13 +73,18 @@
     </div>
     <!-- /table-responsive -->
     <div class="row">
+
         <div class="col-md-8">
-            <div class="col-md-8" ng-if="model.payments.length > 0">
-                <h5>
+            <div class="row">
+                <h4>{{'Description'|translate}} :</h4>
+                <div style="text-align: justify">{{model.invoice.description}}</div>
+            </div>
+            <div class="row" ng-if="model.payments.length > 0" style="margin-top: 10px">
+                <h4>
                     {{'Payments'|translate}}
                     <span style="margin-right: 5px"
                           ng-if="model.invoice.status == 'paid'">(کل مبلغ این فاکتور پرداخت شده)</span>
-                </h5>
+                </h4>
                 <ul class="list-group clear-list m-t">
                     <li class="list-group-item" ng-repeat="payment in model.payments">
                         <div class="row">

@@ -23,7 +23,7 @@ export default class paymentController {
         this.payment = [];
         this.fundApi = fundApi;
         this.bankApi = bankApi;
-        this.amount = $scope.amount;
+        this.amount = $scope.amount || 0;
         this.receiveOrPay = $scope.receiveOrPay;
 
         this.label = this.receiveOrPay === 'pay' ? this.payLabel : this.receiveLabel;

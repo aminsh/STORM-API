@@ -20,7 +20,7 @@
                                                k-placeholder="{{'Select ...'|translate}}"
                                                k-data-value-field="id"
                                                k-data-text-field="display"
-                                               mapper="$=>({id:$.id,display:'{0} - {1} - {2}'.format($.number,$.date,$.customerDisplay)})"
+                                               mapper="$=>({id:$.id,display:'{0} - {1} - {2}'.format($.number || '',$.date,$.customerDisplay)})"
                                                k-on-changed="model.onSaleChanged($item)"
                                                ng-model="model.invoice.detailAccountId"
                                                url="{{model.urls.getAllSales}}"
