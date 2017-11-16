@@ -62,6 +62,7 @@
     "inverse": "^1.0.0",
     "jquery": "^3.2.1",
     "jsdom": "^9.8.3",
+    "jsonformatter": "^0.6.0",
     "jsonwebtoken": "^7.4.1",
     "jszip": "^2.6.0",
     "kavenegar": "^2.0.1",
@@ -164,6 +165,7 @@
   },
   "browser": {
     "adm-dtp": "./node_modules/adm-dtp/dist/ADM-dateTimePicker.js",
+    "jsonformatter": "./node_modules/jsonformatter/dist/json-formatter.js",
     "angular-chart": "./node_modules/angular-chart.js/dist/angular-chart.js",
     "angular-datatables": "./vendors/angular.datatables/angular.datatables.js",
     "jquery-datatables": "./vendors/jquery.dataTables.js",

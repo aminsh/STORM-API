@@ -15,6 +15,7 @@ import "angular-sanitize";
 import "angular-resource";
 import "angular-translate";
 import 'angular-ui-bootstrap';
+import "jsonformatter";
 
 // [START] Storm Lumx Dependencies
 import "moment";
@@ -49,6 +50,7 @@ import AddDocController from "./client/addDoc";
 import EditDocController from "./client/editDoc";
 import PubSub from './client/pubSub';
 import Tabs from "./client/tabs";
+import ApplicationLoggerController from "./client/applicationLogger";
 
 let adminModule = angular.module('admin.module', [
     'ngAnimate',
@@ -57,7 +59,8 @@ let adminModule = angular.module('admin.module', [
     'ui.router',
     'pascalprecht.translate',
     'ui.bootstrap',
-    'lumx'
+    'lumx',
+    'jsonFormatter'
 ]);
 
 
@@ -65,6 +68,8 @@ adminModule
     .run($rootScope => {
         $rootScope.user = {};
     })
+    //.config(JSONFormatterConfigProvider => JSONFormatterConfigProvider.hoverPreviewEnabled = true)
+
     .config(($stateProvider, $urlRouterProvider, $locationProvider) => {
         $locationProvider.html5Mode(true);
         $locationProvider.hashPrefix('!');
@@ -107,6 +112,12 @@ adminModule
                 controller: 'editDocController',
                 controllerAs: 'model',
                 templateUrl: 'partials/templates/editDoc.html'
+            })
+            .state('logger', {
+                url: '/logger',
+                controller: 'applicationLoggerController',
+                controllerAs: 'model',
+                templateUrl: 'partials/templates/applicationLogger.html'
             });
     })
     .service('branchApi', BranchApi)
@@ -154,5 +165,6 @@ adminModule
     .controller('usersController', UsersController)
     .controller('docsController', DocsController)
     .controller('addDocController', AddDocController)
-    .controller('editDocController', EditDocController);
+    .controller('editDocController', EditDocController)
+    .controller('applicationLoggerController', ApplicationLoggerController);
 

@@ -27,6 +27,11 @@ export default class Tabs{
                 label: "Documents",
                 icon: "book-open-page-variant",
                 state: "docs"
+            },
+            {
+                label: "Application logger",
+                icon: "",
+                state: "logger"
             }
         ];
 
