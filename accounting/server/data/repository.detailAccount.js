@@ -34,6 +34,15 @@ class DetailAccountRepository extends BaseRepository {
         return await(query.first());
     }
 
+    findMaxCode(){
+        let result = await(this.knex.table('detailAccounts')
+            .modify(this.modify, this.branchId)
+            .max('code')
+            .first());
+
+        return result.max;
+    }
+
     findBankAccountNumber(bankAccountNumber) {
         let query = this.knex.table('detailAccounts')
             .modify(this.modify, this.branchId)

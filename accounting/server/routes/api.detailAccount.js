@@ -3,9 +3,9 @@
 const async = require('asyncawait/async'),
     await = require('asyncawait/await'),
     router = require('express').Router(),
-    string = require('../utilities/string'),
-    translate = require('../services/translateService'),
-    DetailAccountRepository = require('../data/repository.detailAccount'),
+    EventEmitter = instanceOf('EventEmitter'),
+    Guid = instanceOf('utility').Guid,
+    DetailAccountService = ApplicationService.DetailAccountService,
     DetailAccountQuery = require('../queries/query.detailAccount');
 
 router.route('/')
@@ -15,42 +15,33 @@ router.route('/')
         res.json(result);
     }))
     .post(async((req, res) => {
-        let detailAccountRepository = new DetailAccountRepository(req.branchId),
-            errors = [],
-            cmd = req.body;
+        let cmd = req.body,
+            serviceId;
 
-        if (!string.isNullOrEmpty(cmd.code)) {
-            let gla = await(detailAccountRepository.findByCode(cmd.code));
+        try {
 
-            if (gla)
-                errors.push(translate('The code is duplicated'));
+            serviceId = Guid.new();
+
+            EventEmitter.emit('onServiceStarted', serviceId, {command: cmd, state: req, service: 'createDetailAccount'});
+
+            const id = new DetailAccountService(req.branchId).create(cmd);
+
+            EventEmitter.emit('onServiceSucceed', serviceId, {id});
+
+            res.json({isValid: true, returnValue: {id}});
+
         }
+        catch (e) {
+            EventEmitter.emit('onServiceFailed', serviceId, e);
 
-        if (string.isNullOrEmpty(cmd.title))
-            errors.push(translate('The title is required'));
-        else {
-            if (cmd.title.length < 3)
-                errors.push(translate('The title should have at least 3 character'));
+            const errors = e instanceof ValidationException
+                ? e.errors
+                : ['internal errors'];
+
+            res['_headerSent'] === false && res.json({isValid: false, errors});
+
+            console.log(e);
         }
-
-        if (errors.asEnumerable().any())
-            return res.json({
-                isValid: !errors.asEnumerable().any(),
-                errors: errors
-            });
-
-        let entity = await(detailAccountRepository.create({
-            code: cmd.code,
-            title: cmd.title,
-            detailAccountCategoryIds: cmd.detailAccountCategoryIds
-                ? cmd.detailAccountCategoryIds.join('|')
-                : null
-        }));
-
-        return res.json({
-            isValid: true,
-            returnValue: {id: entity.id}
-        });
     }));
 
 router.route('/:id')
@@ -60,83 +51,63 @@ router.route('/:id')
         res.json(result);
     }))
     .put(async((req, res) => {
-        let detailAccountRepository = new DetailAccountRepository(req.branchId),
-            errors = [],
-            cmd = req.body,
-            id = req.params.id;
+        let cmd = req.body,
+            id = req.params.id,
+            serviceId;
 
-        if (string.isNullOrEmpty(cmd.code))
-            errors.push(translate('The code is required'));
-        else {
-            var gla = await(detailAccountRepository.findByCode(cmd.code, id));
+        try {
 
-            if (gla)
-                errors.push(translate('The code is duplicated'));
+            serviceId = Guid.new();
+
+            EventEmitter.emit('onServiceStarted', serviceId, {command: {cmd, id}, state: req, service: 'updateDetailAccount'});
+
+            new DetailAccountService(req.branchId).update(id, cmd);
+
+            EventEmitter.emit('onServiceSucceed', serviceId);
+
+            res.json({isValid: true});
+
         }
+        catch (e) {
+            EventEmitter.emit('onServiceFailed', serviceId, e);
 
-        if (string.isNullOrEmpty(cmd.title))
-            errors.push(translate('The title is required'));
-        else {
-            if (cmd.title.length < 3)
-                errors.push(translate('The title should have at least 3 character'));
+            const errors = e instanceof ValidationException
+                ? e.errors
+                : ['internal errors'];
+
+            res['_headerSent'] === false && res.json({isValid: false, errors});
+
+            console.log(e);
         }
-
-        if (errors.asEnumerable().any())
-            return res.json({
-                isValid: false,
-                errors: errors
-            });
-
-        let entity = await(detailAccountRepository.findById(id));
-
-        entity.title = cmd.title;
-        entity.code = cmd.code;
-        entity.detailAccountCategoryIds = cmd.detailAccountCategoryIds
-            ? cmd.detailAccountCategoryIds.join('|')
-            : null;
-
-        await(detailAccountRepository.update(entity));
-
-        return res.json({isValid: true});
     }))
     .delete(async((req, res) => {
-        let detailAccountRepository = new DetailAccountRepository(req.branchId),
-            errors = [];
+        let id = req.params.id,
+            serviceId;
 
-        //check for journal line
-        if (errors.asEnumerable().any())
-            return res.json({
-                isValid: !errors.asEnumerable().any(),
-                errors: errors
-            });
+        try {
 
-        await(detailAccountRepository.remove(req.params.id));
+            serviceId = Guid.new();
 
-        return res.json({isValid: true});
+            EventEmitter.emit('onServiceStarted', serviceId, {command: {id}, state: req, service: 'removeDetailAccount'});
+
+            new DetailAccountService(req.branchId).remove(id);
+
+            EventEmitter.emit('onServiceSucceed', serviceId);
+
+            res.json({isValid: true});
+        }
+        catch (e) {
+            EventEmitter.emit('onServiceFailed', serviceId, e);
+
+            const errors = e instanceof ValidationException
+                ? e.errors
+                : ['internal errors'];
+
+            res['_headerSent'] === false && res.json({isValid: false, errors});
+
+            console.log(e);
+        }
     }));
-
-router.route('/:id/activate').put(async((req, res) => {
-    let detailAccountRepository = new DetailAccountRepository(req.branchId),
-        entity = await(detailAccountRepository.findById(req.params.id));
-
-    entity.isActive = true;
-
-    await(detailAccountRepository.update(entity));
-
-    return res.json({isValid: true});
-}));
-
-router.route('/:id/deactivate').put(async((req, res) => {
-    let detailAccountRepository = new DetailAccountRepository(req.branchId),
-        entity = await(detailAccountRepository.findById(req.params.id));
-
-    entity.isActive = false;
-
-    await(detailAccountRepository.update(entity));
-
-    return res.json({isValid: true});
-}));
-
 
 router.route('/by-subsidiary-ledger-account/:subsidiaryLedgerAccountId')
     .get(async((req, res) => {

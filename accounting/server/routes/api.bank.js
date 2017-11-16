@@ -3,10 +3,10 @@
 const async = require('asyncawait/async'),
     await = require('asyncawait/await'),
     router = require('express').Router(),
-    String = require('../utilities/string'),
-    DetailAccountRepository = require('../data/repository.detailAccount'),
-    DetailAccountQuery = require('../queries/query.detailAccount'),
-    JournalRepository = require('../data/repository.journal');
+    EventEmitter = instanceOf('EventEmitter'),
+    Guid = instanceOf('utility').Guid,
+    BankService = ApplicationService.BankService,
+    DetailAccountQuery = require('../queries/query.detailAccount');
 
 router.route('/')
     .get(async((req, res) => {
@@ -15,30 +15,33 @@ router.route('/')
         res.json(result);
     }))
     .post(async((req, res) => {
-        let detailAccountRepository = new DetailAccountRepository(req.branchId),
-            cmd = req.body,
-            errors = [],
-            entity = {
-                code: cmd.code,
-                title: cmd.title,
-                bank: cmd.bank,
-                bankBranch: cmd.bankBranch,
-                bankAccountNumber: cmd.bankAccountNumber,
-                detailAccountType: 'bank'
-            };
+        let cmd = req.body,
+            serviceId;
 
-        if (String.isNullOrEmpty(entity.title))
-            errors.push('عنوان نمیتواند خالی باشد');
+        try {
 
-        if (String.isSmallerThan3Chars(entity.title))
-            errors.push('عنوان نمیتواند کمتر از 3 کاراکتر باشد');
+            serviceId = Guid.new();
 
-        if (errors.length)
-            return res.json({isValid: false, errors});
+            EventEmitter.emit('onServiceStarted', serviceId, {command: cmd, state: req, service: 'createBank'});
 
-        await(detailAccountRepository.create(entity));
+            const bankId = new BankService(req.branchId).create(cmd);
 
-        res.json({isValid: true, returnValue: {id: entity.id}});
+            EventEmitter.emit('onServiceSucceed', serviceId, {bankId});
+
+            res.json({isValid: true, returnValue: {id: bankId}});
+
+        }
+        catch (e) {
+            EventEmitter.emit('onServiceFailed', serviceId, e);
+
+            const errors = e instanceof ValidationException
+                ? e.errors
+                : ['internal errors'];
+
+            res['_headerSent'] === false && res.json({isValid: false, errors});
+
+            console.log(e);
+        }
 
     }));
 
@@ -49,45 +52,62 @@ router.route('/:id')
         res.json(result);
     }))
     .put(async((req, res) => {
-        let detailAccountRepository = new DetailAccountRepository(req.branchId),
-            cmd = req.body,
-            errors = [],
-            entity = await(detailAccountRepository.findById(req.params.id));
+        let cmd = req.body,
+            id = req.params.id,
+            serviceId;
 
-        entity.code = cmd.code;
-        entity.title = cmd.title;
-        entity.bank = cmd.bank;
-        entity.bankBranch = cmd.bankBranch;
-        entity.bankAccountNumber = cmd.bankAccountNumber;
+        try {
 
-        if (String.isNullOrEmpty(entity.title))
-            errors.push('عنوان نمیتواند خالی باشد');
+            serviceId = Guid.new();
 
-        if (String.isSmallerThan3Chars(entity.title))
-            errors.push('عنوان نمیتواند کمتر از 3 کاراکتر باشد');
+            EventEmitter.emit('onServiceStarted', serviceId, {command: {cmd, id}, state: req, service: 'updateBank'});
 
-        if (errors.length)
-            return res.json({isValid: false, errors});
+            new BankService(req.branchId).update(id, cmd);
 
-        await(detailAccountRepository.update(entity));
+            EventEmitter.emit('onServiceSucceed', serviceId);
 
-        res.json({isValid: true});
+            res.json({isValid: true});
+
+        }
+        catch (e) {
+            EventEmitter.emit('onServiceFailed', serviceId, e);
+
+            const errors = e instanceof ValidationException
+                ? e.errors
+                : ['internal errors'];
+
+            res['_headerSent'] === false && res.json({isValid: false, errors});
+
+            console.log(e);
+        }
     }))
     .delete(async((req, res) => {
-        let detailAccountRepository = new DetailAccountRepository(req.branchId),
-            journalRepository = new JournalRepository(req.branchId),
+        let id = req.params.id,
+            serviceId;
 
-            id = req.params.id,
-            errors = [];
+        try {
 
-        if (await(journalRepository.isExistsDetailAccount(id)))
-            errors.push('برای حساب بانکی جاری تراکنش ثبت شده . نمیتوانید حذف کنید');
+            serviceId = Guid.new();
 
-        if (errors.length)
-            return res.json({isValid: false, errors});
+            EventEmitter.emit('onServiceStarted', serviceId, {command: {id}, state: req, service: 'removeBank'});
 
-        await(detailAccountRepository.remove(id));
-        res.json({isValid: true});
+            new BankService(req.branchId).remove(id);
+
+            EventEmitter.emit('onServiceSucceed', serviceId);
+
+            res.json({isValid: true});
+        }
+        catch (e) {
+            EventEmitter.emit('onServiceFailed', serviceId, e);
+
+            const errors = e instanceof ValidationException
+                ? e.errors
+                : ['internal errors'];
+
+            res['_headerSent'] === false && res.json({isValid: false, errors});
+
+            console.log(e);
+        }
     }));
 
 

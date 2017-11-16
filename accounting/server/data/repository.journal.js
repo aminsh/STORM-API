@@ -53,11 +53,9 @@ class JournalRepository extends BaseRepository {
     create(entity) {
         super.create(entity);
 
-        entity.id = await(this.knex('journals')
-            .returning('id')
-            .insert(entity));
+        await(this.knex('journals').insert(entity));
 
-        return entity;
+        return entity.id;
     }
 
     update(entity) {
@@ -152,7 +150,12 @@ class JournalRepository extends BaseRepository {
             await(knex('journals').transacting(trx).insert(journal));
 
             journalLines.forEach(line => {
-                super.create(line);
+
+                if(line.id)
+                    line.branchId = this.branchId;
+                else
+                    super.create(line);
+
                 line.journalId = journal.id;
             });
 
@@ -219,10 +222,10 @@ class JournalRepository extends BaseRepository {
     }
 
     isExistsDetailAccount(detailAccountId) {
-        return this.knex.select('id').from('journalLines')
+        return await(this.knex.select('id').from('journalLines')
             .modify(this.modify, this.branchId)
             .where('detailAccountId', detailAccountId)
-            .first()
+            .first())
     }
 
     orderingTemporaryNumberByTemporaryDate(fiscalPeriodId) {
