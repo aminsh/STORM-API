@@ -2,7 +2,8 @@
 
 const DetailAccountService = require('./detailAccount'),
     String = instanceOf('utility').String,
-    SettingsRepository = require('./data').SettingsRepository;
+    SettingsRepository = require('./data').SettingsRepository,
+    InvoiceRepository = require('./data').InvoiceRepository;
 
 class Bank {
     constructor(branchId) {
@@ -21,11 +22,10 @@ class Bank {
     }
 
     remove(id){
-        let errors = [],
-            settings = new SettingsRepository(this.branchId).get();
+        let errors = [];
 
-        if(settings.bankId === id)
-            errors.push('حساب بانکی جاری در تنظیمات استفاده شده ، امکان حذف وجود ندارد');
+        if(new InvoiceRepository(this.branchId).isExistsCustomer(id))
+            errors.push('شخص جاری در فاکتور ها استفاده شده ، امکان حذف وجود ندارد');
 
         if(errors.length > 0)
             throw new ValidationException(errors);

@@ -10,7 +10,7 @@ class Bank {
     }
 
     create(cmd){
-        cmd.detailAccountType = 'bank   ';
+        cmd.detailAccountType = 'bank';
 
         return this.detailAccountService.create(cmd);
     }
