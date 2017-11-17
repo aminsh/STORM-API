@@ -2,11 +2,10 @@
 
 const async = require('asyncawait/async'),
     await = require('asyncawait/await'),
+    SubsidiaryLedgerAccountService = ApplicationService.SubsidiaryLedgerAccountService,
+    Guid = instanceOf('utility').Guid,
+    EventEmitter = instanceOf('EventEmitter'),
     router = require('express').Router(),
-    string = require('../utilities/string'),
-    translate = require('../services/translateService'),
-    journalRepository = require('../data/repository.journal'),
-    SubsidiaryLedgerAccountRepository = require('../data/repository.subsidiaryLedgerAccount'),
     SubsidiaryLedgerAccountQuery = require('../queries/query.subsidiaryLedgerAccount');
 
 router.route('/').get(async((req, res) => {
@@ -40,46 +39,36 @@ router.route('/general-ledger-account/:parentId')
         res.json(result);
     }))
     .post(async((req, res) => {
-        let subsidiaryLedgerAccountRepository = new SubsidiaryLedgerAccountRepository(req.branchId),
-            errors = [],
-            cmd = req.body,
-            generalLedgerAccountId = req.params.parentId;
+        let cmd = req.body,
+            serviceId;
 
-        if (string.isNullOrEmpty(cmd.title))
-            errors.push(translate('The code is required'));
-        else {
-            if (cmd.title.length < 3)
-                errors.push(translate('The title should have at least 3 character'));
+        cmd.generalLedgerAccountId = req.params.parentId;
+
+        try {
+
+            serviceId = Guid.new();
+
+            EventEmitter.emit('onServiceStarted', serviceId, {command: cmd, state: req, service: 'subsidiaryLedgerAccountCreate'});
+
+            const id = new SubsidiaryLedgerAccountService(req.branchId).create(cmd);
+
+            EventEmitter.emit('onServiceSucceed', serviceId, {id});
+
+            res.json({isValid: true, returnValue: {id}});
+
         }
+        catch (e) {
+            EventEmitter.emit('onServiceFailed', serviceId, e);
 
-        if (!string.isNullOrEmpty(cmd.code)) {
-            var sla = await(subsidiaryLedgerAccountRepository.findByCode(cmd.code, generalLedgerAccountId));
+            const errors = e instanceof ValidationException
+                ? e.errors
+                : ['internal errors'];
 
-            if (sla)
-                errors.push(translate('The code is duplicated'));
+            res['_headerSent'] === false && res.json({isValid: false, errors});
+
+            console.log(e);
         }
-
-        if (errors.asEnumerable().any())
-            return res.json({
-                isValid: false,
-                errors: errors
-            });
-
-        let entity = {
-            generalLedgerAccountId: generalLedgerAccountId,
-            code: cmd.code,
-            title: cmd.title,
-            isBankAccount: cmd.isBankAccount,
-            hasDetailAccount: cmd.hasDetailAccount,
-            hasDimension1: cmd.hasDimension1,
-            hasDimension2: cmd.hasDimension2,
-            hasDimension3: cmd.hasDimension3
-        };
-
-        await(subsidiaryLedgerAccountRepository.create(entity));
-
-        return res.json({isValid: true, returnValue: {id: entity.id}});
-    }))
+    }));
 
 router.route('/:id')
     .get(async((req, res) => {
@@ -88,95 +77,62 @@ router.route('/:id')
         res.json(result);
     }))
     .put(async((req, res) => {
-        let subsidiaryLedgerAccountRepository = new SubsidiaryLedgerAccountRepository(req.branchId),
-            errors = [],
-            cmd = req.body,
+        let cmd = req.body,
             id = req.params.id,
-            account = await(subsidiaryLedgerAccountRepository.findById(id));
+            serviceId;
 
-        if (string.isNullOrEmpty(cmd.title))
-            errors.push(translate('The code is required'));
-        else {
-            if (cmd.title.length < 3)
-                errors.push(translate('The title should have at least 3 character'));
+        try {
+
+            serviceId = Guid.new();
+
+            EventEmitter.emit('onServiceStarted', serviceId, {command: {cmd, id}, state: req, service: 'subsidiaryLedgerAccountUpdate'});
+
+            new SubsidiaryLedgerAccountService(req.branchId).update(id, cmd);
+
+            EventEmitter.emit('onServiceSucceed', serviceId);
+
+            res.json({isValid: true});
+
         }
+        catch (e) {
+            EventEmitter.emit('onServiceFailed', serviceId, e);
 
-        if (!string.isNullOrEmpty(cmd.code)) {
-            var sla = await(subsidiaryLedgerAccountRepository.findByCode(cmd.code, cmd.generalLedgerAccountId, id));
+            const errors = e instanceof ValidationException
+                ? e.errors
+                : ['internal errors'];
 
-            if (sla)
-                errors.push(translate('The code is duplicated'));
+            res['_headerSent'] === false && res.json({isValid: false, errors});
+
+            console.log(e);
         }
-
-        if (errors.asEnumerable().any())
-            return res.json({
-                isValid: false,
-                errors: errors
-            });
-
-        let title = account.isLocked ? account.title : cmd.title,
-            code = account.isLocked ? account.code : cmd.code;
-
-        let entity = {
-            title,
-            code,
-            isBankAccount: cmd.isBankAccount,
-            hasDetailAccount: cmd.hasDetailAccount,
-            hasDimension1: cmd.hasDimension1,
-            hasDimension2: cmd.hasDimension2,
-            hasDimension3: cmd.hasDimension3
-        };
-
-        await(subsidiaryLedgerAccountRepository.update(id, entity));
-
-        return res.json({isValid: true});
     }))
     .delete(async((req, res) => {
-        let subsidiaryLedgerAccountRepository = new SubsidiaryLedgerAccountRepository(req.branchId),
-            errors = [],
-            id = req.params.id,
-            entity = await(subsidiaryLedgerAccountRepository.findById(id)),
-            isUsedOnJournalLines = await(subsidiaryLedgerAccountRepository.isUsedOnJournalLines(id));
+        let id = req.params.id,
+            serviceId;
 
-        if(entity.isLocked)
-            errors.push('این حساب قفل است - امکان حذف وجود ندارد');
+        try {
 
-        if (isUsedOnJournalLines)
-            errors.push(translate('The Subsidiary ledger account is used on journal'));
+            serviceId = Guid.new();
 
-        if (errors.length)
-            return res.json({
-                isValid: false,
-                errors
-            });
+            EventEmitter.emit('onServiceStarted', serviceId, {command: {id}, state: req, service: 'SubsidiaryLedgerAccountRemove'});
 
-        await(subsidiaryLedgerAccountRepository.remove(id));
+            new SubsidiaryLedgerAccountService(req.branchId).remove(id);
 
-        return res.json({isValid: true});
+            EventEmitter.emit('onServiceSucceed', serviceId);
+
+            res.json({isValid: true});
+        }
+        catch (e) {
+            EventEmitter.emit('onServiceFailed', serviceId, e);
+
+            const errors = e instanceof ValidationException
+                ? e.errors
+                : ['internal errors'];
+
+            res['_headerSent'] === false && res.json({isValid: false, errors});
+
+            console.log(e);
+        }
     }));
-
-router.route('/:id/activate').put(async((req, res) => {
-    let subsidiaryLedgerAccountRepository = new SubsidiaryLedgerAccountRepository(req.branchId),
-        errors = [],
-        entity = await(subsidiaryLedgerAccountRepository.findById(req.params.id));
-
-    entity.isActive = true;
-
-    await(subsidiaryLedgerAccountRepository.update(entity));
-
-    return res.json({isValid: true});
-}));
-
-router.route('/:id/deactivate').put(async((req, res) => {
-    let subsidiaryLedgerAccountRepository = new SubsidiaryLedgerAccountRepository(req.branchId),
-        errors = [],
-        entity = await(subsidiaryLedgerAccountRepository.findById(req.params.id));
-
-    entity.isActive = false;
-
-    await(subsidiaryLedgerAccountRepository.update(entity));
-
-    return res.json({isValid: true});
-}));
 
 module.exports = router;

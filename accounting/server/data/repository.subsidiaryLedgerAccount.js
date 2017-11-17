@@ -56,10 +56,10 @@ class SubsidiaryLedgerAccountRepository extends BaseRepository {
     }
 
     isUsedOnJournalLines(id){
-        return this.knex.from('journalLines')
+        return await(this.knex.from('journalLines')
             .modify(this.modify, this.branchId)
             .where('subsidiaryLedgerAccountId', id)
-            .first();
+            .first());
     }
 }
 

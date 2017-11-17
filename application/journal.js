@@ -9,9 +9,7 @@ const async = require('asyncawait/async'),
     InvoiceRepository = require('./data').InvoiceRepository,
     InventoryeRepository = require('./data').InventoryeRepository,
     JournalGenerationTemplateService = require('./journalGenerationTemplate'),
-    SubsidiaryLedgerAccountService = require('./subsidiaryLedgerAccount'),
-
-    paymentJounalLineFactory = require('./paymentJournalLine');
+    SubsidiaryLedgerAccountService = require('./subsidiaryLedgerAccount');
 
 class JournalService {
     constructor(branchId, fiscalPeriodId, user) {
