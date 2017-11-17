@@ -117,6 +117,7 @@ import tab from './directives/tab';
 import fileBrowserButton from './directives/fileBrowserButton';
 import autocomplete from "./directives/autocomplelete";
 import radio from "./directives/radio";
+import combo from "./directives/combobox";
 
 //filter
 import "./filters/amount";
@@ -196,6 +197,7 @@ accModule
     .directive('devTagFileBrowserButton', fileBrowserButton)
     .directive('devAttrAutoComplete', autocomplete)
     .directive('devTagRadio', radio)
+    .directive('devTagCombo', combo)
 
 
     .directive('devTagReportViewer', reportViewer)

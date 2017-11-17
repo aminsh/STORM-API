@@ -16,6 +16,7 @@ import "angular-resource";
 import "angular-translate";
 import 'angular-ui-bootstrap';
 import "jsonformatter";
+import 'angular-ui-select';
 
 // [START] Storm Lumx Dependencies
 import "moment";
@@ -27,6 +28,7 @@ import apiPromise from "../accounting/client/src/services/apiPromise";
 import {body, content, footer, heading} from "../accounting/client/src/directives/content";
 import logger from "../accounting/client/src/services/logger";
 import confirm from "../accounting/client/src/services/confirm";
+import Promise from "../accounting/client/src/services/promise";
 import button from "../accounting/client/src/directives/button";
 import grid from "../accounting/client/src/directives/grid";
 import gridFilter from "../accounting/client/src/directives/grid.filter";
@@ -35,6 +37,7 @@ import dataTable from "../accounting/client/src/directives/dataTable";
 import paging from "../accounting/client/src/directives/paging";
 import ngHtmlCompile from "../accounting/client/src/directives/ngHtmlCompile";
 import radio from "../accounting/client/src/directives/radio";
+import combo from "../accounting/client/src/directives/combobox";
 
 import shell from "./client/directives/shell";
 import DocsTreeDir from "./client/directives/docsTreeDir";
@@ -61,7 +64,8 @@ let adminModule = angular.module('admin.module', [
     'pascalprecht.translate',
     'ui.bootstrap',
     'lumx',
-    'jsonFormatter'
+    'jsonFormatter',
+    'ui.select'
 ]);
 
 
@@ -128,6 +132,7 @@ adminModule
     .factory('apiPromise', apiPromise)
     .factory('logger', logger)
     .factory('confirm', confirm)
+    .service('promise', Promise)
     .factory('translate', () => {
         return key => key;
     })
@@ -146,6 +151,7 @@ adminModule
     .directive('docsTreeDir', DocsTreeDir)
     .directive('editor', Editor)
     .directive('devTagRadio', radio)
+    .directive('devTagComboBox', combo)
 
     .provider('gridFilterCellType', function () {
         let type = {
@@ -169,6 +175,17 @@ adminModule
                                <i  ng-if="item === 'error'" class="fa fa-times-circle fa-lg text-danger"></i>
                             {{item}}
                     </li>`
+            },
+            branch: {
+                template: `<li>
+                                    <dev-tag-combo-box
+                                       k-placeholder="{{'Select' | translate}}"
+                                       k-data-text-field="display"
+                                       k-data-value-field="id"
+                                       url="/api/branches"
+                                       ng-model="filter.value"></dev-tag-combo-box>
+                </li>`,
+                style: {width: '400px'}
             }
         };
 

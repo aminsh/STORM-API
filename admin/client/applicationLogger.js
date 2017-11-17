@@ -17,10 +17,10 @@ class ApplicationLoggerController{
                     `
             },
             {
-                name: 'branchName',
+                name: 'branchId',
                 title: 'Branch',
-                filterable: false,
-                sortable: false
+                type:'branch',
+                template: '<span>{{item.branchName}}</span>'
             },
             {
                 name: 'createdAt',
