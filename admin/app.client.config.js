@@ -34,6 +34,7 @@ import gridSort from "../accounting/client/src/directives/grid.sort";
 import dataTable from "../accounting/client/src/directives/dataTable";
 import paging from "../accounting/client/src/directives/paging";
 import ngHtmlCompile from "../accounting/client/src/directives/ngHtmlCompile";
+import radio from "../accounting/client/src/directives/radio";
 
 import shell from "./client/directives/shell";
 import DocsTreeDir from "./client/directives/docsTreeDir";
@@ -68,7 +69,6 @@ adminModule
     .run($rootScope => {
         $rootScope.user = {};
     })
-    //.config(JSONFormatterConfigProvider => JSONFormatterConfigProvider.hoverPreviewEnabled = true)
 
     .config(($stateProvider, $urlRouterProvider, $locationProvider) => {
         $locationProvider.html5Mode(true);
@@ -145,6 +145,7 @@ adminModule
     .directive('shell', shell)
     .directive('docsTreeDir', DocsTreeDir)
     .directive('editor', Editor)
+    .directive('devTagRadio', radio)
 
     .provider('gridFilterCellType', function () {
         let type = {
@@ -152,6 +153,22 @@ adminModule
                 operator: "contains",
                 template: `<input class="form-control" type="text" ng-model="filter.value"/>`,
                 style: {width: '300px'}
+            },
+            applicationLoggerStatus: {
+                data: ['pending', 'success', 'invalid', 'error'],
+                template: `<li ng-repeat="item in items">
+                    <dev-tag-radio 
+                        style="margin-bottom: 5px"
+                        ng-class="{'checked': item == filter.value}"
+                        ng-model="filter.value" 
+                        k-value="{{item}}"></dev-tag-radio>
+                        
+                               <i  ng-if="item === 'pending'" class="fa fa-history fa-lg text-success"></i>
+                               <i  ng-if="item === 'success'" class="fa fa-check fa-lg text-navy"></i>
+                               <i  ng-if="item === 'invalid'" class="fa fa-exclamation-triangle fa-lg text-warning"></i>
+                               <i  ng-if="item === 'error'" class="fa fa-times-circle fa-lg text-danger"></i>
+                            {{item}}
+                    </li>`
             }
         };
 

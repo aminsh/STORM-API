@@ -17,8 +17,9 @@ router.route('/')
             res.status(404).send();
 
         let query = knex.from(function () {
-                this.select('*')
+                this.select('applicationLogger.*', knex.raw('branches.name as "branchName"'))
                     .from('applicationLogger')
+                    .leftJoin('branches', 'branches.id', 'applicationLogger.branchId')
                     .orderBy('createdAt', 'desc')
                     .as('base');
             }),

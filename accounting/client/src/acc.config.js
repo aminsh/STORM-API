@@ -116,6 +116,7 @@ import {directiveId, matchPasswordValidator} from './settings/matchPasswordValid
 import tab from './directives/tab';
 import fileBrowserButton from './directives/fileBrowserButton';
 import autocomplete from "./directives/autocomplelete";
+import radio from "./directives/radio";
 
 //filter
 import "./filters/amount";
@@ -194,6 +195,7 @@ accModule
     .directive('devTagTab', tab)
     .directive('devTagFileBrowserButton', fileBrowserButton)
     .directive('devAttrAutoComplete', autocomplete)
+    .directive('devTagRadio', radio)
 
 
     .directive('devTagReportViewer', reportViewer)

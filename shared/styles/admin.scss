@@ -1,4 +1,5 @@
 @import "general";
+@import "general.components/ibox";
 
 .so-admin-widget-box{
   display: inline-block;
@@ -1253,3 +1254,4 @@ label.error {
   left: 0 !important;
   right: auto !important;
 }
+
