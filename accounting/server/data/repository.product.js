@@ -17,7 +17,6 @@ class ProductRepository extends BaseRepository {
             .first();
     }
 
-
     /*
     * @return products by id array list
     * @param ids
@@ -29,6 +28,17 @@ class ProductRepository extends BaseRepository {
             .whereIn('id', ids);
     }
 
+    findByCode(code, notEqualId) {
+        let query = this.knex.table('products')
+            .modify(this.modify, this.branchId)
+            .where('code', code);
+
+        if (notEqualId)
+            query.andWhere('id', '!=', notEqualId);
+
+        return await(query.first());
+    }
+
     isGood(id) {
         return await(this.knex.table('products')
             .modify(this.modify, this.branchId)
@@ -37,11 +47,15 @@ class ProductRepository extends BaseRepository {
             .first());
     }
 
-    findByReferenceId(referenceId) {
-        return this.knex.table('products')
+    findByReferenceId(referenceId , notEqualId) {
+        let query = this.knex.table('products')
             .modify(this.modify, this.branchId)
-            .where('referenceId', referenceId)
-            .first();
+            .where('referenceId', referenceId);
+
+        if(notEqualId)
+            query.where('id', '!=', notEqualId);
+
+        return await(query.first());
     }
 
     create(entity) {
@@ -51,7 +65,7 @@ class ProductRepository extends BaseRepository {
         else
             super.create(entity);
 
-        return this.knex('products').insert(entity);
+        return await(this.knex('products').insert(entity));
     }
 
     update(id, entity) {
@@ -61,10 +75,24 @@ class ProductRepository extends BaseRepository {
     }
 
     remove(id) {
-        return this.knex('products')
+        return await(this.knex('products')
             .modify(this.modify, this.branchId)
-            .where('id', id).del();
+            .where('id', id).del());
     }
-};
+
+    isExistsCategory(categoryId){
+        return await(this.knex.select('id')
+            .from('products')
+            .where('categoryId', categoryId)
+            .first())
+    }
+
+    isExistsScale(scaleId){
+        return await(this.knex.select('id')
+            .from('products')
+            .where('scaleId', scaleId)
+            .first())
+    }
+}
 
 module.exports = ProductRepository;

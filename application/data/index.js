@@ -1,7 +1,11 @@
 "use strict";
 
 module.exports.DetailAccountRepository = require('../../accounting/server/data/repository.detailAccount');
+
 module.exports.ProductRepository = require('../../accounting/server/data/repository.product');
+module.exports.ProductCategoryRepository = require('../../accounting/server/data/repository.productCategory');
+module.exports.ScaleRepository = require('../../accounting/server/data/repository.scale');
+
 module.exports.SettingsRepository = require('../../accounting/server/data/repository.setting');
 module.exports.StockRepository = require('../../accounting/server/data/repository.stock');
 

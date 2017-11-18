@@ -250,6 +250,14 @@ class InventoryRepository extends BaseRepository {
             shouldUpdatedLines.forEach(e => await(this.knex('inventoryLines')
                 .transacting(trx).where('id', e.id).update(e)));
     }
-};
+
+    isExistsProduct(productId) {
+        return this.knex('id')
+            .from('inventoryLines')
+            .modify(this.modify, this.branchId)
+            .where('productId', productId)
+            .first();
+    }
+}
 
 module.exports = InventoryRepository;
