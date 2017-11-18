@@ -5,7 +5,8 @@ const async = require('asyncawait/async'),
     BaseQuery = require('./query.base'),
     kendoQueryResolve = require('../services/kendoQueryResolve'),
     view = require('../viewModel.assemblers/view.fiscalPeriod'),
-    translateService = require('../services/translateService');
+    translateService = require('../services/translateService'),
+    PersianDate = instanceOf('utility').PersianDate;
 
 class FiscalPeriodQuery extends BaseQuery {
     constructor(branchId) {
@@ -40,10 +41,13 @@ class FiscalPeriodQuery extends BaseQuery {
     }
 
     getMaxId() {
+
+        let currentDate = PersianDate.current();
         let result = await(this.knex.select('id').from('fiscalPeriods')
             .where('branchId', this.branchId)
             .where('isClosed', false)
-            .orderBy('createdAt', 'desc')
+            .where('minDate','<=',currentDate)
+            .orderBy('minDate', 'desc')
             .first());
 
         return result ? result.id : null;

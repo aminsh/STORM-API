@@ -366,7 +366,7 @@ class Journal {
             invoice = await(this.invoiceRepository.findById(invoiceId));
 
         let description = invoice
-            ? `دریافت بابت فاکتور خرید شماره ${invoice.number}`
+            ? `پرداخت بابت فاکتور خرید شماره ${invoice.number}`
             : 'دریافت وجه',
 
             journal = await(this.getJournal(persianDate.current(), description)),
