@@ -3,9 +3,11 @@
 const async = require('asyncawait/async'),
     await = require('asyncawait/await'),
     router = require('express').Router(),
-    InventoryDomain = require('../domain/inventory'),
-    InventoryQuery = require('../queries/query.inventory'),
-    DomainException = instanceOf('domainException');
+    EventEmitter = instanceOf('EventEmitter'),
+    Guid = instanceOf('utility').Guid,
+    InventoryInputService = ApplicationService.InventoryInputService,
+    InventoryOutputService = ApplicationService.InventoryOutputService,
+    InventoryQuery = require('../queries/query.inventory');
 
 router.route('/inputs')
     .get(async((req, res) => {
@@ -15,43 +17,94 @@ router.route('/inputs')
         return res.json(result);
     }))
     .post(async((req, res) => {
-        let cmd = req.body;
-
-        const inventoryDomain = new InventoryDomain(req.branchId, req.fiscalPeriodId);
-
-        cmd.inventoryType = 'input';
+        let cmd = req.body,
+            serviceId;
 
         try {
-            const id = await(inventoryDomain.create(cmd));
+
+            serviceId = Guid.new();
+
+            EventEmitter.emit('onServiceStarted', serviceId, {command: cmd, state: req, service: 'inventoryInputCreate'});
+
+            const id = new InventoryInputService(req.branchId, req.fiscalPeriodId).create(cmd);
+
+            EventEmitter.emit('onServiceSucceed', serviceId, {id});
+
             res.json({isValid: true, returnValue: {id}});
+
         }
         catch (e) {
-            if (e instanceof DomainException)
-                return res.json({isValid: false, errors: e.errors});
+            EventEmitter.emit('onServiceFailed', serviceId, e);
+
+            const errors = e instanceof ValidationException
+                ? e.errors
+                : ['internal errors'];
+
+            res['_headerSent'] === false && res.json({isValid: false, errors});
 
             console.log(e);
-
-            res.json({isValid: false, errors: ['System error']});
         }
-
     }));
 
 router.route('/inputs/:id')
     .put(async((req, res) => {
 
-        const inventoryDomain = new InventoryDomain(req.branchId, req.fiscalPeriodId);
+        let cmd = req.body,
+            id = req.params.id,
+            serviceId;
 
         try {
-            await(inventoryDomain.update(req.params.id, req.body));
+
+            serviceId = Guid.new();
+
+            EventEmitter.emit('onServiceStarted', serviceId, {command: {cmd, id}, state: req, service: 'inventoryInputUpdate'});
+
+            new InventoryInputService(req.branchId, req.fiscalPeriodId).update(id, cmd);
+
+            EventEmitter.emit('onServiceSucceed', serviceId);
+
             res.json({isValid: true});
+
         }
         catch (e) {
-            if (e instanceof DomainException)
-                return res.json({isValid: false, errors: e.errors});
+            EventEmitter.emit('onServiceFailed', serviceId, e);
+
+            const errors = e instanceof ValidationException
+                ? e.errors
+                : ['internal errors'];
+
+            res['_headerSent'] === false && res.json({isValid: false, errors});
 
             console.log(e);
+        }
+    }))
+    .delete(async((req, res)=> {
+        let id = req.params.id,
+            serviceId;
 
-            res.json({isValid: false, errors: ['System error']});
+        try {
+
+            serviceId = Guid.new();
+
+            EventEmitter.emit('onServiceStarted', serviceId, {command: {id}, state: req, service: 'inventoryInputRemove'});
+
+            new InventoryInputService(req.branchId, req.fiscalPeriodId).remove(id);
+
+            EventEmitter.emit('onServiceSucceed', serviceId);
+
+            res.json({isValid: true});
+
+        }
+        catch (e) {
+            EventEmitter.emit('onServiceFailed', serviceId, e);
+
+            const errors = e instanceof ValidationException
+                ? e.errors
+                : ['internal errors'];
+
+            res['_headerSent'] === false && res.json({isValid: false, errors});
+
+            console.log(e);
         }
     }));
 
@@ -71,23 +124,32 @@ router.route('/outputs')
         return res.json(result);
     }))
     .post(async((req, res) => {
-        let cmd = req.body;
-
-        const inventoryDomain = new InventoryDomain(req.branchId, req.fiscalPeriodId);
-
-        cmd.inventoryType = 'output';
+        let cmd = req.body,
+            serviceId;
 
         try {
-            await(inventoryDomain.create(cmd));
-            res.json({isValid: true});
+
+            serviceId = Guid.new();
+
+            EventEmitter.emit('onServiceStarted', serviceId, {command: cmd, state: req, service: 'inventoryOutputCreate'});
+
+            const id = new InventoryOutputService(req.branchId, req.fiscalPeriodId).create(cmd);
+
+            EventEmitter.emit('onServiceSucceed', serviceId, {id});
+
+            res.json({isValid: true, returnValue: {id}});
+
         }
         catch (e) {
-            if (e instanceof DomainException)
-                return res.json({isValid: false, errors: e.errors});
+            EventEmitter.emit('onServiceFailed', serviceId, e);
+
+            const errors = e instanceof ValidationException
+                ? e.errors
+                : ['internal errors'];
+
+            res['_headerSent'] === false && res.json({isValid: false, errors});
 
             console.log(e);
-
-            res.json({isValid: false, errors: ['System error']});
         }
 
     }));
@@ -95,19 +157,62 @@ router.route('/outputs')
 router.route('/outputs/:id')
     .put(async((req, res) => {
 
-        const inventoryDomain = new InventoryDomain(req.branchId, req.fiscalPeriodId);
+        let cmd = req.body,
+            id = req.params.id,
+            serviceId;
 
         try {
-            await(inventoryDomain.update(req.params.id, req.body));
+
+            serviceId = Guid.new();
+
+            EventEmitter.emit('onServiceStarted', serviceId, {command: {cmd, id}, state: req, service: 'inventoryOutputUpdate'});
+
+            new InventoryOutputService(req.branchId, req.fiscalPeriodId).update(id, cmd);
+
+            EventEmitter.emit('onServiceSucceed', serviceId);
+
             res.json({isValid: true});
+
         }
         catch (e) {
-            if (e instanceof DomainException)
-                return res.json({isValid: false, errors: e.errors});
+            EventEmitter.emit('onServiceFailed', serviceId, e);
+
+            const errors = e instanceof ValidationException
+                ? e.errors
+                : ['internal errors'];
+
+            res['_headerSent'] === false && res.json({isValid: false, errors});
 
             console.log(e);
+        }
+    }))
+    .delete(async((req, res)=> {
+        let id = req.params.id,
+            serviceId;
 
-            res.json({isValid: false, errors: ['System error']});
+        try {
+
+            serviceId = Guid.new();
+
+            EventEmitter.emit('onServiceStarted', serviceId, {command: {id}, state: req, service: 'inventoryOutputRemove'});
+
+            new InventoryInputService(req.branchId, req.fiscalPeriodId).remove(id);
+
+            EventEmitter.emit('onServiceSucceed', serviceId);
+
+            res.json({isValid: true});
+
+        }
+        catch (e) {
+            EventEmitter.emit('onServiceFailed', serviceId, e);
+
+            const errors = e instanceof ValidationException
+                ? e.errors
+                : ['internal errors'];
+
+            res['_headerSent'] === false && res.json({isValid: false, errors});
+
+            console.log(e);
         }
     }));
 
@@ -133,24 +238,6 @@ router.route('/:id/lines')
             result = await(inventoryQuery.getDetailById(req.params.id, req.query));
 
         return res.json(result);
-    }));
-
-router.route('/add-to-first-input')
-    .post(async((req, res) => {
-        let inventoryDomain = new InventoryDomain(req.branchId, req.fiscalPeriodId),
-            cmd = req.body;
-
-        try {
-            await(inventoryDomain.addProductToInputFirst(cmd));
-            return res.json({isValid: true});
-        }
-        catch (e) {
-            if (e instanceof DomainException)
-                return res.json({isValid: false, errors: e.errors});
-
-            return res.json({isValid: false, errors: ['System error']});
-        }
-
     }));
 
 router.route('/by-stock/:productId')

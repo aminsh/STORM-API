@@ -10,6 +10,7 @@ global.ApplicationService = {
     ProductCategoryService: require('./productCategory'),
     ScaleService: require('./scale'),
     InventoryOutputService: require('./inventoryOutput'),
+    InventoryInputService: require('./inventoryInput'),
     JournalService: require('./journal'),
     PaymentService: require('./payment'),
     GeneralLedgerAccountService: require('./generalLedgerAccount'),
