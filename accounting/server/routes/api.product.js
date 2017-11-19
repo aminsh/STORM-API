@@ -121,6 +121,41 @@ router.route('/batch')
 
     }));
 
+router.route('/:id/add-to-input-first')
+    .post(async((req, res) => {
+
+        let id = req.params.id,
+            cmd = req.body,
+            serviceId,
+            productService = new ProductService(req.branchId);
+
+        try {
+
+            serviceId = Guid.new();
+
+            EventEmitter.emit('onServiceStarted', serviceId, {command: cmd, state: req, service: 'productAddToInputFirst'});
+
+            cmd.forEach(item => productService.addToInventoryInputFirst(id, req.fiscalPeriodId, item));
+
+            EventEmitter.emit('onServiceSucceed', serviceId);
+
+            res.json({isValid: true});
+
+        }
+        catch (e) {
+            EventEmitter.emit('onServiceFailed', serviceId, e);
+
+            const errors = e instanceof ValidationException
+                ? e.errors
+                : ['internal errors'];
+
+            res['_headerSent'] === false && res.json({isValid: false, errors});
+
+            console.log(e);
+        }
+
+    }));
+
 router.route('/goods')
     .get(async((req, res) => {
         let productQuery = new ProductQuery(req.branchId),
