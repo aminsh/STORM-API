@@ -103,6 +103,13 @@ class ProductQuery extends BaseQuery {
         return view(result);
     }
 
+    getManyByIds(ids){
+        let products = await(this.knex.select('*').from('products').whereIn('id', ids));
+        return products.asEnumerable()
+            .select(view)
+            .toArray();
+    }
+
     getTotalPriceAndCountByMonth(id, fiscalPeriodId) {
         let branchId = this.branchId,
             knex = this.knex,

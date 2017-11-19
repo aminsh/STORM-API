@@ -7,6 +7,8 @@ global.ApplicationService = {
     BankService: require('./bank'),
     FundService: require('./fund'),
     ProductService: require('./product'),
+    ProductCategoryService: require('./productCategory'),
+    ScaleService: require('./scale'),
     InventoryOutputService: require('./inventoryOutput'),
     JournalService: require('./journal'),
     PaymentService: require('./payment'),

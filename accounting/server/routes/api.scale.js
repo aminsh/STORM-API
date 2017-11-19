@@ -3,7 +3,9 @@
 const async = require('asyncawait/async'),
     await = require('asyncawait/await'),
     router = require('express').Router(),
-    ScaleRepository = require('../data/repository.scale'),
+    ScaleService = ApplicationService.ScaleService,
+    Guid = instanceOf('utility').Guid,
+    EventEmitter = instanceOf('EventEmitter'),
     ScaleQuery = require('../queries/query.scale');
 
 router.route('/')
@@ -13,14 +15,33 @@ router.route('/')
         res.json(result);
     }))
     .post(async((req, res) => {
-        let scaleRepository = new ScaleRepository(req.branchId),
-            entity = {
-                title: req.body.title,
-            };
+        let cmd = req.body,
+            serviceId;
 
-        await(scaleRepository.create(entity));
+        try {
 
-        res.json({isValid: true, returnValue: {id: entity.id}});
+            serviceId = Guid.new();
+
+            EventEmitter.emit('onServiceStarted', serviceId, {command: cmd, state: req, service: 'scaleCreate'});
+
+            const id = new ScaleService(req.branchId).create(cmd);
+
+            EventEmitter.emit('onServiceSucceed', serviceId, {id});
+
+            res.json({isValid: true, returnValue: {id}});
+
+        }
+        catch (e) {
+            EventEmitter.emit('onServiceFailed', serviceId, e);
+
+            const errors = e instanceof ValidationException
+                ? e.errors
+                : ['internal errors'];
+
+            res['_headerSent'] === false && res.json({isValid: false, errors});
+
+            console.log(e);
+        }
 
     }));
 
