@@ -2,12 +2,10 @@
 
 const async = require('asyncawait/async'),
     await = require('asyncawait/await'),
-    translate = require('../services/translateService'),
-    persianDateSerivce = require('../services/persianDateService'),
     router = require('express').Router(),
-    FiscalPeriodRepository = require('../data/repository.fiscalPeriod'),
-    JournalRepository = require('../data/repository.journal'),
-    JournalLineRepository = require('../data/repository.journalLine'),
+    EventEmitter = instanceOf('EventEmitter'),
+    Guid = instanceOf('utility').Guid,
+    JournalService = ApplicationService.JournalService,
     JournalQuery = require('../queries/query.journal');
 
 router.route('/')
@@ -16,7 +14,35 @@ router.route('/')
             result = await(journalQuery.getAll(req.cookies['current-period'], req.query));
         res.json(result);
     }))
-    .post(require('./batch.journal').Insert);
+    .post(async((req, res) => {
+        let cmd = req.body,
+            serviceId;
+
+        try {
+
+            serviceId = Guid.new();
+
+            EventEmitter.emit('onServiceStarted', serviceId, {command: cmd, state: req, service: 'journalCreate'});
+
+            const id = new JournalService(req.branchId, req.fiscalPeriodId).create(cmd);
+
+            EventEmitter.emit('onServiceSucceed', serviceId, {id});
+
+            res.json({isValid: true, returnValue: {id}});
+
+        }
+        catch (e) {
+            EventEmitter.emit('onServiceFailed', serviceId, e);
+
+            const errors = e instanceof ValidationException
+                ? e.errors
+                : ['internal errors'];
+
+            res['_headerSent'] === false && res.json({isValid: false, errors});
+
+            console.log(e);
+        }
+    }));
 
 router.route('/total-info').get((req, res) => {
     let journalQuery = new JournalQuery(req.branchId),
@@ -37,17 +63,97 @@ router.route('/:id')
             result = await(journalQuery.batchFindById(req.params.id));
         res.json(result);
     }))
-    .put(require('./batch.journal').update)
-    .delete(require('./batch.journal').delete);
+    .put(async((req, res) => {
+        let cmd = req.body,
+            id = req.params.id,
+            serviceId;
+
+        try {
+
+            serviceId = Guid.new();
+
+            EventEmitter.emit('onServiceStarted', serviceId, {
+                command: {cmd, id},
+                state: req,
+                service: 'journalUpdate'
+            });
+
+            new JournalService(req.branchId, req.fiscalPeriodId).update(id, cmd);
+
+            EventEmitter.emit('onServiceSucceed', serviceId);
+
+            res.json({isValid: true});
+
+        }
+        catch (e) {
+            EventEmitter.emit('onServiceFailed', serviceId, e);
+
+            const errors = e instanceof ValidationException
+                ? e.errors
+                : ['internal errors'];
+
+            res['_headerSent'] === false && res.json({isValid: false, errors});
+
+            console.log(e);
+        }
+    }))
+    .delete(async((req, res) => {
+        let id = req.params.id,
+            serviceId;
+
+        try {
+
+            serviceId = Guid.new();
+
+            EventEmitter.emit('onServiceStarted', serviceId, {command: {id}, state: req, service: 'journalRemove'});
+
+            new JournalService(req.branchId).remove(id);
+
+            EventEmitter.emit('onServiceSucceed', serviceId);
+
+            res.json({isValid: true});
+        }
+        catch (e) {
+            EventEmitter.emit('onServiceFailed', serviceId, e);
+
+            const errors = e instanceof ValidationException
+                ? e.errors
+                : ['internal errors'];
+
+            res['_headerSent'] === false && res.json({isValid: false, errors});
+
+            console.log(e);
+        }
+    }));
 
 router.route('/:id/confirm')
     .put(async((req, res) => {
-        let journalRepository = new JournalRepository(req.branchId),
-            entity = {id: req.params.id, journalStatus: 'Fixed'};
+        let id = req.params.id,
+            serviceId;
 
-        await(journalRepository.update(entity));
+        try {
 
-        res.json({isValid: true});
+            serviceId = Guid.new();
+
+            EventEmitter.emit('onServiceStarted', serviceId, {command: {id}, state: req, service: 'journalFix'});
+
+            new JournalService(req.branchId).fix(id);
+
+            EventEmitter.emit('onServiceSucceed', serviceId);
+
+            res.json({isValid: true});
+        }
+        catch (e) {
+            EventEmitter.emit('onServiceFailed', serviceId, e);
+
+            const errors = e instanceof ValidationException
+                ? e.errors
+                : ['internal errors'];
+
+            res['_headerSent'] === false && res.json({isValid: false, errors});
+
+            console.log(e);
+        }
     }));
 
 router.route('/by-number/:number').get(async((req, res) => {
@@ -81,97 +187,92 @@ router.route('/period/:periodId').get(async((req, res) => {
 }));
 
 router.route('/:id/bookkeeping').put(async((req, res) => {
-    let journalRepository = new JournalRepository(req.branchId),
-        fiscalPeriodRepository = new FiscalPeriodRepository(req.branchId),
-        errors = [],
-        currentFiscalPeriod = await(fiscalPeriodRepository.findById(req.cookies['current-period'])),
-        journal = await(journalRepository.findById(req.params.id));
+    let id = req.params.id,
+        serviceId;
 
-    if (currentFiscalPeriod.isClosed)
-        errors.push(translate('The current period is closed , You are not allowed to delete Journal'));
+    try {
 
-    if (journal.journalStatus == 'Fixed')
-        errors.push(translate('This journal is already fixed'));
+        serviceId = Guid.new();
 
-    journal.journalStatus = 'BookKeeped';
+        EventEmitter.emit('onServiceStarted', serviceId, {command: {id}, state: req, service: 'journalBookkeeping'});
 
+        new JournalService(req.branchId).bookkeeping(id);
 
-    await(journalRepository.update(entity));
+        EventEmitter.emit('onServiceSucceed', serviceId);
 
-    return res.json({isValid: true});
+        res.json({isValid: true});
+    }
+    catch (e) {
+        EventEmitter.emit('onServiceFailed', serviceId, e);
 
-}));
+        const errors = e instanceof ValidationException
+            ? e.errors
+            : ['internal errors'];
 
-router.route('/:id/fix').put(async((req, res) => {
-    let journalRepository = new JournalRepository(req.branchId),
-        fiscalPeriodRepository = new FiscalPeriodRepository(req.branchId),
-        errors = [],
-        currentFiscalPeriod = await(fiscalPeriodRepository.findById(req.cookies['current-period'])),
-        journal = await(journalRepository.findById(req.params.id));
+        res['_headerSent'] === false && res.json({isValid: false, errors});
 
-    if (currentFiscalPeriod.isClosed)
-        errors.push(translate('The current period is closed , You are not allowed to delete Journal'));
+        console.log(e);
+    }
 
-    if (journal.journalStatus == 'Fixed')
-        errors.push(translate('This journal is already fixed'));
-
-    journal.journalStatus = 'Fixed';
-
-    await(journalRepository.update(journal));
-
-    return res.json({isValid: true});
 }));
 
 router.route('/:id/attach-image').put(async((req, res) => {
-    let journalRepository = new JournalRepository(req.branchId),
-        journal = await(journalRepository.findById(req.params.id));
+    let id = req.params.id,
+        serviceId;
 
-    journal.attachmentFileName = req.body.fileName;
+    try {
 
-    await(journalRepository.update(journal));
+        serviceId = Guid.new();
 
-    return res.json({isValid: true});
+        EventEmitter.emit('onServiceStarted', serviceId, {command: {id}, state: req, service: 'journalAttachImage'});
+
+        new JournalService(req.branchId).attachImage(id, req.body.fileName);
+
+        EventEmitter.emit('onServiceSucceed', serviceId);
+
+        res.json({isValid: true});
+    }
+    catch (e) {
+        EventEmitter.emit('onServiceFailed', serviceId, e);
+
+        const errors = e instanceof ValidationException
+            ? e.errors
+            : ['internal errors'];
+
+        res['_headerSent'] === false && res.json({isValid: false, errors});
+
+        console.log(e);
+    }
 }));
 
 router.route('/:id/copy').post(async((req, res) => {
-    let journalRepository = new JournalRepository(req.branchId),
-        journalLineRepository = new JournalLineRepository(req.branchId);
 
-    const id = req.params.id,
-        periodId = req.fiscalPeriodId,
-        journal = await(journalRepository.findById(id)),
-        journalLines = await(journalLineRepository.findByJournalId(id)),
+    let id = req.params.id,
+        serviceId;
 
-        newJournalLines = journalLines.asEnumerable()
-            .select(line =>
-                ({
-                    generalLedgerAccountId: line.generalLedgerAccountId,
-                    subsidiaryLedgerAccountId: line.subsidiaryLedgerAccountId,
-                    detailAccountId: line.detailAccountId,
-                    dimension1Id: line.dimension1Id,
-                    dimension2Id: line.dimension2Id,
-                    dimension3Id: line.dimension3Id,
-                    article: line.article,
-                    debtor: line.debtor,
-                    creditor: line.creditor
-                }))
-            .toArray(),
+    try {
 
-        newJournal = {
-            periodId: periodId,
-            createdById: req.user.id,
-            journalStatus: 'Temporary',
-            temporaryNumber: (await(journalRepository.maxTemporaryNumber(periodId)).max || 0) + 1,
-            temporaryDate: persianDateSerivce.current(),
-            description: journal.description
-        };
+        serviceId = Guid.new();
 
-    await(journalRepository.batchCreate(newJournalLines, newJournal));
+        EventEmitter.emit('onServiceStarted', serviceId, {command: {id}, state: req, service: 'journalCopy'});
 
-    return res.json({
-        isValid: true,
-        returnValue: {id: newJournal.id}
-    });
+        const id = new JournalService(req.branchId).clone(id);
+
+        EventEmitter.emit('onServiceSucceed', serviceId, {id});
+
+        res.json({isValid: true, returnValue: {id}});
+    }
+    catch (e) {
+        EventEmitter.emit('onServiceFailed', serviceId, e);
+
+        const errors = e instanceof ValidationException
+            ? e.errors
+            : ['internal errors'];
+
+        res['_headerSent'] === false && res.json({isValid: false, errors});
+
+        console.log(e);
+    }
 }));
 
 router.route('/:detailAccountId/payable-transactions/not-have-cheque')

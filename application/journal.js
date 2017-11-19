@@ -3,16 +3,24 @@
 const async = require('asyncawait/async'),
     await = require('asyncawait/await'),
     PersianDate = instanceOf('utility').PersianDate,
+    String = instanceOf('utility').String,
     Guid = instanceOf('utility').Guid,
     JournalRepository = require('./data').JournalRepository,
     SubsidiaryLedgerAccountRepository = require('./data').SubsidiaryLedgerAccountRepository,
+    DetailAccountRepository = require('./data').DetailAccountRepository,
+    FiscalPeriodRepository = require('./data').FiscalPeriodRepository,
     InvoiceRepository = require('./data').InvoiceRepository,
     InventoryRepository = require('./data').InventoryRepository,
     JournalGenerationTemplateService = require('./journalGenerationTemplate'),
     SubsidiaryLedgerAccountService = require('./subsidiaryLedgerAccount');
 
 class JournalService {
+
     constructor(branchId, fiscalPeriodId, user) {
+
+        if (!user)
+            throw new Error('user is empty');
+
         this.branchId = branchId;
         this.fiscalPeriodId = fiscalPeriodId;
         this.user = user;
@@ -23,21 +31,106 @@ class JournalService {
         this.subsidiaryLedgerAccountService = new SubsidiaryLedgerAccountService(branchId);
     }
 
+    _validate(cmd) {
+        let errors = [];
+
+        const remainder = cmd.journalLines.asEnumerable().sum(item => item.debtor - item.creditor);
+        if (remainder !== 0)
+            errors.push('جمع بدهکار و بستانکار سند برابر نیست');
+
+        errors = cmd.journalLines.asEnumerable()
+            .selectMany(this._validateLine.bind(this))
+            .concat(errors)
+            .toArray();
+
+        return errors;
+
+    }
+
+    _validateLine(line) {
+
+        let errors = [],
+            subsidiaryLedgerAccountRepository = new SubsidiaryLedgerAccountRepository(this.branchId),
+            detailAccountRepository = new DetailAccountRepository(this.branchId);
+
+        if (String.isNullOrEmpty(line.article))
+            errors.push('شرح آرتیکل مقدار ندارد');
+        else if (line.article.length < 3)
+            errors.push('شرح آرتیکل باید حداقل ۳ کاراکتر باشد');
+
+        let subsidiaryLedgerAccount = String.isNullOrEmpty(line.subsidiaryLedgerAccountId)
+            ? null
+            : subsidiaryLedgerAccountRepository.findById(line.subsidiaryLedgerAccountId);
+
+        if (!subsidiaryLedgerAccount)
+            errors.push('حساب معین مقدار ندارد یا صحیح نیست');
+        else {
+
+            let detailAccount = String.isNullOrEmpty(line.detailAccountId)
+                ? null
+                : detailAccountRepository.findById(line.detailAccountId);
+
+            if (!detailAccount)
+                errors.push('تفصیل مقدار ندارد یا صحیح نیست');
+        }
+
+        let debtor = parseFloat(line.debtor),
+            creditor = parseFloat(line.creditor);
+
+        if (isNaN(debtor) || isNaN(creditor)) {
+            if (isNaN(debtor)) errors.push('مقدار بدهکار صحیح نیست');
+            if (isNaN(creditor)) errors.push('مقدار بستانکار صحیح نیست');
+        }
+        else {
+            if (debtor > 0 && creditor > 0)
+                errors.push('بدهکار و بستانکار نمیتواند هر دو دارای مقدار باشد')
+        }
+    }
+
+    _generateForOutputSale(outputId) {
+
+        const output = new InventoryRepository(this.branchId).findById(outputId),
+
+            model = {
+                number: output.number,
+                date: output.date,
+                amount: output.inventoryLines.asEnumerable().sum(line => line.unitPrice * line.quantity)
+            },
+
+            journal = await(this.journalGenerationTemplateService.generate(model, 'inventoryOutputSale'));
+
+        return this.create(journal);
+    }
 
     create(cmd) {
-        let maxNumber = this.journalRepository.maxTemporaryNumber(this.fiscalPeriodId).max || 0;
+
+        let errors = this._validate(cmd);
+
+        if (errors.length > 0)
+            throw new ValidationException(errors);
+
+        let maxNumber = this.journalRepository.maxTemporaryNumber(this.fiscalPeriodId).max || 0,
+            currentFiscalPeriod = new FiscalPeriodRepository(this.branchId).findById(this.fiscalPeriodId),
+            trueDate =
+                cmd.temporaryDate &&
+                cmd.temporaryDate >= currentFiscalPeriod.minDate &&
+                cmd.temporaryDate <= currentFiscalPeriod.maxDate
+                    ? cmd.temporaryDate
+                    : PersianDate.current();
 
         let journal = {
                 periodId: this.fiscalPeriodId,
-                journalStatus: 'Fixed',
+                journalStatus: 'Temporary',
                 temporaryNumber: ++maxNumber,
-                temporaryDate: PersianDate.current(),
+                temporaryDate: trueDate,
                 isInComplete: false,
                 createdById: this.user.id,
-                description: cmd.description
+                description: cmd.description,
+                attachmentFileName: cmd.attachmentFileName,
+                tagId: cmd.tagId
             },
             journalLines = cmd.journalLines.asEnumerable()
-                .select(async.result(item => {
+                .select(item => {
 
                     const subsidiaryLedgerAccount = new SubsidiaryLedgerAccountRepository(this.branchId)
                         .findById(item.subsidiaryLedgerAccountId);
@@ -51,14 +144,103 @@ class JournalService {
                         debtor: item.debtor,
                         creditor: item.creditor
                     }
-                }))
+                })
                 .toArray();
 
         return this.journalRepository.batchCreate(journalLines, journal);
     }
 
-    createJournalLine(cmd){
+    update(id, cmd) {
+        cmd.id = id;
 
+        let errors = this._validate(cmd);
+
+        if (errors.length > 0)
+            throw new ValidationException(errors);
+
+        let currentFiscalPeriod = new FiscalPeriodRepository(this.branchId).findById(this.fiscalPeriodId),
+            trueDate =
+                cmd.temporaryDate &&
+                cmd.temporaryDate >= currentFiscalPeriod.minDate &&
+                cmd.temporaryDate <= currentFiscalPeriod.maxDate
+                    ? cmd.temporaryDate
+                    : PersianDate.current();
+
+        let journal = {
+            temporaryDate: trueDate,
+            isInComplete: false,
+            description: cmd.description,
+            attachmentFileName: cmd.attachmentFileName,
+            tagId: cmd.tagId,
+            journalLines: cmd.journalLines.asEnumerable()
+                .select(item => {
+
+                    const subsidiaryLedgerAccount = new SubsidiaryLedgerAccountRepository(this.branchId)
+                        .findById(item.subsidiaryLedgerAccountId);
+
+                    return {
+                        id: item.id,
+                        generalLedgerAccountId: subsidiaryLedgerAccount.generalLedgerAccountId,
+                        subsidiaryLedgerAccountId: item.subsidiaryLedgerAccountId,
+                        detailAccountId: item.detailAccountId,
+                        article: item.article,
+                        debtor: item.debtor,
+                        creditor: item.creditor
+                    }
+                })
+                .toArray()
+        };
+
+        return this.journalRepository.batchUpdate(journal);
+    }
+
+    clone(id){
+        let sourceJournal = this.journalRepository.findById(id);
+
+        if(!sourceJournal)
+            throw new ValidationException(['سند وجود ندارد']);
+
+        return this.create(sourceJournal);
+    }
+
+    fix(id){
+        let journal = this.journalRepository.findById(id);
+
+        if(journal.journalStatus === 'Fixed')
+            throw new ValidationException(['سند قبلا قطعی شده']);
+
+        this.journalRepository.update({id: journal.id, journalStatus: 'Fixed'});
+    }
+
+    bookkeeping(id){
+        let journal = this.journalRepository.findById(id);
+
+        if(journal.journalStatus === 'Fixed')
+            throw new ValidationException(['سند قبلا قطعی شده']);
+
+        this.journalRepository.update({id: journal.id, journalStatus: 'BookKeeped'});
+    }
+
+    attachImage(id, attachmentFileName){
+        this.journalRepository.update({id, attachmentFileName});
+    }
+
+    remove(id){
+        let journal = this.journalRepository.findById(id);
+
+        if(journal.journalStatus === 'Fixed')
+            throw new ValidationException(['سند قطعی شده ، امکان حذف وجود ندارد']);
+
+        if(new FiscalPeriodRepository(this.branchId).findById(this.fiscalPeriodId).isClosed)
+            throw new ValidationException(['دوره مالی بسته شده ، امکان حذف وجود ندارد']);
+
+        if(new InvoiceRepository(this.branchId).isExitsJournal(id))
+            throw new ValidationException(['این سند برای فاکتور صادر شده ، امکان حذف وجود ندارد']);
+
+        if(new InventoryRepository(this.branchId).isExitsJournal(id))
+            throw new ValidationException(['این سند برای اسناد انباری صادر شده ، امکان حذف وجود ندارد']);
+
+        this.journalRepository.update({id: journal.id, journalStatus: 'Fixed'});
     }
 
     generateForInvoice(invoiceId) {
@@ -90,28 +272,13 @@ class JournalService {
             .toArray();
     }
 
-    _generateForOutputSale(outputId) {
-
-        const output = new InventoryRepository(this.branchId).findById(outputId),
-
-            model = {
-                number: output.number,
-                date: output.date,
-                amount: output.inventoryLines.asEnumerable().sum(line => line.unitPrice * line.quantity)
-            },
-
-            journal = await(this.journalGenerationTemplateService.generate(model, 'inventoryOutputSale'));
-
-        return this.create(journal);
-    }
-
     generatePaymentForInvoice(payments, invoiceId) {
 
         let invoice,
             subLedger = this.subsidiaryLedgerAccountService;
 
         if (invoiceId)
-            invoice  = await(new InvoiceRepository(this.branchId).findById(invoiceId));
+            invoice = await(new InvoiceRepository(this.branchId).findById(invoiceId));
 
         let description = invoice
             ? `دریافت بابت فاکتور فروش شماره ${invoice.number}`
@@ -152,7 +319,7 @@ class JournalService {
 
         this.create({description, journalLines});
 
-       return payments;
+        return payments;
 
         function getArticle(p) {
             if (p.paymentType == 'cash')
@@ -180,7 +347,7 @@ class JournalService {
             if (p.paymentType === 'cheque')
                 return subLedger.receivableDocument();
 
-            if(p.paymentType === 'person')
+            if (p.paymentType === 'person')
                 return subLedger.receivableAccount();
         }
 
@@ -194,7 +361,7 @@ class JournalService {
             if (p.paymentType == 'cheque')
                 return invoice.detailAccountId;
 
-            if(p.paymentType === 'person')
+            if (p.paymentType === 'person')
                 return p.personId;
         }
     }
@@ -266,7 +433,6 @@ class JournalService {
         return this.create(journal);
     }
 }
-
 
 
 module.exports = JournalService;

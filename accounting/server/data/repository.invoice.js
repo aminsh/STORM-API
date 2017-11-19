@@ -226,6 +226,14 @@ class InvoiceRepository extends BaseRepository {
             .where('detailAccountId', customerId)
             .first());
     }
+
+    isExitsJournal(journalId){
+        return await(this.knex('id')
+            .from('invoices')
+            .modify(this.modify, this.branchId)
+            .where('journalId', journalId)
+            .first());
+    }
 }
 
 module.exports = InvoiceRepository;
