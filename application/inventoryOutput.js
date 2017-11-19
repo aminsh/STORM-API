@@ -5,7 +5,7 @@ const async = require('asyncawait/async'),
     PersianDate = instanceOf('utility').PersianDate,
     String = instanceOf('utility').String,
     Enums = instanceOf('Enums'),
-    InventoryRepository = require('./data').InventoryeRepository,
+    InventoryRepository = require('./data').InventoryRepository,
     InvoiceRepository = require('./data').InvoiceRepository,
     SettingsRepository = require('./data').SettingsRepository,
     StockRepository = require('./data').StockRepository,
@@ -100,9 +100,9 @@ class OutputService {
 
     setInvoice(id, invoiceId) {
         if (Array.isArray(id))
-            return id.forEach(async.result(id => this._setInvoice(id, invoiceId)));
+            id.forEach(id => this._setInvoice(id, invoiceId));
 
-        return this._setInvoice(id, invoiceId);
+        this._setInvoice(id, invoiceId);
     }
 
     _setInvoice(id, invoiceId) {
@@ -113,7 +113,7 @@ class OutputService {
             ioTypeDisplay = Enums.InventoryIOType().getDisplay('outputSale');
 
         inventory.invoiceId = invoice.id;
-        inventory.description = `بابت فاکتور ${ioTypeDisplay} شماره ${invoice.number}`;
+        inventory.description = 'بابت فاکتور {0} شماره {1}'.format(ioTypeDisplay, invoice.number);
         inventory.ioType = 'outputSale';
 
         inventory.inventoryLines = inventory.inventoryLines.asEnumerable()

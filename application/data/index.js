@@ -12,7 +12,7 @@ module.exports.StockRepository = require('../../accounting/server/data/repositor
 module.exports.PaymentRepository = require('../../accounting/server/data/repository.payment');
 
 module.exports.InvoiceRepository = require('../../accounting/server/data/repository.invoice');
-module.exports.InventoryeRepository = require('../../accounting/server/data/repository.inventory');
+module.exports.InventoryRepository = require('../../accounting/server/data/repository.inventory');
 
 module.exports.FiscalPeriodRepository = require('../../accounting/server/data/repository.fiscalPeriod');
 module.exports.JournalRepository = require('../../accounting/server/data/repository.journal');
