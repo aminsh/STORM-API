@@ -7,7 +7,7 @@ const async = require('asyncawait/async'),
     JournalRepository = require('./data').JournalRepository,
     SubsidiaryLedgerAccountRepository = require('./data').SubsidiaryLedgerAccountRepository,
     InvoiceRepository = require('./data').InvoiceRepository,
-    InventoryeRepository = require('./data').InventoryeRepository,
+    InventoryRepository = require('./data').InventoryRepository,
     JournalGenerationTemplateService = require('./journalGenerationTemplate'),
     SubsidiaryLedgerAccountService = require('./subsidiaryLedgerAccount');
 
@@ -92,7 +92,7 @@ class JournalService {
 
     _generateForOutputSale(outputId) {
 
-        const output = new InventoryeRepository(this.branchId).findById(outputId),
+        const output = new InventoryRepository(this.branchId).findById(outputId),
 
             model = {
                 number: output.number,
@@ -197,6 +197,73 @@ class JournalService {
             if(p.paymentType === 'person')
                 return p.personId;
         }
+    }
+
+    generateForPurchase(invoicePurchaseId) {
+        let purchase = new InvoiceRepository(this.branchId).findById(invoicePurchaseId),
+            journal = {
+                description: 'بابت فاکتور خرید شماره {0}'.format(purchase.number)
+            },
+
+            invoiceLines = purchase.invoiceLines,
+            sumAmount = invoiceLines.asEnumerable().sum(line => line.unitPrice * line.quantity),
+            sumDiscount = invoiceLines.asEnumerable().sum(line => line.discount),
+            sumVat = invoiceLines.asEnumerable().sum(line => line.vat),
+
+            payableAccount = await(this.subsidiaryLedgerAccountService.payableAccount()),
+            purchaseAccount = await(this.subsidiaryLedgerAccountService.purchaseAccount()),
+
+            journalLines = [
+                {
+                    generalLedgerAccountId: payableAccount.generalLedgerAccountId,
+                    subsidiaryLedgerAccountId: payableAccount.id,
+                    detailAccountId: purchase.detailAccountId,
+                    debtor: 0,
+                    creditor: sumAmount - sumDiscount + sumVat,
+                    article: journal.description,
+                    row: 3
+                }, {
+                    generalLedgerAccountId: purchaseAccount.generalLedgerAccountId,
+                    subsidiaryLedgerAccountId: purchaseAccount.id,
+                    debtor: sumAmount,
+                    creditor: 0,
+                    article: journal.description,
+                    row: 1
+                }];
+
+        if (sumDiscount > 0) {
+            let discountAccount = await(this.subsidiaryLedgerAccountService.purchaseDiscountAccount());
+
+            journalLines.push({
+                generalLedgerAccountId: discountAccount.generalLedgerAccountId,
+                subsidiaryLedgerAccountId: discountAccount.id,
+                debtor: 0,
+                creditor: sumDiscount,
+                article: journal.description,
+                row: 4
+            });
+        }
+
+
+        if (sumVat > 0) {
+            let vatAccount = await(this.subsidiaryLedgerAccountService.purchaseVatAccount());
+
+            journalLines.push({
+                generalLedgerAccountId: vatAccount.generalLedgerAccountId,
+                subsidiaryLedgerAccountId: vatAccount.id,
+                debtor: sumVat,
+                creditor: 0,
+                article: journal.description,
+                row: 2
+            });
+        }
+
+        journalLines = journalLines.asEnumerable().orderBy(e => e.row).toArray();
+        journalLines.forEach((e, i) => e.row = i + 1);
+
+        journal.journalLines = journalLines;
+
+        return this.create(journal);
     }
 }
 

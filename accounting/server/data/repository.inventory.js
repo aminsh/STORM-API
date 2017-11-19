@@ -21,14 +21,20 @@ class InventoryRepository extends BaseRepository {
         return inventory;
     }
 
-    findFirst(stockId) {
-        const first = await(this.knex.select('id')
+    findFirst(stockId, fiscalPeriodId, expectId) {
+
+        let query = this.knex.select('id')
             .from('inventories')
             .where('branchId', this.branchId)
+            .where('fiscalPeriodId', fiscalPeriodId)
             .where('inventoryType', 'input')
             .where('ioType', 'inputFirst')
-            .where('stockId', stockId)
-            .first());
+            .where('stockId', stockId);
+
+        if (expectId)
+            query.whereNot('id', expectId);
+
+        let first = await(query.first());
 
         return first ? this.findById(first.id) : null;
     }
@@ -38,7 +44,7 @@ class InventoryRepository extends BaseRepository {
             .where('invoiceId', invoiceId)
             .where('inventoryType', inventoryType));
 
-        if(!(ids && ids.length > 0))
+        if (!(ids && ids.length > 0))
             return [];
 
         return ids.asEnumerable()
@@ -80,14 +86,14 @@ class InventoryRepository extends BaseRepository {
             .andWhere('stockId', stockId)
             .orderBy('inventories.createdAt');
 
-        if(expectInventoryLineId)
+        if (expectInventoryLineId)
             query.whereNot('id', expectInventoryLineId);
 
-        return query;
+        return await(query);
     }
 
     inputMaxNumber(fiscalPeriodId, stockId, ioType) {
-        if(!ioType)
+        if (!ioType)
             throw new Error('ioType is undefined');
 
         return await(this.knex.table('inventories')
@@ -101,10 +107,10 @@ class InventoryRepository extends BaseRepository {
     }
 
     outputMaxNumber(fiscalPeriodId, stockId, ioType) {
-        if(!ioType)
+        if (!ioType)
             throw new Error('ioType is undefined');
 
-        return await( this.knex.table('inventories')
+        return await(this.knex.table('inventories')
             .modify(this.modify, this.branchId)
             .where('inventoryType', 'output')
             .andWhere('fiscalPeriodId', fiscalPeriodId)
@@ -125,30 +131,29 @@ class InventoryRepository extends BaseRepository {
     }
 
     create(entity) {
-        this.entity = entity;
+        const trx = await(this.transaction);
 
-        return new Promise((resolve, reject) => {
-            this.knex.transaction(async(trx => {
-                let entity = this.entity;
+        try {
+            let lines = entity.inventoryLines;
 
-                try {
-                    let lines = this.entity.inventoryLines;
+            delete  entity.inventoryLines;
 
-                    delete  entity.inventoryLines;
+            await(this.createInventory(entity, trx));
 
-                    await(this.createInventory(entity, trx));
+            if (lines && lines.length > 0)
+                await(this.createInventoryLines(lines, entity.id, trx));
 
-                    (lines && lines.length) && await(this.createInventoryLines(lines, entity.id, trx));
+            entity.inventoryLines = lines;
 
-                    entity.inventoryLines = lines;
+            trx.commit();
 
-                    resolve(entity);
-                }
-                catch (e) {
-                    reject(e);
-                }
-            }));
-        });
+            return entity;
+        }
+        catch (e) {
+            trx.rollback();
+
+            throw new Error(e);
+        }
     }
 
     update(id, entity) {
@@ -156,30 +161,27 @@ class InventoryRepository extends BaseRepository {
     }
 
     updateBatch(id, entity) {
-        this.entity = entity;
 
-        return new Promise((resolve, reject) => {
-            this.knex.transaction(async(trx => {
-                let entity = this.entity;
+        const trx = await(this.transaction);
 
-                try {
-                    let lines = this.entity.inventoryLines;
+        try {
+            let lines = this.entity.inventoryLines;
 
-                    delete  entity.inventoryLines;
+            delete  entity.inventoryLines;
 
-                    await(this.updateInventory(id, entity, trx));
+            await(this.updateInventory(id, entity, trx));
 
-                    await(this.updateInventoryLines(id, lines, trx));
+            await(this.updateInventoryLines(id, lines, trx));
 
-                    entity.inventoryLines = lines;
+            entity.inventoryLines = lines;
 
-                    resolve(entity);
-                }
-                catch (e) {
-                    reject(e);
-                }
-            }));
-        });
+            trx.commit();
+        }
+        catch (e) {
+            trx.rollback();
+
+            throw new Error(e);
+        }
     }
 
     remove(id) {
