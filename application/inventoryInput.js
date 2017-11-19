@@ -181,7 +181,7 @@ class InventoryInputService {
         if (errors.length > 0)
             throw new ValidationException(errors);
 
-        let input = {
+        input = {
             date: cmd.date || PersianDate.current(),
             stockId: cmd.stockId,
             inventoryType: 'input',
