@@ -11,10 +11,10 @@ class FiscalPeriodRepository extends BaseRepository {
     }
 
     findById(id) {
-        return this.knex.table('fiscalPeriods')
+        return await(this.knex.table('fiscalPeriods')
             .modify(this.modify, this.branchId)
             .where('id', id)
-            .first();
+            .first());
     }
 
     create(entity) {
