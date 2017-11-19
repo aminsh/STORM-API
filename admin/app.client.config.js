@@ -17,6 +17,7 @@ import "angular-translate";
 import 'angular-ui-bootstrap';
 import "jsonformatter";
 import 'angular-ui-select';
+import clipboardModule from 'angular-clipboard';
 
 // [START] Storm Lumx Dependencies
 import "moment";
@@ -65,7 +66,8 @@ let adminModule = angular.module('admin.module', [
     'ui.bootstrap',
     'lumx',
     'jsonFormatter',
-    'ui.select'
+    'ui.select',
+    clipboardModule.name
 ]);
 
 

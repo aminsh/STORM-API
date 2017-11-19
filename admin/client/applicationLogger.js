@@ -1,11 +1,13 @@
 "use strict";
 
-class ApplicationLoggerController{
-    constructor(tabs){
+class ApplicationLoggerController {
+    constructor(tabs, clipboard) {
+
+        this.clipboard = clipboard;
 
         tabs.setTab("applicationLogger");
 
-        let columns =[
+        let columns = [
             {
                 name: 'status',
                 title: 'Status',
@@ -19,8 +21,12 @@ class ApplicationLoggerController{
             {
                 name: 'branchId',
                 title: 'Branch',
-                type:'branch',
-                template: '<span>{{item.branchName}}</span>'
+                type: 'branch',
+                model: {
+                    copy: text => this.clipboard.copyText(text)
+                },
+                template: `<span>{{item.branchName}}</span>
+                <i title="copy branchId" class="fa fa-copy fa-lg text-success pointer" ng-click="column.model.copy(item.branchId)"></i>`
             },
             {
                 name: 'createdAt',
@@ -48,7 +54,13 @@ class ApplicationLoggerController{
                 width: '300px',
                 filterable: false,
                 sortable: false,
-                template: '<json-formatter json="item.command" style="direction: ltr"></json-formatter>'
+                model: {
+                    copy: text => this.copy(text)
+                },
+                template: `
+                    <json-formatter json="item.command" style="direction: ltr"></json-formatter>
+                    <i title="copy" class="fa fa-copy fa-lg text-success pointer" ng-click="column.model.copy(item.command)" 
+                    ng-if="item.command"></i>`
             },
             {
                 name: 'state',
@@ -57,7 +69,12 @@ class ApplicationLoggerController{
                 width: '300px',
                 filterable: false,
                 sortable: false,
-                template: '<json-formatter json="item.state" style="direction: ltr"></json-formatter>'
+                model: {
+                    copy: text => this.copy(text)
+                },
+                template: `<json-formatter json="item.state" style="direction: ltr"></json-formatter>
+                <i title="copy" class="fa fa-copy fa-lg text-success pointer" ng-click="column.model.copy(item.state)" 
+                ng-if="item.state"></i>`
             },
             {
                 name: 'result',
@@ -66,17 +83,22 @@ class ApplicationLoggerController{
                 width: '300px',
                 filterable: false,
                 sortable: false,
-                template: '<json-formatter json="item.result" style="direction: ltr"></json-formatter>'
+                model: {
+                    copy: text => this.copy(text)
+                },
+                template: `<json-formatter json="item.result" style="direction: ltr"></json-formatter>
+                <i title="copy" class="fa fa-copy fa-lg text-success pointer" ng-click="column.model.copy(item.result)" 
+                ng-if="item.result"></i>`
             }
         ];
 
         columns.forEach(col => {
 
-            if(['branchName', 'status'].includes(col.name))
+            if (['branchName', 'status'].includes(col.name))
                 return;
 
-           col.css = 'text-left';
-           col.header = {css: 'text-left'}
+            col.css = 'text-left';
+            col.header = {css: 'text-left'}
         });
 
         //columns = columns.reverse();
@@ -84,15 +106,18 @@ class ApplicationLoggerController{
 
         this.gridOption = {
             columns,
-            commands: [
-
-
-            ],
+            commands: [],
             gridSize: '700px',
             readUrl: '/api/application-logger'
         }
 
     }
+
+    copy(obj) {
+        this.clipboard.copyText(JSON.stringify(obj));
+    }
+
+
 }
 
 export default ApplicationLoggerController;
