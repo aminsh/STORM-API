@@ -214,12 +214,14 @@
       }
     ]
   },
+
   {
-    "key": "5",
+    "key": "05",
     "text": "گزارش های تراز",
+    "showOnAccounting": false,
     "items": [
       {
-        "key": "500",
+        "key": "0500",
         "text": "تراز کل",
         "func": "generalBalance",
         "fileName": "generalBalanceList",
@@ -230,44 +232,99 @@
         ]
       },
       {
-        "key": "501",
+        "key": "0501",
         "text": "تراز کل - معین",
         "func": "subsidiaryBalance",
         "fileName": "subsidiaryBalanceList",
+        "showOnAccounting": false,
         "params": [
           {
             "name": "generalLedgerAccount"
           },
           {
             "name": "subsidiaryLedgerAccount"
+          }
+        ]
+      },
+      {
+        "key": "0502",
+        "text": "تراز معین - تفصیل",
+        "func": "subsidiaryDetailBalance",
+        "fileName": "subsidiaryDetailBalanceList",
+        "showOnAccounting": false,
+        "params": [
+          {
+            "name": "generalLedgerAccount"
+          },
+          {
+            "name": "subsidiaryLedgerAccount"
+          }
+        ]
+      },
+      {
+        "key": "0503",
+        "text": "تراز 3 سطحی",
+        "func": "generalSubsidiaryDetailBalance",
+        "fileName": "generalSubsidiaryDetailBalanceList",
+        "showOnAccounting": false,
+        "params": [
+          {
+            "name": "generalLedgerAccount"
+          },
+          {
+            "name": "subsidiaryLedgerAccount"
+          }
+        ]
+      }
+    ]
+  },
+
+  {
+    "key": "5",
+    "text": "تراز آزمایشی",
+    "items": [
+      {
+        "key": "500",
+        "text": "تراز کل",
+        "func": "generalBalance",
+        "fileName": "TotalBalance",
+        "useLayout": false,
+        "params": [
+          {
+            "name": "generalLedgerAccount"
+          },
+          {
+            "name": "date"
+          }
+        ]
+      },
+      {
+        "key": "501",
+        "text": "تراز دوستونی",
+        "func": "generalBalance",
+        "fileName": "TwoColumnsBalance",
+        "useLayout": false,
+        "params": [
+          {
+            "name": "generalLedgerAccount"
+          },
+          {
+            "name": "date"
           }
         ]
       },
       {
         "key": "502",
-        "text": "تراز معین - تفصیل",
-        "func": "subsidiaryDetailBalance",
-        "fileName": "subsidiaryDetailBalanceList",
+        "text": "تراز چهارستونی",
+        "func": "generalBalance",
+        "fileName": "FourColumnsBalance",
+        "useLayout": false,
         "params": [
           {
             "name": "generalLedgerAccount"
           },
           {
-            "name": "subsidiaryLedgerAccount"
-          }
-        ]
-      },
-      {
-        "key": "503",
-        "text": "تراز 3 سطحی",
-        "func": "generalSubsidiaryDetailBalance",
-        "fileName": "generalSubsidiaryDetailBalanceList",
-        "params": [
-          {
-            "name": "generalLedgerAccount"
-          },
-          {
-            "name": "subsidiaryLedgerAccount"
+            "name": "date"
           }
         ]
       }
@@ -325,6 +382,19 @@
         "params": [
           {
             "name": "id"
+          }
+        ]
+      },
+      {
+        "key": "702",
+        "text": "گزارش فصلی خرید و فروش",
+        "func": "getSeasonal",
+        "fileName": "",
+        "useLayout": false,
+        "showOnAccounting": false,
+        "params": [
+          {
+
           }
         ]
       }
@@ -389,10 +459,7 @@
         "useLayout": false,
         "showOnAccounting": false,
         "params": [
-          {
-            "name": "date"
-          }
-        ]
+          ]
       },
       {
         "key": "901",

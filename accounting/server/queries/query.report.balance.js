@@ -31,30 +31,61 @@ module.exports = class ReportQueryBalance extends BaseQuery {
             "groupJournals"."sumCreditor" as "creditor",
             "groupJournals"."totalDebtorRemainder" as "totalDebtor",
             "groupJournals"."totalCreditorRemainder" as "totalCreditor",
+            
+            CASE WHEN "groupJournals"."remainder" < 0 
+            THEN "groupJournals"."remainder" 
+                 ELSE 0 END as "creditorRemainderCurrent",
+                 
+            CASE WHEN "groupJournals"."remainder" > 0 
+            THEN "groupJournals"."remainder" 
+                 ELSE 0 END as "debtorRemainderCurrent",
+                 
             CASE WHEN "groupJournals"."totalRemainder" < 0 
             THEN "groupJournals"."totalRemainder" 
-            ELSE 0 END as "creditorRemainder",
+                 ELSE 0 END as "creditorRemainder",
+                 
             CASE WHEN "groupJournals"."totalRemainder" > 0 
-            THEN "groupJournals"."totalRemainder" 
-            ELSE 0 END as "debtorRemainder",
+                THEN "groupJournals"."totalRemainder" 
+                ELSE 0 END as "debtorRemainder",
+                
             "groupJournals"."sumBeforeDebtor" as "sumBeforeDebtor",
             "groupJournals"."sumBeforeCreditor" as "sumBeforeCreditor"`;
 
         let generalLedgerAccounts = `"generalLedgerAccounts".code as generalCode,
             "generalLedgerAccounts".title as generalTitle,
+            "generalLedgerAccounts".id as "generalId",
             CASE WHEN "generalLedgerAccounts".code ISNULL 
             THEN "generalLedgerAccounts".title 
             ELSE "generalLedgerAccounts".title||' ${translate('Code')} ' || "generalLedgerAccounts".code END AS generalDisplay`;
 
-        let query = knex.select(knex.raw(journals + ',' + generalLedgerAccounts))
+        let query = await(knex.select(knex.raw(journals + ',' + generalLedgerAccounts))
             .from(function () {
                 groupJournals.call(this, knex,
                     options,
                     currentFiscalPeriodId, 'generalLedgerAccountId');
             })
             .leftJoin('generalLedgerAccounts', 'groupJournals.generalLedgerAccountId', 'generalLedgerAccounts.id')
-            .as('totalJournals')
-        return query;
+            .as('totalJournals'));
+
+
+        let result = query.asEnumerable().select(item =>
+            Object.assign({}, item,
+                {
+                    debtorT: item.debtor.toString(),
+                    creditorT: item.creditor.toString(),
+                    totalDebtorT: item.totalDebtor.toString(),
+                    totalCreditorT: item.totalCreditor.toString(),
+                    creditorRemainderCurrentT: item.creditorRemainderCurrent.toString(),
+                    debtorRemainderCurrentT: item.debtorRemainderCurrent.toString(),
+                    creditorRemainderT: item.creditorRemainder.toString(),
+                    debtorRemainderT: item.debtorRemainder.toString(),
+                    sumBeforeDebtorT: item.sumBeforeDebtor.toString(),
+                    sumBeforeCreditorT: item.sumBeforeCreditor.toString()
+
+                })
+        ).toArray();
+
+        return result;
 
     };
 

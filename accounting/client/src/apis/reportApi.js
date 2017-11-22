@@ -25,7 +25,7 @@ export default class {
     generalBalance(params) {
         return this.apiPromise.get(`${this.urlPrefix}/general-balance`, params);
     }
-
+/*
     subsidiaryBalance(params) {
         return this.apiPromise.get(`${this.urlPrefix}/subsidiary-balance`, params);
     }
@@ -36,7 +36,7 @@ export default class {
 
     generalSubsidiaryDetailBalance(params) {
         return this.apiPromise.get(`${this.urlPrefix}/general-subsidiary-detail-balance`, params);
-    }
+    }*/
 
     journalOffice(params) {
         return this.apiPromise.get(`${this.urlPrefix}/journal-office`, params);
@@ -148,5 +148,9 @@ export default class {
         };
 
         return this.apiPromise.get(`${this.constants.urls.rootUrl}/account-review/tiny`, reportParam)
+    }
+
+    getSeasonal(params){
+        return this.apiPromise.get(`${this.urlPrefix}/seasonal`,params)
     }
 }
