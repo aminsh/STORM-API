@@ -8,6 +8,7 @@
         "text": "سند حسابداری",
         "func": "detailJournals",
         "fileName": "detailJournalsList",
+        "useLayout": false,
         "params": [
           {
             "name": "date"
@@ -36,6 +37,7 @@
         "text": "سند حسابداری به تفکیک حساب کل - معین",
         "func": "detailGeneralSubsidiaryJournal",
         "fileName": "detailGeneralSubsidiaryJournalList",
+        "useLayout": false,
         "params": [
           {
             "name": "date"
@@ -70,6 +72,7 @@
         "text": "ریز گردش کل - معین",
         "func": "detailGeneralSubsidiaryTurnover",
         "fileName": "detailGeneralSubsidiaryTurnoverList",
+        "useLayout": false,
         "params": [
           {
             "name": "date"
@@ -90,6 +93,7 @@
         "text": "ریز گردش معین - تفصیل",
         "func": "detailSubsidiaryDetailTurnover",
         "fileName": "detailSubsidiaryDetailTurnoverList",
+        "useLayout": false,
         "params": [
           {
             "name": "date"
@@ -107,6 +111,7 @@
         "text": "ریز گردش کل - معین - تفضیل",
         "func": "detailGeneralSubsidiaryDetailTurnover",
         "fileName": "detailGeneralSubsidiaryDetailTurnoverList",
+        "useLayout": false,
         "params": [
           {
             "name": "date"

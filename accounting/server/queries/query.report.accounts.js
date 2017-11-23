@@ -14,7 +14,7 @@ module.exports = class ReportQueryAccounts extends BaseQuery {
         return knex.select(knex.raw(`code, 
         title, 
         description,
-        groupingType,
+        "groupingType",
         CASE WHEN code ISNULL THEN title ELSE title||' ${translate('Code')} ' ||code END AS display`))
             .from('generalLedgerAccounts')
             .where('branchId', this.branchId);
