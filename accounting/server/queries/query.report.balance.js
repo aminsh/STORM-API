@@ -80,7 +80,9 @@ module.exports = class ReportQueryBalance extends BaseQuery {
                     creditorRemainderT: item.creditorRemainder.toString(),
                     debtorRemainderT: item.debtorRemainder.toString(),
                     sumBeforeDebtorT: item.sumBeforeDebtor.toString(),
-                    sumBeforeCreditorT: item.sumBeforeCreditor.toString()
+                    sumBeforeCreditorT: item.sumBeforeCreditor.toString(),
+                    fromDate: options.fromMainDate,
+                    toDate: options.toDate
 
                 })
         ).toArray();
