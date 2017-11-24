@@ -14,14 +14,13 @@ router.route('/')
         res.json(result);
     }))
     .post(async((req, res) => {
-        let stockRepository = new StockRepository(req.branchId),
-            entity = {
-                title: req.body.title
-            };
-
-        await(stockRepository.create(entity));
-
-        res.json({isValid: true, returnValue: {id: entity.id}});
+        try {
+            const id = RunService("stockCreate", [req.body], req);
+            res.json({isValid: true, returnValue: {id}});
+        }
+        catch (e) {
+            res.json({isValid: false, errors: e.errors});
+        }
     }));
 
 router.route('/:id')
@@ -32,33 +31,22 @@ router.route('/:id')
         res.json(result);
     }))
     .put(async((req, res) => {
-        let stockRepository = new StockRepository(req.branchId),
-            id = req.params.id,
-            cmd = req.body,
-            entity = {
-                title: cmd.title,
-                address: cmd.address
-            };
-
-        await(stockRepository.update(id, entity));
-
-        res.json({isValid: true});
+        try {
+            RunService("stockUpdate", [req.params.id, req.body], req);
+            res.json({isValid: true});
+        }
+        catch (e) {
+            res.json({isValid: false, errors: e.errors});
+        }
     }))
     .delete(async((req, res) => {
-        let stockRepository = new StockRepository(req.branchId),
-            id = req.params.id,
-            errors = [],
-            isUsedOnInventory = await(stockRepository.isUsedOnInventory(id));
-
-        if (isUsedOnInventory)
-            errors.push('انبار جاری قبلا در رسید یا حواله استفاده شده است ، امکان حذف وجود ندارد');
-
-        if (errors.length > 0)
-            return res.json({isValid: false, errors});
-
-        await(stockRepository.remove(id));
-
-        res.json({isValid: true});
+        try {
+            RunService("stockRemove", [req.params.id], req);
+            res.json({isValid: true});
+        }
+        catch (e) {
+            res.json({isValid: false, errors: e.errors});
+        }
     }));
 
 module.exports = router;

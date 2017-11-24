@@ -520,6 +520,141 @@
       "id"
     ],
     "returns": ""
+  },
+
+  {
+    "name": "productCreate",
+    "class": "ProductService",
+    "method": "create",
+    "params": [
+      "command"
+    ],
+    "returns": "id"
+  },
+  {
+    "name": "productCreateBatch",
+    "class": "ProductService",
+    "method": "createBatch",
+    "params": [
+      "products"
+    ],
+    "returns": "ids"
+  },
+  {
+    "name": "productAddToInventoryInputFirst",
+    "class": "ProductService",
+    "method": "addToInventoryInputFirst",
+    "params": [
+      "id",
+      "DTO"
+    ],
+    "returns": "ids"
+  },
+  {
+    "name": "productUpdate",
+    "class": "ProductService",
+    "method": "update",
+    "params": [
+      "id",
+      "command"
+    ],
+    "returns": ""
+  },
+  {
+    "name": "productRemove",
+    "class": "ProductService",
+    "method": "remove",
+    "params": [
+      "id"
+    ],
+    "returns": ""
+  },
+
+  {
+    "name": "productCategoryCreate",
+    "class": "ProductCategoryService",
+    "method": "create",
+    "params": [
+      "command"
+    ],
+    "returns": "id"
+  },
+  {
+    "name": "productCategoryUpdate",
+    "class": "ProductCategoryService",
+    "method": "update",
+    "params": [
+      "id",
+      "command"
+    ],
+    "returns": ""
+  },
+  {
+    "name": "productCategoryRemove",
+    "class": "ProductCategoryService",
+    "method": "remove",
+    "params": [
+      "id"
+    ],
+    "returns": ""
+  },
+
+  {
+    "name": "scaleCreate",
+    "class": "ScaleService",
+    "method": "create",
+    "params": [
+      "command"
+    ],
+    "returns": "id"
+  },
+  {
+    "name": "scaleUpdate",
+    "class": "ScaleService",
+    "method": "update",
+    "params": [
+      "id",
+      "command"
+    ],
+    "returns": ""
+  },
+  {
+    "name": "scaleRemove",
+    "class": "ScaleService",
+    "method": "remove",
+    "params": [
+      "id"
+    ],
+    "returns": ""
+  },
+
+  {
+    "name": "stockCreate",
+    "class": "StockService",
+    "method": "create",
+    "params": [
+      "command"
+    ],
+    "returns": "id"
+  },
+  {
+    "name": "stockUpdate",
+    "class": "StockService",
+    "method": "update",
+    "params": [
+      "id",
+      "command"
+    ],
+    "returns": ""
+  },
+  {
+    "name": "stockRemove",
+    "class": "StockService",
+    "method": "remove",
+    "params": [
+      "id"
+    ],
+    "returns": ""
   }
 
 ]
