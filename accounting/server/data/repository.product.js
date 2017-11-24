@@ -11,10 +11,10 @@ class ProductRepository extends BaseRepository {
     }
 
     findById(id) {
-        return this.knex.table('products')
+        return await(this.knex.table('products')
             .modify(this.modify, this.branchId)
             .where('id', id)
-            .first();
+            .first());
     }
 
     /*
@@ -23,9 +23,9 @@ class ProductRepository extends BaseRepository {
     */
 
     findByIds(ids) {
-        return this.knex.table('products')
+        return await(this.knex.table('products')
             .modify(this.modify, this.branchId)
-            .whereIn('id', ids);
+            .whereIn('id', ids));
     }
 
     findByCode(code, notEqualId) {

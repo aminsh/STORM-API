@@ -278,7 +278,7 @@ class JournalService {
             subLedger = this.subsidiaryLedgerAccountService;
 
         if (invoiceId)
-            invoice = await(new InvoiceRepository(this.branchId).findById(invoiceId));
+            invoice = new InvoiceRepository(this.branchId).findById(invoiceId);
 
         let description = invoice
             ? `دریافت بابت فاکتور فروش شماره ${invoice.number}`

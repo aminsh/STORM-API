@@ -9,24 +9,24 @@ class Bank {
         this.detailAccountService = new DetailAccountService(branchId);
     }
 
-    create(cmd){
+    create(cmd) {
         cmd.detailAccountType = 'bank';
 
         return this.detailAccountService.create(cmd);
     }
 
-    update(id , cmd){
+    update(id, cmd) {
         this.detailAccountService.update(id, cmd);
     }
 
-    remove(id){
+    remove(id) {
         let errors = [],
             settings = new SettingsRepository(this.branchId).get();
 
-        if(settings.bankId === id)
+        if (settings.bankId === id)
             errors.push('حساب بانکی جاری در تنظیمات استفاده شده ، امکان حذف وجود ندارد');
 
-        if(errors.length > 0)
+        if (errors.length > 0)
             throw new ValidationException(errors);
 
         this.detailAccountService.remove(id);
