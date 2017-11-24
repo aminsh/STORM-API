@@ -23,22 +23,26 @@ class PaymentService {
             }))
             .toArray();
 
-        return this.paymentRepository.create(payments);
+        this.paymentRepository.create(payments);
+
+        return payments.asEnumerable()
+            .select(item => item.id)
+            .toArray();
     }
 
-    setInvoiceForAll(payments, invoiceId){
-        payments.forEach(item => this.setInvoice(item.id, invoiceId));
+    setInvoiceForAll(paymentIds, invoiceId) {
+        paymentIds.forEach(id => this.setInvoice(id, invoiceId));
     }
 
-    setInvoice(id, invoiceId){
+    setInvoice(id, invoiceId) {
         this.paymentRepository.update(id, {invoiceId});
     }
 
-    setJournalLineForAll(payments){
+    setJournalLineForAll(payments) {
         payments.forEach(item => this.setJournalLine(item.id, item.journalLineId))
     }
 
-    setJournalLine(id, journalLineId){
+    setJournalLine(id, journalLineId) {
         this.paymentRepository.update(id, {journalLineId});
     }
 }
