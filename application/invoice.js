@@ -267,8 +267,6 @@ class InvoiceService {
 
         this._changeStatusIfPaidIsCompleted(id);
     }
-
-
 }
 
 module.exports = InvoiceService;
