@@ -8,6 +8,7 @@ const EventEmitter = instanceOf('EventEmitter'),
     servicesConfig = require('./config.services.json');
 
 let ApplicationService = {
+    FiscalPeriodService: require('./fiscalPeriod'),
     InvoiceService: require('./invoice'),
     InvoicePurchaseService: require('./invoice.purchase'),
     DetailAccountService: require('./detailAccount'),
@@ -16,6 +17,7 @@ let ApplicationService = {
     FundService: require('./fund'),
     ProductService: require('./product'),
     ProductCategoryService: require('./productCategory'),
+    StockService: require('./stock'),
     ScaleService: require('./scale'),
     InventoryOutputService: require('./inventoryOutput'),
     InventoryInputService: require('./inventoryInput'),

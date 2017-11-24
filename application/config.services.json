@@ -655,6 +655,16 @@
       "id"
     ],
     "returns": ""
+  },
+
+  {
+    "name": "fiscalPeriodCreate",
+    "class": "FiscalPeriodService",
+    "method": "remove",
+    "params": [
+      "command"
+    ],
+    "returns": "id"
   }
 
 ]
