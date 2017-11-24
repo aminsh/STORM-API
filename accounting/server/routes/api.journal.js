@@ -4,8 +4,6 @@ const async = require('asyncawait/async'),
     await = require('asyncawait/await'),
     router = require('express').Router(),
     EventEmitter = instanceOf('EventEmitter'),
-    Guid = instanceOf('utility').Guid,
-    JournalService = ApplicationService.JournalService,
     JournalQuery = require('../queries/query.journal');
 
 router.route('/')
@@ -15,32 +13,14 @@ router.route('/')
         res.json(result);
     }))
     .post(async((req, res) => {
-        let cmd = req.body,
-            serviceId;
 
         try {
-
-            serviceId = Guid.new();
-
-            EventEmitter.emit('onServiceStarted', serviceId, {command: cmd, state: req, service: 'journalCreate'});
-
-            const id = new JournalService(req.branchId, req.fiscalPeriodId).create(cmd);
-
-            EventEmitter.emit('onServiceSucceed', serviceId, {id});
-
+            const id = RunService("journalCreate", [req.body], req);
             res.json({isValid: true, returnValue: {id}});
 
         }
         catch (e) {
-            EventEmitter.emit('onServiceFailed', serviceId, e);
-
-            const errors = e instanceof ValidationException
-                ? e.errors
-                : ['internal errors'];
-
-            res['_headerSent'] === false && res.json({isValid: false, errors});
-
-            console.log(e);
+            res.json({isValid: false, errors: e.errors});
         }
     }));
 
@@ -64,95 +44,35 @@ router.route('/:id')
         res.json(result);
     }))
     .put(async((req, res) => {
-        let cmd = req.body,
-            id = req.params.id,
-            serviceId;
-
         try {
-
-            serviceId = Guid.new();
-
-            EventEmitter.emit('onServiceStarted', serviceId, {
-                command: {cmd, id},
-                state: req,
-                service: 'journalUpdate'
-            });
-
-            new JournalService(req.branchId, req.fiscalPeriodId).update(id, cmd);
-
-            EventEmitter.emit('onServiceSucceed', serviceId);
-
+            RunService("journalUpdate", [req.params.id, req.body], req);
             res.json({isValid: true});
 
         }
         catch (e) {
-            EventEmitter.emit('onServiceFailed', serviceId, e);
-
-            const errors = e instanceof ValidationException
-                ? e.errors
-                : ['internal errors'];
-
-            res['_headerSent'] === false && res.json({isValid: false, errors});
-
-            console.log(e);
+            res.json({isValid: false, errors: e.errors});
         }
     }))
     .delete(async((req, res) => {
-        let id = req.params.id,
-            serviceId;
-
         try {
-
-            serviceId = Guid.new();
-
-            EventEmitter.emit('onServiceStarted', serviceId, {command: {id}, state: req, service: 'journalRemove'});
-
-            new JournalService(req.branchId).remove(id);
-
-            EventEmitter.emit('onServiceSucceed', serviceId);
-
+            RunService("journalRemove", [req.params.id], req);
             res.json({isValid: true});
+
         }
         catch (e) {
-            EventEmitter.emit('onServiceFailed', serviceId, e);
-
-            const errors = e instanceof ValidationException
-                ? e.errors
-                : ['internal errors'];
-
-            res['_headerSent'] === false && res.json({isValid: false, errors});
-
-            console.log(e);
+            res.json({isValid: false, errors: e.errors});
         }
     }));
 
 router.route('/:id/confirm')
     .put(async((req, res) => {
-        let id = req.params.id,
-            serviceId;
-
         try {
-
-            serviceId = Guid.new();
-
-            EventEmitter.emit('onServiceStarted', serviceId, {command: {id}, state: req, service: 'journalFix'});
-
-            new JournalService(req.branchId).fix(id);
-
-            EventEmitter.emit('onServiceSucceed', serviceId);
-
+            RunService("journalFix", [req.params.id], req);
             res.json({isValid: true});
+
         }
         catch (e) {
-            EventEmitter.emit('onServiceFailed', serviceId, e);
-
-            const errors = e instanceof ValidationException
-                ? e.errors
-                : ['internal errors'];
-
-            res['_headerSent'] === false && res.json({isValid: false, errors});
-
-            console.log(e);
+            res.json({isValid: false, errors: e.errors});
         }
     }));
 
@@ -187,91 +107,38 @@ router.route('/period/:periodId').get(async((req, res) => {
 }));
 
 router.route('/:id/bookkeeping').put(async((req, res) => {
-    let id = req.params.id,
-        serviceId;
-
     try {
-
-        serviceId = Guid.new();
-
-        EventEmitter.emit('onServiceStarted', serviceId, {command: {id}, state: req, service: 'journalBookkeeping'});
-
-        new JournalService(req.branchId).bookkeeping(id);
-
-        EventEmitter.emit('onServiceSucceed', serviceId);
-
+        RunService("journalBookkeeping", [req.params.id], req);
         res.json({isValid: true});
+
     }
     catch (e) {
-        EventEmitter.emit('onServiceFailed', serviceId, e);
-
-        const errors = e instanceof ValidationException
-            ? e.errors
-            : ['internal errors'];
-
-        res['_headerSent'] === false && res.json({isValid: false, errors});
-
-        console.log(e);
+        res.json({isValid: false, errors: e.errors});
     }
 
 }));
 
 router.route('/:id/attach-image').put(async((req, res) => {
-    let id = req.params.id,
-        serviceId;
 
     try {
 
-        serviceId = Guid.new();
-
-        EventEmitter.emit('onServiceStarted', serviceId, {command: {id}, state: req, service: 'journalAttachImage'});
-
-        new JournalService(req.branchId).attachImage(id, req.body.fileName);
-
-        EventEmitter.emit('onServiceSucceed', serviceId);
-
+        RunService("journalAttachImage", [req.params.id, req.body.fileName], req);
         res.json({isValid: true});
     }
     catch (e) {
-        EventEmitter.emit('onServiceFailed', serviceId, e);
-
-        const errors = e instanceof ValidationException
-            ? e.errors
-            : ['internal errors'];
-
-        res['_headerSent'] === false && res.json({isValid: false, errors});
-
-        console.log(e);
+        res.json({isValid: false, errors: e.errors});
     }
 }));
 
 router.route('/:id/copy').post(async((req, res) => {
 
-    let id = req.params.id,
-        serviceId;
-
     try {
 
-        serviceId = Guid.new();
-
-        EventEmitter.emit('onServiceStarted', serviceId, {command: {id}, state: req, service: 'journalCopy'});
-
-        const id = new JournalService(req.branchId).clone(id);
-
-        EventEmitter.emit('onServiceSucceed', serviceId, {id});
-
+        const id = RunService("journalCopy", [req.params.id], req);
         res.json({isValid: true, returnValue: {id}});
     }
     catch (e) {
-        EventEmitter.emit('onServiceFailed', serviceId, e);
-
-        const errors = e instanceof ValidationException
-            ? e.errors
-            : ['internal errors'];
-
-        res['_headerSent'] === false && res.json({isValid: false, errors});
-
-        console.log(e);
+        res.json({isValid: false, errors: e.errors});
     }
 }));
 

@@ -397,6 +397,72 @@
       "id"
     ],
     "returns": ""
+  },
+
+  {
+    "name": "journalCreate",
+    "class": "JournalService",
+    "method": "create",
+    "params": [
+      "command"
+    ],
+    "returns": "id"
+  },
+  {
+    "name": "journalUpdate",
+    "class": "JournalService",
+    "method": "update",
+    "params": [
+      "id",
+      "command"
+    ],
+    "returns": ""
+  },
+  {
+    "name": "journalRemove",
+    "class": "JournalService",
+    "method": "remove",
+    "params": [
+      "id"
+    ],
+    "returns": ""
+  },
+  {
+    "name": "journalBookkeeping",
+    "class": "JournalService",
+    "method": "bookkeeping",
+    "params": [
+      "id"
+    ],
+    "returns": ""
+  },
+  {
+    "name": "journalFix",
+    "class": "JournalService",
+    "method": "fix",
+    "params": [
+      "id"
+    ],
+    "returns": ""
+  },
+  {
+    "name": "journalAttachImage",
+    "class": "JournalService",
+    "method": "attachImage",
+    "params": [
+      "id",
+      "attachmentFileName"
+    ],
+    "returns": ""
+  },
+  {
+    "name": "journalCopy",
+    "class": "JournalService",
+    "method": "clone",
+    "params": [
+      "id"
+    ],
+    "returns": "id"
   }
 
 ]
