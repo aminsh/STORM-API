@@ -268,6 +268,14 @@ class InventoryRepository extends BaseRepository {
             .where('journalId', journalId)
             .first());
     }
+
+    isExitsStock(stockId){
+        return await(this.knex('id')
+            .from('inventories')
+            .modify(this.modify, this.branchId)
+            .where('stockId', stockId)
+            .first());
+    }
 }
 
 module.exports = InventoryRepository;
