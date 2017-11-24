@@ -1,0 +1,170 @@
+[
+  {
+    "name": "invoiceCreate",
+    "class": "InvoiceService",
+    "method": "create",
+    "params": ["command"],
+    "returns": "id"
+  },
+  {
+    "name": "invoiceUpdate",
+    "class": "InvoiceService",
+    "method": "update",
+    "params": [
+      "id",
+      "command"
+    ],
+    "returns": "undefined"
+  },
+  {
+    "name": "invoiceConfirm",
+    "class": "InvoiceService",
+    "method": "confirm",
+    "params": [
+      "id"
+    ],
+    "returns": "undefined"
+  },
+  {
+    "name": "invoiceRemove",
+    "class": "InvoiceService",
+    "method": "remove",
+    "params": [
+      "id"
+    ],
+    "returns": "undefined"
+  },
+  {
+    "name": "invoiceSetJournal",
+    "class": "InvoiceService",
+    "method": "setJournal",
+    "params": [
+      "id",
+      "journalId"
+    ],
+    "returns": "undefined"
+  },
+  {
+    "name": "invoicePay",
+    "class": "InvoiceService",
+    "method": "pay",
+    "params": [
+      "id",
+      "payments"
+    ],
+    "returns": "undefined"
+  },
+  {
+    "name": "journalCreate",
+    "class": "JournalService",
+    "method": "create",
+    "params": [
+      "command"
+    ],
+    "returns": "journalId"
+  },
+  {
+    "name": "journalUpdate",
+    "class": "JournalService",
+    "method": "update",
+    "params": [
+      "id",
+      "command"
+    ],
+    "returns": ""
+  },
+  {
+    "name": "journalRemove",
+    "class": "JournalService",
+    "method": "remove",
+    "params": [
+      "id"
+    ],
+    "returns": ""
+  },
+  {
+    "name": "journalClone",
+    "class": "JournalService",
+    "method": "clone",
+    "params": [
+      "id"
+    ],
+    "returns": "journalId"
+  },
+  {
+    "name": "journalFix",
+    "class": "JournalService",
+    "method": "fix",
+    "params": [
+      "id"
+    ],
+    "returns": ""
+  },
+  {
+    "name": "journalGenerateForInvoice",
+    "class": "JournalService",
+    "method": "generateForInvoice",
+    "params": [
+      "invoiceId"
+    ],
+    "returns": "journalId"
+  },
+  {
+    "name": "journalGenerateForOutputSale",
+    "class": "JournalService",
+    "method": "generateForOutputSale",
+    "params": [
+      "outputIds"
+    ],
+    "returns": "Array{journalId, id}"
+  },
+  {
+    "name": "paymentCreate",
+    "class": "PaymentService",
+    "method": "create",
+    "params": [
+      "payments",
+      "receiveOrPay"
+    ],
+    "returns": "paymentIds"
+  },
+  {
+    "name": "paymentSetInvoiceForAll",
+    "class": "PaymentService",
+    "method": "setInvoiceForAll",
+    "params": [
+      "payments",
+      "invoiceId"
+    ],
+    "returns": ""
+  },
+  {
+    "name": "paymentSetInvoice",
+    "class": "PaymentService",
+    "method": "setInvoice",
+    "params": [
+      "id",
+      "invoiceId"
+    ],
+    "returns": ""
+  },
+  {
+    "name": "paymentSetJournalLineForAll",
+    "class": "PaymentService",
+    "method": "setJournalLineForAll",
+    "params": [
+      "payments"
+    ],
+    "returns": ""
+  },
+  {
+    "name": "paymentSetJournalLine",
+    "class": "PaymentService",
+    "method": "setJournalLine",
+    "params": [
+      "id",
+      "journalLineId"
+    ],
+    "returns": ""
+  }
+]
