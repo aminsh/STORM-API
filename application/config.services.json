@@ -339,6 +339,64 @@
       "id"
     ],
     "returns": ""
+  },
+
+  {
+    "name": "generalLedgerAccountCreate",
+    "class": "GeneralLedgerAccountService",
+    "method": "create",
+    "params": [
+      "command"
+    ],
+    "returns": "id"
+  },
+  {
+    "name": "generalLedgerAccountUpdate",
+    "class": "GeneralLedgerAccountService",
+    "method": "update",
+    "params": [
+      "id",
+      "command"
+    ],
+    "returns": ""
+  },
+  {
+    "name": "generalLedgerAccountRemove",
+    "class": "PersonService",
+    "method": "remove",
+    "params": [
+      "id"
+    ],
+    "returns": ""
+  },
+  {
+    "name": "subsidiaryLedgerAccountCreate",
+    "class": "SubsidiaryLedgerAccountService",
+    "method": "create",
+    "params": [
+      "generalLedgerAccountId",
+      "command"
+    ],
+    "returns": "id"
+  },
+  {
+    "name": "subsidiaryLedgerAccountUpdate",
+    "class": "SubsidiaryLedgerAccountService",
+    "method": "update",
+    "params": [
+      "id",
+      "command"
+    ],
+    "returns": ""
+  },
+  {
+    "name": "subsidiaryLedgerAccountRemove",
+    "class": "SubsidiaryLedgerAccountService",
+    "method": "remove",
+    "params": [
+      "id"
+    ],
+    "returns": ""
   }
 
 ]

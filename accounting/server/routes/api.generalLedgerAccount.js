@@ -16,33 +16,12 @@ router.route('/')
         res.json(result);
     }))
     .post(async((req, res) => {
-
-        let cmd = req.body,
-            serviceId;
-
         try {
-
-            serviceId = Guid.new();
-
-            EventEmitter.emit('onServiceStarted', serviceId, {command: cmd, state: req, service: 'createGeneralLedgerAccount'});
-
-            const id = new GeneralLedgerAccountService(req.branchId).create(cmd);
-
-            EventEmitter.emit('onServiceSucceed', serviceId, {id});
-
-            res.json({isValid: true, returnValue: {id}});
-
+            const id = RunService("generalLedgerAccountCreate", [req.body], req);
+            res.json({isValid: true, returnValue: {id}})
         }
         catch (e) {
-            EventEmitter.emit('onServiceFailed', serviceId, e);
-
-            const errors = e instanceof ValidationException
-                ? e.errors
-                : ['internal errors'];
-
-            res['_headerSent'] === false && res.json({isValid: false, errors});
-
-            console.log(e);
+            res.json({isValid: false, errors: e.errors});
         }
     }));
 
@@ -73,61 +52,21 @@ router.route('/:id')
         res.json(result);
     }))
     .put(async((req, res) => {
-        let cmd = req.body,
-            id = req.params.id,
-            serviceId;
-
         try {
-
-            serviceId = Guid.new();
-
-            EventEmitter.emit('onServiceStarted', serviceId, {command: {cmd, id}, state: req, service: 'updateGeneralLedgerAccountUpdate'});
-
-            new GeneralLedgerAccountService(req.branchId).update(id, cmd);
-
-            EventEmitter.emit('onServiceSucceed', serviceId);
-
-            res.json({isValid: true});
-
+            RunService("generalLedgerAccountUpdate", [req.params.id, req.body], req);
+            res.json({isValid: true})
         }
         catch (e) {
-            EventEmitter.emit('onServiceFailed', serviceId, e);
-
-            const errors = e instanceof ValidationException
-                ? e.errors
-                : ['internal errors'];
-
-            res['_headerSent'] === false && res.json({isValid: false, errors});
-
-            console.log(e);
+            res.json({isValid: false, errors: e.errors});
         }
     }))
     .delete(async((req, res) => {
-        let id = req.params.id,
-            serviceId;
-
         try {
-
-            serviceId = Guid.new();
-
-            EventEmitter.emit('onServiceStarted', serviceId, {command: {id}, state: req, service: 'removeGeneralLedgerAccount'});
-
-            new GeneralLedgerAccountService(req.branchId).remove(id);
-
-            EventEmitter.emit('onServiceSucceed', serviceId);
-
-            res.json({isValid: true});
+            RunService("generalLedgerAccountRemove", [req.params.id], req);
+            res.json({isValid: true})
         }
         catch (e) {
-            EventEmitter.emit('onServiceFailed', serviceId, e);
-
-            const errors = e instanceof ValidationException
-                ? e.errors
-                : ['internal errors'];
-
-            res['_headerSent'] === false && res.json({isValid: false, errors});
-
-            console.log(e);
+            res.json({isValid: false, errors: e.errors});
         }
     }));
 
