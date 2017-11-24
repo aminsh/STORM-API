@@ -19,7 +19,7 @@ router.route('/')
             result = entity;
         }
 
-        if(!result.subsidiaryLedgerAccounts)
+        if (!result.subsidiaryLedgerAccounts)
             result.subsidiaryLedgerAccounts = defaultSubsidiaryLedgerAccountTemplate;
         else {
             const accountNotExits = defaultSubsidiaryLedgerAccountTemplate.asEnumerable()
@@ -73,6 +73,13 @@ router.route('/')
         await(settingRepository.update(entity));
 
         res.json({isValid: true});
+    }));
+
+router.route('/:branchId')
+    .get(async((req, res) => {
+        const result = new SettingRepository(req.params.branchId).get();
+
+        res.json(result);
     }));
 
 module.exports = router;

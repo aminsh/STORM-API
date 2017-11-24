@@ -32,6 +32,11 @@ export default class Tabs{
                 label: "Application logger",
                 icon: "",
                 state: "logger"
+            },
+            {
+                label: "Branch settings",
+                icon: "",
+                state: "branchSettings"
             }
         ];
 

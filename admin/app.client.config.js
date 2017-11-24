@@ -17,7 +17,9 @@ import "angular-translate";
 import 'angular-ui-bootstrap';
 import "jsonformatter";
 import 'angular-ui-select';
+
 import clipboardModule from 'angular-clipboard';
+import 'angular-ui-codemirror';
 
 // [START] Storm Lumx Dependencies
 import "moment";
@@ -56,6 +58,7 @@ import EditDocController from "./client/editDoc";
 import PubSub from './client/pubSub';
 import Tabs from "./client/tabs";
 import ApplicationLoggerController from "./client/applicationLogger";
+import BranchSettingsController from "./client/branchSettings";
 
 let adminModule = angular.module('admin.module', [
     'ngAnimate',
@@ -67,7 +70,8 @@ let adminModule = angular.module('admin.module', [
     'lumx',
     'jsonFormatter',
     'ui.select',
-    clipboardModule.name
+    clipboardModule.name,
+    'ui.codemirror'
 ]);
 
 
@@ -124,6 +128,12 @@ adminModule
                 controller: 'applicationLoggerController',
                 controllerAs: 'model',
                 templateUrl: 'partials/templates/applicationLogger.html'
+            })
+            .state('branchSettings', {
+                url: '/branch-settings',
+                controller: 'branchSettingsController',
+                controllerAs: 'model',
+                templateUrl: 'partials/templates/branchSettings.html'
             });
     })
     .service('branchApi', BranchApi)
@@ -202,5 +212,6 @@ adminModule
     .controller('docsController', DocsController)
     .controller('addDocController', AddDocController)
     .controller('editDocController', EditDocController)
-    .controller('applicationLoggerController', ApplicationLoggerController);
+    .controller('applicationLoggerController', ApplicationLoggerController)
+    .controller('branchSettingsController', BranchSettingsController);
 
