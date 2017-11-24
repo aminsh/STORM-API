@@ -7,8 +7,9 @@ const ProductRepository = require('./data').ProductRepository,
     String = instanceOf('utility').String;
 
 class ProductService {
-    constructor(branchId) {
+    constructor(branchId, fiscalPeriodId) {
         this.branchId = branchId;
+        this.fiscalPeriodId = fiscalPeriodId;
 
         this.productRepository = new ProductRepository(branchId);
     }
@@ -145,8 +146,10 @@ class ProductService {
         this.productRepository.remove(id);
     }
 
-    addToInventoryInputFirst(id, fiscalPeriodId, DTO) {
-        const inventoryService = new InventoryService(this.branchId, fiscalPeriodId);
+    addToInventoryInputFirst(id, DTO) {
+
+        const fiscalPeriodId = this.fiscalPeriodId,
+            inventoryService = new InventoryService(this.branchId, fiscalPeriodId);
 
         if (String.isNullOrEmpty(fiscalPeriodId))
             throw new ValidationException(['دوره مالی تعیین نشده']);
