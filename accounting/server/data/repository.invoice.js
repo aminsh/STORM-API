@@ -68,22 +68,14 @@ class InvoiceRepository extends BaseRepository {
         return this.knex.table('invoiceLines').where('invoiceId', id);
     }
 
-    saleMaxNumber() {
+    maxNumber(invoiceType) {
         const result = await(this.knex.table('invoices')
             .modify(this.modify, this.branchId)
-            .where('invoiceType', 'sale')
+            .where('invoiceType', invoiceType)
             .max('number')
             .first());
 
         return result && result.max ? result.max || 0 : 0;
-    }
-
-    purchaseMaxNumber() {
-        return this.knex.table('invoices')
-            .modify(this.modify, this.branchId)
-            .where('invoiceType', 'purchase')
-            .max('number')
-            .first();
     }
 
     create(entity) {
