@@ -4,9 +4,6 @@ const async = require('asyncawait/async'),
     await = require('asyncawait/await'),
     router = require('express').Router(),
     EventEmitter = instanceOf('EventEmitter'),
-    Guid = instanceOf('utility').Guid,
-    InventoryInputService = ApplicationService.InventoryInputService,
-    InventoryOutputService = ApplicationService.InventoryOutputService,
     InventoryQuery = require('../queries/query.inventory');
 
 router.route('/inputs')
@@ -17,94 +14,33 @@ router.route('/inputs')
         return res.json(result);
     }))
     .post(async((req, res) => {
-        let cmd = req.body,
-            serviceId;
-
         try {
-
-            serviceId = Guid.new();
-
-            EventEmitter.emit('onServiceStarted', serviceId, {command: cmd, state: req, service: 'inventoryInputCreate'});
-
-            const id = new InventoryInputService(req.branchId, req.fiscalPeriodId).create(cmd);
-
-            EventEmitter.emit('onServiceSucceed', serviceId, {id});
-
-            res.json({isValid: true, returnValue: {id}});
-
+            const id = RunService("inventoryInputCreate", [req.body], req);
+            res.json({isValid: true, returnValue: {id}})
         }
         catch (e) {
-            EventEmitter.emit('onServiceFailed', serviceId, e);
-
-            const errors = e instanceof ValidationException
-                ? e.errors
-                : ['internal errors'];
-
-            res['_headerSent'] === false && res.json({isValid: false, errors});
-
-            console.log(e);
+            res.json({isValid: false, errors: e.errors});
         }
     }));
 
 router.route('/inputs/:id')
     .put(async((req, res) => {
 
-        let cmd = req.body,
-            id = req.params.id,
-            serviceId;
-
         try {
-
-            serviceId = Guid.new();
-
-            EventEmitter.emit('onServiceStarted', serviceId, {command: {cmd, id}, state: req, service: 'inventoryInputUpdate'});
-
-            new InventoryInputService(req.branchId, req.fiscalPeriodId).update(id, cmd);
-
-            EventEmitter.emit('onServiceSucceed', serviceId);
-
-            res.json({isValid: true});
-
+            RunService("inventoryInputUpdate", [req.params.id, req.body], req);
+            res.json({isValid: true})
         }
         catch (e) {
-            EventEmitter.emit('onServiceFailed', serviceId, e);
-
-            const errors = e instanceof ValidationException
-                ? e.errors
-                : ['internal errors'];
-
-            res['_headerSent'] === false && res.json({isValid: false, errors});
-
-            console.log(e);
+            res.json({isValid: false, errors: e.errors});
         }
     }))
-    .delete(async((req, res)=> {
-        let id = req.params.id,
-            serviceId;
-
+    .delete(async((req, res) => {
         try {
-
-            serviceId = Guid.new();
-
-            EventEmitter.emit('onServiceStarted', serviceId, {command: {id}, state: req, service: 'inventoryInputRemove'});
-
-            new InventoryInputService(req.branchId, req.fiscalPeriodId).remove(id);
-
-            EventEmitter.emit('onServiceSucceed', serviceId);
-
-            res.json({isValid: true});
-
+            RunService("inventoryInputRemove", [req.params.id], req);
+            res.json({isValid: true})
         }
         catch (e) {
-            EventEmitter.emit('onServiceFailed', serviceId, e);
-
-            const errors = e instanceof ValidationException
-                ? e.errors
-                : ['internal errors'];
-
-            res['_headerSent'] === false && res.json({isValid: false, errors});
-
-            console.log(e);
+            res.json({isValid: false, errors: e.errors});
         }
     }));
 
@@ -124,32 +60,12 @@ router.route('/outputs')
         return res.json(result);
     }))
     .post(async((req, res) => {
-        let cmd = req.body,
-            serviceId;
-
         try {
-
-            serviceId = Guid.new();
-
-            EventEmitter.emit('onServiceStarted', serviceId, {command: cmd, state: req, service: 'inventoryOutputCreate'});
-
-            const id = new InventoryOutputService(req.branchId, req.fiscalPeriodId).create(cmd);
-
-            EventEmitter.emit('onServiceSucceed', serviceId, {id});
-
-            res.json({isValid: true, returnValue: {id}});
-
+            const id = RunService("inventoryOutputCreate", [req.body], req);
+            res.json({isValid: true, returnValue: {id}})
         }
         catch (e) {
-            EventEmitter.emit('onServiceFailed', serviceId, e);
-
-            const errors = e instanceof ValidationException
-                ? e.errors
-                : ['internal errors'];
-
-            res['_headerSent'] === false && res.json({isValid: false, errors});
-
-            console.log(e);
+            res.json({isValid: false, errors: e.errors});
         }
 
     }));
@@ -157,62 +73,21 @@ router.route('/outputs')
 router.route('/outputs/:id')
     .put(async((req, res) => {
 
-        let cmd = req.body,
-            id = req.params.id,
-            serviceId;
-
         try {
-
-            serviceId = Guid.new();
-
-            EventEmitter.emit('onServiceStarted', serviceId, {command: {cmd, id}, state: req, service: 'inventoryOutputUpdate'});
-
-            new InventoryOutputService(req.branchId, req.fiscalPeriodId).update(id, cmd);
-
-            EventEmitter.emit('onServiceSucceed', serviceId);
-
-            res.json({isValid: true});
-
+            RunService("inventoryOutputUpdate", [req.params.id, req.body], req);
+            res.json({isValid: true})
         }
         catch (e) {
-            EventEmitter.emit('onServiceFailed', serviceId, e);
-
-            const errors = e instanceof ValidationException
-                ? e.errors
-                : ['internal errors'];
-
-            res['_headerSent'] === false && res.json({isValid: false, errors});
-
-            console.log(e);
+            res.json({isValid: false, errors: e.errors});
         }
     }))
-    .delete(async((req, res)=> {
-        let id = req.params.id,
-            serviceId;
-
+    .delete(async((req, res) => {
         try {
-
-            serviceId = Guid.new();
-
-            EventEmitter.emit('onServiceStarted', serviceId, {command: {id}, state: req, service: 'inventoryOutputRemove'});
-
-            new InventoryInputService(req.branchId, req.fiscalPeriodId).remove(id);
-
-            EventEmitter.emit('onServiceSucceed', serviceId);
-
-            res.json({isValid: true});
-
+            RunService("inventoryOutputRemove", [req.params.id], req);
+            res.json({isValid: true})
         }
         catch (e) {
-            EventEmitter.emit('onServiceFailed', serviceId, e);
-
-            const errors = e instanceof ValidationException
-                ? e.errors
-                : ['internal errors'];
-
-            res['_headerSent'] === false && res.json({isValid: false, errors});
-
-            console.log(e);
+            res.json({isValid: false, errors: e.errors});
         }
     }));
 

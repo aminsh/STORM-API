@@ -463,6 +463,63 @@
       "id"
     ],
     "returns": "id"
+  },
+
+  {
+    "name": "inventoryInputCreate",
+    "class": "InventoryInputService",
+    "method": "create",
+    "params": [
+      "command"
+    ],
+    "returns": "id"
+  },
+  {
+    "name": "inventoryInputUpdate",
+    "class": "InventoryInputService",
+    "method": "update",
+    "params": [
+      "id",
+      "command"
+    ],
+    "returns": ""
+  },
+  {
+    "name": "inventoryInputRemove",
+    "class": "InventoryInputService",
+    "method": "remove",
+    "params": [
+      "id"
+    ],
+    "returns": ""
+  },
+  {
+    "name": "inventoryOutputCreate",
+    "class": "InventoryOutputService",
+    "method": "create",
+    "params": [
+      "command"
+    ],
+    "returns": "id"
+  },
+  {
+    "name": "inventoryOutputUpdate",
+    "class": "InventoryOutputService",
+    "method": "update",
+    "params": [
+      "id",
+      "command"
+    ],
+    "returns": ""
+  },
+  {
+    "name": "inventoryOutputRemove",
+    "class": "InventoryOutputService",
+    "method": "remove",
+    "params": [
+      "id"
+    ],
+    "returns": ""
   }
 
 ]
