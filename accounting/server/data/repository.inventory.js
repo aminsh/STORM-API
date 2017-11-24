@@ -165,7 +165,7 @@ class InventoryRepository extends BaseRepository {
         const trx = await(this.transaction);
 
         try {
-            let lines = this.entity.inventoryLines;
+            let lines = entity.inventoryLines;
 
             delete  entity.inventoryLines;
 

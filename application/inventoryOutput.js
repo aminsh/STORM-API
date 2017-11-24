@@ -100,7 +100,7 @@ class OutputService {
 
     setInvoice(id, invoiceId) {
         if (Array.isArray(id))
-            id.forEach(id => this._setInvoice(id, invoiceId));
+            return id.forEach(id => this._setInvoice(id, invoiceId));
 
         this._setInvoice(id, invoiceId);
     }
