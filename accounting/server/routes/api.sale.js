@@ -2,25 +2,9 @@
 
 const async = require('asyncawait/async'),
     await = require('asyncawait/await'),
-    InvoiceService = ApplicationService.InvoiceService,
-    OutputService = ApplicationService.InventoryOutputService,
-    JournalService = ApplicationService.JournalService,
-    PaymentService = ApplicationService.PaymentService,
-    FiscalPeriodRepository = require('../data/repository.fiscalPeriod'),
     router = require('express').Router(),
-    String = require('../utilities/string'),
-    translate = require('../services/translateService'),
-    Guid = instanceOf('utility').Guid,
-    PersianDate = require('../services/persianDateService'),
-    SaleDomain = require('../domain/sale'),
-    DetailAccountDomain = require('../domain/detailAccount'),
-    ProductDomain = require('../domain/product'),
-    InvoiceRepository = require('../data/repository.invoice'),
     InvoiceQuery = require('../queries/query.invoice'),
-    PaymentRepository = require('../data/repository.payment'),
     PaymentQuery = require('../queries/query.payment'),
-    SettingRepository = require('../data/repository.setting'),
-    EventEmitter = require('../services/shared').service.EventEmitter,
     Crypto = require('../services/shared').service.Crypto,
     config = instanceOf('config'),
     md5 = require('md5'),
@@ -62,159 +46,29 @@ router.route('/')
 
     .post(async((req, res) => {
 
-        let cmd = req.body,
-            serviceId = 1;
-
         try {
 
-            /* create invoice */
-            serviceId = Guid.new();
+            const id = RunService("invoiceCreate", [req.body], req);
 
-            EventEmitter.emit('onServiceStarted', serviceId, {command: cmd, state: req, service: 'createInvoice'});
-
-            const invoiceService = new InvoiceService(req.branchId),
-                invoice = invoiceService.create(cmd);
-
-            EventEmitter.emit('onServiceSucceed', serviceId, invoice);
-
-            if (!['confirm', 'paid'].includes(cmd.status))
-                return res.json({isValid: true, returnValue: invoice});
-
-            /* create output */
-            serviceId = Guid.new();
-
-            EventEmitter.emit('onServiceStarted', serviceId, {
-                command: cmd,
-                state: req,
-                service: 'createInventoryOutputForInvoice'
-            });
-
-            const outputService = new OutputService(req.branchId, req.fiscalPeriodId),
-                outputIds = outputService.createForInvoice(invoice);
-
-            EventEmitter.emit('onServiceSucceed', serviceId, outputIds);
-
-            /* confirm invoice */
-            serviceId = Guid.new();
-
-            EventEmitter.emit('onServiceStarted', serviceId, {command: cmd, state: req, service: 'confirmInvoice'});
-
-            invoiceService.confirm(invoice.id);
-
-            EventEmitter.emit('onServiceSucceed', serviceId);
-
-            /* response */
-            res.json({isValid: true, returnValue: new InvoiceQuery(req.branchId).getById(invoice.id)});
-
-            serviceId = Guid.new();
-
-            EventEmitter.emit('onServiceStarted', serviceId, {
-                command: cmd,
-                state: req,
-                service: 'setInvoiceToInventory'
-            });
-
-            outputService.setInvoice(outputIds, invoice.id);
-
-            EventEmitter.emit('onServiceSucceed', serviceId);
-
-
-            serviceId = Guid.new();
-
-            EventEmitter.emit('onServiceStarted', serviceId, {
-                command: cmd,
-                state: req,
-                service: 'journalGenerateForInvoice'
-            });
-
-            let journalId = new JournalService(req.branchId, req.fiscalPeriodId, req.user)
-                .generateForInvoice(invoice.id);
-
-            invoiceService.setJournal(invoice.id, journalId);
-
-            EventEmitter.emit('onServiceSucceed', serviceId, journalId);
-
-
-            /* calculate price for output */
-            serviceId = Guid.new();
-
-            EventEmitter.emit('onServiceStarted', serviceId, {
-                command: cmd,
-                state: req,
-                service: 'calculateOutputPrice'
-            });
-
-            outputIds.asEnumerable().forEach(id => outputService.calculatePrice(id));
-
-            EventEmitter.emit('onServiceSucceed', serviceId);
-
-            /* generate output from output sale */
-            serviceId = Guid.new();
-
-            EventEmitter.emit('onServiceStarted', serviceId, {
-                command: cmd,
-                state: req,
-                service: 'journalGenerateForOutputSale'
-            });
-
-            const journalIds = new JournalService(req.branchId, req.fiscalPeriodId, req.user)
-                .generateForOutputSale(outputIds);
-
-            journalIds.forEach(item => outputService.setJournal(item.id, item.journalId));
-
-            EventEmitter.emit('onServiceSucceed', serviceId, journalId);
+            res.json({isValid: true, returnValue: {id}});
 
         }
         catch (e) {
-
-            EventEmitter.emit('onServiceFailed', serviceId, e);
-
-            const errors = e instanceof ValidationException
-                ? e.errors
-                : ['internal errors'];
-
-            res['_headerSent'] === false && res.json({isValid: false, errors});
-
-            console.log(e);
+            res.json({isValid: false, errors: e.errors});
         }
 
     }));
 
 router.route('/:id/confirm')
     .post(async((req, res) => {
+        try {
+            RunService("invoiceConfirm", [req.params.id], req);
 
-        let branchId = req.branchId,
-            fiscalPeriodId = req.fiscalPeriodId,
-            invoiceRepository = new InvoiceRepository(branchId),
-            cmd = req.body,
-            entity = {invoiceStatus: 'waitForPayment'},
-            id = req.params.id,
-            invoice = await(invoiceRepository.findById(id)),
-            settingRepository = new SettingRepository(branchId),
-            errors = [],
-            current = {
-                branchId,
-                fiscalPeriodId: req.fiscalPeriodId,
-                userId: req.user.id
-            },
-            settings = await(settingRepository.get()),
-            sale = Object.assign(invoice, cmd);
-
-        if (invoice.invoiceStatus !== 'draft')
-            errors.push('این فاکتور قبلا تایید شده');
-
-        if (settings.canControlInventory)
-            errors = await(instanceOf('inventory.control',
-                branchId, fiscalPeriodId, settings).control(sale));
-
-        if (errors.length !== 0)
-            return res.json({isValid: false, errors});
-
-        await(invoiceRepository.update(id, entity));
-
-        res.json({isValid: true});
-
-        EventEmitter.emit('on-sale-created', sale, current);
+            res.json({isValid: true});
+        }
+        catch (e){
+            res.json({isValid: false, errors: e.errors})
+        }
     }));
 
 router.route('/:id')
@@ -225,216 +79,37 @@ router.route('/:id')
         res.json(result);
     }))
     .put(async((req, res) => {
-        let cmd = req.body,
-            serviceId = 1;
-
         try {
+            RunService("invoiceUpdate", [req.params.id, req.body], req);
 
-            /* create invoice */
-            serviceId = Guid.new();
-
-            EventEmitter.emit('onServiceStarted', serviceId, {command: cmd, state: req, service: 'updateInvoice'});
-
-            const invoiceService = new InvoiceService(req.branchId);
-            invoiceService.update(req.params.id, cmd);
-
-            const invoice = new InvoiceQuery(req.branchId).getById(req.params.id);
-
-            EventEmitter.emit('onServiceSucceed', serviceId);
-
-            if (!['confirm', 'paid'].includes(cmd.status))
-                return res.json({isValid: true});
-
-            /* create output */
-            serviceId = Guid.new();
-
-            EventEmitter.emit('onServiceStarted', serviceId, {
-                command: cmd,
-                state: req,
-                service: 'createInventoryOutputForInvoice'
-            });
-
-            const outputService = new OutputService(req.branchId, req.fiscalPeriodId),
-                outputIds = outputService.createForInvoice(invoice);
-
-            EventEmitter.emit('onServiceSucceed', serviceId, outputIds);
-
-            /* confirm invoice */
-            serviceId = Guid.new();
-
-            EventEmitter.emit('onServiceStarted', serviceId, {command: cmd, state: req, service: 'confirmInvoice'});
-
-            invoiceService.confirm(invoice.id);
-
-            EventEmitter.emit('onServiceSucceed', serviceId);
-
-            /* response */
-            res.json({isValid: true, returnValue: invoice});
-
-            serviceId = Guid.new();
-
-            EventEmitter.emit('onServiceStarted', serviceId, {
-                command: cmd,
-                state: req,
-                service: 'setInvoiceToInventory'
-            });
-
-            outputService.setInvoice(outputIds, invoice.id);
-
-            EventEmitter.emit('onServiceSucceed', serviceId);
-
-
-            serviceId = Guid.new();
-
-            EventEmitter.emit('onServiceStarted', serviceId, {
-                command: cmd,
-                state: req,
-                service: 'journalGenerateForInvoice'
-            });
-
-            let journalId = new JournalService(req.branchId, req.fiscalPeriodId, req.user)
-                .generateForInvoice(invoice.id);
-
-            invoiceService.setJournal(invoice.id, journalId);
-
-            EventEmitter.emit('onServiceSucceed', serviceId, journalId);
-
-
-            /* calculate price for output */
-            serviceId = Guid.new();
-
-            EventEmitter.emit('onServiceStarted', serviceId, {
-                command: cmd,
-                state: req,
-                service: 'calculateOutputPrice'
-            });
-
-            outputIds.asEnumerable().forEach(id => outputService.calculatePrice(id));
-
-            EventEmitter.emit('onServiceSucceed', serviceId);
-
-            /* generate output from output sale */
-            serviceId = Guid.new();
-
-            EventEmitter.emit('onServiceStarted', serviceId, {
-                command: cmd,
-                state: req,
-                service: 'journalGenerateForOutputSale'
-            });
-
-            const journalIds = new JournalService(req.branchId, req.fiscalPeriodId, req.user)
-                .generateForOutputSale(outputIds);
-
-            journalIds.forEach(item => outputService.setJournal(item.id, item.journalId));
-
-            EventEmitter.emit('onServiceSucceed', serviceId, journalId);
-
+            res.json({isValid: true});
         }
-        catch (e) {
-
-            EventEmitter.emit('onServiceFailed', serviceId, e);
-
-            const errors = e instanceof ValidationException
-                ? e.errors
-                : ['internal errors'];
-
-            res['_headerSent'] === false && res.json({isValid: false, errors});
-
-            console.log(e);
+        catch (e){
+            res.json({isValid: false, errors: e.errors})
         }
-
     }))
     .delete(async((req, res) => {
-        let id = req.params.id,
-            serviceId = 1;
+        try {
+            RunService("invoiceRemove", [req.params.id], req);
 
-            try {
-                serviceId = Guid.new();
-
-                EventEmitter.emit('onServiceStarted', serviceId, {command: {id}, state: req, service: 'invoiceRemove'});
-
-                new InvoiceService(req.branchId).remove(id);
-
-                EventEmitter.emit('onServiceSucceed', serviceId);
-
-                res.json({isValid: true});
-            }
-            catch (e){
-
-                EventEmitter.emit('onServiceFailed', serviceId, e);
-
-                const errors = e instanceof ValidationException
-                    ? e.errors
-                    : ['internal errors'];
-
-                res['_headerSent'] === false && res.json({isValid: false, errors});
-
-                console.log(e);
-            }
+            res.json({isValid: true});
+        }
+        catch (e){
+            res.json({isValid: false, errors: e.errors})
+        }
     }));
 
 router.route('/:id/pay')
     .post(async((req, res) => {
 
-        let cmd = req.body,
-            id = req.params.id,
-            serviceId = 1,
-            paymentService = new PaymentService(req.branchId);
-
         try {
-            serviceId = Guid.new();
 
-            EventEmitter.emit('onServiceStarted', serviceId, {command: cmd, state: req, service: 'paymentCreate'});
-
-            const payments = paymentService.create(cmd, 'receive');
-
-            EventEmitter.emit('onServiceSucceed', serviceId, payments);
-
-            res.json({isValid: true});
-
-            serviceId = Guid.new();
-
-            EventEmitter.emit('onServiceStarted', serviceId, {command: {payments, invoiceId: id}, state: req, service: 'setInvoiceForPayment'});
-
-            paymentService.setInvoiceForAll(payments, id);
-
-            EventEmitter.emit('onServiceSucceed', serviceId);
-
-            serviceId = Guid.new();
-
-            EventEmitter.emit('onServiceStarted', serviceId, {command: {payments, invoiceId: id}, state: req, service: 'journalGeneratePaymentForInvoice'});
-
-            const paymentWithJournalIds = new JournalService(req.branchId).generatePaymentForInvoice(payments, id);
-
-            EventEmitter.emit('onServiceSucceed', serviceId, paymentWithJournalIds);
-
-            serviceId = Guid.new();
-
-            EventEmitter.emit('onServiceStarted', serviceId, {command: {paymentWithJournalIds}, state: req, service: 'paymentSetJournalLine'});
-
-            paymentService.setJournalLineForAll(paymentWithJournalIds);
-
-            EventEmitter.emit('onServiceSucceed', serviceId);
-
-            serviceId = Guid.new();
-
-            EventEmitter.emit('onServiceStarted', serviceId, {command: {paymentWithJournalIds}, state: req, service: 'invoiceChangeStatusIfPaidIsCompleted'});
-
-            new InvoiceService(req.branchId).changeStatusIfPaidIsCompleted(id);
-
-            EventEmitter.emit('onServiceSucceed', serviceId);
+            RunService("invoicePay", [req.params.id, req.body], req);
         }
-        catch (e){
-            EventEmitter.emit('onServiceFailed', serviceId, e);
-
-            const errors = e instanceof ValidationException
-                ? e.errors
-                : ['internal errors'];
-
-            res['_headerSent'] === false && res.json({isValid: false, errors});
-
-            console.log(e);
+        catch (e) {
+            res.json({isValid: false, errors: e.errors})
         }
+
     }));
 
 router.route('/:id/payments').get(async((req, res) => {
