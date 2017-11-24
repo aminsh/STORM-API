@@ -54,6 +54,63 @@
     ],
     "returns": "undefined"
   },
+
+  {
+    "name": "invoicePurchaseCreate",
+    "class": "InvoicePurchaseService",
+    "method": "create",
+    "params": ["command"],
+    "returns": "id"
+  },
+  {
+    "name": "invoicePurchaseUpdate",
+    "class": "InvoicePurchaseService",
+    "method": "update",
+    "params": [
+      "id",
+      "command"
+    ],
+    "returns": "undefined"
+  },
+  {
+    "name": "invoicePurchaseConfirm",
+    "class": "InvoicePurchaseService",
+    "method": "confirm",
+    "params": [
+      "id"
+    ],
+    "returns": "undefined"
+  },
+  {
+    "name": "invoicePurchaseRemove",
+    "class": "InvoicePurchaseService",
+    "method": "remove",
+    "params": [
+      "id"
+    ],
+    "returns": "undefined"
+  },
+  {
+    "name": "invoicePurchaseSetJournal",
+    "class": "InvoicePurchaseService",
+    "method": "setJournal",
+    "params": [
+      "id",
+      "journalId"
+    ],
+    "returns": "undefined"
+  },
+  {
+    "name": "invoicePurchasePay",
+    "class": "InvoicePurchaseService",
+    "method": "pay",
+    "params": [
+      "id",
+      "payments"
+    ],
+    "returns": "undefined"
+  },
+
   {
     "name": "journalCreate",
     "class": "JournalService",
@@ -166,5 +223,122 @@
       "journalLineId"
     ],
     "returns": ""
+  },
+
+  {
+    "name": "detailAccountCreate",
+    "class": "DetailAccountService",
+    "method": "create",
+    "params": [
+      "command"
+    ],
+    "returns": "id"
+  },
+  {
+    "name": "detailAccountUpdate",
+    "class": "DetailAccountService",
+    "method": "update",
+    "params": [
+      "id",
+      "command"
+    ],
+    "returns": ""
+  },
+  {
+    "name": "detailAccountRemove",
+    "class": "DetailAccountService",
+    "method": "remove",
+    "params": [
+      "id"
+    ],
+    "returns": ""
+  },
+
+  {
+    "name": "fundCreate",
+    "class": "FundService",
+    "method": "create",
+    "params": [
+      "command"
+    ],
+    "returns": "id"
+  },
+  {
+    "name": "fundUpdate",
+    "class": "FundService",
+    "method": "update",
+    "params": [
+      "id",
+      "command"
+    ],
+    "returns": ""
+  },
+  {
+    "name": "fundRemove",
+    "class": "FundService",
+    "method": "remove",
+    "params": [
+      "id"
+    ],
+    "returns": ""
+  },
+
+  {
+    "name": "bankCreate",
+    "class": "BankService",
+    "method": "create",
+    "params": [
+      "command"
+    ],
+    "returns": "id"
+  },
+  {
+    "name": "bankUpdate",
+    "class": "BankService",
+    "method": "update",
+    "params": [
+      "id",
+      "command"
+    ],
+    "returns": ""
+  },
+  {
+    "name": "bankRemove",
+    "class": "BankService",
+    "method": "remove",
+    "params": [
+      "id"
+    ],
+    "returns": ""
+  },
+
+  {
+    "name": "personCreate",
+    "class": "PersonService",
+    "method": "create",
+    "params": [
+      "command"
+    ],
+    "returns": "id"
+  },
+  {
+    "name": "personUpdate",
+    "class": "PersonService",
+    "method": "update",
+    "params": [
+      "id",
+      "command"
+    ],
+    "returns": ""
+  },
+  {
+    "name": "personRemove",
+    "class": "PersonService",
+    "method": "remove",
+    "params": [
+      "id"
+    ],
+    "returns": ""
   }
+
 ]

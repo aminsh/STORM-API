@@ -13,14 +13,18 @@ const async = require('asyncawait/async'),
     SettingRepository = require('./data').SettingsRepository,
     PaymentRepository = require('./data').PaymentRepository,
     DetailAccount = require('./detailAccount'),
-    Product = require('./product');
+    Product = require('./product'),
+    InputPurchaseService = require('./inputPurchase'),
+    PaymentService = require("./payment");
 
 
 class InvoiceService {
 
-    constructor(branchId) {
+    constructor(branchId, fiscalPeriodId) {
 
         this.branchId = branchId;
+        this.fiscalPeriodId = fiscalPeriodId;
+
         this.invoiceRepository = new InvoiceRepository(branchId);
         this.fiscalPeriodRepository = new FiscalPeriodRepository(branchId);
         this.detailAccount = new DetailAccount(branchId);
@@ -86,14 +90,52 @@ class InvoiceService {
         }
     }
 
+    /**
+     * @private
+     */
+    _setForInventoryPurchase(entity) {
+        const inputPurchaseService = new InputPurchaseService(this.branchId, this.fiscalPeriodId);
+
+        let inventoryIds = inputPurchaseService.create(entity);
+
+        if (inventoryIds) {
+            inputPurchaseService.inputService.setInvoice(inventoryIds, entity.id);
+            this.invoiceRepository.update(entity.id, {inventoryIds});
+            inputPurchaseService.setPrice(inventoryIds, entity.id);
+        }
+    }
+
+    /**
+     * @private
+     */
+    _changeStatusIfPaidIsCompleted(id) {
+
+        let invoice = await(this.invoiceRepository.findById(id)),
+            sumPayments = new PaymentRepository(this.branchId).getBySumAmountByInvoiceId(invoiceId).sum || 0,
+
+            totalPrice = invoice.invoiceLines.asEnumerable()
+                .sum(e => (e.unitPrice * e.quantity) - e.discount + e.vat);
+
+        if (sumPayments >= totalPrice)
+            this.invoiceRepository.update(invoiceId, {invoiceStatus: 'paid'});
+    }
+
     create(cmd) {
 
-        let entity = this.mapToEntity(cmd);
+        let entity = this.mapToEntity(cmd),
+            errors = this.validation(entity);
 
+        if (errors.length > 0)
+            throw new ValidationException(errors);
+
+        entity.number = this.invoiceRepository.maxNumber('purchase') + 1;
         entity.invoiceType = 'purchase';
-        entity.invoiceStatus = 'draft';
+        entity.invoiceStatus = cmd.status !== 'draft' ? 'waitForPayment' : 'draft';
 
-        entity = this.invoiceRepository.create(entity);
+        this.invoiceRepository.create(entity);
+
+        if (entity.invoiceStatus !== 'draft')
+            this._setForInventoryPurchase(entity);
 
         return new InvoiceQuery(this.branchId).getById(entity.id);
     }
@@ -111,10 +153,9 @@ class InvoiceService {
 
         let data = {invoiceStatus: 'waitForPayment'};
 
-        if(!entity.number)
-            data.number = this.invoiceRepository.maxNumber('purchase') + 1;
-
         this.invoiceRepository.update(id, data);
+
+        this._setForInventoryPurchase(entity);
     }
 
     update(id, cmd) {
@@ -127,6 +168,9 @@ class InvoiceService {
         let entity = this.mapToEntity(cmd);
 
         this.invoiceRepository.updateBatch(id, entity);
+
+        if (entity.invoiceStatus !== 'draft')
+            this._setForInventoryPurchase(entity);
     }
 
     remove(id) {
@@ -155,6 +199,16 @@ class InvoiceService {
         return entity.id;
     }
 
+    pay(id, payments) {
+        const paymentService = new PaymentService(this.branchId),
+
+            paymentIds = paymentService.create(payments, 'pay');
+
+        paymentService.setInvoiceForAll(paymentIds, id);
+
+        this._changeStatusIfPaidIsCompleted(id);
+    }
+
     updateReturnSale(id, cmd) {
 
         let entity = this.mapToEntity(cmd),
@@ -170,17 +224,7 @@ class InvoiceService {
         return this.invoiceRepository.update(id, {journalId});
     }
 
-    changeStatusIfPaidIsCompleted(id) {
 
-        let invoice = await(this.invoiceRepository.findById(id)),
-            sumPayments = new PaymentRepository(this.branchId).getBySumAmountByInvoiceId(invoiceId).sum || 0,
-
-            totalPrice = invoice.invoiceLines.asEnumerable()
-                .sum(e => (e.unitPrice * e.quantity) - e.discount + e.vat);
-
-        if (sumPayments >= totalPrice)
-            this.invoiceRepository.update(invoiceId, {invoiceStatus: 'paid'});
-    }
 }
 
 module.exports = InvoiceService;
