@@ -80,6 +80,15 @@ router.route('/:branchId')
         const result = new SettingRepository(req.params.branchId).get();
 
         res.json(result);
+    }))
+    .put(async((req, res) => {
+        let entity = {
+            events: JSON.stringify(req.body.events)
+        };
+
+        new SettingRepository(req.params.branchId).update(entity);
+
+        res.json({isValid: true});
     }));
 
 module.exports = router;

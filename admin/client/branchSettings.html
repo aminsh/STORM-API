@@ -1,7 +1,34 @@
 <div class="tab-content">
     <div id="tab-1" class="tab-pane active">
-       <ui-codemirror ui-codemirror-opts="model.codemirrorOptions" ng-model="model.code"></ui-codemirror>
+      <div class="row">
+          <div class="col-md-6">
+              <div>
+                  <lx-button lx-type="raised" lx-color="green" ng-click="model.save()">Save</lx-button>
 
-        <h1>{{model.code | json}}</h1>
+              </div>
+              <div>
+                  <dev-tag-combo-box
+                          k-placeholder="{{'Select' | translate}}"
+                          k-data-text-field="display"
+                          k-data-value-field="id"
+                          k-on-changed="model.onBranchChanged($item)"
+                          url="/api/branches"
+                          ng-model="model.branchId"></dev-tag-combo-box>
+              </div>
+              <div ng-repeat="e in model.events">
+                  <lx-button lx-color="white" ng-click="model.onEventClick(e)">{{e.module}} - {{e.event}}</lx-button>
+
+              </div>
+          </div>
+
+          <div class="col-md-6" ng-if="model.branch && model.event">
+              <div class="row" >
+                  <ui-codemirror ui-codemirror-opts="model.codemirrorOptions" ng-model="model.event.handler"></ui-codemirror>
+              </div>
+              <div class="row">
+                  <h5>Branch :{{model.branch.name}} - Event : {{model.event.module}} - {{model.event.event}}</h5>
+              </div>
+          </div>
+      </div>
     </div>
 </div>

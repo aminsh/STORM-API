@@ -82,4 +82,8 @@ export default class BranchApi {
         return this.apiPromise.get(`/acc/api/settings/${id}`);
     }
 
+    saveSettings(id, data){
+        return this.apiPromise.put(`/acc/api/settings/${id}`, data);
+    }
+
 }
