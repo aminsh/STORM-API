@@ -1,0 +1,18 @@
+[
+  {
+    "module": "invoice",
+    "event": "created"
+  },
+  {
+    "module": "invoice",
+    "event": "edited"
+  },
+  {
+    "module": "invoice",
+    "event": "confirmed"
+  },
+  {
+    "module": "invoice",
+    "event": "removed"
+  }
+]

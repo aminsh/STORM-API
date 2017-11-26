@@ -25,7 +25,9 @@ let ApplicationService = {
     JournalService: require('./journal'),
     PaymentService: require('./payment'),
     GeneralLedgerAccountService: require('./generalLedgerAccount'),
-    SubsidiaryLedgerAccountService: require('./subsidiaryLedgerAccount')
+    SubsidiaryLedgerAccountService: require('./subsidiaryLedgerAccount'),
+    SettingsService: require('./settings'),
+    SMSService: require('./SMS')
 };
 
 global.ApplicationService = ApplicationService;
