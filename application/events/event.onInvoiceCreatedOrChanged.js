@@ -3,25 +3,17 @@
 const async = require('asyncawait/async'),
     EventEmitter = instanceOf('EventEmitter'),
     InvoiceQuery = require('../queries').InvoiceQuery,
-    SettingsService = require('../settings'),
+    handle = require('./handle'),
     defaultOnInvoiceCreated = require('../defaulEventHandlers/invoice.events');
 
 
-function onInvoiceCreatedChanged(invoiceId, state) {
+function onInvoiceCreatedChanged(event, invoiceId, state) {
 
-    let invoice = new InvoiceQuery(state.branchId).getById(invoiceId),
-        event = new SettingsService(state.branchId).getEvent('invoice', 'created'),
-        handler = event && event.handler
-            ? eval(`(${event.handler})`)
-            : defaultOnInvoiceCreated;
+    let invoice = new InvoiceQuery(state.branchId).getById(invoiceId);
 
-    handler.call({runService}, invoice);
-
-    function runService(serviceName, params) {
-        return RunService(serviceName, params, state);
-    }
+    handle("invoice", event, defaultOnInvoiceCreated, state, invoice);
 }
 
-EventEmitter.on("onInvoiceCreated", async(onInvoiceCreatedChanged));
-EventEmitter.on("onInvoiceEdited", async(onInvoiceCreatedChanged));
-EventEmitter.on("onInvoiceConfirmed", async(onInvoiceCreatedChanged));
+EventEmitter.on("onInvoiceCreated", async((invoiceId, state) => onInvoiceCreatedChanged("created", invoiceId, state)));
+EventEmitter.on("onInvoiceEdited", async((invoiceId, state) => onInvoiceCreatedChanged("edited", invoiceId, state)));
+EventEmitter.on("onInvoiceConfirmed", async((invoiceId, state) => onInvoiceCreatedChanged("confirmed", invoiceId, state)));
