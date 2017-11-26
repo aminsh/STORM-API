@@ -665,6 +665,16 @@
       "command"
     ],
     "returns": "id"
+  },
+
+  {
+    "name": "sendSMS",
+    "class": "SMSService",
+    "method": "send",
+    "params": [
+      "massage"
+    ],
+    "returns": ""
   }
 
 ]
