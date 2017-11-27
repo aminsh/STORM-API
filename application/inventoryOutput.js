@@ -2,6 +2,7 @@
 
 const async = require('asyncawait/async'),
     await = require('asyncawait/await'),
+    EventEmitter = instanceOf('EventEmitter'),
     PersianDate = instanceOf('utility').PersianDate,
     String = instanceOf('utility').String,
     Enums = instanceOf('Enums'),
@@ -13,7 +14,9 @@ const async = require('asyncawait/async'),
 
 class OutputService {
 
-    constructor(branchId, fiscalPeriodId) {
+    constructor(branchId, fiscalPeriodId, user) {
+
+        this.args = {branchId, fiscalPeriodId, user};
 
         this.fiscalPeriodId = fiscalPeriodId;
         this.branchId = branchId;
@@ -94,6 +97,8 @@ class OutputService {
             })).toArray();
 
         await(this.inventoryRepository.create(output));
+
+        EventEmitter.emit("onOutputCreated", output.id, this.args);
 
         return output;
     }

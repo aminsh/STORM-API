@@ -14,5 +14,10 @@
   {
     "module": "invoice",
     "event": "removed"
+  },
+
+  {
+    "module": "output",
+    "event": "created"
   }
 ]

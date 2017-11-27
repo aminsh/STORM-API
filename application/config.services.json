@@ -112,6 +112,35 @@
   },
 
   {
+    "name": "journalUpdate",
+    "class": "JournalService",
+    "method": "update",
+    "params": [
+      "id",
+      "command"
+    ],
+    "returns": ""
+  },
+  {
+    "name": "journalRemove",
+    "class": "JournalService",
+    "method": "remove",
+    "params": [
+      "id"
+    ],
+    "returns": ""
+  },
+  {
+    "name": "journalClone",
+    "class": "JournalService",
+    "method": "clone",
+    "params": [
+      "id"
+    ],
+    "returns": "journalId"
+  },
+
+  {
     "name": "journalCreate",
     "class": "JournalService",
     "method": "create",
@@ -171,7 +200,7 @@
     "class": "JournalService",
     "method": "generateForOutputSale",
     "params": [
-      "outputIds"
+      "outputId"
     ],
     "returns": "Array{journalId, id}"
   },
@@ -516,6 +545,15 @@
     "name": "inventoryOutputRemove",
     "class": "InventoryOutputService",
     "method": "remove",
+    "params": [
+      "id"
+    ],
+    "returns": ""
+  },
+  {
+    "name": "inventoryOutputCalculatePrice",
+    "class": "InventoryOutputService",
+    "method": "calculatePrice",
     "params": [
       "id"
     ],
