@@ -69,9 +69,9 @@ class ProductRepository extends BaseRepository {
     }
 
     update(id, entity) {
-        return this.knex('products')
+        return await(this.knex('products')
             .modify(this.modify, this.branchId)
-            .where('id', id).update(entity);
+            .where('id', id).update(entity));
     }
 
     remove(id) {

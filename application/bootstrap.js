@@ -68,6 +68,8 @@ function RunService(serviceName, parameters, state) {
     }
     catch (e) {
 
+        console.log(e);
+
         if (e instanceof ValidationException) {
             EventEmitter.emit('onServiceInvalid', serviceId, e);
 

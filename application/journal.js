@@ -87,20 +87,6 @@ class JournalService {
         }
     }
 
-    _generateForOutputSale(outputId) {
-
-        const output = new InventoryRepository(this.branchId).findById(outputId),
-
-            model = {
-                number: output.number,
-                date: output.date,
-                amount: output.inventoryLines.asEnumerable().sum(line => line.unitPrice * line.quantity)
-            },
-
-            journal = await(this.journalGenerationTemplateService.generate(model, 'inventoryOutputSale'));
-
-        return this.create(journal);
-    }
 
     create(cmd) {
 
@@ -262,14 +248,19 @@ class JournalService {
         return this.create(journal);
     }
 
-    generateForOutputSale(outputIds) {
+    generateForOutputSale(outputId) {
 
-        return outputIds.asEnumerable()
-            .select(id => ({
-                id,
-                journalId: this._generateForOutputSale(id)
-            }))
-            .toArray();
+        const output = new InventoryRepository(this.branchId).findById(outputId),
+
+            model = {
+                number: output.number,
+                date: output.date,
+                amount: output.inventoryLines.asEnumerable().sum(line => line.unitPrice * line.quantity)
+            },
+
+            journal = await(this.journalGenerationTemplateService.generate(model, 'inventoryOutputSale'));
+
+        return this.create(journal);
     }
 
     generatePaymentForInvoice(payments, invoiceId) {

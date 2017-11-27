@@ -74,17 +74,17 @@ class DetailAccountRepository extends BaseRepository {
     }
 
     update(entity) {
-        return this.knex('detailAccounts')
+        return await(this.knex('detailAccounts')
             .modify(this.modify, this.branchId)
             .where('id', entity.id)
-            .update(entity);
+            .update(entity));
     }
 
     remove(id) {
-        return this.knex('detailAccounts')
+        return await(this.knex('detailAccounts')
             .modify(this.modify, this.branchId)
             .where('id', id)
-            .del();
+            .del());
     }
 }
 
