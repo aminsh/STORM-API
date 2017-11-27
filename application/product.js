@@ -59,7 +59,9 @@ class Product {
             salePrice: cmd.salePrice,
             categoryId: cmd.categoryId,
             scaleId: cmd.scaleId,
-            referenceId: cmd.referenceId
+            referenceId: cmd.referenceId,
+            barcode: cmd.barcode
+
         };
 
         this.productRepository.create(entity);
@@ -119,7 +121,8 @@ class Product {
             salePrice: cmd.salePrice,
             categoryId: cmd.categoryId,
             scaleId: cmd.scaleId,
-            referenceId: cmd.referenceId
+            referenceId: cmd.referenceId,
+            barcode: cmd.barcode
         };
 
         this.productRepository.update(id, entity);
