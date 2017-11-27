@@ -10,16 +10,16 @@ const async = require('asyncawait/async'),
     SubsidiaryLedgetAccount = require('../data/repository.subsidiaryLedgerAccount'),
     DetailAccountRepository = require('../data/repository.detailAccount'),
 
-    getSubLedgerByType = async((type, repository) => {
-        let code;
+    Subledger = require('../domain/subledger'),
 
-        if (type == 'fund')
-            code = '1101';
-        if (type == 'bank')
-            code = '1103';
+    getSubLedgerByType = (type, branchId) => {
+        let subledger = new Subledger(branchId);
 
-        return repository.findByCode(code);
-    });
+        if (type === 'fund')
+            return subledger.fundAccount();
+        if (type === 'bank')
+            return subledger.bankAccount()
+    };
 
 
 router.route('/')
@@ -47,8 +47,8 @@ router.route('/')
                 )
             },
 
-            sourceSubLedger = await(getSubLedgerByType(cmd.source.type, subsidiaryLedgerAccountRepository)),
-            targetSubLedger = await(getSubLedgerByType(cmd.target.type, subsidiaryLedgerAccountRepository)),
+            sourceSubLedger = getSubLedgerByType(cmd.source.type, req.branchId),
+            targetSubLedger = getSubLedgerByType(cmd.target.type, req.branchId),
             journalLines = [
                 {
                     row: 1,

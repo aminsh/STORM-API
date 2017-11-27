@@ -23,6 +23,14 @@ router.route('/inputs')
         }
     }));
 
+router.route('/products')
+    .get(async((req,res)=> {
+        let inventoryQuery = new InventoryQuery(req.branchId),
+            result = await(inventoryQuery.getAllInventoryProducts(req.query));
+
+        return res.json(result);
+    }));
+
 router.route('/inputs/:id')
     .put(async((req, res) => {
 

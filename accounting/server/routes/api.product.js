@@ -31,10 +31,6 @@ router.route('/')
 
 router.route('/batch')
     .post(async((req, res) => {
-
-        let cmd = req.body,
-            ids;
-
         try {
 
             ids = RunService("productCreateBatch", [cmd.products], req);

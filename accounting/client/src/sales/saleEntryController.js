@@ -39,7 +39,26 @@ class SaleEntryController extends InvoiceEntryControllerBase {
 
         this.pageTitle = this.onEditMode ? 'Edit sale' : 'Create sale';
 
+        $scope.$watch(
+            () => this.settings,
+            this.assignDefaultDescription.bind(this)
+        );
+
         this.inventoryApi = inventoryApi;
+    }
+
+    assignDefaultDescription() {
+
+        if (!this.settings)
+            return;
+
+        if (this.onEditMode)
+            return;
+
+        if (this.invoice.description.length > 0)
+            return;
+
+        this.invoice.description = this.settings.invoiceDescription;
     }
 
     onShowSelectStock(item) {

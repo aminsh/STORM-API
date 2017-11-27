@@ -47,11 +47,9 @@ router.route('/')
     .post(async((req, res) => {
 
         try {
-
             const id = RunService("invoiceCreate", [req.body], req);
 
             res.json({isValid: true, returnValue: {id}});
-
         }
         catch (e) {
             res.json({isValid: false, errors: e.errors});
@@ -81,8 +79,6 @@ router.route('/:id')
     .put(async((req, res) => {
         try {
             RunService("invoiceUpdate", [req.params.id, req.body], req);
-
-            res.json({isValid: true});
         }
         catch (e){
             res.json({isValid: false, errors: e.errors})

@@ -4,6 +4,7 @@ const BaseQuery = require('./query.base'),
     async = require('asyncawait/async'),
     await = require('asyncawait/await'),
     kendoQueryResolve = require('../services/kendoQueryResolve'),
+    productView = require('../viewModel.assemblers/view.product'),
     Enums = instanceOf('Enums'),
 
     view = item => ({
@@ -30,6 +31,35 @@ const BaseQuery = require('./query.base'),
 class InventoryQuery extends BaseQuery {
     constructor(branchId) {
         super(branchId);
+    }
+
+    getAllInventoryProducts(parameters) {
+        let stockId = parameters.extra && parameters.extra.filter
+                ? parameters.extra.filter.stockId
+                : null,
+            knex = this.knex,
+            branchId = this.branchId,
+
+
+            subquery = knex.select('productId')
+                .from('inventoryLines')
+                .innerJoin('inventories', 'inventories.id', 'inventoryLines.inventoryId')
+                .where('inventoryLines.branchId', branchId);
+
+        if (stockId)
+            subquery.andWhere('inventories.stockId', stockId);
+
+        let query = knex.select()
+            .from(function () {
+                this.select('products.*', knex.raw('scales.title as "scaleDisplay"'))
+                    .from('products')
+                    .leftJoin('scales', 'products.scaleId', 'scales.id')
+                    .where('products.branchId', branchId)
+                    .whereIn('products.id', subquery)
+                    .as('base');
+            });
+
+        return kendoQueryResolve(query, parameters, productView);
     }
 
     getAll(inventoryType, parameters) {
@@ -59,11 +89,11 @@ class InventoryQuery extends BaseQuery {
     getById(id) {
         let knex = this.knex,
             inventory = await(knex.select('*').from('inventories').where('id', id).first()),
-         inventoryLines = await(
-             knex.select('*')
-                 .from('inventoryLines')
-                 .leftJoin('products', 'inventoryLines.productId', 'products.id')
-                 .where('inventoryId', inventory.id));
+            inventoryLines = await(
+                knex.select('*')
+                    .from('inventoryLines')
+                    .leftJoin('products', 'inventoryLines.productId', 'products.id')
+                    .where('inventoryId', inventory.id));
 
         inventory = view(inventory);
         inventory.inventoryLines = inventoryLines.asEnumerable().select(viewLine).toArray();

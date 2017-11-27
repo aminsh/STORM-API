@@ -1,26 +1,27 @@
-"use strict";
+    "use strict";
 
 
 const BaseQuery = require('../queries/query.base'),
-      translate = require('../services/translateService'),
+    translate = require('../services/translateService'),
     filterQueryConfig = require('./report.filter.config'),
     async = require('asyncawait/async'),
     await = require('asyncawait/await');
 
-module.exports = class InventoriesTurnoverReport extends BaseQuery{
-    constructor(branchId, currentFiscalPeriodId, mode, filter){
+module.exports = class InventoriesTurnoverReport extends BaseQuery {
+    constructor(branchId, currentFiscalPeriodId, mode, filter) {
         super(branchId);
 
         this.currentFiscalPeriodId = currentFiscalPeriodId;
         this.mode = mode;
         this.filter = filter;
-        this.filterConfig = new filterQueryConfig(branchId,currentFiscalPeriodId, mode, filter);
+        this.filterConfig = new filterQueryConfig(branchId, currentFiscalPeriodId, mode, filter);
+        this.options = await(this.filterConfig.getDateOptions());
     }
 
-    getInventoriesTurnover(ids){
+    getInventoriesTurnover(ids) {
         let knex = this.knex,
             branchId = this.branchId,
-            options = await(this.filterConfig.getOptions());
+            options = this.options;
 
         return knex.select(knex.raw(
             `CASE WHEN products."referenceId" ISNULL THEN products.title 
@@ -40,11 +41,11 @@ module.exports = class InventoriesTurnoverReport extends BaseQuery{
         ))
             .from('stocks')
             .where('stocks.branchId', branchId)
-            .whereIn('stocks.id',ids)
-            .innerJoin('inventories','inventories.stockId','stocks.id')
-            .innerJoin('inventoryLines','inventoryLines.inventoryId','inventories.id')
-            .innerJoin('products','products.id','inventoryLines.productId')
-            .whereBetween('inventories.date',[options.fromDate, options.toDate])
+            .whereIn('stocks.id', ids)
+            .innerJoin('inventories', 'inventories.stockId', 'stocks.id')
+            .innerJoin('inventoryLines', 'inventoryLines.inventoryId', 'inventories.id')
+            .innerJoin('products', 'products.id', 'inventoryLines.productId')
+            .whereBetween('inventories.date', [options.fromMainDate, options.toDate])
             .as('inventoriesTurnover')
     }
 }

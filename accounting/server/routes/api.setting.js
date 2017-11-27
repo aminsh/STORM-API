@@ -68,6 +68,7 @@ router.route('/')
             stockId: cmd.stockId,
             saleCosts: JSON.stringify(cmd.saleCosts),
             webhooks: JSON.stringify(cmd.webhooks),
+            invoiceDescription: cmd.invoiceDescription
         };
 
         await(settingRepository.update(entity));

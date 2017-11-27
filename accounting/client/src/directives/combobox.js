@@ -74,7 +74,8 @@ function combo($parse, apiPromise, promise) {
                 scope.disabled = false;
                 scope.items = [];
 
-                const mapper = attrs.mapper;
+                const mapper = attrs.mapper,
+                    resolve = attrs.resolve ? eval('scope.$parent.' + attrs.resolve) : undefined;
 
                 scope.isMultiple = angular.isDefined(attrs.multiple);
                 scope.itemsGetter = $parse(attrs.kDataSource);
@@ -221,16 +222,25 @@ function combo($parse, apiPromise, promise) {
                 }
 
                 function getData(parameters) {
-                    if (!mapper)
-                        return apiPromise.get(attrs.url, parameters);
 
-                    return promise.create(resolve => {
-                        apiPromise.get(attrs.url, parameters)
-                            .then(result => {
-                                result.data = result.data.asEnumerable().select(mapper).toArray();
-                                resolve(result);
-                            });
-                    });
+                    if (resolve)
+                        return promise.create(res => {
+                            apiPromise.get(attrs.url, parameters)
+                                .then(result => {
+                                    res(resolve(result));
+                                });
+                        });
+
+                    if (mapper)
+                        return promise.create(resolve => {
+                            apiPromise.get(attrs.url, parameters)
+                                .then(result => {
+                                    result.data = result.data.asEnumerable().select(mapper).toArray();
+                                    resolve(result);
+                                });
+                        });
+
+                    return apiPromise.get(attrs.url, parameters);
                 }
             }
         }

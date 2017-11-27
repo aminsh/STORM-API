@@ -19,7 +19,8 @@ function productAssembler(entity) {
         sumDiscount: entity.sumDiscount,
         countOnSale: entity.countOnSale,
         sumQuantity: entity.sumQuantity,
-        costOfGood: entity.costOfGood
+        costOfGood: entity.costOfGood,
+        barcode: entity.barcode
     };
 
     return viewModel;

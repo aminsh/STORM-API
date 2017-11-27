@@ -22,13 +22,11 @@
     <br/><br/>
 
     <dev-tag-content-body>
-        <div class="form-group col-md-3">
-            <label class="label-control">نرخ ارزش افزوده</label>
-            <dev-tag-numeric
-                    required
-                    not-zero
-                    name="vat"
-                    ng-model="model.settings.vat"></dev-tag-numeric>
+        <label class="label-control">نرخ ارزش افزوده </label>
+        <div class="input-group col-md-3">
+            <input nq-model="model.settings.vat"
+                   type="number" class="form-control" aria-describedby="basic-addon1">
+            <span class="input-group-addon" id="basic-addon1">%</span>
 
             <div ng-messages="form.vat.$error" ng-if="form.vat.$dirty">
                 <label ng-message="required" class="error">{{'This field is required'|translate}}</label>
@@ -37,8 +35,20 @@
         </div>
     </dev-tag-content-body>
 
+    <dev-tag-content-body>
+        <div class="form-group">
+            <label class="label-control">توضیحات پیش فرض</label>
+            <textarea class="form-control"
+                      rows="10"
+                      ng-model="model.settings.invoiceDescription"></textarea>
+            </div>
+        </div>
+    </dev-tag-content-body>
+
+
+
 </div>
-<dev-tag-content-body>
+<dev-tag-content-body ng-if="false">
     <div class="row">
         <div class="col-md-7 ">
             <label style="display: block">هزینه های فروش</label>
