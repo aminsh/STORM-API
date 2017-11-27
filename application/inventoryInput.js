@@ -41,6 +41,8 @@ class InventoryInputService {
             if (!(line.quantity && line.quantity > 0))
                 errors.push(`مقدار وجود ندارد - ردیف {0}`.format(row));
         });
+
+        return errors;
     }
 
     _isValidInventoryTurnover(inventories) {
@@ -136,7 +138,7 @@ class InventoryInputService {
             description: cmd.description
         };
 
-        input.inventoryLines = cmd.lines.asEnumerable()
+        input.inventoryLines = cmd.inventoryLines.asEnumerable()
             .select(line => ({
                 productId: line.productId,
                 quantity: line.quantity,
@@ -188,7 +190,7 @@ class InventoryInputService {
             description: cmd.description
         };
 
-        input.inventoryLines = cmd.lines.asEnumerable()
+        input.inventoryLines = cmd.inventoryLines.asEnumerable()
             .select(line => ({
                 productId: line.productId,
                 quantity: line.quantity,

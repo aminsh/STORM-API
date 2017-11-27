@@ -5,7 +5,7 @@ const DetailAccountService = require('./detailAccount'),
     SettingsRepository = require('./data').SettingsRepository,
     InvoiceRepository = require('./data').InvoiceRepository;
 
-class Bank {
+class PersonService {
     constructor(branchId) {
         this.branchId = branchId;
         this.detailAccountService = new DetailAccountService(branchId);
@@ -34,4 +34,4 @@ class Bank {
     }
 }
 
-module.exports = Bank;
+module.exports = PersonService;

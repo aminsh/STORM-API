@@ -47,7 +47,7 @@ class DetailAccount {
 
         if (String.isNullOrEmpty(cmd.title))
             errors.push('عنوان نمیتواند خالی باشد');
-        else if (cmd.title.length > 3)
+        else if (cmd.title.length < 3)
             errors.push('عنوان باید حداقل ۳ کاراکتر باشد');
 
         if (!String.isNullOrEmpty(cmd.code) && this.detailAccountRepository.findByCode(cmd.code))
@@ -97,7 +97,7 @@ class DetailAccount {
 
         if (String.isNullOrEmpty(cmd.title))
             errors.push('عنوان نمیتواند خالی باشد');
-        else if (cmd.title.length > 3)
+        else if (cmd.title.length < 3)
             errors.push('عنوان باید حداقل ۳ کاراکتر باشد');
 
         if (!String.isNullOrEmpty(cmd.code) && this.detailAccountRepository.findByCode(cmd.code, id))
@@ -139,6 +139,8 @@ class DetailAccount {
 
         if (errors.length > 0)
             throw new ValidationException(errors);
+
+        this.detailAccountRepository.remove(id);
     }
 }
 

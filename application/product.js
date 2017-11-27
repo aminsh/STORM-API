@@ -1,12 +1,6 @@
 "use strict";
 
-const ProductRepository = require('./data').ProductRepository,
-    InvoiceRepository = require('./data').InvoiceRepository,
-    InventoryRepository = require('./data').InventoryRepository,
-    InventoryService = require('./inventoryInput'),
-    String = instanceOf('utility').String;
-
-class ProductService {
+class Product {
     constructor(branchId, fiscalPeriodId) {
         this.branchId = branchId;
         this.fiscalPeriodId = fiscalPeriodId;
@@ -90,7 +84,7 @@ class ProductService {
 
         if (String.isNullOrEmpty(cmd.title))
             errors.push('عنوان نمیتواند خالی باشد');
-        else if (cmd.title.length > 3)
+        else if (cmd.title.length < 3)
             errors.push('عنوان باید حداقل ۳ کاراکتر باشد');
 
         if (!String.isNullOrEmpty(cmd.code) && this.productRepository.findByCode(cmd.code, id))
@@ -180,4 +174,14 @@ class ProductService {
 
 }
 
-module.exports = ProductService;
+const ProductService = module.exports = Product;
+
+const ProductRepository = require('./data').ProductRepository,
+    InvoiceRepository = require('./data').InvoiceRepository,
+    InventoryRepository = require('./data').InventoryRepository,
+    InventoryService = require('./inventoryInput'),
+    String = instanceOf('utility').String;
+
+
+
+
