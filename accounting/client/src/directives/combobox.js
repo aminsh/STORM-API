@@ -1,6 +1,5 @@
 "use strict";
 
-import accModule from "../acc.module";
 import angular from "angular";
 
 function combo($parse, apiPromise, promise) {
@@ -248,16 +247,4 @@ function combo($parse, apiPromise, promise) {
     }
 }
 
-accModule.directive('devTagComboBox', combo)
-    .run(['$templateCache', function ($templateCache) {
-        $templateCache.put('/global/dg-ui/dg-select.tpl.html',
-            `<ui-select class="ui-select" 
-ng-model="selectionModel" 
-on-select="onItemSelect($item, $model)" 
-on-remove="onItemRemove($item, $model)" 
-ng-disabled="disabled"><ui-select-match></ui-select-match>
-<ui-select-choices refrech="onSearch($select)" ></div></ui-select-choices>
-<ui-select-no-choice><a class="btn btn-primary">{{'Create' | translate}} {{$select.search}}</a></ui-select-no-choice>
-</ui-select>`);
-        $templateCache.put('/global/dg-ui/dg-select-multi.tpl.html', '<ui-select class="ui-select" multiple ng-model="selectionModel" on-select="onItemSelect($item, $model)" on-remove="onItemRemove($item, $model)" ng-disabled="disabled"><ui-select-match></ui-select-match><ui-select-choices></ui-select-choices></ui-select>');
-    }]);
+export default combo;

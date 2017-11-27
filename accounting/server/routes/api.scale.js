@@ -3,7 +3,6 @@
 const async = require('asyncawait/async'),
     await = require('asyncawait/await'),
     router = require('express').Router(),
-    ScaleRepository = require('../data/repository.scale'),
     ScaleQuery = require('../queries/query.scale');
 
 router.route('/')
@@ -13,14 +12,15 @@ router.route('/')
         res.json(result);
     }))
     .post(async((req, res) => {
-        let scaleRepository = new ScaleRepository(req.branchId),
-            entity = {
-                title: req.body.title,
-            };
 
-        await(scaleRepository.create(entity));
+        try {
 
-        res.json({isValid: true, returnValue: {id: entity.id}});
+            const id = RunService("scaleCreate", [req.body], req);
+            res.json({isValid: true, returnValue: {id}});
+        }
+        catch (e) {
+            res.json({isValid: false, errors: e.errors});
+        }
 
     }));
 

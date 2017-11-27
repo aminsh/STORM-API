@@ -3,9 +3,8 @@
 const async = require('asyncawait/async'),
     await = require('asyncawait/await'),
     router = require('express').Router(),
-    InventoryDomain = require('../domain/inventory'),
-    InventoryQuery = require('../queries/query.inventory'),
-    DomainException = instanceOf('domainException');
+    EventEmitter = instanceOf('EventEmitter'),
+    InventoryQuery = require('../queries/query.inventory');
 
 router.route('/inputs')
     .get(async((req, res) => {
@@ -15,25 +14,13 @@ router.route('/inputs')
         return res.json(result);
     }))
     .post(async((req, res) => {
-        let cmd = req.body;
-
-        const inventoryDomain = new InventoryDomain(req.branchId, req.fiscalPeriodId);
-
-        cmd.inventoryType = 'input';
-
         try {
-            const id = await(inventoryDomain.create(cmd));
-            res.json({isValid: true, returnValue: {id}});
+            const id = RunService("inventoryInputCreate", [req.body], req);
+            res.json({isValid: true, returnValue: {id}})
         }
         catch (e) {
-            if (e instanceof DomainException)
-                return res.json({isValid: false, errors: e.errors});
-
-            console.log(e);
-
-            res.json({isValid: false, errors: ['System error']});
+            res.json({isValid: false, errors: e.errors});
         }
-
     }));
 
 router.route('/products')
@@ -47,19 +34,21 @@ router.route('/products')
 router.route('/inputs/:id')
     .put(async((req, res) => {
 
-        const inventoryDomain = new InventoryDomain(req.branchId, req.fiscalPeriodId);
-
         try {
-            await(inventoryDomain.update(req.params.id, req.body));
-            res.json({isValid: true});
+            RunService("inventoryInputUpdate", [req.params.id, req.body], req);
+            res.json({isValid: true})
         }
         catch (e) {
-            if (e instanceof DomainException)
-                return res.json({isValid: false, errors: e.errors});
-
-            console.log(e);
-
-            res.json({isValid: false, errors: ['System error']});
+            res.json({isValid: false, errors: e.errors});
+        }
+    }))
+    .delete(async((req, res) => {
+        try {
+            RunService("inventoryInputRemove", [req.params.id], req);
+            res.json({isValid: true})
+        }
+        catch (e) {
+            res.json({isValid: false, errors: e.errors});
         }
     }));
 
@@ -79,23 +68,12 @@ router.route('/outputs')
         return res.json(result);
     }))
     .post(async((req, res) => {
-        let cmd = req.body;
-
-        const inventoryDomain = new InventoryDomain(req.branchId, req.fiscalPeriodId);
-
-        cmd.inventoryType = 'output';
-
         try {
-            await(inventoryDomain.create(cmd));
-            res.json({isValid: true});
+            const id = RunService("inventoryOutputCreate", [req.body], req);
+            res.json({isValid: true, returnValue: {id}})
         }
         catch (e) {
-            if (e instanceof DomainException)
-                return res.json({isValid: false, errors: e.errors});
-
-            console.log(e);
-
-            res.json({isValid: false, errors: ['System error']});
+            res.json({isValid: false, errors: e.errors});
         }
 
     }));
@@ -103,19 +81,21 @@ router.route('/outputs')
 router.route('/outputs/:id')
     .put(async((req, res) => {
 
-        const inventoryDomain = new InventoryDomain(req.branchId, req.fiscalPeriodId);
-
         try {
-            await(inventoryDomain.update(req.params.id, req.body));
-            res.json({isValid: true});
+            RunService("inventoryOutputUpdate", [req.params.id, req.body], req);
+            res.json({isValid: true})
         }
         catch (e) {
-            if (e instanceof DomainException)
-                return res.json({isValid: false, errors: e.errors});
-
-            console.log(e);
-
-            res.json({isValid: false, errors: ['System error']});
+            res.json({isValid: false, errors: e.errors});
+        }
+    }))
+    .delete(async((req, res) => {
+        try {
+            RunService("inventoryOutputRemove", [req.params.id], req);
+            res.json({isValid: true})
+        }
+        catch (e) {
+            res.json({isValid: false, errors: e.errors});
         }
     }));
 
@@ -141,24 +121,6 @@ router.route('/:id/lines')
             result = await(inventoryQuery.getDetailById(req.params.id, req.query));
 
         return res.json(result);
-    }));
-
-router.route('/add-to-first-input')
-    .post(async((req, res) => {
-        let inventoryDomain = new InventoryDomain(req.branchId, req.fiscalPeriodId),
-            cmd = req.body;
-
-        try {
-            await(inventoryDomain.addProductToInputFirst(cmd));
-            return res.json({isValid: true});
-        }
-        catch (e) {
-            if (e instanceof DomainException)
-                return res.json({isValid: false, errors: e.errors});
-
-            return res.json({isValid: false, errors: ['System error']});
-        }
-
     }));
 
 router.route('/by-stock/:productId')

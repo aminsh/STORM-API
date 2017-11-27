@@ -53,25 +53,23 @@ class JournalRepository extends BaseRepository {
     create(entity) {
         super.create(entity);
 
-        entity.id = await(this.knex('journals')
-            .returning('id')
-            .insert(entity));
+        await(this.knex('journals').insert(entity));
 
-        return entity;
+        return entity.id;
     }
 
     update(entity) {
-        return this.knex('journals')
+        return await(this.knex('journals')
             .modify(this.modify, this.branchId)
             .where('id', entity.id)
-            .update(entity);
+            .update(entity));
     }
 
     remove(id) {
-        return this.knex('journals')
+        return await(this.knex('journals')
             .modify(this.modify, this.branchId)
             .where('id', id)
-            .del();
+            .del());
     }
 
     checkIsComplete(id) {
@@ -152,7 +150,12 @@ class JournalRepository extends BaseRepository {
             await(knex('journals').transacting(trx).insert(journal));
 
             journalLines.forEach(line => {
-                super.create(line);
+
+                if(line.id)
+                    line.branchId = this.branchId;
+                else
+                    super.create(line);
+
                 line.journalId = journal.id;
             });
 
@@ -170,44 +173,55 @@ class JournalRepository extends BaseRepository {
         }
     }
 
-    batchUpdate(createJournalLines, updateJournalLine, deleteJournalLine, journal) {
+    _updateLines(id, lines, trx) {
+        let persistedLines = await(this.knex.table('journalLines').where('journalId', id)),
+
+            shouldDeletedLines = persistedLines.asEnumerable()
+                .where(e => !lines.asEnumerable().any(p => p.id === e.id))
+                .toArray(),
+            shouldAddedLines = lines.asEnumerable()
+                .where(e => !persistedLines.asEnumerable().any(p => p.id === e.id))
+                .toArray(),
+            shouldUpdatedLines = lines.asEnumerable()
+                .where(e => persistedLines.asEnumerable().any(p => p.id === e.id))
+                .toArray();
+
+        if (shouldAddedLines.asEnumerable().any()) {
+            shouldAddedLines.forEach(line => {
+                super.create(line);
+                line.journalId = id;
+            });
+
+            await(this.knex('invoiceLines')
+                .transacting(trx)
+                .insert(shouldAddedLines));
+        }
+
+        if (shouldDeletedLines.asEnumerable().any())
+            await(this.knex('journalLines')
+                .transacting(trx)
+                .whereIn('id', shouldDeletedLines.asEnumerable().select(item => item.id).toArray()).del());
+
+        if (shouldUpdatedLines.asEnumerable().any())
+            shouldUpdatedLines.forEach(e => await(this.knex('journalLines')
+                .transacting(trx).where('id', e.id).update(e)));
+    }
+
+    batchUpdate(id, journal) {
         const knex = this.knex,
             trx = await(this.transaction);
 
         try {
+
+            let lines = journal.journalLines;
+            delete journal.journalLines;
+
             await(knex('journals')
                 .transacting(trx)
-                .where('id', journal.id)
+                .where('id', id)
                 .update(journal));
 
-            if (createJournalLines.length !== 0) {
-                createJournalLines.forEach(line => {
-                    super.create(line);
-                    line.journalId = journal.id;
-                });
-
-                await(knex('journalLines')
-                    .transacting(trx)
-                    .insert(createJournalLines));
-            }
-
-            if (updateJournalLine.length !== 0) {
-                updateJournalLine.forEach(
-                    journalLine => {
-                        await(knex('journalLines')
-                            .transacting(trx)
-                            .where('id', journalLine.id)
-                            .update(journalLine))
-                    }
-                );
-            }
-
-            if (deleteJournalLine.length !== 0) {
-                await(knex('journalLines')
-                    .transacting(trx)
-                    .whereIn('id', deleteJournalLine)
-                    .del());
-            }
+            this._updateLines(id, lines, trx);
 
             trx.commit();
         }
@@ -219,10 +233,10 @@ class JournalRepository extends BaseRepository {
     }
 
     isExistsDetailAccount(detailAccountId) {
-        return this.knex.select('id').from('journalLines')
+        return await(this.knex.select('id').from('journalLines')
             .modify(this.modify, this.branchId)
             .where('detailAccountId', detailAccountId)
-            .first()
+            .first())
     }
 
     orderingTemporaryNumberByTemporaryDate(fiscalPeriodId) {

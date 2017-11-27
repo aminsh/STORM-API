@@ -30,6 +30,7 @@ class InvoiceQuery extends BaseQuery {
                     'invoiceType',
                     'description',
                     'title',
+                    'journalId',
                     knex.raw('"sum"("totalPrice") as "sumTotalPrice"'),
                     knex.raw('(select coalesce("sum"("amount"),0) from "payments" where "invoiceId" = "base"."id" limit 1) as "sumPaidAmount"'),
                     knex.raw('"sum"("totalPrice") - (select coalesce("sum"("amount"),0) from "payments" where "invoiceId" = "base"."id" limit 1) as "sumRemainder"'))
@@ -53,7 +54,8 @@ class InvoiceQuery extends BaseQuery {
                         'invoiceStatus',
                         'invoiceType',
                         'description',
-                        'title')
+                        'title',
+                        'journalId')
                     .orderBy('number', 'desc')
 
             }).first()),

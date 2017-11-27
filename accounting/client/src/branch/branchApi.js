@@ -1,12 +1,12 @@
 "use strict";
 
-export default class {
+export default class BranchApi {
 
     constructor(apiPromise) {
         this.apiPromise = apiPromise;
     }
 
-    getAll(){
+    getAll() {
         return this.apiPromise.get('/api/branches');
     }
 
@@ -26,52 +26,64 @@ export default class {
         return this.apiPromise.put('/api/branches/current', data);
     }
 
-    activate(id){
+    activate(id) {
         return this.apiPromise.put(`/api/branches/${id}/activate`);
     }
 
-    deactivate(id){
+    deactivate(id) {
         return this.apiPromise.put(`/api/branches/${id}/deactivate`);
     }
 
-    addMeToBranch(id){
+    addMeToBranch(id) {
         return this.apiPromise.put(`/api/branches/${id}/add-me`);
     }
 
-    removeMeFromBranch(id){
+    removeMeFromBranch(id) {
         return this.apiPromise.delete(`/api/branches/${id}/remove-me`);
     }
 
-    remove(id){
+    remove(id) {
         return this.apiPromise.delete(`/api/branches/${id}`);
     }
 
-    setDefaultLogo(id){
+    setDefaultLogo(id) {
         return this.apiPromise.put(`/api/branches/${id}/default-logo`);
     }
 
-    total(){
+    total() {
         return this.apiPromise.get(`/api/branches/total`);
     }
 
-    isOwnerUser(){
+    isOwnerUser() {
         return this.apiPromise.get('/api/branches/users/is-owner');
     }
-    getBranchUsers(){
+
+    getBranchUsers() {
         return this.apiPromise.get('/api/branches/users');
     }
-    addUserByEmail(email){
+
+    addUserByEmail(email) {
         return this.apiPromise.put(`/api/branches/users/${email}`);
     }
-    deleteUserByEmail(email){
+
+    deleteUserByEmail(email) {
         return this.apiPromise.delete(`/api/branches/users/${email}`);
     }
-    getCurrentBranchLogo(){
+
+    getCurrentBranchLogo() {
         return this.apiPromise.get(`/api/branches/logo`);
     }
 
-    renewChartOfAccounts(id){
+    renewChartOfAccounts(id) {
         return this.apiPromise.post(`/api/branches/${id}/renew-chart-of-accounts`);
+    }
+
+    getSettings(id) {
+        return this.apiPromise.get(`/acc/api/settings/${id}`);
+    }
+
+    saveSettings(id, data){
+        return this.apiPromise.put(`/acc/api/settings/${id}`, data);
     }
 
 }

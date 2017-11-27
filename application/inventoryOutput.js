@@ -2,10 +2,11 @@
 
 const async = require('asyncawait/async'),
     await = require('asyncawait/await'),
+    EventEmitter = instanceOf('EventEmitter'),
     PersianDate = instanceOf('utility').PersianDate,
     String = instanceOf('utility').String,
     Enums = instanceOf('Enums'),
-    InventoryRepository = require('./data').InventoryeRepository,
+    InventoryRepository = require('./data').InventoryRepository,
     InvoiceRepository = require('./data').InvoiceRepository,
     SettingsRepository = require('./data').SettingsRepository,
     StockRepository = require('./data').StockRepository,
@@ -13,7 +14,9 @@ const async = require('asyncawait/async'),
 
 class OutputService {
 
-    constructor(branchId, fiscalPeriodId) {
+    constructor(branchId, fiscalPeriodId, user) {
+
+        this.args = {branchId, fiscalPeriodId, user};
 
         this.fiscalPeriodId = fiscalPeriodId;
         this.branchId = branchId;
@@ -95,14 +98,16 @@ class OutputService {
 
         await(this.inventoryRepository.create(output));
 
+        EventEmitter.emit("onOutputCreated", output.id, this.args);
+
         return output;
     }
 
     setInvoice(id, invoiceId) {
         if (Array.isArray(id))
-            return id.forEach(async.result(id => this._setInvoice(id, invoiceId)));
+            return id.forEach(id => this._setInvoice(id, invoiceId));
 
-        return this._setInvoice(id, invoiceId);
+        this._setInvoice(id, invoiceId);
     }
 
     _setInvoice(id, invoiceId) {
@@ -113,7 +118,7 @@ class OutputService {
             ioTypeDisplay = Enums.InventoryIOType().getDisplay('outputSale');
 
         inventory.invoiceId = invoice.id;
-        inventory.description = `بابت فاکتور ${ioTypeDisplay} شماره ${invoice.number}`;
+        inventory.description = 'بابت فاکتور {0} شماره {1}'.format(ioTypeDisplay, invoice.number);
         inventory.ioType = 'outputSale';
 
         inventory.inventoryLines = inventory.inventoryLines.asEnumerable()
