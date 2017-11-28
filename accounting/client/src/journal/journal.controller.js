@@ -39,7 +39,7 @@ export default class {
         this.navigate = navigate;
         this.formService = formService;
         this.journalApi = journalApi;
-        this.createAccountService=createAccountService;
+        this.createAccountService = createAccountService;
         this.journalLineApi = journalLineApi;
         this.subsidiaryLedgerAccountApi = subsidiaryLedgerAccountApi;
         this.dimensionCategoryApi = dimensionCategoryApi;
@@ -101,7 +101,7 @@ export default class {
 
         this.detailAccount = {
             data: [],
-            onChanged(item, journalLine){
+            onChanged(item, journalLine) {
                 journalLine.detailAccountId = item.id;
 
                 $timeout(() => {
@@ -146,7 +146,7 @@ export default class {
         }
     }
 
-    createNewAccount(item,title) {
+    createNewAccount(item, title) {
         return this.promise.create((resolve, reject) => {
             this.createAccountService.show({title})
                 .then(result => {
@@ -174,6 +174,9 @@ export default class {
             journal = this.journal,
             journalLines = this.journalLines;
 
+        if (this.journalLines.length === 0)
+            return logger.error(this.translate('No row'));
+
         if (form.$invalid) {
             formService.setDirty(form);
             Object.keys(form).asEnumerable()
@@ -190,7 +193,7 @@ export default class {
         if (totalRemainder != 0)
             return logger.error(this.translate('Total of debtor and creditor is not equal'));
 
-        this.errors.asEnumerable().removeAll();
+        this.errors = [];
 
         this.isSaving = true;
 
@@ -220,8 +223,8 @@ export default class {
         let $scope = this.$scope;
 
         let maxRow = this.journalLines.length == 0
-                ? 0
-                : this.journalLines.asEnumerable().max(line => line.row),
+            ? 0
+            : this.journalLines.asEnumerable().max(line => line.row),
             newJournal = {
                 id: Guid.new(),
                 row: ++maxRow,

@@ -3,10 +3,8 @@
 const async = require('asyncawait/async'),
     await = require('asyncawait/await'),
     router = require('express').Router(),
-    String = require('../utilities/string'),
-    DetailAccountRepository = require('../data/repository.detailAccount'),
-    DetailAccountQuery = require('../queries/query.detailAccount'),
-    JournalRepository = require('../data/repository.journal');
+    EventEmitter = instanceOf('EventEmitter'),
+    DetailAccountQuery = require('../queries/query.detailAccount');
 
 router.route('/')
     .get(async((req, res) => {
@@ -15,27 +13,13 @@ router.route('/')
         res.json(result);
     }))
     .post(async((req, res) => {
-        let detailAccountRepository = new DetailAccountRepository(req.branchId),
-            cmd = req.body,
-            errors = [],
-            entity = {
-                code: cmd.code,
-                title: cmd.title,
-                detailAccountType: 'fund'
-            };
-
-        if (String.isNullOrEmpty(entity.title))
-            errors.push('عنوان نمیتواند خالی باشد');
-
-        if (String.isSmallerThan3Chars(entity.title))
-            errors.push('عنوان نمیتواند کمتر از 3 کاراکتر باشد');
-
-        if (errors.length)
-            return res.json({isValid: false, errors});
-
-        await(detailAccountRepository.create(entity));
-
-        res.json({isValid: true, returnValue: {id: entity.id}});
+        try {
+            const id = RunService('fundCreate', [req.body], req);
+            res.json({isValid: true, returnValue: {id}});
+        }
+        catch (e) {
+            res.json({isValid: false, errors: e.errors});
+        }
 
     }));
 
@@ -46,42 +30,23 @@ router.route('/:id')
         res.json(result);
     }))
     .put(async((req, res) => {
-        let detailAccountRepository = new DetailAccountRepository(req.branchId),
-            cmd = req.body,
-            errors = [],
-            entity = await(detailAccountRepository.findById(req.params.id));
-
-        entity.code = cmd.code;
-        entity.title = cmd.title;
-
-        if (String.isNullOrEmpty(entity.title))
-            errors.push('عنوان نمیتواند خالی باشد');
-
-        if (String.isSmallerThan3Chars(entity.title))
-            errors.push('عنوان نمیتواند کمتر از 3 کاراکتر باشد');
-
-        if (errors.length)
-            return res.json({isValid: false, errors});
-
-        await(detailAccountRepository.update(entity));
-
-        res.json({isValid: true});
+        try {
+            RunService('fundUpdate', [req.params.id, req.body], req);
+            res.json({isValid: true});
+        }
+        catch (e) {
+            res.json({isValid: false, errors: e.errors});
+        }
     }))
     .delete(async((req, res) => {
-        let detailAccountRepository = new DetailAccountRepository(req.branchId),
-            journalRepository = new JournalRepository(req.branchId),
+        try {
+            RunService('fundRemove', [req.params.id], req);
+            res.json({isValid: true});
+        }
+        catch (e) {
+            res.json({isValid: false, errors: e.errors});
+        }
 
-            id = req.params.id,
-            errors = [];
-
-        if (await(journalRepository.isExistsDetailAccount(id)))
-            errors.push('برای صندوق جاری تراکنش ثبت شده . نمیتوانید حذف کنید');
-
-        if (errors.length)
-            return res.json({isValid: false, errors});
-
-        await(detailAccountRepository.remove(id));
-        res.json({isValid: true});
     }));
 
 router.route('/:id/tiny-turnover').get(async((req, res) => {

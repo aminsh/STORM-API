@@ -52,6 +52,16 @@ class ApplicationServiceLogger {
 
         return knex(this.tableName).where('id', id).update(entity);
     }
+
+    invalid(id, error) {
+        const entity = {
+            updatedAt: new Date,
+            status: 'invalid',
+            result: JSON.stringify({message: error.message, stack: error.stack, errors: error.errors})
+        };
+
+        return knex(this.tableName).where('id', id).update(entity);
+    }
 }
 
 const applicationServiceLogger = new ApplicationServiceLogger();
@@ -68,5 +78,10 @@ EventEmitter.on('onServiceSucceed', (serviceId, result) => {
 
 EventEmitter.on('onServiceFailed', (serviceId, error) => {
     await(applicationServiceLogger.error(serviceId, error));
+    console.log(`apiService => ${serviceId} failed ...`);
+});
+
+EventEmitter.on('onServiceInvalid', (serviceId, error) => {
+    await(applicationServiceLogger.invalid(serviceId, error));
     console.log(`apiService => ${serviceId} failed ...`);
 });

@@ -7,12 +7,6 @@ let async = require('asyncawait/async'),
 class InvoiceRepository extends BaseRepository {
     constructor(branchId) {
         super(branchId);
-        /*this.findById = async(this.findById);
-        this.create = async(this.create);
-        this.createInvoice = async(this.createInvoice);
-        this.createInvoiceLines = async(this.createInvoiceLines);
-        this.updateInvoice = async(this.updateInvoice);
-        this.updateInvoiceLines = async(this.updateInvoiceLines);*/
     }
 
     findById(id) {
@@ -74,22 +68,14 @@ class InvoiceRepository extends BaseRepository {
         return this.knex.table('invoiceLines').where('invoiceId', id);
     }
 
-    saleMaxNumber() {
+    maxNumber(invoiceType) {
         const result = await(this.knex.table('invoices')
             .modify(this.modify, this.branchId)
-            .where('invoiceType', 'sale')
+            .where('invoiceType', invoiceType)
             .max('number')
             .first());
 
         return result && result.max ? result.max || 0 : 0;
-    }
-
-    purchaseMaxNumber() {
-        return this.knex.table('invoices')
-            .modify(this.modify, this.branchId)
-            .where('invoiceType', 'purchase')
-            .max('number')
-            .first();
     }
 
     create(entity) {
@@ -226,11 +212,28 @@ class InvoiceRepository extends BaseRepository {
     }
 
     isExistsCustomer(customerId) {
-        return this.knex('id')
+        return await(this.knex('id')
             .from('invoices')
             .modify(this.modify, this.branchId)
             .where('detailAccountId', customerId)
-            .first();
+            .first());
+    }
+
+    isExitsJournal(journalId){
+        return await(this.knex('id')
+            .from('invoices')
+            .modify(this.modify, this.branchId)
+            .where('journalId', journalId)
+            .first());
+    }
+
+    isExitsStock(stockId){
+        return await(this.knex.select('id')
+            .from('invoiceLines')
+            .modify(this.modify, this.branchId)
+            .where('stockId', stockId)
+            .first()
+        );
     }
 }
 

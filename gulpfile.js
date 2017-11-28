@@ -102,6 +102,15 @@ gulp.task('admin-build-sass', function () {
 
 });
 
+gulp.task('admin-copy-files', function () {
+    return gulp.src([
+        './node_modules/codemirror/lib/codemirror.js',
+        './node_modules/codemirror/mode/javascript/javascript.js',
+    ])
+        .pipe(flatten())
+        .pipe(gulp.dest(`${config.publicDir}/js`));
+});
+
 // [START] SMRSAN
 gulp.task('admin-build-ckeditor', function () {
     return gulp.src(`./vendors/ckeditor/**/*.*`)
@@ -603,7 +612,8 @@ gulp.task('default', [
     'admin-build-template',
     'admin-build-js',
     'admin-build-sass',
-    'admin-build-ckeditor'
+    'admin-build-ckeditor',
+    'admin-copy-files'
 ]);
 
 

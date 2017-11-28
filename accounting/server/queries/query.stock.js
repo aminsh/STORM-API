@@ -35,7 +35,7 @@ class StockQuery extends BaseQuery {
 
     getById(id) {
 
-        let entity = await(this.knex.select('id', 'title')
+        let entity = await(this.knex.select('id', 'title', 'address')
             .from('stocks')
             .where('branchId', this.branchId)
             .where('id', id)

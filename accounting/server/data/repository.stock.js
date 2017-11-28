@@ -2,8 +2,7 @@
 
 const async = require('asyncawait/async'),
     await = require('asyncawait/await'),
-    BaseRepository = require('./repository.base'),
-    Guid = require('../services/shared').utility.Guid;
+    BaseRepository = require('./repository.base');
 
 class BankRepository extends BaseRepository {
     constructor(branchId) {
@@ -20,18 +19,18 @@ class BankRepository extends BaseRepository {
     }
 
     isUsedOnInventory(id) {
-        return this.knex.select('id')
+        return await(this.knex.select('id')
             .from('inventories')
             .modify(this.modify, this.branchId)
             .where('stockId', id)
-            .first();
+            .first());
     }
 
     getDefaultStock() {
-        return this.knex
+        return await(this.knex
             .table('stocks')
             .modify(this.modify, this.branchId)
-            .first();
+            .first());
     }
 
     create(entity) {
@@ -40,17 +39,17 @@ class BankRepository extends BaseRepository {
     }
 
     update(id, entity) {
-        return this.knex('stocks')
+        return await(this.knex('stocks')
             .modify(this.modify, this.branchId)
             .where('id', id)
-            .update(entity);
+            .update(entity));
     }
 
     remove(id) {
-        return this.knex('stocks')
+        return await(this.knex('stocks')
             .modify(this.modify, this.branchId)
             .where('id', id)
-            .del();
+            .del());
     }
 }
 

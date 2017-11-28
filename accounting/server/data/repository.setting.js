@@ -17,7 +17,7 @@ class SettingRepository extends BaseRepository {
     }
 
     update(entity) {
-        return this.knex('settings').where('branchId', this.branchId).update(entity);
+        return await(this.knex('settings').where('branchId', this.branchId).update(entity));
     }
 
     get() {

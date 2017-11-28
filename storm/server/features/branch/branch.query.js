@@ -32,6 +32,7 @@ class BranchQuery {
                 this.select(
                     'branches.id',
                     'branches.name',
+                    knex.raw("branches.name || ' ' || branches.id as display"),
                     'logo',
                     'apiKey',
                     'status',
@@ -56,6 +57,7 @@ class BranchQuery {
             view = item => ({
                 id: item.id,
                 name: item.name,
+                display: item.display,
                 logo: item.logo,
                 apiKey: item.apiKey,
                 status: item.status,

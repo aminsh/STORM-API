@@ -15,6 +15,7 @@ app.use('/api', require('./features/message/message.api'));
 app.use('/api/auth', require('./features/auth/auth.api'));
 app.use('/api/branch-third-party', require('./features/thirdParty/branchThirdParty.api'));
 app.use('/api/webhook', require('./features/webhook/webhook.api'));
+app.use('/api/application-logger', require('./features/applicationLogger/applicationLogger.api'));
 
 /* ctrls */
 app.use('/auth', require('./features/auth/auth.controller'));

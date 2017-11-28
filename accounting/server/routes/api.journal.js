@@ -2,12 +2,8 @@
 
 const async = require('asyncawait/async'),
     await = require('asyncawait/await'),
-    translate = require('../services/translateService'),
-    persianDateSerivce = require('../services/persianDateService'),
     router = require('express').Router(),
-    FiscalPeriodRepository = require('../data/repository.fiscalPeriod'),
-    JournalRepository = require('../data/repository.journal'),
-    JournalLineRepository = require('../data/repository.journalLine'),
+    EventEmitter = instanceOf('EventEmitter'),
     JournalQuery = require('../queries/query.journal');
 
 router.route('/')
@@ -16,7 +12,17 @@ router.route('/')
             result = await(journalQuery.getAll(req.cookies['current-period'], req.query));
         res.json(result);
     }))
-    .post(require('./batch.journal').Insert);
+    .post(async((req, res) => {
+
+        try {
+            const id = RunService("journalCreate", [req.body], req);
+            res.json({isValid: true, returnValue: {id}});
+
+        }
+        catch (e) {
+            res.json({isValid: false, errors: e.errors});
+        }
+    }));
 
 router.route('/total-info').get((req, res) => {
     let journalQuery = new JournalQuery(req.branchId),
@@ -37,17 +43,37 @@ router.route('/:id')
             result = await(journalQuery.batchFindById(req.params.id));
         res.json(result);
     }))
-    .put(require('./batch.journal').update)
-    .delete(require('./batch.journal').delete);
+    .put(async((req, res) => {
+        try {
+            RunService("journalUpdate", [req.params.id, req.body], req);
+            res.json({isValid: true});
+
+        }
+        catch (e) {
+            res.json({isValid: false, errors: e.errors});
+        }
+    }))
+    .delete(async((req, res) => {
+        try {
+            RunService("journalRemove", [req.params.id], req);
+            res.json({isValid: true});
+
+        }
+        catch (e) {
+            res.json({isValid: false, errors: e.errors});
+        }
+    }));
 
 router.route('/:id/confirm')
     .put(async((req, res) => {
-        let journalRepository = new JournalRepository(req.branchId),
-            entity = {id: req.params.id, journalStatus: 'Fixed'};
+        try {
+            RunService("journalFix", [req.params.id], req);
+            res.json({isValid: true});
 
-        await(journalRepository.update(entity));
-
-        res.json({isValid: true});
+        }
+        catch (e) {
+            res.json({isValid: false, errors: e.errors});
+        }
     }));
 
 router.route('/by-number/:number').get(async((req, res) => {
@@ -81,97 +107,39 @@ router.route('/period/:periodId').get(async((req, res) => {
 }));
 
 router.route('/:id/bookkeeping').put(async((req, res) => {
-    let journalRepository = new JournalRepository(req.branchId),
-        fiscalPeriodRepository = new FiscalPeriodRepository(req.branchId),
-        errors = [],
-        currentFiscalPeriod = await(fiscalPeriodRepository.findById(req.cookies['current-period'])),
-        journal = await(journalRepository.findById(req.params.id));
+    try {
+        RunService("journalBookkeeping", [req.params.id], req);
+        res.json({isValid: true});
 
-    if (currentFiscalPeriod.isClosed)
-        errors.push(translate('The current period is closed , You are not allowed to delete Journal'));
+    }
+    catch (e) {
+        res.json({isValid: false, errors: e.errors});
+    }
 
-    if (journal.journalStatus == 'Fixed')
-        errors.push(translate('This journal is already fixed'));
-
-    journal.journalStatus = 'BookKeeped';
-
-
-    await(journalRepository.update(entity));
-
-    return res.json({isValid: true});
-
-}));
-
-router.route('/:id/fix').put(async((req, res) => {
-    let journalRepository = new JournalRepository(req.branchId),
-        fiscalPeriodRepository = new FiscalPeriodRepository(req.branchId),
-        errors = [],
-        currentFiscalPeriod = await(fiscalPeriodRepository.findById(req.cookies['current-period'])),
-        journal = await(journalRepository.findById(req.params.id));
-
-    if (currentFiscalPeriod.isClosed)
-        errors.push(translate('The current period is closed , You are not allowed to delete Journal'));
-
-    if (journal.journalStatus == 'Fixed')
-        errors.push(translate('This journal is already fixed'));
-
-    journal.journalStatus = 'Fixed';
-
-    await(journalRepository.update(journal));
-
-    return res.json({isValid: true});
 }));
 
 router.route('/:id/attach-image').put(async((req, res) => {
-    let journalRepository = new JournalRepository(req.branchId),
-        journal = await(journalRepository.findById(req.params.id));
 
-    journal.attachmentFileName = req.body.fileName;
+    try {
 
-    await(journalRepository.update(journal));
-
-    return res.json({isValid: true});
+        RunService("journalAttachImage", [req.params.id, req.body.fileName], req);
+        res.json({isValid: true});
+    }
+    catch (e) {
+        res.json({isValid: false, errors: e.errors});
+    }
 }));
 
 router.route('/:id/copy').post(async((req, res) => {
-    let journalRepository = new JournalRepository(req.branchId),
-        journalLineRepository = new JournalLineRepository(req.branchId);
 
-    const id = req.params.id,
-        periodId = req.fiscalPeriodId,
-        journal = await(journalRepository.findById(id)),
-        journalLines = await(journalLineRepository.findByJournalId(id)),
+    try {
 
-        newJournalLines = journalLines.asEnumerable()
-            .select(line =>
-                ({
-                    generalLedgerAccountId: line.generalLedgerAccountId,
-                    subsidiaryLedgerAccountId: line.subsidiaryLedgerAccountId,
-                    detailAccountId: line.detailAccountId,
-                    dimension1Id: line.dimension1Id,
-                    dimension2Id: line.dimension2Id,
-                    dimension3Id: line.dimension3Id,
-                    article: line.article,
-                    debtor: line.debtor,
-                    creditor: line.creditor
-                }))
-            .toArray(),
-
-        newJournal = {
-            periodId: periodId,
-            createdById: req.user.id,
-            journalStatus: 'Temporary',
-            temporaryNumber: (await(journalRepository.maxTemporaryNumber(periodId)).max || 0) + 1,
-            temporaryDate: persianDateSerivce.current(),
-            description: journal.description
-        };
-
-    await(journalRepository.batchCreate(newJournalLines, newJournal));
-
-    return res.json({
-        isValid: true,
-        returnValue: {id: newJournal.id}
-    });
+        const id = RunService("journalCopy", [req.params.id], req);
+        res.json({isValid: true, returnValue: {id}});
+    }
+    catch (e) {
+        res.json({isValid: false, errors: e.errors});
+    }
 }));
 
 router.route('/:detailAccountId/payable-transactions/not-have-cheque')

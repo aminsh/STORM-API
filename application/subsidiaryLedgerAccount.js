@@ -1,6 +1,7 @@
 "use strict";
 
 const SubsidiaryLedgerAccountRepository = require('./data').SubsidiaryLedgerAccountRepository,
+    GeneralLedgerAccountRepository = require('./data').GenenralLedgerAccountRepository,
     SettingsRepository = require('./data').SettingsRepository;
 
 class SubsidiaryLedgerAccountService {
@@ -10,7 +11,7 @@ class SubsidiaryLedgerAccountService {
         
         this.subsidiaryLedgerAccountRepsitory = new SubsidiaryLedgerAccountRepository(branchId);
 
-        const settings = new SettingsRepository(branchId).get();
+        const settings = this.settings = new SettingsRepository(branchId).get();
 
         this.defaultAccounts = settings.subsidiaryLedgerAccounts.asEnumerable().toObject(item => item.key, item=> item.id);
     }
@@ -61,6 +62,83 @@ class SubsidiaryLedgerAccountService {
 
     get payableDocument() {
         return this.subsidiaryLedgerAccountRepsitory.findById(this.defaultAccounts['businessNotesPayables']);
+    }
+
+    create(generalLedgerAccountId, cmd) {
+        let errors = [];
+
+        if (String.isNullOrEmpty(cmd.title))
+            errors.push('عنوان نمیتواند خالی باشد');
+        else if (cmd.title.length > 3)
+            errors.push('عنوان باید حداقل ۳ کاراکتر باشد');
+
+        if (String.isNullOrEmpty(cmd.title))
+            errors.push('کد نمیتواند خالی باشد');
+        else if (this.subsidiaryLedgerAccountRepsitory.findByCode(cmd.code))
+            errors.push('کد تکراری است');
+
+        if(!new GeneralLedgerAccountRepository(this.branchId).findById(generalLedgerAccountId))
+            errors.push('حساب کل انتخاب شده وجود ندارد');
+
+        if (errors.length > 0)
+            throw new ValidationException(errors);
+
+        let entity = {
+            generalLedgerAccountId: generalLedgerAccountId,
+            code: cmd.code,
+            title: cmd.title,
+            isBankAccount: cmd.isBankAccount,
+            hasDetailAccount: cmd.hasDetailAccount,
+            hasDimension1: cmd.hasDimension1,
+            hasDimension2: cmd.hasDimension2,
+            hasDimension3: cmd.hasDimension3
+        };
+
+        this.subsidiaryLedgerAccountRepsitory.create(entity);
+    }
+
+    update(id, cmd) {
+        let errors = [];
+
+        if (String.isNullOrEmpty(cmd.title))
+            errors.push('عنوان نمیتواند خالی باشد');
+        else if (cmd.title.length > 3)
+            errors.push('عنوان باید حداقل ۳ کاراکتر باشد');
+
+        if (String.isNullOrEmpty(cmd.title))
+            errors.push('کد نمیتواند خالی باشد');
+        else if (this.subsidiaryLedgerAccountRepsitory.findByCode(cmd.code, id))
+            errors.push('کد تکراری است');
+
+        if (errors.length > 0)
+            throw new ValidationException(errors);
+
+        let entity = {
+            title: cmd.title,
+            code: cmd.code,
+            isBankAccount: cmd.isBankAccount,
+            hasDetailAccount: cmd.hasDetailAccount,
+            hasDimension1: cmd.hasDimension1,
+            hasDimension2: cmd.hasDimension2,
+            hasDimension3: cmd.hasDimension3
+        };
+
+        this.subsidiaryLedgerAccountRepsitory.update(id, entity);
+    }
+
+    remove(id) {
+        let errors = [];
+
+       if(this.subsidiaryLedgerAccountRepsitory.isUsedOnJournalLines(id))
+           errors.push('حساب معین جاری در اسناد حسابداری استفاده شده ، امکان حذف وجود ندارد');
+
+       if(this.settings.asEnumerable().any(item => item.id === id))
+           errors.push('حساب معین جاری در تنظیمات استفاده شده ، امکان حذف وجود ندارد');
+
+        if (errors.length > 0)
+            throw new ValidationException(errors);
+
+        this.subsidiaryLedgerAccountRepsitory.remove(id);
     }
 }
 

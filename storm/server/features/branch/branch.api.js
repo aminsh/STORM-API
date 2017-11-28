@@ -18,6 +18,12 @@ const express = require('express'),
 
 router.route('/')
     .get(async((req, res) => {
+        if (!req.isAuthenticated())
+            res.status(404).send();
+
+        if (req.user.role !== 'admin')
+            res.status(404).send();
+
         let branches = await(branchQuery.getAll(req.query));
         res.json(branches);
     }))

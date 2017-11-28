@@ -34,7 +34,7 @@
                                    k-data-source="model.products"
                                    k-on-created="model.createNewProduct(item,$search, form['form-'+ $index])"
                                    k-on-changed="model.onProductChanged(item, $item, form['form-'+ $index])"
-                                   k-on-bound="model.onProductChanged(item, $item, form['form-'+ $index])"
+                                   k-on-bound="model.onProductChanged(item, $item, 'bound' , form['form-'+ $index])"
                                    show-no-data-template
                                    url="{{model.urls.getAllProduct}}"
                                    ng-model="item.productId"></dev-tag-combo-box>

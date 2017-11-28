@@ -3,9 +3,7 @@
 const async = require('asyncawait/async'),
     await = require('asyncawait/await'),
     router = require('express').Router(),
-    ProductCategoryQuery = require('../queries/query.productCategory'),
-    ProductCategoryRepository = require('../data/repository.productCategory');
-
+    ProductCategoryQuery = require('../queries/query.productCategory');
 
 router.route('/')
     .get(async((req, res) => {
@@ -15,15 +13,13 @@ router.route('/')
         res.json(result);
     }))
     .post(async((req, res) => {
-        let productCategoryRepository = new ProductCategoryRepository(req.branchId),
-            cmd = req.body,
-            entity = {
-                title: cmd.title,
-            };
-
-        await(productCategoryRepository.create(entity));
-
-        res.json({isValid: true, returnValue: {id: entity.id}});
+        try {
+            const id = RunService("productCategoryCreate", [req.body], req);
+            res.json({isValid: true, returnValue: {id}});
+        }
+        catch (e) {
+            res.json({isValid: false, errors: e.errors});
+        }
     }));
 
 
@@ -35,15 +31,13 @@ router.route('/:id')
         res.json(result);
     }))
     .put(async((req, res) => {
-        let productCategoryRepository = new ProductCategoryRepository(req.branchId),
-            cmd = req.body,
-            entity = {
-                title: cmd.title,
-            };
-
-        entity = await(productCategoryRepository.update(req.params.id, entity));
-
-        res.json({isValid: true, returnValue: {id: entity.id}});
+        try {
+            RunService("productCategoryUpdate", [req.params.req.body], req);
+            res.json({isValid: true});
+        }
+        catch (e) {
+            res.json({isValid: false, errors: e.errors});
+        }
     }));
 
 module.exports = router;
