@@ -197,7 +197,7 @@ accModule
     .directive('devTagFileBrowserButton', fileBrowserButton)
     .directive('devAttrAutoComplete', autocomplete)
     .directive('devTagRadio', radio)
-    .directive('devTagCombo', combo)
+    .directive('devTagComboBox', combo)
 
 
     .directive('devTagReportViewer', reportViewer)
