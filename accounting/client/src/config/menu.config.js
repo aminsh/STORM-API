@@ -5,7 +5,7 @@ accModule.config(menuItemsProvider => {
 
     let chartOfAccount = [
             {
-                title: 'حسابهای کل و معین',
+                title: 'سرفصل حساب ها',
                 url: 'general-ledger-accounts'
             },
             {
@@ -31,12 +31,13 @@ accModule.config(menuItemsProvider => {
                 title: 'مرور حساب',
                 url: 'account-review',
                 icon: ''
-            },
+            }
+            /*,
             {
                 title: 'گزارشات',
                 url: 'report/list',
                 icon: ''
-            }
+            }*/
         ];
 
     menuItemsProvider
@@ -124,6 +125,13 @@ accModule.config(menuItemsProvider => {
                     icon: 'payable-cheques'
                 }
             ]
+        });
+
+    menuItemsProvider
+        .add({
+            title: 'گزارشات',
+            url: 'report/list',
+            icon: 'fa fa-pie-chart'
         });
 
     menuItemsProvider
