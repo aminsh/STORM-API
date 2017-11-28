@@ -43,10 +43,10 @@ class InventoryProductsController {
             multiSelectable: true
         };
 
-       this.stockResolver = result => {
-           result.data.unshift({id: 'all', title: translate('All inventory')});
-           return result;
-       };
+        this.stockResolver = result => {
+            result.data.unshift({id: 'all', title: translate('All inventory')});
+            return result;
+        };
     }
 
     onStockChanged(item) {
@@ -63,13 +63,15 @@ class InventoryProductsController {
 
         this.reportParameters.show([{name: "date"}])
             .then(params => {
-                Object.assign(params, {ids});
+                if (!this.gridOption.isSelectedAll)
+                    Object.assign(params, {ids});
                 this.navigate(
                     'report.print',
                     {key: 900},
                     params);
             });
-    }
+
+    };
 
     inventoryProductsTurnoverTotal() {
         const ids = this.gridOption.getSelected();
@@ -78,6 +80,7 @@ class InventoryProductsController {
 
         this.reportParameters.show([{name: "date"}])
             .then(params => {
+                if (!this.gridOption.isSelectedAll)
                 Object.assign(params, {ids});
                 this.navigate(
                     'report.print',

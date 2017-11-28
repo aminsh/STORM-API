@@ -1,4 +1,3 @@
-import accModule from '../acc.module';
 
 function radio() {
 
@@ -77,4 +76,4 @@ function radio() {
     };
 }
 
-accModule.directive('devTagRadio', radio);
+export default radio;

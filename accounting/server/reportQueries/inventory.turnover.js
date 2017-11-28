@@ -1,4 +1,4 @@
-"use strict";
+    "use strict";
 
 
 const BaseQuery = require('../queries/query.base'),
@@ -15,12 +15,13 @@ module.exports = class InventoriesTurnoverReport extends BaseQuery {
         this.mode = mode;
         this.filter = filter;
         this.filterConfig = new filterQueryConfig(branchId, currentFiscalPeriodId, mode, filter);
+        this.options = await(this.filterConfig.getDateOptions());
     }
 
     getInventoriesTurnover(ids) {
         let knex = this.knex,
             branchId = this.branchId,
-            options = await(this.filterConfig.getOptions());
+            options = this.options;
 
         return knex.select(knex.raw(
             `CASE WHEN products."referenceId" ISNULL THEN products.title 
@@ -44,7 +45,7 @@ module.exports = class InventoriesTurnoverReport extends BaseQuery {
             .innerJoin('inventories', 'inventories.stockId', 'stocks.id')
             .innerJoin('inventoryLines', 'inventoryLines.inventoryId', 'inventories.id')
             .innerJoin('products', 'products.id', 'inventoryLines.productId')
-            .whereBetween('inventories.date', [options.fromDate, options.toDate])
+            .whereBetween('inventories.date', [options.fromMainDate, options.toDate])
             .as('inventoriesTurnover')
     }
 }

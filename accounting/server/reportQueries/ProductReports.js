@@ -16,17 +16,15 @@ class ProductReports extends BaseQuery {
         this.mode = mode;
         this.filter = filter;
         this.filterConfig = new FilterQueryConfig(branchId, currentFiscalPeriodId, mode, filter);
-        this.options = await(this.filterConfig.getOptions());
-        this.getProductTurnovers = async(this.getProductTurnovers);
-
+        this.options = await(this.filterConfig.getDateOptions());
     }
 
     getProductsInventoriesByIds(productIds) {
         let knex = this.knex,
             branchId = this.branchId;
 
-        return this.knex.select(knex.raw(
-            `products.title as product,
+            let query = this.knex.select(knex.raw(
+                `products.title as product,
             inventories."createdAt",
             products.id as "productId",
             inventories."inventoryType",
@@ -45,17 +43,21 @@ class ProductReports extends BaseQuery {
                   WHEN inventories."ioType" = 'inputBackFromSaleOrConsuming' THEN '${translate('ReturnSales')}'
                   WHEN inventories."ioType" = 'outputSale' THEN '${translate('Sale')}'
                   WHEN inventories."ioType" = 'outputWaste' THEN '${translate('damages')}' END AS "ioTypeText"`
-        ))
-            .from('products')
-            .where('products.branchId', branchId)
-            .whereIn('products.id', productIds)
-            .innerJoin('inventoryLines', 'inventoryLines.productId', 'products.id')
-            .innerJoin('inventories', 'inventories.id', 'inventoryLines.inventoryId')
-            .leftJoin('scales', 'scales.id', 'products.scaleId')
-            .innerJoin('stocks', 'stocks.id', 'inventories.stockId')
-            .as('inventoryProducts')
-            .orderBy('inventories.createdAt');
-    }
+            ))
+                .from('products')
+                .where('products.branchId', branchId)
+                .innerJoin('inventoryLines', 'inventoryLines.productId', 'products.id')
+                .innerJoin('inventories', 'inventories.id', 'inventoryLines.inventoryId')
+                .leftJoin('scales', 'scales.id', 'products.scaleId')
+                .innerJoin('stocks', 'stocks.id', 'inventories.stockId')
+                .as('inventoryProducts')
+                .orderBy('inventories.createdAt');
+
+            if(productIds)
+                query.whereIn('products.id', productIds);
+
+            return query;
+    };
 
     getProductRemainders(inventories) {
         let haveZeroUnitPrice = inventories.asEnumerable().firstOrDefault(item => item.unitPrice == 0) ? 0 : 1;
@@ -63,12 +65,14 @@ class ProductReports extends BaseQuery {
         if (inventories.length === 1) {
             return inventories.asEnumerable().select(item =>
                 Object.assign({}, item,
-                    {quantityRemainder: item.quantity},
-                    {haveZeroUnitPrice: haveZeroUnitPrice},
-                    {unitPriceRemainder: item.unitPrice},
-                    {totalPriceRemainder: item.totalPrice},
-                    {lastTotalPriceRemainder: item.totalPrice},
-                    {lastQuantityRemainder: item.quantity})
+                    {
+                        quantityRemainder: item.quantity,
+                        haveZeroUnitPrice: haveZeroUnitPrice,
+                        unitPriceRemainder: item.unitPrice,
+                        totalPriceRemainder: item.totalPrice,
+                        lastTotalPriceRemainder: item.totalPrice,
+                        lastQuantityRemainder: item.quantity
+                    })
             );
 
         }
@@ -135,12 +139,12 @@ class ProductReports extends BaseQuery {
                     item,
                     {
                         lastTotalPriceRemainder: query.asEnumerable()
-                            .where(q => q.date >= this.options.fromDate && q.date <= this.options.toDate)
+                            .where(q => q.date >= this.options.fromMainDate && q.date <= this.options.toDate)
                             .lastOrDefault().totalPriceRemainder
-                    },
-                    {
+                        ,
+
                         lastQuantityRemainder: query.asEnumerable()
-                            .where(q => q.date >= this.options.fromDate && q.date <= this.options.toDate)
+                            .where(q => q.date >= this.options.fromMainDate && q.date <= this.options.toDate)
                             .lastOrDefault().quantityRemainder
                     }
                 ))
@@ -168,7 +172,7 @@ class ProductReports extends BaseQuery {
                             )
                     }))
                 .selectMany(item => item.items)
-                .where(item => item.date >= options.fromDate && item.date <= options.toDate)
+                .where(item => item.date >= options.fromMainDate && item.date <= options.toDate)
                 .toArray();
 
         return query;
