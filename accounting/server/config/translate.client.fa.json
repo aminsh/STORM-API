@@ -476,5 +476,14 @@
   "ExportExcel":"خروجی اکسل",
   "All": "همه",
   "Select month...": "انتخاب ماه...",
-  "Select season...": "انتخاب فصل..."
+  "Select season...": "انتخاب فصل...",
+  "Remove subsidiaryAccount": "حذف حساب معین",
+  "Edit subsidiaryAccount": "ویرایش حساب معین",
+  "Remove generalAccount": "حذف حساب کل",
+  "Edit generalAccount": "ویرایش حساب کل",
+  "Accounts headlines": "سرفصل حساب ها (کدینگ)",
+  "Total amount":"جمع مبلغ",
+  "Total vat and tax": "جمع مالیات و عوارض",
+  "Total return": "جمع برگشتی",
+  "Total purchase Price":"جمع کل خرید"
 }
