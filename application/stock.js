@@ -2,7 +2,8 @@
 
 const StockRepository = require('./data').StockRepository,
     InvoiceRepository = require('./data').InvoiceRepository,
-    InventoryRepository = require('./data').InventoryRepository;
+    InventoryRepository = require('./data').InventoryRepository,
+    String = instanceOf('utility').String;
 
 class ProductService {
     constructor(branchId) {
@@ -17,7 +18,7 @@ class ProductService {
 
         if (String.isNullOrEmpty(cmd.title))
             errors.push('عنوان نمیتواند خالی باشد');
-        else if (cmd.title.length > 3)
+        else if (cmd.title.length < 3)
             errors.push('عنوان باید حداقل ۳ کاراکتر باشد');
 
         if (errors.length > 0)
@@ -39,7 +40,7 @@ class ProductService {
 
         if (String.isNullOrEmpty(cmd.title))
             errors.push('عنوان نمیتواند خالی باشد');
-        else if (cmd.title.length > 3)
+        else if (cmd.title.length < 3)
             errors.push('عنوان باید حداقل ۳ کاراکتر باشد');
 
         if (errors.length > 0)

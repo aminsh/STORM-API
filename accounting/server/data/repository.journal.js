@@ -192,7 +192,7 @@ class JournalRepository extends BaseRepository {
                 line.journalId = id;
             });
 
-            await(this.knex('invoiceLines')
+            await(this.knex('journalLines')
                 .transacting(trx)
                 .insert(shouldAddedLines));
         }

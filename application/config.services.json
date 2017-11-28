@@ -112,42 +112,13 @@
   },
 
   {
-    "name": "journalUpdate",
-    "class": "JournalService",
-    "method": "update",
-    "params": [
-      "id",
-      "command"
-    ],
-    "returns": ""
-  },
-  {
-    "name": "journalRemove",
-    "class": "JournalService",
-    "method": "remove",
-    "params": [
-      "id"
-    ],
-    "returns": ""
-  },
-  {
-    "name": "journalClone",
-    "class": "JournalService",
-    "method": "clone",
-    "params": [
-      "id"
-    ],
-    "returns": "journalId"
-  },
-
-  {
     "name": "journalCreate",
     "class": "JournalService",
     "method": "create",
     "params": [
       "command"
     ],
-    "returns": "journalId"
+    "returns": "id"
   },
   {
     "name": "journalUpdate",
@@ -169,13 +140,13 @@
     "returns": ""
   },
   {
-    "name": "journalClone",
+    "name": "journalBookkeeping",
     "class": "JournalService",
-    "method": "clone",
+    "method": "bookkeeping",
     "params": [
       "id"
     ],
-    "returns": "journalId"
+    "returns": ""
   },
   {
     "name": "journalFix",
@@ -185,6 +156,25 @@
       "id"
     ],
     "returns": ""
+  },
+  {
+    "name": "journalAttachImage",
+    "class": "JournalService",
+    "method": "attachImage",
+    "params": [
+      "id",
+      "attachmentFileName"
+    ],
+    "returns": ""
+  },
+  {
+    "name": "journalCopy",
+    "class": "JournalService",
+    "method": "clone",
+    "params": [
+      "id"
+    ],
+    "returns": "id"
   },
   {
     "name": "journalGenerateForInvoice",
@@ -204,6 +194,7 @@
     ],
     "returns": "Array{journalId, id}"
   },
+
   {
     "name": "paymentCreate",
     "class": "PaymentService",
@@ -426,72 +417,6 @@
       "id"
     ],
     "returns": ""
-  },
-
-  {
-    "name": "journalCreate",
-    "class": "JournalService",
-    "method": "create",
-    "params": [
-      "command"
-    ],
-    "returns": "id"
-  },
-  {
-    "name": "journalUpdate",
-    "class": "JournalService",
-    "method": "update",
-    "params": [
-      "id",
-      "command"
-    ],
-    "returns": ""
-  },
-  {
-    "name": "journalRemove",
-    "class": "JournalService",
-    "method": "remove",
-    "params": [
-      "id"
-    ],
-    "returns": ""
-  },
-  {
-    "name": "journalBookkeeping",
-    "class": "JournalService",
-    "method": "bookkeeping",
-    "params": [
-      "id"
-    ],
-    "returns": ""
-  },
-  {
-    "name": "journalFix",
-    "class": "JournalService",
-    "method": "fix",
-    "params": [
-      "id"
-    ],
-    "returns": ""
-  },
-  {
-    "name": "journalAttachImage",
-    "class": "JournalService",
-    "method": "attachImage",
-    "params": [
-      "id",
-      "attachmentFileName"
-    ],
-    "returns": ""
-  },
-  {
-    "name": "journalCopy",
-    "class": "JournalService",
-    "method": "clone",
-    "params": [
-      "id"
-    ],
-    "returns": "id"
   },
 
   {

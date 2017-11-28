@@ -177,7 +177,7 @@ class JournalService {
                 .toArray()
         };
 
-        return this.journalRepository.batchUpdate(journal);
+        return this.journalRepository.batchUpdate(id, journal);
     }
 
     clone(id){
@@ -226,7 +226,7 @@ class JournalService {
         if(new InventoryRepository(this.branchId).isExitsJournal(id))
             throw new ValidationException(['این سند برای اسناد انباری صادر شده ، امکان حذف وجود ندارد']);
 
-        this.journalRepository.update({id: journal.id, journalStatus: 'Fixed'});
+        this.journalRepository.remove(id);
     }
 
     generateForInvoice(invoiceId) {
