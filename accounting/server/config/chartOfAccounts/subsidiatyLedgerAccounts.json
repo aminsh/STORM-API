@@ -37,7 +37,7 @@
   {"parentCode": "105", "code": "10505", "key": "", "title": "کالای ساخته شده", "hasDetailAccount": false},
   {"parentCode": "105", "code": "10506", "key": "", "title": "موجودی در راه", "hasDetailAccount": true},
   {"parentCode": "105", "code": "10507", "key": "", "title": "کالای امانی ما نزد دیگران", "hasDetailAccount": false},
-  {"parentCode": "105", "code": "10508", "key": "", "title": "موجودی اقلام راکد و ناباب", "hasDetailAccount": false},
+  {"parentCode": "105", "code": "10508", "key": "", "title": "موجودی اقلام راکد و نایاب", "hasDetailAccount": false},
   {"parentCode": "105", "code": "10509", "key": "", "title": "موجودی ضایعات مواد اولیه", "hasDetailAccount": false},
   {"parentCode": "105", "code": "10510", "key": "", "title": "موجودی ضایعات قطعات و لوازم یدکی", "hasDetailAccount": false},
   {"parentCode": "105", "code": "10511", "key": "", "title": "انحراف نرخ مواد اولیه هنگام خرید", "hasDetailAccount": false},
@@ -258,7 +258,7 @@
 
   {"parentCode": "803", "code": "80301", "key": "", "title": "زیان ضایعات غیرعادی تولید", "hasDetailAccount": false},
   {"parentCode": "803", "code": "80302", "key": "", "title": "زیان ناشی از کاهش ارز", "hasDetailAccount": true},
-  {"parentCode": "803", "code": "80303", "key": "", "title": "زیان ناشی از موجودی اقلام راکد و ناباب", "hasDetailAccount": false},
+  {"parentCode": "803", "code": "80303", "key": "", "title": "زیان ناشی از موجودی اقلام راکد و نایاب", "hasDetailAccount": false},
   {"parentCode": "803", "code": "80304", "key": "", "title": "خالص کسری و اضافی انبار", "hasDetailAccount": false},
   {"parentCode": "803", "code": "80305", "key": "", "title": "هزینه های جذب نشده در تولید", "hasDetailAccount": false},
   {"parentCode": "803", "code": "80306", "key": "", "title": "زیان ناشی از تسعیر دارایی ها و بدهی های ارزی عملیاتی", "hasDetailAccount": false},
