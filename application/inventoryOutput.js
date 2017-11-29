@@ -91,6 +91,7 @@ class OutputService {
         };
 
         output.inventoryLines = cmd.lines.asEnumerable()
+            .groupBy(line => line.productId, line => line, (key, items) => ({productId: key, quantity: items.sum(e => e.quantity)}))
             .select(line => ({
                 productId: line.productId,
                 quantity: line.quantity,
