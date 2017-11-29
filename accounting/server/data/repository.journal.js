@@ -30,10 +30,16 @@ class JournalRepository extends BaseRepository {
     }
 
     findById(id) {
-        return this.knex.table('journals')
+        let journal =  await(this.knex.table('journals')
             .modify(this.modify, this.branchId)
             .where('id', id)
-            .first();
+            .first());
+
+        journal.journalLines = await(this.knex.select('*').from('journalLines')
+            .where('branchId', this.branchId)
+            .where('journalId', id));
+
+        return journal;
     }
 
     findByJournalLinesById(id) {
