@@ -13,7 +13,9 @@ class SubsidiaryLedgerAccountService {
 
         const settings = this.settings = new SettingsRepository(branchId).get();
 
-        this.defaultAccounts = settings.subsidiaryLedgerAccounts.asEnumerable().toObject(item => item.key, item=> item.id);
+        this.defaultAccounts = (settings.subsidiaryLedgerAccounts || [])
+            .asEnumerable()
+            .toObject(item => item.key, item => item.id);
     }
 
     get receivableAccount() {
