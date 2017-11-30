@@ -94,6 +94,26 @@ class SaleEntryController extends InvoiceEntryControllerBase {
     goAfterSave() {
         this.$state.go('sale.sales');
     }
+
+    addChange() {
+        this.invoice.charges = this.invoice.charges || [];
+
+        this.invoice.charges.push({});
+    }
+
+    removeCharge(item) {
+        this.invoice.charges.asEnumerable().remove(item);
+    }
+
+    addCost() {
+        this.invoice.costs = this.invoice.costs || [];
+
+        this.invoice.costs.push({});
+    }
+
+    removeCost(item) {
+        this.invoice.costs.asEnumerable().remove(item);
+    }
 }
 
 export default SaleEntryController;

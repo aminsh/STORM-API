@@ -48,9 +48,9 @@
 
 
 </div>
-<dev-tag-content-body ng-if="false">
+<dev-tag-content-body>
     <div class="row">
-        <div class="col-md-7 ">
+        <div class="col-md-6">
             <label style="display: block">هزینه های فروش</label>
             <dev-tag-button style-type="primary btn-outline"
                             style="margin-top: 30px"
@@ -71,8 +71,15 @@
 
                     <div class="row">
 
-                        <div class="col-md-9">
+                        <div class="col-md-4">
+                            <dev-tag-text-box ng-model="item.key"
+                                              placeholder="کلید"
+                                              name="display"></dev-tag-text-box>
+                        </div>
+
+                        <div class="col-md-5">
                             <dev-tag-text-box ng-model="item.display"
+                                              placeholder="عنوان"
                                               name="display"></dev-tag-text-box>
                         </div>
 
@@ -83,6 +90,58 @@
                                     style="margin-left: 5px"
                                     type="button"
                                     ng-click="model.removeSaleCost(item)"
+                                    class="close"
+                                    title="{{'Remove'| translate}}">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    </div>
+
+                </li>
+            </ul>
+
+        </div>
+
+        <div class="col-md-6">
+            <label style="display: block">اضافات فروش</label>
+            <dev-tag-button style-type="primary btn-outline"
+                            style="margin-top: 30px"
+                            title="{{'New row' | translate}}"
+                            ng-click="model.addSaleCharge()"></dev-tag-button>
+
+            <ul class="list-group  clear-list m-t" ng-if="model.settings.saleCharges && model.settings.saleCharges.length" >
+
+                <li class="list-group-item fist-item">
+                    <div class="row">
+                        <div class="col-md-10">
+                            عنوان اضافه
+                        </div>
+                    </div>
+                </li>
+                <li class="list-group-item"
+                    ng-repeat="item in model.settings.saleCharges">
+
+                    <div class="row">
+
+                        <div class="col-md-4">
+                            <dev-tag-text-box ng-model="item.key"
+                                              placeholder="کلید"
+                                              name="display"></dev-tag-text-box>
+                        </div>
+
+                        <div class="col-md-5">
+                            <dev-tag-text-box ng-model="item.display"
+                                              placeholder="عنوان"
+                                              name="display"></dev-tag-text-box>
+                        </div>
+
+
+                        <div class="col-md-2"
+                             style="vertical-align: middle">
+                            <button
+                                    style="margin-left: 5px"
+                                    type="button"
+                                    ng-click="model.removeSaleCharge(item)"
                                     class="close"
                                     title="{{'Remove'| translate}}">
                                 <span aria-hidden="true">&times;</span>

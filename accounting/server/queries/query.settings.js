@@ -21,6 +21,7 @@ class SettingQuery extends BaseQuery {
             'stakeholders',
             'subsidiaryLedgerAccounts',
             'saleCosts',
+            'saleCharges',
             'webhooks',
             'invoiceDescription')
             .from('settings')

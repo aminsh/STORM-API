@@ -19,6 +19,10 @@ class JournalGenerationTemplateEntryController {
             .get(this.type)
             .then(result => {
                 this.template = result;
+
+                this.template.data.lines
+                    .forEach(e => e.detailAccountEntryType = e.detailAccountEntryType || 'template');
+
                 if (!this.template.fields)
                     this.template.fields = [];
             });
@@ -27,7 +31,7 @@ class JournalGenerationTemplateEntryController {
 
         this.urls = {
             getAllAccounts: devConstants.urls.subsidiaryLedgerAccount.all(),
-            getAllDetailAccounts: devConstants.urls.detailAccount.allBySubsidiaryLedgerAccount()
+            getAllDetailAccounts: devConstants.urls.detailAccount.all()
         };
 
     }
@@ -37,6 +41,7 @@ class JournalGenerationTemplateEntryController {
         this.template.data.lines.push({
             subsidiaryLedgerAccountId: null,
             detailAccountId: null,
+            detailAccountEntryType: 'template',
             article: null,
             debtor: "0",
             creditor: "0"
@@ -102,6 +107,13 @@ class JournalGenerationTemplateEntryController {
         row.subsidiaryLedgerAccountId = item.id;
         row.subsidiaryLedgerAccountCode = item.code;
         row.subsidiaryLedgerAccountDisplay = item.title;
+    }
+
+    onChangedDetailAccount(item, row, form) {
+        form.detailAccountId.$setViewValue(item.id);
+        row.detailAccountId = item.id;
+        row.detailAccountCode = item.code;
+        row.detailAccountDisplay = item.title;
     }
 }
 

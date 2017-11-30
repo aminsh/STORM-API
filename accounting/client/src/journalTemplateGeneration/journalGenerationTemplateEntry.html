@@ -62,7 +62,43 @@
                         </td>
                         <td>
                             <div class="row">
-                                <dev-tag-text-box ng-model="item.detailAccountId"></dev-tag-text-box>
+                                <div class="input-group">
+                                    <dev-tag-text-box ng-model="item.detailAccountId" ng-if="item.detailAccountEntryType === 'template'"></dev-tag-text-box>
+
+                                    <dev-tag-combo-box
+                                            name="detailAccountId"
+                                            ng-if="item.detailAccountEntryType === 'list'"
+                                            k-placeholder="{{'Select ...'|translate}}"
+                                            k-data-value-field="id"
+                                            k-data-text-field="display"
+                                            url="{{model.urls.getAllDetailAccounts}}"
+                                            k-on-changed="model.onChangedDetailAccount($item, item, form['form-'+$index])"
+                                            k-on-bound="model.onChangedDetailAccount($item, item, form['form-'+$index])"
+                                            ng-model="item.detailAccountId"
+                                            required></dev-tag-combo-box>
+
+                                    <div class="input-group-addon pointer" ng-click="item.isOpen = !isOpen">
+                                        <div class="btn-group" uib-dropdown is-open="item.isOpen">
+                                            <span class="caret"></span>
+                                            <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="single-button">
+                                                <li role="menuitem">
+                                                    <a href="#" ng-click="item.detailAccountEntryType = 'template'">
+                                                        <i class="fa fa-check fa-lg" ng-show="item.detailAccountEntryType === 'template'"></i>
+                                                        <span>الگو</span>
+                                                    </a>
+                                                </li>
+                                                <li role="menuitem">
+                                                    <a href="#" ng-click="item.detailAccountEntryType = 'list'">
+                                                        <i class="fa fa-check fa-lg" ng-show="item.detailAccountEntryType === 'list'"></i>
+                                                        <span>لیست تفصیلی</span>
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+
+
+                                </div>
                             </div>
                         </td>
                         <td>
