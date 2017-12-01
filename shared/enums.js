@@ -167,6 +167,31 @@ enums.getMonth = function () {
     ]);
 };
 
+enums.getSeason = function () {
+    return new Enum([
+        {key: 1, display: "بهار"},
+        {key: 2, display: "تابستان"},
+        {key: 3, display: "پاییز"},
+        {key: 4, display: "زمستان"}
+    ]);
+};
+
+enums.getVatIncluded = function () {
+    return new Enum([
+        {key: 1, display: "همه ی فاکتورها"},
+        {key: 2, display: "شامل فاکتورهای با مالیات"},
+        {key: 3, display: "شامل فاکتورهای بدون مالیات"}
+    ]);
+};
+
+enums.getNationalCodeIncluded = function () {
+    return new Enum([
+        {key: 1, display: "همه ی اشخاص"},
+        {key: 2, display: "شامل اشخاص دارای کد ملی/ شناسه"},
+        {key: 3, display: "شامل اشخاص بدون کد ملی/ شناسه"}
+    ]);
+};
+
 enums.Active = () => {
     return new Enum([
         {key: 'true', name: 'showActiveItems', display: 'نمایش فعال ها'},

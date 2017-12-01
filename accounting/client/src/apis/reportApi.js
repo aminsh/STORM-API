@@ -1,4 +1,4 @@
-export default class {
+class ReportApi {
     constructor(apiPromise, $q, devConstants) {
         this.urlPrefix = `${devConstants.urls.rootUrl}/reports`;
         this.apiPromise = apiPromise;
@@ -153,4 +153,10 @@ export default class {
     getSeasonal(params){
         return this.apiPromise.get(`${this.urlPrefix}/seasonal`,params)
     }
+
+    getTotalSeasonal(params){
+        return this.apiPromise.get(`${this.urlPrefix}/seasonal`,params)
+    }
 }
+
+export default ReportApi;
