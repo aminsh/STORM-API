@@ -5,7 +5,7 @@ const
     await = require('asyncawait/await'),
     Guid = instanceOf('utility').Guid,
     Common = instanceOf('utility').Common,
-    knex = instanceOf('knex')
+    knex = instanceOf('knex');
 
 
 let defaultAccountCategories = require('../../../../accounting/server/config/chartOfAccounts/accountCategories.json').groups,
