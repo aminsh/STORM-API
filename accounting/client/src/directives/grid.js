@@ -10,7 +10,8 @@ export default function (apiPromise, $timeout) {
         scope: {
             option: '=',
             detailOption: '=',
-            onCurrentChanged: '&'
+            onCurrentChanged: '&',
+            onLoad: '&'
         },
         link: (scope, element, attrs) => {
             let extra = scope.option.extra || null,
@@ -43,6 +44,7 @@ export default function (apiPromise, $timeout) {
 
             scope.onIsSelectedAllChanged = () => {
                 scope.data.forEach(item => item.isSelected = scope.isSelectedAll);
+                option.isSelectedAll = scope.isSelectedAll;
             };
 
             scope.data = [];
@@ -78,6 +80,10 @@ export default function (apiPromise, $timeout) {
 
                 apiPromise.get(option.readUrl, parameters)
                     .then(result => {
+
+                        if (angular.isDefined(attrs.onLoad))
+                            scope.onLoad({$data: result});
+
                         let data = result.data;
 
                         if (option.mapper)
