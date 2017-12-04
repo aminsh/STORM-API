@@ -1,27 +1,38 @@
-
 <dev-tag-content dev-attr-title="{{'Reports' | translate}}">
-<div class="container-fluid">
-   <div class="row">
-        <div class="col-md-4" ng-repeat="r in model.reports">
-        <h5>{{r.text}}</h5>
-        <ul class="list-group">
-            <li class="list-group-item" 
-            style="cursor: pointer" 
-            ng-repeat="item in r.items">
+    <div class="container-fluid">
 
-                <a ng-click="model.show(item)">{{item.text}}</a>
+        <div class="row">
+            <div ng-repeat="r in model.reports">
+                <div class="clearfix" ng-if="$index % 3 == 0"></div>
+                <div class="col-md-4">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <div class="row">
+                                <div class="panel-title" style="margin-right: 10px"><h3>{{r.text}}</h3></div>
+                            </div>
+                        </div>
+                        <div class="panel-body">
+                            <ul class="list-group">
+                                <li class="list-group-item"
+                                    style="cursor: pointer"
+                                    ng-repeat="item in r.items">
 
-                <a 
-                ng-if="isDevelopment" 
-                class="pull-left" 
-                style="cursor: pointer"
-                ng-click="model.design(item)">
-                <i class="fa fa-edit"></i>
-                </a>
-            </li>
-        </ul>
+                                    <a ng-click="model.show(item)">{{item.text}}</a>
+                                    <a
+                                            ng-if="isDevelopment"
+                                            class="pull-left"
+                                            style="cursor: pointer"
+                                            ng-click="model.design(item)">
+                                        <i class="fa fa-edit"></i>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-   </div>
-</div>
+    </div>
 </dev-tag-content>
 
