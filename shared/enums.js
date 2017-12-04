@@ -31,8 +31,8 @@ class Enum {
 
 enums.AccountPostingType = function () {
     return new Enum([
-        {key: 'balanceSheet', display: 'تراز نامه ای'},
-        {key: 'benefitAndLoss', display: 'سود و زیانی'},
+        {key: 'balanceSheet', display: 'تراز نامه ای (دائمی)'},
+        {key: 'benefitAndLoss', display: 'سود و زیانی (موقت)'},
         {key: 'entezami', display: 'انتظامی'}
     ]);
 };
@@ -132,7 +132,8 @@ enums.ChequeStatus = function () {
         {key: 'normal', display: 'عادی'},
         {key: 'inProcessOnPassing', display: 'در جریان وصول'},
         {key: 'passed', display: 'پاس شده'},
-        {key: 'return', display: 'عودت داده'}
+        {key: 'return', display: 'عودت داده'},
+        {key: 'spend', display: 'خرج شده'}
     ]);
 };
 
