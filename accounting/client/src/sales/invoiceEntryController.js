@@ -217,7 +217,7 @@ export default class InvoiceEntryControllerBase {
     onItemPropertyChanged(item) {
         const vat = this.settings.vat;
 
-        item.vat = ((item.unitPrice * item.quantity) - item.discount) * vat / 100;
+        item.vat = item.vat || ((item.unitPrice * item.quantity) - item.discount) * vat / 100;
     }
 
     canShowStock() {

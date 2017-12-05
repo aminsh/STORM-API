@@ -2,15 +2,27 @@
     <i class="fa fa-info-circle fa-2x" aria-hidden="true"></i><br/>
     <ul>
         <li>
-تفکیک حسابها به ترتیب گروه حساب، حساب کل و معین در این بخش قرار دارد.
+            جهت افزودن حساب کل/ معین جدید از
+            <i class="fa fa-plus fa-lg"></i>
+            استفاده نمایید.
         </li>
         <li>
-            امکان ویرایش حسابهای کل و معین وجود دارد.
+            جهت حذف حساب کل/ معین از
+            <i class="fa fa-trash fa-lg"></i>
+            و ویرایش از
+            <i class="fa fa-edit fa-lg"></i>
+            استفاده نمایید.
         </li>
         <li>
-            در صورت نیاز به تعریف حساب تفصیل برای هر یک از حسابهای معین دقت نمایید که در بخش ویرایش/ایجاد حساب معین مقدار گزینه ی
+            جهت افزودن نمایش زیر گروه حساب ها از
+            <i class="fa fa-plus-square-o fa-lg"></i>
+            استفاده نمایید.
+        </li>
+        <li>
+            در صورت نیاز به تعریف حساب تفصیل برای هر یک از حسابهای معین دقت نمایید که در بخش ویرایش/ایجاد حساب معین
+            مقدار گزینه ی
             <b>تفصیل دارد؟ </b>
-انتخاب شده باشد.
+            انتخاب شده باشد.
         </li>
         <li>
             <b>نکته مهم: </b>
@@ -20,12 +32,12 @@
         </li>
     </ul>
 </dev-tag-guide>
-<dev-tag-content dev-attr-title="{{'General ledger accounts' | translate}}">
-    <dev-tag-button
-            ui-sref=".create"
-            style-type="primary"
-            icon="glyphicon glyphicon-plus"
-            title="{{'New General ledger accounts' | translate}}"></dev-tag-button>
+<dev-tag-content dev-attr-title="{{'Accounts headlines' | translate}}">
+    <!--    <dev-tag-button
+                ui-sref=".create"
+                style-type="primary"
+                icon="glyphicon glyphicon-plus"
+                title="{{'New General ledger accounts' | translate}}"></dev-tag-button>-->
 
     <!-- <dev-tag-grid option="gridOption"
                    detail-option="gridOptionSubsidiaryLedgerAccount"
@@ -36,17 +48,23 @@
     <ul class="todo-list m-t ui-sortable">
 
         <li ng-repeat-start="g in chartOfAccounts"
-            style="width: 30%">
+            style="width: 40%"
+            title="{{'Grouping type'|translate}}">
 
             <i class="fa fa-lg pointer"
                ng-click="collapse(g)"
                ng-class="{'fa-plus-square-o': !g.canShow, 'fa-minus-square-o': g.canShow}"></i>
 
             <span>{{g.display}}</span>
+
+            <i class="fa fa-plus fa-lg pointer text-success pull-left"
+               title="{{'New General ledger accounts' | translate}}"
+               ui-sref=".create"></i>
         </li>
         <li ng-repeat-start="gla in g.generalLedgerAccounts"
             ng-if="g.canShow"
-            style="width: 30%; margin-right: 100px;">
+            style="width: 40%; margin-right: 100px;"
+            title="{{'GeneralLedgerAccount'|translate}}">
 
             <i class="fa fa-lg pointer "
                ng-click="collapse(gla)"
@@ -56,28 +74,35 @@
 
 
             <i class="fa fa-edit fa-lg pointer text-success pull-left"
-               title="{{'Edit'|translate}}"
-               ui-sref=".edit({id: gla.id})"></i>
+               title="{{'Edit generalAccount'|translate}}"
+               ui-sref=".edit({id: gla.id})"
+               style="margin-right: 10px"></i>
 
             <i class="fa fa-trash fa-lg pointer text-danger pull-left"
-               title="{{'Remove'|translate}}"
-               ng-click="removeGeneralLedgerAccount(gla)"></i>
+               title="{{'Remove generalAccount'|translate}}"
+               ng-click="removeGeneralLedgerAccount(gla)"
+               style="margin-right: 10px"></i>
 
             <i class="fa fa-plus fa-lg pointer text-success pull-left"
                title="{{'New Subsidiary ledger account' | translate}}"
-               ui-sref=".subsidiary-ledger-accounts.create({generalLedgerAccountId: gla.id})"></i>
+               ui-sref=".subsidiary-ledger-accounts.create({generalLedgerAccountId: gla.id})"
+               style="margin-right: 10px"></i>
         </li>
         <li ng-repeat-end ng-repeat="sla in gla.subsidiaryLedgerAccounts"
             ng-if="gla.canShow"
-            class="pointer"
-            style="width: 30%; margin-right: 200px;">
+            style="width: 40%; margin-right: 200px;"
+            title="{{'SubsidiaryLedgerAccount'|translate}}">
             <span>{{sla.display}}</span>
 
             <i class="fa fa-edit fa-lg pointer text-success pull-left"
-               ui-sref=".subsidiary-ledger-accounts.edit({id: sla.id})"></i>
+               ui-sref=".subsidiary-ledger-accounts.edit({id: sla.id})"
+               title="{{'Edit subsidiaryAccount'|translate}}"
+               style="margin-right: 10px"></i>
 
             <i class="fa fa-trash fa-lg pointer text-danger pull-left"
-               ng-click="removeSubsidiaryLedgerAccount(sla)"></i>
+               ng-click="removeSubsidiaryLedgerAccount(sla)"
+               title="{{'Remove subsidiaryAccount'|translate}}"
+               style="margin-right: 10px"></i>
         </li>
         <li ng-repeat-end ng-show="false"></li>
     </ul>

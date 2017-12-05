@@ -1345,4 +1345,11 @@ label.error {
   outline: none
 }
 
+.truncate-80 {
+  width: 80px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 

@@ -5,7 +5,8 @@ const GeneralLedgerAccountRepository = require('./data').GenenralLedgerAccountRe
 class GeneralLedgerAccount {
     constructor(branchId) {
         this.branchId = branchId;
-        this.generalLedgerAccountRepository = new GeneralLedgerAccountRepository(branchId);
+        this.generalLedgerAccountRepository = new GeneralLedgerAccountRepository(branchId),
+            String = instanceOf('utility').String;
     }
 
     create(cmd) {

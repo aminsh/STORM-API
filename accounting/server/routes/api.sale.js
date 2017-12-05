@@ -64,7 +64,7 @@ router.route('/:id/confirm')
 
             res.json({isValid: true});
         }
-        catch (e){
+        catch (e) {
             res.json({isValid: false, errors: e.errors})
         }
     }));
@@ -79,8 +79,9 @@ router.route('/:id')
     .put(async((req, res) => {
         try {
             RunService("invoiceUpdate", [req.params.id, req.body], req);
+            res.json({isValid: true});
         }
-        catch (e){
+        catch (e) {
             res.json({isValid: false, errors: e.errors})
         }
     }))
@@ -90,7 +91,7 @@ router.route('/:id')
 
             res.json({isValid: true});
         }
-        catch (e){
+        catch (e) {
             res.json({isValid: false, errors: e.errors})
         }
     }));
@@ -104,6 +105,25 @@ router.route('/:id/pay')
         }
         catch (e) {
             res.json({isValid: false, errors: e.errors})
+        }
+
+    }));
+
+router.route('/:id/generate-journal')
+    .post(async((req, res) => {
+
+        try {
+
+            const id = req.params.id;
+
+            let journalId = RunService("journalGenerateForInvoice", [id], req);
+
+            RunService("invoiceSetJournal", [id, journalId], req);
+
+            res.json({isValid: true});
+        }
+        catch (e) {
+            res.json({isValid: false, errors: e.errors});
         }
 
     }));

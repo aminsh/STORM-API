@@ -1,7 +1,7 @@
 import Guid from 'guid';
 import 'jquery-datatables';
 
-export default function (apiPromise, $timeout) {
+export default function (apiPromise, $timeout, exportToExcel) {
     return {
         restrict: 'E',
         priority: 100,
@@ -10,7 +10,8 @@ export default function (apiPromise, $timeout) {
         scope: {
             option: '=',
             detailOption: '=',
-            onCurrentChanged: '&'
+            onCurrentChanged: '&',
+            onLoad: '&'
         },
         link: (scope, element, attrs) => {
             let extra = scope.option.extra || null,
@@ -43,6 +44,7 @@ export default function (apiPromise, $timeout) {
 
             scope.onIsSelectedAllChanged = () => {
                 scope.data.forEach(item => item.isSelected = scope.isSelectedAll);
+                option.isSelectedAll = scope.isSelectedAll;
             };
 
             scope.data = [];
@@ -68,6 +70,7 @@ export default function (apiPromise, $timeout) {
             scope.option.refresh = () => scope.pageOption.refresh();
             scope.option.addItem = newItem => scope.data.unshift(newItem);
             scope.option.removeItem = item => scope.data.remove(item);
+            scope.option.exportToExcel = ()=> exportToExcel(scope.data, 'grid');
 
             function fetch(page) {
                 if (!option.readUrl) return;
@@ -78,6 +81,10 @@ export default function (apiPromise, $timeout) {
 
                 apiPromise.get(option.readUrl, parameters)
                     .then(result => {
+
+                        if (angular.isDefined(attrs.onLoad))
+                            scope.onLoad({$data: result});
+
                         let data = result.data;
 
                         if (option.mapper)

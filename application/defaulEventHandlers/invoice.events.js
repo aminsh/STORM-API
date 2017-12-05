@@ -9,6 +9,9 @@ function onInvoiceCreatedOrChanged(invoice) {
     if(invoice.status === 'draft')
         return;
 
+    if(!this.settings.canSaleGenerateAutomaticJournal)
+        return;
+
     let journalId = this.runService("journalGenerateForInvoice", [invoice.id]);
 
     this.runService("invoiceSetJournal", [invoice.id, journalId]);

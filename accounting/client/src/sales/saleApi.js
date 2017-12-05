@@ -36,11 +36,12 @@ export default function saleApi(apiPromise, devConstants){
         summaryByProduct(){
             return apiPromise.get(`${urlPrefix}/sales/summary/by-product`);
         },
-        // [START] SMRSAN
         sendInvoiceEmail(id, email){
             return apiPromise.post(`${urlPrefix}/sales/${id}/send-email`, { email });
+        },
+        generateJournal(id){
+            return apiPromise.post(`${urlPrefix}/sales/${id}/generate-journal`);
         }
-        // [-END-] SMRSAN
     };
 
 }

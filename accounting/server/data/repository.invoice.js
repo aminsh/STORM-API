@@ -22,20 +22,25 @@ class InvoiceRepository extends BaseRepository {
                 .where('invoices.branchId', this.branchId)
                 .andWhere('invoices.id', id));
 
-        let first = data[0],
-            invoice = {
-                id: first.invoiceId,
-                number: first.number,
-                date: first.date,
-                detailAccountId: first.detailAccountId,
-                description: first.invoiceDescription,
-                referenceId: first.referenceId,
-                journalId: first.journalId,
-                invoiceStatus: first.invoiceStatus,
-                orderId: first.orderId,
-                invoiceType: first.invoiceType,
-                ofInvoiceId: first.ofInvoiceId
-            };
+        let first = data[0];
+
+        if (!first) return null;
+
+        let invoice = {
+            id: first.invoiceId,
+            number: first.number,
+            date: first.date,
+            detailAccountId: first.detailAccountId,
+            description: first.invoiceDescription,
+            referenceId: first.referenceId,
+            journalId: first.journalId,
+            invoiceStatus: first.invoiceStatus,
+            orderId: first.orderId,
+            invoiceType: first.invoiceType,
+            ofInvoiceId: first.ofInvoiceId,
+            costs: first.costs,
+            charges: first.charges
+        };
 
         invoice.invoiceLines = data.asEnumerable().select(line => ({
             id: line.invoiceLineId,
@@ -45,6 +50,7 @@ class InvoiceRepository extends BaseRepository {
             unitPrice: line.unitPrice,
             quantity: line.quantity,
             discount: line.discount,
+            stockId: line.stockId,
             vat: line.vat
         }))
             .toArray();
@@ -219,7 +225,7 @@ class InvoiceRepository extends BaseRepository {
             .first());
     }
 
-    isExitsJournal(journalId){
+    isExitsJournal(journalId) {
         return await(this.knex('id')
             .from('invoices')
             .modify(this.modify, this.branchId)
@@ -227,7 +233,7 @@ class InvoiceRepository extends BaseRepository {
             .first());
     }
 
-    isExitsStock(stockId){
+    isExitsStock(stockId) {
         return await(this.knex.select('id')
             .from('invoiceLines')
             .modify(this.modify, this.branchId)

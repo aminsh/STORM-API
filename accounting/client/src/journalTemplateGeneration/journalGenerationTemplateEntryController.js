@@ -8,7 +8,10 @@ class JournalGenerationTemplateEntryController {
                 journalGenerationTemplateApi,
                 $stateParams,
                 formService,
-                logger) {
+                translate,
+                logger,
+                $sce,
+                settingsApi) {
 
         this.journalGenerationTemplateApi = journalGenerationTemplateApi;
         this.formService = formService;
@@ -25,6 +28,21 @@ class JournalGenerationTemplateEntryController {
 
                 if (!this.template.fields)
                     this.template.fields = [];
+
+
+                settingsApi.get().then(result => {
+
+                    this.template.fields = this.template.fields.asEnumerable()
+                        .concat((result.saleCosts || []).asEnumerable()
+                            .select(e => ({display: `${translate('Cost')} ${e.display}`, key: `cost_${e.key}`}))
+                            .toArray())
+
+                        .concat((result.saleCharges || []).asEnumerable()
+                            .select(e => ({display: `${translate('Charge')} ${e.display}`, key: `charge_${e.key}`}))
+                            .toArray())
+
+                        .toArray()
+                });
             });
 
         this.output = false;
@@ -33,6 +51,10 @@ class JournalGenerationTemplateEntryController {
             getAllAccounts: devConstants.urls.subsidiaryLedgerAccount.all(),
             getAllDetailAccounts: devConstants.urls.detailAccount.all()
         };
+
+        this.popoverHtml = {
+            debtor: `<textarea class="form-control" rows="8" ng-model="item.debtor"></textarea>`
+        }
 
     }
 

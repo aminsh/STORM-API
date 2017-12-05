@@ -41,7 +41,7 @@ class PaymentRepository extends BaseRepository {
     }
 
     update(id, entity) {
-        await(this.knex('payments').where('id', id).update(entity)());
+        await(this.knex('payments').where('id', id).update(entity));
     }
 };
 

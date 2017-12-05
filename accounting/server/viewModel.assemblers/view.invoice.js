@@ -13,7 +13,7 @@ module.exports = function (entity) {
         })}`
         : undefined;
 
-    return {
+    return Object.assign({}, {
         id: entity.id,
         printUrl,
         number: entity.number,
@@ -30,8 +30,10 @@ module.exports = function (entity) {
         invoiceLines: entity.invoiceLines,
         sumTotalPrice: entity.sumTotalPrice,
         sumPaidAmount: entity.sumPaidAmount,
-        sumRemainder: entity.sumRemainder
-    };
+        sumRemainder: entity.sumRemainder,
+        costs: entity.costs,
+        charges: entity.charges
+    }, entity.custom);
 };
 
 

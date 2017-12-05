@@ -21,7 +21,8 @@
     "class": "InvoiceService",
     "method": "confirm",
     "params": [
-      "id"
+      "id",
+      "status"
     ],
     "returns": "undefined"
   },
@@ -200,10 +201,20 @@
     "class": "PaymentService",
     "method": "create",
     "params": [
+      "payment",
+      "receiveOrPay"
+    ],
+    "returns": "id"
+  },
+  {
+    "name": "paymentCreateMany",
+    "class": "PaymentService",
+    "method": "createMany",
+    "params": [
       "payments",
       "receiveOrPay"
     ],
-    "returns": "paymentIds"
+    "returns": "ids"
   },
   {
     "name": "paymentSetInvoiceForAll",

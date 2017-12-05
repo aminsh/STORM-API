@@ -111,7 +111,9 @@
                             </div>
                         </td>
                         <td>
-                            <dev-tag-text-box ng-model="item.debtor" name="debtor" required></dev-tag-text-box>
+                            <dev-tag-text-box ng-model="item.debtor"
+                                              name="debtor"
+                                              required></dev-tag-text-box>
 
                             <div ng-messages="form['form-'+$index].debtor.$error"
                                  ng-if="form['form-'+$index].debtor.$dirty">

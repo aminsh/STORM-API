@@ -1,4 +1,4 @@
-<div class="ui segment">
+<div class="ui segment" style="overflow-x: auto">
     <div class="ui dimmer"
          ng-if="isWaiting">
         <div class="ui loader">
@@ -50,7 +50,8 @@
         </thead>
         <tbody>
         <tr
-                ng-repeat-start="item in data"
+                ng-repeat-start="item in data track by $index"
+                ng-init="item.rowIndex = $index"
                 ng-click="select(item)"
                 ng-class="{'success': current == item, 'pointer':  grid.selectable}"
                 ng-class-odd="'grid-row-striped'">
@@ -62,6 +63,7 @@
             <td ng-repeat="column in columns"
                 style="vertical-align: middle"
                 class="{{column.css}}"
+                ng-style="column.style"
                 ng-class="{'command-cell': column.hasOwnProperty('commands')}">
 
                 <i ng-if="detailTemplate && $index == 0"
