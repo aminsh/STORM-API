@@ -23,6 +23,7 @@ module.exports = function (entity) {
         journalId: entity.journalId,
         detailAccountId: entity.detailAccountId,
         detailAccountDisplay: entity.detailAccountDisplay,
+        customer: {id: entity.detailAccountId},
         customerId: entity.detailAccountId,
         customerDisplay: entity.detailAccountDisplay,
         status: entity.invoiceStatus,
