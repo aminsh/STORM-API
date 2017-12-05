@@ -130,9 +130,13 @@
                     <td><strong>جمع مالیات :</strong></td>
                     <td>{{model.invoice.invoiceLines | totalSum: ('vat') | number}}</td>
                 </tr>
+                <tr ng-repeat="c in model.invoice.charges">
+                    <td><strong>{{'Charge'|translate}} {{c.display}} :</strong></td>
+                    <td>{{c.value | number}}</td>
+                </tr>
                 <tr>
                     <td><strong>جمع کل :</strong></td>
-                    <td>{{model.invoice.invoiceLines | totalSum: ('($.quantity * $.unitPrice) - $.discount + $.vat')| number}}</td>
+                    <td>{{(model.invoice.invoiceLines | totalSum: ('($.quantity * $.unitPrice) - $.discount + $.vat')) + (model.invoice.changes | totalSum: ('value')) | number}}</td>
                 </tr>
                 </tbody>
             </table>
