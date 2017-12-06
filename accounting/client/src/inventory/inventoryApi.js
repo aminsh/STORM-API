@@ -43,6 +43,14 @@ function inventoryApi(apiPromise, devConstants) {
             return apiPromise.put(`${urlPrefix}/inventories/outputs/${id}`, data);
         },
 
+        removeInput(id){
+            return apiPromise.delete(`${urlPrefix}/inventories/inputs/${id}`);
+        },
+
+        removeOutput(id){
+            return apiPromise.delete(`${urlPrefix}/inventories/outputs/${id}`);
+        },
+
         remove: function (id) {
             return apiPromise.delete(`${urlPrefix}/products/${id}`);
         },

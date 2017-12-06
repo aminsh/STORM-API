@@ -2,12 +2,15 @@
 
 class InventoriesController {
 
-    constructor($scope, $state, translate, devConstants, stockApi, logger, navigate) {
+    constructor($scope, $state, translate, devConstants, stockApi, logger, confirm, navigate, inventoryApi, $timeout) {
         this.$scope = $scope;
         this.$state = $state;
+        this.$timeout = $timeout;
         this.logger = logger;
         this.navigate = navigate;
+        this.confirm = confirm;
         this.translate = translate;
+        this.inventoryApi = inventoryApi;
         this.inventoryType = $state.current.name.includes('input') ? 'input' : 'output';
 
         this.gridOption = {
@@ -19,8 +22,8 @@ class InventoriesController {
                     width: '10%',
                     type: 'date',
                     css: 'text-center',
-                    header:{
-                        css:'text-center'
+                    header: {
+                        css: 'text-center'
                     },
                 },
                 {
@@ -30,8 +33,8 @@ class InventoriesController {
                     type: 'number',
                     template: '<span>{{item.number}}</span>',
                     css: 'text-center',
-                    header:{
-                        css:'text-center'
+                    header: {
+                        css: 'text-center'
                     },
                 },
                 {
@@ -69,11 +72,36 @@ class InventoriesController {
                     icon: 'fa fa-edit text-success fa-lg',
                     action: current => {
 
-                        if(this.inventoryType === 'input')
+                        if (this.inventoryType === 'input')
                             this.$state.go('inventoryInputsUpdate', {id: current.id});
 
-                        if(this.inventoryType === 'output')
+                        if (this.inventoryType === 'output')
                             this.$state.go('inventoryOutputsUpdate', {id: current.id});
+                    }
+                },
+                {
+                    title: translate('Remove'),
+                    icon: 'fa fa-trash text-danger fa-lg',
+                    action: current => {
+
+                        let promise;
+
+                        if (this.inventoryType === 'input')
+                            promise = this.inventoryApi.removeInput(current.id);
+
+                        if (this.inventoryType === 'output')
+                            promise = this.inventoryApi.removeOutput(current.id);
+
+                        this.confirm(
+                            translate('Are you sure ?'),
+                            translate(`Remove current ${this.inventoryType}`))
+                            .then(() => $timeout(() => promise
+                                    .then(() => {
+                                        this.logger.success();
+                                        this.gridOption.refresh();
+                                    })
+                                    .catch(errors => this.logger.error(errors.join('<br/>')))
+                                , 1000));
                     }
                 }
             ],
@@ -97,12 +125,12 @@ class InventoriesController {
         this.getAllStockUrl = devConstants.urls.stock.getAll();
     }
 
-    create(){
+    create() {
 
-        if(this.inventoryType === 'input')
+        if (this.inventoryType === 'input')
             this.$state.go('inventoryInputsCreate', {stockId: this.stockId});
 
-        if(this.inventoryType === 'output')
+        if (this.inventoryType === 'output')
             this.$state.go('inventoryOutputsCreate', {stockId: this.stockId});
     }
 
@@ -114,11 +142,12 @@ class InventoriesController {
         this.$state.go('.detail', {id: current.id});
     }
 
-    inventoryOutput(){
+    inventoryOutput() {
         const ids = this.gridOption.getSelected();
-        if(ids.length === 0){
-            this.logger.error(this.translate('Select inventory output'));}
-            else {
+        if (ids.length === 0) {
+            this.logger.error(this.translate('Select inventory output'));
+        }
+        else {
             let reportParam = {ids};
             this.navigate(
                 'report.print',
@@ -127,10 +156,11 @@ class InventoriesController {
         }
     }
 
-    inventoryInput(){
+    inventoryInput() {
         const ids = this.gridOption.getSelected();
-        if(ids.length === 0){
-            this.logger.error(this.translate('Select inventory input'));}
+        if (ids.length === 0) {
+            this.logger.error(this.translate('Select inventory input'));
+        }
         else {
             let reportParam = {ids};
             this.navigate(

@@ -185,7 +185,7 @@ class InventoryRepository extends BaseRepository {
     }
 
     remove(id) {
-        return this.knex('inventories').where('id', id).del();
+        return await(this.knex('inventories').where('id', id).del());
     }
 
     createInventory(entity, trx) {

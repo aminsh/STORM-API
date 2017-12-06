@@ -484,5 +484,7 @@
   "Total vat and tax": "جمع مالیات و عوارض",
   "Total return": "جمع برگشتی",
   "Total purchase Price":"جمع کل خرید",
-  "Generate journal": "صدور سند حسابداری"
+  "Generate journal": "صدور سند حسابداری",
+  "Remove current input": "حذف رسید جاری",
+  "Remove current output": "حذف حواله جاری"
 }
