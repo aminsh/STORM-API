@@ -7,7 +7,8 @@ const async = require('asyncawait/async'),
     Enums = instanceOf('Enums'),
     InventoryRepository = require('./data').InventoryRepository,
     InvoiceRepository = require('./data').InvoiceRepository,
-    ProductService = require('./product');
+    ProductService = require('./product'),
+    InventoryControlService = require('./inventoryControl');
 
 class InventoryInputService {
 
@@ -18,6 +19,8 @@ class InventoryInputService {
 
         this.inventoryRepository = new InventoryRepository(branchId);
         this.invoiceRepository = new InvoiceRepository(branchId);
+
+        this.inventoryControlService = new InventoryControlService(branchId, fiscalPeriodId);
     }
 
     _validate(cmd) {
@@ -45,53 +48,8 @@ class InventoryInputService {
         return errors;
     }
 
-    _isValidInventoryTurnover(inventories) {
-        if (inventories.length === 0) return true;
-
-        let inventoryTurnover = inventories
-            .map(item => {
-                item.total = item.quantity * (item.inventoryType === 'input' ? 1 : -1);
-                return item;
-            })
-            .reduce((memory, current) => {
-                if (Array.isArray(memory)) {
-                    let last = memory.asEnumerable().lastOrDefault(),
-                        remainder = last ? last.remainder : 0;
-
-                    current.remainder = remainder + current.total;
-                    memory.push(current);
-                    return memory;
-                }
-                else {
-                    memory.remainder = memory.total;
-                    current.remainder = memory.remainder + current.total;
-                    return [memory, current];
-                }
-            });
-
-        return inventoryTurnover.asEnumerable().all(item => item.remainder >= 0);
-    }
-
     _validateTurnover(input) {
-        let lines = input.inventoryLines,
-            productService = new ProductService(this.branchId);
-
-        return lines.asEnumerable()
-            .where(item => item.id)
-            .select(item => {
-                let inventories = this.inventoryRepository.getInventoriesByProductId(item.productId, this.fiscalPeriodId, input.stockId),
-                    current = inventories.asEnumerable().singleOrDefault(item => item.id === item.id);
-
-                current.quantity = item.quantity;
-
-                return {
-                    isValid: this._isValidInventoryTurnover(inventories),
-                    product: productService.findByIdOrCreate({id: item.productId})
-                };
-            })
-            .where(item => !item.isValid)
-            .select(item => 'برای کالای {0} موجودی منفی میشود'.format(item.product.title))
-            .toArray();
+        return this.inventoryControlService.validateTurnover(input);
     }
 
     _setInvoice(id, invoiceId, ioType) {
@@ -162,6 +120,15 @@ class InventoryInputService {
         if (errors.length > 0)
             throw new ValidationException(errors);
 
+        let removedLines = input.inventoryLines.asEnumerable()
+            .where(inputLine => !cmd.inventoryLines.asEnumerable().any(line => line.id === inputLine.id))
+            .select(item => ({
+                id: item.id,
+                productId: item.productId,
+                quantity: 0
+            }))
+            .toArray();
+
         errors = this._validateTurnover({
             stockId: cmd.stockId,
             inventoryLines: cmd.inventoryLines.asEnumerable()
@@ -170,13 +137,13 @@ class InventoryInputService {
                 .where(item => item.id && input.inventoryLines.asEnumerable().any(e => e.id === item.id))
 
                 /* removed lines */
-                .concat(input.inventoryLines.asEnumerable()
-                    .where(inputLine => !cmd.inventoryLines.asEnumerable().any(line => line.id === inputLine.id))
-                    .select(item => ({
-                        productId: item.productId,
-                        quantity: 0
-                    }))
-                    .toArray())
+                .concat(removedLines)
+
+                .select(item => ({
+                    id: item.id,
+                    productId: item.productId,
+                    quantity: item.quantity
+                }))
                 .toArray()
         });
 
@@ -184,9 +151,13 @@ class InventoryInputService {
             throw new ValidationException(errors);
 
         input = {
+            number: cmd.ioType === input.ioType && cmd.stockId === input.stockId
+                ? input.number
+                : (this.inventoryRepository.inputMaxNumber(this.fiscalPeriodId, cmd.stockId, cmd.ioType).max || 0) + 1,
             date: cmd.date || PersianDate.current(),
             stockId: cmd.stockId,
             inventoryType: 'input',
+            ioType: cmd.ioType,
             description: cmd.description
         };
 
@@ -206,6 +177,7 @@ class InventoryInputService {
                 stockId: input.stockId,
                 inventoryLines: input.inventoryLines.asEnumerable()
                     .select(item => ({
+                        id: item.id,
                         productId: item.productId,
                         quantity: 0
                     }))
