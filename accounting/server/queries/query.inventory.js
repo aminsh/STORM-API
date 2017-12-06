@@ -90,7 +90,7 @@ class InventoryQuery extends BaseQuery {
         let knex = this.knex,
             inventory = await(knex.select('*').from('inventories').where('id', id).first()),
             inventoryLines = await(
-                knex.select('*')
+                knex.select('inventoryLines.*', knex.raw('products.title as "productDisplay"'))
                     .from('inventoryLines')
                     .leftJoin('products', 'inventoryLines.productId', 'products.id')
                     .where('inventoryId', inventory.id));
