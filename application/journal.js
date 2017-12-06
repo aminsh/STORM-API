@@ -187,6 +187,11 @@ class JournalService {
         if (!sourceJournal)
             throw new ValidationException(['سند وجود ندارد']);
 
+
+        delete sourceJournal.id;
+
+        sourceJournal.journalLines.forEach(e => delete e.id);
+
         return this.create(sourceJournal);
     }
 
@@ -235,7 +240,7 @@ class JournalService {
         const settings = new SettingsRepository(this.branchId).get(),
             invoice = new InvoiceRepository(this.branchId).findById(invoiceId);
 
-        if(!invoice)
+        if (!invoice)
             throw new ValidationException(['فاکتور وجود ندارد']);
 
         if (!String.isNullOrEmpty(invoice.journalId))
