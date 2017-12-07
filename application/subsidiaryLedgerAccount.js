@@ -2,7 +2,8 @@
 
 const SubsidiaryLedgerAccountRepository = require('./data').SubsidiaryLedgerAccountRepository,
     GeneralLedgerAccountRepository = require('./data').GenenralLedgerAccountRepository,
-    SettingsRepository = require('./data').SettingsRepository;
+    SettingsRepository = require('./data').SettingsRepository,
+    String = instanceOf('utility').String;
 
 class SubsidiaryLedgerAccountService {
     
@@ -71,10 +72,10 @@ class SubsidiaryLedgerAccountService {
 
         if (String.isNullOrEmpty(cmd.title))
             errors.push('عنوان نمیتواند خالی باشد');
-        else if (cmd.title.length > 3)
+        else if (cmd.title.length < 3)
             errors.push('عنوان باید حداقل ۳ کاراکتر باشد');
 
-        if (String.isNullOrEmpty(cmd.title))
+        if (String.isNullOrEmpty(cmd.code))
             errors.push('کد نمیتواند خالی باشد');
         else if (this.subsidiaryLedgerAccountRepsitory.findByCode(cmd.code))
             errors.push('کد تکراری است');
@@ -90,6 +91,7 @@ class SubsidiaryLedgerAccountService {
             code: cmd.code,
             title: cmd.title,
             isBankAccount: cmd.isBankAccount,
+            balanceType: cmd.balanceType,
             hasDetailAccount: cmd.hasDetailAccount,
             hasDimension1: cmd.hasDimension1,
             hasDimension2: cmd.hasDimension2,
@@ -104,10 +106,10 @@ class SubsidiaryLedgerAccountService {
 
         if (String.isNullOrEmpty(cmd.title))
             errors.push('عنوان نمیتواند خالی باشد');
-        else if (cmd.title.length > 3)
+        else if (cmd.title.length < 3)
             errors.push('عنوان باید حداقل ۳ کاراکتر باشد');
 
-        if (String.isNullOrEmpty(cmd.title))
+        if (String.isNullOrEmpty(cmd.code))
             errors.push('کد نمیتواند خالی باشد');
         else if (this.subsidiaryLedgerAccountRepsitory.findByCode(cmd.code, id))
             errors.push('کد تکراری است');
@@ -119,6 +121,7 @@ class SubsidiaryLedgerAccountService {
             title: cmd.title,
             code: cmd.code,
             isBankAccount: cmd.isBankAccount,
+            balanceType: cmd.balanceType,
             hasDetailAccount: cmd.hasDetailAccount,
             hasDimension1: cmd.hasDimension1,
             hasDimension2: cmd.hasDimension2,

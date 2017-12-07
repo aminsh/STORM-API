@@ -32,6 +32,7 @@ module.exports = async.result(function (branchId) {
             code: sla.code,
             title: sla.title,
             key: sla.key,
+            balanceType: sla.balanceType,
             hasDetailAccount: sla.hasDetailAccount
         }))
         .toArray();
