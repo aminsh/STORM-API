@@ -217,11 +217,21 @@ export default class InvoiceEntryControllerBase {
     onItemPropertyChanged(item) {
         const vat = this.settings.vat;
 
-        item.vat = item.vat || ((item.unitPrice * item.quantity) - item.discount) * vat / 100;
+        item.vat = ((item.unitPrice * item.quantity) - item.discount) * vat / 100;
     }
 
     canShowStock() {
         return false;
+    }
+
+    addChange() {
+        this.invoice.charges = this.invoice.charges || [];
+
+        this.invoice.charges.push({});
+    }
+
+    removeCharge(item) {
+        this.invoice.charges.asEnumerable().remove(item);
     }
 
     get personTypePropertyName() {
