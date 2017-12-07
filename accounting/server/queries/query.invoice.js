@@ -46,9 +46,9 @@ class InvoiceQuery extends BaseQuery {
                 .sum(c => c.value);
 
         invoice.sumTotalPrice = invoiceLines.asEnumerable()
-            .sum(line => line.quantity * line.unitPrice - line.discount + line.vat + sumCharges);
+            .sum(line => line.quantity * line.unitPrice - line.discount + line.vat ) + sumCharges;
 
-        invoice.sumRemainder = invoice.sumTotalPrice - (invoice.sumRemainder || 0);
+        invoice.sumRemainder = invoice.sumTotalPrice - (invoice.sumPaidAmount || 0);
 
         invoice.invoiceLines = invoiceLines.asEnumerable().select(lineView).toArray();
         invoice.branchId = branchId;

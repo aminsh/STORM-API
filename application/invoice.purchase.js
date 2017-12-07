@@ -120,13 +120,13 @@ class InvoiceService {
     _changeStatusIfPaidIsCompleted(id) {
 
         let invoice = await(this.invoiceRepository.findById(id)),
-            sumPayments = new PaymentRepository(this.branchId).getBySumAmountByInvoiceId(invoiceId).sum || 0,
+            sumPayments = new PaymentRepository(this.branchId).getBySumAmountByInvoiceId(id).sum || 0,
 
             totalPrice = invoice.invoiceLines.asEnumerable()
                 .sum(e => (e.unitPrice * e.quantity) - e.discount + e.vat);
 
         if (sumPayments >= totalPrice)
-            this.invoiceRepository.update(invoiceId, {invoiceStatus: 'paid'});
+            this.invoiceRepository.update(id, {invoiceStatus: 'paid'});
     }
 
     _mapToData(entity) {
@@ -244,7 +244,7 @@ class InvoiceService {
     pay(id, payments) {
         const paymentService = new PaymentService(this.branchId),
 
-            paymentIds = paymentService.create(payments, 'pay');
+            paymentIds = paymentService.createMany(payments, 'pay');
 
         paymentService.setInvoiceForAll(paymentIds, id);
 
