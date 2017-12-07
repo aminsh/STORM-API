@@ -115,6 +115,14 @@ router.route('/:id')
         return res.json(result);
     }));
 
+router.route('/inputs/without-invoice')
+    .get(async((req, res)=> {
+        let inventoryQuery = new InventoryQuery(req.branchId),
+            result = await(inventoryQuery.getAllWithoutInvoice('input', req.query));
+
+        return res.json(result);
+    }));
+
 router.route('/:id/lines')
     .get(async((req, res) => {
         let inventoryQuery = new InventoryQuery(req.branchId),

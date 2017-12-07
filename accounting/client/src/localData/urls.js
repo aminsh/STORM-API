@@ -126,6 +126,7 @@ let payableCheques = {
 
 let inventory = {
     getAllInputs: () => `${rootUrl()}/inventories/inputs`,
+    getAllInputsWithoutInvoice:() => `${rootUrl()}/inventories/inputs/without-invoice`,
     getAllOutputs: () => `${rootUrl()}/inventories/outputs`,
     getLinesById: (id) => `${rootUrl()}/inventories/${id}/lines`,
     getAllInventoryProducts: () => `${rootUrl()}/inventories/products`

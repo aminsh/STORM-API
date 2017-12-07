@@ -11,6 +11,7 @@ const BaseQuery = require('./query.base'),
         id: item.id,
         number: item.number,
         date: item.date,
+        display: item.display,
         description: item.description,
         inventoryType: item.inventoryType,
         inventoryTypeDisplay: item.inventoryType ? Enums.InventoryType().getDisplay(item.inventoryType) : null,
@@ -35,8 +36,8 @@ class InventoryQuery extends BaseQuery {
 
     getAllInventoryProducts(parameters) {
         let stockId = parameters.extra && parameters.extra.filter
-                ? parameters.extra.filter.stockId
-                : null,
+            ? parameters.extra.filter.stockId
+            : null,
             knex = this.knex,
             branchId = this.branchId,
 
@@ -81,6 +82,28 @@ class InventoryQuery extends BaseQuery {
         return kendoQueryResolve(query, parameters, view);
     }
 
+    getAllWithoutInvoice(inventoryType, parameters) {
+        const branchId = this.branchId,
+            knex = this.knex,
+
+            query = knex.from(function () {
+                this.select(
+                    'inventories.*',
+                    knex.raw(`inventories.number || ' - ' || inventories.date || ' - ' || stocks.title as display`),
+                    knex.raw('stocks.title as "stockDisplay"')
+                )
+                    .from('inventories')
+                    .leftJoin('stocks', 'stocks.id', 'inventories.stockId')
+                    .where('inventories.branchId', branchId)
+                    .where('inventoryType', inventoryType)
+                    .whereNull('invoiceId')
+                    .whereNull('journalId')
+                    .as('base');
+            });
+
+        return kendoQueryResolve(query, parameters, view);
+    }
+
     addFilter(query, filter) {
         if (filter.stockId)
             query.where('stockId', filter.stockId);
@@ -88,7 +111,11 @@ class InventoryQuery extends BaseQuery {
 
     getById(id) {
         let knex = this.knex,
-            inventory = await(knex.select('*').from('inventories').where('id', id).first()),
+            inventory = await(knex.select('inventories.*', knex.raw('stocks.title as "stockDisplay"'))
+                .from('inventories')
+                .leftJoin('stocks', 'inventories.stockId', 'stocks.id')
+                .where('inventories.id', id)
+                .first()),
             inventoryLines = await(
                 knex.select('inventoryLines.*', knex.raw('products.title as "productDisplay"'))
                     .from('inventoryLines')

@@ -21,6 +21,7 @@ module.exports = function (entity) {
         description: entity.description,
         title: entity.title,
         journalId: entity.journalId,
+        inventoryIds: entity.inventoryIds,
         detailAccountId: entity.detailAccountId,
         detailAccountDisplay: entity.detailAccountDisplay,
         customer: {id: entity.detailAccountId},
