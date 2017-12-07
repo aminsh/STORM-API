@@ -51,6 +51,8 @@
         <tbody>
         <tr
                 ng-repeat-start="item in data track by $index"
+                name="form-{{$index}}"
+                ng-form
                 ng-init="item.rowIndex = $index"
                 ng-click="select(item)"
                 ng-class="{'success': current == item, 'pointer':  grid.selectable}"
