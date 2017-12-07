@@ -95,6 +95,7 @@ class InventoryInputService {
                 .toArray()
         }
     }
+
     create(cmd) {
 
         let entity = this._mapToEntity(cmd),
