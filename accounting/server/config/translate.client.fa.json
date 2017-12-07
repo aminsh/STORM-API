@@ -491,5 +491,6 @@
   "Remove current output": "حذف حواله جاری",
   "Unit price should not be empty or zero": "مبلغ واحد نباید خالی یا صفر باشد",
   "Price entry": "ورود قیمت",
-  "Calculate price": "محاسبه قیمت"
+  "Calculate price": "محاسبه قیمت",
+  "Not selected stock": "انبار انتخاب نشده"
 }
