@@ -157,7 +157,7 @@ class InvoiceRepository extends BaseRepository {
 
     updateInvoice(id, entity, trx) {
 
-        entity.id = await(this.knex('invoices')
+        await(this.knex('invoices')
             .transacting(trx)
             .where('id', id)
             .update(entity));
