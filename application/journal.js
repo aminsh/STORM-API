@@ -384,69 +384,34 @@ class JournalService {
         }
     }
 
-    generateForPurchase(invoicePurchaseId) {
-        let purchase = new InvoiceRepository(this.branchId).findById(invoicePurchaseId),
-            journal = {
-                description: 'بابت فاکتور خرید شماره {0}'.format(purchase.number)
-            },
+    generateForPurchase(invoiceId) {
+        const settings = new SettingsRepository(this.branchId).get(),
+            invoice = new InvoiceRepository(this.branchId).findById(invoiceId);
 
-            invoiceLines = purchase.invoiceLines,
-            sumAmount = invoiceLines.asEnumerable().sum(line => line.unitPrice * line.quantity),
-            sumDiscount = invoiceLines.asEnumerable().sum(line => line.discount),
-            sumVat = invoiceLines.asEnumerable().sum(line => line.vat),
+        if (!invoice)
+            throw new ValidationException(['فاکتور وجود ندارد']);
 
-            payableAccount = await(this.subsidiaryLedgerAccountService.payableAccount()),
-            purchaseAccount = await(this.subsidiaryLedgerAccountService.purchaseAccount()),
+        if (!String.isNullOrEmpty(invoice.journalId))
+            throw new ValidationException(['برای فاکتور {0} قبلا سند حسابداری صادر شده'.format(invoice.number)]);
 
-            journalLines = [
-                {
-                    generalLedgerAccountId: payableAccount.generalLedgerAccountId,
-                    subsidiaryLedgerAccountId: payableAccount.id,
-                    detailAccountId: purchase.detailAccountId,
-                    debtor: 0,
-                    creditor: sumAmount - sumDiscount + sumVat,
-                    article: journal.description,
-                    row: 3
-                }, {
-                    generalLedgerAccountId: purchaseAccount.generalLedgerAccountId,
-                    subsidiaryLedgerAccountId: purchaseAccount.id,
-                    debtor: sumAmount,
-                    creditor: 0,
-                    article: journal.description,
-                    row: 1
-                }];
+        const charge = (settings.saleCharges || []).asEnumerable()
+                .select(e => ({
+                    key: e.key,
+                    value: (invoice.charges.asEnumerable().firstOrDefault(p => p.key === e.key) || {value: 0}).value
+                }))
+                .toObject(item => `charge_${item.key}`, item => item.value);
 
-        if (sumDiscount > 0) {
-            let discountAccount = await(this.subsidiaryLedgerAccountService.purchaseDiscountAccount());
+        let model = Object.assign({
+                number: invoice.number,
+                date: invoice.date,
+                title: invoice.title,
+                amount: invoice.invoiceLines.asEnumerable().sum(line => line.unitPrice * line.quantity),
+                discount: invoice.invoiceLines.asEnumerable().sum(line => line.discount),
+                vat: invoice.invoiceLines.asEnumerable().sum(line => line.vat),
+                vendor: invoice.detailAccountId
+            }, charge),
 
-            journalLines.push({
-                generalLedgerAccountId: discountAccount.generalLedgerAccountId,
-                subsidiaryLedgerAccountId: discountAccount.id,
-                debtor: 0,
-                creditor: sumDiscount,
-                article: journal.description,
-                row: 4
-            });
-        }
-
-
-        if (sumVat > 0) {
-            let vatAccount = await(this.subsidiaryLedgerAccountService.purchaseVatAccount());
-
-            journalLines.push({
-                generalLedgerAccountId: vatAccount.generalLedgerAccountId,
-                subsidiaryLedgerAccountId: vatAccount.id,
-                debtor: sumVat,
-                creditor: 0,
-                article: journal.description,
-                row: 2
-            });
-        }
-
-        journalLines = journalLines.asEnumerable().orderBy(e => e.row).toArray();
-        journalLines.forEach((e, i) => e.row = i + 1);
-
-        journal.journalLines = journalLines;
+            journal = this.journalGenerationTemplateService.generate(model, 'purchase');
 
         return this.create(journal);
     }

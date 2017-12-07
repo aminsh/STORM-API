@@ -33,13 +33,17 @@ class JournalGenerationTemplateEntryController {
                 settingsApi.get().then(result => {
 
                     this.template.fields = this.template.fields.asEnumerable()
-                        .concat((result.saleCosts || []).asEnumerable()
-                            .select(e => ({display: `${translate('Cost')} ${e.display}`, key: `cost_${e.key}`}))
-                            .toArray())
+                        .concat(this.canCostAdded
+                            ? (result.saleCosts || []).asEnumerable()
+                                .select(e => ({display: `${translate('Cost')} ${e.display}`, key: `cost_${e.key}`}))
+                                .toArray()
+                            : [])
 
-                        .concat((result.saleCharges || []).asEnumerable()
-                            .select(e => ({display: `${translate('Charge')} ${e.display}`, key: `charge_${e.key}`}))
-                            .toArray())
+                        .concat(this.canChargeAdded
+                            ? (result.saleCharges || []).asEnumerable()
+                                .select(e => ({display: `${translate('Charge')} ${e.display}`, key: `charge_${e.key}`}))
+                                .toArray()
+                            : [])
 
                         .toArray()
                 });
@@ -58,6 +62,14 @@ class JournalGenerationTemplateEntryController {
 
     }
 
+    get canCostAdded() {
+        return this.type === 'sale';
+    }
+
+    get canChargeAdded() {
+        return ['sale', 'purchase', 'returnSale'].includes(this.type);
+    }
+
     addLine() {
 
         this.template.data.lines.push({
@@ -70,7 +82,7 @@ class JournalGenerationTemplateEntryController {
         });
     }
 
-    removeLine(item){
+    removeLine(item) {
         this.template.data.lines.asEnumerable().remove(item);
     }
 

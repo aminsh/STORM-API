@@ -114,7 +114,7 @@ export default class invoiceListControllerBase {
                 },
                 {
                     title: translate('Generate journal'),
-                    icon: '',
+                    icon: 'fa fa-share-square-o text-success fa-lg',
                     action: current => {
                         this.generateJournal(current);
                         this.gridOption.refresh();

@@ -32,6 +32,9 @@ function purchaseApi(apiPromise,devConstants) {
         summary(){
             return apiPromise.get(`${urlPrefix}/purchases/summary`);
         },
+        generateJournal(id){
+            return apiPromise.post(`${urlPrefix}/purchases/${id}/generate-journal`);
+        }
     };
 
 
