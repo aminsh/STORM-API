@@ -37,7 +37,13 @@
                                    k-on-bound="model.onProductChanged(item, $item, 'bound' , form['form-'+ $index])"
                                    show-no-data-template
                                    url="{{model.urls.getAllProduct}}"
+                                   ng-required="model.isPurchase"
                                    ng-model="item.productId"></dev-tag-combo-box>
+
+                <div ng-messages="form['form-'+ $index].product.$error"
+                     ng-if="form['form-'+ $index].product.$dirty">
+                    <label ng-message="required" class="error">{{'This field is required'|translate}}</label>
+                </div>
             </td>
 
             <td style="width: 25%; padding: 0px">
@@ -79,7 +85,7 @@
                    ng-click="model.onShowSelectStock(item)"
                    title="{{'Select stock'| translate}}"
                    class="btn btn-white btn-sm"
-                   uib-popover-template="'partials/sales/selectProductFromStock.template.html'"
+                   uib-popover-template="model.selectProductTemplateName"
                    popover-title="{{'Select stock'| translate}}"
                    popover-class="popover-select-stock"
                    popover-placement="bottom"
@@ -165,7 +171,7 @@
             <div class="row">
                 <div class="col-md-8">
                     <dev-tag-button
-                            ng-if="!model.isReturnSale"
+                            ng-if="model.canShowAddButton()"
                             ng-click="model.createInvoiceLine()"
                             icon="glyphicon glyphicon-plus"
                             style-type="outline btn btn-primary btn-sm"
@@ -231,13 +237,14 @@
                 <div class="col-xs-7 h5 txt-bold "
                      ng-model="model.invoice.totalPrice">
 
-                    <h3>{{(model.invoice.invoiceLines | totalSum: ('($.quantity * $.unitPrice) - $.discount + $.vat')) + (model.invoice.changes | totalSum: ('value')) | number}}</h3>
+                    <h3>{{(model.invoice.invoiceLines | totalSum: ('($.quantity * $.unitPrice) - $.discount + $.vat')) + (model.invoice.charges | totalSum: ('value')) | number}}</h3>
                 </div>
             </div>
         </div>
     </div>
 
     <div class="row"
+         ng-if="!model.isPurchase"
         ng-include="'partials/sales/invoiceLines-costs-template.html'">
     </div>
 </div>

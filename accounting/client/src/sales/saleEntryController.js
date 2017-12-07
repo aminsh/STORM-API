@@ -47,6 +47,10 @@ class SaleEntryController extends InvoiceEntryControllerBase {
         this.inventoryApi = inventoryApi;
     }
 
+    get selectProductTemplateName(){
+        return 'partials/sales/selectProductFromStock.template.html';
+    }
+
     assignDefaultDescription() {
 
         if (!this.settings)
@@ -95,16 +99,6 @@ class SaleEntryController extends InvoiceEntryControllerBase {
         this.$state.go('sale.sales');
     }
 
-    addChange() {
-        this.invoice.charges = this.invoice.charges || [];
-
-        this.invoice.charges.push({});
-    }
-
-    removeCharge(item) {
-        this.invoice.charges.asEnumerable().remove(item);
-    }
-
     addCost() {
         this.invoice.costs = this.invoice.costs || [];
 
@@ -113,6 +107,10 @@ class SaleEntryController extends InvoiceEntryControllerBase {
 
     removeCost(item) {
         this.invoice.costs.asEnumerable().remove(item);
+    }
+
+    canShowAddButton() {
+        return true;
     }
 }
 
