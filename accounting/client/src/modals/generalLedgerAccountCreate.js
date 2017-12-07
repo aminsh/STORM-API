@@ -9,7 +9,6 @@ function generalLedgerAccountCreateModalController($scope, $rootScope ,$uibModal
         code: '',
         postingType: null,
         groupingType:null,
-        balanceType: null,
         description: ''
     };
 
@@ -39,7 +38,6 @@ function generalLedgerAccountCreateModalController($scope, $rootScope ,$uibModal
     };
 
     $scope.accountPostingType = devConstants.enums.AccountPostingType();
-    $scope.accountBalanceType = devConstants.enums.AccountBalanceType();
 
     generalLedgerAccountApi.getAccountCategories()
         .then(result => $scope.accountGroupingType = result);

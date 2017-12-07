@@ -4,12 +4,13 @@ function subsidiaryLedgerAccountEntryModalController($scope, $rootScope, $uibMod
                                                      dimensionCategoryApi,
                                                      generalLedgerAccountApi,
                                                      subsidiaryLedgerAccountApi,
-                                                     logger, formService, data) {
+                                                     logger, formService, data, devConstants) {
 
     let isEditMode = $location.$$url.includes('edit'),
         generalLedgerAccountId = $stateParams.generalLedgerAccountId,
         id = $stateParams.id;
 
+    $scope.accountBalanceType = devConstants.enums.AccountBalanceType().data;
     $scope.errors = [];
     $scope.isEditMode = isEditMode;
     $scope.editMode = data.editMode;
@@ -21,6 +22,7 @@ function subsidiaryLedgerAccountEntryModalController($scope, $rootScope, $uibMod
         code: '',
         title: '',
         isBankAccount: false,
+        balanceType: null,
         hasDetailAccount: false,
         hasDimension1: false,
         hasDimension2: false,

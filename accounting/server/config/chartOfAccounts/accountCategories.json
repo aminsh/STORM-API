@@ -7,15 +7,14 @@
     {"key": "9", "display": "انتظامی و کنترلی"}
   ],
   "groups": [
-    {"key": "11", "category":"1",  "postingType": "balanceSheet", "display": "داراییهای جاری"},
-    {"key": "12", "category":"1",  "postingType": "balanceSheet", "display": "داراییهای غیرجاری"},
-    {"key": "21", "category":"2",  "postingType": "balanceSheet", "display": "بدهی های جاری"},
-    {"key": "22", "category":"2",  "postingType": "balanceSheet", "display": "بدهی های غیرجاری"},
-    {"key": "31", "category":"3",  "postingType": "balanceSheet", "display": "حقوق صاحبان سهام"},
-    {"key": "41", "category":"4",  "postingType": "benefitAndLoss", "display": "درآمدها"},
-    {"key": "51", "category":"5",  "postingType": "benefitAndLoss", "display": "بهای تمام شده"},
-    {"key": "61", "category":"6",  "postingType": "benefitAndLoss", "display": "هزینه ها"},
-    {"key": "91", "category":"9",  "postingType": "entezami", "display": "حسابهای انتظامی"},
-    {"key": "92", "category":"9",  "postingType": "", "display": "حسابهای کنترلی"}
+    {"key": "10", "category":"1", "display": "داراییهای جاری"},
+    {"key": "20", "category":"1", "display": "داراییهای غیرجاری"},
+    {"key": "30", "category":"2", "display": "بدهی های جاری"},
+    {"key": "40", "category":"2", "display": "بدهی های بلندمدت"},
+    {"key": "50", "category":"3", "display": "حقوق صاحبان سهام"},
+    {"key": "60", "category":"4", "display": "درآمدها"},
+    {"key": "70", "category":"4", "display": "بهای تمام شده کالای فروش رفته و خدمات ارائه شده"},
+    {"key": "80", "category":"4", "display": "هزینه ها"},
+    {"key": "90", "category":"9", "display": "حسابهای انتظامی"}
   ]
 }
