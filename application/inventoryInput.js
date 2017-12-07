@@ -7,7 +7,6 @@ const async = require('asyncawait/async'),
     Enums = instanceOf('Enums'),
     InventoryRepository = require('./data').InventoryRepository,
     InvoiceRepository = require('./data').InvoiceRepository,
-    ProductService = require('./product'),
     InventoryControlService = require('./inventoryControl');
 
 class InventoryInputService {
@@ -77,34 +76,40 @@ class InventoryInputService {
         this.inventoryRepository.updateBatch(id, inventory);
     }
 
+    _mapToEntity(cmd){
+        return {
+            id: cmd.id,
+            stockId: cmd.stockId,
+            date: cmd.date || PersianDate.current(),
+            description: cmd.description,
+            inventoryType: 'input',
+            ioType: cmd.ioType,
+            fiscalPeriodId: this.fiscalPeriodId,
+            inventoryLines: (cmd.inventoryLines || cmd.lines).asEnumerable()
+                .select(line => ({
+                    id: cmd.id,
+                    productId: line.productId,
+                    quantity: line.quantity,
+                    unitPrice: 0
+                }))
+                .toArray()
+        }
+    }
     create(cmd) {
 
-        let errors = this._validate(cmd);
+        let entity = this._mapToEntity(cmd),
+            errors = this._validate(entity);
 
         if (errors.length > 0)
             throw new ValidationException(errors);
 
         const number = this.inventoryRepository.inputMaxNumber(this.fiscalPeriodId, cmd.stockId, cmd.ioType).max || 0;
 
-        let input = {
-            number: number + 1,
-            date: cmd.date || PersianDate.current(),
-            stockId: cmd.stockId,
-            inventoryType: 'input',
-            ioType: cmd.ioType,
-            fiscalPeriodId: this.fiscalPeriodId,
-            description: cmd.description
-        };
+        entity.number = number + 1;
 
-        input.inventoryLines = cmd.inventoryLines.asEnumerable()
-            .select(line => ({
-                productId: line.productId,
-                quantity: line.quantity,
-            })).toArray();
+        this.inventoryRepository.create(entity);
 
-        this.inventoryRepository.create(input);
-
-        return input.id;
+        return entity.id;
     }
 
     update(id, cmd) {
@@ -192,7 +197,7 @@ class InventoryInputService {
 
     setInvoice(id, invoiceId) {
         if (Array.isArray(id))
-            id.forEach(id => this._setInvoice(id, invoiceId));
+            return id.forEach(id => this._setInvoice(id, invoiceId));
 
         this._setInvoice(id, invoiceId);
     }
@@ -219,7 +224,7 @@ class InventoryInputService {
             }))
             .toArray();
 
-        this.inventoryRepository.updateBatch(id, {inventoryLines});
+        this.inventoryRepository.updateBatch(id, {id , inventoryLines});
     }
 
     getInputFirst(stockId) {
