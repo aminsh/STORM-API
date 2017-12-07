@@ -1,7 +1,7 @@
 import Guid from 'guid';
 import 'jquery-datatables';
 
-export default function (apiPromise, $timeout, exportToExcel) {
+export default function (apiPromise, $timeout) {
     return {
         restrict: 'E',
         priority: 100,
@@ -70,7 +70,6 @@ export default function (apiPromise, $timeout, exportToExcel) {
             scope.option.refresh = () => scope.pageOption.refresh();
             scope.option.addItem = newItem => scope.data.unshift(newItem);
             scope.option.removeItem = item => scope.data.remove(item);
-            scope.option.exportToExcel = ()=> exportToExcel(scope.data, 'grid');
             scope.option.getData = ()=> scope.data;
 
             function fetch(page) {
