@@ -35,6 +35,9 @@ class InventoryControlService {
                 }
             });
 
+        if(!Array.isArray(inventoryTurnover))
+            return true;
+
         return inventoryTurnover.asEnumerable().all(item => item.remainder >= 0);
     }
 

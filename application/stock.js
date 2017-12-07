@@ -57,10 +57,10 @@ class ProductService {
     remove(id) {
 
         if (new InventoryRepository(this.branchId).isExitsStock(id))
-            throw new ValidationException('انباری جاری در اسناد انباری استفاده شده ، امکان حدف وجود ندارد');
+            throw new ValidationException(['انباری جاری در اسناد انباری استفاده شده ، امکان حدف وجود ندارد']);
 
         if (new InvoiceRepository(this.branchId).isExitsStock(id))
-            throw new ValidationException('انباری جاری در فاکتورها استفاده شده ، امکان حدف وجود ندارد');
+            throw new ValidationException(['انباری جاری در فاکتورها استفاده شده ، امکان حدف وجود ندارد']);
 
         this.stockRepository.remove(id);
     }
