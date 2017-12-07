@@ -27,8 +27,8 @@ export default function (apiPromise, $timeout, exportToExcel) {
 
             scope.columns = [...scope.option.columns];
             scope.grid = {
-                sortable: (option.sortable == undefined) ? true : option.sortable,
-                filterable: (option.filterable == undefined) ? true : option.filterable,
+                sortable: (option.sortable === undefined) ? true : option.sortable,
+                filterable: (option.filterable === undefined) ? true : option.filterable,
                 selectable: option.selectable,
                 multiSelectable: option.multiSelectable
             };
@@ -71,6 +71,7 @@ export default function (apiPromise, $timeout, exportToExcel) {
             scope.option.addItem = newItem => scope.data.unshift(newItem);
             scope.option.removeItem = item => scope.data.remove(item);
             scope.option.exportToExcel = ()=> exportToExcel(scope.data, 'grid');
+            scope.option.getData = ()=> scope.data;
 
             function fetch(page) {
                 if (!option.readUrl) return;
