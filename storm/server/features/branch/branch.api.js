@@ -58,6 +58,9 @@ router.route('/')
     }));
 
 router.route('/:id').delete(async((req, res) => {
+
+    return res.status(404).send('Not found');
+
     let id = req.params.id;
 
     if (!req.isAuthenticated())
