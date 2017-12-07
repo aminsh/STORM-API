@@ -49,7 +49,7 @@ class InventoryControlService {
             .where(item => item.id)
             .select(item => {
                 let inventories = this.inventoryRepository.getInventoriesByProductId(item.productId, this.fiscalPeriodId, inventory.stockId),
-                    current = inventories.asEnumerable().singleOrDefault(e => e.id === item.id);
+                    current = inventories.asEnumerable().singleOrDefault(e => e.id === item.id) || {};
 
                 current.quantity = item.quantity;
 
