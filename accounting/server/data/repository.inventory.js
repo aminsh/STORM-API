@@ -157,7 +157,7 @@ class InventoryRepository extends BaseRepository {
     }
 
     update(id, entity) {
-        return this.knex('inventories').where('id', id).update(entity);
+        return await(this.knex('inventories').where('id', id).update(entity));
     }
 
     updateBatch(id, entity) {
@@ -261,7 +261,7 @@ class InventoryRepository extends BaseRepository {
             .first();
     }
 
-    isExitsJournal(journalId){
+    isExitsJournal(journalId) {
         return await(this.knex('id')
             .from('inventories')
             .modify(this.modify, this.branchId)
@@ -269,7 +269,7 @@ class InventoryRepository extends BaseRepository {
             .first());
     }
 
-    isExitsStock(stockId){
+    isExitsStock(stockId) {
         return await(this.knex('id')
             .from('inventories')
             .modify(this.modify, this.branchId)

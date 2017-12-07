@@ -281,7 +281,7 @@ class OutputService {
     }
 
     setJournal(id, journalId) {
-        return this.inventoryRepository.update(id, {journalId});
+        this.inventoryRepository.update(id, {journalId});
     }
 }
 
