@@ -250,16 +250,24 @@ class OutputService {
     }
 
     calculatePrice(id) {
-        let output = await(this.inventoryRepository.findById(id));
+        let output = this.inventoryRepository.findById(id),
 
-        output.inventoryLines.forEach(async.result(line => line.unitPrice = this.getPriceByProduct(line.productId)));
+        lines = output.inventoryLines.asEnumerable()
+            .select(line => ({
+                id: line.id,
+                unitPrice: this.getPriceByProduct(line.productId, output.createdAt)
+            }))
+            .toArray();
 
-        await(this.inventoryRepository.updateBatch(id, output));
+        this.inventoryRepository.updateBatch(id, {id, inventoryLines: lines});
     }
 
-    getPriceByProduct(productId) {
-        let inputs = await(this.inventoryRepository
-            .getAllInputBeforeDate(this.fiscalPeriodId, productId, new Date));
+    getPriceByProduct(productId , date) {
+        if(!date)
+            throw new ValidationException(['تاریخ وجود ندارد']);
+
+        let inputs = this.inventoryRepository
+            .getAllInputBeforeDate(this.fiscalPeriodId, productId, date);
 
         if (!inputs.asEnumerable().all(item => item.unitPrice && item.unitPrice > 0))
             throw new ValidationException(['رسید (ها) با قیمت صفر وجود دارد -  امکان محاسبه قیمت وجود ندارد']);

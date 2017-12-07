@@ -1,42 +1,59 @@
-<div class="modal-header">
-    <button type="button" ng-click="model.close()" class="close" data-dismiss="modal" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-    </button>
-    <h3 class="modal-title" ng-if="!model.inventory">{{'Show journal detail'| translate}}</h3>
-    <h3 class="modal-title" ng-if="model.inventory">{{model.inventory.inventoryTypeDisplay}} - {{model.inventory.ioTypeDisplay}}</h3>
-</div>
-<div class="modal-body">
-    <div class="container-fluid">
-       <div class="row">
-           <div class="col-md-4" style="margin-top: 20px">
-               <label class="label-control">{{'Number'|translate}}</label>
-               :
-               <label class="label-control">{{model.inventory.number}}</label>
-           </div>
+<form name="form" novalidate>
+    <div class="modal-header">
+        <button type="button" ng-click="model.close()" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        <h3 class="modal-title" ng-if="!model.inventory">{{'Show journal detail'| translate}}</h3>
+        <h3 class="modal-title" ng-if="model.inventory">{{model.inventory.inventoryTypeDisplay}} - {{model.inventory.ioTypeDisplay}}
+            <i ng-if="model.isPriceEntry"> - {{'Price entry'|translate}}</i>
+        </h3>
+    </div>
+    <div class="modal-body">
 
-           <div class="col-md-4" style="margin-top: 20px">
-               <label class="label-control">{{'Date'|translate}}</label>
-               :
-               <label class="label-control">{{model.inventory.date}}</label>
-           </div>
+        <dev-tag-validation-summary errors="model.errors"></dev-tag-validation-summary>
 
-           <div class="col-md-4" style="margin-top: 20px">
-               <label class="label-control">{{'Input type'|translate}}</label>
-               :
-               <label class="label-control">{{model.inventory.ioTypeDisplay}}</label>
-           </div>
-       </div>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-4" style="margin-top: 20px">
+                    <label class="label-control">{{'Number'|translate}}</label>
+                    :
+                    <label class="label-control">{{model.inventory.number}}</label>
+                </div>
 
-        <div class="row">
-            <div class="col-md-4" style="margin-top: 20px">
-                <label class="label-control">{{'Description 2'|translate}}</label>
-                :
-                <label class="label-control">{{model.inventory.description}}</label>
+                <div class="col-md-4" style="margin-top: 20px">
+                    <label class="label-control">{{'Date'|translate}}</label>
+                    :
+                    <label class="label-control">{{model.inventory.date}}</label>
+                </div>
+
+                <div class="col-md-4" style="margin-top: 20px">
+                    <label class="label-control">{{'Input type'|translate}}</label>
+                    :
+                    <label class="label-control">{{model.inventory.ioTypeDisplay}}</label>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4" style="margin-top: 20px">
+                    <label class="label-control">{{'Description 2'|translate}}</label>
+                    :
+                    <label class="label-control">{{model.inventory.description}}</label>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div style="margin-top: 50px">
-        <dev-tag-grid option="model.gridOption"></dev-tag-grid>
+        <div style="margin-top: 50px">
+            <dev-tag-grid option="model.gridOption"></dev-tag-grid>
+        </div>
     </div>
-</div>
+    <div class="modal-footer" ng-if="model.isPriceEntry">
+        <dev-tag-button
+                ng-click="model.save(form)"
+                icon="glyphicon glyphicon-floppy-disk"
+                ng-disabled="isSaving"
+                is-waiting="model.isSaving"
+                style-type="primary"
+                title="{{'Save' | translate}}"></dev-tag-button>
+    </div>
+</form>
+

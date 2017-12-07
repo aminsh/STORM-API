@@ -56,6 +56,12 @@ function inventoryApi(apiPromise, devConstants) {
         },
         addToFirstInput(data) {
             return apiPromise.post(`${urlPrefix}/inventories/add-to-first-input`, data);
+        },
+        inputSetPrice(id, data){
+            return apiPromise.put(`${urlPrefix}/inventories/inputs/${id}/set-price`, data);
+        },
+        outputCalculatePrice(id){
+            return apiPromise.put(`${urlPrefix}/inventories/outputs/${id}/calculate-price`);
         }
     };
 

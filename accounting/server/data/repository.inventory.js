@@ -121,13 +121,13 @@ class InventoryRepository extends BaseRepository {
     }
 
     getAllInputBeforeDate(fiscalPeriodId, productId, date) {
-        return this.knex.table('inventories')
+        return await(this.knex.table('inventories')
             .leftJoin('inventoryLines', 'inventories.id', 'inventoryLines.inventoryId')
             .where('inventories.branchId', this.branchId)
             .andWhere('inventoryType', 'input')
             .andWhere('fiscalPeriodId', fiscalPeriodId)
             .andWhere('inventories.createdAt', '<', date)
-            .andWhere('productId', productId);
+            .andWhere('productId', productId));
     }
 
     create(entity) {

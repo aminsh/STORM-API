@@ -84,18 +84,19 @@ class InventoriesController {
                     icon: 'fa fa-trash text-danger fa-lg',
                     action: current => {
 
-                        let promise;
+                        let func;
 
                         if (this.inventoryType === 'input')
-                            promise = this.inventoryApi.removeInput(current.id);
+                            func = this.inventoryApi.removeInput;
 
                         if (this.inventoryType === 'output')
-                            promise = this.inventoryApi.removeOutput(current.id);
+                            func = this.inventoryApi.removeOutput;
 
                         this.confirm(
                             translate('Are you sure ?'),
-                            translate(`Remove current ${this.inventoryType}`))
-                            .then(() => $timeout(() => promise
+                            translate(`Remove current ${this.inventoryType}`)
+                        )
+                            .then(() => $timeout(() => func(current.id)
                                     .then(() => {
                                         this.logger.success();
                                         this.gridOption.refresh();
@@ -103,6 +104,22 @@ class InventoriesController {
                                     .catch(errors => this.logger.error(errors.join('<br/>')))
                                 , 1000));
                     }
+                },
+                {
+                    title: translate('Price entry'),
+                    icon: 'fa fa-usd text-success fa-lg',
+                    action: current => this.$state.go('.setPrice', {id: current.id}),
+                    canShow: () => this.inventoryType === 'input'
+                },
+                {
+                    title: translate('Calculate price'),
+                    icon: 'fa fa-calculator text-success fa-lg',
+                    action: current => {
+                        inventoryApi.outputCalculatePrice(current.id)
+                            .then(()=> logger.success())
+                            .catch(errors => logger.error(errors.join('<br/>')));
+                    },
+                    canShow: () => this.inventoryType === 'output'
                 }
             ],
             readUrl: '',

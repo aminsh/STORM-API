@@ -459,6 +459,16 @@
     "returns": ""
   },
   {
+    "name": "inventoryInputSetPrice",
+    "class": "InventoryInputService",
+    "method": "setPrice",
+    "params": [
+      "id",
+      "lines"
+    ],
+    "returns": ""
+  },
+  {
     "name": "inventoryOutputCreate",
     "class": "InventoryOutputService",
     "method": "create",
