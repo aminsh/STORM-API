@@ -18,7 +18,8 @@ const BaseQuery = require('./query.base'),
         ioType: item.ioType,
         ioTypeDisplay: item.ioType ? Enums.InventoryIOType().getDisplay(item.ioType) : null,
         stockId: item.stockId,
-        stockDisplay: item.stockDisplay
+        stockDisplay: item.stockDisplay,
+        journalId: item.journalId
     }),
 
     viewLine = item => ({

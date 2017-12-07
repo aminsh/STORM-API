@@ -121,6 +121,25 @@ router.route('/outputs/:id/calculate-price')
         }
     }));
 
+router.route('/outputs/:id/generate-journal')
+    .post(async((req, res) => {
+
+        try {
+
+            const id = req.params.id;
+
+            let journalId = RunService("journalGenerateForOutputSale", [id], req);
+
+            RunService("inventoryOutputSetJournal", [id, journalId], req);
+
+            res.json({isValid: true});
+        }
+        catch (e) {
+            res.json({isValid: false, errors: e.errors});
+        }
+
+    }));
+
 router.route('/outputs/max-number')
     .get(async((req, res) => {
         const inventoryQuery = new InventoryQuery(req.branchId),

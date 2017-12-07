@@ -277,9 +277,18 @@ class JournalService {
 
     generateForOutputSale(outputId) {
 
-        const output = new InventoryRepository(this.branchId).findById(outputId),
+        const output = new InventoryRepository(this.branchId).findById(outputId);
 
-            model = {
+        if (output.ioType !== 'outputSale')
+            throw new ValidationException(['حواله جاری از نوع فروش نیست']);
+
+        if(output.inventoryLines.asEnumerable().any(line => !(line.unitPrice && line.unitPrice > 0)))
+            throw new ValidationException(['حواله با مبلغ صفر وجود دارد']);
+
+        if (!String.isNullOrEmpty(output.journalId))
+            throw new ValidationException(['برای حواله {0} قبلا سند حسابداری صادر شده'.format(output.number)]);
+
+        const model = {
                 number: output.number,
                 date: output.date,
                 amount: output.inventoryLines.asEnumerable().sum(line => line.unitPrice * line.quantity)
@@ -395,11 +404,11 @@ class JournalService {
             throw new ValidationException(['برای فاکتور {0} قبلا سند حسابداری صادر شده'.format(invoice.number)]);
 
         const charge = (settings.saleCharges || []).asEnumerable()
-                .select(e => ({
-                    key: e.key,
-                    value: (invoice.charges.asEnumerable().firstOrDefault(p => p.key === e.key) || {value: 0}).value
-                }))
-                .toObject(item => `charge_${item.key}`, item => item.value);
+            .select(e => ({
+                key: e.key,
+                value: (invoice.charges.asEnumerable().firstOrDefault(p => p.key === e.key) || {value: 0}).value
+            }))
+            .toObject(item => `charge_${item.key}`, item => item.value);
 
         let model = Object.assign({
                 number: invoice.number,

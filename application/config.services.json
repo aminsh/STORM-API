@@ -514,6 +514,16 @@
     ],
     "returns": ""
   },
+  {
+    "name": "inventoryOutputSetJournal",
+    "class": "InventoryOutputService",
+    "method": "setJournal",
+    "params": [
+      "id",
+      "journalId"
+    ],
+    "returns": ""
+  },
 
   {
     "name": "productCreate",

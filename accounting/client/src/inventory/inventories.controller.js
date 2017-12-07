@@ -120,6 +120,16 @@ class InventoriesController {
                             .catch(errors => logger.error(errors.join('<br/>')));
                     },
                     canShow: () => this.inventoryType === 'output'
+                },
+                {
+                    title: translate('Generate journal'),
+                    icon: 'fa fa-share-square-o text-success fa-lg',
+                    action: current => {
+                        inventoryApi.outputGenerateJournal(current.id)
+                            .then(()=> logger.success())
+                            .catch(errors => logger.error(errors.join('<br/>')));
+                    },
+                    canShow: current => this.inventoryType === 'output' && current.ioType === 'outputSale' && !current.journalId
                 }
             ],
             readUrl: '',
