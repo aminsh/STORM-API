@@ -99,7 +99,7 @@ class InvoiceService {
                 .sum(e => (e.unitPrice * e.quantity) - e.discount + e.vat);
 
         if (sumPayments >= totalPrice)
-            this.invoiceRepository.update(invoiceId, {invoiceStatus: 'paid'});
+            this.invoiceRepository.update(id, {invoiceStatus: 'paid'});
     }
 
     mapToEntity(cmd) {
@@ -210,16 +210,13 @@ class InvoiceService {
         return entity.id;
     }
 
-    confirm(id, status) {
+    confirm(id) {
 
         let entity = this.invoiceRepository.findById(id),
             errors = [];
 
         if (entity.invoiceStatus !== 'draft')
             errors.push('این فاکتور قبلا تایید شده');
-
-        if(!['confirm', 'waitForPayment', 'paid'].includes(status))
-            errors.push('وضعیت صحیح نیست');
 
         if (errors.length > 0)
             throw  new ValidationException(errors);
@@ -231,7 +228,7 @@ class InvoiceService {
 
         let data = {
             inventoryIds: JSON.stringify(inventoryIds),
-            invoiceStatus: status === 'confirm' ? 'waitForPayment' : status
+            invoiceStatus: 'waitForPayment'
         };
 
         this.invoiceRepository.update(id, data);
@@ -311,11 +308,13 @@ class InvoiceService {
     pay(id, payments) {
         const paymentService = new PaymentService(this.branchId),
 
-            paymentIds = paymentService.create(payments, 'receive');
+            paymentIds = paymentService.createMany(payments, 'receive');
 
         paymentService.setInvoiceForAll(paymentIds, id);
 
         this._changeStatusIfPaidIsCompleted(id);
+
+        return paymentIds;
     }
 }
 
