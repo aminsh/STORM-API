@@ -267,10 +267,15 @@ class JournalService {
                 amount: invoice.invoiceLines.asEnumerable().sum(line => line.unitPrice * line.quantity),
                 discount: invoice.invoiceLines.asEnumerable().sum(line => line.discount),
                 vat: invoice.invoiceLines.asEnumerable().sum(line => line.vat),
-                customer: invoice.detailAccountId
+                customer: invoice.detailAccountId,
+                bankReceiptNumber: invoice.bankReceiptNumber || ''
             }, cost, charge),
 
             journal = this.journalGenerationTemplateService.generate(model, 'sale');
+
+        journal.journalLines = journal.journalLines.asEnumerable()
+            .orderByDescending(line => line.debtor)
+            .toArray();
 
         return this.create(journal);
     }

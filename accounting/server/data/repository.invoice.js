@@ -39,7 +39,8 @@ class InvoiceRepository extends BaseRepository {
             invoiceType: first.invoiceType,
             ofInvoiceId: first.ofInvoiceId,
             costs: first.costs,
-            charges: first.charges
+            charges: first.charges,
+            bankReceiptNumber: (first.custom || {}).bankReceiptNumber
         };
 
         invoice.invoiceLines = data.asEnumerable().select(line => ({

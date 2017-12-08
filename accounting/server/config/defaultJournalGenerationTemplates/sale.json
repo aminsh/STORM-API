@@ -35,6 +35,11 @@
       "key": "customer",
       "display": "خریدار (تفصیل)",
       "value": "6001 - مشتری نمونه"
+    },
+    {
+      "key": "bankReceiptNumber",
+      "display": "شماره رسید بانکی",
+      "value": "12589"
     }
   ],
   "data": {
