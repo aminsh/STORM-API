@@ -136,7 +136,7 @@
                 </tr>
                 <tr>
                     <td><strong>جمع کل :</strong></td>
-                    <td>{{(model.invoice.invoiceLines | totalSum: ('($.quantity * $.unitPrice) - $.discount + $.vat')) + (model.invoice.changes | totalSum: ('value')) | number}}</td>
+                    <td>{{(model.invoice.invoiceLines | totalSum: ('($.quantity * $.unitPrice) - $.discount + $.vat')) + (model.invoice.charges | totalSum: ('value')) | number}}</td>
                 </tr>
                 </tbody>
             </table>

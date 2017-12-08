@@ -53,7 +53,7 @@
       "id",
       "payments"
     ],
-    "returns": "undefined"
+    "returns": "paymentIds"
   },
 
   {
@@ -402,7 +402,7 @@
   },
   {
     "name": "generalLedgerAccountRemove",
-    "class": "PersonService",
+    "class": "GeneralLedgerAccountService",
     "method": "remove",
     "params": [
       "id"

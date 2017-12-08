@@ -54,10 +54,10 @@ class GeneralLedgerAccountRepository extends BaseRepository {
     }
 
     remove(id) {
-        return this.knex('generalLedgerAccounts')
+        return await(this.knex('generalLedgerAccounts')
             .modify(this.modify, this.branchId)
             .where('id', id)
-            .del();
+            .del());
     }
 }
 

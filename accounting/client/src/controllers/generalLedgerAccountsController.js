@@ -24,7 +24,7 @@ function generalLedgerAccountsController($scope, $rootScope, logger, translate, 
                 generalLedgerAccountApi.remove(current.id)
                     .then(function () {
                         logger.success();
-                        $scope.gridOption.refresh();
+                        fetch();
                     })
                     .catch(errors => {
                         $timeout(() => logger.error(errors.join('<br/>')), 100);
@@ -41,7 +41,7 @@ function generalLedgerAccountsController($scope, $rootScope, logger, translate, 
                 subsidiaryLedgerAccountApi.remove(current.id)
                     .then(() => {
                         logger.success();
-                        $scope.gridOptionSubsidiaryLedgerAccount.refresh();
+                        fetch();
                     })
                     .catch((errors) => {
                         $timeout(() => logger.error(errors.join('<br/>')), 100);

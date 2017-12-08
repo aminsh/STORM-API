@@ -99,6 +99,8 @@ class SubsidiaryLedgerAccountService {
         };
 
         this.subsidiaryLedgerAccountRepsitory.create(entity);
+
+        return entity.id;
     }
 
     update(id, cmd) {
@@ -137,7 +139,7 @@ class SubsidiaryLedgerAccountService {
        if(this.subsidiaryLedgerAccountRepsitory.isUsedOnJournalLines(id))
            errors.push('حساب معین جاری در اسناد حسابداری استفاده شده ، امکان حذف وجود ندارد');
 
-       if(this.settings.asEnumerable().any(item => item.id === id))
+       if((this.settings.subsidiaryLedgerAccounts || []).asEnumerable().any(item => item.id === id))
            errors.push('حساب معین جاری در تنظیمات استفاده شده ، امکان حذف وجود ندارد');
 
         if (errors.length > 0)
