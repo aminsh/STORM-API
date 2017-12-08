@@ -50,7 +50,6 @@
   {"code": "804", "title": "هزینه های مالی", "postingType": "benefitAndLoss","groupingType": "80"},
   {"code": "805", "title": "هزینه های غیرعملیاتی", "postingType": "benefitAndLoss","groupingType": "80"},
 
-
   {"code": "901", "title": "حسابهای انتظامی", "postingType": "entezami","groupingType": "90"},
   {"code": "902", "title": "طرف حساب های انتظامی","postingType": "entezami", "groupingType": "90"},
   {"code": "903", "title": "تراز افتتاحیه", "postingType": "entezami", "groupingType": "90"},
