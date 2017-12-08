@@ -224,6 +224,16 @@ export default class InvoiceEntryControllerBase {
         return false;
     }
 
+    addChange() {
+        this.invoice.charges = this.invoice.charges || [];
+
+        this.invoice.charges.push({});
+    }
+
+    removeCharge(item) {
+        this.invoice.charges.asEnumerable().remove(item);
+    }
+
     get personTypePropertyName() {
         return 'customer';
     }

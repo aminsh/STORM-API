@@ -12,11 +12,6 @@ const async = require('asyncawait/async'),
 module.exports = class JournalQuery extends BaseQuery {
     constructor(branchId) {
         super(branchId);
-        this.getGroupedByMouth = async(this.getGroupedByMouth);
-        this.getById = async(this.getById);
-        this.getTotalInfo = async(this.getTotalInfo);
-        this.batchFindById = async(this.batchFindById);
-        this.getMaxNumber = async(this.getMaxNumber);
     }
 
     getMaxNumber(fiscalPeriodId) {
@@ -89,7 +84,7 @@ module.exports = class JournalQuery extends BaseQuery {
 
         });
 
-        return kendoQueryResolve(query, parameters, view);
+        return await(kendoQueryResolve(query, parameters, view));
     }
 
     getGroupedByMouth(currentFiscalPeriod) {
@@ -158,20 +153,30 @@ module.exports = class JournalQuery extends BaseQuery {
 
     getById(id) {
         let knex = this.knex,
-            branchId = this.branchId;
+            journalLines = await(knex.select(
+                'id',
+                'row',
+                'creditor',
+                'debtor',
+                'article',
+                'subsidiaryLedgerAccountId',
+                'detailAccountId',
+                'dimension1Id',
+                'dimension2Id',
+                'dimension3Id'
+            )
+                .from('journalLines')
+                .where('branchId', this.branchId)
+                .where('journalId', id)),
+            journal = await(knex.select()
+                .from('journals')
+                .where('branchId', this.branchId)
+                .andWhere('id', id)
+                .first());
 
-        let result = await(knex.select()
-            .from('journals')
-            .where('branchId', branchId)
-            .andWhere('id', id).first());
+        journal.journalLines = journalLines;
 
-        result.tagIds = await(knex.select('tagId')
-            .from('journalTags')
-            .where('branchId', branchId)
-            .andWhere('journalId', id)
-            .map(t => t.tagId));
-
-        return view(result);
+        return view(journal);
     }
 
     getByNumber(currentFiscalPeriodId, number) {

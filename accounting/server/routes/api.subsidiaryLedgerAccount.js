@@ -38,7 +38,7 @@ router.route('/general-ledger-account/:parentId')
     }))
     .post(async((req, res) => {
         try {
-            const id = RunService("generalLedgerAccountCreate", [req.params.parentId, req.body], req);
+            const id = RunService("subsidiaryLedgerAccountCreate", [req.params.parentId, req.body], req);
             res.json({isValid: true, returnValue: {id}})
         }
         catch (e) {
@@ -54,7 +54,7 @@ router.route('/:id')
     }))
     .put(async((req, res) => {
         try {
-            RunService("generalLedgerAccountUpdate", [req.params.id, req.body], req);
+            RunService("subsidiaryLedgerAccountUpdate", [req.params.id, req.body], req);
             res.json({isValid: true})
         }
         catch (e) {
@@ -63,7 +63,7 @@ router.route('/:id')
     }))
     .delete(async((req, res) => {
         try {
-            RunService("generalLedgerAccountRemove", [req.params.id], req);
+            RunService("subsidiaryLedgerAccountRemove", [req.params.id], req);
             res.json({isValid: true})
         }
         catch (e) {

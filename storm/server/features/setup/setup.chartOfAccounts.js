@@ -5,7 +5,7 @@ const
     await = require('asyncawait/await'),
     Guid = instanceOf('utility').Guid,
     Common = instanceOf('utility').Common,
-    knex = instanceOf('knex')
+    knex = instanceOf('knex');
 
 
 let defaultAccountCategories = require('../../../../accounting/server/config/chartOfAccounts/accountCategories.json').groups,
@@ -32,6 +32,7 @@ module.exports = async.result(function (branchId) {
             code: sla.code,
             title: sla.title,
             key: sla.key,
+            balanceType: sla.balanceType,
             hasDetailAccount: sla.hasDetailAccount
         }))
         .toArray();

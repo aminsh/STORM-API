@@ -9,7 +9,6 @@ const async = require('asyncawait/async'),
     PersianDate = utility.PersianDate,
     FiscalPeriodRepository = require('./data').FiscalPeriodRepository,
     InvoiceRepository = require('./data').InvoiceRepository,
-    InvoiceQuery = require('../queries').InvoiceQuery,
     SettingRepository = require('./data').SettingsRepository,
     PaymentRepository = require('./data').PaymentRepository,
     DetailAccount = require('./detailAccount'),
@@ -63,12 +62,16 @@ class InvoiceService {
 
     mapToEntity(cmd) {
 
-        const detailAccount = this.detailAccount.findPersonByIdOrCreate(cmd.customer);
+        const detailAccount = this.detailAccount.findPersonByIdOrCreate(cmd.vendor);
 
         return {
+            id: cmd.id,
             date: cmd.date || PersianDate.current(),
+            invoiceStatus: cmd.status || 'draft',
             description: cmd.description,
             title: cmd.title,
+            inventoryIds: cmd.inventoryIds,
+            charges: this._mapCostAndCharge(cmd.charges),
             detailAccountId: detailAccount ? detailAccount.id : null,
             orderId: cmd.orderId,
             invoiceLines: cmd.invoiceLines.asEnumerable()
@@ -96,13 +99,19 @@ class InvoiceService {
     _setForInventoryPurchase(entity) {
         const inputPurchaseService = new InputPurchaseService(this.branchId, this.fiscalPeriodId);
 
-        let inventoryIds = inputPurchaseService.create(entity);
+        let inventoryIds = entity.inventoryIds && entity.inventoryIds.length > 0
+            ? entity.inventoryIds
+            : inputPurchaseService.create(entity);
 
-        if (inventoryIds) {
-            inputPurchaseService.inputService.setInvoice(inventoryIds, entity.id);
-            this.invoiceRepository.update(entity.id, {inventoryIds});
-            inputPurchaseService.setPrice(inventoryIds, entity.id);
-        }
+        if (!(inventoryIds && inventoryIds.length > 0))
+            return;
+
+        inputPurchaseService.inputService.setInvoice(inventoryIds, entity.id);
+
+        if (!(entity.inventoryIds && entity.inventoryIds.length > 0))
+            this.invoiceRepository.update(entity.id, {inventoryIds: JSON.stringify(inventoryIds)});
+
+        inputPurchaseService.setPrice(inventoryIds, entity.id);
     }
 
     /**
@@ -111,13 +120,38 @@ class InvoiceService {
     _changeStatusIfPaidIsCompleted(id) {
 
         let invoice = await(this.invoiceRepository.findById(id)),
-            sumPayments = new PaymentRepository(this.branchId).getBySumAmountByInvoiceId(invoiceId).sum || 0,
+            sumPayments = new PaymentRepository(this.branchId).getBySumAmountByInvoiceId(id).sum || 0,
 
             totalPrice = invoice.invoiceLines.asEnumerable()
                 .sum(e => (e.unitPrice * e.quantity) - e.discount + e.vat);
 
         if (sumPayments >= totalPrice)
-            this.invoiceRepository.update(invoiceId, {invoiceStatus: 'paid'});
+            this.invoiceRepository.update(id, {invoiceStatus: 'paid'});
+    }
+
+    _mapToData(entity) {
+
+        return Object.assign({}, entity, {
+            charges: JSON.stringify(entity.charges),
+            inventoryIds: JSON.stringify(entity.inventoryIds)
+        });
+    }
+
+    _mapCostAndCharge(data) {
+
+        if (!data)
+            return [];
+
+        if (Array.isArray(data))
+            return data.asEnumerable().select(e => ({key: e.key, value: e.value || 0})).toArray();
+
+        return Object.keys(data).asEnumerable()
+            .select(key => ({
+                key,
+                value: data[key]
+            }))
+            .toArray();
+
     }
 
     create(cmd) {
@@ -132,12 +166,15 @@ class InvoiceService {
         entity.invoiceType = 'purchase';
         entity.invoiceStatus = cmd.status !== 'draft' ? 'waitForPayment' : 'draft';
 
-        this.invoiceRepository.create(entity);
+        let data = this._mapToData(entity);
+        this.invoiceRepository.create(data);
+
+        entity.id = data.id;
 
         if (entity.invoiceStatus !== 'draft')
             this._setForInventoryPurchase(entity);
 
-        return new InvoiceQuery(this.branchId).getById(entity.id);
+        return entity.id;
     }
 
     confirm(id) {
@@ -160,6 +197,8 @@ class InvoiceService {
 
     update(id, cmd) {
 
+        cmd.id = id;
+
         const invoice = this.invoiceRepository.findById(id);
 
         if (invoice.invoiceStatus !== 'draft')
@@ -167,7 +206,10 @@ class InvoiceService {
 
         let entity = this.mapToEntity(cmd);
 
-        this.invoiceRepository.updateBatch(id, entity);
+        if (entity.invoiceStatus !== 'draft')
+            entity.invoiceStatus = 'waitForPayment';
+
+        this.invoiceRepository.updateBatch(id, this._mapToData(entity));
 
         if (entity.invoiceStatus !== 'draft')
             this._setForInventoryPurchase(entity);
@@ -202,7 +244,7 @@ class InvoiceService {
     pay(id, payments) {
         const paymentService = new PaymentService(this.branchId),
 
-            paymentIds = paymentService.create(payments, 'pay');
+            paymentIds = paymentService.createMany(payments, 'pay');
 
         paymentService.setInvoiceForAll(paymentIds, id);
 

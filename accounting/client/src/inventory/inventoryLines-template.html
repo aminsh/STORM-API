@@ -41,8 +41,9 @@
                 </div>
             </td>
 
-            <td class="text-success" style="font-weight: bold" ng-if="model.inventoryType === 'output'">
-                {{'Inventory quantity'|translate}} : {{item.inventory}} {{item.scale}}
+            <td  style="font-weight: bold" ng-if="model.inventoryType === 'output'">
+                <span class="text-success" ng-if="model.inventory.stockId">{{'Inventory quantity'|translate}} : {{item.inventory}} {{item.scale}}</span>
+                <span class="text-danger" ng-if="!model.inventory.stockId">{{'Not selected stock'|translate}}</span>
             </td>
 
             <td style="width: 120px; padding: 0px;" class="invoice-td">

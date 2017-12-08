@@ -17,7 +17,8 @@ const fs = require('fs'),
     ReportQueryInvoice = require('../queries/query.report.invoices'),
     InventoriesReport = require('../reportQueries/inventory.input-output'),
     InventoriesTurnoverReport = require('../reportQueries/inventory.turnover'),
-    ProductReports = require('../reportQueries/ProductReports');
+    ProductReports = require('../reportQueries/ProductReports'),
+    SeasonalReport = require('../reportQueries/seasonalReport');
 
 function getReport(fileName) {
     return JSON.parse(
@@ -50,9 +51,9 @@ router.route('/file/:fileName').get((req, res) => {
     if (withLayout) {
         let reportComponents = report.Pages[0].Components,
             reportComponentsMaxKeys = (Object.keys(reportComponents)
-                    .asEnumerable()
-                    .select(c => parseInt(c))
-                    .max() || 0) + 1,
+                .asEnumerable()
+                .select(c => parseInt(c))
+                .max() || 0) + 1,
             layoutComponents = layout.Pages[0].Components,
             header = layoutComponents[0],
             footer = layoutComponents[1];
@@ -290,14 +291,14 @@ router.route('/inventory-turnover')
             req.query),
             result = await(ins.getInventoriesTurnover(req.query.ids));
         res.json(result);
-    }))
+    }));
 
 router.route('/product-turnover')
     .get(async((req, res) => {
         let ins = new ProductReports(req.branchId,
             req.cookies['current-period'],
-             req.cookies['current-mode'],
-             req.query),
+            req.cookies['current-mode'],
+            req.query),
             result = await(ins.getProductTurnovers(req.query.ids));
         res.json(result);
     }))
@@ -310,6 +311,18 @@ router.route('/product-turnover-total')
             req.query),
             result = await(ins.getProductTurnovers(req.query.ids));
         res.json(result);
-    }))
+    }));
+
+router.route('/seasonal')
+    .get(async((req, res) => {
+        let ins = new SeasonalReport(req.branchId,
+            req.cookies['current-period'],
+            req.cookies['current-mode'],
+            req.query.extra ? req.query.extra.filter : req.query),
+            resultDetail = await(ins.getSeasonalWithFilter(req.query)),
+            resultTotal = await(ins.getTotalSeasonal());
+
+        res.json(Object.assign({}, resultDetail, {resultTotal}));
+    }));
 
 module.exports = router;

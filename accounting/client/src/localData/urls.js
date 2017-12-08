@@ -1,6 +1,10 @@
 let rootUrl = () => '/acc/api';
 let userApiUrl = () => '/api/users';
 
+let report = {
+    seasonal: () => `${rootUrl()}/reports/seasonal`
+};
+
 let generalLedgerAccount = {
     all: () => '{0}/general-ledger-accounts'.format(rootUrl())
 };
@@ -92,7 +96,7 @@ let sales = {
 };
 
 let returnSale = {
-  getAll: ()=> `${rootUrl()}/return-sales`
+    getAll: () => `${rootUrl()}/return-sales`
 };
 
 let purchase = {
@@ -101,7 +105,7 @@ let purchase = {
 
 let products = {
     getAll: () => `${rootUrl()}/products`,
-    getAllGoods: ()=> `${rootUrl()}/products/goods`,
+    getAllGoods: () => `${rootUrl()}/products/goods`,
 };
 
 let scale = {
@@ -121,18 +125,26 @@ let payableCheques = {
 };
 
 let inventory = {
-    getAllInputs: ()=> `${rootUrl()}/inventories/inputs`,
-    getAllOutputs: ()=> `${rootUrl()}/inventories/outputs`,
-    getLinesById:(id)=> `${rootUrl()}/inventories/${id}/lines`,
-    getAllInventoryProducts: ()=> `${rootUrl()}/inventories/products`
+    getAllInputs: () => `${rootUrl()}/inventories/inputs`,
+    getAllInputsWithoutInvoice:() => `${rootUrl()}/inventories/inputs/without-invoice`,
+    getAllOutputs: () => `${rootUrl()}/inventories/outputs`,
+    getLinesById: (id) => `${rootUrl()}/inventories/${id}/lines`,
+    getAllInventoryProducts: () => `${rootUrl()}/inventories/products`
 };
 
+
+
+let inventoryProducts = {
+    //getInventoryProducts: () => `${rootUrl()}/`
+}
+
+
 let journalGenerationTemplate = {
-    all: ()=> `${rootUrl()}/journal-generation-templates`
+    all: () => `${rootUrl()}/journal-generation-templates`
 };
 
 let stock = {
-  getAll: ()=> `${rootUrl()}/stocks`
+    getAll: () => `${rootUrl()}/stocks`
 };
 
 let apiUrls = {
@@ -164,7 +176,9 @@ let apiUrls = {
     inventory,
     stock,
     journalGenerationTemplate,
-    returnSale
+    returnSale,
+    inventoryProducts,
+    report
 };
 
 export default apiUrls;

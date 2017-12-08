@@ -16,44 +16,12 @@ class ReportFilterConfig extends BaseQuery {
         this.getDateRange = async(this.getDateRange);
     };
 
-    executeFilter(query){
-        let filter = this.filter,
-            currentFiscalPeriod = this.currentFiscalPeriodId;
-
-        if (!filter)
-            return query.where('periodId', currentFiscalPeriod);
-
-        if (!filter.isNotPeriodIncluded)
-            query.where('periodId', currentFiscalPeriod);
-
-        if (filter.minNumber && filter.maxNumber)
-            query.andWhereBetween('number', [filter.minNumber, filter.maxNumber]);
-
-        if (filter.generalLedgerAccounts && filter.generalLedgerAccounts.length > 0)
-            query.whereIn('generalLedgerAccountId', filter.generalLedgerAccounts);
-
-        if (filter.subsidiaryLedgerAccounts && filter.subsidiaryLedgerAccounts.length > 0)
-            query.whereIn('subsidiaryLedgerAccountId', filter.subsidiaryLedgerAccounts);
-
-        if (filter.detailAccounts && filter.detailAccounts.length > 0)
-            query.whereIn('detailAccountId', filter.detailAccounts);
-
-        if (filter.generalLedgerAccountId)
-            query.andWhere('generalLedgerAccountId', filter.generalLedgerAccountId);
-
-        if (filter.subsidiaryLedgerAccountId)
-            query.andWhere('subsidiaryLedgerAccountId', filter.subsidiaryLedgerAccountId);
-
-        if (filter.detailAccountId)
-            query.andWhere('detailAccountId', filter.detailAccountId);
-    }
-
     getDateOptions() {
         let dateRange = await(this.getDateRange()),
             mode = this.mode,
             month = this.getMonth(),
             season = this.getSeason();
-        return {
+       return {
             fromDate: dateRange.fromDate,
             toDate: dateRange.toDate,
             fromMainDate: dateRange.fromMainDate,
@@ -105,7 +73,9 @@ class ReportFilterConfig extends BaseQuery {
             return [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 
         if (filter.month)
-            return [filter.month];
+            return (Array.isArray(filter.month) ? filter.month : [filter.month])
+                .asEnumerable()
+                .select(parseInt).toArray();
 
     };
 
@@ -116,7 +86,9 @@ class ReportFilterConfig extends BaseQuery {
             return [1, 2, 3, 4];
 
         if (filter.season)
-            return [filter.season];
+            return (Array.isArray(filter.season) ? filter.season : [filter.season])
+                .asEnumerable()
+                .select(parseInt).toArray();
     }
 }
 

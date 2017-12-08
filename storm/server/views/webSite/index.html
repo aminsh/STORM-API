@@ -11,9 +11,13 @@
     <script src="js/libs/jQuery/jquery-3.2.1.min.js"></script>
     <script src="js/libs/wow/wow.js"></script>
     <script src="js/libs/angular/angular.min.js"></script>
-
     <title>نرم افزار حسابداری آنلاین استورم :: خانه</title>
 
+    <!-- Meta -->
+        <meta name="description"
+              content="استورم نرم افزار حسابداری ابری یا آنلاین می باشد که به کسب و کارهای اینترنتی امکان می دهد از طریق انواع وب سرویس های متنوع صدور اسناد مالی را بصورت خودکار انجام داده و بدون نیاز به وارد کردن اسناد بصورت دستی اقدام به مدیریت حسابداری خود نمایند"/>
+        <meta name="keywords"
+              content="استورم , نرم افزار حسابداری آنلاین , حسابداری آنلاین , حسابداری ابری , سند حسابداری خودکار , سند حسابداری اتوماتیک , حسابداری انبار آنلاین , وب سرویس حسابداری , API حسابداری , api حسابداری ابری , سند اتوماتیک , گزارش آنلاین حسابداری , SaaS , software as a service , نرم‌افزار به عنوان یک سرویس , کنترل موجودی خودکار , API , accounting api , storm , حسابداری استورم , کسب و کارهای اینترنتی , حسابداری دفترداری , سیستم خرید و فروش , کنترل موجودی , گزارشهای حسابداری"/>
 </head>
 <body>
 
@@ -104,9 +108,11 @@
             <span class="so-home-logo_mini_text-2 animated fadeInUp so-anim-dly-1s ph++">با امکان ارائه ی انواع API جهت اتصال به کسب و کار های اینترنتی</span>
             <br/>
             <div class="so-home-first-section_btn_holder so-align-center animated fadeInUp so-anim-dly-1.5s">
-                <a href="/login" class="so-btn-neon so-btn-neon_md so-btn-neon_color-light-green so-btn-neon_glass">ورود</a>
+                <a href="/login"
+                   class="so-btn-neon so-btn-neon_md so-btn-neon_color-light-green so-btn-neon_glass">ورود</a>
                 <a href="/register"
-                   class="so-btn-neon so-btn-neon_md so-btn-neon_color-yellow so-btn-neon_inverse-color so-btn-neon_glass">ثبت نام نسخه رایگان</a>
+                   class="so-btn-neon so-btn-neon_md so-btn-neon_color-yellow so-btn-neon_inverse-color so-btn-neon_glass">ثبت
+                    نام نسخه رایگان</a>
             </div>
         </div>
 
@@ -145,25 +151,30 @@
 
                     <!--Login Field-->
                     <button class="so-btn-neon so-btn-neon_md so-btn-neon_color-light-green so-btn-neon_glass so-btn-neon_block so-btn-neon_inverse-color mv+"
-                            type="submit">ورود</button>
+                            type="submit">ورود
+                    </button>
 
 
                     <!--SignUp Field-->
                     <button id="loginByGoogle"
                             ng-click="loginByGoogle()"
-                            class="so-btn-neon so-btn-neon_md so-btn-neon_color-red so-btn-neon_glass so-btn-neon_block so-btn-neon_inverse-color mt+">ورود با گوگل <i class="mdi mdi-google"></i>
+                            class="so-btn-neon so-btn-neon_md so-btn-neon_color-red so-btn-neon_glass so-btn-neon_block so-btn-neon_inverse-color mt+">
+                        ورود با گوگل <i class="mdi mdi-google"></i>
                     </button>
                     <div class="so-line-h3"><span>یا</span></div>
                     <button type="button"
-                            class="so-btn-neon so-btn-neon_md so-btn-neon_color-yellow so-btn-neon_glass so-btn-neon_block so-btn-neon_inverse-color mb+ so-sign-form_go-next">ایجاد حساب کاربری</button>
-                    <h5 class="so-tx-color-yellow so-align-center">برای ثبت نام نسخه ی رایگان، ورود/ایجاد حساب کاربری نمایید.</h5>
+                            class="so-btn-neon so-btn-neon_md so-btn-neon_color-yellow so-btn-neon_glass so-btn-neon_block so-btn-neon_inverse-color mb+ so-sign-form_go-next">
+                        ایجاد حساب کاربری
+                    </button>
+                    <h5 class="so-tx-color-yellow so-align-center">برای ثبت نام نسخه ی رایگان، ورود/ایجاد حساب کاربری
+                        نمایید.</h5>
 
                 </form>
             </div>
 
             <!--|Second Content|-->
             <div class="so-home-first-section_form_content" data-num="1" ng-controller="registerCtrl">
-                <form  name="form" novalidate ng-submit="register(form)" ng-show="!success">
+                <form name="form" novalidate ng-submit="register(form)" ng-show="!success">
                     <!--Name Field-->
                     <div class="so-material_input so-blur_color-white so-focus_color-white">
                         <input type="text" class="so-dir-ltr" name="name" ng-model="user.name" required/>
@@ -199,31 +210,39 @@
 
                     <!--Repeat Password Field-->
                     <div class="so-material_input so-blur_color-white so-focus_color-yellow">
-                        <input type="password" class="so-dir-ltr" name="confirmPassword" ng-model="user.confirmPassword" required/>
+                        <input type="password" class="so-dir-ltr" name="confirmPassword" ng-model="user.confirmPassword"
+                               required/>
                         <label class="so-dir-rtl"><i class="mdi mdi-lock-outline"></i> تکرار کلمه ی عبور</label>
                         <span></span>
                     </div>
-                    <span class="pv++ so-tx-color-red" ng-if="form.confirmPassword.$error.required && form.confirmPassword.$dirty">تکرار کلمه عبور را وارد کنید</span>
-                    <span class="pv++ so-tx-color-red" ng-if="form.confirmPassword.$error.match && form.confirmPassword.$dirty">کلمه ی عبور و تکرار کلمه عبور صحیح نیست</span>
+                    <span class="pv++ so-tx-color-red"
+                          ng-if="form.confirmPassword.$error.required && form.confirmPassword.$dirty">تکرار کلمه عبور را وارد کنید</span>
+                    <span class="pv++ so-tx-color-red"
+                          ng-if="form.confirmPassword.$error.match && form.confirmPassword.$dirty">کلمه ی عبور و تکرار کلمه عبور صحیح نیست</span>
 
                     <!--Register Button-->
                     <button type="submit"
-                            class="so-btn-neon so-btn-neon_md so-btn-neon_color-light-green so-btn-neon_glass so-btn-neon_block so-btn-neon_inverse-color mv+">ثبت نام</button>
+                            class="so-btn-neon so-btn-neon_md so-btn-neon_color-light-green so-btn-neon_glass so-btn-neon_block so-btn-neon_inverse-color mv+">
+                        ثبت نام
+                    </button>
                     <!--Login Button-->
                     <button type="button"
-                            class="so-btn-neon so-btn-neon_md so-btn-neon_color-yellow so-btn-neon_glass so-btn-neon_block so-btn-neon_inverse-color mv+ so-sign-form_go-prev">ورود</button>
+                            class="so-btn-neon so-btn-neon_md so-btn-neon_color-yellow so-btn-neon_glass so-btn-neon_block so-btn-neon_inverse-color mv+ so-sign-form_go-prev">
+                        ورود
+                    </button>
                 </form>
             </div>
 
             <!--|Third Content|-->
-            <div class="so-home-first-section_form_content" data-num="2" >
-                <div class="so-align-center" >
-                    <h4 class="pv++ so-tx-color-light-green" >ثبت نام شما در استورم با موفقیت انجام شد</h4>
-                    <h4 class="pv++ so-tx-color-green" >یک ایمیل جهت فعالسازی حساب کاربری برای شما ارسال خواهد شد</h4>
+            <div class="so-home-first-section_form_content" data-num="2">
+                <div class="so-align-center">
+                    <h4 class="pv++ so-tx-color-light-green">ثبت نام شما در استورم با موفقیت انجام شد</h4>
+                    <h4 class="pv++ so-tx-color-green">یک ایمیل جهت فعالسازی حساب کاربری برای شما ارسال خواهد شد</h4>
                     <!--Login Button-->
                     <button type="button"
                             class="so-btn-neon so-btn-neon_md so-btn-neon_color-cyan-green so-btn-neon_glass so-btn-neon_inverse-color mv+ so-sign-form_go-prev"
-                            onclick="window.sign_form.goTo(0)" >ورود</button>
+                            onclick="window.sign_form.goTo(0)">ورود
+                    </button>
                 </div>
             </div>
 
@@ -232,7 +251,7 @@
 
     <!--|The Home Content|-->
     <div class="so-home-content_wrapper">
-        <section id="features" >
+        <section id="features">
             <div class="so-home-content_section_bg">
                 <div class="so-img"></div>
             </div>
@@ -412,25 +431,44 @@
                     </div>
                 </div>
             </div>
-            <div class="so-home_features_content wow fadeInDown" style="padding-top: 10%;padding-bottom: 10%" ><!-- so-active
-             --><div class="so-home_features_content_box" data-num="1"><img alt="storm-features"
-                                                                            src="./img/features/accounts-folders.svg"/><span>سیستم حسابداری دفترداری</span></div><!--
-             --><div class="so-home_features_content_box" data-num="2"><img alt="storm-features"
-                                                                            src="./img/features/shopping-cart.svg"/><span>سیستم خرید و فروش</span></div><!--
-             --><div class="so-home_features_content_box" data-num="3"><img alt="storm-features"
-                                                                            src="./img/features/padlock.svg"/><span>امنیت</span></div><!--
-             --><div class="so-home_features_content_box" data-num="4"><img alt="storm-features"
-                                                                            src="./img/features/writing-cheque.svg"/><span>چک های دریافتی و پرداختی</span></div><!--
-             --><div class="so-home_features_content_box" data-num="5"><img alt="storm-features"
-                                                                            src="./img/features/dollar.svg"/><span>ثبت درآمد و هزینه</span></div><br/><!--
-             --><div class="so-home_features_content_box" data-num="6"><img alt="storm-features"
-                                                                            src="./img/features/money.svg"/><span>انتقال وجه</span></div><!--
-             --><div class="so-home_features_content_box" data-num="7"><img alt="storm-features"
-                                                                            src="./img/features/payment-method.svg"/><span>ارسال لینک پرداخت به مشتری</span></div><!--
-             --><div class="so-home_features_content_box" data-num="8"><img alt="storm-features"
-                                                                            src="./img/features/inventory.svg"/><span>انبار</span></div><!--
-             --><div class="so-home_features_content_box" data-num="9"><img alt="storm-features"
-                                                                            src="./img/features/list.svg"/><span>سایر امکانات</span></div><!--
+            <div class="so-home_features_content wow fadeInDown" style="padding-top: 10%;padding-bottom: 10%"><!-- so-active
+             -->
+                <div class="so-home_features_content_box" data-num="1"><img alt="storm-features"
+                                                                            src="./img/features/accounts-folders.svg"/><span>سیستم حسابداری دفترداری</span>
+                </div><!--
+             -->
+                <div class="so-home_features_content_box" data-num="2"><img alt="storm-features"
+                                                                            src="./img/features/shopping-cart.svg"/><span>سیستم خرید و فروش</span>
+                </div><!--
+             -->
+                <div class="so-home_features_content_box" data-num="3"><img alt="storm-features"
+                                                                            src="./img/features/padlock.svg"/><span>امنیت</span>
+                </div><!--
+             -->
+                <div class="so-home_features_content_box" data-num="4"><img alt="storm-features"
+                                                                            src="./img/features/writing-cheque.svg"/><span>چک های دریافتی و پرداختی</span>
+                </div><!--
+             -->
+                <div class="so-home_features_content_box" data-num="5"><img alt="storm-features"
+                                                                            src="./img/features/dollar.svg"/><span>ثبت درآمد و هزینه</span>
+                </div>
+                <br/><!--
+             -->
+                <div class="so-home_features_content_box" data-num="6"><img alt="storm-features"
+                                                                            src="./img/features/money.svg"/><span>انتقال وجه</span>
+                </div><!--
+             -->
+                <div class="so-home_features_content_box" data-num="7"><img alt="storm-features"
+                                                                            src="./img/features/payment-method.svg"/><span>ارسال لینک پرداخت به مشتری</span>
+                </div><!--
+             -->
+                <div class="so-home_features_content_box" data-num="8"><img alt="storm-features"
+                                                                            src="./img/features/inventory.svg"/><span>انبار</span>
+                </div><!--
+             -->
+                <div class="so-home_features_content_box" data-num="9"><img alt="storm-features"
+                                                                            src="./img/features/list.svg"/><span>سایر امکانات</span>
+                </div><!--
          --></div>
         </section>
         <!--|APIs Section|-->
@@ -588,7 +626,8 @@
                                     <div class="so-home-content_apis_list_item_icon">
                                         <img alt="storm-apis" src="./img/API/browser.svg"/>
                                     </div><!--
-                                 --><div class="so-home-content_apis_list_item_about">
+                                 -->
+                                    <div class="so-home-content_apis_list_item_about">
                                         <span>صدور سند حسابداری و فاکتور خرید/فروش اتوماتیک</span>
                                     </div>
                                 </div>
@@ -596,7 +635,8 @@
                                     <div class="so-home-content_apis_list_item_icon">
                                         <img alt="storm-apis" src="./img/API/api.svg"/>
                                     </div><!--
-                                 --><div class="so-home-content_apis_list_item_about">
+                                 -->
+                                    <div class="so-home-content_apis_list_item_about">
                                         <span>موجودی انبار</span>
                                     </div>
                                 </div>
@@ -604,7 +644,8 @@
                                     <div class="so-home-content_apis_list_item_icon">
                                         <img alt="storm-apis" src="./img/API/api2.svg"/>
                                     </div><!--
-                                 --><div class="so-home-content_apis_list_item_about">
+                                 -->
+                                    <div class="so-home-content_apis_list_item_about">
                                         <span>صدور حواله و رسید انبار</span>
                                     </div>
                                 </div>
@@ -612,7 +653,8 @@
                                     <div class="so-home-content_apis_list_item_icon">
                                         <img alt="storm-apis" src="./img/API/setup-profile.svg"/>
                                     </div><!--
-                                 --><div class="so-home-content_apis_list_item_about">
+                                 -->
+                                    <div class="so-home-content_apis_list_item_about">
                                         <span>گزارشات</span>
                                     </div>
                                 </div>
@@ -620,7 +662,8 @@
                                     <div class="so-home-content_apis_list_item_icon">
                                         <img alt="storm-apis" src="./img/API/laptop.svg"/>
                                     </div><!--
-                                 --><div class="so-home-content_apis_list_item_about">
+                                 -->
+                                    <div class="so-home-content_apis_list_item_about">
                                         <span>ارسال نسخه ی چاپی فاکتور خرید و فروش براساس استاندارد</span>
                                     </div>
                                 </div>
@@ -628,7 +671,8 @@
                                     <div class="so-home-content_apis_list_item_icon">
                                         <img alt="storm-apis" src="./img/API/technology.svg"/>
                                     </div><!--
-                                 --><div class="so-home-content_apis_list_item_about">
+                                 -->
+                                    <div class="so-home-content_apis_list_item_about">
                                         <span>موجودی بانک و صندوق</span>
                                     </div>
                                 </div>
@@ -636,7 +680,8 @@
                                     <div class="so-home-content_apis_list_item_icon">
                                         <img alt="storm-apis" src="./img/API/invoice.svg"/>
                                     </div><!--
-                                 --><div class="so-home-content_apis_list_item_about">
+                                 -->
+                                    <div class="so-home-content_apis_list_item_about">
                                         <span>سند حسابداری</span>
                                     </div>
                                 </div>
@@ -644,7 +689,8 @@
                                     <div class="so-home-content_apis_list_item_icon">
                                         <img alt="storm-apis" src="./img/API/bar-chart.svg"/>
                                     </div><!--
-                                 --><div class="so-home-content_apis_list_item_about">
+                                 -->
+                                    <div class="so-home-content_apis_list_item_about">
                                         <span>ثبت درآمد و هزینه</span>
                                     </div>
                                 </div>
@@ -694,7 +740,7 @@
                         <p class="so-home_team_paragraph">
                             <i>"با بیش از 10 سال تجربه در زمینه ی سیستم های مالی و تجارت الکترونیک"</i>
                         </p>
-                        <div class="so-divider_color-white" ></div>
+                        <div class="so-divider_color-white"></div>
                     </div>
                     <div class="col-md-3">
                         <img src="./img/team/sanaz.jpg" class="so-home_team_img wow fadeInUp" alt="sanaz-storm"/>
@@ -724,7 +770,7 @@
                         <p class="so-home_team_paragraph">
                             <i>"با بیش از 5 سال تجربه در زمینه ی سیستم های مالی و BI"</i>
                         </p>
-                        <div class="so-divider_color-white" ></div>
+                        <div class="so-divider_color-white"></div>
                     </div>
                 </div>
                 <div class="row">
@@ -848,35 +894,35 @@
                 </div>-->
                 <div class="row">
                     <div class="col-md-1"></div>
-                    <div class="col-md-2" style="padding: 10% 25px;" >
+                    <div class="col-md-2" style="padding: 10% 25px;">
                         <img src="./img/testimonials/PayPing.png"
                              class="so-disp-block wow fadeInUp"
                              alt="storm-payping"
                              style="width: 100%;max-width: 260px;margin: 0 auto"/>
                         <h3 class="so-align-center">پی پینگ</h3>
                     </div>
-                    <div class="col-md-2" style="padding: 10% 25px;" >
+                    <div class="col-md-2" style="padding: 10% 25px;">
                         <img src="./img/testimonials/Avatech.png"
                              class="so-disp-block wow fadeInUp"
                              alt="storm-avatech"
                              style="width: 100%;max-width: 260px;margin: 0 auto"/>
                         <h3 class="so-align-center">آواتک</h3>
                     </div>
-                    <div class="col-md-2" style="padding: 10% 25px;" >
+                    <div class="col-md-2" style="padding: 10% 25px;">
                         <img src="./img/testimonials/sorooshpardaz.png"
                              class="so-disp-block wow fadeInUp"
                              alt="storm-sorooshpardaz"
                              style="width: 100%;max-width: 260px;margin: 0 auto"/>
                         <h3 class="so-align-center">سروش پرداز</h3>
                     </div>
-                    <div class="col-md-2" style="padding: 10% 25px;" >
+                    <div class="col-md-2" style="padding: 10% 25px;">
                         <img src="./img/testimonials/retain.png"
                              class="so-disp-block wow fadeInUp"
                              alt="storm-retain"
                              style="width: 100%;max-width: 260px;margin: 0 auto"/>
                         <h3 class="so-align-center">ریتین</h3>
                     </div>
-                    <div class="col-md-2" style="padding: 10% 25px;" >
+                    <div class="col-md-2" style="padding: 10% 25px;">
                         <img src="./img/testimonials/bdok.png"
                              class="so-disp-block wow fadeInUp"
                              alt="storm-bdok"
@@ -1020,7 +1066,7 @@
             </div>
         </section>
         <section id="contact">
-            <div class="so-home-content_subsection" style="padding-top: 15%" >
+            <div class="so-home-content_subsection" style="padding-top: 15%">
                 <!--<div class="so-home-content_section_main-h">
                     <div>تماس با ما
                         <div class="so-underline_color-yellow wow rubberBand"></div>
@@ -1033,8 +1079,8 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-3" ></div>
-                        <div class="col-md-3 so-dir-ltr pv++" >
+                        <div class="col-md-3"></div>
+                        <div class="col-md-3 so-dir-ltr pv++">
                             <a href="tel:+982128427752">
                                 <div class="so-btn-socials_color-too-dark-gray so-btn-socials_sm">
                                     <i class="mdi mdi-phone"></i>
@@ -1042,7 +1088,7 @@
                             </a>
                             <span>+98 21 28427752</span>
                         </div>
-                        <div class="col-md-3 so-dir-ltr pv++" >
+                        <div class="col-md-3 so-dir-ltr pv++">
                             <a href="tel:+989039603096">
                                 <div class="so-btn-socials_color-too-dark-gray so-btn-socials_sm">
                                     <i class="mdi mdi-cellphone"></i>
@@ -1050,7 +1096,7 @@
                             </a>
                             <span>+98 903 960 3096</span>
                         </div>
-                        <div class="col-md-3" ></div>
+                        <div class="col-md-3"></div>
                     </div>
                     <div class="row">
                         <div class="col-md-12">
@@ -1060,29 +1106,29 @@
                         </div>
                     </div>
                     <div class="row pt++">
-                        <div class="col-md-12" >
+                        <div class="col-md-12">
                             <span>ما را در صفحات مجازی دنبال کنید</span><br/>
                             <a href="https://www.instagram.com/storm_software_group/"
                                target="_blank"
-                               class="so-btn-socials_color-too-dark-gray so-btn-socials_sm" >
+                               class="so-btn-socials_color-too-dark-gray so-btn-socials_sm">
                                 <i class="mdi mdi-instagram"></i>
                             </a><a href="https://t.me/STORMAPI"
                                    target="_blank"
-                                   class="so-btn-socials_color-too-dark-gray so-btn-socials_sm" >
-                                <i class="mdi mdi-telegram"></i>
-                            </a><a href="https://www.linkedin.com/company-beta/13263871/"
-                                   target="_blank"
-                                   class="so-btn-socials_color-too-dark-gray so-btn-socials_sm" >
-                                <i class="mdi mdi-linkedin"></i>
-                            </a><a href="https://www.facebook.com/STORM-1885970561682373/"
-                                   target="_blank"
-                                   class="so-btn-socials_color-too-dark-gray so-btn-socials_sm" >
-                                <i class="mdi mdi-facebook"></i>
-                            </a>
+                                   class="so-btn-socials_color-too-dark-gray so-btn-socials_sm">
+                            <i class="mdi mdi-telegram"></i>
+                        </a><a href="https://www.linkedin.com/company-beta/13263871/"
+                               target="_blank"
+                               class="so-btn-socials_color-too-dark-gray so-btn-socials_sm">
+                            <i class="mdi mdi-linkedin"></i>
+                        </a><a href="https://www.facebook.com/STORM-1885970561682373/"
+                               target="_blank"
+                               class="so-btn-socials_color-too-dark-gray so-btn-socials_sm">
+                            <i class="mdi mdi-facebook"></i>
+                        </a>
                         </div>
                     </div>
                     <div class="row pt+++">
-                        <div class="col-md-12" >
+                        <div class="col-md-12">
                             <span>&copy;  تمامی حقوق این سایت متعلق به تیم استورم می باشد.</span>
                         </div>
                     </div>
@@ -1092,7 +1138,6 @@
     </div>
 
 </div>
-
 
 
 <script type="text/javascript" src="./js/home.bundle.min.js"></script>
@@ -1123,7 +1168,7 @@
             $scope.hasError = false;
 
             $scope.login = function (form) {
-                if($scope.googleLogin)
+                if ($scope.googleLogin)
                     return;
 
                 if (form.$invalid)
@@ -1168,7 +1213,7 @@
 
             $scope.register = function (form) {
 
-                if(form.$invalid)
+                if (form.$invalid)
                     return formService.setDirty(form);
 
                 if ($scope.user.password !== $scope.user.confirmPassword) {
@@ -1185,7 +1230,7 @@
 
                 $http.post('/api/users/register', $scope.user)
                     .then(function (result) {
-                        if(result.data.isValid){
+                        if (result.data.isValid) {
                             $scope.success = true;
                             $window.sign_form.goTo(2);
                         } else
@@ -1195,7 +1240,7 @@
 
             $scope.checkEmailIsValid = function (form) {
 
-                $http.get('/api/users/is-unique-email/'+ $scope.user.email)
+                $http.get('/api/users/is-unique-email/' + $scope.user.email)
                     .then(function (result) {
                         if (result.data.isValid === true) {
                             form.email.$invalid = true;

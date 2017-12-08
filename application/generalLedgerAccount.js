@@ -1,6 +1,7 @@
 "use strict";
 
-const GeneralLedgerAccountRepository = require('./data').GenenralLedgerAccountRepository;
+const GeneralLedgerAccountRepository = require('./data').GenenralLedgerAccountRepository,
+    String = instanceOf('utility').String;
 
 class GeneralLedgerAccount {
     constructor(branchId) {
@@ -13,10 +14,10 @@ class GeneralLedgerAccount {
 
         if (String.isNullOrEmpty(cmd.title))
             errors.push('عنوان نمیتواند خالی باشد');
-        else if (cmd.title.length > 3)
+        else if (cmd.title.length < 3)
             errors.push('عنوان باید حداقل ۳ کاراکتر باشد');
 
-        if (String.isNullOrEmpty(cmd.title))
+        if (String.isNullOrEmpty(cmd.code))
             errors.push('کد نمیتواند خالی باشد');
         else if (this.generalLedgerAccountRepository.findByCode(cmd.code))
             errors.push('کد تکراری است');
@@ -28,7 +29,6 @@ class GeneralLedgerAccount {
             code: cmd.code,
             title: cmd.title,
             postingType: cmd.postingType,
-            balanceType: cmd.balanceType,
             description: cmd.description,
             groupingType: cmd.groupingType
         };
@@ -41,10 +41,10 @@ class GeneralLedgerAccount {
 
         if (String.isNullOrEmpty(cmd.title))
             errors.push('عنوان نمیتواند خالی باشد');
-        else if (cmd.title.length > 3)
+        else if (cmd.title.length < 3)
             errors.push('عنوان باید حداقل ۳ کاراکتر باشد');
 
-        if (String.isNullOrEmpty(cmd.title))
+        if (String.isNullOrEmpty(cmd.code))
             errors.push('کد نمیتواند خالی باشد');
         else if (this.generalLedgerAccountRepository.findByCode(cmd.code, id))
             errors.push('کد تکراری است');
@@ -57,7 +57,6 @@ class GeneralLedgerAccount {
             code: cmd.code,
             title: cmd.title,
             postingType: cmd.postingType,
-            balanceType: cmd.balanceType,
             description: cmd.description,
             groupingType: cmd.groupingType
         };

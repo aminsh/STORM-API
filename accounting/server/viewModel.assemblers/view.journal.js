@@ -18,7 +18,8 @@ function journalView(entity) {
         attachmentFileName: entity.attachmentFileName,
         createdBy: entity.createdBy,
         sumDebtor: entity.sumDebtor,
-        sumCreditor: entity.sumCreditor
+        sumCreditor: entity.sumCreditor,
+        journalLines: entity.journalLines
     };
 
     return viewModel;

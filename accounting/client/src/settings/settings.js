@@ -335,6 +335,17 @@ export default class {
         this.settings.saleCosts.asEnumerable().remove(item);
     }
 
+    addSaleCharge() {
+
+        this.settings.saleCharges = this.settings.saleCharges || [];
+
+        this.settings.saleCharges.push({display: ''});
+    }
+
+    removeSaleCharge(item) {
+        this.settings.saleCharges.asEnumerable().remove(item);
+    }
+
     addWebhook() {
         this.settings.webhooks = this.settings.webhooks || [];
 

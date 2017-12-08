@@ -67,6 +67,7 @@ router.route('/')
             subsidiaryLedgerAccounts: JSON.stringify(cmd.subsidiaryLedgerAccounts),
             stockId: cmd.stockId,
             saleCosts: JSON.stringify(cmd.saleCosts),
+            saleCharges: JSON.stringify(cmd.saleCharges),
             webhooks: JSON.stringify(cmd.webhooks),
             invoiceDescription: cmd.invoiceDescription
         };

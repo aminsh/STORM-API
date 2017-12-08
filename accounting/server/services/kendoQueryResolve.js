@@ -32,7 +32,7 @@ function resolveFilter(query, filter) {
         return;
 
 
-    var methodName = filter.logic = 'and' ? 'andWhere' : 'orWhere';
+    var methodName = filter.logic === 'and' ? 'andWhere' : 'orWhere';
 
     filter.filters.forEach(function (f) {
         if (f.logic)

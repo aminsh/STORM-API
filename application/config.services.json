@@ -21,7 +21,8 @@
     "class": "InvoiceService",
     "method": "confirm",
     "params": [
-      "id"
+      "id",
+      "status"
     ],
     "returns": "undefined"
   },
@@ -52,7 +53,7 @@
       "id",
       "payments"
     ],
-    "returns": "undefined"
+    "returns": "paymentIds"
   },
 
   {
@@ -186,6 +187,15 @@
     "returns": "journalId"
   },
   {
+    "name": "journalGenerateForInvoicePurchase",
+    "class": "JournalService",
+    "method": "generateForPurchase",
+    "params": [
+      "invoiceId"
+    ],
+    "returns": "journalId"
+  },
+  {
     "name": "journalGenerateForOutputSale",
     "class": "JournalService",
     "method": "generateForOutputSale",
@@ -200,10 +210,20 @@
     "class": "PaymentService",
     "method": "create",
     "params": [
+      "payment",
+      "receiveOrPay"
+    ],
+    "returns": "id"
+  },
+  {
+    "name": "paymentCreateMany",
+    "class": "PaymentService",
+    "method": "createMany",
+    "params": [
       "payments",
       "receiveOrPay"
     ],
-    "returns": "paymentIds"
+    "returns": "ids"
   },
   {
     "name": "paymentSetInvoiceForAll",
@@ -382,7 +402,7 @@
   },
   {
     "name": "generalLedgerAccountRemove",
-    "class": "PersonService",
+    "class": "GeneralLedgerAccountService",
     "method": "remove",
     "params": [
       "id"
@@ -448,6 +468,16 @@
     "returns": ""
   },
   {
+    "name": "inventoryInputSetPrice",
+    "class": "InventoryInputService",
+    "method": "setPrice",
+    "params": [
+      "id",
+      "lines"
+    ],
+    "returns": ""
+  },
+  {
     "name": "inventoryOutputCreate",
     "class": "InventoryOutputService",
     "method": "create",
@@ -481,6 +511,16 @@
     "method": "calculatePrice",
     "params": [
       "id"
+    ],
+    "returns": ""
+  },
+  {
+    "name": "inventoryOutputSetJournal",
+    "class": "InventoryOutputService",
+    "method": "setJournal",
+    "params": [
+      "id",
+      "journalId"
     ],
     "returns": ""
   },

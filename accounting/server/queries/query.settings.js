@@ -10,7 +10,7 @@ class SettingQuery extends BaseQuery {
     }
 
     get() {
-        return this.knex.select(
+        return await(this.knex.select(
             'vat',
             'bankId',
             'canControlInventory',
@@ -21,11 +21,12 @@ class SettingQuery extends BaseQuery {
             'stakeholders',
             'subsidiaryLedgerAccounts',
             'saleCosts',
+            'saleCharges',
             'webhooks',
             'invoiceDescription')
             .from('settings')
             .where('branchId', this.branchId)
-            .first();
+            .first());
     }
 }
 

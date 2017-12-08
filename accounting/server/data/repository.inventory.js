@@ -121,13 +121,13 @@ class InventoryRepository extends BaseRepository {
     }
 
     getAllInputBeforeDate(fiscalPeriodId, productId, date) {
-        return this.knex.table('inventories')
+        return await(this.knex.table('inventories')
             .leftJoin('inventoryLines', 'inventories.id', 'inventoryLines.inventoryId')
             .where('inventories.branchId', this.branchId)
             .andWhere('inventoryType', 'input')
             .andWhere('fiscalPeriodId', fiscalPeriodId)
             .andWhere('inventories.createdAt', '<', date)
-            .andWhere('productId', productId);
+            .andWhere('productId', productId));
     }
 
     create(entity) {
@@ -157,7 +157,7 @@ class InventoryRepository extends BaseRepository {
     }
 
     update(id, entity) {
-        return this.knex('inventories').where('id', id).update(entity);
+        return await(this.knex('inventories').where('id', id).update(entity));
     }
 
     updateBatch(id, entity) {
@@ -185,7 +185,7 @@ class InventoryRepository extends BaseRepository {
     }
 
     remove(id) {
-        return this.knex('inventories').where('id', id).del();
+        return await(this.knex('inventories').where('id', id).del());
     }
 
     createInventory(entity, trx) {
@@ -261,7 +261,7 @@ class InventoryRepository extends BaseRepository {
             .first();
     }
 
-    isExitsJournal(journalId){
+    isExitsJournal(journalId) {
         return await(this.knex('id')
             .from('inventories')
             .modify(this.modify, this.branchId)
@@ -269,7 +269,7 @@ class InventoryRepository extends BaseRepository {
             .first());
     }
 
-    isExitsStock(stockId){
+    isExitsStock(stockId) {
         return await(this.knex('id')
             .from('inventories')
             .modify(this.modify, this.branchId)

@@ -1,39 +1,54 @@
 <form name="form" ng-if=model.canShowContent>
     <div class="modal-header">
         <button type="button" ng-click="model.close()" class="close" data-dismiss="modal" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-    </button>
+            <span aria-hidden="true">&times;</span>
+        </button>
         <h3 class="modal-title">{{'Parameters'|translate}}</h3>
     </div>
     <div class="modal-body">
         <div class="row">
-            <div class="row " style="margin-top: 10px" ng-if="model.hasProperty('number')" ng-include="'partials/templates/report.parameter.number.html'">
+            <div class="row " style="margin-top: 10px" ng-if="model.hasProperty('number')"
+                 ng-include="'partials/templates/report.parameter.number.html'">
             </div>
-            <div class="row" style="margin-top: 10px" ng-if="model.hasProperty('date')" ng-include="'partials/templates/report.parameter.date.html'">
+            <div class="row" style="margin-top: 10px" ng-if="model.hasProperty('date')"
+                 ng-include="'partials/templates/report.parameter.date.html'">
 
             </div>
             <div class="row" style="margin-top: 10px" ng-if="model.hasProperty('generalLedgerAccount')"
                  ng-include="'partials/templates/report.parameter.generalLedgerAccount.html'">
 
             </div>
-            <div class="row" style="margin-top: 10px" ng-if="model.hasProperty('subsidiaryLedgerAccount')" ng-include="'partials/templates/report.parameter.subsidiaryLedgerAccount.html'">
+            <div class="row" style="margin-top: 10px" ng-if="model.hasProperty('subsidiaryLedgerAccount')"
+                 ng-include="'partials/templates/report.parameter.subsidiaryLedgerAccount.html'">
 
             </div>
-            <div class="row" style="margin-top: 10px" ng-if="model.hasProperty('detailAccount')" ng-include="'partials/templates/report.parameter.detailAccount.html'">
-
-            </div>
-
-            <div ng-repeat="category in dimensionCategories" class="row" style="margin-top: 10px" ng-if="model.hasProperty('dimension'+($index + 1))"
-                ng-include="'partials/templates/report.parameter.dimensions.html'">
+            <div class="row" style="margin-top: 10px" ng-if="model.hasProperty('detailAccount')"
+                 ng-include="'partials/templates/report.parameter.detailAccount.html'">
 
             </div>
 
-            <div class="row" style="margin-top: 10px" ng-if="model.hasProperty('cheque')" ng-include="'partials/templates/report.parameter.cheque.html'">
+            <div ng-repeat="category in dimensionCategories" class="row" style="margin-top: 10px"
+                 ng-if="model.hasProperty('dimension'+($index + 1))"
+                 ng-include="'partials/templates/report.parameter.dimensions.html'">
 
             </div>
 
-            <div class="row" style="margin-top: 10px" ng-if="model.hasProperty('chequeDate')" ng-include="'partials/templates/report.parameter.chequeDate.html'">
+            <div class="row" style="margin-top: 10px" ng-if="model.hasProperty('cheque')"
+                 ng-include="'partials/templates/report.parameter.cheque.html'">
 
+            </div>
+
+            <div class="row" style="margin-top: 10px" ng-if="model.hasProperty('chequeDate')"
+                 ng-include="'partials/templates/report.parameter.chequeDate.html'">
+
+            </div>
+
+            <div class="row" style="margin-top: 10px" ng-if="model.hasProperty('product')"
+                 ng-include="'partials/templates/report.parameter.product.html'">
+            </div>
+
+            <div class="row" style="margin-top: 10px" ng-if="model.hasProperty('stock')"
+                 ng-include="'partials/templates/report.parameter.stock.html'">
             </div>
 
             <div class="row" style="margin-top: 10px" ng-if="model.hasProperty('noPeriod')">
@@ -49,6 +64,7 @@
     </div>
 
     <div class="modal-footer">
-        <dev-tag-button ng-click="model.go(form)" icon="fa fa-play-circle-o fa-lg" style-type="primary" title="{{'Show' | translate}}"></dev-tag-button>
+        <dev-tag-button ng-click="model.go(form)" icon="fa fa-play-circle-o fa-lg" style-type="primary"
+                        title="{{'Show' | translate}}"></dev-tag-button>
     </div>
 </form>

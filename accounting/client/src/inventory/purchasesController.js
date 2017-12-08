@@ -1,6 +1,6 @@
 import InvoiceListControllerBase from "../sales/invoiceListController";
 
-class PurchasesController extends InvoiceListControllerBase{
+class PurchasesController extends InvoiceListControllerBase {
 
     constructor(translate,
                 confirm,
@@ -8,7 +8,7 @@ class PurchasesController extends InvoiceListControllerBase{
                 logger,
                 $timeout,
                 $state,
-                returnSaleApi,
+                purchaseApi,
                 navigate,
                 $scope) {
 
@@ -18,7 +18,7 @@ class PurchasesController extends InvoiceListControllerBase{
             logger,
             $timeout,
             $state,
-            returnSaleApi,
+            purchaseApi,
             navigate,
             $scope,
             'purchase');

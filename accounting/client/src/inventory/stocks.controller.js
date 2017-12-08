@@ -2,7 +2,9 @@
 
 class StocksController {
 
-    constructor($scope, $rootScope, stockApi, logger, confirm, translate, navigate, reportParameters) {
+    constructor($scope, $rootScope, $timeout, stockApi, logger, confirm, translate, navigate, reportParameters) {
+
+        this.$timeout = $timeout;
         this.stockApi = stockApi;
         this.logger = logger;
         this.confirm = confirm;
@@ -31,16 +33,19 @@ class StocksController {
         this.confirm(
             translate('Are you sure ?'),
             translate('Remove stock')
-        ).then(() => {
-            this.stockApi.remove(item.id)
-                .then(() => {
-                    this.logger.success();
-                    this.fetch();
-                })
-                .catch(errors => this.errors = errors);
-        });
+        ).then(() => this.$timeout(() => this._remove(item), 1000));
+
     }
 
+    _remove(item) {
+
+        this.stockApi.remove(item.id)
+            .then(() => {
+                this.logger.success();
+                this.fetch();
+            })
+            .catch(errors => this.logger.error(errors.join('<br/>')));
+    }
 
     inventoryTurnover() {
 
@@ -49,7 +54,7 @@ class StocksController {
             .select(item => item.id)
             .toArray();
 
-        if(ids.length === 0)
+        if (ids.length === 0)
             return this.logger.error(this.translate('Select inventory'));
 
         this.reportParameters.show([{name: "date"}])
@@ -59,7 +64,7 @@ class StocksController {
 
                 this.navigate(
                     'report.print',
-                    {key: 802},
+                    {key: 902},
                     params);
             });
     }

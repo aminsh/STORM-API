@@ -1,4 +1,4 @@
-<div class="ui segment">
+<div class="ui segment" style="overflow-x: auto">
     <div class="ui dimmer"
          ng-if="isWaiting">
         <div class="ui loader">
@@ -12,7 +12,6 @@
         </div>
 
     </div>
-
 
 
     <table class="table table-hover" id="{{gridId}}">
@@ -31,13 +30,11 @@
                 style="{{(column.width) ? 'width: ' + column.width : ''}}">
                 {{column.title}}
                 <span ng-if="!column.hasOwnProperty('commands')">
-
                 <dev-tag-grid-sort
                         ng-if="grid.sortable"
                         dev-attr-add-sort="addSort(sort)"
                         dev-attr-remove-sort="removeSort()"
                         dev-attr-column="column"></dev-tag-grid-sort>
-
                 <dev-tag-grid-filter
                         ng-if="grid.filterable"
                         dev-attr-add-filter="addFilter(filter)"
@@ -50,7 +47,10 @@
         </thead>
         <tbody>
         <tr
-                ng-repeat-start="item in data"
+                ng-repeat-start="item in data track by $index"
+                name="form-{{$index}}"
+                ng-form
+                ng-init="item.rowIndex = $index"
                 ng-click="select(item)"
                 ng-class="{'success': current == item, 'pointer':  grid.selectable}"
                 ng-class-odd="'grid-row-striped'">
@@ -62,6 +62,7 @@
             <td ng-repeat="column in columns"
                 style="vertical-align: middle"
                 class="{{column.css}}"
+                ng-style="column.style"
                 ng-class="{'command-cell': column.hasOwnProperty('commands')}">
 
                 <i ng-if="detailTemplate && $index == 0"
@@ -73,11 +74,11 @@
                 <span ng-if="!column.template">{{item[column.name]}}</span>
                 <span ng-if="column.template" ng-html-compile="column.template"></span>
             </span>
-            <span uib-dropdown ng-if="column.hasOwnProperty('commands')" style="margin-left: 20px;">
+                <span uib-dropdown ng-if="column.hasOwnProperty('commands')" style="margin-left: 20px;">
 
                 <a href="#" class="btn btn-primary btn-circle " uib-dropdown-toggle>
                     <i class="fa fa-ellipsis-v fa-lg "
-                       ></i>
+                    ></i>
                 </a>
 
 
@@ -89,7 +90,7 @@
                      <li role="menuitem"
                          ng-if="!command.canShow || (command.canShow && command.canShow(item))"
                          ng-repeat="command in column.commands">
-                         <a href="#"   ng-click="command.action(item)">
+                         <a href="#" ng-click="command.action(item)">
                          <i class="{{command.icon}} fa-lg"></i>
                          <span>{{command.title}}</span>
                          </a>
@@ -98,17 +99,17 @@
 
             </span>
 
-               <!-- <span ng-if="column.hasOwnProperty('commands')">
-                <button ng-repeat="command in column.commands"
-                        ng-click="command.action(item)"
-                        ng-if="!command.canShow || (command.canShow && command.canShow(item))"
-                        class="btn btn-outline "
-                        type="button"
-                        title="{{command.title}}"
-                        style="margin-top: 0;margin-bottom: 0">
-                    <i class="{{command.icon}} fa-lg"></i>
-                </button>
-            </span>-->
+                <!-- <span ng-if="column.hasOwnProperty('commands')">
+                 <button ng-repeat="command in column.commands"
+                         ng-click="command.action(item)"
+                         ng-if="!command.canShow || (command.canShow && command.canShow(item))"
+                         class="btn btn-outline "
+                         type="button"
+                         title="{{command.title}}"
+                         style="margin-top: 0;margin-bottom: 0">
+                     <i class="{{command.icon}} fa-lg"></i>
+                 </button>
+             </span>-->
             </td>
         </tr>
         <tr ng-if="item.expanded"
@@ -129,7 +130,7 @@
         </tr>
         <tr ng-show="pageable">
 
-            <td colspan="{{columns.length + (grid.multiSelectable === true ? 1 : 0) }}" >
+            <td colspan="{{columns.length + (grid.multiSelectable === true ? 1 : 0) }}">
                 <dev-tag-paging
                         dev-attr-total="total"
                         dev-attr-set-page="fetch(page)"

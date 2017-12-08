@@ -138,6 +138,7 @@ import $ModalFactory from "./services/$modalFactory";
 import Promise from "./services/promise";
 import formService from './services/formService';
 import FileService from './services/fileService';
+import exportToExcel from "./services/exportToExcel";
 
 import "./journal";
 import "./report";
@@ -221,6 +222,7 @@ accModule
     .factory('confirm', confirm)
     .factory('saleApi', saleApi)
     .factory('translateStorageService', translateStorageService)
+    .factory('exportToExcel', exportToExcel)
 
     .controller('chequePrintController', chequePrintController)
     .controller('reportController', reportController)

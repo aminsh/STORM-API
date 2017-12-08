@@ -87,6 +87,25 @@ router.route('/:id/pay')
         }
     }));
 
+router.route('/:id/generate-journal')
+    .post(async((req, res) => {
+
+        try {
+
+            const id = req.params.id;
+
+            let journalId = RunService("journalGenerateForInvoicePurchase", [id], req);
+
+            RunService("invoicePurchaseSetJournal", [id, journalId], req);
+
+            res.json({isValid: true});
+        }
+        catch (e) {
+            res.json({isValid: false, errors: e.errors});
+        }
+
+    }));
+
 router.route('/:id/payments').get(async((req, res) => {
     let paymentQuery = new PaymentQuery(req.branchId),
         result = await(paymentQuery.getPeymentsByInvoiceId(req.params.id));

@@ -1,4 +1,4 @@
-export default class {
+class ReportApi {
     constructor(apiPromise, $q, devConstants) {
         this.urlPrefix = `${devConstants.urls.rootUrl}/reports`;
         this.apiPromise = apiPromise;
@@ -95,7 +95,7 @@ export default class {
     }
 
     getInventoriesOutput(params) {
-        return this.apiPromise.get(`${this.urlPrefix}/inventory-output`, params)
+        return this.apiPromise.get(`${this.urlPrefix}/inventory-outputs`, params)
     }
 
     getInventoriesInput(params) {
@@ -103,15 +103,18 @@ export default class {
     }
 
     getInventoriesTurnover(params) {
-        return this.apiPromise.get(`${this.urlPrefix}/inventory-turnover`, params)
+        let ids = params.stocks.length === 0 ? params.ids : params.stocks;
+        return this.apiPromise.get(`${this.urlPrefix}/inventory-turnover`, {ids})
     }
 
     getProductTurnover(params) {
-        return this.apiPromise.get(`${this.urlPrefix}/product-turnover`, params)
+        let ids = params.products.length === 0 ? params.ids : params.products;
+        return this.apiPromise.get(`${this.urlPrefix}/product-turnover`, {ids})
     }
 
     getProductTurnoverTotal(params){
-        return this.apiPromise.get(`${this.urlPrefix}/product-turnover-total`,params)
+        let ids = params.products.length === 0 ? params.ids : params.products;
+        return this.apiPromise.get(`${this.urlPrefix}/product-turnover-total`,{ids})
     }
 
     generalLedgerAccountReview(params) {
@@ -153,4 +156,10 @@ export default class {
     getSeasonal(params){
         return this.apiPromise.get(`${this.urlPrefix}/seasonal`,params)
     }
+
+    getTotalSeasonal(params){
+        return this.apiPromise.get(`${this.urlPrefix}/seasonal`,params)
+    }
 }
+
+export default ReportApi;

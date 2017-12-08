@@ -10,6 +10,8 @@ function subsidiaryLedgerAccountAssembler(entity) {
         display: entity.display,
         account: entity.account,
         isBankAccount: entity.isBankAccount,
+        balanceType: entity.balanceType,
+        balanceTypeDisplay: entity.balanceType ? enums.AccountBalanceType().getDisplay(entity.balanceType) : '',
         hasDetailAccount: entity.hasDetailAccount,
         hasDimension1: entity.hasDimension1,
         hasDimension2: entity.hasDimension2,

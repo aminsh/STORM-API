@@ -45,6 +45,19 @@ accModule
     .config($stateProvider => {
 
         $stateProvider
+            .state('inventory.inputs.setPrice', {
+                url: '/set-price/:id',
+                onEnter: ($modelFactory, $stateParams) => {
+                    $modelFactory.create({
+                        controller: 'inventoryDetailController',
+                        controllerAs: 'model',
+                        size: 'lg',
+                        templateUrl: 'partials/inventory/inventoryDetail.html',
+                        resolve: {data: {id: $stateParams.id, isPriceEntry: true}}
+                    });
+                }
+            })
+
             .state('inventory.purchases', {
                 url: '/purchases',
                 controller: 'purchasesController',
@@ -62,6 +75,7 @@ accModule
                     });
                 }
             })
+
             .state('inventory.purchases.detail.payment', {
                 url: '/payment/:amount/:receiveOrPay',
                 controller: 'paymentController',

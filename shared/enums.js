@@ -31,8 +31,8 @@ class Enum {
 
 enums.AccountPostingType = function () {
     return new Enum([
-        {key: 'balanceSheet', display: 'تراز نامه ای'},
-        {key: 'benefitAndLoss', display: 'سود و زیانی'},
+        {key: 'balanceSheet', display: 'تراز نامه ای (دائمی)'},
+        {key: 'benefitAndLoss', display: 'سود و زیانی (موقت)'},
         {key: 'entezami', display: 'انتظامی'}
     ]);
 };
@@ -132,7 +132,8 @@ enums.ChequeStatus = function () {
         {key: 'normal', display: 'عادی'},
         {key: 'inProcessOnPassing', display: 'در جریان وصول'},
         {key: 'passed', display: 'پاس شده'},
-        {key: 'return', display: 'عودت داده'}
+        {key: 'return', display: 'عودت داده'},
+        {key: 'spend', display: 'خرج شده'}
     ]);
 };
 
@@ -164,6 +165,31 @@ enums.getMonth = function () {
         {key: 10, display: "دی"},
         {key: 11, display: "بهمن"},
         {key: 12, display: "اسفند"}
+    ]);
+};
+
+enums.getSeason = function () {
+    return new Enum([
+        {key: 1, display: "بهار"},
+        {key: 2, display: "تابستان"},
+        {key: 3, display: "پاییز"},
+        {key: 4, display: "زمستان"}
+    ]);
+};
+
+enums.getVatIncluded = function () {
+    return new Enum([
+        {key: 1, display: "همه ی فاکتورها"},
+        {key: 2, display: "شامل فاکتورهای با مالیات"},
+        {key: 3, display: "شامل فاکتورهای بدون مالیات"}
+    ]);
+};
+
+enums.getNationalCodeIncluded = function () {
+    return new Enum([
+        {key: 1, display: "همه ی اشخاص"},
+        {key: 2, display: "شامل اشخاص دارای کد ملی/ شناسه"},
+        {key: 3, display: "شامل اشخاص بدون کد ملی/ شناسه"}
     ]);
 };
 
@@ -259,6 +285,7 @@ enums.ProductOutputCreationMethod = function () {
 enums.JournalGenerationTemplateSourceType = function () {
     return new Enum([
         {key: 'sale', display: 'فاکتور فروش'},
+        {key: 'purchase', display: 'فاکتور خرید'},
         {key: 'returnSale', display: 'فاکتور برگشت از فروش'},
         {key: 'inventoryOutputSale', display: 'حواله فروش'},
         {key: 'inventoryInputReturnSale', display: 'رسید برگشت از فروش'}

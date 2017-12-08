@@ -4,7 +4,8 @@ const InputService = require('./inventoryInput'),
     ProductService = require('./product'),
     SettingsRepository = require('./data').SettingsRepository,
     InvoiceRepository = require('./data').InvoiceRepository,
-    InventoryRepository = require('./data').InventoryRepository;
+    InventoryRepository = require('./data').InventoryRepository,
+    String = instanceOf('utility').String;
 
 class InputPurchaseService {
 
@@ -33,20 +34,18 @@ class InputPurchaseService {
                 throw new ValidationException(errors);
         }
 
-        let inputs = cmd.invoiceLines.asEnumerable()
+        return cmd.invoiceLines.asEnumerable()
             .where(item => productService.shouldTrackInventory(item.productId))
             .groupBy(
                 item => item.stockId,
                 item => item,
                 (key, items) => ({
                     stockId: key,
+                    ioType: 'inputPurchase',
                     lines: items.toArray()
                 }))
             .select(item => this.inputService.create(item))
-            .select(item => item.id)
             .toArray();
-
-        return inputs;
     }
 
     setPrice(ids, invoiceId) {
@@ -54,23 +53,30 @@ class InputPurchaseService {
         const inventoryRepository = new InventoryRepository(this.branchId);
 
         let invoice = new InvoiceRepository(this.branchId).findById(invoiceId),
-            inputs = ids.asEnumerable().select(id => inventoryRepository.findById(id)).toArray();
+            inputs = ids.asEnumerable().select(id => inventoryRepository.findById(id)).toArray(),
+
+            totalPrice = invoice.invoiceLines.asEnumerable().sum(line => line.unitPrice * line.quantity),
+            totalCharges = invoice.charges.asEnumerable().sum(e => e.value);
 
         inputs.forEach(input => {
-           let list = input.inventoryLines.asEnumerable()
-               .select(line => {
+            let list = input.inventoryLines.asEnumerable()
+                .select(line => {
 
-                   let invoiceLine = invoice.invoiceLines.asEnumerable()
-                       .single(invoiceLine => invoiceLine.id === line.invoiceLineId);
+                    let invoiceLine = invoice.invoiceLines.asEnumerable()
+                            .single(invoiceLine => invoiceLine.id === line.invoiceLineId),
 
-                   return {
-                       id: line.id,
-                       unitPrice: invoiceLine.unitPrice - invoiceLine.discount
-                   };
-               })
-               .toArray();
+                        rate = 100 * ((invoiceLine.quantity * invoiceLine.unitPrice) - invoiceLine.discount) / totalPrice,
+                        chargeShare = totalCharges * rate / 100,
+                        unitPrice = ((invoiceLine.quantity * invoiceLine.unitPrice) - invoiceLine.discount + chargeShare) / invoiceLine.quantity;
 
-           this.inputService.setPrice(input.id, list);
+                    return {
+                        id: line.id,
+                        unitPrice
+                    };
+                })
+                .toArray();
+
+            this.inputService.setPrice(input.id, list);
         });
 
     }

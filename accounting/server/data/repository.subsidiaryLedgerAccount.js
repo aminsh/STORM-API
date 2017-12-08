@@ -28,7 +28,7 @@ class SubsidiaryLedgerAccountRepository extends BaseRepository {
         if (notEqualId)
             query.andWhere('id', '!=', notEqualId);
 
-        return query.first();
+        return await(query.first());
     }
 
     create(entity) {
@@ -38,21 +38,21 @@ class SubsidiaryLedgerAccountRepository extends BaseRepository {
         else
             super.create(entity);
 
-        return this.knex('subsidiaryLedgerAccounts').insert(entity);
+        await(this.knex('subsidiaryLedgerAccounts').insert(entity));
     }
 
     update(id,entity) {
-        return this.knex('subsidiaryLedgerAccounts')
+        return await(this.knex('subsidiaryLedgerAccounts')
             .modify(this.modify, this.branchId)
             .where('id', id)
-            .update(entity);
+            .update(entity));
     }
 
     remove(id) {
-        return this.knex('subsidiaryLedgerAccounts')
+        return await(this.knex('subsidiaryLedgerAccounts')
             .modify(this.modify, this.branchId)
             .where('id', id)
-            .del();
+            .del());
     }
 
     isUsedOnJournalLines(id){

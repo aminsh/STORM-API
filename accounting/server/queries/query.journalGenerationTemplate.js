@@ -6,12 +6,14 @@ const async = require('asyncawait/async'),
     kendoQueryResolve = require('../services/kendoQueryResolve');
 
 const templateSale = require('../config/defaultJournalGenerationTemplates/sale.json'),
+    templatePurchase = require('../config/defaultJournalGenerationTemplates/purchase.json'),
     templateReturnSale = require('../config/defaultJournalGenerationTemplates/returnSale.json'),
     templateInventoryOutputSale = require('../config/defaultJournalGenerationTemplates/inventoryOutputSale.json'),
     templateInventoryInputReturnSale = require('../config/defaultJournalGenerationTemplates/inventoryInputReturnSale.json'),
 
     templates = {
         sale: templateSale,
+        purchase: templatePurchase,
         returnSale: templateReturnSale,
         inventoryOutputSale: templateInventoryOutputSale,
         inventoryInputReturnSale: templateInventoryInputReturnSale
@@ -52,7 +54,7 @@ class JournalGenerationTemplateQuery extends BaseQuery {
             }
             : template;
     }
-};
+}
 
 module.exports = JournalGenerationTemplateQuery;
 

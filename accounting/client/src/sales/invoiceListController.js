@@ -38,8 +38,8 @@ export default class invoiceListControllerBase {
                     width: '10%',
                     type: 'date',
                     css: 'text-center',
-                    header:{
-                        css:'text-center'
+                    header: {
+                        css: 'text-center'
                     }
                 },
                 {
@@ -49,8 +49,8 @@ export default class invoiceListControllerBase {
                     type: 'number',
                     template: '<a ui-sref="^.view({id: item.id})">{{item.number}}</a>',
                     css: 'text-center',
-                    header:{
-                        css:'text-center'
+                    header: {
+                        css: 'text-center'
                     }
                 },
                 {
@@ -111,6 +111,15 @@ export default class invoiceListControllerBase {
                     title: translate('Print'),
                     icon: 'fa fa-print text-success fa-lg',
                     action: current => this.print(current)
+                },
+                {
+                    title: translate('Generate journal'),
+                    icon: 'fa fa-share-square-o text-success fa-lg',
+                    action: current => {
+                        this.generateJournal(current);
+                        this.gridOption.refresh();
+                    },
+                    canShow: current => current.status !== 'draft' && !current.journalId
                 }
             ],
             readUrl
@@ -144,5 +153,11 @@ export default class invoiceListControllerBase {
 
     view() {
         throw new Error('Not implemented this method');
+    }
+
+    generateJournal(current) {
+        this.api.generateJournal(current.id)
+            .then(() => this.logger.success())
+            .catch(errors => this.logger.error(errors.join('<br/>')));
     }
 }

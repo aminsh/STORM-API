@@ -16,7 +16,7 @@ const async = require('asyncawait/async'),
     PaymentRepository = require('./data').PaymentRepository,
     DetailAccount = require('./detailAccount'),
     Product = require('./product'),
-    PaymentService= require("./payment");
+    PaymentService = require("./payment");
 
 
 class InvoiceService {
@@ -51,6 +51,12 @@ class InvoiceService {
 
         if (String.isNullOrEmpty(entity.detailAccountId))
             errors.push('مشتری نباید خالی باشد');
+
+        if (entity.costs.length !== 0 && !entity.costs.asEnumerable().all(e => !String.isNullOrEmpty(e.key) && e.value !== 0))
+            errors.push('ردیف های هزینه صحیح نیست');
+
+        if (entity.charges.length !== 0 && !entity.charges.asEnumerable().all(e => !String.isNullOrEmpty(e.key) && e.value !== 0))
+            errors.push('ردیف های اضافات صحیح نیست');
 
         errors = entity.invoiceLines.asEnumerable()
             .selectMany(this._validateLine.bind(this))
@@ -93,7 +99,7 @@ class InvoiceService {
                 .sum(e => (e.unitPrice * e.quantity) - e.discount + e.vat);
 
         if (sumPayments >= totalPrice)
-            this.invoiceRepository.update(invoiceId, {invoiceStatus: 'paid'});
+            this.invoiceRepository.update(id, {invoiceStatus: 'paid'});
     }
 
     mapToEntity(cmd) {
@@ -101,17 +107,22 @@ class InvoiceService {
         const detailAccount = this.detailAccount.findPersonByIdOrCreate(cmd.customer);
 
         return {
+            id: cmd.id,
             date: cmd.date || PersianDate.current(),
             description: cmd.description,
             title: cmd.title,
             detailAccountId: detailAccount ? detailAccount.id : null,
             orderId: cmd.orderId,
+            costs: this._mapCostAndCharge(cmd.costs),
+            charges: this._mapCostAndCharge(cmd.charges),
+            bankReceiptNumber: cmd.bankReceiptNumber,
             invoiceLines: cmd.invoiceLines.asEnumerable()
                 .select(line => {
 
                     const product = this.product.findByIdOrCreate(line.product);
 
                     return {
+                        id: line.id,
                         productId: product ? product.id : null,
                         description: line.description || product.title,
                         stockId: line.stockId,
@@ -123,6 +134,35 @@ class InvoiceService {
                 })
                 .toArray()
         }
+    }
+
+    _mapCostAndCharge(data) {
+
+        if (!data)
+            return [];
+
+        if (Array.isArray(data))
+            return data.asEnumerable().select(e => ({key: e.key, value: e.value || 0})).toArray();
+
+        return Object.keys(data).asEnumerable()
+            .select(key => ({
+                key,
+                value: data[key]
+            }))
+            .toArray();
+
+    }
+
+    _mapToData(entity) {
+        let data = Object.assign({}, entity, {
+            costs: JSON.stringify(entity.costs),
+            charges: JSON.stringify(entity.charges),
+            custom: {bankReceiptNumber: entity.bankReceiptNumber}
+        });
+
+        delete data.bankReceiptNumber;
+
+        return data;
     }
 
     _createOutput(entity) {
@@ -137,6 +177,9 @@ class InvoiceService {
 
     _setToOutput(id, inventoryIds) {
 
+        if (!this.settings.canControlInventory)
+            return;
+
         this.outputService.setInvoice(inventoryIds, id);
     }
 
@@ -149,15 +192,15 @@ class InvoiceService {
         if (errors.length > 0)
             throw new ValidationException(errors);
 
-        if (cmd.status === 'confirm')
+        if (cmd.status && cmd.status !== 'draft')
             inventoryIds = this._createOutput(entity);
 
         entity.number = this.invoiceRepository.maxNumber('sale') + 1;
         entity.invoiceType = 'sale';
-        entity.invoiceStatus = cmd.status !== 'draft' ? 'waitForPayment' : 'draft';
+        entity.invoiceStatus = !cmd.status || cmd.status === 'draft' ? 'draft' : 'waitForPayment';
         entity.inventoryIds = JSON.stringify(inventoryIds);
 
-        entity = this.invoiceRepository.create(entity);
+        entity = this.invoiceRepository.create(this._mapToData(entity));
 
         if (inventoryIds)
             this._setToOutput(entity.id, inventoryIds);
@@ -188,7 +231,7 @@ class InvoiceService {
             invoiceStatus: 'waitForPayment'
         };
 
-        entity.entity.this.invoiceRepository.update(id, data);
+        this.invoiceRepository.update(id, data);
 
         EventEmitter.emit("onInvoiceConfirmed", entity.id, this.args);
     }
@@ -201,20 +244,24 @@ class InvoiceService {
         if (invoice.invoiceStatus !== 'draft')
             throw new ValidationException(['فاکتور جاری قابل ویرایش نمیباشد']);
 
-        let entity = this.mapToEntity(cmd);
+        let entity = this.mapToEntity(cmd),
+            errors = this._validate(entity);
 
-        if (cmd.status === 'confirm')
+        if (errors.length > 0)
+            throw new ValidationException(errors);
+
+        if (cmd.status && cmd.status !== 'draft')
             inventoryIds = this._createOutput(entity);
 
         if (inventoryIds)
-            this._setToOutput(entity.id, inventoryIds);
+            this._setToOutput(id, inventoryIds);
 
         entity.inventoryIds = JSON.stringify(inventoryIds);
         entity.invoiceStatus = cmd.status !== 'draft' ? 'waitForPayment' : 'draft';
 
-        this.invoiceRepository.updateBatch(id, entity);
+        this.invoiceRepository.updateBatch(id, this._mapToData(entity));
 
-        EventEmitter.emit("onInvoiceEdited", entity.id, this.args);
+        EventEmitter.emit("onInvoiceEdited", id, this.args);
     }
 
     remove(id) {
@@ -258,14 +305,16 @@ class InvoiceService {
         return this.invoiceRepository.update(id, {journalId});
     }
 
-    pay(id, payments){
+    pay(id, payments) {
         const paymentService = new PaymentService(this.branchId),
 
-            paymentIds = paymentService.create(payments, 'receive');
+            paymentIds = paymentService.createMany(payments, 'receive');
 
         paymentService.setInvoiceForAll(paymentIds, id);
 
         this._changeStatusIfPaidIsCompleted(id);
+
+        return paymentIds;
     }
 }
 

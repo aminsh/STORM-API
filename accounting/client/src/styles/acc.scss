@@ -60,23 +60,28 @@ $dir: rtl;
 @import "../journal/journalLine-style";
 
 // For Each Defined Color
-@each $key , $val in $color-map {
-  .so-tx-#{$key}{ color: $val; }
-  .so-bg-#{$key}{ background-color: $val; }
+@each $key, $val in $color-map {
+  .so-tx-#{$key} {
+    color: $val;
+  }
+  .so-bg-#{$key} {
+    background-color: $val;
+  }
 }
+
 // Make Property Classes
 @each $className, $cssPropName in $propNames {
-  .so-#{$className}{
+  .so-#{$className} {
     #{$cssPropName}: #{map_get($propValues, $className)} !important;
   }
 }
 
-*, *::before, *::after{
+*, *::before, *::after {
   @include box-sizing(border-box);
   //font-family: "IRANSans", sans-serif, tahoma, "FontAwesome", "Glyphicons Halflings";
 }
 
-body{
+body {
   display: block;
   position: relative;
   margin: 0;
@@ -92,7 +97,7 @@ body, h1, a,
 }
 
 // [START] SMRSAN
-.so-md-form-container{
+.so-md-form-container {
   display: block;
   position: absolute;
   width: 500px;
@@ -106,8 +111,9 @@ body, h1, a,
   @include border-radius();
   top: 50%;
   left: 50%;
-  @include transform(translate(-50%,-50%));
+  @include transform(translate(-50%, -50%));
 }
+
 // [-END-] SMRSAN
 
 .button-click-menu {
@@ -1323,17 +1329,31 @@ label.error {
   right: auto !important;
 }
 
-.popover-select-stock{
+.popover-select-stock {
   width: 500px;
 }
 
-.text-bold{
+.text-bold {
   font-weight: bold;
 }
 
-
-.table>thead>tr>th, .table>tbody>tr>th, .table>tfoot>tr>th, .table>thead>tr>td, .table>tbody>tr>td, .table>tfoot>tr>td {
+.table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td {
   vertical-align: middle;
+}
+
+.close:focus {
+  outline: none
+}
+
+.noWarp{
+  white-space: nowrap;
+}
+
+.giveMeEllipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100px;
 }
 
 

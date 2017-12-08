@@ -52,12 +52,20 @@ class OutputEntryController extends InventoryEntryControllerBase {
     onProductChanged(item, product, form) {
         super.onProductChanged(item, product, form);
 
-        this.inventoryApi.getProductInventoryByStock(product.id)
+        this.fetchStockInventoryByRowAndProduct(item, product.id);
+    }
+
+    fetchStockInventoryByRowAndProduct(item, productId){
+        this.inventoryApi.getProductInventoryByStock(productId)
             .then(result => {
                 const inventory = result.asEnumerable().singleOrDefault(e => e.stockId === this.inventory.stockId);
 
                 item.inventory = inventory ? inventory.sumQuantity : 0;
             });
+    }
+
+    onStockChanged(){
+        this.inventory.inventoryLines.forEach(item => this.fetchStockInventoryByRowAndProduct(item, item.productId));
     }
 
     save(form) {

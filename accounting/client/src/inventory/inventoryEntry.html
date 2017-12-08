@@ -65,6 +65,7 @@
                                            k-data-value-field="id"
                                            k-data-text-field="title"
                                            show-no-data-template
+                                           k-on-changed="model.onStockChanged($item)"
                                            url="{{model.urls.getAllStocks}}"
                                            ng-model="model.inventory.stockId"
                                            required></dev-tag-combo-box>

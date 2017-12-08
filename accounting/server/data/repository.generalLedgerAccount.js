@@ -34,7 +34,7 @@ class GeneralLedgerAccountRepository extends BaseRepository {
         if (notEqualId)
             query.andWhere('id', '!=', notEqualId);
 
-        return query.first();
+        return await(query.first());
     }
 
     create(entity) {
@@ -47,17 +47,17 @@ class GeneralLedgerAccountRepository extends BaseRepository {
     }
 
     update(entity) {
-        return this.knex('generalLedgerAccounts')
+        return await(this.knex('generalLedgerAccounts')
             .modify(this.modify, this.branchId)
             .where('id', entity.id)
-            .update(entity);
+            .update(entity));
     }
 
     remove(id) {
-        return this.knex('generalLedgerAccounts')
+        return await(this.knex('generalLedgerAccounts')
             .modify(this.modify, this.branchId)
             .where('id', id)
-            .del();
+            .del());
     }
 }
 

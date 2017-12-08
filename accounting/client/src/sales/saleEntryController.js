@@ -65,7 +65,12 @@ class SaleEntryController extends InvoiceEntryControllerBase {
 
         this.inventoryApi.getProductInventoryByStock(item.productId)
             .then(result => {
-                item.inventories = result;
+                item.stocks = result.asEnumerable()
+                    .select(item => ({
+                        display: `${item.stockDisplay} - ${this.translate('Inventory quantity')} : ${item.sumQuantity}`,
+                        stockId: item.stockId
+                    }))
+                    .toArray();
             });
     }
 
@@ -87,12 +92,29 @@ class SaleEntryController extends InvoiceEntryControllerBase {
         item.canShowStockSection = this.settings.productOutputCreationMethod === 'stockOnRequest'
             && product.productType === 'good';
 
+        if(item.canShowStockSection)
+            this.onShowSelectStock(item);
+
         super.onProductChanged(item, product);
     }
 
 
     goAfterSave() {
         this.$state.go('sale.sales');
+    }
+
+    addCost() {
+        this.invoice.costs = this.invoice.costs || [];
+
+        this.invoice.costs.push({});
+    }
+
+    removeCost(item) {
+        this.invoice.costs.asEnumerable().remove(item);
+    }
+
+    canShowAddButton() {
+        return true;
     }
 }
 

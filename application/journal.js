@@ -6,6 +6,7 @@ const async = require('asyncawait/async'),
     String = instanceOf('utility').String,
     Guid = instanceOf('utility').Guid,
     JournalRepository = require('./data').JournalRepository,
+    SettingsRepository = require('./data').SettingsRepository,
     SubsidiaryLedgerAccountRepository = require('./data').SubsidiaryLedgerAccountRepository,
     DetailAccountRepository = require('./data').DetailAccountRepository,
     FiscalPeriodRepository = require('./data').FiscalPeriodRepository,
@@ -180,50 +181,55 @@ class JournalService {
         return this.journalRepository.batchUpdate(id, journal);
     }
 
-    clone(id){
+    clone(id) {
         let sourceJournal = this.journalRepository.findById(id);
 
-        if(!sourceJournal)
+        if (!sourceJournal)
             throw new ValidationException(['سند وجود ندارد']);
+
+
+        delete sourceJournal.id;
+
+        sourceJournal.journalLines.forEach(e => delete e.id);
 
         return this.create(sourceJournal);
     }
 
-    fix(id){
+    fix(id) {
         let journal = this.journalRepository.findById(id);
 
-        if(journal.journalStatus === 'Fixed')
+        if (journal.journalStatus === 'Fixed')
             throw new ValidationException(['سند قبلا قطعی شده']);
 
         this.journalRepository.update({id: journal.id, journalStatus: 'Fixed'});
     }
 
-    bookkeeping(id){
+    bookkeeping(id) {
         let journal = this.journalRepository.findById(id);
 
-        if(journal.journalStatus === 'Fixed')
+        if (journal.journalStatus === 'Fixed')
             throw new ValidationException(['سند قبلا قطعی شده']);
 
         this.journalRepository.update({id: journal.id, journalStatus: 'BookKeeped'});
     }
 
-    attachImage(id, attachmentFileName){
+    attachImage(id, attachmentFileName) {
         this.journalRepository.update({id, attachmentFileName});
     }
 
-    remove(id){
+    remove(id) {
         let journal = this.journalRepository.findById(id);
 
-        if(journal.journalStatus === 'Fixed')
+        if (journal.journalStatus === 'Fixed')
             throw new ValidationException(['سند قطعی شده ، امکان حذف وجود ندارد']);
 
-        if(new FiscalPeriodRepository(this.branchId).findById(this.fiscalPeriodId).isClosed)
+        if (new FiscalPeriodRepository(this.branchId).findById(this.fiscalPeriodId).isClosed)
             throw new ValidationException(['دوره مالی بسته شده ، امکان حذف وجود ندارد']);
 
-        if(new InvoiceRepository(this.branchId).isExitsJournal(id))
+        if (new InvoiceRepository(this.branchId).isExitsJournal(id))
             throw new ValidationException(['این سند برای فاکتور صادر شده ، امکان حذف وجود ندارد']);
 
-        if(new InventoryRepository(this.branchId).isExitsJournal(id))
+        if (new InventoryRepository(this.branchId).isExitsJournal(id))
             throw new ValidationException(['این سند برای اسناد انباری صادر شده ، امکان حذف وجود ندارد']);
 
         this.journalRepository.remove(id);
@@ -231,28 +237,63 @@ class JournalService {
 
     generateForInvoice(invoiceId) {
 
-        const invoice = new InvoiceRepository(this.branchId).findById(invoiceId);
+        const settings = new SettingsRepository(this.branchId).get(),
+            invoice = new InvoiceRepository(this.branchId).findById(invoiceId);
 
-        let model = {
+        if (!invoice)
+            throw new ValidationException(['فاکتور وجود ندارد']);
+
+        if (!String.isNullOrEmpty(invoice.journalId))
+            throw new ValidationException(['برای فاکتور {0} قبلا سند حسابداری صادر شده'.format(invoice.number)]);
+
+        const cost = (settings.saleCosts || []).asEnumerable()
+                .select(e => ({
+                    key: e.key,
+                    value: (invoice.costs.asEnumerable().firstOrDefault(p => p.key === e.key) || {value: 0}).value
+                }))
+                .toObject(item => `cost_${item.key}`, item => item.value),
+
+            charge = (settings.saleCharges || []).asEnumerable()
+                .select(e => ({
+                    key: e.key,
+                    value: (invoice.charges.asEnumerable().firstOrDefault(p => p.key === e.key) || {value: 0}).value
+                }))
+                .toObject(item => `charge_${item.key}`, item => item.value);
+
+        let model = Object.assign({
                 number: invoice.number,
                 date: invoice.date,
                 title: invoice.title,
                 amount: invoice.invoiceLines.asEnumerable().sum(line => line.unitPrice * line.quantity),
                 discount: invoice.invoiceLines.asEnumerable().sum(line => line.discount),
                 vat: invoice.invoiceLines.asEnumerable().sum(line => line.vat),
-                customer: invoice.detailAccountId
-            },
+                customer: invoice.detailAccountId,
+                bankReceiptNumber: invoice.bankReceiptNumber || ''
+            }, cost, charge),
 
             journal = this.journalGenerationTemplateService.generate(model, 'sale');
+
+        journal.journalLines = journal.journalLines.asEnumerable()
+            .orderByDescending(line => line.debtor)
+            .toArray();
 
         return this.create(journal);
     }
 
     generateForOutputSale(outputId) {
 
-        const output = new InventoryRepository(this.branchId).findById(outputId),
+        const output = new InventoryRepository(this.branchId).findById(outputId);
 
-            model = {
+        if (output.ioType !== 'outputSale')
+            throw new ValidationException(['حواله جاری از نوع فروش نیست']);
+
+        if(output.inventoryLines.asEnumerable().any(line => !(line.unitPrice && line.unitPrice > 0)))
+            throw new ValidationException(['حواله با مبلغ صفر وجود دارد']);
+
+        if (!String.isNullOrEmpty(output.journalId))
+            throw new ValidationException(['برای حواله {0} قبلا سند حسابداری صادر شده'.format(output.number)]);
+
+        const model = {
                 number: output.number,
                 date: output.date,
                 amount: output.inventoryLines.asEnumerable().sum(line => line.unitPrice * line.quantity)
@@ -357,69 +398,34 @@ class JournalService {
         }
     }
 
-    generateForPurchase(invoicePurchaseId) {
-        let purchase = new InvoiceRepository(this.branchId).findById(invoicePurchaseId),
-            journal = {
-                description: 'بابت فاکتور خرید شماره {0}'.format(purchase.number)
-            },
+    generateForPurchase(invoiceId) {
+        const settings = new SettingsRepository(this.branchId).get(),
+            invoice = new InvoiceRepository(this.branchId).findById(invoiceId);
 
-            invoiceLines = purchase.invoiceLines,
-            sumAmount = invoiceLines.asEnumerable().sum(line => line.unitPrice * line.quantity),
-            sumDiscount = invoiceLines.asEnumerable().sum(line => line.discount),
-            sumVat = invoiceLines.asEnumerable().sum(line => line.vat),
+        if (!invoice)
+            throw new ValidationException(['فاکتور وجود ندارد']);
 
-            payableAccount = await(this.subsidiaryLedgerAccountService.payableAccount()),
-            purchaseAccount = await(this.subsidiaryLedgerAccountService.purchaseAccount()),
+        if (!String.isNullOrEmpty(invoice.journalId))
+            throw new ValidationException(['برای فاکتور {0} قبلا سند حسابداری صادر شده'.format(invoice.number)]);
 
-            journalLines = [
-                {
-                    generalLedgerAccountId: payableAccount.generalLedgerAccountId,
-                    subsidiaryLedgerAccountId: payableAccount.id,
-                    detailAccountId: purchase.detailAccountId,
-                    debtor: 0,
-                    creditor: sumAmount - sumDiscount + sumVat,
-                    article: journal.description,
-                    row: 3
-                }, {
-                    generalLedgerAccountId: purchaseAccount.generalLedgerAccountId,
-                    subsidiaryLedgerAccountId: purchaseAccount.id,
-                    debtor: sumAmount,
-                    creditor: 0,
-                    article: journal.description,
-                    row: 1
-                }];
+        const charge = (settings.saleCharges || []).asEnumerable()
+            .select(e => ({
+                key: e.key,
+                value: (invoice.charges.asEnumerable().firstOrDefault(p => p.key === e.key) || {value: 0}).value
+            }))
+            .toObject(item => `charge_${item.key}`, item => item.value);
 
-        if (sumDiscount > 0) {
-            let discountAccount = await(this.subsidiaryLedgerAccountService.purchaseDiscountAccount());
+        let model = Object.assign({
+                number: invoice.number,
+                date: invoice.date,
+                title: invoice.title,
+                amount: invoice.invoiceLines.asEnumerable().sum(line => line.unitPrice * line.quantity),
+                discount: invoice.invoiceLines.asEnumerable().sum(line => line.discount),
+                vat: invoice.invoiceLines.asEnumerable().sum(line => line.vat),
+                vendor: invoice.detailAccountId
+            }, charge),
 
-            journalLines.push({
-                generalLedgerAccountId: discountAccount.generalLedgerAccountId,
-                subsidiaryLedgerAccountId: discountAccount.id,
-                debtor: 0,
-                creditor: sumDiscount,
-                article: journal.description,
-                row: 4
-            });
-        }
-
-
-        if (sumVat > 0) {
-            let vatAccount = await(this.subsidiaryLedgerAccountService.purchaseVatAccount());
-
-            journalLines.push({
-                generalLedgerAccountId: vatAccount.generalLedgerAccountId,
-                subsidiaryLedgerAccountId: vatAccount.id,
-                debtor: sumVat,
-                creditor: 0,
-                article: journal.description,
-                row: 2
-            });
-        }
-
-        journalLines = journalLines.asEnumerable().orderBy(e => e.row).toArray();
-        journalLines.forEach((e, i) => e.row = i + 1);
-
-        journal.journalLines = journalLines;
+            journal = this.journalGenerationTemplateService.generate(model, 'purchase');
 
         return this.create(journal);
     }

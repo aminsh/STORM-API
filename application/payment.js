@@ -10,23 +10,27 @@ class PaymentService {
     }
 
     create(paymentDTO, receiveOrPay) {
-        let payments = paymentDTO.asEnumerable()
-            .select(item => ({
-                number: item.number,
-                date: item.date,
-                amount: item.amount,
-                paymentType: item.paymentType,
-                bankName: item.bankName,
-                bankBranch: item.bankBranch,
-                receiveOrPay,
-                chequeStatus: item.paymentType === 'cheque' ? 'normal' : null
-            }))
-            .toArray();
 
-        this.paymentRepository.create(payments);
+        let payment = {
+            number: paymentDTO.number,
+            date: paymentDTO.date,
+            amount: paymentDTO.amount,
+            paymentType: paymentDTO.paymentType,
+            bankName: paymentDTO.bankName,
+            bankBranch: paymentDTO.bankBranch,
+            receiveOrPay,
+            chequeStatus: paymentDTO.paymentType === 'cheque' ? 'normal' : null
+        };
 
-        return payments.asEnumerable()
-            .select(item => item.id)
+        this.paymentRepository.create(payment);
+
+        return payment.id;
+    }
+
+    createMany(paymentsDTO, receiveOrPay) {
+
+        return paymentsDTO.asEnumerable()
+            .select(p => this.create(p, receiveOrPay))
             .toArray();
     }
 

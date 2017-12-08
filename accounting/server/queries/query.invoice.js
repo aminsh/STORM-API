@@ -6,6 +6,7 @@ const BaseQuery = require('./query.base'),
     view = require('../viewModel.assemblers/view.invoice'),
     lineView = require('../viewModel.assemblers/view.invoiceLine'),
     FiscalPeriodQuery = require('./query.fiscalPeriod'),
+    SettingsQuery = require('./query.settings'),
     kendoQueryResolve = require('../services/kendoQueryResolve'),
     enums = require('../../../shared/enums');
 
@@ -19,67 +20,48 @@ class InvoiceQuery extends BaseQuery {
     getById(id) {
         let knex = this.knex,
             branchId = this.branchId,
-            invoice = await(knex.select().table(function () {
-                this.select(
-                    'id',
-                    'number',
-                    'date',
-                    'detailAccountId',
-                    'detailAccountDisplay',
-                    'invoiceStatus',
-                    'invoiceType',
-                    'description',
-                    'title',
-                    'journalId',
-                    knex.raw('"sum"("totalPrice") as "sumTotalPrice"'),
-                    knex.raw('(select coalesce("sum"("amount"),0) from "payments" where "invoiceId" = "base"."id" limit 1) as "sumPaidAmount"'),
-                    knex.raw('"sum"("totalPrice") - (select coalesce("sum"("amount"),0) from "payments" where "invoiceId" = "base"."id" limit 1) as "sumRemainder"'))
-                    .from(function () {
-                        this.select('invoices.*',
-                            knex.raw('"detailAccounts"."title" as "detailAccountDisplay"'),
-                            knex.raw('(("invoiceLines"."unitPrice" * "invoiceLines"."quantity") - "invoiceLines"."discount" + "invoiceLines"."vat") as "totalPrice"'))
-                            .from('invoices')
-                            .leftJoin('invoiceLines', 'invoices.id', 'invoiceLines.invoiceId')
-                            .leftJoin('detailAccounts', 'invoices.detailAccountId', 'detailAccounts.id')
-                            .where('invoices.branchId', branchId)
-                            .andWhere('invoiceId', id)
-                            .as('base');
-                    }).as("group")
-                    .groupBy(
-                        'id',
-                        'number',
-                        'date',
-                        'detailAccountId',
-                        'detailAccountDisplay',
-                        'invoiceStatus',
-                        'invoiceType',
-                        'description',
-                        'title',
-                        'journalId')
-                    .orderBy('number', 'desc')
+            settings = new SettingsQuery(this.branchId).get(),
 
-            }).first()),
-            invoiceLines = await(knex.select(
-                'invoiceLines.*',
-                knex.raw('scales.title as scale'),
-                knex.raw('stocks.title as "stockDisplay"')
-            )
+            invoice = await(knex
+                .select(
+                    'invoices.*',
+                    knex.raw('"detailAccounts"."title" as "detailAccountDisplay"'),
+                    knex.raw('(select coalesce("sum"("amount"),0) from "payments" where "invoiceId" = invoices.id limit 1) as "sumPaidAmount"')
+                )
+                .from('invoices')
+                .leftJoin('detailAccounts', 'invoices.detailAccountId', 'detailAccounts.id')
+                .where('invoices.id', id)
+                .where('invoices.branchId', branchId)
+                .first()
+            ),
+
+            invoiceLines = await(knex
+                .select('invoiceLines.*', knex.raw('scales.title as scale'), knex.raw('stocks.title as "stockDisplay"'))
                 .from('invoiceLines')
                 .leftJoin('products', 'invoiceLines.productId', 'products.id')
                 .leftJoin('scales', 'products.scaleId', 'scales.id')
                 .leftJoin('stocks', 'invoiceLines.stockId', 'stocks.id')
                 .where('invoiceLines.branchId', branchId)
-                .andWhere('invoiceId', id));
+                .where('invoiceId', id)
+            ),
+            sumCharges = (invoice.charges || []).asEnumerable()
+                .sum(c => c.value);
+
+        invoice.sumTotalPrice = invoiceLines.asEnumerable()
+            .sum(line => line.quantity * line.unitPrice - line.discount + line.vat ) + sumCharges;
+
+        invoice.sumRemainder = invoice.sumTotalPrice - (invoice.sumPaidAmount || 0);
 
         invoice.invoiceLines = invoiceLines.asEnumerable().select(lineView).toArray();
         invoice.branchId = branchId;
 
-        return view(invoice);
+        return view(invoice, settings);
     }
 
     getAll(parameters, invoiceType) {
         let knex = this.knex,
             branchId = this.branchId,
+            sumChargesQuery = '(select coalesce(sum(value),0) from invoices as i left join json_to_recordset(i.charges) as x(key text, value int) on true where i.id = "base".id)',
 
             query = knex.select().table(function () {
                 this.select(
@@ -91,9 +73,10 @@ class InvoiceQuery extends BaseQuery {
                     'invoiceStatus',
                     'description',
                     'title',
-                    knex.raw('"sum"("totalPrice") as "sumTotalPrice"'),
+                    'journalId',
+                    knex.raw(`"sum"("totalPrice") + ${sumChargesQuery} as "sumTotalPrice" `),
                     knex.raw('(select coalesce("sum"("amount"),0) from "payments" where "invoiceId" = "base"."id" limit 1) as "sumPaidAmount"'),
-                    knex.raw('"sum"("totalPrice")-(select coalesce("sum"("amount"),0) from "payments" where "invoiceId" = "base"."id" limit 1) as "sumRemainder"'))
+                    knex.raw(`("sum"("totalPrice") + ${sumChargesQuery})-(select coalesce("sum"("amount"),0) from "payments" where "invoiceId" = "base"."id" limit 1) as "sumRemainder"`))
                     .from(function () {
                         this.select('invoices.*',
                             knex.raw('"detailAccounts"."title" as "detailAccountDisplay"'),
@@ -113,7 +96,8 @@ class InvoiceQuery extends BaseQuery {
                         'detailAccountDisplay',
                         'invoiceStatus',
                         'description',
-                        'title')
+                        'title',
+                        'journalId')
                     .orderBy('number', 'desc')
 
             });
@@ -231,7 +215,7 @@ class InvoiceQuery extends BaseQuery {
             .first();
     }
 
-    check(invoiceId){
+    check(invoiceId) {
         return !!(await(this.knex('invoices').where("id", invoiceId).first()))
     }
 
