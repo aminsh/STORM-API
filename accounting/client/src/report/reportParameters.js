@@ -15,12 +15,16 @@ export class ReportParametersController {
         this.urls = {
             getAllGeneralLedgerAccount: devConstants.urls.generalLedgerAccount.all(),
             getAllSubsidiaryLedgerAccount: devConstants.urls.subsidiaryLedgerAccount.all(),
-            getAllDetailAccount: devConstants.urls.detailAccount.all()
+            getAllDetailAccount: devConstants.urls.detailAccount.all(),
+            getAllProducts: devConstants.urls.products.getAll(),
+            getAllStocks: devConstants.urls.stock.getAll()
         };
         this.paramsConfig = data;
         this.parameters = {
             generalLedgerAccounts: [],
             subsidiaryLedgerAccounts: [],
+            products: [],
+            stocks:[],
             detailAccounts: [],
             dimension1s: [],
             dimension2s: [],

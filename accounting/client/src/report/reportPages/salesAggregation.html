@@ -1,21 +1,59 @@
+<dev-tag-guide>
+    <i class="fa fa-info-circle fa-2x" aria-hidden="true"></i>
+   <ul>
+       <li>
+           گزارش صورت معاملات زیر، براساس ثبت تایید شده ی تمامی فاکتورها ی خرید و فروش می باشد.
+       </li>
+       <li>
+           جهت اعمال فیلترها از دکمه ی
+           <b>
+               فیلتر
+           </b>
+           استفاده نمایید.
+       </li>
+       <li>
+           کادرهای جمع کل
+           <b>فروش</b>
+           و
+           <b>خرید</b>
+           در زیر لیست، براساس عملکرد خرید و فروش در بازه ی مورد نظر شما در فیلتر می باشد.
+       </li>
+   </ul>
+</dev-tag-guide>
 <dev-tag-content dev-attr-title={{'SeasonalReport'|translate}}>
     <dev-tag-content-body>
         <div class="row">
-            <div class="col-md-5">
-                <div class="btn-group" role="group">
+            <div class="col-md-1">
+                <div class="btn-group-vertical" role="group">
                     <button type="button"
                             ng-click="model.selectInvoiceType(item)"
                             ng-repeat="item in model.invoiceTypes"
                             ng-class="{
                             'btn-primary': model.filter.invoiceType === item.key,
-                            'btn-white': model.filter.invoiceType !== item.key
-                        }"
-                            class="btn">{{item.display}}
+                            'btn-white': model.filter.invoiceType !== item.key}"
+                            class="btn"
+                            style="margin-left: 5px">{{item.display}}
                     </button>
                 </div>
             </div>
-            <div class="col-md-7">
-            <span ng-repeat="item in model.filterType">
+            <div class="col-md-1" style="margin-right: 5px"></div>
+            <div class="col-md-3">
+                <select ng-model="model.filter.haveNationalCode"
+                        ng-options="p.key as p.display for p in model.detailAccountStatuses"
+                        class="form-control">
+                </select>
+                <select ng-model="model.filter.haveVat"
+                        ng-options="p.key as p.display for p in model.vatStatuses"
+                        class="form-control"
+                        style="margin-top: 3px">
+                </select>
+            </div>
+            <div class="col-md-1" style="width: 3%"></div>
+            <div class="col-md-4">
+                <div class="row" style="margin-bottom: 3px; margin-top: 5px">
+                    <div class="col-md-1"></div>
+                    <div class="col-md-10">
+                    <span ng-repeat="item in model.filterType">
                        <dev-tag-radio
                                style="margin-right: 15px; margin-left: 15px"
                                ng-class="{'checked': item.key == model.selectedFilterType}"
@@ -23,78 +61,66 @@
                                ng-model="model.selectedFilterType"></dev-tag-radio>
                                {{item.display}}
                     </span>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-md-2">
-                <select ng-model="model.filter.haveNationalCode"
-                        ng-options="p.key as p.display for p in model.detailAccountStatuses"
-                        class="form-control">
-                </select>
-            </div>
-            <div class="col-md-2">
-                <select ng-model="model.filter.haveVat"
-                        ng-options="p.key as p.display for p in model.vatStatuses"
-                        class="form-control">
-                </select>
-
-            </div>
-            <div class="col-md-5">
-                <select ng-model="model.filter.month"
-                        ng-if="model.selectedFilterType === 'month'"
-                        ng-options="p.key as p.display for p in model.months"
-                        class="form-control">
-                </select>
-
-                <select ng-model="model.filter.season"
-                        ng-if="model.selectedFilterType === 'season'"
-                        ng-options="p.key as p.display for p in model.seasons"
-                        class="form-control">
-                </select>
-
-                <div class="row"
-                     ng-if="model.selectedFilterType === 'date'">
-                    <div class="col-md-2" style="text-align: left;margin-top: 7px">
-                        <label class="label-control">{{'From date' | translate}}</label>
                     </div>
-                    <div class="col-md-4">
-                        <dev-tag-datepicker
-                                ng-model="model.filter.minDate"
-                                name="temporaryDate"></dev-tag-datepicker>
-                    </div>
-                    <div class="col-md-2" style="text-align: left;margin-top: 7px">
-                        <label class="label-control">{{'To date' | translate}}</label>
-                    </div>
-                    <div class="col-md-4">
-                        <dev-tag-datepicker
-                                ng-model="model.filter.maxDate"
-                                name="temporaryDate"></dev-tag-datepicker>
+                    <div class="col-md-1"></div>
+                </div>
+                <div class="row" style="margin-top: 10px">
+                    <select ng-model="model.filter.month"
+                            ng-if="model.selectedFilterType === 'month'"
+                            ng-options="p.key as p.display for p in model.months"
+                            class="form-control">
+                    </select>
+
+                    <select ng-model="model.filter.season"
+                            ng-if="model.selectedFilterType === 'season'"
+                            ng-options="p.key as p.display for p in model.seasons"
+                            class="form-control">
+                    </select>
+
+                    <div class="row"
+                         ng-if="model.selectedFilterType === 'date'">
+                        <div class="col-md-2" style="text-align: left;margin-top: 7px">
+                            <label class="label-control">{{'From date' | translate}}</label>
+                        </div>
+                        <div class="col-md-4">
+                            <dev-tag-datepicker
+                                    ng-model="model.filter.minDate"
+                                    name="temporaryDate"></dev-tag-datepicker>
+                        </div>
+                        <div class="col-md-2" style="text-align: left;margin-top: 7px">
+                            <label class="label-control">{{'To date' | translate}}</label>
+                        </div>
+                        <div class="col-md-4">
+                            <dev-tag-datepicker
+                                    ng-model="model.filter.maxDate"
+                                    name="temporaryDate"></dev-tag-datepicker>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="col-md-1">
+            <div class="col-md-2"></div>
+        </div>
+        <div class="row" style="margin-top: 5px">
+            <div class="col-md-9"></div>
+            <div class="col-md-3">
                 <dev-tag-button
                         ng-click="model.onChangedFilter()"
                         icon="fa fa-refresh fa-lg"
                         style-type="primary"
-                        title=&nbsp&nbsp&nbsp{{'Filter'|translate}}&nbsp&nbsp&nbsp></dev-tag-button>
-            </div>
-            <div class="col-md-2">
+                        title=&nbsp&nbsp&nbsp{{'Filter'|translate}}></dev-tag-button>
                 <dev-tag-button
                         ng-click="model.runExportToExcel()"
                         icon="fa fa-file-excel-o fa-lg"
                         style-type="outline btn btn-primary"
                         title=&nbsp&nbsp&nbsp{{'ExportExcel'|translate}}&nbsp&nbsp&nbsp></dev-tag-button>
             </div>
-
         </div>
 
-        <div class="row">
-            <div class="col-md-3"></div>
-            <div class="col-md-6"></div>
-            <div class="col-md-3"></div>
-        </div>
+        <!--        <div class="row">
+                    <div class="col-md-3"></div>
+                    <div class="col-md-6"></div>
+                    <div class="col-md-3"></div>
+                </div>-->
 
     </dev-tag-content-body>
 

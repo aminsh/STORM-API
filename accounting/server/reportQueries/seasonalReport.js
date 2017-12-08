@@ -26,38 +26,40 @@ class SeasonalReport extends BaseQuery {
             options = this.options,
 
             query = knex.from(function () {
-                this.select(knex.raw(`invoices.date,
-            invoices."invoiceType",
-            invoices.id as "invoiceId",
-            products.title as "productTitle",
-            products.id as "productId",
-            products.code as "iranCode",
-            CASE WHEN "detailAccounts"."personType" = 'legal' THEN '${translate('legal')}'
-                ELSE '${translate('real')}' END AS "personTypeText",
-            CASE WHEN "invoiceLines".vat > 0 then 1 else 0 END as "haveVat",
-            CASE WHEN "detailAccounts"."nationalCode" is NULL then 0 else 1 END as "haveNationalCode",
-            "detailAccounts"."postalCode",
-            "detailAccounts".phone,
-            "detailAccounts".address,
-            "detailAccounts".title as "personName",
-            "detailAccounts"."economicCode",
-            "detailAccounts"."nationalCode",
-            "detailAccounts".city,
-            "detailAccounts".province,
-            COALESCE (("invoiceLines"."unitPrice" * "invoiceLines".quantity),0) AS "price",
-            COALESCE ("invoiceLines".discount,0) as discount,
-            ("invoiceLines".vat / 3) as vat,
-            ("invoiceLines".vat * 2/ 3) as tax,
-            ((("invoiceLines"."unitPrice" * "invoiceLines".quantity)-"invoiceLines".discount)+"invoiceLines".vat) as "totalPrice",
-            "returnInvoice"."ofInvoiceId",
-            COALESCE("returnInvoice"."returnPrice",0) as "returnPrice",
-            COALESCE("returnInvoice"."totalReturnPrice",0) as "totalReturnPrice",
-            CAST(substring("invoices"."date" from 7 for 1) as INTEGER) as "month",
-            CASE WHEN CAST(substring("invoices"."date" from 7 for 1) as INTEGER) BETWEEN 1 AND 3 THEN 1
-	             WHEN CAST(substring("invoices"."date" from 7 for 1) as INTEGER) BETWEEN 4 AND 6 THEN 2 
-	             WHEN CAST(substring("invoices"."date" from 7 for 1) as INTEGER) BETWEEN 7 AND 9 THEN 3 
-	             WHEN CAST(substring("invoices"."date" from 7 for 1) as INTEGER) BETWEEN 10 AND 12 THEN 4 END as season
-            `))
+                this.select(knex.raw(`
+                ROW_NUMBER () OVER (ORDER BY invoices.date desc) as "rowNumber",
+                invoices.date,
+                invoices."invoiceType",
+                invoices.id as "invoiceId",
+                products.title as "productTitle",
+                products.id as "productId",
+                products.code as "iranCode",
+                CASE WHEN "detailAccounts"."personType" = 'legal' THEN '${translate('legal')}'
+                    ELSE '${translate('real')}' END AS "personTypeText",
+                CASE WHEN "invoiceLines".vat > 0 then 1 else 0 END as "haveVat",
+                CASE WHEN "detailAccounts"."nationalCode" is NULL then 0 else 1 END as "haveNationalCode",
+                "detailAccounts"."postalCode",
+                "detailAccounts".phone,
+                "detailAccounts".address,
+                "detailAccounts".title as "personName",
+                "detailAccounts"."economicCode",
+                "detailAccounts"."nationalCode",
+                "detailAccounts".city,
+                "detailAccounts".province,
+                COALESCE (("invoiceLines"."unitPrice" * "invoiceLines".quantity),0) AS "price",
+                COALESCE ("invoiceLines".discount,0) as discount,
+                ("invoiceLines".vat / 3) as vat,
+                ("invoiceLines".vat * 2/ 3) as tax,
+                ((("invoiceLines"."unitPrice" * "invoiceLines".quantity)-"invoiceLines".discount)+"invoiceLines".vat) as "totalPrice",
+                "returnInvoice"."ofInvoiceId",
+                COALESCE("returnInvoice"."returnPrice",0) as "returnPrice",
+                COALESCE("returnInvoice"."totalReturnPrice",0) as "totalReturnPrice",
+                CAST(substring("invoices"."date" from 7 for 1) as INTEGER) as "month",
+                CASE WHEN CAST(substring("invoices"."date" from 7 for 1) as INTEGER) BETWEEN 1 AND 3 THEN 1
+                     WHEN CAST(substring("invoices"."date" from 7 for 1) as INTEGER) BETWEEN 4 AND 6 THEN 2 
+                     WHEN CAST(substring("invoices"."date" from 7 for 1) as INTEGER) BETWEEN 7 AND 9 THEN 3 
+                     WHEN CAST(substring("invoices"."date" from 7 for 1) as INTEGER) BETWEEN 10 AND 12 THEN 4 END as season
+                `))
                     .from('invoiceLines')
                     .innerJoin('invoices', 'invoiceLines.invoiceId', 'invoices.id')
                     .where('invoices.invoiceType', options.filter.invoiceType)
