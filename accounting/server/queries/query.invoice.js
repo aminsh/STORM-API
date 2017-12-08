@@ -6,6 +6,7 @@ const BaseQuery = require('./query.base'),
     view = require('../viewModel.assemblers/view.invoice'),
     lineView = require('../viewModel.assemblers/view.invoiceLine'),
     FiscalPeriodQuery = require('./query.fiscalPeriod'),
+    SettingsQuery = require('./query.settings'),
     kendoQueryResolve = require('../services/kendoQueryResolve'),
     enums = require('../../../shared/enums');
 
@@ -19,6 +20,7 @@ class InvoiceQuery extends BaseQuery {
     getById(id) {
         let knex = this.knex,
             branchId = this.branchId,
+            settings = new SettingsQuery(this.branchId).get(),
 
             invoice = await(knex
                 .select(
@@ -53,12 +55,13 @@ class InvoiceQuery extends BaseQuery {
         invoice.invoiceLines = invoiceLines.asEnumerable().select(lineView).toArray();
         invoice.branchId = branchId;
 
-        return view(invoice);
+        return view(invoice, settings);
     }
 
     getAll(parameters, invoiceType) {
         let knex = this.knex,
             branchId = this.branchId,
+            sumChargesQuery = '(select coalesce(sum(value),0) from invoices as i left join json_to_recordset(i.charges) as x(key text, value int) on true where i.id = "base".id)',
 
             query = knex.select().table(function () {
                 this.select(
@@ -71,9 +74,9 @@ class InvoiceQuery extends BaseQuery {
                     'description',
                     'title',
                     'journalId',
-                    knex.raw('"sum"("totalPrice") as "sumTotalPrice"'),
+                    knex.raw(`"sum"("totalPrice") + ${sumChargesQuery} as "sumTotalPrice" `),
                     knex.raw('(select coalesce("sum"("amount"),0) from "payments" where "invoiceId" = "base"."id" limit 1) as "sumPaidAmount"'),
-                    knex.raw('"sum"("totalPrice")-(select coalesce("sum"("amount"),0) from "payments" where "invoiceId" = "base"."id" limit 1) as "sumRemainder"'))
+                    knex.raw(`("sum"("totalPrice") + ${sumChargesQuery})-(select coalesce("sum"("amount"),0) from "payments" where "invoiceId" = "base"."id" limit 1) as "sumRemainder"`))
                     .from(function () {
                         this.select('invoices.*',
                             knex.raw('"detailAccounts"."title" as "detailAccountDisplay"'),

@@ -4,7 +4,7 @@ const enums = instanceOf('Enums'),
     Crypto = instanceOf('Crypto'),
     config = instanceOf('config');
 
-module.exports = function (entity) {
+module.exports = function (entity, settings) {
 
     const printUrl = entity.invoiceType === 'sale' && entity.invoiceStatus !== 'draft'
         ? `${config.url.origin}/invoice/token/${Crypto.sign({
@@ -33,9 +33,26 @@ module.exports = function (entity) {
         sumTotalPrice: entity.sumTotalPrice,
         sumPaidAmount: entity.sumPaidAmount,
         sumRemainder: entity.sumRemainder,
-        costs: entity.costs,
-        charges: entity.charges
+        costs: mapCostsAndCharges(entity.costs, settings.saleCosts),
+        charges: mapCostsAndCharges(entity.charges, settings.saleCharges)
     }, entity.custom);
+
+
 };
+
+function mapCostsAndCharges(items, itemsInSettings) {
+
+    if (!(items && items.length > 0))
+        return undefined;
+
+    return (items || []).asEnumerable()
+        .select(e => ({
+            key: e.key,
+            value: e.value,
+            display: (itemsInSettings.asEnumerable().singleOrDefault(c => c.key === e.key) || {}).display
+        }))
+        .toArray();
+}
+
 
 
