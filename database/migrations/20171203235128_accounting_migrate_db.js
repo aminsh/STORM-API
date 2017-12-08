@@ -3,7 +3,7 @@
 exports.up = function (knex, Promise) {
     return knex.schema
         .table('invoices', table => {
-            table.join('custom');
+            table.json('custom');
         });
 };
 
