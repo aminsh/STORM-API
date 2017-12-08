@@ -22,12 +22,9 @@ class SalesAggregationController {
             name: 'seasonal',
             columns: [
                 {
-                    name: 'row',
+                    name: 'rowNumber',
                     title: translate('Row'),
-                    width: '2%',
-                    fontSize: '11px',
                     type: 'number',
-                    template: '<span>{{item.rowIndex + 1}}</span>',
                     css: 'text-center',
                     header: {
                         css: 'text-center'
@@ -36,9 +33,7 @@ class SalesAggregationController {
                 {
                     name: 'date',
                     title: translate('Date'),
-                    width: '5%',
                     type: 'date',
-                    fontSize: '11px',
                     css: 'text-center',
                     header: {
                         css: 'text-center'
@@ -47,9 +42,9 @@ class SalesAggregationController {
                 {
                     name: 'productTitle',
                     title: translate('Product title'),
-                    width: '5%',
+                    template: '<span title="{{item.productTitle}}">{{item.productTitle}}</span>',
                     type: 'string',
-                    css: 'text-center',
+                    css: 'text-center giveMeEllipsis',
                     header: {
                         css: 'text-center'
                     }
@@ -57,7 +52,6 @@ class SalesAggregationController {
                 {
                     name: 'iranCode',
                     title: translate('IranCode'),
-                    width: '5%',
                     type: 'number',
                     css: 'text-center',
                     header: {
@@ -67,7 +61,6 @@ class SalesAggregationController {
                 {
                     name: 'price',
                     title: translate('Price'),
-                    width: '5%',
                     type: 'number',
                     css: 'text-center',
                     header: {
@@ -77,7 +70,6 @@ class SalesAggregationController {
                 {
                     name: 'discount',
                     title: translate('Discount'),
-                    width: '5%',
                     type: 'number',
                     css: 'text-center',
                     header: {
@@ -87,7 +79,6 @@ class SalesAggregationController {
                 {
                     name: 'returnPrice',
                     title: translate('Return price'),
-                    width: '5%',
                     type: 'number',
                     css: 'text-center',
                     header: {
@@ -97,7 +88,6 @@ class SalesAggregationController {
                 {
                     name: 'tax',
                     title: translate('Tax'),
-                    width: '5%',
                     type: 'number',
                     template: '<span>{{item.tax|number:1}}</span>',
                     css: 'text-center',
@@ -108,7 +98,6 @@ class SalesAggregationController {
                 {
                     name: 'vat',
                     title: translate('Vat'),
-                    width: '5%',
                     type: 'number',
                     template: '<span>{{item.vat|number:1}}</span>',
                     css: 'text-center',
@@ -119,7 +108,6 @@ class SalesAggregationController {
                 {
                     name: 'personTypeText',
                     title: translate('Person type text'),
-                    width: '5%',
                     type: 'number',
                     css: 'text-center',
                     header: {
@@ -129,7 +117,6 @@ class SalesAggregationController {
                 {
                     name: 'postalCode',
                     title: translate('Postal code'),
-                    //width: '10%',
                     type: 'string',
                     css: 'text-center',
                     header: {
@@ -139,7 +126,6 @@ class SalesAggregationController {
                 {
                     name: 'phone',
                     title: translate('Phone'),
-                    //width: '10%',
                     type: 'string',
                     css: 'text-center',
                     header: {
@@ -149,9 +135,9 @@ class SalesAggregationController {
                 {
                     name: 'address',
                     title: translate('Address'),
-                    width: '80px',
                     type: 'string',
-                    css: 'text-center truncate-80',
+                    template: '<span title="{{item.address}}">{{item.address}}</span>',
+                    css: 'text-center giveMeEllipsis',
                     header: {
                         css: 'text-center'
                     }
@@ -159,9 +145,9 @@ class SalesAggregationController {
                 {
                     name: 'personName',
                     title: translate('Person name'),
-                    //width: '10%',
                     type: 'string',
-                    css: 'text-center',
+                    template: '<span title="{{item.personName}}">{{item.personName}}</span>',
+                    css: 'text-center giveMeEllipsis',
                     header: {
                         css: 'text-center'
                     }
@@ -169,7 +155,6 @@ class SalesAggregationController {
                 {
                     name: 'economicCode',
                     title: translate('Economic code'),
-                    //width: '10%',
                     type: 'string',
                     css: 'text-center',
                     header: {
@@ -179,7 +164,6 @@ class SalesAggregationController {
                 {
                     name: 'nationalCode',
                     title: translate('National code'),
-                    //width: '10%',
                     type: 'string',
                     css: 'text-center',
                     header: {
@@ -189,9 +173,9 @@ class SalesAggregationController {
                 {
                     name: 'province',
                     title: translate('Province'),
-                    //width: '10%',
                     type: 'string',
-                    css: 'text-center',
+                    template: '<span title="{{item.province}}">{{item.province}}</span>',
+                    css: 'text-center giveMeEllipsis',
                     header: {
                         css: 'text-center'
                     }
@@ -199,9 +183,9 @@ class SalesAggregationController {
                 {
                     name: 'city',
                     title: translate('City'),
-                    //width: '10%',
                     type: 'string',
-                    css: 'text-center',
+                    template: '<span title="{{item.city}}">{{item.city}}</span>',
+                    css: 'text-center giveMeEllipsis',
                     header: {
                         css: 'text-center'
                     }
@@ -209,7 +193,6 @@ class SalesAggregationController {
                 {
                     name: 'totalPrices',
                     title: translate('Total price'),
-                    //width: '10%',
                     template: '<span>{{item.totalPrice-item.totalReturnPrice|number}}</span>',
                     sortable: false,
                     filterable: false,
@@ -229,11 +212,11 @@ class SalesAggregationController {
         };
 
         this.gridOptions.columns.forEach(col => {
-
             col.style = {
                 fontSize: '11px'
             };
-
+            //col.css = 'text-center giveMeEllipsis';
+            col.header = {css: 'text-center noWarp'};
             col.filterable = false;
             col.sortable = false;
         });
@@ -289,11 +272,6 @@ class SalesAggregationController {
         this.filter.invoiceType = item.key;
         this.onChangedFilter();
     }
-
-    /*getTotal(filter) {
-        this.reportApi.getTotalSeasonal(filter)
-            .then(resultTotal => this.total = resultTotal);
-    }*/
 
     onChangedFilter() {
 

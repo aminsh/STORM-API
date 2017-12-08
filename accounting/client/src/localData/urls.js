@@ -132,6 +132,8 @@ let inventory = {
     getAllInventoryProducts: () => `${rootUrl()}/inventories/products`
 };
 
+
+
 let inventoryProducts = {
     //getInventoryProducts: () => `${rootUrl()}/`
 }

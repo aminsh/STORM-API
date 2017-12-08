@@ -64,7 +64,7 @@ class StocksController {
 
                 this.navigate(
                     'report.print',
-                    {key: 802},
+                    {key: 902},
                     params);
             });
     }
