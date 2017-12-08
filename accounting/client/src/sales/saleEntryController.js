@@ -47,10 +47,6 @@ class SaleEntryController extends InvoiceEntryControllerBase {
         this.inventoryApi = inventoryApi;
     }
 
-    get selectProductTemplateName(){
-        return 'partials/sales/selectProductFromStock.template.html';
-    }
-
     assignDefaultDescription() {
 
         if (!this.settings)
@@ -69,7 +65,12 @@ class SaleEntryController extends InvoiceEntryControllerBase {
 
         this.inventoryApi.getProductInventoryByStock(item.productId)
             .then(result => {
-                item.inventories = result;
+                item.stocks = result.asEnumerable()
+                    .select(item => ({
+                        display: `${item.stockDisplay} - ${this.translate('Inventory quantity')} : ${item.sumQuantity}`,
+                        stockId: item.stockId
+                    }))
+                    .toArray();
             });
     }
 
@@ -90,6 +91,9 @@ class SaleEntryController extends InvoiceEntryControllerBase {
 
         item.canShowStockSection = this.settings.productOutputCreationMethod === 'stockOnRequest'
             && product.productType === 'good';
+
+        if(item.canShowStockSection)
+            this.onShowSelectStock(item);
 
         super.onProductChanged(item, product);
     }

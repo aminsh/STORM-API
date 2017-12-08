@@ -46,15 +46,18 @@ class PurchaseEntryController extends InvoiceEntryController {
         this.urls.getAllInputs = devConstants.urls.inventory.getAllInputsWithoutInvoice()
     }
 
-    get selectProductTemplateName() {
-        return 'partials/inventory/purchase.selectProduct.template.html';
-    }
-
-    onShowSelectStock() {
+    onShowSelectStock(item) {
 
         if (!this.stocks)
             this.stockApi.getAll()
-                .then(result => this.stocks = result.data);
+                .then(result => this.stocks = item.stocks = result.data.asEnumerable()
+                    .select(item => ({
+                        stockId: item.id,
+                        display: item.title
+                    })).toArray()
+                );
+        else
+            item.stocks = this.stocks;
     }
 
     onStockChanged(item, stock) {
@@ -72,6 +75,9 @@ class PurchaseEntryController extends InvoiceEntryController {
 
         item.canShowStockSection = this.settings.productOutputCreationMethod === 'stockOnRequest'
             && product.productType === 'good';
+
+        if (item.canShowStockSection)
+            this.onShowSelectStock(item);
 
         super.onProductChanged(item, product);
     }
