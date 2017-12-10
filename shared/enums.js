@@ -67,6 +67,17 @@ enums.AssignmentStatus = function () {
     ]);
 };
 
+enums.ErrorCode = function () {
+    return new Enum([
+        {key: 'SaveDataError', display: '-1'},
+        {key: 'NoRecordFound', display: '-2'},
+        {key: 'RecordIsUsed', display: '-3'},
+        {key: 'DeleteError', display: '-4'},
+        {key: 'InputDataNotFound', display: '-5'},
+        {key: 'EditError', display: '-6'},
+        {key: 'DataNotFound', display: '-7'},
+    ]);
+};
 
 enums.AccountGroupingType = function () {
     return new Enum([
@@ -108,6 +119,12 @@ enums.paymentType = function () {
     ]);
 };
 
+enums.OrderStatus = function () {
+    return new Enum([
+        {key: 'waitForPayment', display: 'منتظر برای پرداخت'},
+        {key: 'paid', display: 'پرداخت شده'}
+    ]);
+};
 
 enums.JournalType = function () {
     return new Enum([
