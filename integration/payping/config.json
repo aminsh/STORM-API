@@ -1,7 +1,7 @@
 {
-  "getServiceTokenUrl": "https://api.payping.ir/token",
-  "getUserKeyUrl": "https://api.payping.ir/v1/payment/GetUserKey?username={0}",
-  "getRequestTokenUrl": "https://api.payping.ir/v1/payment/RequestToken",
-  "redirectToPaypingUrl": "https://www.payping.ir/payment/PayApi/{0}",
-  "verifyPayment": "https://api.payping.ir/v1/payment/VerifyPayment"
+  "getServiceTokenUrl": "https://api.payping.net/token",
+  "getUserKeyUrl": "https://api.payping.net/v1/payment/GetUserKey?username={0}",
+  "getRequestTokenUrl": "https://api.payping.net/v1/payment/RequestToken",
+  "redirectToPaypingUrl": "https://www.payping.net/payment/PayApi/{0}",
+  "verifyPayment": "https://api.payping.net/v1/payment/VerifyPayment"
 }
