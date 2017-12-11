@@ -37,7 +37,7 @@
                 </a>
             </li>
 
-            <li ng-repeat="item in items">
+            <li ng-repeat="item in items" ng-if="canShowMenu(item)">
                 <a href="{{item.url}}">
                     <i class="{{item.icon}} fa-lg"></i>
                     <span class="nav-label">{{item.title}}</span>
@@ -54,7 +54,7 @@
             <li class="landing_link">
 
             </li>
-            <li class="special_link">
+            <li class="special_link" ng-if="canShowMenu({})">
                 <a href="{{window.location.origin + '/third-party'}}" target="_blank">
                     <i class="fa fa-puzzle-piece fa-lg"></i>
                     <span class="nav-label">افزونه های استورم</span>
