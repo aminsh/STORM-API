@@ -1,7 +1,7 @@
 import 'bootstrap';
 import 'metisMenu';
 
-export default function (menuItems, $timeout) {
+export default function (menuItems, $timeout, $rootScope) {
     return {
         restrict: 'E',
         templateUrl: 'partials/templates/shell.sidebar-template.html',
@@ -12,6 +12,16 @@ export default function (menuItems, $timeout) {
             let sideMenu = $(element).find('#side-menu');
 
             $timeout(() => sideMenu.metisMenu());
+
+            scope.canShowMenu = item => {
+                if (!$rootScope.user.role)
+                    return true;
+
+                if ($rootScope.user.role === 'admin')
+                    return true;
+
+                return item.role === $rootScope.user.role;
+            };
 
             if ($(document).width() <= 992) {
                 $('body').addClass('body-small')

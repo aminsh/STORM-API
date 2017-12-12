@@ -1,73 +1,74 @@
-<div class="row">
-    <div class="col-lg-6">
-        <div class="ibox float-e-margins">
-            <div class="ibox-title">
-                <h5>{{'Purchase'|translate}}</h5>
-            </div>
-            <div class="ibox-content">
-
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="font-bold text-navy"><h3>{{'Total'|translate}}</h3></div>
-                        <hr>
-                        <h3 class="no-margins">{{ purchaseInfo.total | number}}</h3>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="font-bold text-navy"><h4>{{'Sum Of Paid'|translate}}</h4></div>
-                        <hr>
-                        <h3 class="no-margins text-success">{{purchaseInfo.sumOfPaid | number}}</h3>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="font-bold text-navy"><h4>{{'Sum Of Remain'|translate}}</h4></div>
-                        <hr>
-                        <h3 class="no-margins text-danger">{{purchaseInfo.sumOfRemain | number}}</h3>
-                    </div>
+<div ng-if="user.role !== 'stock'">
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>{{'Purchase'|translate}}</h5>
                 </div>
+                <div class="ibox-content">
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="font-bold text-navy"><h3>{{'Total'|translate}}</h3></div>
+                            <hr>
+                            <h3 class="no-margins">{{ purchaseInfo.total | number}}</h3>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="font-bold text-navy"><h4>{{'Sum Of Paid'|translate}}</h4></div>
+                            <hr>
+                            <h3 class="no-margins text-success">{{purchaseInfo.sumOfPaid | number}}</h3>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="font-bold text-navy"><h4>{{'Sum Of Remain'|translate}}</h4></div>
+                            <hr>
+                            <h3 class="no-margins text-danger">{{purchaseInfo.sumOfRemain | number}}</h3>
+                        </div>
+                    </div>
 
 
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>{{'Sale'|translate}}</h5>
+                </div>
+                <div class="ibox-content">
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="font-bold text-navy"><h4>{{'Total'|translate}}</h4></div>
+                            <hr>
+                            <h3 class="no-margins">{{ saleInfo.total | number}}</h3>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="font-bold text-navy"><h4>{{'Sum Of Paid'|translate}}</h4></div>
+                            <hr>
+                            <h3 class="no-margins text-success">{{saleInfo.sumOfPaid | number}}</h3>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="font-bold text-navy"><h4>{{'Sum Of Remain'|translate}}</h4></div>
+                            <hr>
+                            <h3 class="no-margins text-danger">{{saleInfo.sumOfRemain | number}}</h3>
+                        </div>
+                    </div>
+
+
+                </div>
             </div>
         </div>
     </div>
-    <div class="col-lg-6">
-        <div class="ibox float-e-margins">
-            <div class="ibox-title">
-                <h5>{{'Sale'|translate}}</h5>
-            </div>
-            <div class="ibox-content">
 
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="font-bold text-navy"><h4>{{'Total'|translate}}</h4></div>
-                        <hr>
-                        <h3 class="no-margins">{{ saleInfo.total | number}}</h3>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="font-bold text-navy"><h4>{{'Sum Of Paid'|translate}}</h4></div>
-                        <hr>
-                        <h3 class="no-margins text-success">{{saleInfo.sumOfPaid | number}}</h3>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="font-bold text-navy"><h4>{{'Sum Of Remain'|translate}}</h4></div>
-                        <hr>
-                        <h3 class="no-margins text-danger">{{saleInfo.sumOfRemain | number}}</h3>
-                    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>{{'Sales information by month'|translate}}</h5>
                 </div>
-
-
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="row">
-    <div class="col-lg-12">
-        <div class="ibox float-e-margins">
-            <div class="ibox-title">
-                <h5>{{'Sales information by month'|translate}}</h5>
-            </div>
-            <div class="ibox-content">
-                <div class="row">
-                    <div class="col-lg-12">
+                <div class="ibox-content">
+                    <div class="row">
+                        <div class="col-lg-12">
                             <canvas height="300" class="chart chart-line"
                                     chart-data="data"
                                     chart-series="series"
@@ -76,104 +77,72 @@
                                     chart-options="options"
                                     chart-click="select"></canvas>
 
-                        <!--<canvas class="chart chart-bar"-->
-                                <!--chart-data="saleByMonthData"-->
-                                <!--chart-series="series"-->
-                                <!--chart-labels="saleByMonthLabels"-->
-                                <!--chart-options="{legend: {display: true}}"-->
-                                <!--chart-click="select"></canvas>-->
-                        <!--<canvas class="chart chart-bar"-->
-                        <!--chart-data="data"-->
-                        <!--chart-labels="labels"></canvas>-->
+                            <!--<canvas class="chart chart-bar"-->
+                            <!--chart-data="saleByMonthData"-->
+                            <!--chart-series="series"-->
+                            <!--chart-labels="saleByMonthLabels"-->
+                            <!--chart-options="{legend: {display: true}}"-->
+                            <!--chart-click="select"></canvas>-->
+                            <!--<canvas class="chart chart-bar"-->
+                            <!--chart-data="data"-->
+                            <!--chart-labels="labels"></canvas>-->
+                        </div>
                     </div>
                 </div>
-            </div>
-
-        </div>
-    </div>
-</div>
-
-<div class="row">
-    <div class="col-lg-6">
-        <div class="ibox float-e-margins">
-            <div class="ibox-title">
-                <h5>{{'Payment Information'|translate}}</h5>
-            </div>
-            <div class="ibox-content">
-
-                <table class="table table-hover no-margins">
-                    <thead>
-                    <tr>
-                        <th>{{'Title'|translate}}</th>
-                        <th>{{'Remain'|translate}}</th>
-                        <th>{{'Type'|translate}}</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr ng-repeat="bankAndFundInfo in bankAndFundInfos">
-                        <td>{{bankAndFundInfo.accountName}}</td>
-                        <td>{{bankAndFundInfo.remainder | number }}</td>
-                        <td><span class="label"
-                                  ng-class="{'label-success':bankAndFundInfo.accountType=='bank','label-primary':bankAndFundInfo.accountType=='fund'}">{{bankAndFundInfo.accountTypeDisplay}}</span>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-
 
             </div>
         </div>
     </div>
-    <div class="col-lg-6">
-        <div class="ibox float-e-margins">
-            <div class="ibox-title">
-                <h5>{{'Best Selling Product Information'|translate}}</h5>
-            </div>
-            <div class="ibox-content">
 
-                <div class="row">
-                    <canvas class="chart chart-doughnut"
-                            chart-data="dounatdata"
-                            chart-labels="dounatlabels"
-                            chart-options="{legend: {display: false},responsive:true,maintainAspectRatio:false}"
-                            chart-click="select"></canvas>
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>{{'Payment Information'|translate}}</h5>
                 </div>
+                <div class="ibox-content">
+
+                    <table class="table table-hover no-margins">
+                        <thead>
+                        <tr>
+                            <th>{{'Title'|translate}}</th>
+                            <th>{{'Remain'|translate}}</th>
+                            <th>{{'Type'|translate}}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="bankAndFundInfo in bankAndFundInfos">
+                            <td>{{bankAndFundInfo.accountName}}</td>
+                            <td>{{bankAndFundInfo.remainder | number }}</td>
+                            <td><span class="label"
+                                      ng-class="{'label-success':bankAndFundInfo.accountType=='bank','label-primary':bankAndFundInfo.accountType=='fund'}">{{bankAndFundInfo.accountTypeDisplay}}</span>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
 
 
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>{{'Best Selling Product Information'|translate}}</h5>
+                </div>
+                <div class="ibox-content">
+
+                    <div class="row">
+                        <canvas class="chart chart-doughnut"
+                                chart-data="dounatdata"
+                                chart-labels="dounatlabels"
+                                chart-options="{legend: {display: false},responsive:true,maintainAspectRatio:false}"
+                                chart-click="select"></canvas>
+                    </div>
+
+
+                </div>
             </div>
         </div>
     </div>
 </div>
-
-
-<!--<div class="row">-->
-<!--<div class="col-md-2">-->
-<!--<dev-tag-content dev-attr-title="{{'Last journal'|translate}}">-->
-<!--<h1 class="no-margins" style="text-align: center">{{totalInfo.lastNumber}}</h1>-->
-<!--</dev-tag-content>-->
-<!--</div>-->
-<!--</div>-->
-
-<!--<div class="row">-->
-<!--<div class="col-md-6 col-lg-6">-->
-<!--<dev-tag-content-->
-<!--id="inComeOutcome"-->
-<!--dev-attr-title="{{'Comparing income and outcome'|translate}}">-->
-<!--<canvas class="chart chart-line"-->
-<!--chart-data="incomeAndOutcomes"-->
-<!--chart-labels="months" chart-series="series" chart-options="options"-->
-<!--chart-dataset-override="datasetOverride" chart-click="onClick"></canvas>-->
-<!--</dev-tag-content>-->
-<!--</div>-->
-<!--<div class="col-md-6 col-lg-6">-->
-<!--<dev-tag-content dev-attr-title="{{'Journal grouped by months'|translate}}">-->
-<!--<canvas class="chart chart-doughnut"-->
-<!--chart-data="data"-->
-<!--chart-labels="labels"-->
-<!--chart-options="{legend: {display: true}}"-->
-<!--chart-click="select"></canvas>-->
-<!--</dev-tag-content>-->
-<!--</div>-->
-<!--</div>-->
-
-

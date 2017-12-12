@@ -74,7 +74,8 @@ accModule.config(menuItemsProvider => {
         .add({
             title: 'انبار',
             url: 'inventory/inputs',
-            icon: 'fa fa-cubes'
+            icon: 'fa fa-cubes',
+            role: 'stock'
         });
 
     menuItemsProvider
