@@ -493,5 +493,6 @@
   "Unit price should not be empty or zero": "مبلغ واحد نباید خالی یا صفر باشد",
   "Price entry": "ورود قیمت",
   "Calculate price": "محاسبه قیمت",
-  "Not selected stock": "انبار انتخاب نشده"
+  "Not selected stock": "انبار انتخاب نشده",
+  "Convert to JPG":"ذخیره به عنوان فایل JPG"
 }

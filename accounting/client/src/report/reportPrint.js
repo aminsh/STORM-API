@@ -9,6 +9,8 @@ export default class ReportPrintController {
                 navigate,
                 $location,
                 reportApi,
+                logger,
+                translate,
                 reportParameters) {
 
         $scope.$emit('close-sidebar');
@@ -22,6 +24,8 @@ export default class ReportPrintController {
         this.navigate = navigate;
         this.reportParameters = reportParameters;
         this.data = false;
+        this.logger = logger;
+        this.translate = translate;
 
         reportApi[report.func](params)
             .then(result => this.data = result);
@@ -42,12 +46,28 @@ export default class ReportPrintController {
     }
 
     toJpeg() {
+
+        this.logger.alert({
+            title: this.translate('Please wait ...'),
+            text: `<div class="sk-spinner sk-spinner-wave">
+                                <div class="sk-rect1"></div>
+                                <div class="sk-rect2"></div>
+                                <div class="sk-rect3"></div>
+                                <div class="sk-rect4"></div>
+                                <div class="sk-rect5"></div>
+                            </div>`,
+            html: true,
+            showConfirmButton: false
+        });
+
         domtoimage.toJpeg(document.getElementsByClassName('stiJsViewerPageShadow')[0], {quality: 0.95})
-            .then(function (dataUrl) {
+            .then(dataUrl => {
                 const link = document.createElement('a');
-                link.download = 'my-image-name.jpeg';
+                link.download = 'report.jpeg';
                 link.href = dataUrl;
                 link.click();
+
+                this.logger.close();
             });
     }
 }
