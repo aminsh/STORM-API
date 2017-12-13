@@ -116,7 +116,7 @@ class InvoiceService {
             costs: this._mapCostAndCharge(cmd.costs),
             charges: this._mapCostAndCharge(cmd.charges),
             bankReceiptNumber: cmd.bankReceiptNumber,
-            invoiceLines: cmd.invoiceLines.asEnumerable()
+            invoiceLines: this._mapLines(cmd.invoiceLines).asEnumerable()
                 .select(line => {
 
                     const product = this.product.findByIdOrCreate(line.product);
@@ -134,6 +134,16 @@ class InvoiceService {
                 })
                 .toArray()
         }
+    }
+
+    _mapLines(lines){
+        if(!lines)
+            return [];
+
+        if(!Array.isArray(lines))
+            return [lines];
+
+        return lines;
     }
 
     _mapCostAndCharge(data) {
