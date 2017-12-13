@@ -46,35 +46,56 @@ export default class BanksAndFundsController {
                         }"
                         class="fa fa-play "
                         style="font-weight: bold"></i>`,
-                    width: '100px',
+                    css: 'text-center',
+                    width: '40px',
                 },
                 {
                     name: 'date',
                     title: translate('Date'),
-                    width: '100px',
+                    css: 'text-center',
+                    width: '50px',
+                    header: {
+                        css: 'text-center'
+                    },
+
                 },
                 {
                     name: 'article',
                     title: translate('Journal description'),
-                    template: '<span title="{{item.article}}">{{item.article}}</span>'
+                    template: '<span title="{{item.article}}">{{item.article}}</span>',
+                    css: 'giveMeEllipsis'
                 },
                 {
-                    name: 'amount',
-                    title: translate('Amount'),
-                    template: `<i 
-                        ng-class="{
-                            'text-danger': item.creditor!=0,
-                            'text-navy': item.debtor!=0
-                        }"
-                        style="font-weight: bold"
-                        >{{item.creditor === 0 ? item.debtor : item.creditor | number}}</i>`,
-                    width: '120px',
+                    name: 'debtor',
+                    title: translate('Debtor'),
+                    width: '80px'
+                },
+                {
+                    name: 'creditor',
+                    title: translate('Creditor'),
+                    width: '80px'
+                },
+                {
+                    name: 'remainder',
+                    title: translate('Remainder'),
+                    width: '80px'
                 }
             ],
             commands: [],
+            sort: [
+                {dir: 'asc', field: 'date'}
+            ],
             readUrl: '',
             gridSize: '500px'
         };
+
+        this.tinyTurnoverGridOption.columns.forEach(col => {
+            col.style = {
+                fontSize: '12px'
+            };
+            col.filterable = false;
+            col.sortable = false;
+        });
 
         this.current = false;
     }
@@ -103,7 +124,5 @@ export default class BanksAndFundsController {
     showTinyTurnover(item) {
         this.current = item;
         this.tinyTurnoverGridOption.readUrl = this.urls[item.type].getAllTinyTurnonver(item.id);
-        /*this.current = false;
-         this.$timeout(() => );*/
     }
 }
