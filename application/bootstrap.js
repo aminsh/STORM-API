@@ -1,6 +1,7 @@
 "use strict";
 
 require('./events/event.onInvoiceCreatedOrChanged');
+require('./events/event.output');
 
 const EventEmitter = instanceOf('EventEmitter'),
     Guid = instanceOf('utility').Guid,

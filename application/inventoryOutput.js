@@ -1,18 +1,5 @@
 "use strict";
 
-const async = require('asyncawait/async'),
-    await = require('asyncawait/await'),
-    EventEmitter = instanceOf('EventEmitter'),
-    PersianDate = instanceOf('utility').PersianDate,
-    String = instanceOf('utility').String,
-    Enums = instanceOf('Enums'),
-    InventoryRepository = require('./data').InventoryRepository,
-    InvoiceRepository = require('./data').InvoiceRepository,
-    SettingsRepository = require('./data').SettingsRepository,
-    StockRepository = require('./data').StockRepository,
-    ProductService = require('./product'),
-    InventoryControlService = require('./inventoryControl');
-
 class OutputService {
 
     constructor(branchId, fiscalPeriodId, user) {
@@ -75,7 +62,6 @@ class OutputService {
                     lines: items.toArray()
                 }))
             .select(item => this.create(item))
-            .select(item => item.id)
             .toArray();
 
         return outputs;
@@ -121,13 +107,14 @@ class OutputService {
             .select(line => ({
                 productId: line.productId,
                 quantity: line.quantity,
+                unitPrice: line.unitPrice
             })).toArray();
 
         await(this.inventoryRepository.create(output));
 
         EventEmitter.emit("onOutputCreated", output.id, this.args);
 
-        return output;
+        return output.id;
     }
 
     update(id, cmd) {
@@ -252,18 +239,21 @@ class OutputService {
     calculatePrice(id) {
         let output = this.inventoryRepository.findById(id),
 
-        lines = output.inventoryLines.asEnumerable()
-            .select(line => ({
-                id: line.id,
-                unitPrice: this.getPriceByProduct(line.productId, output.createdAt)
-            }))
-            .toArray();
+            lines = output.inventoryLines.asEnumerable()
+                .select(line => ({
+                    id: line.id,
+                    unitPrice: this.getPriceByProduct(line.productId, output.createdAt)
+                }))
+                .toArray();
 
         this.inventoryRepository.updateBatch(id, {id, inventoryLines: lines});
+
+        if (output.inputId)
+            EventEmitter.emit('onOutputSetPrice', output.id, this.args);
     }
 
-    getPriceByProduct(productId , date) {
-        if(!date)
+    getPriceByProduct(productId, date) {
+        if (!date)
             throw new ValidationException(['تاریخ وجود ندارد']);
 
         let inputs = this.inventoryRepository
@@ -283,6 +273,26 @@ class OutputService {
     setJournal(id, journalId) {
         this.inventoryRepository.update(id, {journalId});
     }
+
+    /**
+     * For Stock to stock
+     */
+    setInput(id, inputId) {
+        this.inventoryRepository.update(id, {inputId});
+    }
 }
 
 module.exports = OutputService;
+
+const async = require('asyncawait/async'),
+    await = require('asyncawait/await'),
+    EventEmitter = instanceOf('EventEmitter'),
+    PersianDate = instanceOf('utility').PersianDate,
+    String = instanceOf('utility').String,
+    Enums = instanceOf('Enums'),
+    InventoryRepository = require('./data').InventoryRepository,
+    InvoiceRepository = require('./data').InvoiceRepository,
+    SettingsRepository = require('./data').SettingsRepository,
+    StockRepository = require('./data').StockRepository,
+    ProductService = require('./product'),
+    InventoryControlService = require('./inventoryControl');

@@ -253,7 +253,8 @@ enums.InventoryIOType = function () {
         {key: 'inputBackFromSaleOrConsuming', display: 'برگشت از مصرف / فروش'},
 
         {key: 'outputSale', display: 'فروش'},
-        {key: 'outputWaste', display: 'ضایعات'}
+        {key: 'outputWaste', display: 'ضایعات'},
+        {key: 'outputStockToStock', display: 'انبار به انبار'}
     ])
 };
 

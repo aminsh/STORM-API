@@ -1,14 +1,5 @@
 "use strict";
 
-const async = require('asyncawait/async'),
-    await = require('asyncawait/await'),
-    PersianDate = instanceOf('utility').PersianDate,
-    String = instanceOf('utility').String,
-    Enums = instanceOf('Enums'),
-    InventoryRepository = require('./data').InventoryRepository,
-    InvoiceRepository = require('./data').InvoiceRepository,
-    InventoryControlService = require('./inventoryControl');
-
 class InventoryInputService {
 
     constructor(branchId, fiscalPeriodId) {
@@ -76,7 +67,7 @@ class InventoryInputService {
         this.inventoryRepository.updateBatch(id, inventory);
     }
 
-    _mapToEntity(cmd){
+    _mapToEntity(cmd) {
         return {
             id: cmd.id,
             stockId: cmd.stockId,
@@ -98,17 +89,37 @@ class InventoryInputService {
 
     create(cmd) {
 
+        const outputService = new OutputService(this.branchId, this.fiscalPeriodId);
+
         let entity = this._mapToEntity(cmd),
             errors = this._validate(entity);
 
         if (errors.length > 0)
             throw new ValidationException(errors);
 
+        if (entity.ioType === 'inputStockToStock') {
+
+            entity.outputId = outputService.create({
+                stockId: cmd.sourceStockId,
+                date: entity.date,
+                ioType: 'outputStockToStock',
+                inventoryLines: entity.inventoryLines.asEnumerable()
+                    .select(line => ({
+                        productId: line.productId,
+                        quantity: line.quantity
+                    }))
+                    .toArray()
+            });
+        }
+
         const number = this.inventoryRepository.inputMaxNumber(this.fiscalPeriodId, cmd.stockId, cmd.ioType).max || 0;
 
         entity.number = number + 1;
 
         this.inventoryRepository.create(entity);
+
+        if (entity.outputId)
+            outputService.setInput(entity.outputId, entity.id);
 
         return entity.id;
     }
@@ -225,7 +236,7 @@ class InventoryInputService {
             }))
             .toArray();
 
-        this.inventoryRepository.updateBatch(id, {id , inventoryLines});
+        this.inventoryRepository.updateBatch(id, {id, inventoryLines});
     }
 
     getInputFirst(stockId) {
@@ -248,4 +259,14 @@ class InventoryInputService {
     }
 }
 
-module.exports = InventoryInputService;
+const InputService = module.exports = InventoryInputService;
+
+const async = require('asyncawait/async'),
+    await = require('asyncawait/await'),
+    PersianDate = instanceOf('utility').PersianDate,
+    String = instanceOf('utility').String,
+    Enums = instanceOf('Enums'),
+    InventoryRepository = require('./data').InventoryRepository,
+    InvoiceRepository = require('./data').InvoiceRepository,
+    OutputService = require('./inventoryOutput'),
+    InventoryControlService = require('./inventoryControl');
