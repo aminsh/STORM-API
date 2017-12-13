@@ -32,7 +32,7 @@ app.use((req, res, next) => {
         let currentPeriod = req.cookies['current-period'],
             fiscalPeriodQuery = new FiscalPeriodQuery(req.branchId);
 
-        if (currentPeriod === null || currentPeriod === 0) {
+        if (!currentPeriod) {
             setFiscalPeriodId();
         } else{
             let isFiscalPeriodValid = await(fiscalPeriodQuery.getById(currentPeriod));
