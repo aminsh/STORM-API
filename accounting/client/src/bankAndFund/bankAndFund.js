@@ -10,7 +10,9 @@ export default class BanksAndFundsController {
                 fundApi,
                 logger,
                 translate,
-                devConstants) {
+                devConstants,
+                reportApi,
+                exportToExcel) {
 
         this.$timeout = $timeout;
         this.bankApi = bankApi;
@@ -20,6 +22,8 @@ export default class BanksAndFundsController {
         this.translate = translate;
         this.bankAndFundApi = bankAndFundApi;
         this.urls = devConstants.urls;
+        this.reportApi = reportApi;
+        this.exportToExcel = exportToExcel;
 
         this.fetch();
 
@@ -78,7 +82,8 @@ export default class BanksAndFundsController {
                 {
                     name: 'remainder',
                     title: translate('Remainder'),
-                    width: '80px'
+                    width: '80px',
+                    template: '<span><b>{{item.remainder|amount}}</b></span>'
                 }
             ],
             commands: [],
@@ -124,5 +129,34 @@ export default class BanksAndFundsController {
     showTinyTurnover(item) {
         this.current = item;
         this.tinyTurnoverGridOption.readUrl = this.urls[item.type].getAllTinyTurnonver(item.id);
+    }
+
+    runExportToExcel() {
+        let columns = this.tinyTurnoverGridOption.columns,
+            exportedData = [];
+
+        this.api.tinyTurnover(this.current.id)
+            .then(result => {
+                let data = result.data;
+
+                data.forEach((item) => {
+                    let result = {};
+                    columns.forEach(col => {
+                        result[col.title] = item[col.name];
+                    });
+
+                    exportedData.push(result);
+                });
+
+                this.exportToExcel(exportedData, "BankOrFoundTurnover");
+            });
+    }
+
+    get api(){
+        if(this.current.type === 'fund')
+            return this.fundApi;
+
+        if(this.current.type === 'bank')
+            return this.bankApi;
     }
 }

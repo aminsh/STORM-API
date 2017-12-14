@@ -186,7 +186,7 @@ class DetailAccountQuery extends BaseQuery {
     getAllTurnoversWithRemainder(id, type, fiscalPeriodId, parameters) {
         let turnovers = await(this.getAllSmallTurnoverById(id, type, fiscalPeriodId, parameters));
         if (turnovers.data.length === 1) {
-            return turnovers.asEnumerable().select(item =>
+            return turnovers.data.asEnumerable().select(item =>
                 Object.assign({}, item,
                     {
                         remainder: item.debtor - item.creditor
@@ -216,7 +216,6 @@ class DetailAccountQuery extends BaseQuery {
             });
 
         let result = query.asEnumerable().orderByDescending(e => e.date && e.number).toArray();
-
         return result;
     }
 
