@@ -22,6 +22,9 @@ function fundApi(apiPromise, devConstants) {
         },
         smallTurnOver: function (id) {
             return apiPromise.get(`${urlPrefix}/funds/${id}/small-turnover`);
+        },
+        tinyTurnover(id){
+            return apiPromise.get(devConstants.urls.fund.getAllTinyTurnonver(id));
         }
     };
 

@@ -10,7 +10,9 @@ export default class BanksAndFundsController {
                 fundApi,
                 logger,
                 translate,
-                devConstants) {
+                devConstants,
+                reportApi,
+                exportToExcel) {
 
         this.$timeout = $timeout;
         this.bankApi = bankApi;
@@ -20,6 +22,8 @@ export default class BanksAndFundsController {
         this.translate = translate;
         this.bankAndFundApi = bankAndFundApi;
         this.urls = devConstants.urls;
+        this.reportApi = reportApi;
+        this.exportToExcel = exportToExcel;
 
         this.fetch();
 
@@ -46,35 +50,57 @@ export default class BanksAndFundsController {
                         }"
                         class="fa fa-play "
                         style="font-weight: bold"></i>`,
-                    width: '100px',
+                    css: 'text-center',
+                    width: '40px',
                 },
                 {
                     name: 'date',
                     title: translate('Date'),
-                    width: '100px',
+                    css: 'text-center',
+                    width: '50px',
+                    header: {
+                        css: 'text-center'
+                    },
+
                 },
                 {
                     name: 'article',
                     title: translate('Journal description'),
-                    template: '<span title="{{item.article}}">{{item.article}}</span>'
+                    template: '<span title="{{item.article}}">{{item.article}}</span>',
+                    css: 'giveMeEllipsis'
                 },
                 {
-                    name: 'amount',
-                    title: translate('Amount'),
-                    template: `<i 
-                        ng-class="{
-                            'text-danger': item.creditor!=0,
-                            'text-navy': item.debtor!=0
-                        }"
-                        style="font-weight: bold"
-                        >{{item.creditor === 0 ? item.debtor : item.creditor | number}}</i>`,
-                    width: '120px',
+                    name: 'debtor',
+                    title: translate('Debtor'),
+                    width: '80px'
+                },
+                {
+                    name: 'creditor',
+                    title: translate('Creditor'),
+                    width: '80px'
+                },
+                {
+                    name: 'remainder',
+                    title: translate('Remainder'),
+                    width: '80px',
+                    template: '<span><b>{{item.remainder|amount}}</b></span>'
                 }
             ],
             commands: [],
+            sort: [
+                {dir: 'asc', field: 'date'}
+            ],
             readUrl: '',
             gridSize: '500px'
         };
+
+        this.tinyTurnoverGridOption.columns.forEach(col => {
+            col.style = {
+                fontSize: '12px'
+            };
+            col.filterable = false;
+            col.sortable = false;
+        });
 
         this.current = false;
     }
@@ -103,7 +129,34 @@ export default class BanksAndFundsController {
     showTinyTurnover(item) {
         this.current = item;
         this.tinyTurnoverGridOption.readUrl = this.urls[item.type].getAllTinyTurnonver(item.id);
-        /*this.current = false;
-         this.$timeout(() => );*/
+    }
+
+    runExportToExcel() {
+        let columns = this.tinyTurnoverGridOption.columns,
+            exportedData = [];
+
+        this.api.tinyTurnover(this.current.id)
+            .then(result => {
+                let data = result.data;
+
+                data.forEach((item) => {
+                    let result = {};
+                    columns.forEach(col => {
+                        result[col.title] = item[col.name];
+                    });
+
+                    exportedData.push(result);
+                });
+
+                this.exportToExcel(exportedData, "BankOrFoundTurnover");
+            });
+    }
+
+    get api(){
+        if(this.current.type === 'fund')
+            return this.fundApi;
+
+        if(this.current.type === 'bank')
+            return this.bankApi;
     }
 }
