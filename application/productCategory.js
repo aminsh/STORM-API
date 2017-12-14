@@ -1,7 +1,8 @@
 "use strict";
 
 const ProductCategoryRepository = require('./data').ProductCategoryRepository,
-    ProductRepository = require('./data').ProductRepository;
+    ProductRepository = require('./data').ProductRepository,
+    String = instanceOf('utility').String;
 
 class ProductService {
     constructor(branchId) {
@@ -16,14 +17,13 @@ class ProductService {
 
         if (String.isNullOrEmpty(cmd.title))
             errors.push('عنوان نمیتواند خالی باشد');
-        else if (cmd.title.length > 3)
+        else if (cmd.title.length < 3)
             errors.push('عنوان باید حداقل ۳ کاراکتر باشد');
 
         if (errors.length > 0)
             throw new ValidationException(errors);
 
         let entity = {
-            code: cmd.code,
             title: cmd.title
         };
 
@@ -38,14 +38,13 @@ class ProductService {
 
         if (String.isNullOrEmpty(cmd.title))
             errors.push('عنوان نمیتواند خالی باشد');
-        else if (cmd.title.length > 3)
+        else if (cmd.title.length < 3)
             errors.push('عنوان باید حداقل ۳ کاراکتر باشد');
 
         if (errors.length > 0)
             throw new ValidationException(errors);
 
         let entity = {
-            code: cmd.code,
             title: cmd.title
         };
 
