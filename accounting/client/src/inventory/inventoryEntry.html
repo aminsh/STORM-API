@@ -38,8 +38,9 @@
                 </div>
 
                 <div class="col-md-4">
-                    <div class="form-group" ng-if="model.inventoryType === 'input'">
-                        <label for="number">{{'Input type'|translate}}</label>
+                    <div class="form-group" >
+                        <label for="number" ng-if="model.inventoryType === 'input'">{{'Input type'|translate}}</label>
+                        <label for="number" ng-if="model.inventoryType === 'output'">{{'Output type'|translate}}</label>
                         <select ng-model="model.inventory.ioType"
                                 ng-options="p.key as p.display for p in model.ioTypes"
                                 class="form-control">
@@ -47,34 +48,49 @@
                         </select>
                     </div>
 
-                    <div class="form-group" ng-if="model.inventoryType === 'output'">
-                        <label for="number">{{'Output type'|translate}}</label>
-                        <select ng-model="model.inventory.ioType"
-                                ng-options="p.key as p.display for p in model.ioTypes"
-                                class="form-control">
-                            <option value="">{{'Select ...'|translate}}</option>
-                        </select>
-                    </div>
+                    <div class="row">
+                        <div  class="form-group col-md-6" ng-if="model.inventory.ioType === 'inputStockToStock'">
+                            <label>{{'Source stock'|translate}}</label>
+                            <dev-tag-combo-box style="width: 500px;"
+                                               name="sourceStockId"
+                                               k-placeholder="{{'Select ...'|translate}}"
+                                               k-data-value-field="id"
+                                               k-data-text-field="title"
+                                               show-no-data-template
+                                               k-on-changed="model.onStockChanged($item)"
+                                               url="{{model.urls.getAllStocks}}"
+                                               ng-model="model.inventory.sourceStockId"
+                                               required></dev-tag-combo-box>
 
-                    <div  class="form-group">
-                        <label for="stockId">{{'Stock'|translate}}</label>
-                        <dev-tag-combo-box style="width: 500px;"
-                                           name="stockId"
-                                           id="stockId"
-                                           k-placeholder="{{'Select ...'|translate}}"
-                                           k-data-value-field="id"
-                                           k-data-text-field="title"
-                                           show-no-data-template
-                                           k-on-changed="model.onStockChanged($item)"
-                                           url="{{model.urls.getAllStocks}}"
-                                           ng-model="model.inventory.stockId"
-                                           required></dev-tag-combo-box>
-
-                        <div ng-messages="form.stockId.$error" ng-if="form.stockId.$dirty">
-                            <label ng-message="required" class="error">
-                                {{'This field is required'|translate}}</label>
+                            <div ng-messages="form.sourceStockId.$error" ng-if="form.sourceStockId.$dirty">
+                                <label ng-message="required" class="error">
+                                    {{'This field is required'|translate}}</label>
+                            </div>
                         </div>
+
+                        <div  class="form-group col-md-{{model.inventory.ioType === 'inputStockToStock' ? '6' : '12'}}">
+                            <label>{{model.inventory.ioType === 'inputStockToStock'?'Destination stock':'Stock'|translate}}</label>
+                            <dev-tag-combo-box style="width: 500px;"
+                                               name="stockId"
+                                               k-placeholder="{{'Select ...'|translate}}"
+                                               k-data-value-field="id"
+                                               k-data-text-field="title"
+                                               show-no-data-template
+                                               k-on-changed="model.onStockChanged($item)"
+                                               url="{{model.urls.getAllStocks}}"
+                                               ng-model="model.inventory.stockId"
+                                               required></dev-tag-combo-box>
+
+                            <div ng-messages="form.stockId.$error" ng-if="form.stockId.$dirty">
+                                <label ng-message="required" class="error">
+                                    {{'This field is required'|translate}}</label>
+                            </div>
+                        </div>
+
+
                     </div>
+
+
                 </div>
 
                 <div class="col-md-6">

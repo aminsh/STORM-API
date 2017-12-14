@@ -196,7 +196,6 @@ class SalesAggregationController {
                     template: '<span>{{item.totalPrice-item.totalReturnPrice|number}}</span>',
                     sortable: false,
                     filterable: false,
-                    fontSize: '11px',
                     type: 'number',
                     css: 'text-center',
                     header: {
@@ -253,7 +252,6 @@ class SalesAggregationController {
     }
 
     onLoadData(data) {
-        console.log(data);
         this.total = data.resultTotal;
     }
 

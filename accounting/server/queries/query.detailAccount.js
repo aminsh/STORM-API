@@ -156,7 +156,8 @@ class DetailAccountQuery extends BaseQuery {
                     'journalLines.article',
                     'journalLines.debtor',
                     'journalLines.creditor',
-                    knex.raw('journals."temporaryDate" as date'))
+                    knex.raw('journals."temporaryDate" as date'),
+                    knex.raw('journals."temporaryNumber" as number'))
                     .from('detailAccounts')
                     .leftJoin('journalLines', 'detailAccounts.id', 'journalLines.detailAccountId')
                     .leftJoin('journals', 'journals.id', 'journalLines.journalId')
@@ -166,20 +167,58 @@ class DetailAccountQuery extends BaseQuery {
                     .andWhere('journals.periodId', fiscalPeriodId)
                     .andWhere('detailAccounts.detailAccountType', type)
                     .whereIn('subsidiaryLedgerAccounts.id', [subledger.bank, subledger.fund])
-                    .orderBy('journals.temporaryNumber', 'desc')
-                    .as('base');
-
+                    .as('base')
+                    .orderBy(knex.raw(`journals."temporaryDate", journals."temporaryNumber"`), 'asc');
             }),
+
             view = entity => ({
                 title: entity.title,
                 article: entity.article,
                 debtor: entity.debtor,
                 creditor: entity.creditor,
-                date: entity.date
+                date: entity.date,
+                number: entity.number
             });
 
         return kendoQueryResolve(query, parameters, view);
     }
+
+    getAllTurnoversWithRemainder(id, type, fiscalPeriodId, parameters) {
+        let turnovers = await(this.getAllSmallTurnoverById(id, type, fiscalPeriodId, parameters));
+        if (turnovers.data.length === 1) {
+            return turnovers.data.asEnumerable().select(item =>
+                Object.assign({}, item,
+                    {
+                        remainder: item.debtor - item.creditor
+                    })
+            );
+        }
+
+        let query = turnovers.data
+            .map(item => {
+                item.crrentRemainder = item.debtor - item.creditor;
+                return item;
+            })
+            .reduce((memory, current) => {
+                if (Array.isArray(memory)) {
+                    let last = memory[memory.length - 1];
+
+                    current.remainder = current.crrentRemainder + last.remainder;
+                    memory.push(current);
+                    return memory;
+                }
+                else {
+                    memory.remainder = memory.crrentRemainder;
+                    current.remainder = memory.remainder + current.crrentRemainder;
+
+                    return [memory, current];
+                }
+            });
+
+        let result = query.asEnumerable().orderByDescending(e => e.date && e.number).toArray();
+        return result;
+    }
+
 };
 
 module.exports = DetailAccountQuery;

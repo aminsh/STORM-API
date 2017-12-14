@@ -19,5 +19,9 @@
   {
     "module": "output",
     "event": "created"
+  },
+  {
+    "module": "output",
+    "event": "setPrice"
   }
 ]

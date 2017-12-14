@@ -53,12 +53,18 @@ class InputEntryController extends InventoryEntryControllerBase {
     save(form) {
         super.save(form);
 
+        if (this.inventory.ioType === 'inputStockToStock' && this.inventory.stockId === this.inventory.sourceStockId) {
+            this.isSaving = false;
+            this.errors.push(this.translate('Stock and Source stock is not allowed to be equal'));
+            return;
+        }
+
         const promise = this.id
             ? this.inventoryApi.updateInput(this.id, this.inventory)
             : this.inventoryApi.createInput(this.inventory);
 
         promise
-            .then(result => {
+            .then(() => {
                 this.logger.success();
                 this.$state.go('inventory.inputs');
             })

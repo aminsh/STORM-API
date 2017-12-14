@@ -123,14 +123,13 @@ class JournalService {
                         .findById(item.subsidiaryLedgerAccountId);
 
                     return {
-                        id: item.id,
                         generalLedgerAccountId: subsidiaryLedgerAccount.generalLedgerAccountId,
                         subsidiaryLedgerAccountId: item.subsidiaryLedgerAccountId,
                         detailAccountId: item.detailAccountId,
                         article: item.article,
                         debtor: item.debtor,
                         creditor: item.creditor
-                    }
+                    };
                 })
                 .toArray();
 

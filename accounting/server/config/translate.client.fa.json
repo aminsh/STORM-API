@@ -494,5 +494,8 @@
   "Price entry": "ورود قیمت",
   "Calculate price": "محاسبه قیمت",
   "Not selected stock": "انبار انتخاب نشده",
-  "Convert to JPG":"ذخیره به عنوان فایل JPG"
+  "Convert to JPG":"ذخیره به عنوان فایل JPG",
+  "Source stock": "انبار مبدا",
+  "Destination stock": "انبار مقصد",
+  "Stock and Source stock is not allowed to be equal": "انبار و انبار مبدا نمیتواند یکی باشد"
 }
