@@ -216,6 +216,7 @@ class DetailAccountQuery extends BaseQuery {
             });
 
         let result = query.asEnumerable().orderByDescending(e => e.date && e.number).toArray();
+
         return result;
     }
 

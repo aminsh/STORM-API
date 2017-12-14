@@ -57,6 +57,7 @@ router.route('/:id/tiny-turnover').get(async((req, res) => {
             req.query));
 
     res.json({data: result});
+
 }));
 
 module.exports = router;
