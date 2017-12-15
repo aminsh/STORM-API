@@ -40,13 +40,12 @@ class BalanceSheet extends BaseQuery {
                             FROM journals
                             INNER JOIN "journalLines" on "journalLines"."journalId" = journals."id"
                             WHERE  journals."journalStatus" != 'Temporary' 
-                                AND "journalType" != 'Closing'
                                 AND journals."temporaryDate" BETWEEN '${options.fromMainDate}' AND '${options.toDate}'                   
                             GROUP BY "journalLines"."generalLedgerAccountId") as journal`),
                         'journal.generalLedgerAccountId', '=', 'generalLedgerAccounts.id')
                 .where('generalLedgerAccounts.branchId', branchId)
                 .whereIn('accountCategories.key', ['10', '20', '30', '40', '50','11','12','21','22','31'])
-                .orderBy('accountCategoriesKey','generalLedgerAccountsCode', 'asc')
+                .orderBy('generalLedgerAccountsCode', 'asc')
             );
     }
 }

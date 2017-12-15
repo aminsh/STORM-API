@@ -24,7 +24,7 @@
                                             {{item.generalLedgerAccountsTitle}}
                                         </div>
                                         <div class="col-xs-4 title1 so-align-center">
-                                            {{item.remainder|number}}
+                                            {{item.remainder|amount}}
                                         </div>
                                     </div>
 
@@ -34,7 +34,7 @@
                                             <h4>{{'Sum Of Remain'|translate}}</h4>
                                         </div>
                                         <div class="col-xs-4 title1 so-align-center">
-                                            <h4 style="background-color: aliceblue;">{{category.items|totalSum:('remainder')|number}}</h4>
+                                            <h4 style="background-color: aliceblue;">{{category.items|totalSum:('remainder')|amount}}</h4>
                                         </div>
                                     </div>
                                 </div>
@@ -46,7 +46,7 @@
                             <div class="col-xs-8 title1 so-align-right">
                                 <h4 style="margin-bottom: 15px">{{'Sum belonging'|translate}}</h4></div>
                             <div class="col-xs-4 title1 so-align-center">
-                                <h4 style="padding-right: 20px;">{{model.totalRight|number}}</h4>
+                                <h4 style="padding-right: 20px;">{{model.totalRight|amount}}</h4>
                             </div>
                         </div>
                     </div>
@@ -76,7 +76,7 @@
                                             {{item.generalLedgerAccountsTitle}}
                                         </div>
                                         <div class="col-xs-4 title1 so-align-center">
-                                            {{item.remainder|number}}
+                                            {{item.remainder|amount}}
                                         </div>
                                     </div>
 
@@ -86,7 +86,7 @@
                                             <h4>{{'Sum Of Remain'|translate}}</h4>
                                         </div>
                                         <div class="col-xs-4 title1 so-align-center">
-                                            <h4 style="background-color: aliceblue;">{{category.items|totalSum:('remainder')|number}}</h4>
+                                            <h4 style="background-color: aliceblue;">{{category.items|totalSum:('remainder')|amount}}</h4>
                                         </div>
                                     </div>
                                 </div>
@@ -98,7 +98,7 @@
                             <div class="col-xs-8 title1 so-align-right">
                                 <h4 style="margin-bottom: 15px">{{'Sum debtors an founders rights'|translate}}</h4></div>
                             <div class="col-xs-4 title1 so-align-center">
-                                <h4 style="padding-right: 20px;">{{model.totalLeft|number}}</h4>
+                                <h4 style="padding-right: 20px;">{{model.totalLeft|amount}}</h4>
                             </div>
                         </div>
                     </div>
