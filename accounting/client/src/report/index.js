@@ -3,11 +3,12 @@
 import appModule from '../acc.module';
 
 import ReportListController from './reportList';
-import { ReportParametersController, reportParametersModal } from './reportParameters';
+import {ReportParametersController, reportParametersModal} from './reportParameters';
 import ReportPrintController from './reportPrint';
 import ReportDesignController from'./reportDesign';
 import ReportLoaderService from './reportLoaderService';
 import SalesAggregationController from "./reportPages/salesAggregation.controller";
+import BalanceSheetController from "./reportPages/balanceSheet.controller";
 
 appModule
     .config($stateProvider => {
@@ -17,6 +18,12 @@ appModule
                 controller: 'salesAggregationController',
                 controllerAs: 'model',
                 templateUrl: 'partials/report/reportPages/salesAggregation.html'
+            })
+            .state('report.balanceSheet', {
+                url: '/balance-sheet',
+                controller: 'balanceSheetController',
+                controllerAs: 'model',
+                templateUrl: 'partials/report/reportPages/balanceSheet.html'
             });
     })
     .controller('reportListController', ReportListController)
@@ -24,6 +31,7 @@ appModule
     .controller('ReportPrintController', ReportPrintController)
     .controller('reportDesignController', ReportDesignController)
     .controller('salesAggregationController', SalesAggregationController)
+    .controller('balanceSheetController', BalanceSheetController)
     .service('reportLoaderService', ReportLoaderService)
     .factory('reportParameters', reportParametersModal);
 

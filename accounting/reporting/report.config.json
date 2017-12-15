@@ -308,11 +308,18 @@
   },
   {
     "key": "5",
-    "text": "تراز آزمایشی",
+    "text": "تراز",
     "items": [
       {
+        "key": "balance-sheet",
+        "text": "ترازنامه",
+        "func": "getBalanceSheet",
+        "fileName": "",
+        "useLayout": false
+      },
+      {
         "key": "500",
-        "text": "تراز کل",
+        "text": "تراز کل آزمایشی",
         "func": "generalBalance",
         "fileName": "TotalBalance",
         "useLayout": false,
@@ -327,7 +334,7 @@
       },
       {
         "key": "501",
-        "text": "تراز دوستونی",
+        "text": "تراز دوستونی آزمایشی",
         "func": "generalBalance",
         "fileName": "TwoColumnsBalance",
         "useLayout": false,
@@ -342,7 +349,7 @@
       },
       {
         "key": "502",
-        "text": "تراز چهارستونی",
+        "text": "تراز چهارستونی آزمایشی",
         "func": "generalBalance",
         "fileName": "FourColumnsBalance",
         "useLayout": false,
