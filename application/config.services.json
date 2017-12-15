@@ -235,6 +235,23 @@
     "returns": "id"
   },
   {
+    "name": "journalChangeDate",
+    "class": "JournalService",
+    "method": "changeDate",
+    "params": [
+      "id",
+      "date"
+    ],
+    "returns": ""
+  },
+  {
+    "name": "journalOrderingTemporaryNumberByTemporaryDate",
+    "class": "JournalService",
+    "method": "orderingTemporaryNumberByTemporaryDate",
+    "params": [],
+    "returns": ""
+  },
+  {
     "name": "journalGenerateForInvoice",
     "class": "JournalService",
     "method": "generateForInvoice",

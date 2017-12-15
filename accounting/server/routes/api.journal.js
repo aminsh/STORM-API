@@ -37,6 +37,18 @@ router.route('/max-number').get(async((req, res) => {
     res.json(result);
 }));
 
+router.route('/ordering-number-by-date')
+    .put(async((req, res) => {
+        try {
+            RunService("journalOrderingTemporaryNumberByTemporaryDate", [], req);
+            res.json({isValid: true});
+
+        }
+        catch (e) {
+            res.json({isValid: false, errors: e.errors});
+        }
+    }));
+
 router.route('/:id')
     .get(async((req, res) => {
         let journalQuery = new JournalQuery(req.branchId),
@@ -64,10 +76,23 @@ router.route('/:id')
         }
     }));
 
+
 router.route('/:id/confirm')
     .put(async((req, res) => {
         try {
             RunService("journalFix", [req.params.id], req);
+            res.json({isValid: true});
+
+        }
+        catch (e) {
+            res.json({isValid: false, errors: e.errors});
+        }
+    }));
+
+router.route('/:id/change-date')
+    .put(async((req, res) => {
+        try {
+            RunService("journalChangeDate", [req.params.id, req.body.date], req);
             res.json({isValid: true});
 
         }

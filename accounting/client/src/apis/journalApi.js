@@ -23,6 +23,12 @@ function journalApi(apiPromise, devConstants) {
         update: function (id, data) {
             return apiPromise.put('{0}/journals/{1}'.format(urlPrefix, id), data);
         },
+        changeDate(id , date){
+            return apiPromise.put('{0}/journals/{1}/change-date'.format(urlPrefix, id), {date});
+        },
+        orderingNumbersByDate(){
+            return apiPromise.put('{0}/journals/ordering-number-by-date'.format(urlPrefix));
+        },
         remove: function (id) {
             return apiPromise.delete('{0}/journals/{1}'.format(urlPrefix, id));
         },

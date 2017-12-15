@@ -499,5 +499,6 @@
   "Destination stock": "انبار مقصد",
   "Stock and Source stock is not allowed to be equal": "انبار و انبار مبدا نمیتواند یکی باشد",
   "Fixed quantity": "ثبت مقداری",
-  "Fixed amount": "ثبت ریالی"
+  "Fixed amount": "ثبت ریالی",
+  "Ordering number by date": "مرتب سازی شماره ها براساس تاریخ"
 }
