@@ -9,7 +9,7 @@
             <th class="text-center" ng-if="!model.isReturnSale">{{'Description 2'|translate}}</th>
             <th class="text-center">{{'Quantity'|translate}}</th>
             <th></th>
-            <th class="text-center">{{'Stock'|translate}}</th>
+            <th ng-if="model.settings.productOutputCreationMethod === 'stockOnRequest'" class="text-center">{{'Stock'|translate}}</th>
             <th class="text-center">{{'Unit price'|translate}}</th>
             <th class="text-center">{{'Discount'|translate}}</th>
             <th class="text-center">{{'Vat'|translate}} ({{model.settings.vat}} %)</th>
@@ -80,7 +80,7 @@
             <td style="width: 120px; padding: 0px;" class="invoice-td">
                 <span style="vertical-align: middle;margin-right: 3px">{{item.scale}}</span>
             </td>
-            <td style="width: 200px; padding-right: 3px;padding-top: 0;padding-bottom: 0" class="invoice-td">
+            <td style="width: 200px; padding-right: 3px;padding-top: 0;padding-bottom: 0" class="invoice-td" ng-if="model.settings.productOutputCreationMethod === 'stockOnRequest'">
 
                 <select ng-if="item.canShowStockSection"
                         ng-model="item.stockId"

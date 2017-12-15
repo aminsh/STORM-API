@@ -261,7 +261,7 @@ class JournalRepository extends BaseRepository {
                     and "periodId" = '${fiscalPeriodId}'
                     and journals.id = subquery.id`;
 
-        return this.knex.raw(query);
+        return await(this.knex.raw(query));
     }
 }
 

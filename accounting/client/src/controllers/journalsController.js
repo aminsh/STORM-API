@@ -37,11 +37,18 @@ function journalsController($scope, translate, journalApi, $state, logger, promp
             {name: 'date',
                 title: translate('Date'),
                 type: 'date',
-                width: '120px',
+                width: '200px',
                 css:'text-center',
                 header:{
                     css: 'text-center'
-                }
+                },
+                template: `<span ng-if="item.dateIsEditing === false">{{item.date}} 
+                                <i class="fa fa-edit fa-lg text-success pointer" 
+                                             ng-click="item.dateIsEditing = true;item.originalDate = item.date"></i></span>
+                           <span ng-if="item.dateIsEditing === true"><dev-tag-datepicker ng-model="item.date"></dev-tag-datepicker>
+                                <i class="fa fa-floppy-o fa-lg text-success pointer" ng-click="item.changeDate(item)"></i>
+                                <i class="fa fa-ban fa-lg text-danger pointer" ng-click="item.dateIsEditing = false;item.date = item.originalDate;"></i>
+                           </span> `
             },
 
             {
@@ -151,6 +158,9 @@ function journalsController($scope, translate, journalApi, $state, logger, promp
                     d.statusColor = 'green';
                 }
             }
+
+            d.dateIsEditing = false;
+            d.changeDate = $scope.changeDate;
         },
         sort: [
             {dir: 'desc', field: 'number'}
@@ -159,6 +169,24 @@ function journalsController($scope, translate, journalApi, $state, logger, promp
         setExtraFilter: (extra) => {
             $scope.searchParameters = extra;
         }
+    };
+
+    $scope.changeDate = (item) => {
+      journalApi.changeDate(item.id, item.date)
+          .then(()=> {
+              logger.success();
+              item.dateIsEditing = false;
+          })
+          .catch(errors => logger.error(errors.join('<br/>')));
+    };
+
+    $scope.orderingNumbers = ()=> {
+      journalApi.orderingNumbersByDate()
+          .then(()=> {
+              logger.success();
+              $scope.gridOption.refresh();
+          })
+          .catch(errors => logger.error(errors.join('<br/>')));
     };
 
     $scope.$on('fiscal-period-changed', () => $scope.gridOption.refresh());

@@ -65,6 +65,7 @@ class InventoryRepository extends BaseRepository {
                     .from('inventories')
                     .leftJoin('inventoryLines', 'inventories.id', 'inventoryLines.inventoryId')
                     .where('inventories.branchId', branchId)
+                    .where('fixedQuantity', true)
                     .andWhere('fiscalPeriodId', fiscalPeriodId)
                     .andWhere('productId', productId)
                     .andWhere('stockId', stockId)

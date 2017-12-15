@@ -57,6 +57,63 @@
   },
 
   {
+    "name": "invoiceReturnCreate",
+    "class": "InvoiceReturnService",
+    "method": "create",
+    "params": ["command"],
+    "returns": "id"
+  },
+  {
+    "name": "invoiceReturnUpdate",
+    "class": "InvoiceReturnService",
+    "method": "update",
+    "params": [
+      "id",
+      "command"
+    ],
+    "returns": "undefined"
+  },
+  {
+    "name": "invoiceReturnConfirm",
+    "class": "InvoiceReturnService",
+    "method": "confirm",
+    "params": [
+      "id",
+      "status"
+    ],
+    "returns": "undefined"
+  },
+  {
+    "name": "invoiceReturnRemove",
+    "class": "InvoiceReturnService",
+    "method": "remove",
+    "params": [
+      "id"
+    ],
+    "returns": "undefined"
+  },
+  {
+    "name": "invoiceReturnSetJournal",
+    "class": "InvoiceReturnService",
+    "method": "setJournal",
+    "params": [
+      "id",
+      "journalId"
+    ],
+    "returns": "undefined"
+  },
+  {
+    "name": "invoiceReturnPay",
+    "class": "InvoiceService",
+    "method": "pay",
+    "params": [
+      "id",
+      "payments"
+    ],
+    "returns": "paymentIds"
+  },
+
+  {
     "name": "invoicePurchaseCreate",
     "class": "InvoicePurchaseService",
     "method": "create",
@@ -176,6 +233,23 @@
       "id"
     ],
     "returns": "id"
+  },
+  {
+    "name": "journalChangeDate",
+    "class": "JournalService",
+    "method": "changeDate",
+    "params": [
+      "id",
+      "date"
+    ],
+    "returns": ""
+  },
+  {
+    "name": "journalOrderingTemporaryNumberByTemporaryDate",
+    "class": "JournalService",
+    "method": "orderingTemporaryNumberByTemporaryDate",
+    "params": [],
+    "returns": ""
   },
   {
     "name": "journalGenerateForInvoice",

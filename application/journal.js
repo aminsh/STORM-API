@@ -180,6 +180,14 @@ class JournalService {
         return this.journalRepository.batchUpdate(id, journal);
     }
 
+    changeDate(id, date) {
+        this.journalRepository.update({id, temporaryDate: date});
+    }
+
+    orderingTemporaryNumberByTemporaryDate() {
+        this.journalRepository.orderingTemporaryNumberByTemporaryDate(this.fiscalPeriodId);
+    }
+
     clone(id) {
         let sourceJournal = this.journalRepository.findById(id);
 
@@ -286,7 +294,7 @@ class JournalService {
         if (output.ioType !== 'outputSale')
             throw new ValidationException(['حواله جاری از نوع فروش نیست']);
 
-        if(output.inventoryLines.asEnumerable().any(line => !(line.unitPrice && line.unitPrice > 0)))
+        if (output.inventoryLines.asEnumerable().any(line => !(line.unitPrice && line.unitPrice > 0)))
             throw new ValidationException(['حواله با مبلغ صفر وجود دارد']);
 
         if (!String.isNullOrEmpty(output.journalId))

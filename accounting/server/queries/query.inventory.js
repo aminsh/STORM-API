@@ -21,7 +21,8 @@ const BaseQuery = require('./query.base'),
         stockDisplay: item.stockDisplay,
         journalId: item.journalId,
         inputId: item.inputId,
-        outputId: item.outputId
+        outputId: item.outputId,
+        invoiceId: item.invoiceId
     }),
 
     viewLine = item => ({

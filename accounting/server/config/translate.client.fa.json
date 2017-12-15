@@ -495,7 +495,15 @@
   "Calculate price": "محاسبه قیمت",
   "Not selected stock": "انبار انتخاب نشده",
   "Convert to JPG":"ذخیره به عنوان فایل JPG",
+  "BalanceSheet":"ترازنامه",
+  "Belonging": "دارایی ها",
+  "Debtors an founders rights": "بدهی ها و حقوق صاحبان سهام",
+  "Sum belonging": "جمع دارایی ها",
+  "Sum debtors an founders rights": " جمع بدهی ها و حقوق صاحبان سهام",
   "Source stock": "انبار مبدا",
   "Destination stock": "انبار مقصد",
-  "Stock and Source stock is not allowed to be equal": "انبار و انبار مبدا نمیتواند یکی باشد"
+  "Stock and Source stock is not allowed to be equal": "انبار و انبار مبدا نمیتواند یکی باشد",
+  "Fixed quantity": "ثبت مقداری",
+  "Fixed amount": "ثبت ریالی",
+  "Ordering number by date": "مرتب سازی شماره ها براساس تاریخ"
 }

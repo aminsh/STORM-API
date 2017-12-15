@@ -160,6 +160,10 @@ class ReportApi {
     getTotalSeasonal(params){
         return this.apiPromise.get(`${this.urlPrefix}/seasonal`,params)
     }
+
+    getBalanceSheet(params){
+        return this.apiPromise.get(`${this.urlPrefix}/balance-sheet`,params)
+    }
 }
 
 export default ReportApi;
