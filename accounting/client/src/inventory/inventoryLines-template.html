@@ -5,10 +5,8 @@
             <th>#</th>
             <th class="text-center" style="width: 30%">{{'Good'|translate}}</th>
             <th class="text-center" style="width: 120px" ng-if="model.inventoryType === 'output'"></th>
-            <th class="text-center" style="width: 100px">{{'Quantity'|translate}}</th>
+            <th class="text-center" style="width: 10%">{{'Quantity'|translate}}</th>
             <th class="text-center" style="width: 100px"></th>
-            <th class="text-center" style="width: 100px">{{'Unit price'|translate}}</th>
-            <th class="text-center">{{'Total price'|translate}}</th>
             <th></th>
         </tr>
         </thead>
@@ -46,13 +44,13 @@
                 <span class="text-danger" ng-if="!model.inventory.stockId">{{'Not selected stock'|translate}}</span>
             </td>
 
-            <td style="width: 120px; padding: 0px;" class="invoice-td">
+            <td style="padding: 0px;" >
                 <dev-tag-numeric
+                        style="max-width: 200px"
                         ng-model="item.quantity"
                         name="quantity"
                         required
-                        not-should-be-zero="item.quantity"
-                        required></dev-tag-numeric>
+                        not-should-be-zero="item.quantity"></dev-tag-numeric>
 
                 <div ng-messages="form['form-'+ $index].quantity.$error" ng-if="form['form-'+ $index].quantity.$dirty">
                     <label ng-message="required" class="error">
@@ -66,17 +64,6 @@
 
             <td style="width: 120px; padding: 0px;vertical-align: middle;" class="invoice-td">
                 <span style="margin-right: 10px">{{item.scale}}</span>
-            </td>
-
-            <td style="width: 120px; padding: 0px;" class="invoice-td">
-                <dev-tag-numeric
-                        ng-model="item.unitPrice"
-                        name="unitPrice"></dev-tag-numeric>
-            </td>
-
-
-            <td style="width: 120px;padding: 0px; vertical-align: middle; text-align: center;">
-                <span>{{(item.quantity * item.unitPrice) - item.discount + item.vat | number}}</span>
             </td>
 
             <td style="width: 20px; padding: 0px; vertical-align: middle; text-align: center;">
@@ -107,14 +94,7 @@
             </div>
 
         </div>
-        <div class="col-md-3">
-            <div class="row text-left" style="border-bottom: 1px solid #DDDDDD;">
-                <div class="col-xs-5 title1 so-align-right"><h3>{{'Sum'|translate}}</h3></div>
-                <div class="col-xs-7 title1" >
-                    <h3>{{model.inventory.inventoryLines | totalSum: ('$.quantity * $.unitPrice') | number}}</h3>
-                </div>
-            </div>
-        </div>
+
     </div>
 </div>
 

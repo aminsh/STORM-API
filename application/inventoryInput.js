@@ -129,6 +129,9 @@ class InventoryInputService {
 
         let input = this.inventoryRepository.findById(id);
 
+        if (input.fixQuantity)
+            throw new ValidationException(['رسید ثبت تعدادی شده ، امکان ویرایش وجود ندارد']);
+
         if (String.isNullOrEmpty(cmd.stockId))
             cmd.stockId = input.stockId;
 
@@ -188,18 +191,21 @@ class InventoryInputService {
     }
 
     remove(id) {
-        let input = this.inventoryRepository.findById(id),
+        let input = this.inventoryRepository.findById(id);
 
-            errors = this._validateTurnover({
-                stockId: input.stockId,
-                inventoryLines: input.inventoryLines.asEnumerable()
-                    .select(item => ({
-                        id: item.id,
-                        productId: item.productId,
-                        quantity: 0
-                    }))
-                    .toArray()
-            });
+        if (input.fixQuantity)
+            throw new ValidationException(['رسید ثبت تعدادی شده ، امکان حذف وجود ندارد']);
+
+        let errors = this._validateTurnover({
+            stockId: input.stockId,
+            inventoryLines: input.inventoryLines.asEnumerable()
+                .select(item => ({
+                    id: item.id,
+                    productId: item.productId,
+                    quantity: 0
+                }))
+                .toArray()
+        });
 
         if (errors.length > 0)
             throw new ValidationException(errors);
@@ -220,6 +226,11 @@ class InventoryInputService {
 
     setPrice(id, lines) {
         let errors = [];
+
+        let input = this.inventoryRepository.findById(id);
+
+        if (!input.fixQuantity)
+            throw new ValidationException(['رسید جاری ثبت مقداری نشده ، امکان ورود قیمت وجود ندارد']);
 
         lines.forEach((line, i) => {
             if (!(line.unitPrice && line.unitPrice > 0))
@@ -256,6 +267,14 @@ class InventoryInputService {
         const id = this.create(first);
 
         return this.inventoryRepository.findById(id);
+    }
+
+    fixQuantity(id) {
+        this.inventoryRepository.update(id, {fixQuantity: true});
+    }
+
+    fixAmount(id) {
+        this.inventoryRepository.update(id, {fixAmount: true});
     }
 }
 

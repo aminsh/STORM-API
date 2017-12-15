@@ -59,12 +59,6 @@ function inventoryApi(apiPromise, devConstants) {
         },
         inputSetPrice(id, data){
             return apiPromise.put(`${urlPrefix}/inventories/inputs/${id}/set-price`, data);
-        },
-        outputCalculatePrice(id){
-            return apiPromise.put(`${urlPrefix}/inventories/outputs/${id}/calculate-price`);
-        },
-        outputGenerateJournal(id){
-            return apiPromise.post(`${urlPrefix}/inventories/outputs/${id}/generate-journal`);
         }
     };
 

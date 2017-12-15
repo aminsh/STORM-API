@@ -110,8 +110,6 @@ class InvoiceService {
 
         if (!(entity.inventoryIds && entity.inventoryIds.length > 0))
             this.invoiceRepository.update(entity.id, {inventoryIds: JSON.stringify(inventoryIds)});
-
-        inputPurchaseService.setPrice(inventoryIds, entity.id);
     }
 
     /**

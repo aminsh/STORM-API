@@ -17,6 +17,26 @@ class InventoriesController {
             name: 'inventories',
             columns: [
                 {
+                    name: 'fixedQuantity',
+                    title: translate('Fixed quantity'),
+                    width: '10%',
+                    type: 'boolean',
+                    css: 'text-center',
+                    header: {
+                        css: 'text-center'
+                    },
+                },
+                {
+                    name: 'fixedAmount',
+                    title: translate('Fixed amount'),
+                    width: '10%',
+                    type: 'boolean',
+                    css: 'text-center',
+                    header: {
+                        css: 'text-center'
+                    },
+                },
+                {
                     name: 'date',
                     title: translate('Date'),
                     width: '10%',
@@ -56,7 +76,7 @@ class InventoriesController {
                 {
                     name: 'description',
                     title: translate('Description'),
-                    width: '40%',
+                    width: '30%',
                     type: 'string'
                 }
 
@@ -109,27 +129,19 @@ class InventoriesController {
                     title: translate('Price entry'),
                     icon: 'fa fa-usd text-success fa-lg',
                     action: current => this.$state.go('.setPrice', {id: current.id}),
-                    canShow: () => this.inventoryType === 'input'
-                },
-                {
-                    title: translate('Calculate price'),
-                    icon: 'fa fa-calculator text-success fa-lg',
-                    action: current => {
-                        inventoryApi.outputCalculatePrice(current.id)
-                            .then(()=> logger.success())
-                            .catch(errors => logger.error(errors.join('<br/>')));
-                    },
-                    canShow: () => this.inventoryType === 'output'
-                },
-                {
-                    title: translate('Generate journal'),
-                    icon: 'fa fa-share-square-o text-success fa-lg',
-                    action: current => {
-                        inventoryApi.outputGenerateJournal(current.id)
-                            .then(()=> logger.success())
-                            .catch(errors => logger.error(errors.join('<br/>')));
-                    },
-                    canShow: current => this.inventoryType === 'output' && current.ioType === 'outputSale' && !current.journalId
+                    canShow: current => {
+                        if(this.inventoryType !== 'input')
+                            return false;
+
+                        if(current.ioType === 'inputStockToStock')
+                            return false;
+
+                        if(['inputBackFromSaleOrConsuming', 'inputPurchase'].includes(current.ioType) && current.invoiceId)
+                            return false;
+
+
+                        return true;
+                    }
                 }
             ],
             readUrl: '',
