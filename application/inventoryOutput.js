@@ -127,6 +127,9 @@ class OutputService {
         if (!output)
             throw new ValidationException(['حواله وجود ندارد']);
 
+        if(output.fixQuantity)
+            throw new ValidationException(['حواله ثبت تعدادی شده ، امکان ویرایش وجود ندارد']);
+
         /* for created lines */
         let errors = cmd.inventoryLines.asEnumerable()
             .where(item => !output.inventoryLines.asEnumerable().any(e => e.id === item.id))
@@ -194,6 +197,9 @@ class OutputService {
 
         if (!output)
             throw new ValidationException(['حواله وجود ندارد']);
+
+        if(output.fixQuantity)
+            throw new ValidationException(['حواله ثبت تعدادی شده ، امکان حذف وجود ندارد']);
 
         if (!String.isNullOrEmpty(output.invoiceId))
             throw new ValidationException(['برای حواله جاری فاکتور صادر شده ، امکان حذف وجود ندارد']);
@@ -279,6 +285,14 @@ class OutputService {
      */
     setInput(id, inputId) {
         this.inventoryRepository.update(id, {inputId});
+    }
+
+    fixQuantity(id){
+        this.inventoryRepository.update(id, {fixQuantity: true});
+    }
+
+    fixAmount(id){
+        this.inventoryRepository.update(id, {fixAmount: true});
     }
 }
 

@@ -497,5 +497,7 @@
   "Convert to JPG":"ذخیره به عنوان فایل JPG",
   "Source stock": "انبار مبدا",
   "Destination stock": "انبار مقصد",
-  "Stock and Source stock is not allowed to be equal": "انبار و انبار مبدا نمیتواند یکی باشد"
+  "Stock and Source stock is not allowed to be equal": "انبار و انبار مبدا نمیتواند یکی باشد",
+  "Fixed quantity": "ثبت مقداری",
+  "Fixed amount": "ثبت ریالی"
 }
