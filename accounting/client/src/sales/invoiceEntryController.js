@@ -29,7 +29,7 @@ export default class InvoiceEntryControllerBase {
                 };
 
                 api.getAll(parameter)
-                    .then(result => cb(result.data));
+                    .then(result => cb(result.data.asEnumerable().select(e=> ({title: e.title})).distinct().toArray()));
             },
             displayField: 'title'
         };
