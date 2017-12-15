@@ -18,7 +18,8 @@ const fs = require('fs'),
     InventoriesReport = require('../reportQueries/inventory.input-output'),
     InventoriesTurnoverReport = require('../reportQueries/inventory.turnover'),
     ProductReports = require('../reportQueries/ProductReports'),
-    SeasonalReport = require('../reportQueries/seasonalReport');
+    SeasonalReport = require('../reportQueries/seasonalReport'),
+    BalanceSheet = require('../reportQueries/balanceSheet');
 
 function getReport(fileName) {
     return JSON.parse(
@@ -51,9 +52,9 @@ router.route('/file/:fileName').get((req, res) => {
     if (withLayout) {
         let reportComponents = report.Pages[0].Components,
             reportComponentsMaxKeys = (Object.keys(reportComponents)
-                .asEnumerable()
-                .select(c => parseInt(c))
-                .max() || 0) + 1,
+                    .asEnumerable()
+                    .select(c => parseInt(c))
+                    .max() || 0) + 1,
             layoutComponents = layout.Pages[0].Components,
             header = layoutComponents[0],
             footer = layoutComponents[1];
@@ -323,6 +324,16 @@ router.route('/seasonal')
             resultTotal = await(ins.getTotalSeasonal());
 
         res.json(Object.assign({}, resultDetail, {resultTotal}));
+    }));
+
+router.route('/balance-sheet')
+    .get(async((req, res) => {
+        let ins = new BalanceSheet(req.branchId,
+            req.cookies['current-period'],
+            req.cookies['current-mode'],
+            req.query),
+            result = await(ins.getBalanceSheet());
+        res.json(result);
     }));
 
 module.exports = router;

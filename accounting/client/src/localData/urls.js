@@ -2,7 +2,8 @@ let rootUrl = () => '/acc/api';
 let userApiUrl = () => '/api/users';
 
 let report = {
-    seasonal: () => `${rootUrl()}/reports/seasonal`
+    seasonal: () => `${rootUrl()}/reports/seasonal`,
+    balanceSheet: () => `${rootUrl()}/reports/balance-sheet`
 };
 
 let generalLedgerAccount = {
