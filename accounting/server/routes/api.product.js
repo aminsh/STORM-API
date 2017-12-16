@@ -31,9 +31,12 @@ router.route('/')
 
 router.route('/batch')
     .post(async((req, res) => {
+
+        let cmd = req.body;
+
         try {
 
-            ids = RunService("productCreateBatch", [cmd.products], req);
+            let ids = RunService("productCreateBatch", [cmd.products], req);
 
             res.json({isValid: true, returnValue: {ids}});
 
