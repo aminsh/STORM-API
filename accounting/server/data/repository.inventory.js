@@ -185,6 +185,23 @@ class InventoryRepository extends BaseRepository {
         }
     }
 
+    updateLines(lines) {
+
+        const trx = await(this.transaction);
+
+        try {
+            lines.forEach(e => await(this.knex('inventoryLines').transacting(trx).where('id', e.id).update(e)));
+
+            trx.commit();
+        }
+        catch (e) {
+            trx.rollback();
+
+            throw new Error(e);
+        }
+
+    }
+
     remove(id) {
         return await(this.knex('inventories').where('id', id).del());
     }

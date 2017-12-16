@@ -32,11 +32,12 @@ router.route('/')
 router.route('/batch')
     .post(async((req, res) => {
 
-        let cmd = req.body;
+        let cmd = req.body,
+            ids;
 
         try {
 
-            let ids = RunService("productCreateBatch", [cmd.products], req);
+            ids = RunService("productCreateBatch", [cmd.products], req);
 
             res.json({isValid: true, returnValue: {ids}});
 
@@ -60,7 +61,7 @@ router.route('/batch')
                 }))
             .toArray();
 
-        firstInputList.forEach(item => RunService("productAddToInventoryInputFirst", [item.productId, item], req));
+        RunService("productAddToInventoryInputFirst", [firstInputList, cmd.stockId], req);
 
     }));
 

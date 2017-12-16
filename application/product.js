@@ -149,15 +149,9 @@ class Product {
         this.productRepository.remove(id);
     }
 
-    addToInventoryInputFirst(id, DTO) {
+    _addToInventoryInputFirst(DTO, inputFirst) {
 
-        const fiscalPeriodId = this.fiscalPeriodId,
-            inventoryService = new InventoryService(this.branchId, fiscalPeriodId);
-
-        if (String.isNullOrEmpty(fiscalPeriodId))
-            throw new ValidationException(['دوره مالی تعیین نشده']);
-
-        if (!this.productRepository.isGood(id))
+        if (!this.productRepository.isGood(DTO.productId))
             throw new ValidationException(['کالای جاری از نوع انباری نیست']);
 
         if (!(DTO.quantity && !isNaN(parseFloat(DTO.quantity)) && parseFloat(DTO.quantity) > 0 ))
@@ -166,18 +160,42 @@ class Product {
         if (String.isNullOrEmpty(DTO.stockId))
             throw new ValidationException(['انبار تعیین نشده']);
 
-        let inputFirst = inventoryService.getInputFirst(DTO.stockId),
-            lineMatchProduct = inputFirst.inventoryLines.asEnumerable().singleOrDefault(item => item.productId === id);
+        let lineMatchProduct = inputFirst.inventoryLines.asEnumerable().singleOrDefault(item => item.productId === DTO.productId);
 
         if (!lineMatchProduct) {
-            lineMatchProduct = {productId: id};
+            lineMatchProduct = {productId: DTO.productId};
             inputFirst.inventoryLines.push(lineMatchProduct);
         }
 
         lineMatchProduct.quantity = parseFloat(DTO.quantity);
-        lineMatchProduct.unitPrice = isNaN(parseFloat(DTO.unitPrice)) ? 0 : parseFloat(DTO.unitPrice);
+    }
+
+    addManyToInventoryInputFirst(DTOs, stockId) {
+
+        const fiscalPeriodId = this.fiscalPeriodId,
+            inventoryService = new InventoryService(this.branchId, fiscalPeriodId);
+
+        let inputFirst = inventoryService.getInputFirst(stockId);
+
+        DTOs.forEach(DTO => this._addToInventoryInputFirst(DTO, inputFirst));
 
         inventoryService.update(inputFirst.id, inputFirst);
+
+        inputFirst = inventoryService.inventoryRepository.findById(inputFirst.id);
+
+        let setPriceList = inputFirst.inventoryLines.asEnumerable()
+            .join(
+                DTOs.asEnumerable().where(d => (isNaN(parseFloat(d.unitPrice)) ? 0 : parseFloat(d.unitPrice)) > 0).toArray(),
+                first => first.productId,
+                second => second.productId,
+                (first, second) => ({
+                    id: first.id,
+                    unitPrice: isNaN(parseFloat(second.unitPrice)) ? 0 : parseFloat(second.unitPrice)
+                }))
+            .toArray();
+
+        inventoryService.fixQuantity(inputFirst.id);
+        inventoryService.setPrice(inputFirst.id, setPriceList);
     }
 
 

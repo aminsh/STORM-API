@@ -620,12 +620,12 @@
   {
     "name": "productAddToInventoryInputFirst",
     "class": "ProductService",
-    "method": "addToInventoryInputFirst",
+    "method": "addManyToInventoryInputFirst",
     "params": [
-      "id",
-      "DTO"
+      "DTOs",
+      "stockId"
     ],
-    "returns": "ids"
+    "returns": ""
   },
   {
     "name": "productUpdate",
