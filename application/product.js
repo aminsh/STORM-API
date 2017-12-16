@@ -98,25 +98,12 @@ class Product {
         return errors;
     }
 
-    update(id, cmd) {
-
-        if (String.isNullOrEmpty(id))
-            throw new ValidationException(['کد کالا / خدمات مقدار ندارد']);
-
-        let product = this.productRepository.findById(id);
-
-        if (!product)
-            throw new ValidationException(['کالا / خدمات وجود ندارد']);
-
-        let errors = this._validate(cmd, id);
-
-        if (errors.length > 0)
-            throw new ValidationException(errors);
+    _mapToEntity(cmd) {
 
         let entity = {
             code: cmd.code,
             title: cmd.title,
-            productType: cmd.productType || product.productType,
+            productType: cmd.productType,
             reorderPoint: cmd.reorderPoint,
             salePrice: cmd.salePrice,
             categoryId: cmd.categoryId,
@@ -125,7 +112,26 @@ class Product {
             barcode: cmd.barcode
         };
 
-        this.productRepository.update(id, entity);
+        return JSON.parse(JSON.stringify(entity));
+    }
+
+    update(id, cmd) {
+
+        if (String.isNullOrEmpty(id))
+            throw new ValidationException(['کد کالا / خدمات مقدار ندارد']);
+
+        const persistedProduct = this.productRepository.findById(id);
+
+        if (!persistedProduct)
+            throw new ValidationException(['کالا / خدمات وجود ندارد']);
+
+        let product = Object.assign({}, persistedProduct, this._mapToEntity(cmd)),
+            errors = this._validate(product, id);
+
+        if (errors.length > 0)
+            throw new ValidationException(errors);
+
+        this.productRepository.update(id, product);
     }
 
     remove(id) {
