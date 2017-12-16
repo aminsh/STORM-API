@@ -54,6 +54,16 @@ export default class BanksAndFundsController {
                     width: '40px',
                 },
                 {
+                    name: 'number',
+                    title: translate('Journal number'),
+                    css: 'text-center',
+                    width: '70px',
+                    header: {
+                        css: 'text-center'
+                    },
+
+                },
+                {
                     name: 'date',
                     title: translate('Date'),
                     css: 'text-center',
@@ -72,12 +82,14 @@ export default class BanksAndFundsController {
                 {
                     name: 'debtor',
                     title: translate('Debtor'),
-                    width: '80px'
+                    width: '80px',
+                    template: '<span><b>{{item.debtor|number}}</b></span>'
                 },
                 {
                     name: 'creditor',
                     title: translate('Creditor'),
-                    width: '80px'
+                    width: '80px',
+                    template: '<span><b>{{item.creditor|number}}</b></span>'
                 },
                 {
                     name: 'remainder',

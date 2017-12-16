@@ -16,8 +16,9 @@ module.exports = class InvoicesQuery extends BaseQuery {
             branchId = this.branchId,
             settings = new SettingsQuery(this.branchId).get(),
 
-            invoice = await(knex.select(knex.raw(`invoices."number" as "number", invoices."date" as "date",
-                COALESCE(charges,'[{"key":"","value":0}]'::json) as charges,
+            invoice = await(knex.select(knex.raw(` invoices."id" as "invoiceId",
+                invoices."number" as "number", invoices."date" as "date",
+                CASE WHEN charges is NULL OR charges::TEXT = '[]' THEN '[{"key":"","value":0}]'::json ELSE charges END as charges,
                 invoices.description as "invoiceDescription",
                 scales.title as "scaleTitle",
                 "invoiceLines".quantity || ' ' || scales.title as "amount",
