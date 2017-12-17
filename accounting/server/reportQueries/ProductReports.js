@@ -4,6 +4,7 @@
 const BaseQuery = require('../queries/query.base'),
     translate = require('../services/translateService'),
     FilterQueryConfig = require('./report.filter.config'),
+    enums = require('../../../shared/enums'),
     async = require('asyncawait/async'),
     await = require('asyncawait/await');
 
@@ -19,12 +20,14 @@ class ProductReports extends BaseQuery {
         this.options = await(this.filterConfig.getDateOptions());
     }
 
-    getProductsInventoriesByIds(productIds) {
+    getProductsInventoriesByIds(productIds, fixedType) {
         let knex = this.knex,
-            branchId = this.branchId;
+            branchId = this.branchId,
 
-            let query = this.knex.select(knex.raw(
+            query = this.knex.select(knex.raw(
                 `products.title as product,
+            inventories."fixedAmount",
+            
             inventories."createdAt",
             products.id as "productId",
             inventories."inventoryType",
@@ -50,13 +53,24 @@ class ProductReports extends BaseQuery {
                 .innerJoin('inventories', 'inventories.id', 'inventoryLines.inventoryId')
                 .leftJoin('scales', 'scales.id', 'products.scaleId')
                 .innerJoin('stocks', 'stocks.id', 'inventories.stockId')
-                .as('inventoryProducts')
                 .orderBy('inventories.createdAt');
+        ;
 
-            if(productIds)
-                query.whereIn('products.id', productIds);
+        if (fixedType === 'fixedQuantity')
+            query.where('fixedQuantity', true);
 
-            return query;
+        if (fixedType === 'fixedAmount')
+            query.where('fixedAmount', true);
+
+        if (fixedType === 'fixedAmountAndQuantity')
+            query
+                .where('fixedQuantity', true)
+                .where('fixedAmount', true);
+
+        if (productIds)
+            query.whereIn('products.id', productIds);
+
+        return query;
     };
 
     getProductRemainders(inventories) {
@@ -152,8 +166,8 @@ class ProductReports extends BaseQuery {
 
     }
 
-    getProductTurnovers(productIds) {
-        let productsInventories = await(this.getProductsInventoriesByIds(productIds)),
+    getProductTurnovers(productIds, fixedType) {
+        let productsInventories = await(this.getProductsInventoriesByIds(productIds, fixedType)),
             options = this.options,
 
             query = productsInventories.asEnumerable()

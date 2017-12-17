@@ -323,4 +323,14 @@ enums.NotificationEvent = function () {
     ]);
 };
 
+enums.getInventoryFixedStatus = function () {
+    return new Enum([
+        {key: 'all', display: "همه ی گردش ها"},
+        {key: 'fixedQuantity', display: "گردش های ثبت مقداری شده"},
+        {key: 'fixedAmount', display: "گردش های ثبت ریالی شده"},
+        {key: 'fixedAmountAndQuantity', display: "گردش های ثبت مقداری و ریالی شده"}
+    ]);
+};
+
+
 module.exports = enums;

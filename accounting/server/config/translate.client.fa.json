@@ -505,5 +505,7 @@
   "Stock and Source stock is not allowed to be equal": "انبار و انبار مبدا نمیتواند یکی باشد",
   "Fixed quantity": "ثبت مقداری",
   "Fixed amount": "ثبت ریالی",
-  "Ordering number by date": "مرتب سازی شماره ها براساس تاریخ"
+  "Ordering number by date": "مرتب سازی شماره ها براساس تاریخ",
+  "Filtered by fixed ...": "شامل گردش های ...",
+  "AmountFixed or QuantityFixed filter":"فیلتر ثبت ریالی/ مقداری گردش ها"
 }

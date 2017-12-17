@@ -19,12 +19,15 @@ export class ReportParametersController {
             getAllProducts: devConstants.urls.products.getAll(),
             getAllStocks: devConstants.urls.stock.getAll()
         };
+        this.inventoryFixedStatus= devConstants.enums.getInventoryFixedStatus().data;
+
         this.paramsConfig = data;
         this.parameters = {
             generalLedgerAccounts: [],
             subsidiaryLedgerAccounts: [],
             products: [],
             stocks:[],
+            inventoryFixedStatuses:'all',
             detailAccounts: [],
             dimension1s: [],
             dimension2s: [],
