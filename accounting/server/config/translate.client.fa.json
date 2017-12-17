@@ -510,7 +510,7 @@
   "{0} don`t have title": "{0} تا دارای عنوان خالی است",
   "{0} codes is duplicated": "کدهای {0} تکراری است",
   "{0} referenceId is duplicated": "کدهای مرجع {0} تکراری است",
-  "It`s not possible the rows that have these errors": "امکان ذخیره سازی ردیف های با اشکالات زیر وجود ندارد"
+  "It`s not possible the rows that have these errors": "امکان ذخیره سازی ردیف های با اشکالات زیر وجود ندارد",
   "Ordering number by date": "مرتب سازی شماره ها براساس تاریخ",
   "Filtered by fixed ...": "شامل گردش های ...",
   "AmountFixed or QuantityFixed filter":"فیلتر ثبت ریالی/ مقداری گردش ها"
