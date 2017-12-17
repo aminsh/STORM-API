@@ -78,6 +78,20 @@
             </li>
 
             <li class="list-group-item">
+                <div class="row">
+                    <div class="col-md-6">{{'Sale price'|translate}}</div>
+                    <div class="col-md-6">
+                        <select ng-model="model.mapper.salePrice"
+                                name="title"
+                                ng-options="p as p for p in model.excelFields"
+                                class="form-control">
+                        </select>
+
+                    </div>
+                </div>
+            </li>
+
+            <li class="list-group-item">
                 <dev-tag-check-box ng-model="model.hasFirstInput">{{'Has first input'|translate}}</dev-tag-check-box>
             </li>
 
