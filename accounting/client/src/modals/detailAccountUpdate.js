@@ -1,11 +1,12 @@
 import accModule from "../acc.module";
 
-function detailAccountUpdateModalController($scope, $uibModalInstance, formService, detailAccountApi, logger, data, devConstants) {
+function detailAccountUpdateModalController($scope, $uibModalInstance, formService, detailAccountApi, logger, data, devConstants, $rootScope) {
     "use strict";
 
     let id = data.id;
 
     $scope.personType = devConstants.enums.PersonType().data;
+    $scope.detailAccountTypes = devConstants.enums.DetailAccountType().data;
 
     $scope.errors = [];
     detailAccountApi.getById(id)
@@ -24,6 +25,7 @@ function detailAccountUpdateModalController($scope, $uibModalInstance, formServi
         let cmd = {
             code: $scope.detailAccount.code,
             title: $scope.detailAccount.title,
+            detailAccountType: $scope.detailAccount.detailAccountType,
             description: $scope.detailAccount.description,
             detailAccountCategoryIds: $scope.detailAccount.detailAccountCategories
                 .asEnumerable()
@@ -34,6 +36,7 @@ function detailAccountUpdateModalController($scope, $uibModalInstance, formServi
 
         detailAccountApi.update(id, cmd)
             .then((result) => {
+                $rootScope.$broadcast('onDetailAccountChanged');
                 logger.success();
                 $uibModalInstance.close(result);
             })

@@ -38,6 +38,17 @@
         </div>
 
         <div class="form-group">
+            <label class="label-control">{{'Detail account type' | translate}}</label>
+
+            <select name="groupingType"
+                    ng-model="detailAccount.detailAccountType"
+                    ng-options="p.key as p.display for p in detailAccountTypes"
+                    class="form-control">
+                <option value="">{{'Select ...'|translate}}</option>
+            </select>
+        </div>
+
+        <div class="form-group">
             <label class="label-control">{{'Description' | translate}}</label>
             <textarea class="form-control" ng-model="detailAccount.description"
                       name="description"></textarea>

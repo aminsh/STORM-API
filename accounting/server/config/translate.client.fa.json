@@ -293,6 +293,7 @@
   "name":"نام",
   "person,company,...":"به عنوان مثال : نام شخص , شرکت یا ...",
   "Person Type":"نوع شخص",
+  "Detail account type": "نوع تفصیل",
   "RegistrationNumber":"شماره ثبت",
   "Economic Code":"کد اقتصادی",
   "Products": "کالا / خدمات",
