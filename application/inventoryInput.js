@@ -106,7 +106,8 @@ class InventoryInputService {
                 inventoryLines: entity.inventoryLines.asEnumerable()
                     .select(line => ({
                         productId: line.productId,
-                        quantity: line.quantity
+                        quantity: line.quantity,
+                        unitPrice: 0
                     }))
                     .toArray()
             });
@@ -129,7 +130,7 @@ class InventoryInputService {
 
         let input = this.inventoryRepository.findById(id);
 
-        if (input.fixQuantity)
+        if (input.fixedQuantity)
             throw new ValidationException(['رسید ثبت تعدادی شده ، امکان ویرایش وجود ندارد']);
 
         if (String.isNullOrEmpty(cmd.stockId))
@@ -185,6 +186,7 @@ class InventoryInputService {
             .select(line => ({
                 productId: line.productId,
                 quantity: line.quantity,
+                unitPrice: 0
             })).toArray();
 
         this.inventoryRepository.updateBatch(id, input);
@@ -229,7 +231,7 @@ class InventoryInputService {
 
         let input = this.inventoryRepository.findById(id);
 
-        if (!input.fixQuantity)
+        if (!input.fixedQuantity)
             throw new ValidationException(['رسید جاری ثبت مقداری نشده ، امکان ورود قیمت وجود ندارد']);
 
         lines.forEach((line, i) => {
@@ -247,7 +249,7 @@ class InventoryInputService {
             }))
             .toArray();
 
-        this.inventoryRepository.updateBatch(id, {id, inventoryLines});
+        this.inventoryRepository.updateLines(inventoryLines);
     }
 
     getInputFirst(stockId) {
@@ -270,11 +272,11 @@ class InventoryInputService {
     }
 
     fixQuantity(id) {
-        this.inventoryRepository.update(id, {fixQuantity: true});
+        this.inventoryRepository.update(id, {fixedQuantity: true});
     }
 
     fixAmount(id) {
-        this.inventoryRepository.update(id, {fixAmount: true});
+        this.inventoryRepository.update(id, {fixedAmount: true});
     }
 }
 
