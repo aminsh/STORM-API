@@ -47,6 +47,10 @@
                  ng-include="'partials/templates/report.parameter.product.html'">
             </div>
 
+            <div class="row" style="margin-top: 10px" ng-if="model.hasProperty('inventoryFixedStatus')"
+                 ng-include="'partials/templates/report.parameter.inventoryFixedStatus.html'">
+            </div>
+
             <div class="row" style="margin-top: 10px" ng-if="model.hasProperty('stock')"
                  ng-include="'partials/templates/report.parameter.stock.html'">
             </div>

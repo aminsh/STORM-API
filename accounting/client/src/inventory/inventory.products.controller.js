@@ -9,6 +9,11 @@ class InventoryProductsController {
         this.logger = logger;
 
         this.getAllStockUrl = devConstants.urls.stock.getAll();
+        this.getFixedStatus = devConstants.enums.getInventoryFixedStatus().data;
+
+        this.filter = {
+            fixedStatus: 'all'
+        };
 
         this.gridOption = {
             name: 'inventoryProduct',
@@ -50,21 +55,22 @@ class InventoryProductsController {
     }
 
     onStockChanged(item) {
-
         const extra = item.id === 'all' ? {} : {filter: {stockId: item.id}};
-
         this.$scope.$broadcast(`${this.gridOption.name}/execute-advanced-search`, extra);
     }
 
     inventoryProductsTurnover() {
-        const ids = this.gridOption.getSelected();
+        const ids = this.gridOption.getSelected(),
+            fixedType = this.filter.fixedStatus;
+
         if (ids.length === 0)
             return this.logger.error(this.translate('Select product'));
 
         this.reportParameters.show([{name: "date"}])
             .then(params => {
                 if (!this.gridOption.isSelectedAll)
-                    Object.assign(params, {ids});
+                    Object.assign(params, {ids: ids});
+                Object.assign(params, {fixedType: fixedType});
                 this.navigate(
                     'report.print',
                     {key: 900},
@@ -74,14 +80,16 @@ class InventoryProductsController {
     };
 
     inventoryProductsTurnoverTotal() {
-        const ids = this.gridOption.getSelected();
+        const ids = this.gridOption.getSelected(),
+            fixedType = this.filter.fixedStatus;
         if (ids.length === 0)
             return this.logger.error(this.translate('Select product'));
 
         this.reportParameters.show([{name: "date"}])
             .then(params => {
                 if (!this.gridOption.isSelectedAll)
-                Object.assign(params, {ids});
+                    Object.assign(params, {ids: ids});
+                Object.assign(params, {fixedType: fixedType});
                 this.navigate(
                     'report.print',
                     {key: 901},

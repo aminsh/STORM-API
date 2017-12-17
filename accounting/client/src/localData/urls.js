@@ -133,13 +133,6 @@ let inventory = {
     getAllInventoryProducts: () => `${rootUrl()}/inventories/products`
 };
 
-
-
-let inventoryProducts = {
-    //getInventoryProducts: () => `${rootUrl()}/`
-}
-
-
 let journalGenerationTemplate = {
     all: () => `${rootUrl()}/journal-generation-templates`
 };
@@ -178,7 +171,6 @@ let apiUrls = {
     stock,
     journalGenerationTemplate,
     returnSale,
-    inventoryProducts,
     report
 };
 
