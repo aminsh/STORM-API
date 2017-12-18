@@ -35,6 +35,14 @@
                                    resolve="model.stockResolver"
                                    url="{{model.getAllStockUrl}}"></dev-tag-combo-box>
             </div>
+
+            <div class="col-md-4" style="margin-top: 10px">
+                <label class="label-control">{{'AmountFixed or QuantityFixed filter' | translate}}</label>
+                <select ng-model="model.filter.fixedStatus"
+                        ng-options="p.key as p.display for p in model.getFixedStatus"
+                        class="form-control">
+                </select>
+            </div>
         </div>
 
         <dev-tag-grid option="model.gridOption"></dev-tag-grid>

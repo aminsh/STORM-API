@@ -25,18 +25,19 @@ class ReportApi {
     generalBalance(params) {
         return this.apiPromise.get(`${this.urlPrefix}/general-balance`, params);
     }
-/*
-    subsidiaryBalance(params) {
-        return this.apiPromise.get(`${this.urlPrefix}/subsidiary-balance`, params);
-    }
 
-    subsidiaryDetailBalance(params) {
-        return this.apiPromise.get(`${this.urlPrefix}/subsidiary-detail-balance`, params);
-    }
+    /*
+     subsidiaryBalance(params) {
+     return this.apiPromise.get(`${this.urlPrefix}/subsidiary-balance`, params);
+     }
 
-    generalSubsidiaryDetailBalance(params) {
-        return this.apiPromise.get(`${this.urlPrefix}/general-subsidiary-detail-balance`, params);
-    }*/
+     subsidiaryDetailBalance(params) {
+     return this.apiPromise.get(`${this.urlPrefix}/subsidiary-detail-balance`, params);
+     }
+
+     generalSubsidiaryDetailBalance(params) {
+     return this.apiPromise.get(`${this.urlPrefix}/general-subsidiary-detail-balance`, params);
+     }*/
 
     journalOffice(params) {
         return this.apiPromise.get(`${this.urlPrefix}/journal-office`, params);
@@ -108,13 +109,15 @@ class ReportApi {
     }
 
     getProductTurnover(params) {
-        let ids = params.products.length === 0 ? params.ids : params.products;
-        return this.apiPromise.get(`${this.urlPrefix}/product-turnover`, {ids})
+        let ids = params.products.length === 0 ? params.ids : params.products,
+            fixedType = params.fixedType ? params.fixedType : params.inventoryFixedStatuses;
+        return this.apiPromise.get(`${this.urlPrefix}/product-turnover`, {ids, fixedType})
     }
 
-    getProductTurnoverTotal(params){
-        let ids = params.products.length === 0 ? params.ids : params.products;
-        return this.apiPromise.get(`${this.urlPrefix}/product-turnover-total`,{ids})
+    getProductTurnoverTotal(params) {
+        let ids = params.products.length === 0 ? params.ids : params.products,
+            fixedType = params.fixedType ? params.fixedType : params.inventoryFixedStatuses;
+        return this.apiPromise.get(`${this.urlPrefix}/product-turnover-total`, {ids, fixedType})
     }
 
     generalLedgerAccountReview(params) {
@@ -153,16 +156,16 @@ class ReportApi {
         return this.apiPromise.get(`${this.constants.urls.rootUrl}/account-review/tiny`, reportParam)
     }
 
-    getSeasonal(params){
-        return this.apiPromise.get(`${this.urlPrefix}/seasonal`,params)
+    getSeasonal(params) {
+        return this.apiPromise.get(`${this.urlPrefix}/seasonal`, params)
     }
 
-    getTotalSeasonal(params){
-        return this.apiPromise.get(`${this.urlPrefix}/seasonal`,params)
+    getTotalSeasonal(params) {
+        return this.apiPromise.get(`${this.urlPrefix}/seasonal`, params)
     }
 
-    getBalanceSheet(params){
-        return this.apiPromise.get(`${this.urlPrefix}/balance-sheet`,params)
+    getBalanceSheet(params) {
+        return this.apiPromise.get(`${this.urlPrefix}/balance-sheet`, params)
     }
 }
 

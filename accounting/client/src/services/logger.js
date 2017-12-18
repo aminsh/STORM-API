@@ -12,6 +12,7 @@ export default function logger(translate) {
             swal({
                 title: translate('Successful'),
                 text: message || translate('Done successfully'),
+                html: true,
                 type: 'success',
                 timer: 2000,
                 confirmButtonText: translate('OK')
@@ -21,6 +22,7 @@ export default function logger(translate) {
             swal({
                 title: translate('Info'),
                 text: message,
+                html: true,
                 type: 'info',
                 timer: 2000,
                 confirmButtonText: translate('OK')
@@ -30,6 +32,7 @@ export default function logger(translate) {
             swal({
                 title: translate('Warning'),
                 text: message,
+                html: true,
                 type: 'warning',
                 timer: 2000,
                 confirmButtonText: translate('OK')
@@ -39,6 +42,7 @@ export default function logger(translate) {
             swal({
                 title: translate('Error'),
                 text: message,
+                html: true,
                 type: 'error',
                 timer: 4000,
                 confirmButtonText: translate('OK')

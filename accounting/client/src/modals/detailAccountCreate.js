@@ -1,6 +1,7 @@
 import accModule from "../acc.module";
 
 function detailAccountCreateModalController($scope,
+                                            $rootScope,
                                             $uibModalInstance,
                                             formService,
                                             detailAccountApi,
@@ -22,6 +23,8 @@ function detailAccountCreateModalController($scope,
         personType: null
     };
 
+    $scope.detailAccountTypes = devConstants.enums.DetailAccountType().data;
+
     detailAccountCategoryApi.getAll()
         .then(result => {
             result.data.forEach(e => e.isSelected = false);
@@ -42,6 +45,7 @@ function detailAccountCreateModalController($scope,
             code: $scope.detailAccount.code,
             title: $scope.detailAccount.title,
             description: $scope.detailAccount.description,
+            detailAccountType: $scope.detailAccount.detailAccountType,
             detailAccountCategoryIds: $scope.detailAccount.detailAccountCategories
                 .asEnumerable()
                 .where(e => e.isSelected)
@@ -52,7 +56,7 @@ function detailAccountCreateModalController($scope,
         detailAccountApi.create(cmd)
             .then((result) => {
                 logger.success();
-                $scope.$broadcast('on-customer-created', result)
+                $rootScope.$broadcast('onDetailAccountChanged');
                 $uibModalInstance.close(result);
 
             })

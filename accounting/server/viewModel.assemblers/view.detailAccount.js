@@ -7,6 +7,8 @@ function detailAccountAssembler(entity) {
         id: entity.id,
         code: entity.code,
         display: entity.display,
+        detailAccountType: entity.detailAccountType,
+        detailAccountTypeDisplay: entity.detailAccountType ? enums.DetailAccountType().getDisplay(entity.detailAccountType) : '',
         title: entity.title,
         description: entity.description,
         isActive: entity.isActive,

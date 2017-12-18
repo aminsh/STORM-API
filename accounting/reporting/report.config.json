@@ -446,6 +446,9 @@
           },
           {
             "name": "product"
+          },
+          {
+            "name": "inventoryFixedStatus"
           }
         ]
       },
@@ -462,6 +465,9 @@
           },
           {
             "name": "product"
+          },
+          {
+            "name": "inventoryFixedStatus"
           }
         ]
       },

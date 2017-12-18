@@ -8,6 +8,7 @@ export default function confirm(translate, $q) {
         swal({
             title: title,
             text: message,
+            html: true,
             type: type || "warning",
             showCancelButton: true,
             cancelButtonText: translate('No'),

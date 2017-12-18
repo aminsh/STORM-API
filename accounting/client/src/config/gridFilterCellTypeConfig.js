@@ -170,6 +170,17 @@ accModule.config(function (gridFilterCellTypeProvider,
         </li>`
     };
 
+    let detailAccountType = {
+        data: devConstants.enums.DetailAccountType().data,
+        template: `<li ng-repeat="item in items">
+        <dev-tag-radio 
+            ng-class="{'checked': item.key == filter.value}"
+            ng-model="filter.value" 
+            k-value="{{item.key}}"></dev-tag-radio>
+        {{item.display}}
+        </li>`
+    };
+
     let chequeStatus = {
         data: devConstants.enums.ChequeStatus().data,
         template: `<li ng-repeat="item in items">
@@ -186,6 +197,7 @@ accModule.config(function (gridFilterCellTypeProvider,
         groupingType: groupingType,
         balanceType: balanceType,
         activeType: activeType,
+        detailAccountType: detailAccountType,
         bank: bank,
         generalLedgerAccount: generalLedgerAccount,
         subsidiaryLedgerAccount: subsidiaryLedgerAccount,

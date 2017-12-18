@@ -1,9 +1,11 @@
 import accModule from '../acc.module';
 
-function detailAccountsController($scope, logger, translate, confirm,
+function detailAccountsController($scope, logger, translate, confirm,$rootScope,
                                   detailAccountApi,
                                   devConstants) {
     "use strict";
+
+
 
     $scope.gridOption = {
         columns: [
@@ -13,6 +15,12 @@ function detailAccountsController($scope, logger, translate, confirm,
                 title: translate('Title'),
                 type: 'string',
                 template: `<a ui-sref=".edit({id: item.id})">{{item.title}}</a>`
+            },
+            {
+                name: 'detailAccountType',
+                title: translate('Detail account type'),
+                type: 'detailAccountType',
+                template: `<span>{{item.detailAccountTypeDisplay}}</span>`
             }
         ],
         commands: [
@@ -38,6 +46,10 @@ function detailAccountsController($scope, logger, translate, confirm,
         ],
         readUrl: devConstants.urls.detailAccount.all()
     };
+
+    let unRegister = $rootScope.$on('onDetailAccountChanged', () => $scope.gridOption.refresh());
+
+    $scope.$on('$destroy', unRegister);
 }
 
 accModule.controller('detailAccountsController', detailAccountsController);

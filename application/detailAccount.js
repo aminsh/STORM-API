@@ -110,6 +110,7 @@ class DetailAccount {
             id,
             code: cmd.code,
             title: cmd.title,
+            detailAccountType: cmd.detailAccountType,
             referenceId: cmd.referenceId,
             bank: cmd.bank,
             bankBranch: cmd.bankBranch,
