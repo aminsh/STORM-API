@@ -50,7 +50,7 @@
       {
         "subsidiaryLedgerAccountId": "",
         "debtor": "# amount #",
-        "creditor": "",
+        "creditor": "0",
         "article": "بابت فاکتور شماره # number # "
       },
       {
