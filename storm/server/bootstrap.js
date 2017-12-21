@@ -51,9 +51,6 @@ app.use('/', express.static(config.rootPath + '/storm/server/views/webSite'));
 
 app.use(multer({dest: './data/uploads/;'}));
 
-/*require('raven').config('https://50b4d5bc2a994b1c981dca42cd56013b:530f0521a04c4090b8174c157927d65b@sentry.io/192057')
-    .install();*/
-
 require('./bootstrap.authentication');
 require('./bootstrap.events');
 
