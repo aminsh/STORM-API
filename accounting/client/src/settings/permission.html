@@ -53,38 +53,7 @@
         </div>
         <div class="row" >
             <div class="col-md-12" >
-                <div class="table-responsive m-t" >
-                    <table class="table" ng-show="model.changeUsersInBranchData.branchUsers.length > 0" >
-                        <thead>
-                        <tr>
-                            <th></th>
-                            <th class="so-align-center" >{{'Email' | translate}}</th>
-                            <th class="so-align-center" >{{'name' | translate}}</th>
-                            <th></th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr ng-repeat="item in model.changeUsersInBranchData.branchUsers"
-                            class="so-vert-align-middle" >
-                            <td class="so-align-center so-vert-align-middle" >
-                                <img class="img-circle" ng-src="{{item.image}}"
-                                     style="width: 50px;height: 50px"
-                                     alt="member: {{item.name}}"
-                                     preload-image
-                                     default-image="/public/images/user.png"
-                                     fallback-image="/public/images/user.png"/>
-                            </td>
-                            <td class="so-align-center so-vert-align-middle" >{{item.email}}</td>
-                            <td class="so-align-center so-vert-align-middle" >{{item.name}}</td>
-                            <td class="so-align-center so-vert-align-middle" >
-                                <i class="fa fa-trash-o so-tx-color-red"
-                                   style="cursor: pointer;font-size: 18pt;"
-                                   ng-click="model.deleteUserFromBranchByEmail(item.email)" ></i>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
+                <dev-tag-grid option="model.branchMembersGridOption"></dev-tag-grid>
             </div>
         </div>
     </form>

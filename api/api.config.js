@@ -4,56 +4,60 @@ const async = require('asyncawait/async'),
     await = require('asyncawait/await'),
     express = require('express'),
     app = express(),
-    jwt = require('jsonwebtoken'),
-    FiscalPeriodQuery = require('../accounting/server/queries/query.fiscalPeriod'),
-    superSecret = require('../accounting/server/services/cryptoService').superSecret;
+
+    /**
+     * @type {BranchService} */
+    BranchService = instanceOf('BranchService'),
+
+    /** @type {UserQuery}*/
+    UserQuery = instanceOf('UserQuery'),
+    parseFiscalPeriod = require('./parse.fiscalPeriod');
 
 
 module.exports = app;
 
-app.use((req, res, next) => {
-    const token = req.body.token || req.query.token || req.headers['x-access-token'],
-        noTokenProvidedMessage = {
-            success: false,
-            message: 'No token provided.'
-        };
+app.use(async(function (req, res, next) {
 
+    let userToken = req.headers["authorization"];
+
+    if (!userToken)
+        return next();
+
+    let user = UserQuery.getByToken(userToken);
+
+    if (!user)
+        return next();
+
+    req.user = user;
+    req.isAuth = true;
+
+    next();
+}));
+
+app.use('/login', require('./api.login'));
+app.use('/branches', require('./api.branch'));
+
+app.use(async((req, res, next) => {
+    const token = req.body.token || req.query.token || req.headers['x-access-token'],
+
+        noTokenProvidedMessage = 'No token provided.';
 
     if (!token)
         return res.status(403).send(noTokenProvidedMessage);
 
-    jwt.verify(token, superSecret, async((err, decode) => {
-        if(err)
-            return res.status(403).send(noTokenProvidedMessage);
+    let decode = BranchService.findByToken(token);
 
-        req.branchId = decode.branchId;
-        req.user = {id: decode.userId};
+    if (!decode)
+        return res.status(403).send(noTokenProvidedMessage);
 
-        let currentPeriod = req.cookies['current-period'],
-            fiscalPeriodQuery = new FiscalPeriodQuery(req.branchId);
+    req.branchId = decode.branchId;
+    req.user = {id: decode.userId};
 
-        if (!currentPeriod) {
-            setFiscalPeriodId();
-        } else{
-            let isFiscalPeriodValid = await(fiscalPeriodQuery.getById(currentPeriod));
+    parseFiscalPeriod(req);
 
-            if(isFiscalPeriodValid)
-                req.fiscalPeriodId = currentPeriod;
+    next();
+}));
 
-            else setFiscalPeriodId();
-        }
-
-        function setFiscalPeriodId() {
-            let maxId = await(fiscalPeriodQuery.getMaxId());
-            maxId = maxId || 0;
-
-            res.cookie('current-period', maxId);
-            req.fiscalPeriodId = maxId;
-        }
-
-        next();
-    }));
-});
 
 app.use('/account-review', require('../accounting/server/routes/api.accountReview'));
 

@@ -12,6 +12,9 @@ const express = require('express'),
     Email = instanceOf('Email'),
     crypto = instanceOf('Crypto'),
     render = instanceOf('htmlRender').renderFile,
+    /**
+     * @type {TokenGenerator}*/
+    TokenGenerator = instanceOf('TokenGenerator'),
     TokenRepository = require('../token/token.repository');
 
 router.route('/').get(async((req, res) => {
@@ -42,7 +45,7 @@ router.route('/register').post(async((req, res) => {
             name: cmd.name,
             password: md5(cmd.password.toString()),
             state: 'pending',
-            token: Guid.new()
+            token: TokenGenerator.generate256Bit()
         },
         url = `${config.url.origin}/activate/${user.token}`;
 

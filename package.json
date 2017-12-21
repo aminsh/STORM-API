@@ -108,6 +108,7 @@
     "tedious": "^1.14.0",
     "to-pascal-case": "^1.0.0",
     "ui-select": "^0.19.7",
+    "uuid-token-generator": "^1.0.0",
     "yargs": "^7.0.2"
   },
   "devDependencies": {

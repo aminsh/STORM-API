@@ -85,10 +85,10 @@ class BranchQuery {
             .from('userInBranches')
             .where('userId', userId);
 
-        return knex.select('id', 'name', 'logo', 'apiKey', 'status', 'address', 'phone', 'mobile', 'webSite', 'ownerName')
+        return await(knex.select('id', 'name', 'logo', 'apiKey', 'status', 'address', 'phone', 'mobile', 'webSite', 'ownerName')
             .from('branches')
             .where('ownerId', userId)
-            .orWhereIn('id', userInBranchQuery);
+            .orWhereIn('id', userInBranchQuery));
     }
 
     totalBranches(){

@@ -70,6 +70,10 @@ export default class BranchApi {
         return this.apiPromise.delete(`/api/branches/users/${email}`);
     }
 
+    regenerateToken(id){
+        return this.apiPromise.put(`/api/branches/users/${id}/regenerate-token`);
+    }
+
     getCurrentBranchLogo() {
         return this.apiPromise.get(`/api/branches/logo`);
     }

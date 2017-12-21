@@ -1,5 +1,7 @@
 "use strict";
 
+/**
+ * @param {BranchApi} branchApi */
 export default class {
     constructor(settingsApi
         , userApi
@@ -11,7 +13,8 @@ export default class {
         , $timeout
         , translate
         , confirm
-        , webhookEntryService) {
+        , webhookEntryService,
+                clipboard) {
         this.settingsApi = settingsApi;
         this.userApi = userApi;
         this.branchApi = branchApi;
@@ -34,6 +37,7 @@ export default class {
             this.stakeholders = result.stakeholders || [];
             this.subsidiaryLedgerAccounts = result.subsidiaryLedgerAccounts;
         });
+
         this.updateUserImage();
         this.isBranchOwnerUser()
             .then((isOwner) => {
@@ -72,6 +76,73 @@ export default class {
             getAllDetailAccount: devConstants.urls.people.getAll(),
             getAllAccounts: devConstants.urls.subsidiaryLedgerAccount.all()
         };
+
+        this.branchMembersGridOption = {
+            columns: [
+                {
+                    name: 'image',
+                    title: '',
+                    filterable: false,
+                    sortable: false,
+                    css: 'text-center',
+                    header: {
+                        css: 'text-center'
+                    },
+                    template: `<img class="img-circle" ng-src="{{item.image}}"
+                                     style="width: 50px;height: 50px"
+                                     alt="member: {{item.name}}"
+                                     preload-image
+                                     default-image="/public/images/user.png"
+                                     fallback-image="/public/images/user.png"/>`
+                },
+                {
+                    name: 'email',
+                    title: translate('Email'),
+                    type: 'string',
+                    css: 'text-center',
+                    header: {
+                        css: 'text-center'
+                    }
+                },
+                {
+                    name: 'name',
+                    title: translate('Name'),
+                    type: 'string',
+                    css: 'text-center',
+                    header: {
+                        css: 'text-center'
+                    }
+                },
+                {
+                    name: 'token',
+                    title: translate('Token'),
+                    filterable: false,
+                    sortable: false,
+                    css: 'text-center giveMeEllipsis',
+                    header: {
+                        css: 'text-center'
+                    },
+                    model: {
+                        copy: text => clipboard.copyText(text)
+                    },
+                    template: `<i title="${translate('Copy')}" class="fa fa-copy fa-lg text-success pointer" ng-click="column.model.copy(item.token)"></i>
+                                <span title="{{item.token}}" style="font-family: Arial">{{item.token}}</span>`
+                },
+            ],
+            commands: [
+                {
+                    title: translate('Remove'),
+                    icon: 'fa fa-trash text-danger fa-lg',
+                    action: current => this.deleteUserFromBranchByEmail(current.email)
+                },
+                {
+                    title: translate('Regenerate token'),
+                    icon: 'fa fa-refresh text-success fa-lg',
+                    action: current => this.regenerateToken(current.id)
+                }
+            ],
+            readUrl: '/api/branches/users'
+        }
 
     }
 
@@ -131,7 +202,7 @@ export default class {
     }
 
     validateStakeholder() {
-        if(this.stakeholders.length === 0)
+        if (this.stakeholders.length === 0)
             return;
 
         const total = this.stakeholders.asEnumerable()
@@ -281,7 +352,10 @@ export default class {
 
                 }
 
-                this.$timeout(() => this.formService.setClean(form));
+                this.$timeout(() => {
+                    this.formService.setClean(form);
+                    this.branchMembersGridOption.refresh();
+                });
 
             })
             .catch(error => {
@@ -309,7 +383,10 @@ export default class {
                     .deleteUserByEmail(email)
                     .then(() => {
 
-                        this.$timeout(() => this.logger.success());
+                        this.$timeout(() => {
+                            this.logger.success();
+                            this.branchMembersGridOption.refresh();
+                        });
 
                     })
                     .catch(error => {
@@ -320,6 +397,23 @@ export default class {
                     })
                     .finally(() => this.getBranchUsers());
 
+            });
+
+    }
+
+    regenerateToken(id) {
+
+        this.confirm(
+            this.translate('Are you sure ?'),
+            this.translate('Regenerate token')
+        )
+            .then(() => {
+                this.branchApi.regenerateToken(id)
+                    .then(() => {
+                        this.$timeout(() => this.logger.success(), 500);
+                        this.branchMembersGridOption.refresh();
+                    })
+                    .catch(errors => this.logger.error(errors.join('</br>')));
             });
 
     }
@@ -356,7 +450,7 @@ export default class {
             });
     }
 
-    editWebhook(config){
+    editWebhook(config) {
         this.webhookEntryService.show({config})
             .then(result => config = result);
     }

@@ -1,5 +1,7 @@
 ﻿{
   "menu": "منو",
+  "Name": "نام",
+  "Token": "کلید",
   "Current info": "اطلاعات جاری",
   "User": "کاربر",
   "Change password": "تغییر رمز عبور",
@@ -499,5 +501,6 @@
   "Destination stock": "انبار مقصد",
   "Stock and Source stock is not allowed to be equal": "انبار و انبار مبدا نمیتواند یکی باشد",
   "Fixed quantity": "ثبت مقداری",
-  "Fixed amount": "ثبت ریالی"
+  "Fixed amount": "ثبت ریالی",
+  "Regenerate token": "تولید کلید"
 }

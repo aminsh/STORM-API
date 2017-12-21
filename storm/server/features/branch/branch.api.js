@@ -234,33 +234,47 @@ router.route('/users/is-owner')
         }
 
     }));
+
+
+router.route('/users/:id/regenerate-token')
+    .put(async((req, res) => {
+
+        if (!req.isAuth)
+            return res.status(401).send('No Authorized');
+
+        let id = req.params.id,
+            member = branchRepository.getMember(id),
+            branch = branchRepository.getById(member.branchId);
+
+        if (branch.ownerId !== req.user.id)
+            return res.status(401).send('No Authorized');
+
+        try {
+            BranchService.userRegenerateToken(req.params.id);
+
+            res.json({isValid: true});
+        }
+        catch (e) {
+            res.json({isValid: false, errors: ['internal error']});
+        }
+
+    }));
+
 router.route('/users')
     .get(async((req, res) => {
 
         if (!req.isAuthenticated())
-            return res.json({isValid: false});
+            return res.status(401).send('No authorized');
 
         let currentBranch = await(branchRepository.getById(req.cookies['branch-id']));
 
-        try {
+        if (currentBranch.ownerId !== req.user.id)
+            return res.status(401).send('Not authorized');
 
-            if (currentBranch.ownerId !== req.user.id) {
-                console.log(">>> Not Owner");
-                return res.json({isValid: false});
-            }
-
-        } catch (err) {
-
-            console.log(">>> Error: ", err);
-            return res.json({isValid: false});
-
-        }
-
-        let branchUsers = await(branchRepository.getBranchMembers(currentBranch.id));
-        return res.json({isValid: true, returnValue: branchUsers});
-
-
+        let result = branchRepository.getBranchMembers(currentBranch.id);
+        return res.json(result);
     }));
+
 router.route('/users/:email')
     .put((req, res) => {
 
