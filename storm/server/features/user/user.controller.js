@@ -5,7 +5,10 @@ const express = require('express'),
     await = require('asyncawait/await'),
     UserRepository = require('./user.repository'),
     crypto = require('../../../../shared/services/cryptoService'),
-    TokenRepository = require('../token/token.repository');
+    TokenRepository = require('../token/token.repository'),
+    /**
+     * @type {TokenGenerator}*/
+    TokenGenerator = instanceOf('TokenGenerator');
 
 
 router.route('/activate/:token').get(async((req, res) => {
@@ -13,19 +16,11 @@ router.route('/activate/:token').get(async((req, res) => {
         userRepository = new UserRepository(),
         user = await(userRepository.getByToken(token));
 
-    try{
+    if(!user)
+        return res.redirect('/404');
 
-        user.token = null;
-        user.state = 'active';
-
-    } catch(err) {
-
-        if(!req.isAuthenticated())
-            return res.redirect("/login");
-
-        return res.redirect("/profile");
-
-    }
+    user.token = TokenGenerator.generate256Bit();
+    user.state = 'active';
 
     await(userRepository.update(user.id, user));
 
