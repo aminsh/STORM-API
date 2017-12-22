@@ -47,8 +47,13 @@ class InvoiceQuery extends BaseQuery {
             sumCharges = (invoice.charges || []).asEnumerable()
                 .sum(c => c.value);
 
+        let lineHaveVat = invoiceLines.asEnumerable().firstOrDefault(e => e.vat !== 0),
+            persistedVat = lineHaveVat
+                ? (100 * lineHaveVat.vat) / ((lineHaveVat.quantity * lineHaveVat.unitPrice) - lineHaveVat.discount)
+                : 0;
+
         invoice.sumTotalPrice = invoiceLines.asEnumerable()
-            .sum(line => line.quantity * line.unitPrice - line.discount + line.vat ) + sumCharges;
+            .sum(line => line.quantity * line.unitPrice - line.discount + line.vat) + sumCharges + (sumCharges * persistedVat / 100);
 
         invoice.sumRemainder = invoice.sumTotalPrice - (invoice.sumPaidAmount || 0);
 
@@ -61,7 +66,9 @@ class InvoiceQuery extends BaseQuery {
     getAll(parameters, invoiceType) {
         let knex = this.knex,
             branchId = this.branchId,
-            sumChargesQuery = '(select coalesce(sum(value),0) from invoices as i left join json_to_recordset(i.charges) as x(key text, value int) on true where i.id = "base".id)',
+            sumChargesQuery = `(select coalesce(sum(value),0) from invoices as i left join json_to_recordset(i.charges) as x(key text, value int) on true where i.id = "base".id) 
+            + ((select coalesce(sum(value),0) from invoices as i left join json_to_recordset(i.charges) as x(key text, value int) on true where i.id = "base".id) *  
+            coalesce((select (100 * line.vat) / ((line.quantity * line."unitPrice") - line.discount) from "invoiceLines" as line where "invoiceId" = "base".id and vat <> 0 limit 1), 0) /100)`,
 
             query = knex.select().table(function () {
                 this.select(
