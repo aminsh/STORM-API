@@ -131,7 +131,7 @@
                     <td>{{c.value | number}}</td>
                 </tr>
 
-                <tr>
+                <tr ng-show="model.invoice.charges.length > 0">
                     <td><strong>جمع مالیات اضافات :</strong></td>
                     <td>{{((model.invoice.charges | totalSum: ('value')) * model.vat) /100 | number}}</td>
                 </tr>
