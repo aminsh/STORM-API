@@ -26,7 +26,15 @@ class InvoiceViewBaseController {
         this.isLoading = true;
 
         this.api.getById(this.id)
-            .then(result => this.invoice = result)
+            .then(result => {
+                this.invoice = result;
+
+                let itemVatNotZero =  this.invoice.invoiceLines.asEnumerable().firstOrDefault(item => item.vat !== 0);
+
+                this.vat = itemVatNotZero
+                    ? (100 * itemVatNotZero.vat) / ((itemVatNotZero.quantity * itemVatNotZero.unitPrice) - itemVatNotZero.discount)
+                    : 0;
+            })
             .finally(() => this.isLoading = false);
 
         this.getPayments();

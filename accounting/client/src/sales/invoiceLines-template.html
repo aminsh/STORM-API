@@ -216,28 +216,43 @@
                     <h3>{{model.invoice.invoiceLines | totalSum: ('discount') | number}}</h3>
                 </div>
             </div>
+
+            <div class="row text-left" style="border-bottom: 1px solid #DDDDDD;">
+                <div ng-include="'partials/sales/invoiceLines-charges-template.html'"></div>
+
+                <div ng-show="model.invoice.charges.length > 0">
+                    <div class="col-md-5 text-right">
+                        <h3>{{'Sum charges'|translate}}</h3>
+                    </div>
+                    <div class="col-md-7 text-left">
+                        <h3>{{model.invoice.charges | totalSum: ('value') | number}}</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="row text-left"
+                 ng-show="model.invoice.charges.length > 0"
+                 style="border-bottom: 1px solid #DDDDDD;">
+                <div class="col-xs-5 title1 so-align-right"><h3>{{'Sum charges tax'|translate}}</h3></div>
+                <div class="col-xs-7 title1">
+                    <h3>{{((model.invoice.charges | totalSum: ('value')) * model.settings.vat) /100 | number}}</h3>
+                </div>
+            </div>
             <div class="row text-left" style="border-bottom: 1px solid #DDDDDD;">
                 <div class="col-xs-5 title1 so-align-right"><h3>{{'Sum tax'|translate}}</h3></div>
                 <div class="col-xs-7 title1">
-                    <h3>{{model.invoice.invoiceLines | totalSum: ('vat') | number}}</h3>
+                    <h3>{{(model.invoice.invoiceLines | totalSum: ('vat')) + (((model.invoice.charges | totalSum: ('value')) * model.settings.vat) /100) | number}}</h3>
                 </div>
             </div>
-            <div class="row text-left" style="border-bottom: 1px solid #DDDDDD;">
-                <div ng-include="'partials/sales/invoiceLines-charges-template.html'"></div>
-                <div class="col-md-5 text-right">
-                    <h3>{{'Sum charges'|translate}}</h3>
-                </div>
-                <div class="col-md-7 text-left">
-                    <h3>{{model.invoice.charges | totalSum: ('value') | number}}</h3>
-                </div>
-            </div>
+
             <div class="row" style="margin-top: 1px; margin-bottom: 1px;border-bottom: 1px solid #DDDDDD;"></div>
             <div class="row text-left" >
                 <div class="col-xs-5 h5 txt-bold so-align-right"><h3>{{"Payable amount"|translate}}</h3></div>
                 <div class="col-xs-7 h5 txt-bold "
                      ng-model="model.invoice.totalPrice">
 
-                    <h3>{{(model.invoice.invoiceLines | totalSum: ('($.quantity * $.unitPrice) - $.discount + $.vat')) + (model.invoice.charges | totalSum: ('value')) | number}}</h3>
+                    <h3>{{(model.invoice.invoiceLines | totalSum: ('($.quantity * $.unitPrice) - $.discount + $.vat')) +
+                          (model.invoice.charges | totalSum: ('value')) +
+                          (((model.invoice.charges | totalSum: ('value')) * model.settings.vat) /100) | number}}</h3>
                 </div>
             </div>
         </div>

@@ -267,13 +267,18 @@ class JournalService {
                 }))
                 .toObject(item => `charge_${item.key}`, item => item.value);
 
-        let model = Object.assign({
+        let lineHaveVat = invoice.invoiceLines.asEnumerable().firstOrDefault(e => e.vat !== 0),
+            persistedVat = lineHaveVat
+                ? (100 * lineHaveVat.vat) / ((lineHaveVat.quantity * lineHaveVat.unitPrice) - lineHaveVat.discount)
+                : 0,
+
+            model = Object.assign({
                 number: invoice.number,
                 date: invoice.date,
                 title: invoice.title,
                 amount: invoice.invoiceLines.asEnumerable().sum(line => line.unitPrice * line.quantity),
                 discount: invoice.invoiceLines.asEnumerable().sum(line => line.discount),
-                vat: invoice.invoiceLines.asEnumerable().sum(line => line.vat),
+                vat: invoice.invoiceLines.asEnumerable().sum(line => line.vat) + (invoice.charges.asEnumerable().sum(e => e.value) * persistedVat /100),
                 customer: invoice.detailAccountId,
                 bankReceiptNumber: invoice.bankReceiptNumber || ''
             }, cost, charge),
