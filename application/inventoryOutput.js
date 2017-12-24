@@ -18,14 +18,20 @@ class OutputService {
     createForInvoice(cmd) {
         const settings = await(new SettingsRepository(this.branchId).get()),
             productService = new ProductService(this.branchId),
-            stockRepository = new StockRepository(this.branchId);
+            stockRepository = new StockRepository(this.branchId),
+
+            linesShouldTrackByInventory = cmd.invoiceLines.asEnumerable()
+                .where(item => item.productId && productService.shouldTrackInventory(item.productId))
+                .toArray();
+
+        if(linesShouldTrackByInventory.length === 0)
+            return;
 
         if (settings.productOutputCreationMethod === 'defaultStock')
             cmd.invoiceLines.forEach(item => item.stockId = settings.stockId);
         else {
 
-            let errors = cmd.invoiceLines.asEnumerable()
-                .where(item => productService.shouldTrackInventory(item.productId))
+            let errors = linesShouldTrackByInventory.asEnumerable()
                 .where(item => String.isNullOrEmpty(item.stockId))
                 .select(item => `برای کالای ${productService.findByIdOrCreate({id: item.productId}).title} انبار انتخاب نشده`)
                 .toArray();
@@ -34,7 +40,7 @@ class OutputService {
                 throw new ValidationException(errors);
         }
 
-        let errors = cmd.invoiceLines.asEnumerable()
+        let errors = linesShouldTrackByInventory.asEnumerable()
             .select(item => ({
                 productId: item.productId,
                 stockId: item.stockId,
@@ -52,8 +58,7 @@ class OutputService {
             throw new ValidationException(errors);
 
 
-        let outputs = cmd.invoiceLines.asEnumerable()
-            .where(item => productService.shouldTrackInventory(item.productId))
+        let outputs = linesShouldTrackByInventory.asEnumerable()
             .groupBy(
                 item => item.stockId,
                 item => item,
