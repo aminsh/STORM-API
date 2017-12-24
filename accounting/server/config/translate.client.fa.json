@@ -514,5 +514,7 @@
   "It`s not possible the rows that have these errors": "امکان ذخیره سازی ردیف های با اشکالات زیر وجود ندارد",
   "Ordering number by date": "مرتب سازی شماره ها براساس تاریخ",
   "Filtered by fixed ...": "شامل گردش های ...",
-  "AmountFixed or QuantityFixed filter":"فیلتر ثبت ریالی/ مقداری گردش ها"
+  "AmountFixed or QuantityFixed filter":"فیلتر ثبت ریالی/ مقداری گردش ها",
+  "Not set subsidiary ledger account bank on settings":"حساب معین بانک در تنظیمات تعریف نشده",
+  "Not set subsidiary ledger account fund on settings": "حساب معین صندوق در تنظیمات تعریف نشده"
 }
