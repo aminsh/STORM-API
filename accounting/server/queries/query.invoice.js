@@ -36,7 +36,10 @@ class InvoiceQuery extends BaseQuery {
             ),
 
             invoiceLines = await(knex
-                .select('invoiceLines.*', knex.raw('scales.title as scale'), knex.raw('stocks.title as "stockDisplay"'))
+                .select('invoiceLines.*',
+                    knex.raw('CAST("invoiceLines"."unitPrice" AS FLOAT)'),
+                    knex.raw('scales.title as scale'),
+                    knex.raw('stocks.title as "stockDisplay"'))
                 .from('invoiceLines')
                 .leftJoin('products', 'invoiceLines.productId', 'products.id')
                 .leftJoin('scales', 'products.scaleId', 'scales.id')
