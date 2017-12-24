@@ -36,7 +36,7 @@ class DetailAccount {
         if (!cmd.title)
             return null;
 
-        const id = this.create({title: cmd.title, referenceId: cmd.referenceId, detailAccountType: 'person'});
+        const id = this.create(Object.assign({}, cmd, {detailAccountType: 'person'}));
 
         return {id};
     }
