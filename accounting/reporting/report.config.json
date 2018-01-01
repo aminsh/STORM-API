@@ -434,10 +434,10 @@
     "text": "کالا و انبار",
     "items": [
       {
-        "key": "900",
-        "text": "گزارش جزئیات گردش کالا (کاردکس)",
-        "func": "getProductTurnover",
-        "fileName": "getProductTurnover",
+        "key": "901",
+        "text": "گزارش کاردکس کالا ",
+        "func": "getProductTurnoverTotal",
+        "fileName": "getProductTurnoverTotal",
         "useLayout": false,
         "showOnAccounting": true,
         "params": [
@@ -453,10 +453,10 @@
         ]
       },
       {
-        "key": "901",
-        "text": "گزارش کل گردش کالا",
-        "func": "getProductTurnoverTotal",
-        "fileName": "getProductTurnoverTotal",
+        "key": "900",
+        "text": "گزارش جزئیات گردش کالا (کاردکس)",
+        "func": "getProductTurnover",
+        "fileName": "getProductTurnover",
         "useLayout": false,
         "showOnAccounting": true,
         "params": [
