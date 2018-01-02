@@ -15,6 +15,10 @@ export default class ReportPrintController {
 
         $scope.$emit('close-sidebar');
 
+        $scope.$on('$destroy', () => {
+            $location.search(null);
+        });
+
         let report = this.report = devConstants.reports.asEnumerable()
                 .selectMany(r => r.items)
                 .single(r => r.key == $stateParams.key),

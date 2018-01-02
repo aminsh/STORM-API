@@ -27,7 +27,7 @@ export class ReportParametersController {
             subsidiaryLedgerAccounts: [],
             products: [],
             stocks:[],
-            inventoryFixedStatuses:'all',
+            inventoryFixedStatuses: null,
             detailAccounts: [],
             dimension1s: [],
             dimension2s: [],
