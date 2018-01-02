@@ -516,5 +516,7 @@
   "Filtered by fixed ...": "شامل گردش های ...",
   "AmountFixed or QuantityFixed filter":"فیلتر ثبت ریالی/ مقداری گردش ها",
   "Not set subsidiary ledger account bank on settings":"حساب معین بانک در تنظیمات تعریف نشده",
-  "Not set subsidiary ledger account fund on settings": "حساب معین صندوق در تنظیمات تعریف نشده"
+  "Not set subsidiary ledger account fund on settings": "حساب معین صندوق در تنظیمات تعریف نشده",
+  "Date range first":"بازه اول",
+  "Date range second":"بازه دوم"
 }
