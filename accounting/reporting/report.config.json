@@ -558,5 +558,38 @@
         "showOnAccounting": false
       }
     ]
+  },
+  {
+    "key": "12",
+    "showOnAccounting": true,
+    "text": "عملکرد",
+    "items": [
+      {
+        "key": "1201",
+        "text": "صورت سود و زیانی",
+        "func": "getProfitLossStatement",
+        "fileName": "profitLossStatement",
+        "useLayout": false,
+        "showOnAccounting": true,
+        "params": [
+          {
+            "name": "date"
+          }
+        ]
+      },
+      {
+        "key": "1202",
+        "text": "صورت سود و زیانی مقایسه ای",
+        "func": "getCompareProfitLossStatement",
+        "fileName": "CompareProfitLossStatement",
+        "useLayout": false,
+        "showOnAccounting": true,
+        "params": [
+          {
+            "name": "compareDate"
+          }
+        ]
+      }
+    ]
   }
 ]
