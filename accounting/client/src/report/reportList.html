@@ -12,11 +12,14 @@
                             </div>
                         </div>
                         <div class="panel-body">
+                            <h6 ng-if="r.key === '12'" style="text-align: right">
+                                <i class="fa fa-exclamation-triangle fa-lg" aria-hidden="true" style="color: orangered;"></i>
+                                {{'PostingType in generalLedgerAccount should be selected'|translate}}
+                            </h6>
                             <ul class="list-group">
                                 <li class="list-group-item"
                                     style="cursor: pointer"
                                     ng-repeat="item in r.items">
-
                                     <a ng-click="model.show(item)">{{item.text}}</a>
                                     <a
                                             ng-if="isDevelopment"
