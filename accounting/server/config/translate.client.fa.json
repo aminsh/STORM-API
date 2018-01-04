@@ -518,5 +518,13 @@
   "Not set subsidiary ledger account bank on settings":"حساب معین بانک در تنظیمات تعریف نشده",
   "Not set subsidiary ledger account fund on settings": "حساب معین صندوق در تنظیمات تعریف نشده",
   "Date range first":"بازه اول",
-  "Date range second":"بازه دوم"
+  "Date range second":"بازه دوم",
+  "For invoice with number": "بابت فاکتور فروش شماره",
+  "In date":"در تاریخ",
+  "In number":"به شماره",
+  "To amount":"به مبلغ",
+  "cheque to number":"چک به شماره",
+  "cheque date": "تاریخ چک",
+  "By person": "توسط شخص",
+  "Print payment receipt":"چاپ رسید پرداخت"
 }

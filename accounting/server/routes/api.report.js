@@ -20,7 +20,8 @@ const fs = require('fs'),
     ProductReports = require('../reportQueries/ProductReports'),
     SeasonalReport = require('../reportQueries/seasonalReport'),
     BalanceSheet = require('../reportQueries/balanceSheet'),
-    ProfitLossStatement = require('../reportQueries/profit.loss.statement');
+    ProfitLossStatement = require('../reportQueries/profit.loss.statement'),
+    CustomerReceipts = require('../reportQueries/customer.receipts');
 
 function getReport(fileName) {
     return JSON.parse(
@@ -354,6 +355,13 @@ router.route('/compare-profit-loss-statement')
             req.cookies['current-mode'],
             req.query),
             result = await(ins.getCompareProfitLossStatement());
+        res.json(result);
+    }));
+
+router.route('/customer-receipts')
+    .get(async((req, res) => {
+        let ins = new CustomerReceipts(req.branchId),
+            result = await(ins.getCustomerReceipt(req.query.id));
         res.json(result);
     }));
 

@@ -85,6 +85,10 @@ class InvoiceViewBaseController {
             personId: this.invoice.detailAccountId
         });
     }
+
+    printPaymentReceipt() {
+        this.navigate('report.print', {key: 702}, {id: this.id});
+    }
 }
 
 export default InvoiceViewBaseController;

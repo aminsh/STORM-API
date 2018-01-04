@@ -175,6 +175,10 @@ class ReportApi {
     getCompareProfitLossStatement(params) {
         return this.apiPromise.get(`${this.urlPrefix}/compare-profit-loss-statement`, params)
     }
+
+    getCustomerReceipts(params) {
+        return this.apiPromise.get(`${this.urlPrefix}/customer-receipts`, params)
+    }
 }
 
 export default ReportApi;

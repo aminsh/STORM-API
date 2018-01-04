@@ -394,6 +394,19 @@
             "name": "id"
           }
         ]
+      },
+      {
+        "key": "702",
+        "text": "رسید پرداخت",
+        "func": "getCustomerReceipts",
+        "fileName": "customerReceipts",
+        "useLayout": false,
+        "showOnAccounting": false,
+        "params": [
+          {
+            "name": "id"
+          }
+        ]
       }
     ]
   },
