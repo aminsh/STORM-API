@@ -526,5 +526,6 @@
   "cheque to number":"چک به شماره",
   "cheque date": "تاریخ چک",
   "By person": "توسط شخص",
-  "Print payment receipt":"چاپ رسید پرداخت"
+  "Print payment receipt":"چاپ رسید پرداخت",
+  "PostingType in generalLedgerAccount should be selected":"دقت نمایید که نوع حساب کل(موقت/دائمی)در سرفصل حساب ها مشخص شده باشد. "
 }
