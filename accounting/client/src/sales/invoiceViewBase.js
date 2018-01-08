@@ -81,6 +81,9 @@ class InvoiceViewBaseController {
         this.navigate('report.print', {key: 703}, {id: this.id});
     }
 
+    printPreInvoice() {
+        this.navigate('report.print', {key: 704}, {id: this.id});
+    }
 
     sendEmail() {
 

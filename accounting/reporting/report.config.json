@@ -420,6 +420,19 @@
             "name": "id"
           }
         ]
+      },
+      {
+        "key": "704",
+        "text": "پیش فاکتور",
+        "func": "getPreInvoice",
+        "fileName": "preInvoice",
+        "useLayout": false,
+        "showOnAccounting": false,
+        "params": [
+          {
+            "name": "id"
+          }
+        ]
       }
     ]
   },

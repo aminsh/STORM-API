@@ -277,6 +277,13 @@ router.route('/un-invoices')
         res.json(result);
     }));
 
+router.route('/pre-invoices')
+    .get(async((req, res) => {
+        let ins = new ReportQueryInvoice(req.branchId),
+            result = await(ins.invoice(req.query.id));
+        res.json(result);
+    }));
+
 router.route('/inventory-output')
     .get(async((req, res) => {
         let ins = new InventoriesReport(req.branchId),

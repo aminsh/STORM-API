@@ -183,6 +183,10 @@ class ReportApi {
     getUnofficialInvoice(params) {
         return this.apiPromise.get(`${this.urlPrefix}/un-invoices`, params)
     }
+
+    getPreInvoice(params) {
+        return this.apiPromise.get(`${this.urlPrefix}/pre-invoices`, params)
+    }
 }
 
 export default ReportApi;
