@@ -46,6 +46,7 @@ class BranchQuery {
                     'registrationNumber',
                     'province',
                     'city',
+                    knex.raw(`age(branches."createdAt") as "branchActiveTime"`),
                     knex.raw('users.name as "userTitle"'),
                     knex.raw('users.email as "userEmail"'))
                     .from('branches')
@@ -74,7 +75,9 @@ class BranchQuery {
                 },
                 registrationNumber: item.registrationNumber,
                 province: item.province,
-                city: item.city
+                city: item.city,
+                branchActiveTimeDays: item.branchActiveTime.days,
+                branchActiveTimeMonths: item.branchActiveTime.months || 0
             });
 
         return kendoQueryResolve(query, parameters, view);

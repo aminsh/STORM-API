@@ -2,7 +2,7 @@
 
 const BaseQuery = require('../queries/query.base'),
     FilterQueryConfig = require('./report.filter.config'),
-    translate = require('../services/translateService'),
+        translate = require('../services/translateService'),
     async = require('asyncawait/async'),
     await = require('asyncawait/await'),
     kendoQueryResolve = instanceOf('kendoQueryResolve');

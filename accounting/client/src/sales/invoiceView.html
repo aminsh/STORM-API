@@ -161,22 +161,26 @@
                 title="{{'Print'|translate}}"
                 style-type="primary"
                 icon="fa fa-print fa-lg"></dev-tag-button>
-
-
         <dev-tag-button
                 ng-if="model.invoiceType === 'sale'"
                 ng-click="model.sendEmail()"
                 title="{{'Send' | translate}}"
                 style-type="primary btn-outline"
                 icon="fa fa-send fa-lg"></dev-tag-button>
-
-
         <dev-tag-button
-                ng-if="model.invoice.status != 'paid'"
+                ng-if="model.invoice.status != 'paid' && model.invoice.status != 'draft'"
                 ng-click="model.recordPayment()"
                 title="{{'Payment' | translate}}"
                 style-type="primary btn-outline"
                 icon="fa fa-money fa-lg"></dev-tag-button>
+
+        <dev-tag-button
+                ng-if="model.invoice.status === 'paid'"
+                ng-click="model.printPaymentReceipt()"
+                title="{{'Print payment receipt' | translate}}"
+                style-type="primary btn-outline"
+                icon="fa fa-print fa-lg"></dev-tag-button>
+
 
     </div>
 

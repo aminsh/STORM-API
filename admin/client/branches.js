@@ -31,15 +31,37 @@ export default class BranchesController {
                 {
                     name: 'id',
                     title: 'Id',
-                    width: '20%',
+                    width: '18%',
                     type: 'string'
                 },
                 {
-                    width: '40%',
+                    width: '30%',
                     name: 'name',
                     type: 'string',
                     title: 'Name',
                     template: '<h3>{{item.name}}</h3>'
+                },
+                {
+                    width: '15%',
+                    name: 'branchActiveTimeMonths',
+                    type: 'string',
+                    title: 'Active months',
+                    css:'text-center',
+                    header:{
+                        css:'text-center'
+                    },
+                    template: '<h5>{{item.branchActiveTimeMonths}}</h5>'
+                },
+                {
+                    width: '15%',
+                    name: 'branchActiveTimeDays',
+                    type: 'string',
+                    title: 'Active days',
+                    css:'text-center',
+                    header:{
+                        css:'text-center'
+                    },
+                    template: '<h5>{{item.branchActiveTimeDays}}</h4>',
                 },
                 {
                     name: 'status',

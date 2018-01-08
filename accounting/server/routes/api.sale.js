@@ -101,7 +101,16 @@ router.route('/:id/pay')
 
         try {
 
-            RunService("invoicePay", [req.params.id, req.body], req);
+            let id = req.params.id,
+                payments = req.body,
+                paymentIds = RunService("invoicePay", [id, payments], req);
+
+            payments.forEach((item, i) => item.id = paymentIds[i]);
+
+            let paymentsAndJournalLines = RunService("journalGenerateForInvoicePayments", [payments, id], req);
+
+            RunService("paymentSetJournalLineForAll", [paymentsAndJournalLines], req);
+            res.json({isValid: true});
         }
         catch (e) {
             res.json({isValid: false, errors: e.errors})

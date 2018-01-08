@@ -167,6 +167,18 @@ class ReportApi {
     getBalanceSheet(params) {
         return this.apiPromise.get(`${this.urlPrefix}/balance-sheet`, params)
     }
+
+    getProfitLossStatement(params) {
+        return this.apiPromise.get(`${this.urlPrefix}/profit-loss-statement`, params)
+    }
+
+    getCompareProfitLossStatement(params) {
+        return this.apiPromise.get(`${this.urlPrefix}/compare-profit-loss-statement`, params)
+    }
+
+    getCustomerReceipts(params) {
+        return this.apiPromise.get(`${this.urlPrefix}/customer-receipts`, params)
+    }
 }
 
 export default ReportApi;

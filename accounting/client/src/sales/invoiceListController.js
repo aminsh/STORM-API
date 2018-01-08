@@ -113,6 +113,12 @@ export default class invoiceListControllerBase {
                     action: current => this.print(current)
                 },
                 {
+                    title: translate('Print payment receipt'),
+                    icon: 'fa fa-print text-success fa-lg',
+                    action: current => this.printPaymentReceipt(current),
+                    canShow: current => current.status == 'paid'
+                },
+                {
                     title: translate('Generate journal'),
                     icon: 'fa fa-share-square-o text-success fa-lg',
                     action: current => {
@@ -145,6 +151,12 @@ export default class invoiceListControllerBase {
         let reportParam = {id: current.id};
 
         this.navigate('report.print', {key: 700}, reportParam);
+    }
+
+    printPaymentReceipt(current) {
+        let reportParam = {id: current.id};
+
+        this.navigate('report.print', {key: 702}, reportParam);
     }
 
     edit() {

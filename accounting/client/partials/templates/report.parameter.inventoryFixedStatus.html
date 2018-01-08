@@ -2,7 +2,8 @@
     <label class="label-control">{{'AmountFixed or QuantityFixed filter' | translate}}</label>
 </div>
 <div class="col-md-7">
-    <select ng-model="model.parameters.inventoryFixedStatuses"
+    <select ng-init="model.parameters.inventoryFixedStatuses = 'all'"
+            ng-model="model.parameters.inventoryFixedStatuses"
             ng-options="p.key as p.display for p in model.inventoryFixedStatus"
             class="form-control">
     </select>
