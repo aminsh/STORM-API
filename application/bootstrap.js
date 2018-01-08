@@ -12,6 +12,7 @@ let ApplicationService = {
     FiscalPeriodService: require('./fiscalPeriod'),
     InvoiceService: require('./invoice'),
     InvoicePurchaseService: require('./invoice.purchase'),
+    InvoiceReturnService: require('./invoice.return'),
     DetailAccountService: require('./detailAccount'),
     PersonService: require('./person'),
     BankService: require('./bank'),

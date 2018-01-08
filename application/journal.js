@@ -88,7 +88,6 @@ class JournalService {
         }
     }
 
-
     create(cmd) {
 
         let errors = this._validate(cmd);
@@ -279,12 +278,49 @@ class JournalService {
                 title: invoice.title,
                 amount: invoice.invoiceLines.asEnumerable().sum(line => line.unitPrice * line.quantity),
                 discount: invoice.invoiceLines.asEnumerable().sum(line => line.discount),
-                vat: invoice.invoiceLines.asEnumerable().sum(line => line.vat) + (invoice.charges.asEnumerable().sum(e => e.value) * persistedVat /100),
+                vat: invoice.invoiceLines.asEnumerable().sum(line => line.vat) + (invoice.charges.asEnumerable().sum(e => e.value) * persistedVat / 100),
                 customer: invoice.detailAccountId,
                 bankReceiptNumber: invoice.bankReceiptNumber || ''
             }, cost, charge),
 
             journal = this.journalGenerationTemplateService.generate(model, 'sale');
+
+        journal.journalLines = journal.journalLines.asEnumerable()
+            .orderByDescending(line => line.debtor)
+            .toArray();
+
+        return this.create(journal);
+    }
+
+    generateForReturnInvoice(invoiceId) {
+
+        const settings = new SettingsRepository(this.branchId).get(),
+            invoice = new InvoiceRepository(this.branchId).findById(invoiceId);
+
+        if (!invoice)
+            throw new ValidationException(['فاکتور وجود ندارد']);
+
+        if (!String.isNullOrEmpty(invoice.journalId))
+            throw new ValidationException(['برای فاکتور {0} قبلا سند حسابداری صادر شده'.format(invoice.number)]);
+
+        const charge = (settings.saleCharges || []).asEnumerable()
+            .select(e => ({
+                key: e.key,
+                value: (invoice.charges.asEnumerable().firstOrDefault(p => p.key === e.key) || {value: 0}).value
+            }))
+            .toObject(item => `charge_${item.key}`, item => item.value);
+
+        let model = Object.assign({
+                number: invoice.number,
+                date: invoice.date,
+                title: invoice.title,
+                amount: invoice.invoiceLines.asEnumerable().sum(line => line.unitPrice * line.quantity),
+                discount: invoice.invoiceLines.asEnumerable().sum(line => line.discount),
+                vat: invoice.invoiceLines.asEnumerable().sum(line => line.vat),
+                customer: invoice.detailAccountId
+            }, charge),
+
+            journal = this.journalGenerationTemplateService.set(model, 'returnSale');
 
         journal.journalLines = journal.journalLines.asEnumerable()
             .orderByDescending(line => line.debtor)
