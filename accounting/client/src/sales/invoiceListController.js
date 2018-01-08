@@ -110,7 +110,12 @@ export default class invoiceListControllerBase {
                 {
                     title: translate('Print'),
                     icon: 'fa fa-print text-success fa-lg',
-                    action: current => this.print(current)
+                    action: current => this.printUnofficialInvoice(current)
+                },
+                {
+                    title: translate('Print as official invoice'),
+                    icon: 'fa fa-print text-success fa-lg',
+                    action: current => this.printOfficalInvoice(current)
                 },
                 {
                     title: translate('Print payment receipt'),
@@ -147,10 +152,16 @@ export default class invoiceListControllerBase {
         })
     }
 
-    print(current) {
+    printOfficalInvoice(current) {
         let reportParam = {id: current.id};
 
         this.navigate('report.print', {key: 700}, reportParam);
+    }
+
+    printUnofficialInvoice(current) {
+        let reportParam = {id: current.id};
+
+        this.navigate('report.print', {key: 703}, reportParam);
     }
 
     printPaymentReceipt(current) {

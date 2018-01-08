@@ -179,6 +179,10 @@ class ReportApi {
     getCustomerReceipts(params) {
         return this.apiPromise.get(`${this.urlPrefix}/customer-receipts`, params)
     }
+
+    getUnofficialInvoice(params) {
+        return this.apiPromise.get(`${this.urlPrefix}/un-invoices`, params)
+    }
 }
 
 export default ReportApi;
