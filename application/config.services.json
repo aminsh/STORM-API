@@ -261,6 +261,16 @@
     "returns": "journalId"
   },
   {
+    "name": "journalGenerateForInvoicePayments",
+    "class": "JournalService",
+    "method": "generatePaymentForInvoice",
+    "params": [
+      "payments",
+      "invoiceId"
+    ],
+    "returns": "journalId"
+  },
+  {
     "name": "journalGenerateForInvoicePurchase",
     "class": "JournalService",
     "method": "generateForPurchase",

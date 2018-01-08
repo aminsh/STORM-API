@@ -123,6 +123,7 @@ class JournalService {
                         .findById(item.subsidiaryLedgerAccountId);
 
                     return {
+                        id: item.id,
                         generalLedgerAccountId: subsidiaryLedgerAccount.generalLedgerAccountId,
                         subsidiaryLedgerAccountId: item.subsidiaryLedgerAccountId,
                         detailAccountId: item.detailAccountId,
@@ -328,7 +329,7 @@ class JournalService {
             ? `دریافت بابت فاکتور فروش شماره ${invoice.number}`
             : 'دریافت وجه',
 
-            receivableAccount = this.subsidiaryLedgerAccountService.receivableAccount(),
+            receivableAccount = this.subsidiaryLedgerAccountService.receivableAccount,
             journalLines = [];
 
         payments.forEach(p => {
@@ -383,16 +384,16 @@ class JournalService {
 
         function getSubLedgerForDebtor(p) {
             if (p.paymentType === 'cash')
-                return subLedger.fundAccount();
+                return subLedger.fundAccount;
 
             if (p.paymentType === 'receipt')
-                return subLedger.bankAccount();
+                return subLedger.bankAccount;
 
             if (p.paymentType === 'cheque')
-                return subLedger.receivableDocument();
+                return subLedger.receivableDocument;
 
             if (p.paymentType === 'person')
-                return subLedger.receivableAccount();
+                return subLedger.receivableAccount;
         }
 
         function getDetailAccountForDebtor(p) {
