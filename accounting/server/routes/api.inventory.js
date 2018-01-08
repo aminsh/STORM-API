@@ -63,6 +63,17 @@ router.route('/inputs/:id/set-price')
         }
     }));
 
+router.route('/inputs/:id/fix-quantity')
+    .put(async((req, res) => {
+        try {
+            RunService("inventoryInputFixQuantity", [req.params.id], req);
+            res.json({isValid: true})
+        }
+        catch (e) {
+            res.json({isValid: false, errors: e.errors});
+        }
+    }));
+
 router.route('/inputs/max-number')
     .get(async((req, res) => {
         const inventoryQuery = new InventoryQuery(req.branchId),

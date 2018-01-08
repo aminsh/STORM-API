@@ -85,6 +85,19 @@ class InvoiceRepository extends BaseRepository {
         return result && result.max ? result.max || 0 : 0;
     }
 
+    isNumberDuplicated(number, invoiceType, notEqualId){
+        let query = this.knex.select('id')
+            .from('invoices')
+            .modify(this.modify, this.branchId)
+            .where('invoiceType', invoiceType)
+            .where('number', number);
+
+        if(notEqualId)
+            query.where('id', '!=', notEqualId);
+
+        return await(query.first());
+    }
+
     create(entity) {
 
         const trx = await(this.transaction);

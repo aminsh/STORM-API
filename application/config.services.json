@@ -261,6 +261,16 @@
     "returns": "journalId"
   },
   {
+    "name": "journalGenerateForInvoicePayments",
+    "class": "JournalService",
+    "method": "generatePaymentForInvoice",
+    "params": [
+      "payments",
+      "invoiceId"
+    ],
+    "returns": "journalId"
+  },
+  {
     "name": "journalGenerateForInvoicePurchase",
     "class": "JournalService",
     "method": "generateForPurchase",
@@ -277,6 +287,15 @@
       "outputId"
     ],
     "returns": "Array{journalId, id}"
+  },
+  {
+    "name": "journalGenerateForReturnInvoice",
+    "class": "JournalService",
+    "method": "generateForReturnInvoice",
+    "params": [
+      "invoiceId"
+    ],
+    "returns": "id"
   },
 
   {
@@ -548,6 +567,15 @@
     "params": [
       "id",
       "lines"
+    ],
+    "returns": ""
+  },
+  {
+    "name": "inventoryInputFixQuantity",
+    "class": "InventoryInputService",
+    "method": "fixQuantity",
+    "params": [
+      "id"
     ],
     "returns": ""
   },

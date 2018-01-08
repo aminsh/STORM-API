@@ -110,8 +110,28 @@ export default class invoiceListControllerBase {
                 {
                     title: translate('Print'),
                     icon: 'fa fa-print text-success fa-lg',
-                    action: current => this.print(current)
+                    action: current => this.printUnofficialInvoice(current),
+                    canShow: current => current.status !== 'draft'
                 },
+                {
+                    title: translate('Print as official invoice'),
+                    icon: 'fa fa-print text-success fa-lg',
+                    action: current => this.printOfficialInvoice(current),
+                    canShow: current => current.status !== 'draft'
+                },
+                {
+                    title: translate('Print preInvoice'),
+                    icon: 'fa fa-print text-success fa-lg',
+                    action: current => this.printPreInvoice(current),
+                    canShow: current => current.status === 'draft'
+                },
+                {
+                    title: translate('Print payment receipt'),
+                    icon: 'fa fa-print text-success fa-lg',
+                    action: current => this.printPaymentReceipt(current),
+                    canShow: current => current.status == 'paid'
+                },
+
                 {
                     title: translate('Generate journal'),
                     icon: 'fa fa-share-square-o text-success fa-lg',
@@ -141,10 +161,28 @@ export default class invoiceListControllerBase {
         })
     }
 
-    print(current) {
+    printOfficialInvoice(current) {
         let reportParam = {id: current.id};
 
         this.navigate('report.print', {key: 700}, reportParam);
+    }
+
+    printUnofficialInvoice(current) {
+        let reportParam = {id: current.id};
+
+        this.navigate('report.print', {key: 703}, reportParam);
+    }
+
+    printPreInvoice(current) {
+        let reportParam = {id: current.id};
+
+        this.navigate('report.print', {key: 704}, reportParam);
+    }
+
+    printPaymentReceipt(current) {
+        let reportParam = {id: current.id};
+
+        this.navigate('report.print', {key: 702}, reportParam);
     }
 
     edit() {

@@ -17,7 +17,7 @@ class BankQuery extends BaseQuery {
         let knex = this.knex,
             subsidiaryLedgerAccounts = await(knex.from('settings').where('branchId', this.branchId).first())
                 .subsidiaryLedgerAccounts,
-            subledger = subsidiaryLedgerAccounts.asEnumerable().toObject(item => item.key, item=> item.id);
+            subledger = subsidiaryLedgerAccounts.asEnumerable().toObject(item => item.key, item => item.id);
 
         return knex.select(
             'journalLines.detailAccountId',
@@ -50,20 +50,22 @@ class BankQuery extends BaseQuery {
 
     getAll(fiscalPeriodId) {
         let knex = this.knex,
-            subsidiaryLedgerAccounts = await(knex.from('settings').where('branchId', this.branchId).first())
-                .subsidiaryLedgerAccounts,
-            subledger = subsidiaryLedgerAccounts.asEnumerable().toObject(item => item.key, item=> item.id);
 
-        return knex.select(
-            '*',
-            knex.raw(`(select sum(CAST(debtor-creditor as FLOAT)) from journals 
+            subsidiaryLedgerAccounts = (await(knex.from('settings').where('branchId', this.branchId).first()) || {subsidiaryLedgerAccounts: []})
+                .subsidiaryLedgerAccounts,
+
+            subsidiaryLedgerAccount = subsidiaryLedgerAccounts.asEnumerable().toObject(item => item.key, item => item.id),
+
+            remainderSubQuery = knex.raw(`(select sum(CAST(debtor-creditor as FLOAT)) from journals 
                 left join "journalLines" on journals.id = "journalLines"."journalId"
                 left join "subsidiaryLedgerAccounts" on "journalLines"."subsidiaryLedgerAccountId" = "subsidiaryLedgerAccounts"."id"
                 where journals."periodId" = '${fiscalPeriodId}' 
                 and journals."branchId" = '${this.branchId}'
                 and "detailAccountId" = "detailAccounts"."id"
-                and "subsidiaryLedgerAccounts".id in ('${subledger.bank}', '${subledger.fund}') ) as "remainder"`)
-        )
+                and "subsidiaryLedgerAccounts".id in ('${subsidiaryLedgerAccount.bank || 0}', '${subsidiaryLedgerAccount.fund || 0}') ) as "remainder"`);
+
+
+        return knex.select('*', remainderSubQuery)
             .from('detailAccounts')
             .where('branchId', this.branchId)
             .whereIn('detailAccountType', ['bank', 'fund'])
@@ -74,8 +76,18 @@ class BankQuery extends BaseQuery {
                 typeDisplay: item.detailAccountType
                     ? enums.DetailAccountType().getDisplay(item.detailAccountType)
                     : '',
-                remainder: item.remainder || 0
+                remainder: getRemainder(item.detailAccountType, item.remainder)
             }));
+
+        function getRemainder(detailAccountType, remainder) {
+            if (detailAccountType === 'bank' && !subsidiaryLedgerAccount.bank)
+                return '?';
+
+            if (detailAccountType === 'fund' && !subsidiaryLedgerAccount.fund)
+                return '?';
+
+            return remainder || 0;
+        }
     }
 
 

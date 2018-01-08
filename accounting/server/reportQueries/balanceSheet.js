@@ -1,7 +1,6 @@
 "use strict";
 
 const BaseQuery = require('../queries/query.base'),
-    translate = require('../services/translateService'),
     filterQueryConfig = require('./report.filter.config'),
     async = require('asyncawait/async'),
     await = require('asyncawait/await');

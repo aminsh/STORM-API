@@ -14,6 +14,10 @@
                  ng-include="'partials/templates/report.parameter.date.html'">
 
             </div>
+            <div class="row" style="margin-top: 10px" ng-if="model.hasProperty('compareDate')"
+                 ng-include="'partials/templates/report.parameter.compareDate.html'">
+
+            </div>
             <div class="row" style="margin-top: 10px" ng-if="model.hasProperty('generalLedgerAccount')"
                  ng-include="'partials/templates/report.parameter.generalLedgerAccount.html'">
 

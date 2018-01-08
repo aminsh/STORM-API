@@ -1,0 +1,77 @@
+<div class="row">
+    <div class="col-md-6" style="padding-right: 20px; padding-left: 15px">
+        <div class="panel panel panel-default">
+            <div class="panel-body">
+                <div class="row" style="margin-bottom: 10px">
+                    <label class="label-control" style="padding-right: 15px; border-bottom: 1px solid #DDDDDD">{{'Date range first' | translate}}</label>
+                </div>
+                <div class="row">
+                    <div class="col-md-3" style="text-align: right;margin-top: 7px">
+                        <label class="label-control">{{'From date' | translate}}</label>
+                    </div>
+                    <div class="col-md-9">
+                        <dev-tag-datepicker ng-model="model.parameters.minDateRangeFirst"
+                                            name="minDateRangeFirst"
+                                            ng-required="model.isRequired('date')"></dev-tag-datepicker>
+
+                        <div ng-messages="form.minDateRangeFirst.$error" ng-if="form.minDateRangeFirst.$dirty">
+                            <label ng-message="required" class="error">{{'This field is required'|translate}}</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3" style="text-align: right;margin-top: 7px">
+                        <label class="label-control">{{'To date' | translate}}</label>
+                    </div>
+                    <div class="col-md-9">
+                        <dev-tag-datepicker ng-model="model.parameters.maxDateRangeFirst"
+                                            name="maxDateRangeFirst"
+                                            ng-required="model.isRequired('date')"></dev-tag-datepicker>
+
+                        <div ng-messages="form.maxDateRangeFirst.$error" ng-if="form.maxDateRangeFirst.$dirty">
+                            <label ng-message="required" class="error">{{'This field is required'|translate}}</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6" style="padding-left: 20px; padding-right: 15px">
+        <div class="panel panel panel-default">
+            <div class="panel-body">
+                <div class="row" style="margin-bottom: 10px">
+                    <label class="label-control" style="padding-right: 15px; border-bottom: 1px solid #DDDDDD">{{'Date range second' | translate}}</label>
+                </div>
+                <div class="row">
+                    <div class="col-md-3" style="text-align: right;margin-top: 7px">
+                        <label class="label-control">{{'From date' | translate}}</label>
+                    </div>
+                    <div class="col-md-9">
+                        <dev-tag-datepicker ng-model="model.parameters.minDateRangeSecond"
+                                            name="minDateRangeSecond"
+                                            ng-required="model.isRequired('date')"></dev-tag-datepicker>
+
+                        <div ng-messages="form.minDateRangeSecond.$error" ng-if="form.minDateRangeSecond.$dirty">
+                            <label ng-message="required" class="error">{{'This field is required'|translate}}</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3" style="text-align: right;margin-top: 7px">
+                        <label class="label-control">{{'To date' | translate}}</label>
+                    </div>
+                    <div class="col-md-9">
+                        <dev-tag-datepicker ng-model="model.parameters.maxDateRangeSecond"
+                                            name="maxDateRangeSecond"
+                                            ng-required="model.isRequired('date')"></dev-tag-datepicker>
+
+                        <div ng-messages="form.maxDateRangeSecond.$error" ng-if="form.maxDateRangeSecond.$dirty">
+                            <label ng-message="required" class="error">{{'This field is required'|translate}}</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

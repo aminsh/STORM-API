@@ -23,8 +23,12 @@
                     <div>
                         <strong>{{item.title}}</strong> <br>
                         <span class="text-muted">
-                    {{'Remainder'|translate}} :
-                    {{item.remainder|number}}</span>
+                            {{'Remainder'|translate}} :
+                            <i ng-if="item.remainder !== '?'">{{item.remainder|number}}</i>
+                            <i class="text-success badge"
+                               title="{{'Not set subsidiary ledger account {0} on settings'.format(item.type)|translate}}"
+                               ng-if="item.remainder === '?'"><i class="fa fa-question fa-lg"></i></i>
+                        </span>
                         <small class="pull-left">
                             <dev-tag-button
                                     ng-click="model.remove(item)"

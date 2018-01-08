@@ -19,7 +19,9 @@ const fs = require('fs'),
     InventoriesTurnoverReport = require('../reportQueries/inventory.turnover'),
     ProductReports = require('../reportQueries/ProductReports'),
     SeasonalReport = require('../reportQueries/seasonalReport'),
-    BalanceSheet = require('../reportQueries/balanceSheet');
+    BalanceSheet = require('../reportQueries/balanceSheet'),
+    ProfitLossStatement = require('../reportQueries/profit.loss.statement'),
+    CustomerReceipts = require('../reportQueries/customer.receipts');
 
 function getReport(fileName) {
     return JSON.parse(
@@ -268,6 +270,20 @@ router.route('/invoices')
         res.json(result);
     }));
 
+router.route('/un-invoices')
+    .get(async((req, res) => {
+        let ins = new ReportQueryInvoice(req.branchId),
+            result = await(ins.invoice(req.query.id));
+        res.json(result);
+    }));
+
+router.route('/pre-invoices')
+    .get(async((req, res) => {
+        let ins = new ReportQueryInvoice(req.branchId),
+            result = await(ins.invoice(req.query.id));
+        res.json(result);
+    }));
+
 router.route('/inventory-output')
     .get(async((req, res) => {
         let ins = new InventoriesReport(req.branchId),
@@ -333,6 +349,33 @@ router.route('/balance-sheet')
             req.cookies['current-mode'],
             req.query),
             result = await(ins.getBalanceSheet());
+        res.json(result);
+    }));
+
+router.route('/profit-loss-statement')
+    .get(async((req, res) => {
+        let ins = new ProfitLossStatement(req.branchId,
+            req.cookies['current-period'],
+            req.cookies['current-mode'],
+            req.query),
+            result = await(ins.getProfitLossStatement());
+        res.json(result);
+    }));
+
+router.route('/compare-profit-loss-statement')
+    .get(async((req, res) => {
+        let ins = new ProfitLossStatement(req.branchId,
+            req.cookies['current-period'],
+            req.cookies['current-mode'],
+            req.query),
+            result = await(ins.getCompareProfitLossStatement());
+        res.json(result);
+    }));
+
+router.route('/customer-receipts')
+    .get(async((req, res) => {
+        let ins = new CustomerReceipts(req.branchId),
+            result = await(ins.getCustomerReceipt(req.query.id));
         res.json(result);
     }));
 

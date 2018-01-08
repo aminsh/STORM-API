@@ -14,7 +14,9 @@ class ReturnSaleEntryController extends InvoiceEntryControllerBase {
                 translate,
                 settingsApi,
                 saleApi,
+                stockApi,
                 returnSaleApi,
+                productApi,
                 formService,
                 createPersonService,
                 productCreateService,
@@ -44,10 +46,37 @@ class ReturnSaleEntryController extends InvoiceEntryControllerBase {
         this.isReturnSale = true;
 
         this.saleApi = saleApi;
+        this.stockApi = stockApi;
+        this.productApi = productApi;
     }
 
-    onProductChanged(item, product) {
-        item.unitPrice = product.salePrice;
+    onShowSelectStock(item) {
+
+        if (!this.stocks)
+            this.stockApi.getAll()
+                .then(result => this.stocks = item.stocks = result.data.asEnumerable()
+                    .select(item => ({
+                        stockId: item.id,
+                        display: item.title
+                    })).toArray()
+                );
+        else
+            item.stocks = this.stocks;
+    }
+
+    onProductChanged(item, product, caller) {
+
+        if (caller !== 'bound') {
+
+            item.stockId = null;
+            item.stockDisplay = null;
+        }
+
+        item.canShowStockSection = this.settings.productOutputCreationMethod === 'stockOnRequest'
+            && product.productType === 'good';
+
+        if (item.canShowStockSection)
+            this.onShowSelectStock(item);
 
         super.onProductChanged(item, product);
     }
@@ -57,24 +86,26 @@ class ReturnSaleEntryController extends InvoiceEntryControllerBase {
 
         this.saleApi.getById(sale.id)
             .then(result => {
-                const number = this.invoice.number,
-                    date = this.invoice.date;
 
-                this.invoice = result;
                 this.invoice.ofInvoiceId = result.id;
-                this.invoice.id = null;
-                this.invoice.status = 'confirm';
-                this.invoice.number = number;
-                this.invoice.date = date;
+                this.invoice.detailAccountId = result.customerId;
+                this.invoice.invoiceLines = result.invoiceLines;
+
+                this.invoice.invoiceLines.forEach(line => {
+                    if (!line.productId) return;
+
+                    this.productApi.getById(line.productId)
+                        .then(product => this.onProductChanged(line, product));
+                })
             })
             .finally(() => this.isLoading = false);
     }
 
-    goAfterSave(){
+    goAfterSave() {
         this.$state.go('sale.returnSales');
     }
 
-    canShowStock(){
+    get canShowInputSelector() {
         return true;
     }
 }

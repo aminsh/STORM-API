@@ -73,9 +73,16 @@ class InvoiceViewBaseController {
         throw new Error('Not implemented this method');
     }
 
-    print() {
-
+    printOfficialInvoice() {
         this.navigate('report.print', {key: 700}, {id: this.id});
+    }
+
+    printUnofficialInvoice() {
+        this.navigate('report.print', {key: 703}, {id: this.id});
+    }
+
+    printPreInvoice() {
+        this.navigate('report.print', {key: 704}, {id: this.id});
     }
 
     sendEmail() {
@@ -84,6 +91,10 @@ class InvoiceViewBaseController {
             invoiceId: this.invoice.id,
             personId: this.invoice.detailAccountId
         });
+    }
+
+    printPaymentReceipt() {
+        this.navigate('report.print', {key: 702}, {id: this.id});
     }
 }
 

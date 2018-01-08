@@ -394,6 +394,45 @@
             "name": "id"
           }
         ]
+      },
+      {
+        "key": "702",
+        "text": "رسید پرداخت",
+        "func": "getCustomerReceipts",
+        "fileName": "customerReceipts",
+        "useLayout": false,
+        "showOnAccounting": false,
+        "params": [
+          {
+            "name": "id"
+          }
+        ]
+      },
+      {
+        "key": "703",
+        "text": "فاکتور غیررسمی",
+        "func": "getUnofficialInvoice",
+        "fileName": "unSaleInvoice",
+        "useLayout": false,
+        "showOnAccounting": false,
+        "params": [
+          {
+            "name": "id"
+          }
+        ]
+      },
+      {
+        "key": "704",
+        "text": "پیش فاکتور",
+        "func": "getPreInvoice",
+        "fileName": "preInvoice",
+        "useLayout": false,
+        "showOnAccounting": false,
+        "params": [
+          {
+            "name": "id"
+          }
+        ]
       }
     ]
   },
@@ -434,10 +473,10 @@
     "text": "کالا و انبار",
     "items": [
       {
-        "key": "900",
-        "text": "گزارش جزئیات گردش کالا (کاردکس)",
-        "func": "getProductTurnover",
-        "fileName": "getProductTurnover",
+        "key": "901",
+        "text": "گزارش کاردکس کالا ",
+        "func": "getProductTurnoverTotal",
+        "fileName": "getProductTurnoverTotal",
         "useLayout": false,
         "showOnAccounting": true,
         "params": [
@@ -453,10 +492,10 @@
         ]
       },
       {
-        "key": "901",
-        "text": "گزارش کل گردش کالا",
-        "func": "getProductTurnoverTotal",
-        "fileName": "getProductTurnoverTotal",
+        "key": "900",
+        "text": "گزارش جزئیات گردش کالا (کاردکس)",
+        "func": "getProductTurnover",
+        "fileName": "getProductTurnover",
         "useLayout": false,
         "showOnAccounting": true,
         "params": [
@@ -556,6 +595,39 @@
         "fileName": "",
         "useLayout": false,
         "showOnAccounting": false
+      }
+    ]
+  },
+  {
+    "key": "12",
+    "showOnAccounting": true,
+    "text": "عملکرد",
+    "items": [
+      {
+        "key": "1201",
+        "text": "صورت سود و زیانی",
+        "func": "getProfitLossStatement",
+        "fileName": "profitLossStatement",
+        "useLayout": false,
+        "showOnAccounting": true,
+        "params": [
+          {
+            "name": "date"
+          }
+        ]
+      },
+      {
+        "key": "1202",
+        "text": "صورت سود و زیانی مقایسه ای",
+        "func": "getCompareProfitLossStatement",
+        "fileName": "CompareProfitLossStatement",
+        "useLayout": false,
+        "showOnAccounting": true,
+        "params": [
+          {
+            "name": "compareDate"
+          }
+        ]
       }
     ]
   }

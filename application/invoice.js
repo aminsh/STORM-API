@@ -101,13 +101,32 @@ class InvoiceService {
             this.invoiceRepository.update(id, {invoiceStatus: 'paid'});
     }
 
+    getNumber(number, persistedInvoice) {
+
+        const _getNumber = () => persistedInvoice
+            ? persistedInvoice.number
+            : this.invoiceRepository.maxNumber('sale') + 1;
+
+        if (!number)
+            return _getNumber();
+
+        const isNumberDuplicated = this.invoiceRepository.isNumberDuplicated(number, 'sale', (persistedInvoice || {}).id);
+
+        if (isNumberDuplicated)
+            return _getNumber();
+
+        return number;
+    }
+
     mapToEntity(cmd) {
 
-        const detailAccount = this.detailAccount.findPersonByIdOrCreate(cmd.customer);
+        const detailAccount = this.detailAccount.findPersonByIdOrCreate(cmd.customer),
+            invoice = cmd.id ? this.invoiceRepository.findById(cmd.id) : undefined;
 
         return {
             id: cmd.id,
             date: cmd.date || PersianDate.current(),
+            number: this.getNumber(cmd.number, invoice),
             description: cmd.description,
             title: cmd.title,
             detailAccountId: detailAccount ? detailAccount.id : null,
@@ -135,11 +154,11 @@ class InvoiceService {
         }
     }
 
-    _mapLines(lines){
-        if(!lines)
+    _mapLines(lines) {
+        if (!lines)
             return [];
 
-        if(!Array.isArray(lines))
+        if (!Array.isArray(lines))
             return [lines];
 
         return lines;
@@ -204,7 +223,6 @@ class InvoiceService {
         if (cmd.status && cmd.status !== 'draft')
             inventoryIds = this._createOutput(entity);
 
-        entity.number = this.invoiceRepository.maxNumber('sale') + 1;
         entity.invoiceType = 'sale';
         entity.invoiceStatus = !cmd.status || cmd.status === 'draft' ? 'draft' : 'waitForPayment';
         entity.inventoryIds = JSON.stringify(inventoryIds);
