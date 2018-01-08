@@ -195,7 +195,7 @@ class InventoryInputService {
     remove(id) {
         let input = this.inventoryRepository.findById(id);
 
-        if (input.fixQuantity)
+        if (input.fixedQuantity)
             throw new ValidationException(['رسید ثبت تعدادی شده ، امکان حذف وجود ندارد']);
 
         let errors = this._validateTurnover({

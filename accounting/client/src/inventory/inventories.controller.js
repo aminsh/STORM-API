@@ -25,6 +25,7 @@ class InventoriesController {
                     header: {
                         css: 'text-center'
                     },
+                    template: '<i ng-if="item.fixedQuantity" class="fa fa-check text-navy fa-lg"></i>'
                 },
                 {
                     name: 'fixedAmount',
@@ -123,7 +124,8 @@ class InventoriesController {
                                     })
                                     .catch(errors => this.logger.error(errors.join('<br/>')))
                                 , 1000));
-                    }
+                    },
+                    canShow: current => !item.fixedQuantity
                 },
                 {
                     title: translate('Price entry'),
@@ -142,6 +144,24 @@ class InventoriesController {
 
                         return true;
                     }
+                },
+                {
+                    title: translate('Fixed quantity'),
+                    icon: 'fa fa-check text-success fa-lg',
+                    action: current => {
+                        this.confirm(
+                            translate('Are you sure ?'),
+                            translate(`Fixed quantity`)
+                        )
+                            .then(() => $timeout(() => inventoryApi.fixQuantity(current.id)
+                                    .then(() => {
+                                        this.logger.success();
+                                        this.gridOption.refresh();
+                                    })
+                                    .catch(errors => this.logger.error(errors.join('<br/>')))
+                                , 1000));
+                    },
+                    canShow: current => !current.fixedQuantity
                 }
             ],
             readUrl: '',

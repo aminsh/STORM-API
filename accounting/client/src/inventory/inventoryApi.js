@@ -59,7 +59,8 @@ function inventoryApi(apiPromise, devConstants) {
         },
         inputSetPrice(id, data){
             return apiPromise.put(`${urlPrefix}/inventories/inputs/${id}/set-price`, data);
-        }
+        },
+        fixQuantity: id => apiPromise.put(`${urlPrefix}/inventories/inputs/${id}/fix-quantity`)
     };
 
 
