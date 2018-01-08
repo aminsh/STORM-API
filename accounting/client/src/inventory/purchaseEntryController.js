@@ -139,6 +139,8 @@ class PurchaseEntryController extends InvoiceEntryController {
     canShowAddButton() {
         return !(this.invoice.inventoryIds && this.invoice.inventoryIds.length > 0)
     }
+
+    get canShowInputSelector(){return true;}
 }
 
 export default PurchaseEntryController;

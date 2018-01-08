@@ -278,6 +278,15 @@
     ],
     "returns": "Array{journalId, id}"
   },
+  {
+    "name": "journalGenerateForReturnInvoice",
+    "class": "JournalService",
+    "method": "generateForReturnInvoice",
+    "params": [
+      "invoiceId"
+    ],
+    "returns": "id"
+  },
 
   {
     "name": "paymentCreate",
@@ -548,6 +557,15 @@
     "params": [
       "id",
       "lines"
+    ],
+    "returns": ""
+  },
+  {
+    "name": "inventoryInputFixQuantity",
+    "class": "InventoryInputService",
+    "method": "fixQuantity",
+    "params": [
+      "id"
     ],
     "returns": ""
   },
