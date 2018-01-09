@@ -13,12 +13,15 @@ class InvoiceRepository extends BaseRepository {
 
         let knex = this.knex,
             data = await(this.knex.select(
-                '*',
+                'invoices.*', 'invoiceLines.*',
                 knex.raw('"invoices"."description" as "invoiceDescription"'),
                 knex.raw('"invoiceLines"."description" as "invoiceLineDescription"'),
-                knex.raw('"invoiceLines"."id" as "invoiceLineId"')
+                knex.raw('"invoiceLines"."id" as "invoiceLineId"'),
+                knex.raw('"detailAccounts"."title" as "detailAccountTitle"'),
+                knex.raw('"detailAccounts"."code" as "detailAccountCode"')
             ).from('invoices')
                 .leftJoin('invoiceLines', 'invoices.id', 'invoiceLines.invoiceId')
+                .leftJoin('detailAccounts','detailAccounts.id','invoices.detailAccountId')
                 .where('invoices.branchId', this.branchId)
                 .andWhere('invoices.id', id));
 
@@ -31,6 +34,10 @@ class InvoiceRepository extends BaseRepository {
             number: first.number,
             date: first.date,
             detailAccountId: first.detailAccountId,
+            detailAccount: {
+                title: first.detailAccountTitle,
+                code: first.detailAccountCode
+            },
             description: first.invoiceDescription,
             referenceId: first.referenceId,
             journalId: first.journalId,

@@ -35,6 +35,16 @@
       "key": "customer",
       "display": "خریدار (تفصیل)",
       "value": "6001 - مشتری نمونه"
+    },
+    {
+      "key": "customerTitle",
+      "display": "نام خریدار (تفصیل)",
+      "value": "مشتری نمونه"
+    },
+    {
+      "key": "customerCode",
+      "display": "کد خریدار (تفصیل)",
+      "value": "6001"
     }
   ],
   "data": {

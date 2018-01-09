@@ -35,6 +35,16 @@
       "key": "vendor",
       "display": "فروشنده (تفصیل)",
       "value": "6001 - فروشنده نمونه"
+    },
+    {
+      "key": "vendorTitle",
+      "display": "نام فروشنده (تفصیل)",
+      "value": "فروشنده نمونه"
+    },
+    {
+      "key": "vendorCode",
+      "display": "کد فروشنده (تفصیل)",
+      "value": "6001"
     }
   ],
   "data": {

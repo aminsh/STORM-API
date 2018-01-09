@@ -280,6 +280,8 @@ class JournalService {
                 discount: invoice.invoiceLines.asEnumerable().sum(line => line.discount),
                 vat: invoice.invoiceLines.asEnumerable().sum(line => line.vat) + (invoice.charges.asEnumerable().sum(e => e.value) * persistedVat / 100),
                 customer: invoice.detailAccountId,
+                customerCode: invoice.detailAccount.code,
+                customerTitle: invoice.detailAccount.title,
                 bankReceiptNumber: invoice.bankReceiptNumber || ''
             }, cost, charge),
 
@@ -317,7 +319,9 @@ class JournalService {
                 amount: invoice.invoiceLines.asEnumerable().sum(line => line.unitPrice * line.quantity),
                 discount: invoice.invoiceLines.asEnumerable().sum(line => line.discount),
                 vat: invoice.invoiceLines.asEnumerable().sum(line => line.vat),
-                customer: invoice.detailAccountId
+                customer: invoice.detailAccountId,
+                customerCode: invoice.detailAccount.code,
+                customerTitle: invoice.detailAccount.title,
             }, charge),
 
             journal = this.journalGenerationTemplateService.set(model, 'returnSale');
@@ -362,8 +366,8 @@ class JournalService {
             invoice = new InvoiceRepository(this.branchId).findById(invoiceId);
 
         let description = invoice
-            ? `دریافت بابت فاکتور فروش شماره ${invoice.number}`
-            : 'دریافت وجه',
+                ? `دریافت بابت فاکتور فروش شماره ${invoice.number}`
+                : 'دریافت وجه',
 
             receivableAccount = this.subsidiaryLedgerAccountService.receivableAccount,
             journalLines = [];
@@ -471,7 +475,9 @@ class JournalService {
                 amount: invoice.invoiceLines.asEnumerable().sum(line => line.unitPrice * line.quantity),
                 discount: invoice.invoiceLines.asEnumerable().sum(line => line.discount),
                 vat: invoice.invoiceLines.asEnumerable().sum(line => line.vat),
-                vendor: invoice.detailAccountId
+                vendor: invoice.detailAccountId,
+                vendorCode: invoice.detailAccount.code,
+                vendorTitle: invoice.detailAccount.title,
             }, charge),
 
             journal = this.journalGenerationTemplateService.generate(model, 'purchase');
