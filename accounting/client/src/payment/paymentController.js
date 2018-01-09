@@ -35,7 +35,7 @@ export default class paymentController {
         };
     }
 
-    get payLabel(){
+    get payLabel() {
         return {
             newCash: 'New Cash',
             newBank: 'New Receipt',
@@ -44,7 +44,7 @@ export default class paymentController {
         };
     }
 
-    get receiveLabel(){
+    get receiveLabel() {
         return {
             newCash: 'New Cash receive',
             newBank: 'New Receipt receive',
@@ -76,7 +76,8 @@ export default class paymentController {
     }
 
     newCashPayment() {
-        if (this.amount && this.getRemainder() <= 0) return;
+        if (this.isPaymentCompletedAndSetWarningIfTrue())
+            return;
 
         let newPayment = {
             style: "panel-info",
@@ -92,7 +93,8 @@ export default class paymentController {
     }
 
     newChequePayment() {
-        if (this.amount && this.getRemainder() <= 0) return;
+        if (this.isPaymentCompletedAndSetWarningIfTrue())
+            return;
 
         let newPayment = {
             style: "panel-success",
@@ -110,7 +112,8 @@ export default class paymentController {
     }
 
     newReceiptPayment() {
-        if (this.amount && this.getRemainder() <= 0) return;
+        if (this.isPaymentCompletedAndSetWarningIfTrue())
+            return;
 
         let newPayment = {
             style: "panel-danger",
@@ -126,7 +129,8 @@ export default class paymentController {
     }
 
     newPersonPayment() {
-        if (this.amount && this.getRemainder() <= 0) return;
+        if (this.isPaymentCompletedAndSetWarningIfTrue())
+            return;
 
         let newPayment = {
             style: "panel-default",
@@ -138,6 +142,16 @@ export default class paymentController {
         };
         this.payment.push(newPayment);
         this.setFocus(newPayment);
+    }
+
+    isPaymentCompletedAndSetWarningIfTrue() {
+
+        if (this.amount && this.getRemainder() <= 0) {
+            this.logger.warning(this.translate('Amount is completed, you are not allowed to add another payment'));
+            return true;
+        }
+
+        return;
     }
 
     onBankChanged(bank, item) {
