@@ -102,7 +102,7 @@
                     <li class="list-group-item">
                         <div class="row">
                             <div class="col-md-3">
-
+                                <h4 style="text-align: left;">{{'Sum'|translate}}</h4>
                             </div>
                             <div class="col-md-2">
                                 <p>{{model.payments| totalSum: ('amount') | number}}</p>
@@ -173,7 +173,6 @@
                 title="{{'Print preInvoice'|translate}}"
                 style-type="primary"
                 icon="fa fa-print fa-lg"></dev-tag-button>
-
         <dev-tag-button
                 ng-if="model.invoice.status != 'paid' && model.invoice.status != 'draft'"
                 ng-click="model.recordPayment()"

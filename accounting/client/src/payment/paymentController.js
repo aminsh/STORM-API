@@ -25,6 +25,7 @@ export default class paymentController {
         this.bankApi = bankApi;
         this.amount = $scope.amount || 0;
         this.receiveOrPay = $scope.receiveOrPay;
+        this.today = localStorage.getItem('today');
 
         this.label = this.receiveOrPay === 'pay' ? this.payLabel : this.receiveLabel;
 
