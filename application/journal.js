@@ -358,8 +358,17 @@ class JournalService {
         let invoice,
             subLedger = this.subsidiaryLedgerAccountService;
 
-        if (invoiceId)
-            invoice = new InvoiceRepository(this.branchId).findById(invoiceId);
+        if (!invoiceId)
+            throw new Error('invoiceId is empty');
+
+        invoice = new InvoiceRepository(this.branchId).findById(invoiceId);
+
+        if (!invoice)
+            throw new ValidationException(['فاکتور وجود ندارد']);
+
+        if (!this.subsidiaryLedgerAccountService.receivableAccount)
+            throw new ValidationException(['حسابهای دریافتنی در معین های پیش فرض وجود ندارد']);
+
 
         let description = invoice
             ? `دریافت بابت فاکتور فروش شماره ${invoice.number}`
@@ -369,7 +378,11 @@ class JournalService {
             journalLines = [];
 
         payments.forEach(p => {
-            let article = getArticle(p);
+            let article = getArticle(p),
+                errors = checkIsValid(p);
+
+            if (errors.length > 0)
+                throw new ValidationException(errors);
 
             /* معین حسابهای دریافتنی بستانکار میشود */
             journalLines.push({
@@ -401,6 +414,22 @@ class JournalService {
         this.create({description, journalLines});
 
         return payments;
+
+        function checkIsValid(p) {
+            let errors = [];
+
+            if (p.paymentType === 'cash' && !subLedger.fundAccount)
+                errors.push('حساب معین صندوق در حسابهای معین پیش فرض تعریف نشده');
+
+            if (p.paymentType === 'receipt' && !subLedger.bankAccount)
+                errors.push('حساب معین بانک در حسابهای معین پیش فرض تعریف نشده');
+
+            if (p.paymentType === 'cheque' && !subLedger.receivableDocument)
+                errors.push('حساب معین اسناد دریافتنی در حسابهای معین پیش فرض تعریف نشده');
+
+            return;
+        }
+
 
         function getArticle(p) {
             if (p.paymentType == 'cash')
