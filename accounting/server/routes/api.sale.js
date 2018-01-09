@@ -99,22 +99,25 @@ router.route('/:id')
 router.route('/:id/pay')
     .post(async((req, res) => {
 
+        let id = req.params.id,
+            payments = req.body,
+            paymentIds;
+
         try {
 
-            let id = req.params.id,
-                payments = req.body,
-                paymentIds = RunService("invoicePay", [id, payments], req);
+            paymentIds = RunService("invoicePay", [id, payments], req);
 
-            payments.forEach((item, i) => item.id = paymentIds[i]);
-
-            let paymentsAndJournalLines = RunService("journalGenerateForInvoicePayments", [payments, id], req);
-
-            RunService("paymentSetJournalLineForAll", [paymentsAndJournalLines], req);
             res.json({isValid: true});
         }
         catch (e) {
             res.json({isValid: false, errors: e.errors})
         }
+
+        payments.forEach((item, i) => item.id = paymentIds[i]);
+
+        let paymentsAndJournalLines = RunService("journalGenerateForInvoicePayments", [payments, id], req);
+
+        RunService("paymentSetJournalLineForAll", [paymentsAndJournalLines], req);
 
     }));
 
