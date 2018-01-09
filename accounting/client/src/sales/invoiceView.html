@@ -102,7 +102,7 @@
                     <li class="list-group-item">
                         <div class="row">
                             <div class="col-md-3">
-
+                                <h4 style="text-align: left;">{{'Sum'|translate}}</h4>
                             </div>
                             <div class="col-md-2">
                                 <p>{{model.payments| totalSum: ('amount') | number}}</p>
@@ -156,10 +156,34 @@
     <div class="text-right">
 
         <dev-tag-button
-                ng-if="model.invoiceType === 'sale'"
-                ng-click="model.print()"
+                ng-if="model.invoiceType === 'sale' && model.invoice.status != 'draft'"
+                ng-click="model.printUnofficialInvoice()"
                 title="{{'Print'|translate}}"
                 style-type="primary"
+                icon="fa fa-print fa-lg"></dev-tag-button>
+        <dev-tag-button
+                ng-if="model.invoiceType === 'sale' && model.invoice.status != 'draft'"
+                ng-click="model.printOfficialInvoice()"
+                title="{{'Print as official invoice'|translate}}"
+                style-type="primary"
+                icon="fa fa-print fa-lg"></dev-tag-button>
+        <dev-tag-button
+                ng-if="model.invoiceType === 'sale' && model.invoice.status === 'draft'"
+                ng-click="model.printPreInvoice()"
+                title="{{'Print preInvoice'|translate}}"
+                style-type="primary"
+                icon="fa fa-print fa-lg"></dev-tag-button>
+        <dev-tag-button
+                ng-if="model.invoice.status != 'paid' && model.invoice.status != 'draft'"
+                ng-click="model.recordPayment()"
+                title="{{'Payment' | translate}}"
+                style-type="primary btn-outline"
+                icon="fa fa-money fa-lg"></dev-tag-button>
+        <dev-tag-button
+                ng-if="model.invoice.status === 'paid'"
+                ng-click="model.printPaymentReceipt()"
+                title="{{'Print payment receipt' | translate}}"
+                style-type="primary btn-outline"
                 icon="fa fa-print fa-lg"></dev-tag-button>
         <dev-tag-button
                 ng-if="model.invoiceType === 'sale'"
@@ -167,19 +191,6 @@
                 title="{{'Send' | translate}}"
                 style-type="primary btn-outline"
                 icon="fa fa-send fa-lg"></dev-tag-button>
-        <dev-tag-button
-                ng-if="model.invoice.status != 'paid' && model.invoice.status != 'draft'"
-                ng-click="model.recordPayment()"
-                title="{{'Payment' | translate}}"
-                style-type="primary btn-outline"
-                icon="fa fa-money fa-lg"></dev-tag-button>
-
-        <dev-tag-button
-                ng-if="model.invoice.status === 'paid'"
-                ng-click="model.printPaymentReceipt()"
-                title="{{'Print payment receipt' | translate}}"
-                style-type="primary btn-outline"
-                icon="fa fa-print fa-lg"></dev-tag-button>
 
 
     </div>

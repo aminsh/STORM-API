@@ -528,5 +528,8 @@
   "By person": "توسط شخص",
   "Print payment receipt":"چاپ رسید پرداخت",
   "PostingType in generalLedgerAccount should be selected":"دقت نمایید که نوع حساب کل(موقت/دائمی) در سرفصل حساب ها مشخص شده باشد. ",
+  "Print as official invoice":"چاپ فاکتور رسمی",
+  "Print preInvoice":"چاپ پیش فاکتور",
+  "Receipt date":"تاریخ رسید",
   "Amount is completed, you are not allowed to add another payment": "مبلغ کامل شده ، نمیتوانید پرداخت دیگری ثبت کنید "
 }

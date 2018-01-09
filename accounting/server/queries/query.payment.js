@@ -123,6 +123,6 @@ class PaymentQuery extends BaseQuery {
                 fundDisplay: entity.paymentType === 'cash' ? entity.detailAccountDisplay : undefined,
             }));
     }
-};
+}
 
 module.exports = PaymentQuery;

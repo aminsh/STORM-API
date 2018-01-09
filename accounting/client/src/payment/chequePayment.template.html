@@ -35,11 +35,12 @@
                 {{'This field is required'|translate}}</label>
         </div>
     </div>
-    <div class="col-md-1" style="text-align: left;margin-top: 7px">
-        <label class="label-control">{{'Date' | translate}}</label>
+    <div class="col-md-1" style="text-align: left;margin-top: 7px;padding:  0px;">
+        <label class="label-control">{{'cheque date' | translate}}</label>
     </div>
     <div class="col-md-3">
         <dev-tag-datepicker
+                ng-init="item.date = model.today"
                 ng-model="item.date"
                 name="paymentDate"
                 required></dev-tag-datepicker>
