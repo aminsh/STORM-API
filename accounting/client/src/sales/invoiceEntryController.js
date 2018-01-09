@@ -29,7 +29,7 @@ export default class InvoiceEntryControllerBase {
                 };
 
                 api.getAll(parameter)
-                    .then(result => cb(result.data.asEnumerable().select(e=> ({title: e.title})).distinct().toArray()));
+                    .then(result => cb(result.data.asEnumerable().select(e => ({title: e.title})).distinct().toArray()));
             },
             displayField: 'title'
         };
@@ -163,6 +163,10 @@ export default class InvoiceEntryControllerBase {
     }
 
     saveInvoice(form, status) {
+
+        if(this.isSaving)
+            return;
+
         let logger = this.logger,
             formService = this.formService,
             invoice = this.invoice;
@@ -186,6 +190,7 @@ export default class InvoiceEntryControllerBase {
         }
 
         this.errors = [];
+        this.isSaving = true;
 
         let promise = this.onEditMode
             ? this.api.update(invoice.id, invoice)
