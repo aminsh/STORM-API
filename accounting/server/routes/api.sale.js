@@ -47,7 +47,7 @@ router.route('/')
     .post(async((req, res) => {
 
         try {
-            const id = RunService("invoiceCreate", [req.body], req);
+            const id = req.container.get("CommandBus").send("invoiceCreate", [req.body]);
 
             res.json({isValid: true, returnValue: {id}});
         }
@@ -60,7 +60,7 @@ router.route('/')
 router.route('/:id/confirm')
     .post(async((req, res) => {
         try {
-            RunService("invoiceConfirm", [req.params.id], req);
+            req.container.get("CommandBus").send("invoiceConfirm", [req.params.id]);
 
             res.json({isValid: true});
         }
@@ -78,7 +78,7 @@ router.route('/:id')
     }))
     .put(async((req, res) => {
         try {
-            RunService("invoiceUpdate", [req.params.id, req.body], req);
+            req.container.get("CommandBus").send("invoiceUpdate", [req.params.id, req.body]);
             res.json({isValid: true});
         }
         catch (e) {
@@ -87,7 +87,7 @@ router.route('/:id')
     }))
     .delete(async((req, res) => {
         try {
-            RunService("invoiceRemove", [req.params.id], req);
+            req.container.get("CommandBus").send("invoiceRemove", [req.params.id]);
 
             res.json({isValid: true});
         }
@@ -101,7 +101,7 @@ router.route('/:id/pay')
 
         try {
 
-            RunService("invoicePay", [req.params.id, req.body], req);
+            req.container.get("CommandBus").send("invoicePay", [req.params.id, req.body]);
         }
         catch (e) {
             res.json({isValid: false, errors: e.errors})
@@ -116,9 +116,9 @@ router.route('/:id/generate-journal')
 
             const id = req.params.id;
 
-            let journalId = RunService("journalGenerateForInvoice", [id], req);
+            let journalId = req.container.get("CommandBus").send("journalGenerateForInvoice", [id]);
 
-            RunService("invoiceSetJournal", [id, journalId], req);
+            req.container.get("CommandBus").send("invoiceSetJournal", [id, journalId]);
 
             res.json({isValid: true});
         }

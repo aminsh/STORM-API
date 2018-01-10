@@ -15,7 +15,7 @@ router.route('/')
     .post(async((req, res) => {
 
         try {
-            const id = RunService("journalCreate", [req.body], req);
+            const id = req.container.get("CommandBus").send("journalCreate", [req.body]);
             res.json({isValid: true, returnValue: {id}});
 
         }
@@ -40,7 +40,7 @@ router.route('/max-number').get(async((req, res) => {
 router.route('/ordering-number-by-date')
     .put(async((req, res) => {
         try {
-            RunService("journalOrderingTemporaryNumberByTemporaryDate", [], req);
+            req.container.get("CommandBus").send("journalOrderingTemporaryNumberByTemporaryDate", []);
             res.json({isValid: true});
 
         }
@@ -57,7 +57,7 @@ router.route('/:id')
     }))
     .put(async((req, res) => {
         try {
-            RunService("journalUpdate", [req.params.id, req.body], req);
+            req.container.get("CommandBus").send("journalUpdate", [req.params.id, req.body]);
             res.json({isValid: true});
 
         }
@@ -67,7 +67,7 @@ router.route('/:id')
     }))
     .delete(async((req, res) => {
         try {
-            RunService("journalRemove", [req.params.id], req);
+            req.container.get("CommandBus").send("journalRemove", [req.params.id]);
             res.json({isValid: true});
 
         }
@@ -80,7 +80,7 @@ router.route('/:id')
 router.route('/:id/confirm')
     .put(async((req, res) => {
         try {
-            RunService("journalFix", [req.params.id], req);
+            req.container.get("CommandBus").send("journalFix", [req.params.id]);
             res.json({isValid: true});
 
         }
@@ -92,7 +92,7 @@ router.route('/:id/confirm')
 router.route('/:id/change-date')
     .put(async((req, res) => {
         try {
-            RunService("journalChangeDate", [req.params.id, req.body.date], req);
+            req.container.get("CommandBus").send("journalChangeDate", [req.params.id, req.body.date]);
             res.json({isValid: true});
 
         }
@@ -133,7 +133,7 @@ router.route('/period/:periodId').get(async((req, res) => {
 
 router.route('/:id/bookkeeping').put(async((req, res) => {
     try {
-        RunService("journalBookkeeping", [req.params.id], req);
+        req.container.get("CommandBus").send("journalBookkeeping", [req.params.id]);
         res.json({isValid: true});
 
     }
@@ -147,7 +147,7 @@ router.route('/:id/attach-image').put(async((req, res) => {
 
     try {
 
-        RunService("journalAttachImage", [req.params.id, req.body.fileName], req);
+        req.container.get("CommandBus").send("journalAttachImage", [req.params.id, req.body.fileName]);
         res.json({isValid: true});
     }
     catch (e) {
@@ -159,7 +159,7 @@ router.route('/:id/copy').post(async((req, res) => {
 
     try {
 
-        const id = RunService("journalCopy", [req.params.id], req);
+        const id = req.container.get("CommandBus").send("journalCopy", [req.params.id]);
         res.json({isValid: true, returnValue: {id}});
     }
     catch (e) {

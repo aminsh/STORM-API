@@ -21,7 +21,9 @@ router.route('/')
     }))
     .post(async((req, res) => {
         try {
-            const id = RunService("productCreate", [req.body], req);
+
+            const id = req.container.get("CommandBus").send("productCreate",[req.body]);
+
             res.json({isValid: true, returnValue: {id}});
         }
         catch (e) {
@@ -37,7 +39,7 @@ router.route('/batch')
 
         try {
 
-            ids = RunService("productCreateBatch", [cmd.products], req);
+            ids = req.container.get("CommandBus").send("productCreateBatch", [cmd.products]);
 
             res.json({isValid: true, returnValue: {ids}});
 
@@ -61,7 +63,7 @@ router.route('/batch')
                 }))
             .toArray();
 
-        RunService("productAddToInventoryInputFirst", [firstInputList, cmd.stockId], req);
+        req.container.get("CommandBus").send("productAddToInventoryInputFirst", [firstInputList, cmd.stockId]);
 
     }));
 
@@ -70,7 +72,7 @@ router.route('/:id/add-to-input-first')
 
         try {
 
-            req.body.forEach(item => RunService("productAddToInventoryInputFirst", [req.params.id, item], req));
+            req.body.forEach(item => req.container.get("CommandBus").send("productAddToInventoryInputFirst", [req.params.id, item]));
 
             res.json({isValid: true});
 
@@ -99,7 +101,7 @@ router.route('/:id')
     }))
     .put(async((req, res) => {
         try {
-            RunService("productUpdate", [req.params.id, req.body], req);
+            req.container.get("CommandBus").send("productUpdate", [req.params.id, req.body]);
             res.json({isValid: true});
         }
         catch (e) {
@@ -108,7 +110,7 @@ router.route('/:id')
     }))
     .delete(async((req, res) => {
         try {
-            RunService("productRemove", [req.params.id], req);
+            req.container.get("CommandBus").send("productRemove", [req.params.id]);
             res.json({isValid: true});
         }
         catch (e) {

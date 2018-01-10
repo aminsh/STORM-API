@@ -24,7 +24,7 @@ router.route('/')
     .post(async((req, res) => {
 
         try {
-            const id = RunService("invoicePurchaseCreate", [req.body], req);
+            const id = req.container.get("CommandBus").send("invoicePurchaseCreate", [req.body]);
 
             res.json({isValid: true, returnValue: {id}});
         }
@@ -37,7 +37,7 @@ router.route('/')
 router.route('/:id/confirm')
     .post(async((req, res) => {
         try {
-            RunService("invoicePurchaseConfirm", [req.params.id], req);
+            req.container.get("CommandBus").send("invoicePurchaseConfirm", [req.params.id]);
 
             res.json({isValid: true});
         }
@@ -55,7 +55,7 @@ router.route('/:id')
     }))
     .put(async((req, res) => {
         try {
-            RunService("invoicePurchaseUpdate", [req.params.id, req.body], req);
+            req.container.get("CommandBus").send("invoicePurchaseUpdate", [req.params.id, req.body]);
 
             res.json({isValid: true});
         }
@@ -65,7 +65,7 @@ router.route('/:id')
     }))
     .delete(async((req, res) => {
         try {
-            RunService("invoicePurchaseRemove", [req.params.id], req);
+            req.container.get("CommandBus").send("invoicePurchaseRemove", [req.params.id]);
 
             res.json({isValid: true});
         }
@@ -78,7 +78,7 @@ router.route('/:id')
 router.route('/:id/pay')
     .post(async((req, res) => {
         try {
-            RunService("invoicePurchasePay", [req.params.id, req.body], req);
+            req.container.get("CommandBus").send("invoicePurchasePay", [req.params.id, req.body]);
 
             res.json({isValid: true});
         }
@@ -94,9 +94,9 @@ router.route('/:id/generate-journal')
 
             const id = req.params.id;
 
-            let journalId = RunService("journalGenerateForInvoicePurchase", [id], req);
+            let journalId = req.container.get("CommandBus").send("journalGenerateForInvoicePurchase", [id]);
 
-            RunService("invoicePurchaseSetJournal", [id, journalId], req);
+            req.container.get("CommandBus").send("invoicePurchaseSetJournal", [id, journalId]);
 
             res.json({isValid: true});
         }

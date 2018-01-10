@@ -14,7 +14,7 @@ router.route('/')
     }))
     .post(async((req, res) => {
         try {
-            const id = RunService("productCategoryCreate", [req.body], req);
+            const id = req.container.get("CommandBus").send("productCategoryCreate", [req.body]);
             res.json({isValid: true, returnValue: {id}});
         }
         catch (e) {
@@ -32,7 +32,7 @@ router.route('/:id')
     }))
     .put(async((req, res) => {
         try {
-            RunService("productCategoryUpdate", [req.params.req.body], req);
+            req.container.get("CommandBus").send("productCategoryUpdate", [req.params.req.body]);
             res.json({isValid: true});
         }
         catch (e) {
