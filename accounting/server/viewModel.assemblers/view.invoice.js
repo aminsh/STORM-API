@@ -49,6 +49,7 @@ function mapCostsAndCharges(items, itemsInSettings) {
         .select(e => ({
             key: e.key,
             value: e.value,
+            vatIncluded: e.vatIncluded,
             display: (itemsInSettings.asEnumerable().singleOrDefault(c => c.key === e.key) || {}).display
         }))
         .toArray();

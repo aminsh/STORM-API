@@ -48,7 +48,10 @@ class InvoiceQuery extends BaseQuery {
                 .where('invoiceId', id)
             ),
             sumCharges = (invoice.charges || []).asEnumerable()
-                .sum(c => c.value);
+                .sum(c => c.value),
+            sumChargesVatIncluded = (invoice.charges || []).asEnumerable()
+                .where(e => e.vatIncluded)
+                .sum(e => e.value);
 
         let lineHaveVat = invoiceLines.asEnumerable().firstOrDefault(e => e.vat !== 0),
             persistedVat = lineHaveVat
@@ -56,7 +59,7 @@ class InvoiceQuery extends BaseQuery {
                 : 0;
 
         invoice.sumTotalPrice = invoiceLines.asEnumerable()
-            .sum(line => line.quantity * line.unitPrice - line.discount + line.vat) + sumCharges + (sumCharges * persistedVat / 100);
+            .sum(line => line.quantity * line.unitPrice - line.discount + line.vat) + sumCharges + (sumChargesVatIncluded * persistedVat / 100);
 
         invoice.sumRemainder = invoice.sumTotalPrice - (invoice.sumPaidAmount || 0);
 
@@ -69,8 +72,8 @@ class InvoiceQuery extends BaseQuery {
     getAll(parameters, invoiceType) {
         let knex = this.knex,
             branchId = this.branchId,
-            sumChargesQuery = `(select coalesce(sum(value),0) from invoices as i left join json_to_recordset(i.charges) as x(key text, value int) on true where i.id = "base".id) 
-            + ((select coalesce(sum(value),0) from invoices as i left join json_to_recordset(i.charges) as x(key text, value int) on true where i.id = "base".id) *  
+            baseQuery = `select coalesce(sum(value),0) from invoices as i left join json_to_recordset(i.charges) as x(key text, value int, "vatIncluded" boolean) on true where i.id = "base".id`,
+            sumChargesQuery = `(${baseQuery}) + ((${baseQuery} and "vatIncluded" = true) *  
             coalesce((select (100 * line.vat) / ((line.quantity * line."unitPrice") - line.discount) from "invoiceLines" as line where "invoiceId" = "base".id and vat <> 0 limit 1), 0) /100)`,
 
             query = knex.select().table(function () {

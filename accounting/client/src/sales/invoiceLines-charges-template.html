@@ -5,45 +5,50 @@
          ng-form
          name="form-charge-{{$index}}"
          class="row">
-        <div class="col-md-6">
-            <select ng-model="item.key"
-                    name="key"
-                    required
-                    ng-options="p.key as p.display for p in model.settings.saleCharges"
-                    class="form-control">
-                <option value="">{{'Select ...'|translate}}</option>
-            </select>
+        <div class="row">
+            <div class="col-md-6">
+                <select ng-model="item.key"
+                        name="key"
+                        required
+                        ng-options="p.key as p.display for p in model.settings.saleCharges"
+                        class="form-control">
+                    <option value="">{{'Select ...'|translate}}</option>
+                </select>
 
-            <div ng-messages="form['form-charge-'+ $index].key.$error"
-                 ng-if="form['form-charge-'+ $index].key.$dirty">
-                <label ng-message="required" class="error">
-                    {{'This field is required'|translate}}
-                </label>
+                <div ng-messages="form['form-charge-'+ $index].key.$error"
+                     ng-if="form['form-charge-'+ $index].key.$dirty">
+                    <label ng-message="required" class="error">
+                        {{'This field is required'|translate}}
+                    </label>
+                </div>
+            </div>
+            <div class="col-md-5">
+                <dev-tag-numeric ng-model="item.value"
+                                 name="value"
+                                 required
+                                 placeholder="{{'Amount'|translate}}"></dev-tag-numeric>
+
+                <div ng-messages="form['form-charge-'+ $index].value.$error"
+                     ng-if="form['form-charge-'+ $index].value.$dirty">
+                    <label ng-message="required" class="error">
+                        {{'This field is required'|translate}}
+                    </label>
+                </div>
+            </div>
+            <div class="col-md-1">
+                <button
+                        tabindex="-1"
+                        style="margin-left: 5px"
+                        type="button"
+                        ng-click="model.removeCharge(item)"
+                        class="close"
+                        title="{{'Remove'| translate}}">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
         </div>
-        <div class="col-md-5">
-            <dev-tag-numeric ng-model="item.value"
-                             name="value"
-                             required
-                             placeholder="{{'Amount'|translate}}"></dev-tag-numeric>
-
-            <div ng-messages="form['form-charge-'+ $index].value.$error"
-                 ng-if="form['form-charge-'+ $index].value.$dirty">
-                <label ng-message="required" class="error">
-                    {{'This field is required'|translate}}
-                </label>
-            </div>
-        </div>
-        <div class="col-md-1">
-            <button
-                    tabindex="-1"
-                    style="margin-left: 5px"
-                    type="button"
-                    ng-click="model.removeCharge(item)"
-                    class="close"
-                    title="{{'Remove'| translate}}">
-                <span aria-hidden="true">&times;</span>
-            </button>
+        <div class="row">
+            <dev-tag-check-box ng-model="item.vatIncluded">{{'Is vat included ?'|translate}}</dev-tag-check-box>
         </div>
     </div>
 

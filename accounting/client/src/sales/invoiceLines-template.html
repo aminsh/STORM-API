@@ -234,13 +234,13 @@
                  style="border-bottom: 1px solid #DDDDDD;">
                 <div class="col-xs-5 title1 so-align-right"><h3>{{'Sum charges tax'|translate}}</h3></div>
                 <div class="col-xs-7 title1">
-                    <h3>{{((model.invoice.charges | totalSum: ('value')) * model.settings.vat) /100 | number}}</h3>
+                    <h3>{{((model.invoice.charges.asEnumerable().where('$.vatIncluded').toArray() | totalSum: ('value')) * model.settings.vat) /100 | number}}</h3>
                 </div>
             </div>
             <div class="row text-left" style="border-bottom: 1px solid #DDDDDD;">
                 <div class="col-xs-5 title1 so-align-right"><h3>{{'Sum tax'|translate}}</h3></div>
                 <div class="col-xs-7 title1">
-                    <h3>{{(model.invoice.invoiceLines | totalSum: ('vat')) + (((model.invoice.charges | totalSum: ('value')) * model.settings.vat) /100) | number}}</h3>
+                    <h3>{{(model.invoice.invoiceLines | totalSum: ('vat')) + (((model.invoice.charges.asEnumerable().where('$.vatIncluded').toArray() | totalSum: ('value')) * model.settings.vat) /100) | number}}</h3>
                 </div>
             </div>
 
@@ -252,7 +252,7 @@
 
                     <h3>{{(model.invoice.invoiceLines | totalSum: ('($.quantity * $.unitPrice) - $.discount + $.vat')) +
                           (model.invoice.charges | totalSum: ('value')) +
-                          (((model.invoice.charges | totalSum: ('value')) * model.settings.vat) /100) | number}}</h3>
+                          (((model.invoice.charges.asEnumerable().where('$.vatIncluded').toArray() | totalSum: ('value')) * model.settings.vat) /100) | number}}</h3>
                 </div>
             </div>
         </div>
