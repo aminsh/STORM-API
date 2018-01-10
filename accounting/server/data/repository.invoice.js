@@ -231,11 +231,11 @@ class InvoiceRepository extends BaseRepository {
     }
 
     isExistsProduct(productId) {
-        return this.knex('id')
+        return await(this.knex('id')
             .from('invoiceLines')
             .modify(this.modify, this.branchId)
             .where('productId', productId)
-            .first();
+            .first());
     }
 
     isExistsCustomer(customerId) {

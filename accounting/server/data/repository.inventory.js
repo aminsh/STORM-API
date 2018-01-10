@@ -274,11 +274,11 @@ class InventoryRepository extends BaseRepository {
     }
 
     isExistsProduct(productId) {
-        return this.knex('id')
+        return await( this.knex('id')
             .from('inventoryLines')
             .modify(this.modify, this.branchId)
             .where('productId', productId)
-            .first();
+            .first());
     }
 
     isExitsJournal(journalId) {
