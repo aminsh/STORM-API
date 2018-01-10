@@ -42,3 +42,4 @@ jspm_packages
 /.sass-cache
 /public
 /dest
+/application/dist
