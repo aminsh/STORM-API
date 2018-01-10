@@ -6,7 +6,8 @@ const async = require('asyncawait/async'),
     EventEmitter = require('../services/shared').service.EventEmitter,
     branchQuery = require('../../../storm/server/features/branch/branch.query'),
     knex = require('knex'),
-    config = require('../config');
+    config = require('../config'),
+    container = require('../../../application/dist/di.config').container;
 
 
 module.exports = async((req, res, next) => {
@@ -44,6 +45,12 @@ module.exports = async((req, res, next) => {
         else setFiscalPeriodId();
     }
 
+
+    let childContainer = container.createChild();
+
+    childContainer.bind("State").toConstantValue({branchId: req.branchId,fiscalPeriodId: req.fiscalPeriodId, user: req.user });
+
+    req.container = childContainer;
 
     next();
 
