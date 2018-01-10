@@ -184,9 +184,10 @@ class InventoryInputService {
 
         input.inventoryLines = cmd.inventoryLines.asEnumerable()
             .select(line => ({
+                id: line.id,
                 productId: line.productId,
                 quantity: line.quantity,
-                unitPrice: 0
+                /*unitPrice: 0*/
             })).toArray();
 
         this.inventoryRepository.updateBatch(id, input);
@@ -229,10 +230,11 @@ class InventoryInputService {
     setPrice(id, lines) {
         let errors = [];
 
+        /* TODO this control disabled temporarily
         let input = this.inventoryRepository.findById(id);
 
         if (!input.fixedQuantity)
-            throw new ValidationException(['رسید جاری ثبت مقداری نشده ، امکان ورود قیمت وجود ندارد']);
+            throw new ValidationException(['رسید جاری ثبت مقداری نشده ، امکان ورود قیمت وجود ندارد']);*/
 
         lines.forEach((line, i) => {
             if (!(line.unitPrice && line.unitPrice > 0))

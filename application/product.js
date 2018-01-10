@@ -157,8 +157,8 @@ class Product {
         if (!(DTO.quantity && !isNaN(parseFloat(DTO.quantity)) && parseFloat(DTO.quantity) > 0 ))
             throw new ValidationException(['مقدار باید دارای مقدار بزرگتر از صفر باشد']);
 
-        if (String.isNullOrEmpty(DTO.stockId))
-            throw new ValidationException(['انبار تعیین نشده']);
+        /*if (String.isNullOrEmpty(DTO.stockId))
+            throw new ValidationException(['انبار تعیین نشده']);*/
 
         let lineMatchProduct = inputFirst.inventoryLines.asEnumerable().singleOrDefault(item => item.productId === DTO.productId);
 
@@ -194,7 +194,8 @@ class Product {
                 }))
             .toArray();
 
-        inventoryService.fixQuantity(inputFirst.id);
+        /*TODO this control disabled temporarily
+            inventoryService.fixQuantity(inputFirst.id);*/
         inventoryService.setPrice(inputFirst.id, setPriceList);
     }
 

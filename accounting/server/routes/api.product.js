@@ -70,7 +70,15 @@ router.route('/:id/add-to-input-first')
 
         try {
 
-            req.body.forEach(item => RunService("productAddToInventoryInputFirst", [req.params.id, item], req));
+            let items =  req.body.asEnumerable()
+                    .select(item => ({
+                        stockId: item.stockId,
+                        items: [{productId: req.params.id, quantity: item.quantity, unitPrice: item.unitPrice}]
+                    }))
+                    .toArray();
+
+
+            items.forEach(item => RunService("productAddToInventoryInputFirst", [item.items, item.stockId], req));
 
             res.json({isValid: true});
 

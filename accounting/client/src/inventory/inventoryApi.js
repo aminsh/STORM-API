@@ -54,8 +54,8 @@ function inventoryApi(apiPromise, devConstants) {
         remove: function (id) {
             return apiPromise.delete(`${urlPrefix}/products/${id}`);
         },
-        addToFirstInput(data) {
-            return apiPromise.post(`${urlPrefix}/inventories/add-to-first-input`, data);
+        addToFirstInput(id ,data) {
+            return apiPromise.post(`${urlPrefix}/products/${id}/add-to-input-first`, data);
         },
         inputSetPrice(id, data){
             return apiPromise.put(`${urlPrefix}/inventories/inputs/${id}/set-price`, data);

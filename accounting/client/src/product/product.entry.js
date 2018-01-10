@@ -228,9 +228,7 @@ export default class ProductEntryController {
     }
 
     sendFirstInput() {
-        const cmd = {productId: this.id, data: this.firstInput};
-
-        return this.inventoryApi.addToFirstInput(cmd);
+        return this.inventoryApi.addToFirstInput(this.id, this.firstInput);
     }
 
 }
