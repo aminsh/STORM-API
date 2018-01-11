@@ -51,6 +51,7 @@ export default class InvoiceEntryControllerBase {
                 sumRemainder: null,
                 sumTotalPrice: null,
                 number: null,
+                discount:0,
                 date: localStorage.getItem('today'),
                 description: '',
                 invoiceLines: [],

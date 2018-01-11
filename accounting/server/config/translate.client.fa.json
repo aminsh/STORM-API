@@ -532,5 +532,7 @@
   "Print preInvoice":"چاپ پیش فاکتور",
   "Receipt date":"تاریخ رسید",
   "Amount is completed, you are not allowed to add another payment": "مبلغ کامل شده ، نمیتوانید پرداخت دیگری ثبت کنید ",
-  "Is vat included ?": "شامل مالیات ارزش افزوده است ؟"
+  "Is vat included ?": "شامل مالیات ارزش افزوده است ؟",
+  "Invoices discount":"تخفیف روی کل فاکتور"
+
 }

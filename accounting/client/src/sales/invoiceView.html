@@ -126,6 +126,14 @@
                     <td><strong>جمع تخفیف :</strong></td>
                     <td> {{model.invoice.invoiceLines | totalSum: ('discount') | number}}</td>
                 </tr>
+
+                <tr>
+                    <td><strong>{{'Invoices discount'|translate}}:</strong></td>
+                    <td>
+                        {{model.invoice.discount}}
+                    </td>
+                </tr>
+
                 <tr ng-repeat="c in model.invoice.charges">
                     <td><strong>{{'Charge'|translate}} {{c.display}} :</strong></td>
                     <td>{{c.value | number}}</td>

@@ -150,7 +150,8 @@ class InvoiceService {
                         vat: line.vat || 0
                     }
                 })
-                .toArray()
+                .toArray(),
+            discount: cmd.discount
         }
     }
 

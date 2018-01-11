@@ -217,6 +217,15 @@
                 </div>
             </div>
 
+            <div class="row text-left" style="border-bottom: 1px solid #DDDDDD;padding-top: 5px; padding-bottom: 5px">
+                <div class="col-xs-6 title1 so-align-right"><h3>{{'Invoices discount'|translate}}</h3></div>
+                <div class="col-xs-6 title1">
+                    <dev-tag-numeric id="invoiceDiscount"
+                            ng-model="model.invoice.discount"
+                            name="invoiceDiscount"></dev-tag-numeric>
+                </div>
+            </div>
+
             <div class="row text-left" style="border-bottom: 1px solid #DDDDDD;">
                 <div ng-include="'partials/sales/invoiceLines-charges-template.html'"></div>
 
