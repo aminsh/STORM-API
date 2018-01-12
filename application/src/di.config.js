@@ -1,5 +1,7 @@
 import {Container} from "inversify";
 import {CommandBus} from "./bus/CommandBus";
+//import {GenericRepository} from "./domain/data/GenericRepository";
+
 import {
     DetailAccountRepository,
     FiscalPeriodRepository,
@@ -43,6 +45,9 @@ import {
 
 const container = new Container();
 
+container.bind("CommandBus").to(CommandBus).inRequestScope();
+//container.bind("GenericRepository").to(GenericRepository).inRequestScope();
+
 container.bind("DetailAccountRepository").to(DetailAccountRepository).inRequestScope();
 container.bind("FiscalPeriodRepository").to(FiscalPeriodRepository).inRequestScope();
 container.bind("GeneralLedgerAccountRepository").to(GeneralLedgerAccountRepository).inRequestScope();
@@ -56,8 +61,6 @@ container.bind("ProductCategoryRepository").to(ProductCategoryRepository).inRequ
 container.bind("ScaleRepository").to(ScaleRepository).inRequestScope();
 container.bind("SettingsRepository").to(SettingsRepository).inRequestScope();
 container.bind("StockRepository").to(StockRepository).inRequestScope();
-
-container.bind("CommandBus").to(CommandBus).inRequestScope();
 
 container.bind("BankDomainService").to(BankDomainService);
 container.bind("DetailAccountDomainService").to(DetailAccountDomainService);
