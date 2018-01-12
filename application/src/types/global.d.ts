@@ -1,4 +1,3 @@
-
 declare global {
     const EventEmitter: IEventEmitter,
         Utility: IUtility,
@@ -27,6 +26,8 @@ declare interface IString {
 declare interface IGuid {
     new(): string;
 
+    create(): string;
+
     isEmpty(guid: string): Boolean
 }
 
@@ -48,4 +49,12 @@ declare interface IUser {
     id: string;
     name: string;
     email: string;
+}
+
+declare interface Promise<any> {
+    toDirectResult(): any
+}
+
+declare interface Builder {
+    toDirectResult(): any
 }
