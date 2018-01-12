@@ -6,8 +6,8 @@ export class InputReturnInvoiceDomainService {
     /**@type {InventoryInputDomainService}*/
     @inject("InventoryInputDomainService") inventoryInputDomainService = undefined;
 
-    /** @type {ProductDomainService}*/
-    @inject("ProductDomainService") productDomainService = undefined;
+    /** @type {ProductRepository}*/
+    @inject("ProductRepository") productRepository = undefined;
 
     /** @type {SettingsRepository}*/
     @inject("SettingsRepository") settingsRepository = undefined;
@@ -26,9 +26,9 @@ export class InputReturnInvoiceDomainService {
         else {
 
             let errors = cmd.invoiceLines.asEnumerable()
-                .where(item => this.productDomainService.shouldTrackInventory(item.productId))
+                .where(item => this.productRepository.isGood(item.productId))
                 .where(item => Utility.String.isNullOrEmpty(item.stockId))
-                .select(item => 'برای کالای {0} انبار انتخاب نشده'.format(this.productDomainService.findByIdOrCreate({id: item.productId}).title))
+                .select(item => 'برای کالای {0} انبار انتخاب نشده'.format(this.productRepository.findById(item.productId).title))
                 .toArray();
 
             if (errors.length > 0)
@@ -36,7 +36,7 @@ export class InputReturnInvoiceDomainService {
         }
 
         return cmd.invoiceLines.asEnumerable()
-            .where(item => this.productDomainService.shouldTrackInventory(item.productId))
+            .where(item => this.productRepository.isGood(item.productId))
             .groupBy(
                 item => item.stockId,
                 item => item,

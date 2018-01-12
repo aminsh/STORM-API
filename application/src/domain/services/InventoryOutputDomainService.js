@@ -8,8 +8,8 @@ export class InventoryOutputDomainService {
     /** @type {InventoryControlDomainService}*/
     @inject("InventoryControlDomainService") inventoryControlDomainService = undefined;
 
-    /** @type {ProductDomainService}*/
-    @inject("ProductDomainService") productDomainService = undefined;
+    /** @type {ProductRepository}*/
+    @inject("ProductRepository") productRepository = undefined;
 
     /** @type {InventoryRepository}*/
     @inject("InventoryRepository") inventoryRepository = undefined;
@@ -30,7 +30,7 @@ export class InventoryOutputDomainService {
         const settings = this.settingsRepository.get(),
 
             linesShouldTrackByInventory = cmd.invoiceLines.asEnumerable()
-                .where(item => item.productId && this.productDomainService.shouldTrackInventory(item.productId))
+                .where(item => item.productId && this.productRepository.isGood(item.productId))
                 .toArray();
 
         if (linesShouldTrackByInventory.length === 0)
@@ -42,7 +42,7 @@ export class InventoryOutputDomainService {
 
             let errors = linesShouldTrackByInventory.asEnumerable()
                 .where(item => Utility.String.isNullOrEmpty(item.stockId))
-                .select(item => `برای کالای ${this.productDomainService.findByIdOrCreate({id: item.productId}).title} انبار انتخاب نشده`)
+                .select(item => `برای کالای ${this.productRepository.findById(item.productId).title} انبار انتخاب نشده`)
                 .toArray();
 
             if (errors.length > 0)
@@ -57,7 +57,7 @@ export class InventoryOutputDomainService {
             }))
             .where(item => !item.hasInventory)
             .select(item => ({
-                product: this.productDomainService.findByIdOrCreate({id: item.productId}),
+                product: this.productRepository.findById(item.productId),
                 stock: this.stockRepository.findById(item.stockId)
             }))
             .select(item => `کالای ${item.product.title} در انبار ${item.stock.title} به مقدار تعیین شده موجود نیست`)
@@ -91,7 +91,7 @@ export class InventoryOutputDomainService {
             }))
             .where(item => !item.hasInventory)
             .select(item => ({
-                product: this.productDomainService.findByIdOrCreate({id: item.productId}),
+                product: this.productRepository.findById(item.productId),
                 stock: this.stockRepository.findById(item.stockId)
             }))
             .select(item => `کالای ${item.product.title} در انبار ${item.stock.title} به مقدار تعیین شده موجود نیست`)
@@ -149,7 +149,7 @@ export class InventoryOutputDomainService {
             }))
             .where(item => !item.hasInventory)
             .select(item => ({
-                product: this.productDomainService.findByIdOrCreate({id: item.productId}),
+                product: this.productRepository.findById(item.productId),
                 stock: this.stockRepository.findById(item.stockId)
             }))
             .select(item => `کالای ${item.product.title} در انبار ${item.stock.title} به مقدار تعیین شده موجود نیست`)

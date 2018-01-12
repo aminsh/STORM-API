@@ -3,8 +3,8 @@ import {inject, injectable} from "inversify";
 @injectable()
 export class InventoryControlDomainService {
 
-    /** @type {ProductDomainService}*/
-    @inject("ProductDomainService") productDomainService = undefined;
+    /** @type {ProductRepository}*/
+    @inject("ProductRepository") productRepository = undefined;
 
     /** @type {InventoryRepository}*/
     @inject("InventoryRepository") inventoryRepository = undefined;
@@ -55,7 +55,7 @@ export class InventoryControlDomainService {
 
                 return {
                     isValid: this._isValidInventoryTurnover(inventories),
-                    product: this.productDomainService.findByIdOrCreate({id: item.productId})
+                    product: this.productRepository.isGood({id: item.productId})
                 };
             })
             .where(item => !item.isValid)

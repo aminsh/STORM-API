@@ -4,19 +4,19 @@ import {inject, injectable} from "inversify";
 export class InputPurchaseDomainService {
 
     /**@type {InventoryInputDomainService}*/
-    @inject("InventoryInputDomainService") inventoryInputDomainService;
+    @inject("InventoryInputDomainService") inventoryInputDomainService = undefined;
 
-    /** @type {ProductDomainService}*/
-    @inject("ProductDomainService") productDomainService;
+    /** @type {ProductRepository}*/
+    @inject("ProductRepository") productRepository = undefined;
 
     /** @type {SettingsRepository}*/
-    @inject("SettingsRepository") settingsRepository;
+    @inject("SettingsRepository") settingsRepository = undefined;
 
     /** @type {InvoiceRepository}*/
-    @inject("InvoiceRepository") invoiceRepository;
+    @inject("InvoiceRepository") invoiceRepository = undefined;
 
     /** @type {InventoryRepository}*/
-    @inject("InventoryRepository") inventoryRepository;
+    @inject("InventoryRepository") inventoryRepository = undefined;
 
     create(cmd) {
         const settings = this.settingsRepository.get();
@@ -26,9 +26,9 @@ export class InputPurchaseDomainService {
         else {
 
             let errors = cmd.invoiceLines.asEnumerable()
-                .where(item => this.productDomainService.shouldTrackInventory(item.productId))
+                .where(item => this.productRepository.isGood(item.productId))
                 .where(item => Utility.String.isNullOrEmpty(item.stockId))
-                .select(item => 'برای کالای {0} انبار انتخاب نشده'.format(this.productDomainService.findByIdOrCreate({id: item.productId}).title))
+                .select(item => 'برای کالای {0} انبار انتخاب نشده'.format(this.productRepository.findById(item.productId).title))
                 .toArray();
 
             if (errors.length > 0)
@@ -36,7 +36,7 @@ export class InputPurchaseDomainService {
         }
 
         return cmd.invoiceLines.asEnumerable()
-            .where(item => this.productDomainService.shouldTrackInventory(item.productId))
+            .where(item => this.productRepository.isGood(item.productId))
             .groupBy(
                 item => item.stockId,
                 item => item,
