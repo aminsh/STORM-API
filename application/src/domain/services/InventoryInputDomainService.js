@@ -22,7 +22,7 @@ export class InventoryInputDomainService {
     @inject("InventoryRepository") inventoryRepository = undefined;
 
     /** @type {IState}*/
-    @inject("State") state;
+    @inject("State") state = undefined;
 
     _validate(cmd) {
         let errors = [];

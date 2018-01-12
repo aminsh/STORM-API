@@ -10,7 +10,7 @@ export class InventoryControlDomainService {
     @inject("InventoryRepository") inventoryRepository = undefined;
 
     /** @type {IState}*/
-    @inject("State") state;
+    @inject("State") state = undefined;
 
     _isValidInventoryTurnover(inventories) {
         if (inventories.length === 0) return true;

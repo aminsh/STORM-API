@@ -24,7 +24,7 @@ export class InventoryOutputDomainService {
     @inject("InvoiceRepository") invoiceRepository = undefined;
 
     /** @type {IState}*/
-    @inject("State") state;
+    @inject("State") state = undefined;
 
     createForInvoice(cmd) {
         const settings = this.settingsRepository.get(),
@@ -124,7 +124,7 @@ export class InventoryOutputDomainService {
 
         this.inventoryRepository.create(output);
 
-        EventEmitter.emit("onOutputCreated", output.id, this.args);
+        EventEmitter.emit("onOutputCreated", output.id, this.state);
 
         return output.id;
     }

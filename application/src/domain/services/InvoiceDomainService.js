@@ -31,7 +31,7 @@ export class InvoiceDomainService {
     @inject("InvoiceRepository") invoiceRepository = undefined;
 
     /** @type {IState}*/
-    @inject("State") state;
+    @inject("State") state = undefined;
 
     @postConstruct()
     init() {
@@ -273,7 +273,7 @@ export class InvoiceDomainService {
 
         this.invoiceRepository.updateBatch(id, this._mapToData(entity));
 
-        EventEmitter.emit("onInvoiceEdited", id, this.args);
+        EventEmitter.emit("onInvoiceEdited", id, this.state);
     }
 
     remove(id) {

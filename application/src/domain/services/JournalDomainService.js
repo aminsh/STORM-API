@@ -34,7 +34,7 @@ export class JournalDomainService {
     @inject("SubsidiaryLedgerAccountDomainService") subsidiaryLedgerAccountDomainService = undefined;
 
     /** @type {IState}*/
-    @inject("State") state;
+    @inject("State") state = undefined;
 
     _validate(cmd) {
         let errors = [];

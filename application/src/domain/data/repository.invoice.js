@@ -114,28 +114,26 @@ export class InvoiceRepository extends BaseRepository {
     updateBatch(id, entity) {
         this.entity = entity;
 
-        return toResult(new Promise((resolve, reject) => {
-            this.knex.transaction(trx => {
-                let entity = this.entity;
+        let trx = toResult(this.transaction);
 
-                try {
-                    let lines = this.entity.invoiceLines;
+        try {
+            let lines = this.entity.invoiceLines;
 
-                    delete  entity.invoiceLines;
+            delete  entity.invoiceLines;
 
-                    toResult(this.updateInvoice(id, entity, trx));
+            toResult(this.updateInvoice(id, entity, trx));
 
-                    toResult(this.updateInvoiceLines(id, lines, trx));
+            toResult(this.updateInvoiceLines(id, lines, trx));
 
-                    entity.invoiceLines = lines;
+            entity.invoiceLines = lines;
 
-                    resolve(entity);
-                }
-                catch (e) {
-                    reject(e);
-                }
-            });
-        }));
+            trx.commit();
+        }
+        catch (e){
+            trx.rollback();
+
+            throw new Error(e);
+        }
     }
 
     remove(id) {
@@ -198,11 +196,11 @@ export class InvoiceRepository extends BaseRepository {
         }
 
         if (shouldDeletedLines.asEnumerable().any())
-            shouldDeletedLines.forEach(e => aw(this.knex('invoiceLines')
+            shouldDeletedLines.forEach(e => toResult(this.knex('invoiceLines')
                 .transacting(trx).where('id', e.id).del()));
 
         if (shouldUpdatedLines.asEnumerable().any())
-            shouldUpdatedLines.forEach(e => aw(this.knex('invoiceLines')
+            shouldUpdatedLines.forEach(e => toResult(this.knex('invoiceLines')
                 .transacting(trx).where('id', e.id).update(e)));
     }
 
