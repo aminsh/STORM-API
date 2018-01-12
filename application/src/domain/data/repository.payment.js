@@ -1,4 +1,4 @@
-import aw from "asyncawait/await";
+import toResult from "asyncawait/await";
 import {BaseRepository} from "./repository.base";
 import {injectable} from "inversify";
 
@@ -6,14 +6,14 @@ import {injectable} from "inversify";
 export class PaymentRepository extends BaseRepository {
 
     findById(id) {
-        return aw(this.knex.select('*').table('payments')
+        return toResult(this.knex.select('*').table('payments')
             .where('branchId', this.branchId)
             .andWhere('id', id)
             .first());
     }
 
     getBySumAmountByInvoiceId(invoiceId) {
-        return aw(this.knex.table('payments')
+        return toResult(this.knex.table('payments')
             .where('branchId', this.branchId)
             .andWhere('invoiceId', invoiceId)
             .sum('amount')
@@ -31,12 +31,12 @@ export class PaymentRepository extends BaseRepository {
         if (trx)
             query.transacting(trx);
 
-        aw(query.insert(entity));
+        toResult(query.insert(entity));
 
         return entity;
     }
 
     update(id, entity) {
-        aw(this.knex('payments').where('id', id).update(entity));
+        toResult(this.knex('payments').where('id', id).update(entity));
     }
 }

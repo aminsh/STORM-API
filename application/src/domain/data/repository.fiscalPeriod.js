@@ -1,4 +1,4 @@
-import aw from "asyncawait/await";
+import toResult from "asyncawait/await";
 import {BaseRepository} from "./repository.base";
 import {injectable} from "inversify";
 
@@ -6,7 +6,7 @@ import {injectable} from "inversify";
 export class FiscalPeriodRepository extends BaseRepository {
 
     findById(id) {
-        return aw(this.knex.table('fiscalPeriods')
+        return toResult(this.knex.table('fiscalPeriods')
             .modify(this.modify, this.branchId)
             .where('id', id)
             .first());
@@ -14,7 +14,7 @@ export class FiscalPeriodRepository extends BaseRepository {
 
     create(entity) {
         super.create(entity);
-        aw(this.knex('fiscalPeriods').insert(entity));
+        toResult(this.knex('fiscalPeriods').insert(entity));
     }
 }
 

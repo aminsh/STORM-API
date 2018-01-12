@@ -1,4 +1,4 @@
-import aw from "asyncawait/await";
+import toResult from "asyncawait/await";
 import {BaseRepository} from "./repository.base";
 import {injectable} from "inversify";
 
@@ -8,7 +8,7 @@ export class InvoiceRepository extends BaseRepository {
     findById(id) {
 
         let knex = this.knex,
-            data = aw(this.knex.select(
+            data = toResult(this.knex.select(
                 '*',
                 knex.raw('"invoices"."description" as "invoiceDescription"'),
                 knex.raw('"invoiceLines"."description" as "invoiceLineDescription"'),
@@ -64,15 +64,15 @@ export class InvoiceRepository extends BaseRepository {
         if (notEqualId)
             query.andWhere('id', '!=', notEqualId);
 
-        return query.first();
+        return toResult(query.first());
     }
 
     findInvoiceLinesByInvoiceId(id) {
-        return this.knex.table('invoiceLines').where('invoiceId', id);
+        return toResult(this.knex.table('invoiceLines').where('invoiceId', id));
     }
 
     maxNumber(invoiceType) {
-        const result = aw(this.knex.table('invoices')
+        const result = toResult(this.knex.table('invoices')
             .modify(this.modify, this.branchId)
             .where('invoiceType', invoiceType)
             .max('number')
@@ -83,16 +83,16 @@ export class InvoiceRepository extends BaseRepository {
 
     create(entity) {
 
-        const trx = aw(this.transaction);
+        const trx = toResult(this.transaction);
 
         try {
             let lines = entity.invoiceLines;
 
             delete  entity.invoiceLines;
 
-            aw(this.createInvoice(entity, trx));
+            toResult(this.createInvoice(entity, trx));
 
-            aw(this.createInvoiceLines(lines, entity.id, trx));
+            toResult(this.createInvoiceLines(lines, entity.id, trx));
 
             entity.invoiceLines = lines;
 
@@ -108,14 +108,14 @@ export class InvoiceRepository extends BaseRepository {
     }
 
     update(id, entity) {
-        aw(this.knex('invoices').where('id', id).update(entity));
+        toResult(this.knex('invoices').where('id', id).update(entity));
     }
 
     updateBatch(id, entity) {
         this.entity = entity;
 
-        return aw(new Promise((resolve, reject) => {
-            this.knex.transaction(async(trx => {
+        return toResult(new Promise((resolve, reject) => {
+            this.knex.transaction(trx => {
                 let entity = this.entity;
 
                 try {
@@ -123,9 +123,9 @@ export class InvoiceRepository extends BaseRepository {
 
                     delete  entity.invoiceLines;
 
-                    aw(this.updateInvoice(id, entity, trx));
+                    toResult(this.updateInvoice(id, entity, trx));
 
-                    aw(this.updateInvoiceLines(id, lines, trx));
+                    toResult(this.updateInvoiceLines(id, lines, trx));
 
                     entity.invoiceLines = lines;
 
@@ -134,18 +134,18 @@ export class InvoiceRepository extends BaseRepository {
                 catch (e) {
                     reject(e);
                 }
-            }));
+            });
         }));
     }
 
     remove(id) {
-        return aw(this.knex('invoices').where('id', id).del());
+        return toResult(this.knex('invoices').where('id', id).del());
     }
 
     createInvoice(entity, trx) {
         super.create(entity);
 
-        aw(this.knex('invoices')
+        toResult(this.knex('invoices')
             .transacting(trx)
             .insert(entity));
 
@@ -154,7 +154,7 @@ export class InvoiceRepository extends BaseRepository {
 
     updateInvoice(id, entity, trx) {
 
-        aw(this.knex('invoices')
+        toResult(this.knex('invoices')
             .transacting(trx)
             .where('id', id)
             .update(entity));
@@ -168,13 +168,13 @@ export class InvoiceRepository extends BaseRepository {
             line.invoiceId = id;
         });
 
-        aw(this.knex('invoiceLines')
+        toResult(this.knex('invoiceLines')
             .transacting(trx)
             .insert(lines));
     }
 
     updateInvoiceLines(id, lines, trx) {
-        let persistedLines = aw(this.knex.table('invoiceLines').where('invoiceId', id)),
+        let persistedLines = toResult(this.knex.table('invoiceLines').where('invoiceId', id)),
 
             shouldDeletedLines = persistedLines.asEnumerable()
                 .where(e => !lines.asEnumerable().any(p => p.id == e.id))
@@ -192,7 +192,7 @@ export class InvoiceRepository extends BaseRepository {
                 line.invoiceId = id;
             });
 
-            aw(this.knex('invoiceLines')
+            toResult(this.knex('invoiceLines')
                 .transacting(trx)
                 .insert(shouldAddedLines));
         }
@@ -207,7 +207,7 @@ export class InvoiceRepository extends BaseRepository {
     }
 
     isExistsProduct(productId) {
-        return aw(this.knex('id')
+        return toResult(this.knex('id')
             .from('invoiceLines')
             .modify(this.modify, this.branchId)
             .where('productId', productId)
@@ -215,7 +215,7 @@ export class InvoiceRepository extends BaseRepository {
     }
 
     isExistsCustomer(customerId) {
-        return aw(this.knex('id')
+        return toResult(this.knex('id')
             .from('invoices')
             .modify(this.modify, this.branchId)
             .where('detailAccountId', customerId)
@@ -223,7 +223,7 @@ export class InvoiceRepository extends BaseRepository {
     }
 
     isExitsJournal(journalId) {
-        return aw(this.knex('id')
+        return toResult(this.knex('id')
             .from('invoices')
             .modify(this.modify, this.branchId)
             .where('journalId', journalId)
@@ -231,11 +231,10 @@ export class InvoiceRepository extends BaseRepository {
     }
 
     isExitsStock(stockId) {
-        return aw(this.knex.select('id')
+        return toResult(this.knex.select('id')
             .from('invoiceLines')
             .modify(this.modify, this.branchId)
             .where('stockId', stockId)
-            .first()
-        );
+            .first());
     }
 }

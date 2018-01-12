@@ -1,4 +1,4 @@
-import aw from "asyncawait/await";
+import toResult from "asyncawait/await";
 import {BaseRepository} from "./repository.base";
 import {injectable} from "inversify";
 
@@ -6,7 +6,7 @@ import {injectable} from "inversify";
 export class SubsidiaryLedgerAccountRepository extends BaseRepository {
 
     findById(id) {
-        return aw(this.knex.table('subsidiaryLedgerAccounts')
+        return toResult(this.knex.table('subsidiaryLedgerAccounts')
             .modify(this.modify, this.branchId)
             .where('id', id)
             .first());
@@ -23,7 +23,7 @@ export class SubsidiaryLedgerAccountRepository extends BaseRepository {
         if (notEqualId)
             query.andWhere('id', '!=', notEqualId);
 
-        return aw(query.first());
+        return toResult(query.first());
     }
 
     create(entity) {
@@ -33,25 +33,25 @@ export class SubsidiaryLedgerAccountRepository extends BaseRepository {
         else
             super.create(entity);
 
-        aw(this.knex('subsidiaryLedgerAccounts').insert(entity));
+        toResult(this.knex('subsidiaryLedgerAccounts').insert(entity));
     }
 
     update(id,entity) {
-        return aw(this.knex('subsidiaryLedgerAccounts')
+        return toResult(this.knex('subsidiaryLedgerAccounts')
             .modify(this.modify, this.branchId)
             .where('id', id)
             .update(entity));
     }
 
     remove(id) {
-        return aw(this.knex('subsidiaryLedgerAccounts')
+        return toResult(this.knex('subsidiaryLedgerAccounts')
             .modify(this.modify, this.branchId)
             .where('id', id)
             .del());
     }
 
     isUsedOnJournalLines(id){
-        return aw(this.knex.from('journalLines')
+        return toResult(this.knex.from('journalLines')
             .modify(this.modify, this.branchId)
             .where('subsidiaryLedgerAccountId', id)
             .first());

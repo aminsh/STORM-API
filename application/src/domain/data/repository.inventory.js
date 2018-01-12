@@ -1,4 +1,4 @@
-import aw from "asyncawait/await";
+import toResult from "asyncawait/await";
 import {BaseRepository} from "./repository.base";
 import {injectable} from "inversify";
 
@@ -6,11 +6,11 @@ import {injectable} from "inversify";
 export class InventoryRepository extends BaseRepository {
 
     findById(id) {
-        let inventory = aw(this.knex.table('inventories').where('id', id).first());
+        let inventory = toResult(this.knex.table('inventories').where('id', id).first());
 
         if (!inventory) return null;
 
-        let inventoryLines = aw(this.knex.table('inventoryLines').where('inventoryId', id));
+        let inventoryLines = toResult(this.knex.table('inventoryLines').where('inventoryId', id));
 
         inventory.inventoryLines = inventoryLines;
 
@@ -30,13 +30,13 @@ export class InventoryRepository extends BaseRepository {
         if (expectId)
             query.whereNot('id', expectId);
 
-        let first = aw(query.first());
+        let first = toResult(query.first());
 
         return first ? this.findById(first.id) : null;
     }
 
     findByInvoiceId(invoiceId, inventoryType) {
-        const ids = aw(this.knex.select('id').from('inventories')
+        const ids = toResult(this.knex.select('id').from('inventories')
             .where('invoiceId', invoiceId)
             .where('inventoryType', inventoryType));
 
@@ -44,7 +44,7 @@ export class InventoryRepository extends BaseRepository {
             return [];
 
         return ids.asEnumerable()
-            .select(async.result(item => aw(this.findById(item.id))))
+            .select(item => toResult(this.findById(item.id)))
             .toArray();
     }
 
@@ -53,7 +53,7 @@ export class InventoryRepository extends BaseRepository {
         let knex = this.knex,
             branchId = this.branchId,
 
-            query = aw(knex.from(function () {
+            query = toResult(knex.from(function () {
                 this.select(knex.raw(`((case
                      when "inventories"."inventoryType" = 'input' then 1
                      when "inventories"."inventoryType" = 'output' then -1
@@ -86,14 +86,14 @@ export class InventoryRepository extends BaseRepository {
         if (expectInventoryLineId)
             query.whereNot('id', expectInventoryLineId);
 
-        return aw(query);
+        return toResult(query);
     }
 
     inputMaxNumber(fiscalPeriodId, stockId, ioType) {
         if (!ioType)
             throw new Error('ioType is undefined');
 
-        return aw(this.knex.table('inventories')
+        return toResult(this.knex.table('inventories')
             .modify(this.modify, this.branchId)
             .where('inventoryType', 'input')
             .andWhere('fiscalPeriodId', fiscalPeriodId)
@@ -107,7 +107,7 @@ export class InventoryRepository extends BaseRepository {
         if (!ioType)
             throw new Error('ioType is undefined');
 
-        return aw(this.knex.table('inventories')
+        return toResult(this.knex.table('inventories')
             .modify(this.modify, this.branchId)
             .where('inventoryType', 'output')
             .andWhere('fiscalPeriodId', fiscalPeriodId)
@@ -118,7 +118,7 @@ export class InventoryRepository extends BaseRepository {
     }
 
     getAllInputBeforeDate(fiscalPeriodId, productId, date) {
-        return aw(this.knex.table('inventories')
+        return toResult(this.knex.table('inventories')
             .leftJoin('inventoryLines', 'inventories.id', 'inventoryLines.inventoryId')
             .where('inventories.branchId', this.branchId)
             .andWhere('inventoryType', 'input')
@@ -128,17 +128,17 @@ export class InventoryRepository extends BaseRepository {
     }
 
     create(entity) {
-        const trx = aw(this.transaction);
+        const trx = toResult(this.transaction);
 
         try {
             let lines = entity.inventoryLines;
 
             delete  entity.inventoryLines;
 
-            aw(this.createInventory(entity, trx));
+            toResult(this.createInventory(entity, trx));
 
             if (lines && lines.length > 0)
-                aw(this.createInventoryLines(lines, entity.id, trx));
+                toResult(this.createInventoryLines(lines, entity.id, trx));
 
             entity.inventoryLines = lines;
 
@@ -154,21 +154,21 @@ export class InventoryRepository extends BaseRepository {
     }
 
     update(id, entity) {
-        return aw(this.knex('inventories').where('id', id).update(entity));
+        return toResult(this.knex('inventories').where('id', id).update(entity));
     }
 
     updateBatch(id, entity) {
 
-        const trx = aw(this.transaction);
+        const trx = toResult(this.transaction);
 
         try {
             let lines = entity.inventoryLines;
 
             delete  entity.inventoryLines;
 
-            aw(this.updateInventory(id, entity, trx));
+            toResult(this.updateInventory(id, entity, trx));
 
-            aw(this.updateInventoryLines(id, lines, trx));
+            toResult(this.updateInventoryLines(id, lines, trx));
 
             entity.inventoryLines = lines;
 
@@ -183,10 +183,10 @@ export class InventoryRepository extends BaseRepository {
 
     updateLines(lines) {
 
-        const trx = aw(this.transaction);
+        const trx = toResult(this.transaction);
 
         try {
-            lines.forEach(e => aw(this.knex('inventoryLines').transacting(trx).where('id', e.id).update(e)));
+            lines.forEach(e => toResult(this.knex('inventoryLines').transacting(trx).where('id', e.id).update(e)));
 
             trx.commit();
         }
@@ -199,13 +199,13 @@ export class InventoryRepository extends BaseRepository {
     }
 
     remove(id) {
-        return aw(this.knex('inventories').where('id', id).del());
+        return toResult(this.knex('inventories').where('id', id).del());
     }
 
     createInventory(entity, trx) {
         super.create(entity);
 
-        aw(this.knex('inventories')
+        toResult(this.knex('inventories')
             .transacting(trx)
             .insert(entity));
 
@@ -214,7 +214,7 @@ export class InventoryRepository extends BaseRepository {
 
     updateInventory(id, entity, trx) {
 
-        entity.id = aw(this.knex('inventories')
+        entity.id = toResult(this.knex('inventories')
             .transacting(trx)
             .where('id', id)
             .update(entity));
@@ -229,13 +229,13 @@ export class InventoryRepository extends BaseRepository {
 
         });
 
-        aw(this.knex('inventoryLines')
+        toResult(this.knex('inventoryLines')
             .transacting(trx)
             .insert(lines));
     }
 
     updateInventoryLines(id, lines, trx) {
-        let persistedLines = aw(this.knex.table('inventoryLines').where('inventoryId', id)),
+        let persistedLines = toResult(this.knex.table('inventoryLines').where('inventoryId', id)),
 
             shouldDeletedLines = persistedLines.asEnumerable()
                 .where(e => !lines.asEnumerable().any(p => p.id == e.id))
@@ -253,22 +253,22 @@ export class InventoryRepository extends BaseRepository {
                 line.inventoryId = id;
             });
 
-            aw(this.knex('inventoryLines')
+            toResult(this.knex('inventoryLines')
                 .transacting(trx)
                 .insert(shouldAddedLines));
         }
 
         if (shouldDeletedLines.asEnumerable().any())
-            shouldDeletedLines.forEach(e => aw(this.knex('inventoryLines')
+            shouldDeletedLines.forEach(e => toResult(this.knex('inventoryLines')
                 .transacting(trx).where('id', e.id).del()));
 
         if (shouldUpdatedLines.asEnumerable().any())
-            shouldUpdatedLines.forEach(e => aw(this.knex('inventoryLines')
+            shouldUpdatedLines.forEach(e => toResult(this.knex('inventoryLines')
                 .transacting(trx).where('id', e.id).update(e)));
     }
 
     isExistsProduct(productId) {
-        return aw(this.knex('id')
+        return toResult(this.knex('id')
             .from('inventoryLines')
             .modify(this.modify, this.branchId)
             .where('productId', productId)
@@ -276,7 +276,7 @@ export class InventoryRepository extends BaseRepository {
     }
 
     isExitsJournal(journalId) {
-        return aw(this.knex('id')
+        return toResult(this.knex('id')
             .from('inventories')
             .modify(this.modify, this.branchId)
             .where('journalId', journalId)
@@ -284,7 +284,7 @@ export class InventoryRepository extends BaseRepository {
     }
 
     isExitsStock(stockId) {
-        return aw(this.knex('id')
+        return toResult(this.knex('id')
             .from('inventories')
             .modify(this.modify, this.branchId)
             .where('stockId', stockId)

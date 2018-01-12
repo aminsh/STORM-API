@@ -1,4 +1,4 @@
-import aw from "asyncawait/await";
+import toResult from "asyncawait/await";
 import {BaseRepository} from "./repository.base";
 import {injectable} from "inversify";
 
@@ -6,14 +6,14 @@ import {injectable} from "inversify";
 export class DetailAccountRepository extends BaseRepository {
 
     findById(id) {
-        return aw(this.knex.table('detailAccounts')
+        return toResult(this.knex.table('detailAccounts')
             .modify(this.modify, this.branchId)
             .where('id', id)
             .first());
     }
 
     findByReferenceId(referenceId) {
-        return aw(this.knex.table('detailAccounts')
+        return toResult(this.knex.table('detailAccounts')
             .modify(this.modify, this.branchId)
             .where('referenceId', referenceId)
             .first());
@@ -27,11 +27,11 @@ export class DetailAccountRepository extends BaseRepository {
         if (notEqualId)
             query.andWhere('id', '!=', notEqualId);
 
-        return aw(query.first());
+        return toResult(query.first());
     }
 
     findMaxCode(){
-        let result = aw(this.knex.table('detailAccounts')
+        let result = toResult(this.knex.table('detailAccounts')
             .modify(this.modify, this.branchId)
             .max('code')
             .first());
@@ -48,7 +48,7 @@ export class DetailAccountRepository extends BaseRepository {
             query.andWhere('bankAccountNumber', bankAccountNumber);
         else query.andWhere('thisIsDefaultBankAccount', true);
 
-        return query.first();
+        return toResult(query.first());
     }
 
     findFund(fundCode) {
@@ -60,24 +60,24 @@ export class DetailAccountRepository extends BaseRepository {
             query.andWhere('code', fundCode);
         else query.andWhere('thisIsDefaultFund', true);
 
-        return query.first();
+        return toResult(query.first());
     }
 
     create(entity) {
         super.create(entity);
 
-        aw(this.knex('detailAccounts').insert(entity));
+        toResult(this.knex('detailAccounts').insert(entity));
     }
 
     update(entity) {
-        return aw(this.knex('detailAccounts')
+        return toResult(this.knex('detailAccounts')
             .modify(this.modify, this.branchId)
             .where('id', entity.id)
             .update(entity));
     }
 
     remove(id) {
-        return aw(this.knex('detailAccounts')
+        return toResult(this.knex('detailAccounts')
             .modify(this.modify, this.branchId)
             .where('id', id)
             .del());

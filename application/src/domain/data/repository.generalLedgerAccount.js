@@ -1,4 +1,4 @@
-import aw from "asyncawait/await";
+import toResult from "asyncawait/await";
 import {BaseRepository} from "./repository.base";
 import {injectable} from "inversify";
 
@@ -6,12 +6,12 @@ import {injectable} from "inversify";
 export class GeneralLedgerAccountRepository extends BaseRepository {
 
     findById(id) {
-        let generalLedgerAccount = aw(
+        let generalLedgerAccount = toResult(
             this.knex.table('generalLedgerAccounts')
                 .modify(this.modify, this.branchId)
                 .where('id', id)
                 .first()),
-            subsidiaryLedgerAccounts = aw(
+            subsidiaryLedgerAccounts = toResult(
                 this.knex.select().from('subsidiaryLedgerAccounts')
                     .modify(this.modify, this.branchId)
                     .where('generalLedgerAccountId', id));
@@ -29,7 +29,7 @@ export class GeneralLedgerAccountRepository extends BaseRepository {
         if (notEqualId)
             query.andWhere('id', '!=', notEqualId);
 
-        return aw(query.first());
+        return toResult(query.first());
     }
 
     create(entity) {
@@ -38,18 +38,18 @@ export class GeneralLedgerAccountRepository extends BaseRepository {
         else
             super.create(entity);
 
-        aw(this.knex('generalLedgerAccounts').insert(entity));
+        toResult(this.knex('generalLedgerAccounts').insert(entity));
     }
 
     update(entity) {
-        return aw(this.knex('generalLedgerAccounts')
+        return toResult(this.knex('generalLedgerAccounts')
             .modify(this.modify, this.branchId)
             .where('id', entity.id)
             .update(entity));
     }
 
     remove(id) {
-        return aw(this.knex('generalLedgerAccounts')
+        return toResult(this.knex('generalLedgerAccounts')
             .modify(this.modify, this.branchId)
             .where('id', id)
             .del());
