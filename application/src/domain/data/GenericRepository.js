@@ -1,9 +1,8 @@
 import {getRepository} from "typeorm";
 import aw from "asyncawait/await";
 import {inject, injectable} from "inversify";
-import {TYPES} from "../../contants/types";
 
-const Guid = instanceOf('utility').Guid;
+const Guid = Utility.Guid;
 
 @injectable()
 export class GenericRepository {
@@ -12,13 +11,12 @@ export class GenericRepository {
     repository = undefined;
 
     /** @private */
-    @inject(TYPES.STATE)
+    @inject("State")
     _state = undefined;
 
 
     /**@return {Repository}*/
     of(Type) {
-
         return new Repository(this._state, Type);
     }
 }
@@ -73,10 +71,6 @@ export class Repository {
         return aw(this.repository.findOne(options));
     }
 
-    createQueryBuilder(alias) {
-        return this.repository.createQueryBuilder(alias)
-            .where(`${alias}.branchId = :branchId`, {branchId: this._state.branchId});
-    }
 
     /**
      * @private
