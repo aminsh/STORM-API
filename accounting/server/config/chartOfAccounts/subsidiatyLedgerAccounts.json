@@ -29,8 +29,7 @@
   {"parentCode": "104", "code": "10411", "key": "", "title": "طلب از شرکت های گروه", "balanceType": "debit", "hasDetailAccount": false},
   {"parentCode": "104", "code": "10412", "key": "", "title": "طلب از سایر اشخاص وابسته", "balanceType": "debit", "hasDetailAccount": false},
   {"parentCode": "104", "code": "10413", "key": "", "title": "خسارات قابل دریافت از بیمه", "balanceType": "debit", "hasDetailAccount": false},
-  {"parentCode": "104", "code": "10414", "key": "tax", "title":"مالیات بر ارزش افزوده خرید", "balanceType": "credit", "hasDetailAccount": false},
-  {"parentCode": "104", "code": "10415", "key": "vat", "title":"عوارض شهرداری خرید", "balanceType": "credit", "hasDetailAccount": false},
+  {"parentCode": "104", "code": "10414", "key": "vat", "title":"مالیات و عوارض بر ارزش افزوده خرید", "balanceType": "credit", "hasDetailAccount": false},
 
   {"parentCode": "105", "code": "10501", "key": "", "title": "موجودی مواد اولیه", "balanceType": "debit", "hasDetailAccount": false},
   {"parentCode": "105", "code": "10502", "key": "", "title": "موجودی قطعات و لوازم یدکی", "balanceType": "debit", "hasDetailAccount": false},
@@ -116,14 +115,13 @@
   {"parentCode": "301", "code": "30101", "key": "", "title": "اسناد پرداختنی تجاری", "balanceType": "credit", "hasDetailAccount": false},
   {"parentCode": "301", "code": "30102", "key": "", "title": "معلق خرید", "balanceType": "credit", "hasDetailAccount": false},
   {"parentCode": "301", "code": "30103", "key": "", "title": "حساب های پرداختنی تجاری", "balanceType": "credit", "hasDetailAccount": true},
-
   {"parentCode": "302", "code": "30201", "key": "", "title": "اسناد پرداختنی غیرتجاری", "balanceType": "credit", "hasDetailAccount": false},
   {"parentCode": "302", "code": "30202", "key": "", "title": "حساب های پرداختنی غیرتجاری", "balanceType": "credit", "hasDetailAccount": true},
   {"parentCode": "302", "code": "30203", "key": "", "title": "مالیات های تکلیفی پرداختنی", "balanceType": "credit", "hasDetailAccount": true},
   {"parentCode": "302", "code": "30204", "key": "", "title": "مالیات بر درآمد شرکت پرداختنی", "balanceType": "credit", "hasDetailAccount": true},
   {"parentCode": "302", "code": "30205", "key": "", "title": "حق بیمه پرداختنی", "balanceType": "credit", "hasDetailAccount": true},
   {"parentCode": "302", "code": "30206", "key": "", "title": "حقوق و دستمزد پرداختنی", "balanceType": "credit", "hasDetailAccount": true},
-  {"parentCode": "302", "code": "30207", "key": "", "title": "عوارض شهرداری فروش", "balanceType": "credit", "hasDetailAccount": false},
+  {"parentCode": "302", "code": "30207", "key": "", "title": "مالیات و عوارض ارزش افزوده فروش", "balanceType": "credit", "hasDetailAccount": true},
   {"parentCode": "302", "code": "30208", "key": "", "title": "دو در هزار فروش صنایع", "balanceType": "credit", "hasDetailAccount": false},
   {"parentCode": "302", "code": "30209", "key": "", "title": "یک در هزار تربیت بدنی", "balanceType": "credit", "hasDetailAccount": false},
   {"parentCode": "302", "code": "30210", "key": "", "title": "عوارض آموزش و پرورش", "balanceType": "credit", "hasDetailAccount": false},
@@ -207,10 +205,10 @@
   {"parentCode": "505", "code": "50503", "key": "", "title": "تعدیلات سنواتی", "hasDetailAccount": false},
 
   {"parentCode": "601", "code": "60101", "key": "", "title": "فروش کالا داخلی", "balanceType": "credit", "hasDetailAccount": true},
-  {"parentCode": "601", "code": "60102", "key": "", "title": "برگشت از فروش و تخفیفات داخلی", "balanceType": "debit", "hasDetailAccount": true},
+  {"parentCode": "601", "code": "60102", "key": "", "title": "برگشت از فروش کالای داخلی", "balanceType": "debit", "hasDetailAccount": true},
   {"parentCode": "601", "code": "60103", "key": "", "title": "تخفیفات نقدی فروش کالا داخلی", "balanceType": "debit", "hasDetailAccount": true},
   {"parentCode": "601", "code": "60104", "key": "", "title": "فروش کالا صادراتی", "balanceType": "credit", "hasDetailAccount": false},
-  {"parentCode": "601", "code": "60105", "key": "", "title": "برگشت از فروش و تخفیفات فروش صادراتی", "balanceType": "debit", "hasDetailAccount": false},
+  {"parentCode": "601", "code": "60105", "key": "", "title": "برگشت از فروش کالای فروش صادراتی", "balanceType": "debit", "hasDetailAccount": false},
   {"parentCode": "601", "code": "60106", "key": "", "title": "تخفیفات نقدی فروش صادراتی", "balanceType": "debit", "hasDetailAccount": false},
 
   {"parentCode": "602", "code": "60201", "key": "", "title": "درآمد حاصل از ارائه خدمات داخلی", "balanceType": "credit", "hasDetailAccount": true},
