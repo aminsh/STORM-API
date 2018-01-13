@@ -54,7 +54,15 @@ app.use((req, res, next) => {
 
         let childContainer = container.createChild();
 
-        childContainer.bind("State").toConstantValue({branchId: req.branchId,fiscalPeriodId: req.fiscalPeriodId, user: req.user });
+        childContainer.bind("State").toConstantValue({
+            branchId: req.branchId,
+            fiscalPeriodId: req.fiscalPeriodId,
+            user: req.user,
+            query: req.query,
+            body: req.body,
+            params: req.params,
+            originalUrl: req.originalUrl
+        });
 
         req.container = childContainer;
 
