@@ -3,7 +3,6 @@
 const async = require('asyncawait/async'),
     await = require('asyncawait/await'),
     router = require('express').Router(),
-    EventEmitter = instanceOf('EventEmitter'),
     JournalQuery = require('../queries/query.journal');
 
 router.route('/')

@@ -2,7 +2,6 @@
 
 const async = require('asyncawait/async'),
     await = require('asyncawait/await'),
-    EventEmitter = instanceOf('EventEmitter'),
     router = require('express').Router(),
     SubsidiaryLedgerAccountQuery = require('../queries/query.subsidiaryLedgerAccount');
 

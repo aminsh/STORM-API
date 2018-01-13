@@ -3,8 +3,7 @@
 const async = require('asyncawait/async'),
     await = require('asyncawait/await'),
     router = require('express').Router(),
-    EventEmitter = instanceOf('EventEmitter'),
-    Guid = instanceOf('utility').Guid;
+    DetailAccountQuery = require('../queries/query.detailAccount');
 
 
     router.route('/')

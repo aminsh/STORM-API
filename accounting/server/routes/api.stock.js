@@ -3,7 +3,6 @@
 const async = require('asyncawait/async'),
     await = require('asyncawait/await'),
     router = require('express').Router(),
-    StockRepository = require('../data/repository.stock'),
     StockQuery = require('../queries/query.stock');
 
 router.route('/')
