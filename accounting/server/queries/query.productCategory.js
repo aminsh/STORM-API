@@ -6,7 +6,7 @@ const async = require('asyncawait/async'),
     kendoQueryResolve = require('../services/kendoQueryResolve'),
     view = require('../viewModel.assemblers/view.product');
 
-module.exports = class ProductCategoryQuery extends BaseQuery {
+class ProductCategoryQuery extends BaseQuery {
     constructor(branchId) {
         super(branchId);
     }
@@ -25,4 +25,6 @@ module.exports = class ProductCategoryQuery extends BaseQuery {
             .andWhere('id', id)
             .first();
     }
-};
+}
+
+module.exports = ProductCategoryQuery;

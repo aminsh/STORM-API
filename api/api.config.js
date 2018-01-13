@@ -6,7 +6,8 @@ const async = require('asyncawait/async'),
     app = express(),
     jwt = require('jsonwebtoken'),
     FiscalPeriodQuery = require('../accounting/server/queries/query.fiscalPeriod'),
-    superSecret = require('../accounting/server/services/cryptoService').superSecret;
+    superSecret = require('../accounting/server/services/cryptoService').superSecret,
+    container = require('../application/dist/di.config').container;
 
 
 module.exports = app;
@@ -50,6 +51,12 @@ app.use((req, res, next) => {
             res.cookie('current-period', maxId);
             req.fiscalPeriodId = maxId;
         }
+
+        let childContainer = container.createChild();
+
+        childContainer.bind("State").toConstantValue({branchId: req.branchId,fiscalPeriodId: req.fiscalPeriodId, user: req.user });
+
+        req.container = childContainer;
 
         next();
     }));

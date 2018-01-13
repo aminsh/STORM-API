@@ -15,7 +15,7 @@ router.route('/inputs')
     }))
     .post(async((req, res) => {
         try {
-            const id = RunService("inventoryInputCreate", [req.body], req);
+            const id = req.container.get("CommandBus").send("inventoryInputCreate", [req.body]);
             res.json({isValid: true, returnValue: {id}})
         }
         catch (e) {
@@ -35,7 +35,7 @@ router.route('/inputs/:id')
     .put(async((req, res) => {
 
         try {
-            RunService("inventoryInputUpdate", [req.params.id, req.body], req);
+            req.container.get("CommandBus").send("inventoryInputUpdate", [req.params.id, req.body]);
             res.json({isValid: true})
         }
         catch (e) {
@@ -44,7 +44,7 @@ router.route('/inputs/:id')
     }))
     .delete(async((req, res) => {
         try {
-            RunService("inventoryInputRemove", [req.params.id], req);
+            req.container.get("CommandBus").send("inventoryInputRemove", [req.params.id]);
             res.json({isValid: true})
         }
         catch (e) {
@@ -55,7 +55,7 @@ router.route('/inputs/:id')
 router.route('/inputs/:id/set-price')
     .put(async((req, res) => {
         try {
-            RunService("inventoryInputSetPrice", [req.params.id, req.body], req);
+            req.container.get("CommandBus").send("inventoryInputSetPrice", [req.params.id, req.body]);
             res.json({isValid: true})
         }
         catch (e) {
@@ -91,7 +91,7 @@ router.route('/outputs')
     }))
     .post(async((req, res) => {
         try {
-            const id = RunService("inventoryOutputCreate", [req.body], req);
+            const id = req.container.get("CommandBus").send("inventoryOutputCreate", [req.body]);
             res.json({isValid: true, returnValue: {id}})
         }
         catch (e) {
@@ -104,7 +104,7 @@ router.route('/outputs/:id')
     .put(async((req, res) => {
 
         try {
-            RunService("inventoryOutputUpdate", [req.params.id, req.body], req);
+            req.container.get("CommandBus").send("inventoryOutputUpdate", [req.params.id, req.body]);
             res.json({isValid: true})
         }
         catch (e) {
@@ -113,7 +113,7 @@ router.route('/outputs/:id')
     }))
     .delete(async((req, res) => {
         try {
-            RunService("inventoryOutputRemove", [req.params.id], req);
+            req.container.get("CommandBus").send("inventoryOutputRemove", [req.params.id]);
             res.json({isValid: true})
         }
         catch (e) {
@@ -124,7 +124,7 @@ router.route('/outputs/:id')
 router.route('/outputs/:id/calculate-price')
     .put(async((req, res)=> {
         try {
-            RunService("inventoryOutputCalculatePrice", [req.params.id], req);
+            req.container.get("CommandBus").send("inventoryOutputCalculatePrice", [req.params.id]);
             res.json({isValid: true})
         }
         catch (e) {
@@ -139,9 +139,9 @@ router.route('/outputs/:id/generate-journal')
 
             const id = req.params.id;
 
-            let journalId = RunService("journalGenerateForOutputSale", [id], req);
+            let journalId = req.container.get("CommandBus").send("journalGenerateForOutputSale", [id]);
 
-            RunService("inventoryOutputSetJournal", [id, journalId], req);
+            req.container.get("CommandBus").send("inventoryOutputSetJournal", [id, journalId]);
 
             res.json({isValid: true});
         }

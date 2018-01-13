@@ -3,8 +3,6 @@
 const async = require('asyncawait/async'),
     await = require('asyncawait/await'),
     router = require('express').Router(),
-    GeneralLedgerAccountService = ApplicationService.GeneralLedgerAccountService,
-    Guid = instanceOf('utility').Guid,
     EventEmitter = instanceOf('EventEmitter'),
     GeneralLedgerAccountQuery = require('../queries/query.generalLedgerAccount');
 
@@ -17,7 +15,7 @@ router.route('/')
     }))
     .post(async((req, res) => {
         try {
-            const id = RunService("generalLedgerAccountCreate", [req.body], req);
+            const id = req.container.get("CommandBus").send("generalLedgerAccountCreate", [req.body]);
             res.json({isValid: true, returnValue: {id}})
         }
         catch (e) {
@@ -53,7 +51,7 @@ router.route('/:id')
     }))
     .put(async((req, res) => {
         try {
-            RunService("generalLedgerAccountUpdate", [req.params.id, req.body], req);
+            req.container.get("CommandBus").send("generalLedgerAccountUpdate", [req.params.id, req.body]);
             res.json({isValid: true})
         }
         catch (e) {
@@ -62,7 +60,7 @@ router.route('/:id')
     }))
     .delete(async((req, res) => {
         try {
-            RunService("generalLedgerAccountRemove", [req.params.id], req);
+            req.container.get("CommandBus").send("generalLedgerAccountRemove", [req.params.id]);
             res.json({isValid: true})
         }
         catch (e) {

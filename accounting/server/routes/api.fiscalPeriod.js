@@ -14,7 +14,7 @@ router.route('/')
     .post(async((req, res) => {
 
         try {
-            const id = RunService("fiscalPeriodCreate", [req.body], req);
+            const id = req.container.get("CommandBus").send("fiscalPeriodCreate", [req.body]);
             res.json({isValid: true, returnValue: {id}});
         }
         catch (e) {

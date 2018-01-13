@@ -1,0 +1,26 @@
+[
+  {
+    "class": "InvoiceEventListener",
+    "method": "onInvoiceCreated",
+    "module": "invoice",
+    "event": "created"
+  },
+  {
+    "name": "InvoiceEventListener",
+    "method": "onInvoiceChanged",
+    "module": "invoice",
+    "event": "edited"
+  },
+  {
+    "name": "InvoiceEventListener",
+    "method": "onInvoiceConfirmed",
+    "module": "invoice",
+    "event": "confirmed"
+  },
+  {
+    "name": "InvoiceEventListener",
+    "method": "onInvoiceRemoved",
+    "module": "invoice",
+    "event": "removed"
+  }
+]
