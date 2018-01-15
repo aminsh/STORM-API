@@ -53,7 +53,7 @@
                 <th>تعداد</th>
                 <th>مبلغ واحد</th>
                 <th>تخفیف</th>
-                <th>مالیات</th>
+                <th>مالیات و عوارض</th>
                 <th>جمع کل</th>
             </tr>
             </thead>
@@ -74,7 +74,7 @@
     <!-- /table-responsive -->
     <div class="row">
 
-        <div class="col-md-8">
+        <div class="col-md-7">
             <div class="row">
                 <h4>{{'Description'|translate}} :</h4>
                 <div style="text-align: justify">{{model.invoice.description}}</div>
@@ -115,7 +115,7 @@
                 </ul>
             </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-5">
             <table class="table invoice-total">
                 <tbody class="pull-left text-left">
                 <tr>
@@ -123,16 +123,10 @@
                     <td>{{model.invoice.invoiceLines|totalSum:('$.quantity * $.unitPrice')|number}}</td>
                 </tr>
                 <tr>
-                    <td><strong>جمع تخفیف :</strong></td>
+                    <td><strong>{{'Discount'+''|translate}}</strong></td>
                     <td> {{model.invoice.invoiceLines | totalSum: ('discount') | number}}</td>
                 </tr>
 
-                <tr>
-                    <td><strong>{{'Invoices discount'|translate}}:</strong></td>
-                    <td>
-                        {{model.invoice.discount}}
-                    </td>
-                </tr>
 
                 <tr ng-repeat="c in model.invoice.charges">
                     <td><strong>{{'Charge'|translate}} {{c.display}} :</strong></td>
@@ -140,20 +134,27 @@
                 </tr>
 
                 <tr ng-show="model.invoice.charges.length > 0">
-                    <td><strong>جمع مالیات اضافات :</strong></td>
-                    <td>{{((model.invoice.charges | totalSum: ('value')) * model.vat) /100 | number}}</td>
+                    <td><strong>جمع مالیات و عوارض اضافات :</strong></td>
+                    <td>{{model.invoice.chargesVat | number}}</td>
                 </tr>
 
                 <tr>
-                    <td><strong>جمع مالیات :</strong></td>
-                    <td>{{(model.invoice.invoiceLines | totalSum: ('vat')) + ((model.invoice.charges | totalSum: ('value')) * model.vat) /100 | number}}</td>
+                    <td><strong>جمع کل مالیات و عوارض :</strong></td>
+                    <td>
+                        {{model.invoice.totalVat | number}}
+                    </td>
+                </tr>
+
+                <tr>
+                    <td><strong>{{'Total discount'|translate}}:</strong></td>
+                    <td>
+                        {{model.invoice.discount | number}}
+                    </td>
                 </tr>
 
                 <tr>
                     <td><strong>جمع کل :</strong></td>
-                    <td>{{(model.invoice.invoiceLines | totalSum: ('($.quantity * $.unitPrice) - $.discount + $.vat')) +
-                        (model.invoice.charges | totalSum: ('value')) +
-                        ((model.invoice.charges | totalSum: ('value')) * model.vat) /100 | number}}</td>
+                    <td>{{model.invoice.sumTotalPrice | number}}</td>
                 </tr>
                 </tbody>
             </table>

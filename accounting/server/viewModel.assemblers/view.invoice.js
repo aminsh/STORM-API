@@ -35,7 +35,9 @@ module.exports = function (entity, settings) {
         sumRemainder: entity.sumRemainder,
         costs: mapCostsAndCharges(entity.costs, settings.saleCosts),
         charges: mapCostsAndCharges(entity.charges, settings.saleCharges),
-        discount: entity.discount || 0
+        discount: entity.discount || 0,
+        totalVat: entity.totalVat || 0,
+        chargesVat: entity.chargesVat || 0
     }, entity.custom);
 
 
