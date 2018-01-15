@@ -13,7 +13,7 @@ const async = require('asyncawait/async'),
 router.route('/')
     .post(async(function (req, res) {
 
-        if(!(req.email && req.password))
+        if(!(req.body.email && req.body.password))
             return res.status(400).send('نام کاربری یا کلمه عبور صحیح نیست');
 
         let user = userRepository.getUserByEmailAndPassword(req.body.email, req.body.password);
