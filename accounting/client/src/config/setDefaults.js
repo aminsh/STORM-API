@@ -3,50 +3,62 @@
 import io from 'socket.io-client';
 
 export default function ($rootScope,
+                         $window,
                          $state,
                          $cookies,
-                         branchApi,
-                         dimensionCategoryApi) {
+                         $location,
+                         branchApi) {
 
     $rootScope.user = JSON.parse(localStorage.getItem('currentUser'));
     $rootScope.today = localStorage.getItem('today');
     $rootScope.fiscalPeriodId = $cookies.get('current-period');
     $rootScope.mode = localStorage.getItem('mode');
     $rootScope.canShowStatusSection = false;
-    $rootScope.isDevelopment = localStorage.getItem('env') == 'development';
+    $rootScope.isDevelopment = localStorage.getItem('env') === 'development';
 
     //init socket
     let socket = io.connect('/');
     socket.emit('join', $rootScope.user.id);
 
+    $rootScope.$on('onBranchIsInvalid', () => {
+        $rootScope.branch = undefined;
+        $state.reload();
+    });
+
+    $rootScope.$on('onUserIsNotAuthenticated', ()=> $window.location.reload());
+
+    $rootScope.$on('onBranchChanged', (e, branch)=> {
+        $rootScope.branch = branch;
+        $cookies.put('BRANCH-KEY', branch.token, {path: '/'});
+    });
+
     $rootScope.$on('$stateChangeStart',
         function (event, toState, toParams, fromState, fromParams) {
-            let branchFromCurrent = $rootScope.branch,
-                branchIdCookie = $cookies.get('branch-id'),
-                fiscalPeriodId = $cookies.get('current-period');
 
-            if (branchFromCurrent == null &&
-                branchIdCookie == null) {
+            const branchToken = $cookies.get('BRANCH-KEY'),
+                branch = $rootScope.branch;
 
-                return toState.controller != 'chooseBranchController' &&
-                    goToBranchChooser();
+            if (toState.controller === 'branchesController')
+                return;
+
+            if (!branchToken)
+                return goToChooseBranchAction();
+
+
+            if (!branch) {
+                branchApi.getByToken(branchToken)
+                    .then(branch => $rootScope.branch = branch)
+                    .catch(e => goToChooseBranchAction());
             }
-            else{
-                dimensionCategoryApi.getAll().then(result => {
-                    localStorage.setItem('dimensionCategories', JSON.stringify(result.data));
-                });
-            }
 
-            function goToBranchChooser() {
+            function goToChooseBranchAction() {
+                $rootScope.branch = undefined;
+
                 event.preventDefault();
-                $state.go('chooseBranch');
-            }
 
-            if (branchFromCurrent == null &&
-                branchIdCookie != null) {
-
-                branchApi.getCurrent()
-                    .then(result => $rootScope.branch = result);
+                const url = $location.$$url;
+                $location.search({returnUrl: url});
+                $state.go('branches');
             }
 
         });

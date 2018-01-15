@@ -90,4 +90,8 @@ export default class BranchApi {
         return this.apiPromise.put(`/acc/api/settings/${id}`, data);
     }
 
+    getByToken(token){
+        return this.apiPromise.get(`/api/branches/by-token/${token}`);
+    }
+
 }

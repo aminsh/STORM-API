@@ -35,7 +35,7 @@ import "./controllers/journalPrintController";
 import chequePrintController from "./controllers/chequePrintController";
 import reportController from "./controllers/reportController";
 import reportDesignerController from "./controllers/reportDesignerController";
-import chooseBranchController from "./branch/branch.choose.controller";
+import BranchesController from "./branch/branches.controller";
 import SettingsController from "./settings/settings";
 import BranchInfoController from "./branch/branchInfo";
 
@@ -227,7 +227,7 @@ accModule
     .controller('chequePrintController', chequePrintController)
     .controller('reportController', reportController)
     .controller('reportDesignerController', reportDesignerController)
-    .controller('chooseBranchController', chooseBranchController)
+    .controller('branchesController', BranchesController)
     .controller('settingsController', SettingsController)
     .controller('branchInfoController', BranchInfoController)
 

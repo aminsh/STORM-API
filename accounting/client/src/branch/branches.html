@@ -1,0 +1,49 @@
+
+<dev-tag-content-cover-from style="background-color: white">
+
+    <div class="feed-activity-list" style="padding-top: 16px">
+        <div class="feed-element"
+             ng-repeat="item in model.branches">
+            <div class="row">
+                <div class="col-md-3">
+                    <img alt="image"
+                         class="center-block"
+                         ng-src="{{item.logo}}"
+                         preload-image
+                         default-image="/public/images/business.png"
+                         fallback-image="/public/images/business.png"
+                         style="height: 100px;max-width: 200px">
+                </div>
+                <div class="col-md-6 text-right" >
+                    <strong>{{item.name}}</strong> <br>
+                    <p style="margin-top: 5px">
+                       <div ng-if="item.isOwner">
+                            <i  class="fa fa-star fa-lg text-success"></i>
+                            <span >{{'You are owner of this branch'|translate}}</span>
+                        </div>
+                        <span class="text-muted">{{'Created at'|translate}} : </span><span class="text-muted">{{item.createdAtToPersian}}</span>
+                    </p>
+
+                </div>
+                <div class="col-md-3">
+                    <dev-tag-button
+                            ng-click="model.select(item)"
+                            icon="fa fa-sign-in fa-lg"
+                            ng-disabled="isSaving"
+                            is-waiting="isSaving"
+                            style-type="primary"
+                            title="{{'Enter' | translate}}"
+                            ng-disabled="false"></dev-tag-button>
+
+                    <dev-tag-button
+                            style="text-align: right"
+                            ng-if="!item.isOwner"
+                            ng-click="model.remove(item)"
+                            style-type="white btn-xs"
+                            title="{{'Remove me from this branch'|translate}}"></dev-tag-button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</dev-tag-content-cover-from>

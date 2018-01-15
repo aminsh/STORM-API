@@ -3,7 +3,8 @@
 const knex = instanceOf('knex'),
     async = require('asyncawait/async'),
     await = require('asyncawait/await'),
-    kendoQueryResolve = instanceOf('kendoQueryResolve');
+    kendoQueryResolve = instanceOf('kendoQueryResolve'),
+    PersianDate = instanceOf('utility').PersianDate;
 
 class BranchQuery {
     constructor() {
@@ -81,26 +82,91 @@ class BranchQuery {
     }
 
     getBranchesByUser(userId) {
-        let userInBranchQuery = knex.select('branchId')
-            .from('userInBranches')
-            .where('userId', userId);
 
-        return await(knex.select('id', 'name', 'logo', 'apiKey', 'status', 'address', 'phone', 'mobile', 'webSite', 'ownerName')
+        return await(knex.select(
+            'branches.id',
+            'name',
+            'logo',
+            'userInBranches.token',
+            'userInBranches.isOwner',
+            'status',
+            'address',
+            'phone',
+            'mobile',
+            'webSite',
+            'ownerName',
+            'branches.createdAt')
             .from('branches')
-            .where('ownerId', userId)
-            .orWhereIn('id', userInBranchQuery));
+            .leftJoin("userInBranches", "branches.id", "userInBranches.branchId")
+            .where('userInBranches.userId', userId)
+            .map(item => ({
+                id: item.id,
+                name: item.name,
+                isOwner: item.isOwner,
+                logo: item.logo,
+                token: item.token,
+                statue: item.status,
+                address: item.address,
+                phone: item.phone,
+                mobile: item.mobile,
+                webSite: item.webSite,
+                ownerName: item.ownerName,
+                createdAt: item.createdAt,
+                createdAtToPersian: PersianDate.getDate(item.createdAt)
+            }))
+        );
+    }
+    
+    getBranchByToken(token){
+        let result = await(knex.select(
+            'branches.id',
+            'name',
+            'logo',
+            'userInBranches.token',
+            'userInBranches.isOwner',
+            'status',
+            'address',
+            'phone',
+            'mobile',
+            'webSite',
+            'ownerName',
+            'branches.createdAt')
+            .from('branches')
+            .leftJoin("userInBranches", "branches.id", "userInBranches.branchId")
+            .where('userInBranches.token', token)
+            .first());
+        
+        if(!result)
+            return;
+        
+        return {
+            id: result.id,
+            name: result.name,
+            isOwner: result.isOwner,
+            logo: result.logo,
+            token: result.token,
+            statue: result.status,
+            address: result.address,
+            phone: result.phone,
+            mobile: result.mobile,
+            webSite: result.webSite,
+            ownerName: result.ownerName,
+            createdAt: result.createdAt,
+            createdAtToPersian: PersianDate.getDate(result.createdAt)
+        };
     }
 
-    totalBranches(){
+
+    totalBranches() {
         return knex.from('branches').count('*').first();
     }
 
-    isSubscriptionExpired(branchId){
+    isSubscriptionExpired(branchId) {
         let record = await(knex.select('*').from('orders').where('branchId', branchId).first());
         let expireTime = record.expire_at.getTime();
         let todayTime = new Date().getTime();
 
-        if(expireTime < todayTime)
+        if (expireTime < todayTime)
             return true;
         return false;
     }
