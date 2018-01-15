@@ -4,7 +4,7 @@ const FiscalPeriodQuery = require('../accounting/server/queries/query.fiscalPeri
 
 module.exports = function (req) {
 
-    let fiscalPeriodId = req.body.fiscalPeriodId || req.query.fiscalPeriodId,
+    let fiscalPeriodId = req.body.fiscalPeriodId || req.query.fiscalPeriodId || req.cookies['current-period'],
         fiscalPeriodQuery = new FiscalPeriodQuery(req.branchId);
 
 
