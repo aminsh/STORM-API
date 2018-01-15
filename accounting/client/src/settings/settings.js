@@ -38,13 +38,6 @@ export default class {
             this.subsidiaryLedgerAccounts = result.subsidiaryLedgerAccounts;
         });
 
-        this.updateUserImage();
-        this.isBranchOwnerUser()
-            .then((isOwner) => {
-                if (isOwner) this.getBranchUsers();
-            })
-            .catch(error => console.log(error));
-
         $scope.$watch(
             () => this.settings.canControlInventory,
             newValue => {
@@ -79,6 +72,18 @@ export default class {
 
         this.branchMembersGridOption = {
             columns: [
+                {
+                    name: 'isOwner',
+                    width: '50px',
+                    title: '',
+                    filterable: false,
+                    sortable: false,
+                    css: 'text-center',
+                    header: {
+                        css: 'text-center'
+                    },
+                    template: `<i ng-if="item.isOwner" class="fa fa-star fa-lg text-success"></i>`
+                },
                 {
                     name: 'image',
                     title: '',
@@ -133,7 +138,8 @@ export default class {
                 {
                     title: translate('Remove'),
                     icon: 'fa fa-trash text-danger fa-lg',
-                    action: current => this.deleteUserFromBranchByEmail(current.email)
+                    action: current => this.deleteUserFromBranchByEmail(current.email),
+                    canShow: current => !current.isOwner
                 },
                 {
                     title: translate('Regenerate token'),
@@ -141,7 +147,11 @@ export default class {
                     action: current => this.regenerateToken(current.id)
                 }
             ],
-            readUrl: '/api/branches/users'
+            readUrl: '/api/branches/users',
+            sort: [
+                {dir: 'asc', field: 'isOwner'},
+                {dir: 'asc', field: 'id'},
+            ]
         }
 
     }
@@ -278,49 +288,6 @@ export default class {
     loadUserUploadedImage(fileName) {
         this.changeUserImageData.uploaderAddress = `/${fileName}`.replace(/[\\]/g, "/");
         console.log(this.changeUserImageData.uploaderAddress);
-    }
-
-    isBranchOwnerUser() {
-
-        return new Promise((resolve, reject) => {
-
-            this.branchApi
-                .isOwnerUser()
-                .then(data => {
-
-                    this.changeUsersInBranchData.isOwnerUser = data.isValid;
-                    resolve(data.isValid);
-
-                })
-                .catch(error => {
-
-                    // console.log(error);
-                    this.changeUsersInBranchData.isOwnerUser = false;
-                    this.errors = error;
-                    reject(error);
-
-                });
-
-        });
-
-    }
-
-    getBranchUsers() {
-
-        this.branchApi
-            .getBranchUsers()
-            .then(data => {
-
-                this.changeUsersInBranchData.branchUsers = data.returnValue;
-
-            })
-            .catch(error => {
-
-                console.log(error);
-                this.errors = error;
-
-            });
-
     }
 
     addUserToBranch(form) {
