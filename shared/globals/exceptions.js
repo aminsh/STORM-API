@@ -6,4 +6,6 @@ class ValidationException {
     }
 }
 
-global.ValidationException = ValidationException;
+module.exports = {
+    ValidationException
+};

@@ -20,6 +20,7 @@ RUN mkdir /.config && \
     cp -rpT /tmp/app /usr/src/app && \
     rm -rf /tmp/app
 
+RUN npm run build-production
 RUN gulp --production
 
 RUN \

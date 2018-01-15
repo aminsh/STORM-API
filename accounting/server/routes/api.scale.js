@@ -15,7 +15,7 @@ router.route('/')
 
         try {
 
-            const id = RunService("scaleCreate", [req.body], req);
+            const id = req.container.get("CommandBus").send("scaleCreate", [req.body]);
             res.json({isValid: true, returnValue: {id}});
         }
         catch (e) {

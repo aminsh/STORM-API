@@ -2,7 +2,6 @@
 
 const async = require('asyncawait/async'),
     await = require('asyncawait/await'),
-    EventEmitter = instanceOf('EventEmitter'),
     router = require('express').Router(),
     SubsidiaryLedgerAccountQuery = require('../queries/query.subsidiaryLedgerAccount');
 
@@ -38,7 +37,7 @@ router.route('/general-ledger-account/:parentId')
     }))
     .post(async((req, res) => {
         try {
-            const id = RunService("subsidiaryLedgerAccountCreate", [req.params.parentId, req.body], req);
+            const id = req.container.get("CommandBus").send("subsidiaryLedgerAccountCreate", [req.params.parentId, req.body]);
             res.json({isValid: true, returnValue: {id}})
         }
         catch (e) {
@@ -54,7 +53,7 @@ router.route('/:id')
     }))
     .put(async((req, res) => {
         try {
-            RunService("subsidiaryLedgerAccountUpdate", [req.params.id, req.body], req);
+            req.container.get("CommandBus").send("subsidiaryLedgerAccountUpdate", [req.params.id, req.body]);
             res.json({isValid: true})
         }
         catch (e) {
@@ -63,7 +62,7 @@ router.route('/:id')
     }))
     .delete(async((req, res) => {
         try {
-            RunService("subsidiaryLedgerAccountRemove", [req.params.id], req);
+            req.container.get("CommandBus").send("subsidiaryLedgerAccountRemove", [req.params.id]);
             res.json({isValid: true})
         }
         catch (e) {

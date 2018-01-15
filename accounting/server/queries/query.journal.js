@@ -9,7 +9,7 @@ const async = require('asyncawait/async'),
     journalBase = require('./query.journal.base'),
     journalBaseFilter = require('./query.journal.baseFilter');
 
-module.exports = class JournalQuery extends BaseQuery {
+class JournalQuery extends BaseQuery {
     constructor(branchId) {
         super(branchId);
     }
@@ -260,7 +260,9 @@ module.exports = class JournalQuery extends BaseQuery {
         }));
 
     }
-};
+}
+
+module.exports = JournalQuery;
 
 
 

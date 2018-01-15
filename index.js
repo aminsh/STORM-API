@@ -1,16 +1,19 @@
 "use strict";
 
+require('babel-polyfill');
 
 /* 1- loading prototypes */
 require('./shared/utilities/string.prototypes');
 require('./shared/utilities/array.prototypes');
 require('./shared/utilities/function.prototypes');
-require('./shared/exceptions');
+
 
 /* 2- loading ioc */
 require('./config/ioc');
 
-require('./application/bootstrap');
+require('./shared/globals');
+
+require('./application/dist/bootstrap');
 
 const config = instanceOf('config'),
     app = require('./storm/server/bootstrap').app,
@@ -18,7 +21,7 @@ const config = instanceOf('config'),
     io = require('./storm/server/bootstrap').io,
     userConnected = require('./storm/server/features/user/connectedUsers');
 
-/!* 3- loading apps *!/
+/* 3- loading apps */
 app.use('/acc', require('./accounting/server/bootstrape'));
 app.use('/api/v1', require('./api/api.config'));
 app.use('/invoice', require('./invoice/app.server.config'));
@@ -29,7 +32,7 @@ app.use('/admin', require('./admin/app.server.config'));
 
 require('./storm/server/bootstrap.routes');
 
-/!* 3- listening *!/
+/* 3- listening */
 server.listen(config.port, () => console.log(`Port ${config.port} is listening ...`));
 
 io.on('connection', function (socket) {
