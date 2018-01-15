@@ -12,6 +12,8 @@ export class InvoiceRepository extends BaseRepository {
                 'invoices.*', 'invoiceLines.*',
                 knex.raw('"invoices"."description" as "invoiceDescription"'),
                 knex.raw('"invoiceLines"."description" as "invoiceLineDescription"'),
+                knex.raw('"invoices"."discount" as "invoiceDiscount"'),
+                knex.raw('"invoiceLines"."discount" as "invoiceLineDiscount"'),
                 knex.raw('"invoiceLines"."id" as "invoiceLineId"'),
                 knex.raw('"detailAccounts"."title" as "detailAccountTitle"'),
                 knex.raw('"detailAccounts"."code" as "detailAccountCode"')
@@ -43,7 +45,8 @@ export class InvoiceRepository extends BaseRepository {
             ofInvoiceId: first.ofInvoiceId,
             costs: first.costs,
             charges: first.charges,
-            bankReceiptNumber: (first.custom || {}).bankReceiptNumber
+            bankReceiptNumber: (first.custom || {}).bankReceiptNumber,
+            discount: first.invoiceDiscount
         };
 
         invoice.invoiceLines = data.asEnumerable().select(line => ({
@@ -53,7 +56,7 @@ export class InvoiceRepository extends BaseRepository {
             description: line.invoiceLineDescription,
             unitPrice: line.unitPrice,
             quantity: line.quantity,
-            discount: line.discount,
+            discount: line.invoiceLineDiscount,
             stockId: line.stockId,
             vat: line.vat
         }))

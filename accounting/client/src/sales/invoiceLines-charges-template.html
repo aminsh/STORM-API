@@ -48,7 +48,9 @@
             </div>
         </div>
         <div class="row">
-            <dev-tag-check-box ng-model="item.vatIncluded">{{'Is vat included ?'|translate}}</dev-tag-check-box>
+            <dev-tag-check-box ng-model="item.vatIncluded"
+                               ng-disabled="(model.invoice.invoiceLines | totalSum: ('vat')) === 0 ? true : false" >{{'Is vat included ?'|translate}}
+            </dev-tag-check-box>
         </div>
     </div>
 

@@ -185,8 +185,10 @@ export default class invoiceListControllerBase {
         this.navigate('report.print', {key: 702}, reportParam);
     }
 
-    edit() {
-        throw new Error('Not implemented this method');
+    edit(current) {
+        current.vat = current.invoiceLines.asEnumerable()
+            .sum(item => item.vat);
+        //throw new Error('Not implemented this method');
     }
 
     view() {

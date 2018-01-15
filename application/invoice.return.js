@@ -78,6 +78,7 @@ class InvoiceService {
             charges: this._mapCostAndCharge(cmd.charges),
             detailAccountId: detailAccount ? detailAccount.id : null,
             orderId: cmd.orderId,
+            discount: cmd.discount,
             invoiceLines: cmd.invoiceLines.asEnumerable()
                 .select(line => {
 
