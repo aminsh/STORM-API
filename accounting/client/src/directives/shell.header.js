@@ -8,7 +8,7 @@ export default function (fiscalPeriodApi, $rootScope, $cookies, logger, branchAp
 
             scope.toggleSidebar = () => scope.$emit('toggle-sidebar');
 
-            scope.$on('branch-changed', (e, branch) => {
+            $rootScope.$on('onBranchChanged', (e, branch) => {
                 if (branch)
                     fetchFiscalPeriod();
             });
@@ -17,7 +17,10 @@ export default function (fiscalPeriodApi, $rootScope, $cookies, logger, branchAp
                 fetchFiscalPeriod();
 
             function fetchFiscalPeriod() {
-                fiscalPeriodApi.getAll().then(result => scope.fiscalPeriods = result.data);
+                fiscalPeriodApi.getAll().then(result => {
+                    scope.fiscalPeriods = result.data;
+                    scope.selectFiscalPeriod(scope.fiscalPeriods[0]);
+                });
             }
 
             scope.selectFiscalPeriod = current => {
@@ -26,7 +29,7 @@ export default function (fiscalPeriodApi, $rootScope, $cookies, logger, branchAp
                 scope.$broadcast('fiscal-period-changed');
             };
 
-            scope.showApiKey = () => {
+            /*scope.showApiKey = () => {
                 branchApi.getApiKey()
                     .then(result => logger.alert({
                         title: 'api-key',
@@ -35,7 +38,13 @@ export default function (fiscalPeriodApi, $rootScope, $cookies, logger, branchAp
                                     style="font-family: Arial;width: 100%;height: 171px;direction: ltr">${result.apiKey}</textarea>`,
                         html: true
                     }));
-            };
+            };*/
+
+            branchApi.getMyBranches().then(result => {
+                scope.branches = result;
+            });
+
+            scope.selectBranch = branch =>  $rootScope.$broadcast('onBranchChanged', branch);
         }
     }
 }
