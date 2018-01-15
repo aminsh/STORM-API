@@ -68,9 +68,7 @@ class InventoryProductsController {
 
         this.reportParameters.show([{name: "date"}])
             .then(params => {
-                if (!this.gridOption.isSelectedAll)
-                    Object.assign(params, {ids: ids});
-                Object.assign(params, {fixedType: fixedType});
+                Object.assign(params, {ids: ids}, {fixedType: fixedType});
                 this.navigate(
                     'report.print',
                     {key: 900},
@@ -87,9 +85,10 @@ class InventoryProductsController {
 
         this.reportParameters.show([{name: "date"}])
             .then(params => {
-                if (!this.gridOption.isSelectedAll)
+                /*if (!this.gridOption.isSelectedAll)
                     Object.assign(params, {ids: ids});
-                Object.assign(params, {fixedType: fixedType});
+                Object.assign(params, {fixedType: fixedType});*/
+                Object.assign(params, {ids: ids}, {fixedType: fixedType});
                 this.navigate(
                     'report.print',
                     {key: 901},
