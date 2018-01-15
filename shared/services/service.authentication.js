@@ -11,6 +11,27 @@ module.exports = class {
         this.userRepository = instanceOf('user.repository');
     }
 
+
+    isAuthenticated(req, res, next) {
+
+        let userKey = req.cookies["USER-KEY"];
+
+        if (!userKey) {
+            next();
+            return false;
+        }
+
+        let user = instanceOf("UserQuery").getByToken(userKey);
+
+        if (!user) {
+            next();
+            return false;
+        }
+
+        req.user = user;
+        next();
+    }
+
     serialize() {
         passport.serializeUser(function (user, done) {
             done(null, user.id);
@@ -50,27 +71,28 @@ module.exports = class {
         let auth = passport.authenticate('local', function (err, user) {
             if (err) return next(err);
             if (!user) return res.send({isValid: false, errors: ['Username or password in incorrect']});
-            req.logIn(user, async(function (err) {
-                if (err) return next(err);
+            //req.logIn(user, async(function (err) {
+            //if (err) return next(err);
 
-                let reCaptchaUserResponse = null;
+            let reCaptchaUserResponse = null;
 
-                if(instanceOf('config').env !== "development")
-                    reCaptchaUserResponse = req.body.reCaptchaResponse;
+            if (instanceOf('config').env !== "development")
+                reCaptchaUserResponse = req.body.reCaptchaResponse;
 
-                instanceOf('captcha').verify(reCaptchaUserResponse)
-                    .then(() => res.send({
-                        isValid: true,
-                        returnValue: {
-                            currentUser: user.name
-                        }
-                    }))
-                    .catch(() => res.send({
-                        isValid: false,
-                        errors: ['Captcha is incorrect']
-                    }));
+            instanceOf('captcha').verify(reCaptchaUserResponse)
+                .then(() => res.send({
+                    isValid: true,
+                    returnValue: {
+                        currentUser: user.name,
+                        token: user.token
+                    }
+                }))
+                .catch(() => res.send({
+                    isValid: false,
+                    errors: ['Captcha is incorrect']
+                }));
 
-            }));
+            //}));
         });
 
         auth(req, res, next);

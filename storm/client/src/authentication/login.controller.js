@@ -42,14 +42,19 @@ export default class LoginController {
 
         this.userApi.login(this.user)
             .then(result => {
+
+
+                let date = new Date();
+                date.setTime(date.getTime() + (48 * 60 * 60 * 1000));
+
+                this.$cookies.put('USER-KEY', result.token, {path: '/', expires: date});
+
                 if (this.returnUrl)
                     this.$window.location = this.returnUrl;
-                else {
+                else
+                    this.$window.location = '/acc';
 
-                    this.$rootScope.currentUser = result.currentUser;
-                    this.$rootScope.isAuthenticated = true;
-                    this.$state.go('profile');
-                }
+
             })
             .catch(err => this.isError = true);
     }

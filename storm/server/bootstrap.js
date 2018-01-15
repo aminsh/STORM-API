@@ -1,6 +1,7 @@
 "use strict";
 
-const express = require('express'),
+const async = require('asyncawait/async'),
+    express = require('express'),
     ejs =require('ejs'),
     bodyParser = require('body-parser'),
     cookieParser = require('cookie-parser'),
@@ -37,6 +38,7 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
+app.use(async(instanceOf("Authentication").isAuthenticated));
 
 ejs.filters.translate = key => require('./config/translate.fa.json')[key];
 
