@@ -33,11 +33,11 @@ export default function ($stateProvider, $urlRouterProvider, $locationProvider, 
             }
         })
 
-        .state('chooseBranch', {
-            url: '/branch/choose',
-            controller: 'chooseBranchController',
+        .state('branches', {
+            url: '/branches',
+            controller: 'branchesController',
             controllerAs: 'model',
-            templateUrl: 'partials/branch/branch.choose.html'
+            templateUrl: 'partials/branch/branches.html'
         })
 
         .state('branchInfo', {

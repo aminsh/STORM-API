@@ -15,6 +15,7 @@ import 'angular-local-storage';
 import 'adm-dtp';
 import 'chart.js';
 import 'angular-image-perloader';
+import clipboardModule from 'angular-clipboard';
 
 import translate from './services/translate';
 
@@ -35,7 +36,8 @@ let accModule = angular.module('acc.module', [
     'angular-ladda',
     'ui.select',
     'LocalStorageModule',
-    'angular-image-preloader'
+    'angular-image-preloader',
+    clipboardModule.name,
 ]);
 
 /*accModule.factory('$exceptionHandler', function () {

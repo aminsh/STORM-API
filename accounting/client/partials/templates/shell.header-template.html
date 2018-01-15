@@ -7,11 +7,7 @@
     </div>
 
     <ul class="nav navbar-top-links navbar-left">
-        <li class="dropdown">
-            <a ng-click="showApiKey()">
-               api-key
-            </a>
-        </li>
+
         <li class="dropdown" uib-dropdown>
             <a class="dropdown-toggle count-info"
                href="#"
@@ -35,11 +31,43 @@
                 <i class="fa fa-power-off fa-2x"></i>
             </a>
         </li>
-        <li>
-            <img alt="{{branch.title}}"
-                 ng-src="{{branch.logo}}"
-                 title="{{branch.title}}"
-                 style="height: 35px; margin: 8px;">
+        <li class="dropdown" uib-dropdown>
+            <a class="dropdown-toggle count-info" uib-dropdown-toggle>
+                <img alt="{{branch.title}}"
+                     ng-src="{{branch.logo}}"
+                     title="{{branch.title}}"
+                     style="height: 35px; margin: 8px;">
+            </a>
+            <div class="feed-activity-list dropdown-menu dropdown-alerts animated fadeInDown list-group" style="padding-top: 16px">
+                <div class="feed-element">
+                    <a ui-sref="branches">{{'Branches management'|translate}}</a>
+                </div>
+                <div class="feed-element pointer"
+                     ng-click="selectBranch(item)"
+                     ng-repeat="item in branches">
+                    <div class="row">
+                        <div class="col-md-3">
+
+                            <img alt="image"
+                                 class="center-block"
+                                 ng-src="{{item.logo}}"
+                                 preload-image
+                                 default-image="/public/images/business.png"
+                                 fallback-image="/public/images/business.png"
+                                 style="height: 50px;max-width: 100px">
+                        </div>
+                        <div class="col-md-6 text-right" >
+                            <strong>{{item.name}}</strong> <br>
+
+                        </div>
+                        <div class="col-md-3">
+                            <i ng-if="item.id === branch.id" class="fa fa-check text-navy fa-lg"></i>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
         </li>
     </ul>
 </nav>
