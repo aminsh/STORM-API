@@ -73,7 +73,7 @@
                                  style="padding: 20px"></div>
                         </uib-tab>
 
-                        <uib-tab ng-show="branch.isOwner"
+                        <uib-tab ng-if="branch.isOwner"
                                  index="11" heading="دسترسی کاربر" >
                             <div ng-include="'partials/settings/permission.html'"
                                  style="padding: 20px"></div>

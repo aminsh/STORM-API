@@ -10,9 +10,6 @@ app.engine('html', ejs.renderFile);
 
 app.use('/reporting', express.static(config.rootPath + '/accounting/reporting'));
 app.use(require('./middlewares/checkAuthenticated'));
-
-/*app.use(require('./middlewares/goToLoginIfNotAuthenticated'));
-app.use(require('./middlewares/onUserConnected'));*/
 app.use(require('./middlewares/locals'));
 
 app.use('/api/*', require('./middlewares/checkBranchIsValid'));

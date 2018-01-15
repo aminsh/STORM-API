@@ -537,7 +537,7 @@
   "Is vat included ?": "شامل مالیات ارزش افزوده است ؟",
   "Total discount":"تخفیف کلی",
   "Sum vat": "جمع کل مالیات و عوارض ارزش افزوده ",
-  "Invoice discount do not add in official invoice": "دقت نمایید، تخفیف کلی در فاکتورهای رسمی طبق قوانین امورمالیاتی اعمال نمی شود!"
+  "Invoice discount do not add in official invoice": "دقت نمایید، تخفیف کلی در فاکتورهای رسمی طبق قوانین امورمالیاتی اعمال نمی شود!",
   "Regenerate token": "تولید کلید",
   "Branch id": "شناسه کسب و کار",
   "Created at": "تاریخ ایجاد",

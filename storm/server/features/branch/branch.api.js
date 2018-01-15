@@ -328,7 +328,7 @@ router.route('/users')
     .get(async((req, res) => {
 
 
-        const branchId = branchRepository.findByToken(req.branchId),
+        const branchId = req.branchId,
             isMember = branchRepository.getMemberByIdAndUserId(branchId, req.user.id);
 
         if (!isMember)
