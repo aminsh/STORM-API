@@ -32,5 +32,11 @@ module.exports = {
             day = parseInt(dateSplit[2]);
 
         return '{0} {1} ماه {2}'.format(fn(day), months[month], fn(year));
+    },
+    getDate(date){
+      let dateToString = `${date.getFullYear()}/${date.getMonth()+1}/${date.getDate()}`;
+
+      return moment(dateToString).format('jYYYY/jM/jD');
     }
 };
+

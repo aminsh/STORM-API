@@ -5,7 +5,10 @@ const express = require('express'),
     await = require('asyncawait/await'),
     UserRepository = require('./user.repository'),
     crypto = require('../../../../shared/services/cryptoService'),
-    TokenRepository = require('../token/token.repository');
+    TokenRepository = require('../token/token.repository'),
+    /**
+     * @type {TokenGenerator}*/
+    TokenGenerator = instanceOf('TokenGenerator');
 
 
 router.route('/activate/:token').get(async((req, res) => {
@@ -13,33 +16,29 @@ router.route('/activate/:token').get(async((req, res) => {
         userRepository = new UserRepository(),
         user = await(userRepository.getByToken(token));
 
-    try{
+    if(!user)
+        return res.redirect('/404');
 
-        user.token = null;
-        user.state = 'active';
-
-    } catch(err) {
-
-        if(!req.isAuthenticated())
-            return res.redirect("/login");
-
-        return res.redirect("/profile");
-
-    }
+    user.token = TokenGenerator.generate256Bit();
+    user.state = 'active';
 
     await(userRepository.update(user.id, user));
 
-    req.logIn(user, function (err) {
+    res.cookie('USER-KEY', user.token);
+
+    /*req.logIn(user, function (err) {
         if (err) return next(err);
         res.render('index.ejs');
-    });
+    });*/
+
+
 }));
 
 router.route('/profile').get(async((req, res) => {
     let returnUrl = req.cookies['return-url'];
 
     if(returnUrl)
-        res.cookie('return-url', '', {expires: new Date(0)});
+        res.clearCookie("return-url");
 
     if (returnUrl && returnUrl !== '/profile')
         return res.redirect(returnUrl);

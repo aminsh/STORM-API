@@ -1,5 +1,4 @@
-
-export default function apiPromise($http, $q, $window) {
+export default function apiPromise($http, $q, $rootScope) {
 
     function promise($httpPromise) {
         var deferred = $q.defer();
@@ -16,13 +15,22 @@ export default function apiPromise($http, $q, $window) {
                 }
             })
             .catch(function (error) {
-                if (error.status == 401 && error.data == 'user is not authenticated')
-                    return $window.location.reload();
+
+                errorHandler(error);
+
                 console.error(error);
-                    deferred.reject(['Internal Error']);
+                deferred.reject(['Internal Error']);
             });
 
         return deferred.promise;
+    }
+
+    function errorHandler(error) {
+        if (error.status === 401 && error.data === 'user is not authenticated')
+            return $rootScope.$emit('onUserIsNotAuthenticated');
+
+        if (error.status === 401 && error.data === 'branch is not valid')
+            return $rootScope.$emit('onBranchIsInvalid');
     }
 
     return {
@@ -34,8 +42,7 @@ export default function apiPromise($http, $q, $window) {
                     deferred.resolve(result.data);
                 })
                 .catch(function (error) {
-                    if (error.status == 401 && error.data == 'user is not authenticated')
-                        return $window.location.reload();
+                    errorHandler(error);
                     console.error(error);
                     deferred.reject(['Internal Error']);
                 });

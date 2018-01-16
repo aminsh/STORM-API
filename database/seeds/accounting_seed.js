@@ -1,24 +1,28 @@
 "use strict";
 
 const async = require('asyncawait/async'),
-    await = require('asyncawait/await');
+    await = require('asyncawait/await'),
+    TokenGenerator = require('../../shared/services/token.generator'),
+    tokenGenerator = new TokenGenerator();
 
 exports.seed = async(function (knex, Promise) {
-    const branches = await(knex.select('id').from('branches')),
-        oldAccountGroups = [
-            {key: '1', display: 'دارایی ها'},
-            {key: '2', display: 'بدهی ها'},
-            {key: '3', display: 'حقوق صاحبان سهام'},
-            {key: '5', display: 'خرید'},
-            {key: '6', display: 'فروش'},
-            {key: '7', display: 'درآمدها'},
-            {key: '8', display: 'هزینه ها'},
-            {key: '9', display: 'سایر حساب ها'}
-        ],
 
-        data = branches.asEnumerable()
-            .selectMany(b => oldAccountGroups, (b, g) => ({branchId: b.id, key: g.key, display: g.display}))
-            .toArray();
+    const branches = await(knex.select('*').from('branches'));
 
-    return knex.table('accountCategories').insert(data);
+    let data = branches.map(item => ({
+        branchId: item.id,
+        userId: item.ownerId,
+        app: 'accounting',
+        state: 'active',
+        isOwner: true,
+        token: tokenGenerator.generate256Bit()
+    }));
+
+    return knex.table('userInBranches').insert(data);
+
+    const userInBranchesTokenIsNull = await(knex.select('id').from("userInBranches").whereNull('token'));
+
+    userInBranchesTokenIsNull.forEach(e => await(knex("userInBranches").where('id', e.id).update({token: tokenGenerator.generate256Bit()})));
+
+
 });

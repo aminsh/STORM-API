@@ -20,7 +20,7 @@ module.exports = class {
     }
 
     update(id, user){
-        return knex('users').where('id', id).update(user);
+        return await(knex('users').where('id', id).update(user));
     }
 
     remove(id){
@@ -36,10 +36,10 @@ module.exports = class {
     }
 
     getUserByEmailAndPassword(email, password){
-        return knex.table('users')
+        return await(knex.table('users')
             .where('email', 'ILIKE', email)
-            .andWhere('password', md5(password.toString()))
-            .first();
+            .where('password', md5(password.toString()))
+            .first());
     }
 
     // [START] SMRSAN

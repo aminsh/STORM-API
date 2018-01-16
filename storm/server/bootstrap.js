@@ -1,6 +1,7 @@
 "use strict";
 
-const express = require('express'),
+const async = require('asyncawait/async'),
+    express = require('express'),
     ejs =require('ejs'),
     bodyParser = require('body-parser'),
     cookieParser = require('cookie-parser'),
@@ -37,6 +38,7 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
+app.use(async(instanceOf("Authentication").isAuthenticated));
 
 ejs.filters.translate = key => require('./config/translate.fa.json')[key];
 
@@ -50,9 +52,6 @@ app.use('/data', express.static(config.rootPath + '/data'));
 app.use('/', express.static(config.rootPath + '/storm/server/views/webSite'));
 
 app.use(multer({dest: './data/uploads/;'}));
-
-/*require('raven').config('https://50b4d5bc2a994b1c981dca42cd56013b:530f0521a04c4090b8174c157927d65b@sentry.io/192057')
-    .install();*/
 
 require('./bootstrap.authentication');
 require('./bootstrap.events');

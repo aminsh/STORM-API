@@ -70,6 +70,10 @@ export default class BranchApi {
         return this.apiPromise.delete(`/api/branches/users/${email}`);
     }
 
+    regenerateToken(id){
+        return this.apiPromise.put(`/api/branches/users/${id}/regenerate-token`);
+    }
+
     getCurrentBranchLogo() {
         return this.apiPromise.get(`/api/branches/logo`);
     }
@@ -84,6 +88,10 @@ export default class BranchApi {
 
     saveSettings(id, data){
         return this.apiPromise.put(`/acc/api/settings/${id}`, data);
+    }
+
+    getByToken(token){
+        return this.apiPromise.get(`/api/branches/by-token/${token}`);
     }
 
 }

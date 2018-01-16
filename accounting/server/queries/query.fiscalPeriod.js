@@ -11,8 +11,6 @@ const async = require('asyncawait/async'),
 class FiscalPeriodQuery extends BaseQuery {
     constructor(branchId) {
         super(branchId);
-        this.getMaxId = async(this.getMaxId);
-        this.getById = async(this.getById);
     }
 
     getById(id) {

@@ -11,6 +11,7 @@ import "angular-animate";
 import "angular-ui-router";
 import "angular-sanitize";
 import "angular-resource";
+import 'angular-translate';
 
 // [START] Storm Lumx Dependencies
 import "moment";
@@ -20,6 +21,7 @@ import "storm-lumx";
 
 import ReportApi from "../accounting/client/src/apis/reportApi";
 import apiPromise from "../accounting/client/src/services/apiPromise";
+import logger from "../accounting/client/src/services/logger";
 import navigate from "../accounting/client/src/services/routeNavigatorService";
 import reportViewer from "../accounting/client/src/directives/reportViewer";
 import ReportPrintController from "../accounting/client/src/report/reportPrint";
@@ -40,7 +42,8 @@ let invoiceModule = angular.module('invoice.module', [
         'ngResource',
         'ngSanitize',
         'ui.router',
-        'lumx'
+        'lumx',
+        'pascalprecht.translate'
     ]),
     devConstants = {
         urls: {
@@ -87,6 +90,15 @@ invoiceModule
                 templateUrl: 'partials/templates/reportPrint.html'
             });
     })
+    .config($translateProvider => {
+        let translate = JSON.parse(localStorage.getItem('translate'));
+
+        $translateProvider.translations('fa_IR', translate);
+        //$translateProvider.useStorage('translateStorageService');
+
+        $translateProvider.preferredLanguage('fa_IR');
+        $translateProvider.useSanitizeValueStrategy('escapeParameters');
+    })
     .constant('devConstants', devConstants)
     .service('reportApi', ReportApi)
     .service('branchApi', BranchApi)
@@ -95,6 +107,8 @@ invoiceModule
     .service('invoiceApi', InvoiceApi)
     .factory('apiPromise', apiPromise)
     .factory('navigate', navigate)
+    .factory('logger', logger)
+    .factory('translate', $filter => (key) => $filter('translate')(key))
     .factory('reportParameters', () => ({
         show: () => console.log('reportParameters')
     }))
