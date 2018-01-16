@@ -21,8 +21,7 @@ export default function ($rootScope,
     socket.emit('join', $rootScope.user.id);
 
     $rootScope.$on('onBranchIsInvalid', () => {
-        $rootScope.branch = undefined;
-        $state.reload();
+        goToChooseBranchAction();
     });
 
     $rootScope.$on('onUserIsNotAuthenticated', ()=> $window.location.reload());
@@ -51,15 +50,15 @@ export default function ($rootScope,
                     .catch(e => goToChooseBranchAction());
             }
 
-            function goToChooseBranchAction() {
-                $rootScope.branch = undefined;
-
-                event.preventDefault();
-
-                const url = $location.$$url;
-                $location.search({returnUrl: url});
-                $state.go('branches');
-            }
-
         });
+
+    function goToChooseBranchAction() {
+        $rootScope.branch = undefined;
+
+        event.preventDefault();
+
+        const url = $location.$$url;
+        $location.search({returnUrl: url});
+        $state.go('branches');
+    }
 }
