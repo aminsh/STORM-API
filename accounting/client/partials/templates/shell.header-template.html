@@ -44,7 +44,7 @@
                 </div>
                 <div class="feed-element pointer"
                      ng-click="selectBranch(item)"
-                     ng-repeat="item in branches">
+                     ng-repeat="item in branches|filter: {status: 'active'}">
                     <div class="row">
                         <div class="col-md-3">
 
