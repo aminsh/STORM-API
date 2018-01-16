@@ -1,7 +1,22 @@
 
+<div class="row" ng-if="model.branches.length === 0">
+    <h2 class="text-center" style="color: white">برای فعالسازی پنل رایگان بر روی ایجاد کسب و کار جدید کلیک کنید</h2>
+</div>
+
 <dev-tag-content-cover-from style="background-color: white">
+<!-- ng-if="model.branches.length === 0"-->
+
 
     <div class="feed-activity-list" style="padding-top: 16px">
+        <div ng-if="model.branches.length === 0"
+             class="feed-element"
+             style="text-align: right;padding-right: 10px">
+            <dev-tag-button
+                    href="/setup/info"
+                    icon="fa fa-plus fa-lg"
+                    style-type="primary"
+                    title="{{'Create new Branch' | translate}}"></dev-tag-button>
+        </div>
         <div class="feed-element"
              ng-repeat="item in model.branches">
             <div class="row">
@@ -15,7 +30,9 @@
                          style="height: 100px;max-width: 200px">
                 </div>
                 <div class="col-md-6 text-right" >
-                    <strong>{{item.name}}</strong> <br>
+                    <strong>{{item.name}}</strong>
+                    <span ng-show="item.status !== 'active'" class="label label-danger">{{'It`s not active'|translate}}</span>
+                    <br>
                     <p style="margin-top: 5px">
                        <div ng-if="item.isOwner">
                             <i  class="fa fa-star fa-lg text-success"></i>
@@ -27,6 +44,7 @@
                 </div>
                 <div class="col-md-3">
                     <dev-tag-button
+                            ng-if="item.status === 'active'"
                             ng-click="model.select(item)"
                             icon="fa fa-sign-in fa-lg"
                             ng-disabled="isSaving"
@@ -46,4 +64,10 @@
             </div>
         </div>
     </div>
+
+
 </dev-tag-content-cover-from>
+
+<div class="row" ng-if="model.branches.length === 0">
+    <h2 class="text-center text-info">پنل حسابداری کسب و کار شما به مدت 30 روز به صورت آزمایشی فعال میشود</h2>
+</div>
