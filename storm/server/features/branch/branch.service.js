@@ -19,20 +19,27 @@ class BranchService {
     findByToken(token) {
         let userInBranch = this.branchRepository.findByToken(token);
 
-        if (userInBranch)
+        if (userInBranch) {
+            let branch = this.branchRepository.getById(userInBranch.branchId);
+
             return {
                 userId: userInBranch.userId,
-                branchId: userInBranch.branchId
+                branchId: userInBranch.branchId,
+                isActive: branch.status === 'active'
             };
+        }
 
         try {
             userInBranch = Crypto.verify(token);
 
-            if (userInBranch)
+            if (userInBranch) {
+                let branch = this.branchRepository.getById(userInBranch.branchId);
                 return {
                     userId: userInBranch.userId,
-                    branchId: userInBranch.branchId
+                    branchId: userInBranch.branchId,
+                    isActive: branch.status === 'active'
                 };
+            }
         }
         catch (e) {
 
@@ -42,7 +49,7 @@ class BranchService {
     userRegenerateToken(memberId) {
         let newToken = TokenGenerator.generate256Bit();
 
-        this.branchRepository.updateMember(memberId,{token: newToken});
+        this.branchRepository.updateMember(memberId, {token: newToken});
     }
 }
 
