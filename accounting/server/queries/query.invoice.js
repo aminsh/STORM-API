@@ -148,15 +148,14 @@ class InvoiceQuery extends BaseQuery {
 
         return knex.select(
             knex.raw('"count"(*) as "total"'),
-            knex.raw('"sum"("totalPrice") as "sumTotalPrice"'),
+            knex.raw(`"sum"("totalPrice") - sum(DISTINCT coalesce(discount,0)) as "sumTotalPrice"`),
             knex.raw('"sum"("paidAmount") as "sumPaidAmount"'),
-            knex.raw('"sum"("totalPrice"-"paidAmount") as "sumRemainder"')
+            knex.raw(`"sum"("totalPrice"-"paidAmount")  - sum(DISTINCT coalesce(discount,0)) as "sumRemainder"`)
         ).from(function () {
             this.select('invoices.*',
                 knex.raw('(select coalesce("sum"("amount"),0) from "payments" where "invoiceId" = "invoices"."id" limit 1) as "paidAmount"'),
                 knex.raw('"detailAccounts"."title" as "detailAccountDisplay"'),
-                knex.raw(`(((("invoiceLines"."unitPrice" * "invoiceLines"."quantity") - "invoiceLines"."discount") - coalesce(invoices.discount,0)) 
-                                + "invoiceLines"."vat")  as "totalPrice"`))
+                knex.raw(`("invoiceLines"."unitPrice" * "invoiceLines".quantity - "invoiceLines".discount + "invoiceLines".vat) as "totalPrice"`))
                 .from('invoices')
                 .leftJoin('invoiceLines', 'invoices.id', 'invoiceLines.invoiceId')
                 .leftJoin('detailAccounts', 'invoices.detailAccountId', 'detailAccounts.id')
@@ -176,12 +175,11 @@ class InvoiceQuery extends BaseQuery {
         return knex.select(
             'month',
             knex.raw('"count"(*) as "total"'),
-            knex.raw('"sum"("totalPrice") as "sumTotalPrice"'))
+            knex.raw('"sum"("totalPrice") - sum(DISTINCT coalesce(discount,0)) as "sumTotalPrice"'))
             .from(function () {
                 this.select('invoices.*',
                     knex.raw('cast(substring("invoices"."date" from 6 for 2) as INTEGER) as "month"'),
-                    knex.raw(`(((("invoiceLines"."unitPrice" * "invoiceLines"."quantity") - "invoiceLines"."discount") - coalesce(invoices.discount,0)) 
-                                + "invoiceLines"."vat")  as "totalPrice"`))
+                    knex.raw(`("invoiceLines"."unitPrice" * "invoiceLines".quantity - "invoiceLines".discount + "invoiceLines".vat) as "totalPrice"`))
                     .from('invoices')
                     .leftJoin('invoiceLines', 'invoices.id', 'invoiceLines.invoiceId')
                     .where('invoices.branchId', branchId)
