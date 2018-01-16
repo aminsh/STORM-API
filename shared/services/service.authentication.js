@@ -32,6 +32,17 @@ module.exports = class {
         next();
     }
 
+    login(USER_KEY, req, res) {
+        let date = new Date();
+        date.setTime(date.getTime() + (48 * 60 * 60 * 1000));
+
+        res.cookie('USER-KEY', USER_KEY, {expires: date});
+    }
+
+    logout(req, res){
+        res.clearCookie("USER-KEY");
+    }
+
     serialize() {
         passport.serializeUser(function (user, done) {
             done(null, user.id);
@@ -68,11 +79,12 @@ module.exports = class {
     }
 
     authenticate(req, res, next) {
+
         let auth = passport.authenticate('local', function (err, user) {
             if (err) return next(err);
             if (!user) return res.send({isValid: false, errors: ['Username or password in incorrect']});
-            //req.logIn(user, async(function (err) {
-            //if (err) return next(err);
+
+            instanceOf('Authentication').login(user.token, req, res);
 
             let reCaptchaUserResponse = null;
 
