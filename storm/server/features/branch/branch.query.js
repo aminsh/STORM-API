@@ -108,7 +108,7 @@ class BranchQuery {
                 isOwner: item.isOwner,
                 logo: item.logo,
                 token: item.token,
-                statue: item.status,
+                status: item.status,
                 address: item.address,
                 phone: item.phone,
                 mobile: item.mobile,
