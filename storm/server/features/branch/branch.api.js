@@ -9,7 +9,7 @@ const express = require('express'),
     branchRepository = instanceOf("branch.repository"),
 
     /**@type {BranchService}*/
-    BranchService = instanceOf('branchService'),
+    BranchService = instanceOf('BranchService'),
     userRepository = new (require('../user/user.repository')),
     branchQuery = require('./branch.query'),
     superSecret = instanceOf('Crypto').superSecret,
@@ -31,14 +31,14 @@ function shouldBeAdmin(req, res, next) {
 
 function shouldHaveBranch(req, res, next) {
     if(!req.branchId)
-        return res.status(404).send('Not found');
+        return res.status(401).send('Not authorized');
 
     next();
 }
 
 function shouldAuthenticated(req, res, next) {
     if(!req.isAuthenticated())
-        return res.status(401).send('Not found');
+        return res.status(401).send('Not authorized');
 
     next();
 }
@@ -57,7 +57,7 @@ router.use(async(function (req, res, next) {
     next();
 }));
 
-router.use('/', shouldBeAdmin);
+router.get('/', shouldBeAdmin);
 router.route('/')
     .get(async((req, res) => {
         if (!req.isAuthenticated())
@@ -297,22 +297,23 @@ router.route('/users/is-owner')
 
     }));
 
-
+router.use('/users/:id/regenerate-token', shouldAuthenticated);
 router.route('/users/:id/regenerate-token')
     .put(async((req, res) => {
 
-        if (!req.isAuth)
-            return res.status(401).send('No Authorized');
+        let memberId = parseInt(req.params.id),
+            members = branchRepository.getBranchMembers(req.branchId).data,
+            isOwner = members.asEnumerable().any(e => e.isOwner && e.userId === req.user.id),
+            userIsRegeneratingOwnToken = members.asEnumerable().any(e => e.id === memberId && e.userId === req.user.id);
 
-        let id = req.params.id,
-            member = branchRepository.getMember(id),
-            branch = branchRepository.getById(member.branchId);
+        if(!members.asEnumerable().any(e => e.id === memberId))
+            return res.status(404).send('No Found');
 
-        if (branch.ownerId !== req.user.id)
+        if (!isOwner && !userIsRegeneratingOwnToken)
             return res.status(401).send('No Authorized');
 
         try {
-            BranchService.userRegenerateToken(req.params.id);
+            BranchService.userRegenerateToken(memberId);
 
             res.json({isValid: true});
         }
