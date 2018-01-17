@@ -18,11 +18,13 @@ exports.seed = async(function (knex, Promise) {
         token: tokenGenerator.generate256Bit()
     }));
 
-    return knex.table('userInBranches').insert(data);
+    await(knex.table('userInBranches').insert(data));
 
     const userInBranchesTokenIsNull = await(knex.select('id').from("userInBranches").whereNull('token'));
 
     userInBranchesTokenIsNull.forEach(e => await(knex("userInBranches").where('id', e.id).update({token: tokenGenerator.generate256Bit()})));
 
+    let users = await(knex.select('id').from('users'));
 
+    users.forEach(item => await(knex('users').where('id', item.id).update({token: tokenGenerator.generate256Bit()})));
 });
