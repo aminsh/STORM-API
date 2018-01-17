@@ -48,7 +48,7 @@ app.use(async((req, res, next) => {
 
     let decode = BranchService.findByToken(token);
 
-    if (!decode)
+    if (!(decode && decode.isActive))
         return res.status(403).send(noTokenProvidedMessage);
 
     req.branchId = decode.branchId;
@@ -56,21 +56,21 @@ app.use(async((req, res, next) => {
 
     parseFiscalPeriod(req);
 
-        let childContainer = container.createChild();
+    let childContainer = container.createChild();
 
-        childContainer.bind("State").toConstantValue({
-            branchId: req.branchId,
-            fiscalPeriodId: req.fiscalPeriodId,
-            user: req.user,
-            query: req.query,
-            body: req.body,
-            params: req.params,
-            originalUrl: req.originalUrl
-        });
+    childContainer.bind("State").toConstantValue({
+        branchId: req.branchId,
+        fiscalPeriodId: req.fiscalPeriodId,
+        user: req.user,
+        query: req.query,
+        body: req.body,
+        params: req.params,
+        originalUrl: req.originalUrl
+    });
 
-        req.container = childContainer;
+    req.container = childContainer;
 
-        next();
+    next();
 }));
 
 

@@ -15,7 +15,7 @@ const async = require('asyncawait/async'),
 EventEmitter.on('on-branch-created', async(function (branchId) {
 
     let branch = await(branchRepository.getById(branchId));
-    await(branchRepository.addMember(branchId, branch.ownerId));
+    await(branchRepository.addMember(branchId, branch.ownerId, true));
 
     chartOfAccount(branchId);
     fiscalPeriod(branchId);

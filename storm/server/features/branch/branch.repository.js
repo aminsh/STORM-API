@@ -47,12 +47,13 @@ class BranchRepository {
         return await(knex.table('userInBranches').where('id', memberId).first());
     }
 
-    addMember(id, userId) {
+    addMember(id, userId, isOwner) {
         let member = {
             branchId: id,
             userId: userId,
             app: 'accounting',
             state: 'active',
+            isOwner,
             token: TokenGenerator.generate256Bit()
         };
 
@@ -76,7 +77,14 @@ class BranchRepository {
 
     getBranchMembers(branchId, parameters) {
         let query = knex.from(function () {
-            this.select(knex.raw('users.id as "userId"'),'users.email', 'users.name', 'users.image', 'userInBranches.token', 'userInBranches.id', 'userInBranches.isOwner')
+            this.select(
+                knex.raw('users.id as "userId"'),
+                'users.email',
+                'users.name',
+                'users.image',
+                'userInBranches.token',
+                'userInBranches.id',
+                'userInBranches.isOwner')
                 .from('users')
                 .leftJoin('userInBranches', 'users.id', 'userInBranches.userId')
                 .where('userInBranches.branchId', branchId)

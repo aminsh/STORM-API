@@ -17,7 +17,7 @@ module.exports = async(function (req, res, next) {
 
     let state = BranchService.findByToken(branchKey);
 
-    if (!state)
+    if (!(state && state.isActive))
         return branchIsNotValidAction(res, res);
 
     req.branchId = state.branchId;

@@ -26,12 +26,7 @@ router.route('/activate/:token').get(async((req, res) => {
 
     res.cookie('USER-KEY', user.token);
 
-    /*req.logIn(user, function (err) {
-        if (err) return next(err);
-        res.render('index.ejs');
-    });*/
-
-
+    res.redirect('/acc');
 }));
 
 router.route('/profile').get(async((req, res) => {

@@ -29,7 +29,7 @@ export default function apiPromise($http, $q, $rootScope) {
         if (error.status === 401 && error.data === 'user is not authenticated')
             return $rootScope.$emit('onUserIsNotAuthenticated');
 
-        if (error.status === 401 && error.data === 'branch is not valid')
+        if (error.status === 401)
             return $rootScope.$emit('onBranchIsInvalid');
     }
 
