@@ -9,10 +9,24 @@ export class PersonDomainService {
     /**@type {DetailAccountDomainService}*/
     @inject("DetailAccountDomainService")  detailAccountDomainService = undefined;
 
+    /**@type {DetailAccountRepository}*/
+    @inject("DetailAccountRepository") personRepository = undefined;
+
     create(cmd) {
         cmd.detailAccountType = 'person';
 
         return this.detailAccountDomainService.create(cmd);
+    }
+
+        createBatch(peopleDTO) {
+        peopleDTO.forEach(item => item.errors = this._validate(item));
+
+        let peopleIds = peopleDTO.asEnumerable()
+            .where(item => item.errors.length === 0)
+            .select(item => this.create(item))
+            .toArray();
+
+        return peopleIds;
     }
 
     update(id, cmd) {
@@ -29,5 +43,19 @@ export class PersonDomainService {
             throw new ValidationException(errors);
 
         this.detailAccountDomainService.remove(id);
+    }
+
+    _validate(cmd, id) {
+        let errors = [];
+
+        if (Utility.String.isNullOrEmpty(cmd.title))
+            errors.push('عنوان نمیتواند خالی باشد');
+        else if (cmd.title.length < 3)
+            errors.push('عنوان باید حداقل ۳ کاراکتر باشد');
+
+        if (!Utility.String.isNullOrEmpty(cmd.code) && this.personRepository.findByCode(cmd.code, id))
+            errors.push('کد تکراری است');
+
+        return errors;
     }
 }

@@ -509,7 +509,7 @@
   "Stock and Source stock is not allowed to be equal": "انبار و انبار مبدا نمیتواند یکی باشد",
   "Fixed quantity": "ثبت مقداری",
   "Fixed amount": "ثبت ریالی",
-  "Do you want to save rest of data ?": "آیا مایل به ذخیره بقیه اطلاعات هستید ؟",
+  "Do you want to save rest of data ?": "آیا مایل به ادامه ی ذخیره اطلاعات هستید ؟",
   "{0} don`t have title": "{0} تا دارای عنوان خالی است",
   "{0} codes is duplicated": "کدهای {0} تکراری است",
   "{0} referenceId is duplicated": "کدهای مرجع {0} تکراری است",
@@ -544,5 +544,8 @@
   "Remove me from this branch": "منو از این کسب و کار حذف کن",
   "You are owner of this branch": "شما صاحب این کسب و کار هستید",
   "Remove me from branch {0}": "حذف من از {0}",
-  "Branches management": "مدیریت کسب و کارها"
+  "Branches management": "مدیریت کسب و کارها",
+  "Person code": "کد شخص",
+  "Mobile": "موبایل"
+
 }

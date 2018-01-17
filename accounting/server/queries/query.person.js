@@ -63,6 +63,12 @@ class PersonQuery extends BaseQuery {
 
     }
 
+    getManyByIds(ids){
+        let products = await(this.knex.select('*').from('detailAccounts').whereIn('id', ids));
+        return products.asEnumerable()
+            .select(view)
+            .toArray();
+    }
 
     getTotalPriceAndCountByMonth(id, fiscalPeriodId) {
         let branchId = this.branchId,

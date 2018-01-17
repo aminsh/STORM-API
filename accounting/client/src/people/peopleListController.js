@@ -7,7 +7,8 @@ export default class peopleListController {
                 confirm,
                 $state,
                 $scope,
-                $rootScope) {
+                $rootScope,
+                peopleImportFromExcelService) {
 
         this.$scope = $scope;
         this.$state = $state;
@@ -16,6 +17,7 @@ export default class peopleListController {
         this.translate = translate;
         this.peopleApi = peopleApi;
         this.errors = [];
+        this.peopleImportFromExcelService = peopleImportFromExcelService;
 
         let unRegister = $rootScope.$on('onPersonChanged', () => this.gridOption.refresh());
 
@@ -24,7 +26,7 @@ export default class peopleListController {
         this.gridOption = {
             columns: [
                 {
-                    name: 'title', title: translate('Title'), width: '50%',
+                    name: 'title', title: translate('Title'), width: '60%',
                     template: `<a ui-sref=".info({id: item.id})">{{item.title}}</a>`,
                     type: 'string',
                     /*css: 'text-center',
@@ -33,9 +35,19 @@ export default class peopleListController {
                     }*/
                 },
                 {
+                    name: 'personTypeDisplay',
+                    title: translate('Person Type'),
+                    width: '20%',
+                    type: 'string',
+                     css: 'text-center'
+                     /*header:{
+                     css:'text-center'
+                     }*/
+                },
+                {
                     name: 'phone',
                     title: translate('Phone'),
-                    width: '40%',
+                    width: '20%',
                     type: 'string',
                     /*css: 'text-center',
                     header:{
@@ -72,5 +84,10 @@ export default class peopleListController {
             ],
             readUrl: devConstants.urls.people.getAll()
         };
+    }
+
+    importFormExcelFile(){
+        this.peopleImportFromExcelService.show()
+            .then(()=> this.gridOption.refresh());
     }
 }
