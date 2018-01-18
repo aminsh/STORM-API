@@ -433,6 +433,19 @@
             "name": "id"
           }
         ]
+      },
+      {
+        "key": "sale-invoice-turnover",
+        "text": "عملکرد فروش",
+        "func": "getSaleInvoiceTurnover",
+        "fileName": "saleInvoiceTurnover",
+        "useLayout": false,
+        "showOnAccounting": false,
+        "params": [
+          {
+            "name": "date"
+          }
+        ]
       }
     ]
   },
@@ -596,6 +609,7 @@
         "useLayout": false,
         "showOnAccounting": false
       }
+
     ]
   },
   {

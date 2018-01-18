@@ -187,6 +187,10 @@ class ReportApi {
     getPreInvoice(params) {
         return this.apiPromise.get(`${this.urlPrefix}/pre-invoices`, params)
     }
+
+    getSaleInvoiceTurnover(params) {
+        return this.apiPromise.get(`${this.urlPrefix}/sale-invoice-turnover`, params)
+    }
 }
 
 export default ReportApi;
