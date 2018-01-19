@@ -1,0 +1,283 @@
+<form name="form" style="padding: 10px">
+    <div class="modal-header">
+        <button type="button" ng-click="model.close()" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        <h3 class="modal-title">{{'Import from excel'| translate}}</h3>
+    </div>
+    <div class="modal-body k-rtl">
+        <div class="row">
+            <div class="row">
+                <dev-tag-guide>
+                    <i class="fa fa-info-circle fa-2x" aria-hidden="true"></i><br/>
+                    <ul>
+                        <li>توجه فرمایید در روش ورود اطلاعات از فایل اکسل در سیستم استورم نیاز به ایجاد فایل اکسل با فرمت خاص نمی باشد، تنها کافی ست نکات زیر را رعایت نمایید.</li>
+                        <li>پسوند فایل فقط xlsx. (فرمت اکسل 2007 به بعد) قابل قبول می باشد.</li>
+                        <li>فایل را قبل از تبدیل بررسی کنید تا مقادیر در ستونها معتبر باشند، فقط ردیف های صحیح تبدیل می
+                            شوند.
+                        </li>
+                        <li>ردیف اول فایل اکسل ، نام ستونها باشد.</li>
+                        <li>پس از انتخاب فایل اکسل، در لیست باز شده، نام هر ستون فایل اکسل را در ردیف مربوط به آن وصل کنید.  </li>
+                        <li>نوع شخص در فایل اکسل، برای شخص حقیقی real و برای شخص حقوقی legal وارد نمایید در غیر اینصورت بصورت پیشفرض حقیقی در سیستم وارد می شود که می توانید در فرم اشخاص ویرایش نمایید. </li>
+                        <li>کد شخص، کد تفصیل شخص در حساب های تفصیل می باشد.</li>
+                    </ul>
+                </dev-tag-guide>
+
+                <dev-tag-file-browser-button
+                        title="{{'Select file'|translate}}"
+                        after="model.afterGetExcelFile($data)"></dev-tag-file-browser-button>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <ul ng-if="model.excelList" class="list-group  clear-list m-t">
+                        <li class="list-group-item">
+                            <div class="row">
+                                <div class="col-md-6">{{'Field name'|translate}}</div>
+                                <div class="col-md-6">{{'Excel header'|translate}}</div>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div class="row">
+                                <div class="col-md-6">{{'Person code'|translate}}</div>
+                                <div class="col-md-6">
+                                    <select ng-model="model.mapper.code"
+                                            name="code"
+                                            ng-options="p as p for p in model.excelFields"
+                                            class="form-control">
+                                    </select>
+
+                                    <!--                        <div ng-messages="form.code.$error" ng-if="form.code.$dirty">
+                                                                <label ng-message="required" class="error">This field is required</label>
+                                                            </div>-->
+                                </div>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div class="row">
+                                <div class="col-md-6">{{'Person name'|translate}}</div>
+                                <div class="col-md-6">
+                                    <select ng-model="model.mapper.title"
+                                            name="title"
+                                            ng-options="p as p for p in model.excelFields"
+                                            class="form-control"
+                                            required>
+                                    </select>
+
+                                    <div ng-messages="form.title.$error" ng-if="form.title.$dirty">
+                                        <label ng-message="required" class="error">This field is required</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+
+                        <li class="list-group-item">
+                            <div class="row">
+                                <div class="col-md-6">{{'Person Type'|translate}}</div>
+                                <div class="col-md-6">
+                                    <select ng-model="model.mapper.personType"
+                                            name="personType"
+                                            ng-options="p as p for p in model.excelFields"
+                                            class="form-control">
+                                    </select>
+
+                                </div>
+                            </div>
+                        </li>
+
+                        <li class="list-group-item">
+                            <div class="row">
+                                <div class="col-md-6">{{'National code'|translate}}</div>
+                                <div class="col-md-6">
+                                    <select ng-model="model.mapper.nationalCode"
+                                            name="nationalCode"
+                                            ng-options="p as p for p in model.excelFields"
+                                            class="form-control">
+                                    </select>
+
+                                </div>
+                            </div>
+                        </li>
+
+                        <li class="list-group-item">
+                            <div class="row">
+                                <div class="col-md-6">{{'Economic Code'|translate}}</div>
+                                <div class="col-md-6">
+                                    <select ng-model="model.mapper.economicCode"
+                                            name="economicCode"
+                                            ng-options="p as p for p in model.excelFields"
+                                            class="form-control">
+                                    </select>
+
+                                </div>
+                            </div>
+                        </li>
+
+                        <li class="list-group-item">
+                            <div class="row">
+                                <div class="col-md-6">{{'Postal code'|translate}}</div>
+                                <div class="col-md-6">
+                                    <select ng-model="model.mapper.postalCode"
+                                            name="postalCode"
+                                            ng-options="p as p for p in model.excelFields"
+                                            class="form-control">
+                                    </select>
+
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <ul ng-if="model.excelList" class="list-group  clear-list m-t">
+                        <li class="list-group-item">
+                            <div class="row">
+                                <div class="col-md-6">{{'Field name'|translate}}</div>
+                                <div class="col-md-6">{{'Excel header'|translate}}</div>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div class="row">
+                                <div class="col-md-6">{{'Address'|translate}}</div>
+                                <div class="col-md-6">
+                                    <select ng-model="model.mapper.address"
+                                            name="address"
+                                            ng-options="p as p for p in model.excelFields"
+                                            class="form-control">
+                                    </select>
+
+                                </div>
+                            </div>
+                        </li>
+
+                        <li class="list-group-item">
+                            <div class="row">
+                                <div class="col-md-6">{{'Province'|translate}}</div>
+                                <div class="col-md-6">
+                                    <select ng-model="model.mapper.province"
+                                            name="province"
+                                            ng-options="p as p for p in model.excelFields"
+                                            class="form-control">
+                                    </select>
+
+                                </div>
+                            </div>
+                        </li>
+
+                        <li class="list-group-item">
+                            <div class="row">
+                                <div class="col-md-6">{{'City'|translate}}</div>
+                                <div class="col-md-6">
+                                    <select ng-model="model.mapper.city"
+                                            name="city"
+                                            ng-options="p as p for p in model.excelFields"
+                                            class="form-control">
+                                    </select>
+
+                                </div>
+                            </div>
+                        </li>
+
+                        <li class="list-group-item">
+                            <div class="row">
+                                <div class="col-md-6">{{'Phone'|translate}}</div>
+                                <div class="col-md-6">
+                                    <select ng-model="model.mapper.phone"
+                                            name="phone"
+                                            ng-options="p as p for p in model.excelFields"
+                                            class="form-control">
+                                    </select>
+
+                                </div>
+                            </div>
+                        </li>
+
+                        <li class="list-group-item">
+                            <div class="row">
+                                <div class="col-md-6">{{'Mobile'|translate}}</div>
+                                <div class="col-md-6">
+                                    <select ng-model="model.mapper.mobile"
+                                            name="mobile"
+                                            ng-options="p as p for p in model.excelFields"
+                                            class="form-control">
+                                    </select>
+
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <!--            <li class="list-group-item">
+                                <dev-tag-check-box ng-model="model.hasFirstInput">{{'Has first input'|translate}}</dev-tag-check-box>
+                            </li>-->
+
+                <li ng-if="model.hasFirstInput" class="list-group-item">
+                    <div class="row">
+                        <div class="col-md-6">{{'Quantity'|translate}}</div>
+                        <div class="col-md-6">
+                            <select ng-model="model.mapper.quantity"
+                                    name="quantity"
+                                    ng-options="p as p for p in model.excelFields"
+                                    class="form-control"
+                                    required>
+                            </select>
+
+                            <div ng-messages="form.quantity.$error" ng-if="form.quantity.$dirty">
+                                <label ng-message="required" class="error">This field is required</label>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li ng-if="model.hasFirstInput" class="list-group-item">
+                    <div class="row">
+                        <div class="col-md-6">{{'Unit price'|translate}}</div>
+                        <div class="col-md-6">
+                            <select ng-model="model.mapper.unitPrice"
+                                    name="unitPrice"
+                                    ng-options="p as p for p in model.excelFields"
+                                    class="form-control"
+                                    required>
+                            </select>
+
+                            <div ng-messages="form.unitPrice.$error" ng-if="form.unitPrice.$dirty">
+                                <label ng-message="required" class="error">This field is required</label>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li ng-if="model.hasFirstInput" class="list-group-item">
+                    <div class="row">
+                        <div class="col-md-6">{{'Stock'|translate}}</div>
+                        <div class="col-md-6">
+                            <dev-tag-combo-box id="stockId" style="width: 100%"
+                                               name="stockId"
+                                               class="combobox-directive-margin-top"
+                                               k-placeholder="{{'Select ...'|translate}}"
+                                               k-data-value-field="id"
+                                               k-data-text-field="title"
+                                               ng-model="model.stockId"
+                                               url="{{model.urls.getAllStocks}}"
+                                               required></dev-tag-combo-box>
+
+                            <div ng-messages="form.stockId.$error" ng-if="form.stockId.$dirty">
+                                <label ng-message="required" class="error">{{'This field is
+                                    required'|translate}}</label>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer" ng-if="model.excelList">
+        <dev-tag-button
+                ng-click="model.run(form)"
+                icon="fa fa-play fa-lg"
+                ng-disabled="model.isSaving"
+                is-waiting="model.isSaving"
+                style-type="primary"
+                title="{{'Run' | translate}}"></dev-tag-button>
+    </div>
+</form>

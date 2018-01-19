@@ -7,7 +7,8 @@ const async = require('asyncawait/async'),
     view = require('../viewModel.assemblers/view.detailAccount'),
     personView = require('../viewModel.assemblers/view.person'),
     bankView = require('../viewModel.assemblers/view.bank'),
-    fundView = require('../viewModel.assemblers/view.fund');
+    fundView = require('../viewModel.assemblers/view.fund'),
+    translate = require('../services/translateService');
 
 
 class DetailAccountQuery extends BaseQuery {

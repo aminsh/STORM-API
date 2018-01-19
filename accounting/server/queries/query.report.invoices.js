@@ -70,8 +70,6 @@ module.exports = class InvoicesQuery extends BaseQuery {
                 .toArray();
         });
 
-            invoice.chargesDef = [];
-
         return invoice;
     }
 };

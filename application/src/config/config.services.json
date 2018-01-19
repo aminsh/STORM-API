@@ -436,6 +436,15 @@
     "returns": "id"
   },
   {
+    "name": "peopleCreateBatch",
+    "class": "PersonDomainService",
+    "method": "createBatch",
+    "params": [
+      "people"
+    ],
+    "returns": "ids"
+  },
+  {
     "name": "personUpdate",
     "class": "PersonDomainService",
     "method": "update",

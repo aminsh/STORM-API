@@ -14,6 +14,9 @@ export default function(apiPromise,devConstants) {
         create: function (data) {
             return apiPromise.post(`${urlPrefix}/people`,data);
         },
+        createBatch(data){
+            return apiPromise.post(`${urlPrefix}/people/batch`, data);
+        },
         update: function (id,data) {
             return apiPromise.put(`${urlPrefix}/people/${id}/`,data);
         },

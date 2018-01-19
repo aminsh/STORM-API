@@ -5,7 +5,8 @@ const async = require('asyncawait/async'),
      * @type {BranchService} */
     BranchService = instanceOf('BranchService'),
 
-    parseFiscalPeriod = require('../../../api/parse.fiscalPeriod');
+    parseFiscalPeriod = require('../../../api/parse.fiscalPeriod'),
+    container = require('../../../application/dist/di.config').container;
 
 module.exports = async(function (req, res, next) {
 
@@ -25,6 +26,12 @@ module.exports = async(function (req, res, next) {
     parseFiscalPeriod(req);
 
     res.cookie('current-period', req.fiscalPeriodId);
+
+    let childContainer = container.createChild();
+
+    childContainer.bind("State").toConstantValue({branchId: req.branchId,fiscalPeriodId: req.fiscalPeriodId, user: req.user });
+
+    req.container = childContainer;
 
     return next()
 
