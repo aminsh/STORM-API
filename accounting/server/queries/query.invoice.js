@@ -1,4 +1,4 @@
-"use strict";
+    "use strict";
 
 const BaseQuery = require('./query.base'),
     async = require('asyncawait/async'),

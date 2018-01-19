@@ -38,12 +38,12 @@ export class EventHandler {
             parameters = Array.isArray(params) ? params : [params],
             settings = new Queries.SettingsQuery(this.state.branchId),
 
-            func = eval(`(${event.handler})`);
+            func = eval(`(${handler})`);
 
         func.apply({runService, query, settings}, parameters);
 
         function runService(serviceName, params) {
-            return self.commandBus.send(serviceName, ...params);
+            return self.commandBus.send(serviceName, params);
         }
 
         function query(queryName) {
