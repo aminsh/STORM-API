@@ -116,9 +116,9 @@ router.route('/:id/pay')
 
         payments.forEach((item, i) => item.id = paymentIds[i]);
 
-        let paymentsAndJournalLines = RunService("journalGenerateForInvoicePayments", [payments, id], req);
+        let paymentsAndJournalLines = req.container.get("CommandBus").send("journalGenerateForInvoicePayments", [payments, id]);
 
-        RunService("paymentSetJournalLineForAll", [paymentsAndJournalLines], req);
+        req.container.get("CommandBus").send("paymentSetJournalLineForAll", [paymentsAndJournalLines]);
 
     }));
 

@@ -18,7 +18,7 @@ router.route('/')
     .post(async((req, res) => {
 
         try {
-            const id = RunService("invoiceReturnCreate", [req.body], req);
+            const id = req.container.get("CommandBus").send("invoiceReturnCreate", [req.body], req);
 
             res.json({isValid: true, returnValue: {id}});
         }
@@ -32,7 +32,7 @@ router.route('/:id/confirm')
     .post(async((req, res) => {
 
         try {
-            RunService("invoiceReturnConfirm", [req.params.id], req);
+            req.container.get("CommandBus").send("invoiceReturnConfirm", [req.params.id], req);
 
             res.json({isValid: true});
         }
@@ -52,7 +52,7 @@ router.route('/:id')
     .put(async((req, res) => {
 
         try {
-            RunService("invoiceReturnUpdate", [req.params.id, req.body], req);
+            req.container.get("CommandBus").send("invoiceReturnUpdate", [req.params.id, req.body], req);
 
             res.json({isValid: true});
         }
@@ -64,7 +64,7 @@ router.route('/:id')
     .delete(async((req, res) => {
 
         try {
-            RunService("invoiceReturnRemove", [req.params.id], req);
+            req.container.get("CommandBus").send("invoiceReturnRemove", [req.params.id], req);
 
             res.json({isValid: true});
         }

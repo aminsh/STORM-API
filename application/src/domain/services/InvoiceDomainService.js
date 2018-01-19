@@ -296,7 +296,7 @@ export class InvoiceDomainService {
 
         this.invoiceRepository.updateBatch(id, this._mapToData(entity));
 
-        this.eventBus.send("onInvoiceEdited", id);
+        this.eventBus.send("onInvoiceChanged", id);
     }
 
     remove(id) {

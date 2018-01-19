@@ -66,7 +66,7 @@ router.route('/inputs/:id/set-price')
 router.route('/inputs/:id/fix-quantity')
     .put(async((req, res) => {
         try {
-            RunService("inventoryInputFixQuantity", [req.params.id], req);
+            req.container.get("CommandBus").send("inventoryInputFixQuantity", [req.params.id]);
             res.json({isValid: true})
         }
         catch (e) {

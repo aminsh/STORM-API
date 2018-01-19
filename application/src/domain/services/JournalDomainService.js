@@ -341,7 +341,7 @@ export class JournalDomainService {
             ? `دریافت بابت فاکتور فروش شماره ${invoice.number}`
             : 'دریافت وجه',
 
-            receivableAccount = this.subsidiaryLedgerAccountDomainService.receivableAccount(),
+            receivableAccount = this.subsidiaryLedgerAccountDomainService.receivableAccount,
             journalLines = [];
 
         payments.forEach(p => {
@@ -394,7 +394,7 @@ export class JournalDomainService {
             if (p.paymentType === 'cheque' && !subLedger.receivableDocument)
                 errors.push('حساب معین اسناد دریافتنی در حسابهای معین پیش فرض تعریف نشده');
 
-            return;
+            return [];
         }
 
 
@@ -416,16 +416,16 @@ export class JournalDomainService {
 
         function getSubLedgerForDebtor(p) {
             if (p.paymentType === 'cash')
-                return subLedger.fundAccount();
+                return subLedger.fundAccount;
 
             if (p.paymentType === 'receipt')
-                return subLedger.bankAccount();
+                return subLedger.bankAccount;
 
             if (p.paymentType === 'cheque')
-                return subLedger.receivableDocument();
+                return subLedger.receivableDocument;
 
             if (p.paymentType === 'person')
-                return subLedger.receivableAccount();
+                return subLedger.receivableAccount;
         }
 
         function getDetailAccountForDebtor(p) {

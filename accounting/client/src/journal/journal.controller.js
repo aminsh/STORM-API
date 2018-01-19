@@ -204,6 +204,7 @@ export default class {
                 .then(result => {
                     logger.success();
                     journal.id = result.id;
+                    this.$state.go('^.list');
                 })
                 .catch(err => {
                     this.errors = err;
@@ -211,7 +212,10 @@ export default class {
                 .finally(() => this.isSaving = false);
 
         this.journalApi.update(this.id, this.journal)
-            .then(() => logger.success())
+            .then(() => {
+                logger.success();
+                this.$state.go('^.list');
+            })
             .catch(err => {
                 console.log(err);
                 this.errors = err;
