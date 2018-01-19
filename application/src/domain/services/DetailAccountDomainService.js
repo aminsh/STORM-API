@@ -121,7 +121,10 @@ export class DetailAccountDomainService {
             personType: cmd.personType,
             economicCode: cmd.economicCode,
             registrationNumber: cmd.registrationNumber,
-            contacts: JSON.stringify(cmd.contacts)
+            contacts: JSON.stringify(cmd.contacts),
+            detailAccountCategoryIds: cmd.detailAccountCategoryIds
+                ? cmd.detailAccountCategoryIds.join('|')
+                : null
         };
 
         this.detailAccountRepository.update(entity);
