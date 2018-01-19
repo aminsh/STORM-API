@@ -55,7 +55,8 @@ class ProductQuery extends BaseQuery {
             fiscalPeriodQuery = new FiscalPeriodQuery(this.branchId),
             fiscalPeriod = await(fiscalPeriodQuery.getById(fiscalPeriodId)),
 
-            totalSalePrice = `select cast(sum(("unitPrice" * "quantity") - discount + vat) as float) from "invoices" 
+           /* TODO  this part is disabled temporarily because discount on invoice and invoice lines
+           totalSalePrice = `select cast(sum(("unitPrice" * "quantity") - discount + vat) as float) from "invoices"
                 left join "invoiceLines" on "invoices".id = "invoiceLines"."invoiceId"
                 where "invoices".date between '${fiscalPeriod.minDate}' and '${fiscalPeriod.maxDate}' 
                 and "invoices"."branchId" = '${branchId}'
@@ -83,16 +84,17 @@ class ProductQuery extends BaseQuery {
                 where "inventories"."fiscalPeriodId" = '${fiscalPeriod.id}'
                 and "inventories"."branchId" = '${branchId}'
                 and "productId" = "products".id
-                and "inventoryType" = 'input'`,
+                and "inventoryType" = 'input'`,*/
 
             result = await(this.knex.select(
                 'products.*',
-                knex.raw('scales.title as "scaleDisplay"'),
-                knex.raw(`coalesce((${totalSalePrice}),0) as "sumSalePrice"`),
+                knex.raw('scales.title as "scaleDisplay"')
+               /* TODO  this part is disabled temporarily because discount on invoice and invoice lines
+               knex.raw(`coalesce((${totalSalePrice}),0) as "sumSalePrice"`),
                 knex.raw(`coalesce((${totalSaleDiscount}),0) as "sumDiscount"`),
                 knex.raw(`coalesce((${countOfSale}),0) as "countOnSale"`),
                 knex.raw(`coalesce((${inventory}),0) as "sumQuantity"`),
-                knex.raw(`coalesce((${costOfGood}),0) as "costOfGood"`)
+                knex.raw(`coalesce((${costOfGood}),0) as "costOfGood"`)*/
             )
                 .from('products')
                 .leftJoin('scales', 'products.scaleId', 'scales.id')
