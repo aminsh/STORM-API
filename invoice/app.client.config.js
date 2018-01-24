@@ -14,9 +14,9 @@ import "angular-resource";
 import 'angular-translate';
 
 // [START] Storm Lumx Dependencies
-import "moment";
+/*import "moment";
 import "velocity-animate";
-import "storm-lumx";
+import "storm-lumx";*/
 // [-END-] Storm Lumx Dependencies
 
 import ReportApi from "../accounting/client/src/apis/reportApi";
@@ -42,7 +42,6 @@ let invoiceModule = angular.module('invoice.module', [
         'ngResource',
         'ngSanitize',
         'ui.router',
-        'lumx',
         'pascalprecht.translate'
     ]),
     devConstants = {

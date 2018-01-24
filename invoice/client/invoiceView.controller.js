@@ -12,7 +12,8 @@ export default class InvoiceViewController {
         , navigate
         , $filter
         , branchThirdPartyApi
-        , invoiceApi) {
+        , invoiceApi
+        , reportApi) {
 
         this.hasPayPing = false;
         this.showPaymentTable = false;
@@ -30,12 +31,14 @@ export default class InvoiceViewController {
         this.saleApi = saleApi;
         this.branchApi = branchApi;
         this.invoiceApi = invoiceApi;
+        this.reportApi = reportApi;
 
         this.invoiceId = $stateParams.id;
         this.isRealInvoiceId(this.invoiceId);
 
         this.invoice = {};
-        this.payments = {};
+        // this.payments = {};
+        this.receipt = [];
         this.branch = {
             logo: null,
             name: null
@@ -45,17 +48,18 @@ export default class InvoiceViewController {
             tbody: []
         };
 
+        this.formatNumber = this.$filter("number");
+
         this.tHeadInit();
         this.tBodyInit();
-        this.getPayments();
+        // this.getPayments();
+        this.getReceipt();
         this.currentBranchInit();
         this.canShowPaymentSection();
 
     }
 
-
     tHeadInit() {
-        let formatNumber = this.$filter("number");
 
         this.dataTable.thead = [
             {
@@ -77,7 +81,7 @@ export default class InvoiceViewController {
                 name: "unitPrice",
                 label: "مبلغ واحد",
                 sortable: false,
-                format: item => `<span>${formatNumber(item.unitPrice)}</span>`
+                format: item => `<span>${model.formatNumber(item.unitPrice)}</span>`
             },
             {
                 name: "discount",
@@ -93,7 +97,7 @@ export default class InvoiceViewController {
                 name: "totalPrice",
                 label: "مبلغ کل",
                 sortable: false,
-                format: item => `<span>${formatNumber((item.unitPrice * item.quantity) - item.discount + item.vat)}</span>`
+                format: item => `<span>${model.formatNumber((item.unitPrice * item.quantity) - item.discount + item.vat)}</span>`
             }
         ];
 
@@ -115,11 +119,22 @@ export default class InvoiceViewController {
 
     }
 
-    getPayments() {
+    /*getPayments() {
 
         this.saleApi
             .payments(this.invoiceId)
             .then(result => this.payments = result)
+            .catch(err => console.log(err));
+
+    }*/
+
+    getReceipt() {
+
+        this.reportApi
+            .getCustomerReceipts({ id: this.invoiceId })
+            .then(result => {
+                this.receipt = result
+            })
             .catch(err => console.log(err));
 
     }
@@ -129,6 +144,17 @@ export default class InvoiceViewController {
         this.navigate(
             'print',
             {key: 700},
+            {"id": this.invoiceId});
+
+        return true;
+
+    }
+
+    printReceiptContent(){
+
+        this.navigate(
+            'print',
+            {key: 702},
             {"id": this.invoiceId});
 
         return true;

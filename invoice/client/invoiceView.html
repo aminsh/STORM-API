@@ -1,27 +1,49 @@
 <div class="invoice-print-main-wrapper rtl">
     <div class="invoice-print-header">
         <img class="invoice-print-header-log" src="/public/images/logo-black.png" alt="storm-logo"/>
-        <button class="btn btn--flat btn--blue-grey btn--l"
+
+        <button class="btn btn-white btn-bitbucket"
+                title="چاپ فاکتور"
+                ng-click="model.printInvoiceContent()">
+            <i class="fa fa-print" style="font-size: 20px;" ></i><!--mdi mdi-24px mdi-printer-->
+        </button>
+
+        <button id="invoice-pay-top-btn"
+                class="btn btn-primary btn-bitbucket invoice-pay-btn"
+                title="پرداخت"
+                ng-if="model.canShowPaymentSection()"
+                onclick="soTogglePayment()" >
+            <i class="fa fa-money" style="font-size: 20px;" ></i>
+        </button>
+
+        <!--<button class="btn btn&#45;&#45;flat btn&#45;&#45;blue-grey btn&#45;&#45;l"
                 ng-click="model.printInvoiceContent()"
                 lx-ripple
-                lx-tooltip="چاپ فاکتور" lx-tooltip-position="bottom">
+                lx-tooltip="چاپ فاکتور"
+                lx-tooltip-position="bottom">
             <i class="mdi mdi-24px mdi-printer"></i>
-        </button>
+        </button>-->
     </div>
     <div class="invoice-print-wrapper">
         <div ng-class="{ 'invoice-print-content' : model.canShowPaymentSection(), 'invoice-print-content whole-page' : !model.canShowPaymentSection() }">
-            <div class="invoice-print-content-body">
-                <div flex-container="row" flex-column="12">
-                    <div flex-item="2">
+            <div class="container-fluid invoice-print-content-body">
+                <div class="row" ><!--flex-container="row" flex-column="12"-->
+                    <div class="col col-sm-2" ><!--flex-item="2"-->
+                        <button class="btn btn-lg btn-primary invoice-pay-btn invoice-print-pay-btn p+"
+                                title="پرداخت"
+                                ng-if="model.canShowPaymentSection()"
+                                onclick="soTogglePayment()" >
+                            <span>پرداخت</span>
+                        </button>
                         <img class="invoice-print-branch-logo" ng-src="{{ model.branch.logo }}" alt="branch-logo"/>
                         <div class="so-align-center" style="font-size: 16px;padding: 5px 0;">{{model.branch.name}}</div>
                     </div>
-                    <div flex-item="2">
+                    <div class="col col-sm-2" ><!--flex-item="2"-->
                         <br/><br/>
                         <span>مشتری:</span>
                         <span>{{model.invoice.customerDisplay}}</span>
                     </div>
-                    <div flex-item="4">
+                    <div class="col col-sm-4" ><!--flex-item="4"-->
                         <br/><br/>
                         <span class="so-tx-color-cyan-green">شماره فاکتور</span>:
                         <span>{{model.invoice.number}}</span>
@@ -29,44 +51,100 @@
                         <span class="so-tx-color-cyan-green">تاریخ فاکتور</span>:
                         <span>{{model.invoice.date}}</span>
                     </div>
-                    <div flex-item="4">
+                    <div class="col col-sm-4" ><!--flex-item="4"-->
                         <br/>
                         <span style="font-size: 20px;">قابل پرداخت:</span><br/>
                         <div style="display: block;position: relative;margin: 0 auto;text-align: center;"
                              class="so-tx-color-dark-blue">
-                            <span style="font-size: 67px;">{{model.invoice.invoiceLines | totalSum: ('($.unitPrice * $.quantity) - $.discount + $.vat') | number}}</span><span
+                            <span class="invoice-print-payable" >{{model.invoice.invoiceLines | totalSum: ('($.unitPrice * $.quantity) - $.discount + $.vat') | number}}</span><span
                                 style="font-size: 18px">ریال</span>
-
                         </div>
                     </div>
                 </div>
-                <div flex-container="row" flex-column="12">
-                    <div flex-item="12">
-                        <lx-data-table
+                <div class="row" ><!--flex-container="row" flex-column="12"-->
+                    <div class="col col-sm-12" ><!--flex-item="12"-->
+                        <!--<lx-data-table
                                 lx-selectable="false"
                                 lx-thead="model.dataTable.thead"
-                                lx-tbody="model.dataTable.tbody"></lx-data-table>
+                                lx-tbody="model.dataTable.tbody"></lx-data-table>-->
+                        <div style="overflow: auto;" >
+                            <table  style="width: 100%;min-width: 768px;"
+                                    class="table table-hover table-striped" >
+                                <tr>
+                                    <th ng-repeat="col in model.dataTable.thead"
+                                        style="text-align: center;" >{{col.label}}</th>
+                                </tr>
+                                <tr ng-repeat="item in model.dataTable.tbody" >
+                                    <td style="text-align: center;" >{{item.row}}</td>
+                                    <td style="text-align: center;" >{{item.description}}</td>
+                                    <td style="text-align: center;" >{{item.quantity}}</td>
+                                    <td style="text-align: center;" >{{model.formatNumber(item.unitPrice)}}</td>
+                                    <td style="text-align: center;" >{{model.formatNumber(item.discount)}}</td>
+                                    <td style="text-align: center;" >{{model.formatNumber(item.vat)}}</td>
+                                    <td style="text-align: center;" >{{model.formatNumber((item.unitPrice * item.quantity) - item.discount + item.vat)}}</td>
+                                </tr>
+                            </table>
+                        </div>
                     </div>
                 </div>
-                <div class="divider divider--dark"></div>
+                <div class="divider so-bg-color-gray"></div>
                 <br/>
                 <br/>
-                <div flex-container="row" flex-column="12">
+                <div class="row" ><!--flex-container="row" flex-column="12"-->
                     <div
-                            flex-item="6"
-                            class="invoice-print-pay-table-container"
-                            style="padding: 0 50px;">
+                            class="invoice-print-pay-table-container col col-sm-6"
+                            style="padding: 0 50px;"><!--flex-item="6"-->
 
-                        <div ng-if="model.invoice.sumPaidAmount !== 0">
-                            <div flex-container="row" flex-column="12">
-                                <h3 flex-column="3">پرداختی ها</h3>
-                                <h5 flex-column="3" ng-show="model.invoice.sumRemainder === 0">(کل مبلغ فاکتور پرداخت
-                                    شده)</h5>
+                        <div ng-if="model.invoice.sumPaidAmount !== 0" >
+                            <div class="mb+" ><!--flex-container="row" flex-column="12"-->
+                                <h3>پرداختی ها</h3><!--flex-column="3"-->
+                                <h5 ng-show="model.invoice.sumRemainder === 0">(کل مبلغ فاکتور پرداخت
+                                    شده)</h5><!--flex-column="3"-->
                             </div>
 
 
-                            <ul class="list mt++">
-                                <li class="list-row list-row--has-separator">
+
+                            <table class="table table-hover table-striped" >
+                                <tr>
+                                    <th style="text-align: center;" >ردیف</th>
+                                    <th style="text-align: center;" >نوع پرداخت</th>
+                                    <th style="text-align: center;" >شرح</th>
+                                    <th style="text-align: center;" >مبلغ</th>
+                                </tr>
+                                <tr ng-repeat="r in model.receipt" >
+                                    <td style="text-align: center;" >{{r.number}}</td>
+                                    <td style="text-align: center;" >{{r.paymentTypeText}}</td>
+                                    <td style="text-align: center;" >{{r.paymentDescription}}</td>
+                                    <td style="text-align: center;" >{{r.amount | number}}</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3" >
+                                        <h4>جمع پرداختی ها :</h4>
+                                    </td>
+                                    <td colspan="1" >
+                                        <h4 style="text-align: center;" >{{model.receipt | totalSum:('amount')| number}}</h4>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3" >
+                                        <h4>مانده :</h4>
+                                    </td>
+                                    <td colspan="1" >
+                                        <h4 style="text-align: center;" >{{(model.invoice.invoiceLines | totalSum: ('(($.unitPrice * $.quantity) - $.discount + $.vat)'))   -
+                                            (model.receipt | totalSum:('amount')) | number}}
+                                        </h4>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <button class="btn btn-white btn-bitbucket"
+                                    title="چاپ رسید پرداخت"
+                                    ng-click="model.printReceiptContent()">
+                                <span><i class="fa fa-print" ></i> چاپ رسید پرداخت</span>
+                            </button>
+
+                            <!--<ul class="list mt++">
+                                <li class="list-row list-row&#45;&#45;has-separator">
                                     <div class="list-row__content">
                                         <span>سند</span>
                                     </div>
@@ -83,7 +161,7 @@
 
                                     </div>
                                 </li>
-                                <li class="list-row list-row--has-separator" ng-repeat="p in model.payments">
+                                <li class="list-row list-row&#45;&#45;has-separator" ng-repeat="p in model.payments">
 
                                     <div class="list-row__content">
                                         <span>{{p.number}}</span>
@@ -103,7 +181,7 @@
 
                                 </li>
 
-                                <li class="list-row list-row--has-separator">
+                                <li class="list-row list-row&#45;&#45;has-separator">
                                     <div class="list-row__content">
 
                                     </div>
@@ -117,11 +195,11 @@
 
                                     </div>
                                 </li>
-                            </ul>
+                            </ul>-->
 
                         </div>
                     </div>
-                    <div flex-item="6" class="invoice-print-avg-table-container" style="padding: 0 50px 0 0">
+                    <div class="invoice-print-avg-table-container col col-sm-6" style="padding: 0 50px 0 0"><!--flex-item="6"-->
                         <table class="invoice-print-table">
                             <tr>
                                 <td>جمع مبلغ:</td>
@@ -138,8 +216,7 @@
                             </tr>
                             <tr>
                                 <td>قابل پرداخت:</td>
-                                <td>{{model.invoice.invoiceLines | totalSum: ('($.unitPrice * $.quantity) - $.discount +
-                                    $.vat') | number}}
+                                <td>{{model.invoice.invoiceLines | totalSum: ('($.unitPrice * $.quantity) - $.discount + $.vat') | number}}
                                 </td>
                             </tr>
                         </table>
@@ -151,7 +228,7 @@
             </div>
         </div>
         <div class="invoice-print-sidebar" ng-show="model.canShowPaymentSection()">
-            <h3 style="padding: 0 10px;color: #707070">پرداخت با:</h3>
+            <h3 style="padding: 0 10px;color: #707070"><i class="fa fa-money" ></i> پرداخت با:</h3>
             <ul class="invoice-print-sidebar-pay-list">
                 <li>
                     <a href="" ng-click="model.goToPayment()">
@@ -161,7 +238,7 @@
             </ul>
         </div>
     </div>
-    <div class="invoice-print-mobile-pay-list" ng-show="model.canShowPaymentSection()">
+    <!--<div class="invoice-print-mobile-pay-list" ng-show="model.canShowPaymentSection()">
         <lx-fab lx-direction="up">
             <lx-fab-trigger>
                 <lx-button lx-size="xl" lx-type="fab" lx-tooltip="پرداخت با" lx-tooltip-position="right">
@@ -176,5 +253,38 @@
                 </lx-button>
             </lx-fab-actions>
         </lx-fab>
-    </div>
+    </div>-->
 </div>
+<script>
+
+    function soTogglePayment(){
+
+        var $payTopBtn = $("#invoice-pay-top-btn");
+        var $invoiceContent = $($(".invoice-print-content")[0]);
+        var $paySidebar = $($(".invoice-print-sidebar")[0]);
+
+        if($invoiceContent.hasClass("so-close")){ // OPEN
+
+            $payTopBtn.removeClass("btn-warning");
+            $payTopBtn.addClass("btn-primary");
+            $payTopBtn.html("<i class='fa fa-money' style='font-size: 20px;' ></i>");
+
+            $invoiceContent.removeClass("so-close");
+            $paySidebar.removeClass("so-open");
+            return;
+
+        }
+
+        // CLOSE
+
+        $payTopBtn.addClass("btn-warning");
+        $payTopBtn.removeClass("btn-primary");
+        $payTopBtn.html("<i class='fa fa-arrow-left' style='font-size: 20px;' ></i>");
+
+        $invoiceContent.addClass("so-close");
+        $paySidebar.addClass("so-open");
+
+
+    }
+
+</script>

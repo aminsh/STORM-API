@@ -1,5 +1,8 @@
 @import "general";
 
+$so-res-width: 700px;
+$bootstrap-res-sm-grid-width: 54.800em;
+
 .invoice-print-main-wrapper{
   display: block;
   position: relative;
@@ -28,6 +31,9 @@
     display: inline-block;
     float: left;
     width: 100px;
+    /*@media screen and (max-width: $bootstrap-res-sm-grid-width){
+      width: 10vw;
+    }*/
     bottom: -20px;
   }
 }
@@ -45,20 +51,30 @@
     width: 80%;
     min-height: 50px;
     max-height: calc(100vh - 90px);
+    padding: 0;
+    margin: 0;
     overflow: hidden;
-    @include transition(width ease 0.3s);
+    @include transition(#{"width ease 0.3s, opacity ease 0.3s"});
 
     &.whole-page{ width: calc(100% - 25px); }
 
     & > div.invoice-print-content-body{
       display: block;
       position: relative;
+      margin: 0;
       padding: 10px 25px;
+      width: 100%;
       height: calc(100vh - 115px);
       background-color: white;
       @include overflow-x(hidden);
       @include overflow-y(auto);
       border-bottom: 2px solid $color-cyan-green;
+      .invoice-print-payable{
+        font-size: 4.5vw;
+        @media screen and (max-width: $bootstrap-res-sm-grid-width){
+          font-size: 60px;
+        }
+      }
     }
     & > div.invoice-print-content-footer {
       display: block;
@@ -84,9 +100,12 @@
     float: left;
     width: 20%;
     height: calc(100vh - 90px);
+    margin: 0;
+    padding: 0;
     // border-right: 1px solid red;
     @include overflow-x(hidden);
     @include overflow-y(auto);
+    @include transition(#{"width ease 0.3s, opacity ease 0.3s"});
 
     ul.invoice-print-sidebar-pay-list{
       display: block;
@@ -164,13 +183,25 @@
     }
 
   }
-  @media screen and (max-width: 800px){
+  @media screen and (max-width: $so-res-width){
     padding: 0;
     & > div.invoice-print-content{
-      width: 100% !important;
+      width: 100%;
+      opacity: 1;
+      &.so-close{
+        width: 0;
+        opacity: 0;
+        overflow: hidden;
+      }
     }
     & > div.invoice-print-sidebar{
-      display: none;
+      overflow: hidden;
+      width: 0;
+      opacity: 0;
+      &.so-open{
+        width: 100%;
+        opacity: 1;
+      }
     }
   }
 
@@ -178,8 +209,12 @@
 
 .invoice-print-branch-logo{
   display: block;
-  width: 125px;
-  height: 125px;
+  width: 7vw;
+  @media screen and (max-width: $bootstrap-res-sm-grid-width){
+    width: 125px;
+  }
+  max-width: 125px;
+  max-height: 125px;
   line-height: 125px;
   text-align: center;
   margin: 0 auto;
@@ -199,7 +234,7 @@
     }
     td:nth-of-type(2){
       text-align: right;
-      border-bottom: 1px solid lighten($color-gray,0.5);
+      border-bottom: 1px solid lighten($color-gray-milk-white,20%);
       &:not(:empty)::after{
         display: inline;
         content: ' ریال';
@@ -211,7 +246,7 @@
 
 .invoice-print-pay-table-container,
 .invoice-print-avg-table-container{
-  @media screen and (max-width: 800px){
+  @media screen and (max-width: $so-res-width){
     padding: 0 !important;
     text-align: center;
     .invoice-print-table{
@@ -220,6 +255,7 @@
   }
 }
 
+/*
 .invoice-print-mobile-pay-list{
   display: none;
   position: fixed;
@@ -229,4 +265,21 @@
   @media screen and (max-width: 800px){
     display: block;
   }
+}*/
+
+.invoice-pay-btn{
+  @media screen and (min-width: $so-res-width){
+    overflow: hidden;
+    width: 0 !important;
+    display: none !important;
+  }
+  @media screen and (max-width: $so-res-width){
+    width: auto;
+  }
+}
+.invoice-print-pay-btn{
+  display: block;
+  position: absolute;
+  top: 10px;
+  left: 10px;
 }
