@@ -44,8 +44,5 @@ jspm_packages
 /dest
 /application/dist
 
-# Additional Gulps
-watchers.gulp.js
-
 # Others
 package-lock.json
