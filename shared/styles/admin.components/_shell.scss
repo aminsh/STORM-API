@@ -1,0 +1,29 @@
+.so-admin-shell-nav{
+  display: block;
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  width: 100%;
+  height: auto;
+  border-bottom: 1px solid $color-blue;
+
+  .so-admin-shell-tabs{
+    text-align: left;
+    font-size: 16px;
+    border: none;
+    & > li{
+      float: left;
+      @include no-focus-outline();
+      a{
+        @include no-focus-outline()
+      }
+      &:not(.active) > a:hover{
+        border-bottom-color: $color-blue;
+      }
+      &.active{
+        a{ border-color: $color-blue;border-bottom-color: white }
+      }
+    }
+  }
+}

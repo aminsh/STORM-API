@@ -5,9 +5,9 @@
  * @param {BranchApi} branchApi
  */
 class BranchSettingsController {
-    constructor(tabs, branchApi, logger) {
+    constructor(branchApi, logger) {
 
-        tabs.setTab("branchSettings");
+        // tabs.setTab("branchSettings");
         this.events = JSON.parse(localStorage.getItem("events"));
 
         this.branchApi = branchApi;

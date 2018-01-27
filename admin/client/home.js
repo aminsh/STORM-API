@@ -1,10 +1,10 @@
 "use strict";
 
 export default class HomeController {
-    constructor(userApi, pubSub, branchApi, tabs) {
+    constructor(userApi, pubSub, branchApi) {
         this.userApi = userApi;
         this.branchApi = branchApi;
-        tabs.setTab("home");
+        // tabs.setTab("home");
 
         this.fetchConnectedUsers();
         this.totalBenaches();

@@ -2,10 +2,10 @@
 
 export default class DocsController{
 
-    constructor($state, tabs, docsApi, logger, confirm) {
+    constructor($state, docsApi, logger, confirm) {
 
         this.$state = $state;
-        tabs.setTab("docs");
+        // tabs.setTab("docs");
         this.docsApi = docsApi;
         this.logger = logger;
         this.confirm = confirm;

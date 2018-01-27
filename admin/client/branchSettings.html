@@ -3,21 +3,24 @@
       <div class="row">
           <div class="col-md-6">
               <div>
-                  <lx-button lx-type="raised" lx-color="green" ng-click="model.save()">Save</lx-button>
 
               </div>
               <div>
                   <dev-tag-combo-box
+                          style="display: inline-block;width: 400px;vertical-align: top"
                           k-placeholder="{{'Select' | translate}}"
                           k-data-text-field="display"
                           k-data-value-field="id"
                           k-on-changed="model.onBranchChanged($item)"
                           url="/api/branches"
                           ng-model="model.branchId"></dev-tag-combo-box>
+                  <button style="display: inline-block;vertical-align: top"
+                          class="btn btn-primary btn-md"
+                          ng-click="model.save()" ><i class="fa fa-floppy-o" ></i> Save</button>
               </div>
               <div ng-repeat="e in model.events">
-                  <lx-button lx-color="white" ng-click="model.onEventClick(e)">{{e.module}} - {{e.event}}</lx-button>
-
+                  <button class="btn btn-success mv"
+                          ng-click="model.onEventClick(e)" >{{e.module}} - {{e.event}}</button>
               </div>
           </div>
 

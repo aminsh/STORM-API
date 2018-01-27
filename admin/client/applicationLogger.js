@@ -1,11 +1,11 @@
 "use strict";
 
 class ApplicationLoggerController {
-    constructor(tabs, clipboard) {
+    constructor(clipboard) {
 
         this.clipboard = clipboard;
 
-        tabs.setTab("applicationLogger");
+        // tabs.setTab("applicationLogger");
 
         let columns = [
             {

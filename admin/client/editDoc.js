@@ -5,7 +5,6 @@ export default class EditDocController{
     constructor($window,
                 $state,
                 $stateParams,
-                tabs,
                 docsApi,
                 logger,
                 LxNotificationService) {
@@ -15,7 +14,7 @@ export default class EditDocController{
         this.pageId = $stateParams.pageId;
         if (!this.pageId)
             $state.go("docs");
-        tabs.setTab("docs");
+        // tabs.setTab("docs");
         this.docsApi = docsApi;
         this.parentList = [];
         this.settings = {};

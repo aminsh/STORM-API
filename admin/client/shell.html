@@ -1,25 +1,44 @@
-<!--<div>
+<div>
 
     <div id="page-wrapper" class="gray-bg dashbard-1">
-        <div class="row border-bottom">
-            <nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
+        <nav class="navbar navbar-static-top so-admin-shell-nav" role="navigation" style="margin-bottom: 0">
 
+            <ul class="nav nav-tabs navbar-left so-admin-shell-tabs pl++ pt+" style="direction: ltr;" >
+                <li role="presentation" ng-class="{ 'active' : $state.current.name == 'home' }" >
+                    <a ui-sref="home">
+                        <i class="fa fa-home" ></i> Home
+                    </a>
+                </li>
+                <li role="presentation" ng-class="{ 'active' : $state.current.name == 'users' }" >
+                    <a ui-sref="users">
+                        <i class="fa fa-users" ></i> Users
+                    </a>
+                </li>
+                <li role="presentation" ng-class="{ 'active' : $state.current.name == 'branches' }" >
+                    <a ui-sref="branches">
+                        <i class="fa fa-sitemap" ></i> Branches
+                    </a>
+                </li><!--
+                <li role="presentation" ng-class="{ 'active' : $state.current.name == 'docs' }" >
+                    <a ui-sref="docs">
+                        <i class="glyphicon glyphicon-file" ></i> Documents
+                    </a>
+                </li>-->
+                <li role="presentation" ng-class="{ 'active' : $state.current.name == 'logger' }" >
+                    <a ui-sref="logger">
+                        <i class="fa fa-terminal" ></i> Application Logger
+                    </a>
+                </li>
+                <li role="presentation" ng-class="{ 'active' : $state.current.name == 'branchSettings' }" >
+                    <a ui-sref="branchSettings">
+                        <i class="fa fa-cog" ></i> Branch Settings
+                    </a>
+                </li>
+            </ul>
 
-                <ul class="nav navbar-top-links navbar-left">
-                    <li class="dropdown">
-                        <a ui-sref="branches">
-                            Branches
-                        </a>
-                    </li>
-                    <li class="dropdown">
-                        <a ui-sref="users">
-                            Users
-                        </a>
-                    </li>
+        </nav>
 
-                </ul>
-            </nav>
-        </div>
+        <div class="row border-bottom"><br/><br/><br/></div>
 
         <div id="page-content-wrapper" class="content-total">
             <div class="container-fluid">
@@ -32,30 +51,5 @@
         </div>
 
 
-    </div>
-</div>-->
-
-
-<div class="wrapper wrapper-content  animated fadeInRight">
-    <div class="row">
-        <div class="col-sm-12">
-            <div class="ibox">
-                <div class="ibox-content">
-                    <div class="clients-list">
-                        <!--<ul class="nav nav-tabs">
-                            <li ng-class="{'active' : tab == 1}"><a ui-sref="branches"><i class="fa fa-building"></i> Branches</a></li>
-                            <li ng-class="{'active' : tab == 2}"><a ui-sref="users"><i class="fa fa-user"></i>Users </a></li>
-                        </ul>-->
-                        <lx-tabs lx-layout="inline" lx-color="green" lx-active-tab="tabNum" >
-                            <lx-tab ng-repeat="tab in tabs"
-                                    lx-go-state="{{tab.state}}"
-                                    lx-label="{{tab.label}}"
-                                    lx-icon="{{tab.icon}}" ></lx-tab>
-                        </lx-tabs>
-                        <ui-view></ui-view>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
 </div>

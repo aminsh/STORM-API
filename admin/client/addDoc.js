@@ -2,11 +2,11 @@
 
 export default class AddDocController{
 
-    constructor($window, $state, tabs, docsApi, LxNotificationService, logger){
+    constructor($window, $state, docsApi, LxNotificationService, logger){
 
         this.$window = $window;
         this.$state = $state;
-        tabs.setTab("docs");
+        // tabs.setTab("docs");
         this.docsApi = docsApi;
         this.LxNotificationService = LxNotificationService;
         this.logger = logger;

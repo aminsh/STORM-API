@@ -5,6 +5,26 @@ const gulp = require("gulp"),
       chalk = require("chalk");
 
 const tasks = [
+    // Admin Tasks
+    {
+        name: "admin-build-template",
+        globs: ["./admin/client/**/*.html"]
+    },
+    {
+        name: "admin-build-js",
+        globs: ["./admin/client/**/*.js"]
+    },
+    {
+        name: "admin-build-sass",
+        globs: [
+            "./shared/styles/admin.scss",
+            "./shared/styles/admin.components/**/*.*",
+            "./shared/styles/_general.scss",
+            "./shared/styles/general.components/**/*.*",
+            "./shared/styles/resources/**/*.*"
+        ]
+    },
+    // Invoice Tasks
     {
         name: "invoice-build-template",
         globs: ["./invoice/**/*.html"]

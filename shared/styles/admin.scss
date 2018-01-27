@@ -1,5 +1,6 @@
 @import "general";
-@import "general.components/ibox";
+// @import "general.components/ibox";
+@import "admin.components/shell";
 
 .so-admin-widget-box{
   display: inline-block;
@@ -8,7 +9,7 @@
   height: 75px;
   padding: 0 15px;
   @include border-radius();
-  background-color: lighten($color-gray-milk-white,20%);
+  background-color: white;
   color: $color-black;
   border-bottom: 2px solid $color-cyan-green;
   @mixin sides(){
@@ -22,7 +23,7 @@
     float: right;
     width: 25%;
     .so-admin-widget-box-icon{
-      display: block;
+      display: inline-block;
       margin: 0 auto;
       font-size: 32px;
     }
