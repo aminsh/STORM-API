@@ -12,7 +12,10 @@ const tasks = [
     },
     {
         name: "admin-build-js",
-        globs: ["./admin/client/**/*.js"]
+        globs: [
+            "./admin/client/**/*.js",
+            "./admin/app.client.config.js"
+        ]
     },
     {
         name: "admin-build-sass",

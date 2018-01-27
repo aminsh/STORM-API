@@ -67,7 +67,6 @@ let adminModule = angular.module('admin.module', [
     'ui.router',
     'pascalprecht.translate',
     'ui.bootstrap',
-    'lumx',
     'jsonFormatter',
     'ui.select',
     clipboardModule.name,
