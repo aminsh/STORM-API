@@ -23,6 +23,7 @@ export default class invoiceListControllerBase {
         this.errors = [];
         this.api = api;
         this.reportParameters = reportParameters;
+        this.invoiceType = invoiceType;
 
         let urls = {
                 sales: devConstants.urls.sales.getAll(),
