@@ -20,7 +20,7 @@ class ProductReports extends BaseQuery {
         this.options = await(this.filterConfig.getDateOptions());
     }
 
-    getProductsInventoriesByIds(productIds, fixedType) {
+    getProductsInventoriesByIds(productIds, fixedType, stockId) {
         let knex = this.knex,
             branchId = this.branchId,
 
@@ -69,6 +69,11 @@ class ProductReports extends BaseQuery {
 
         if (productIds)
             query.whereIn('products.id', productIds);
+
+        if (stockId && !stockId.includes('all')){
+            query.whereIn('stocks.id',stockId);
+        }
+
 
         return query;
     };
@@ -166,8 +171,8 @@ class ProductReports extends BaseQuery {
 
     }
 
-    getProductTurnovers(productIds, fixedType) {
-        let productsInventories = await(this.getProductsInventoriesByIds(productIds, fixedType)),
+    getProductTurnovers(productIds, fixedType, stockId) {
+        let productsInventories = await(this.getProductsInventoriesByIds(productIds, fixedType, stockId)),
             options = this.options,
 
             query = productsInventories.asEnumerable()
