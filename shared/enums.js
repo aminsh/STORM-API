@@ -104,8 +104,14 @@ enums.InvoiceType = function () {
 enums.InvoiceStatus = function () {
     return new Enum([
         {key: 'draft', display: 'پیش نویس'},
+
+        //TODO they should be removed after purchase and returnInvoice code changed
         {key: 'waitForPayment', display: 'منتظر برای پرداخت'},
         {key: 'paid', display: 'پرداخت شده'},
+        //*************************************************************************
+
+        {key: 'confirmed', display: 'تایید'},
+        {key: 'fixed', display: 'قطعی'},
     ]);
 };
 
