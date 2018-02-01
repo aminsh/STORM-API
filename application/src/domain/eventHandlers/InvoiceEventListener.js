@@ -22,9 +22,7 @@ export class InvoiceEventListener {
         if (!settings.canSaleGenerateAutomaticJournal)
             return;
 
-        let journalId = this.commandBus.send("journalGenerateForInvoice", [invoice.id]);
-
-        this.commandBus.send("invoiceSetJournal", [invoice.id, journalId]);
+        this.commandBus.send("journalGenerateForInvoice", [invoice.id]);
     }
 
     onInvoiceChanged(invoice) {
