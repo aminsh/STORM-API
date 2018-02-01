@@ -33,8 +33,10 @@ export class InventoryInputDomainService {
         if (Utility.String.isNullOrEmpty(cmd.stockId))
             errors.push('انبار وجود ندارد');
 
-        if (!cmd.inventoryLines && cmd.inventoryLines.length === 0)
+        if (!cmd.inventoryLines && cmd.inventoryLines.length === 0) {
+            errors.push('ردیف ها وجود ندارد');
             return errors;
+        }
 
         cmd.inventoryLines.forEach((line, i) => {
             const row = i + 1;
@@ -82,6 +84,7 @@ export class InventoryInputDomainService {
         return {
             id: cmd.id,
             stockId: cmd.stockId,
+            invoiceId: cmd.invoiceId,
             date: cmd.date || PersianDate.current(),
             description: cmd.description,
             inventoryType: 'input',
@@ -97,6 +100,7 @@ export class InventoryInputDomainService {
                 .toArray()
         }
     }
+
 
     create(cmd) {
 
