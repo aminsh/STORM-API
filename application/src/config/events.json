@@ -6,19 +6,19 @@
     "event": "created"
   },
   {
-    "name": "InvoiceEventListener",
+    "class": "InvoiceEventListener",
     "method": "onInvoiceChanged",
     "module": "invoice",
     "event": "edited"
   },
   {
-    "name": "InvoiceEventListener",
+    "class": "InvoiceEventListener",
     "method": "onInvoiceConfirmed",
     "module": "invoice",
     "event": "confirmed"
   },
   {
-    "name": "InvoiceEventListener",
+    "class": "InvoiceEventListener",
     "method": "onInvoiceRemoved",
     "module": "invoice",
     "event": "removed"
