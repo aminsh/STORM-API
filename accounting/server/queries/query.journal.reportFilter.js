@@ -11,6 +11,8 @@ module.exports = function (knex, options, currentFiscalPeriod) {
         'date',
         'month',
         'number',
+        'temporaryNumber',
+        'temporaryDate',
         'description',
         'periodId',
         'isInComplete',
@@ -37,7 +39,7 @@ module.exports = function (knex, options, currentFiscalPeriod) {
     ).from(function () {
         baseJournals.call(this, knex, options);
     })
-        .whereBetween('date', [options.fromDate, options.toDate])
+        .whereBetween('temporaryDate', [options.fromDate, options.toDate])
         .as('dateControlJournals');
 
     _executeFilter(this, options.filter, currentFiscalPeriod, knex);
@@ -53,15 +55,15 @@ function _getAmountFields(knex, options) {
             beforeDebtor: 0
         };
 
-    let beforeRemainder = `CASE WHEN "date" < '${options.fromMainDate}'
+    let beforeRemainder = `CASE WHEN "temporaryDate" < '${options.fromMainDate}'
         THEN "debtor"  -  "creditor" 
         ELSE 0 END as "beforeRemainder"`;
 
-    let beforeDebtor = `CASE WHEN "date" < '${options.fromMainDate}' THEN "debtor" ELSE 0 END as "beforeDebtor"`;
-    let beforeCreditor = `CASE WHEN "date" < '${options.fromMainDate}' THEN "creditor" ELSE 0 END as "beforeCreditor"`;
+    let beforeDebtor = `CASE WHEN "temporaryDate" < '${options.fromMainDate}' THEN "debtor" ELSE 0 END as "beforeDebtor"`;
+    let beforeCreditor = `CASE WHEN "temporaryDate" < '${options.fromMainDate}' THEN "creditor" ELSE 0 END as "beforeCreditor"`;
 
-    let debtor = `CASE WHEN "date" >= '${options.fromMainDate}' THEN "debtor" ELSE 0 END as "debtor"`;
-    let creditor = `CASE WHEN "date" >= '${options.fromMainDate}' THEN "creditor" ELSE 0 END as "creditor"`;
+    let debtor = `CASE WHEN "temporaryDate" >= '${options.fromMainDate}' THEN "debtor" ELSE 0 END as "debtor"`;
+    let creditor = `CASE WHEN "temporaryDate" >= '${options.fromMainDate}' THEN "creditor" ELSE 0 END as "creditor"`;
 
     return {
         beforeRemainder: knex.raw(beforeRemainder),
