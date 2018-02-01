@@ -1,0 +1,63 @@
+<form name="form" novalidate>
+    <div class="modal-header">
+        <button type="button" ng-click="model.close()" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        <h3 class="modal-title">{{'Inventory changes on editing invoice'| translate}}</h3>
+    </div>
+    <div class="modal-body">
+
+        <div class="feed-activity-list" ng-show="model.effects.output.length > 0">
+            <h3>{{'Create output'|translate}}</h3>
+            <div class="feed-element">
+                <div class="row">
+                    <div class="col-md-5">{{'Good'|translate}}</div>
+                    <div class="col-md-2">{{'Quantity'|translate}}</div>
+                    <div class="col-md-5">{{'Stock'|translate}}</div>
+                </div>
+            </div>
+            <div class="feed-element" ng-repeat="item in model.effects.output">
+
+                <div class="row">
+                    <div class="col-md-5">{{item.productDisplay}}</div>
+                    <div class="col-md-2">{{item.quantity}}</div>
+                    <div class="col-md-5">{{item.stockDisplay}}</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="feed-activity-list"  style="margin-top: 40px" ng-show="model.effects.input.length > 0">
+            <h3>{{'Create return invoice'|translate}}</h3>
+            <div class="feed-element">
+                <div class="row">
+                    <div class="col-md-5">{{'Good'|translate}}</div>
+                    <div class="col-md-2">{{'Quantity'|translate}}</div>
+                    <div class="col-md-5">{{'Stock'|translate}}</div>
+                </div>
+            </div>
+            <div class="feed-element" ng-repeat="item in model.effects.input">
+
+                <div class="row">
+                    <div class="col-md-5">{{item.productDisplay}}</div>
+                    <div class="col-md-2">{{item.quantity}}</div>
+                    <div class="col-md-5">{{item.stockDisplay}}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <dev-tag-button
+                ng-click="model.close()"
+                style-type="white"
+                title="{{'Cancel' | translate}}"></dev-tag-button>
+
+        <dev-tag-button
+                ng-click="model.confirm()"
+                icon="fa fa-check fa-lg"
+                style-type="primary"
+                title="{{'Do inventory changes' | translate}}"></dev-tag-button>
+
+
+    </div>
+</form>
+

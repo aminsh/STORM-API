@@ -155,6 +155,18 @@ router.route('/:id/lines').get(async((req, res) => {
     res.json(result);
 }));
 
+router.route('/:id/compare-changes-invoice').get(async((req, res) => {
+    try {
+        let params = req.query.lines,
+            invoiceQuery = new InvoiceQuery(req.branchId),
+            result = await(invoiceQuery.getCompareInvoiceOnChange(req.params.id, params));
+
+        res.json(result);
+    } catch (e) {
+        res.status(403).send('Bad Request');
+    }
+}));
+
 router.route('/max/number')
     .get(async((req, res) => {
         let invoiceQuery = new InvoiceQuery(req.branchId),

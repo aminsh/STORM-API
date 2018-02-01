@@ -546,5 +546,10 @@
   "Remove me from branch {0}": "حذف من از {0}",
   "Branches management": "مدیریت کسب و کارها",
   "Invoice sale turnover": "گزارش عملکرد فروش",
-  "It`s not active": "فعال نیست"
+  "It`s not active": "فعال نیست",
+  "Inventory changes on editing invoice": "تغییرات کنترل موجودی روی ویرایش فاکتور",
+  "Do inventory changes": "تغییرات کنترل موجودی انجام شود",
+  "Create output": "صدور حواله",
+  "Create return invoice": "صدور رسید برگشت از فروش",
+  "Is paid?": "پرداخت شده ؟"
 }

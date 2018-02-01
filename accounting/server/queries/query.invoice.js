@@ -1,4 +1,4 @@
-    "use strict";
+"use strict";
 
 const BaseQuery = require('./query.base'),
     async = require('asyncawait/async'),
@@ -61,13 +61,13 @@ class InvoiceQuery extends BaseQuery {
 
         invoice.sumTotalPrice = invoiceLines.asEnumerable()
                 .sum(line => line.quantity * line.unitPrice - line.discount + line.vat)
-                - invoiceDiscount +
-                sumCharges + (sumChargesVatIncluded * persistedVat / 100);
+            - invoiceDiscount +
+            sumCharges + (sumChargesVatIncluded * persistedVat / 100);
 
         invoice.sumRemainder = invoice.sumTotalPrice - (invoice.sumPaidAmount || 0);
 
         invoice.totalVat = invoiceLines.asEnumerable()
-                .sum(line => line.vat) + (sumChargesVatIncluded * persistedVat / 100);
+            .sum(line => line.vat) + (sumChargesVatIncluded * persistedVat / 100);
 
         invoice.chargesVat = sumChargesVatIncluded * persistedVat / 100;
 
@@ -241,7 +241,86 @@ class InvoiceQuery extends BaseQuery {
     }
 
 
+    getCompareInvoiceOnChange(id, lines) {
+
+        let settings = await(new SettingsQuery(this.branchId).get()),
+            goodLines = lines.asEnumerable().where(e =>
+                e.productId &&
+                await(this.knex.select('productType').from('products').where('id', e.productId).first()).productType === 'good'
+            ).toArray();
+
+        if (goodLines.length === 0)
+            return;
+
+        if (settings.productOutputCreationMethod === 'defaultStock')
+            goodLines.forEach(e => e.stockId = settings.stockId);
+        else {
+            if (goodLines.asEnumerable().any(e => !e.stockId))
+                throw new ValidationException('StockId is empty');
+        }
+
+        let inventoryLines = await(this.knex
+                .select('productId', 'quantity', 'stockId', 'inventoryType')
+                .from('inventories')
+                .innerJoin('inventoryLines', 'inventories.id', 'inventoryLines.inventoryId')
+                .where('inventories.branchId', this.branchId)
+                .where('invoiceId', id)
+            )
+                .asEnumerable()
+                .groupBy(
+                    item => item.productId,
+                    item => item,
+                    (productId, items) => ({
+                        productId,
+                        quantity: items.sum(e => e.inventoryType === 'output' ? e.quantity : e.quantity * -1)
+                    }))
+                .toArray(),
+
+            invoiceLines = goodLines,
+
+            newLines = invoiceLines.asEnumerable().where(e => !inventoryLines.asEnumerable().any(p => p.productId === e.productId)).toArray(),
+            compareEqualProduct = invoiceLines.asEnumerable()
+                .join(inventoryLines, item => item.productId, item => item.productId, (invoice, inventory) => ({
+                    productId: invoice.productId,
+                    stockId: invoice.stockId,
+                    quantity: invoice.quantity - inventory.quantity
+                }))
+                .toArray(),
+            removedLines = inventoryLines.asEnumerable().where(e => !invoiceLines.asEnumerable().any(p => p.productId === e.productId)).toArray(),
+
+
+            output = compareEqualProduct.asEnumerable().where(e => e.quantity > 0)
+                .concat(newLines)
+                .toArray(),
+
+            input = compareEqualProduct.asEnumerable()
+                .where(e => e.quantity < 0)
+                .select(e => Object.assign({}, e, {quantity: Math.abs(e.quantity)}))
+                .concat(removedLines)
+                .toArray();
+
+        let stocks = await(this.knex
+                .select('id', 'title')
+                .from('stocks')
+                .whereIn('id', output.asEnumerable().concat(input).select(e => e.stockId).distinct().toArray())),
+            products = await(this.knex
+                .select('id', 'title')
+                .from('products')
+                .whereIn('id', output.asEnumerable().concat(input).select(e => e.productId).distinct().toArray()));
+
+        function setDisplayForProductAndStock(items) {
+            items.forEach(item => {
+                item.stockDisplay = stocks.asEnumerable().singleOrDefault(p => p.id === item.stockId).title;
+                item.productDisplay = products.asEnumerable().singleOrDefault(p => p.id === item.productId).title;
+            });
+        }
+
+        setDisplayForProductAndStock(output);
+        setDisplayForProductAndStock(input);
+
+        return {input, output};
+    }
 }
-;
+
 
 module.exports = InvoiceQuery;
