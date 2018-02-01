@@ -21,3 +21,5 @@ export * from "./ScaleDomainService";
 export * from "./SettingsDomainService";
 export * from "./StockDomainService";
 export * from "./SubsidiaryLedgerAccountDomainService";
+export * from "./InvoiceInventoryDomainService";
+export * from "./JournalInvoiceGenerationDomainService"

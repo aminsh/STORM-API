@@ -6,8 +6,8 @@ const PersianDate = Utility.PersianDate,
 @injectable()
 export class InvoiceDomainService {
 
-    /** @type {InventoryOutputDomainService}*/
-    @inject("InventoryOutputDomainService") inventoryOutputDomainService = undefined;
+    /** @type {InvoiceInventoryDomainService}*/
+    @inject("InvoiceInventoryDomainService") invoiceInventoryDomainService = undefined;
 
     /** @type {ProductDomainService}*/
     @inject("ProductDomainService") productDomainService = undefined;
@@ -104,7 +104,7 @@ export class InvoiceDomainService {
                 .sum(e => (e.unitPrice * e.quantity) - e.discount + e.vat);
 
         if (sumPayments >= totalPrice)
-            this.invoiceRepository.update(id, {invoiceStatus: 'paid'});
+            this.invoiceRepository.update(id, {isPaid: true});
     }
 
     getNumber(number, persistedInvoice) {
@@ -201,24 +201,6 @@ export class InvoiceDomainService {
         return data;
     }
 
-    _createOutput(entity) {
-
-        if (!this.settings.canControlInventory)
-            return;
-
-        let inventoryIds = this.inventoryOutputDomainService.createForInvoice(entity);
-
-        return inventoryIds;
-    }
-
-    _setToOutput(id, inventoryIds) {
-
-        if (!this.settings.canControlInventory)
-            return;
-
-        this.inventoryOutputDomainService.setInvoice(inventoryIds, id);
-    }
-
     create(cmd) {
 
         let entity = this.mapToEntity(cmd),
@@ -229,16 +211,16 @@ export class InvoiceDomainService {
             throw new ValidationException(errors);
 
         if (cmd.status && cmd.status !== 'draft')
-            inventoryIds = this._createOutput(entity);
+            inventoryIds = this.invoiceInventoryDomainService.control(entity);
 
         entity.invoiceType = 'sale';
-        entity.invoiceStatus = !cmd.status || cmd.status === 'draft' ? 'draft' : 'waitForPayment';
+        entity.invoiceStatus = !cmd.status || cmd.status === 'draft' ? 'draft' : 'confirmed';
         entity.inventoryIds = JSON.stringify(inventoryIds);
 
         entity = this.invoiceRepository.create(this._mapToData(entity));
 
         if (inventoryIds)
-            this._setToOutput(entity.id, inventoryIds);
+            this.invoiceInventoryDomainService.setInvoiceToOutput(entity.id, inventoryIds);
 
         this.eventBus.send("onInvoiceCreated", entity.id);
 
@@ -256,14 +238,14 @@ export class InvoiceDomainService {
         if (errors.length > 0)
             throw  new ValidationException(errors);
 
-        let inventoryIds = this._createOutput(entity);
+        let inventoryIds = this.invoiceInventoryDomainService.control(entity);
 
         if (inventoryIds)
-            this._setToOutput(entity.id, inventoryIds);
+            this.invoiceInventoryDomainService.setInvoiceToOutput(entity.id, inventoryIds);
 
         let data = {
             inventoryIds: JSON.stringify(inventoryIds),
-            invoiceStatus: 'waitForPayment'
+            invoiceStatus: 'confirmed'
         };
 
         this.invoiceRepository.update(id, data);
@@ -272,11 +254,12 @@ export class InvoiceDomainService {
     }
 
     update(id, cmd) {
+
         let inventoryIds;
 
         const invoice = this.invoiceRepository.findById(id);
 
-        if (invoice.invoiceStatus !== 'draft')
+        if (invoice.invoiceStatus === 'fixed')
             throw new ValidationException(['فاکتور جاری قابل ویرایش نمیباشد']);
 
         let entity = this.mapToEntity(cmd),
@@ -285,14 +268,13 @@ export class InvoiceDomainService {
         if (errors.length > 0)
             throw new ValidationException(errors);
 
-        if (cmd.status && cmd.status !== 'draft')
-            inventoryIds = this._createOutput(entity);
+        inventoryIds = this.invoiceInventoryDomainService.control(entity);
 
         if (inventoryIds)
-            this._setToOutput(id, inventoryIds);
+            this.invoiceInventoryDomainService.setInvoiceToOutput(id, inventoryIds);
 
         entity.inventoryIds = JSON.stringify(inventoryIds);
-        entity.invoiceStatus = cmd.status !== 'draft' ? 'waitForPayment' : 'draft';
+        entity.invoiceStatus = cmd.status !== 'draft' ? 'confirmed' : 'draft';
 
         this.invoiceRepository.updateBatch(id, this._mapToData(entity));
 

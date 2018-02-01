@@ -99,10 +99,11 @@ export default class invoiceListControllerBase {
                     canShow: current => current.status == 'draft'
                 },
                 {
+                    name: 'edit',
                     title: translate('Edit'),
                     icon: 'fa fa-edit text-success fa-lg',
                     action: current => this.edit(current),
-                    canShow: current => current.status == 'draft'
+                    canShow: current => current.status === 'draft'
                 },
                 {
                     title: translate('Show'),
