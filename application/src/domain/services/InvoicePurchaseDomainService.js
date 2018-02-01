@@ -148,11 +148,12 @@ export class InvoicePurchaseDomainService {
             return [];
 
         if (Array.isArray(data))
-            return data.asEnumerable().select(e => ({key: e.key, value: e.value || 0})).toArray();
+            return data.asEnumerable().select(e => ({key: e.key, value: e.value || 0, vatIncluded: e.vatIncluded})).toArray();
 
         return Object.keys(data).asEnumerable()
             .select(key => ({
                 key,
+                vatIncluded: false,
                 value: data[key]
             }))
             .toArray();

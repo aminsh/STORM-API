@@ -9,7 +9,7 @@
         <div class="row">
             <div class="col-sm-6">
                 <h3>
-                    {{'Buyer'|translate}} : {{model.invoice.customerDisplay}}
+                    {{'Vendor'|translate}} : {{model.invoice.customerDisplay}}
                 </h3>
 
             </div>
@@ -94,6 +94,44 @@
                         <td>{{model.invoice.invoiceLines|totalSum:('$.quantity * $.unitPrice')|number}}</td>
                     </tr>
                     <tr>
+                        <td><strong>{{'Discount'+''|translate}}</strong></td>
+                        <td> {{model.invoice.invoiceLines | totalSum: ('discount') | number}}</td>
+                    </tr>
+
+
+                    <tr ng-repeat="c in model.invoice.charges">
+                        <td><strong>{{'Charge'|translate}} {{c.display}} :</strong></td>
+                        <td>{{c.value | number}}</td>
+                    </tr>
+
+                    <tr ng-show="model.invoice.charges.length > 0">
+                        <td><strong>جمع مالیات و عوارض اضافات :</strong></td>
+                        <td>{{model.invoice.chargesVat | number}}</td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>جمع کل مالیات و عوارض :</strong></td>
+                        <td>
+                            {{model.invoice.totalVat | number}}
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>{{'Total discount'|translate}}:</strong></td>
+                        <td>
+                            {{model.invoice.discount | number}}
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>جمع کل :</strong></td>
+                        <td>{{model.invoice.sumTotalPrice | number}}</td>
+                    </tr>
+                    <!--<tr>
+                        <td><strong>جمع:</strong></td>
+                        <td>{{model.invoice.invoiceLines|totalSum:('$.quantity * $.unitPrice')|number}}</td>
+                    </tr>
+                    <tr>
                         <td><strong>جمع تخفیف :</strong></td>
                         <td> {{model.invoice.invoiceLines | totalSum: ('discount') | number}}</td>
                     </tr>
@@ -108,7 +146,7 @@
                     <tr>
                         <td><strong>جمع کل :</strong></td>
                         <td>{{(model.invoice.invoiceLines | totalSum: ('($.quantity * $.unitPrice) - $.discount + $.vat')) + (model.invoice.charges | totalSum: ('value')) | number}}</td>
-                    </tr>
+                    </tr>-->
                     </tbody>
                 </table>
             </div>
