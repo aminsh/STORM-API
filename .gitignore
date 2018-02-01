@@ -43,3 +43,6 @@ jspm_packages
 /public
 /dest
 /application/dist
+
+# Others
+package-lock.json

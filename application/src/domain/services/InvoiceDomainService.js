@@ -101,7 +101,7 @@ export class InvoiceDomainService {
             sumPayments = this.paymentRepository.getBySumAmountByInvoiceId(invoice.id).sum || 0,
 
             totalPrice = invoice.invoiceLines.asEnumerable()
-                .sum(e => (e.unitPrice * e.quantity) - e.discount + e.vat);
+                .sum(e => (e.unitPrice * e.quantity) - e.discount + e.vat) - invoice.discount;
 
         if (sumPayments >= totalPrice)
             this.invoiceRepository.update(id, {isPaid: true});

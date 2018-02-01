@@ -10,6 +10,8 @@ module.exports = function (knex, options, currentFiscalPeriod, groupByFields) {
             'date',
             'month',
             'number',
+            'temporaryNumber',
+            'temporaryDate',
             'description',
             'periodId',
             'isInComplete',

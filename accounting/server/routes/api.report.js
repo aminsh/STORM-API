@@ -317,7 +317,7 @@ router.route('/product-turnover')
             req.cookies['current-period'],
             req.cookies['current-mode'],
             req.query),
-            result = await(ins.getProductTurnovers(req.query.ids, req.query.fixedType));
+            result = await(ins.getProductTurnovers(req.query.ids, req.query.fixedType, req.query.stockId));
         res.json(result);
     }))
 
@@ -327,7 +327,7 @@ router.route('/product-turnover-total')
             req.cookies['current-period'],
             req.cookies['current-mode'],
             req.query),
-            result = await(ins.getProductTurnovers(req.query.ids, req.query.fixedType));
+            result = await(ins.getProductTurnovers(req.query.ids, req.query.fixedType, req.query.stockId));
         res.json(result);
     }));
 

@@ -23,6 +23,7 @@ export default class invoiceListControllerBase {
         this.errors = [];
         this.api = api;
         this.reportParameters = reportParameters;
+        this.invoiceType = invoiceType;
 
         let urls = {
                 sales: devConstants.urls.sales.getAll(),
@@ -120,19 +121,19 @@ export default class invoiceListControllerBase {
                     title: translate('Print as official invoice'),
                     icon: 'fa fa-print text-success fa-lg',
                     action: current => this.printOfficialInvoice(current),
-                    canShow: current => current.status !== 'draft'
+                    canShow: current => current.status !== 'draft' && this.invoiceType === 'sales'
                 },
                 {
                     title: translate('Print preInvoice'),
                     icon: 'fa fa-print text-success fa-lg',
                     action: current => this.printPreInvoice(current),
-                    canShow: current => current.status === 'draft'
+                    canShow: current => current.status === 'draft' && this.invoiceType === 'sales'
                 },
                 {
                     title: translate('Print payment receipt'),
                     icon: 'fa fa-print text-success fa-lg',
                     action: current => this.printPaymentReceipt(current),
-                    canShow: current => current.status == 'paid'
+                    canShow: current => current.status == 'paid' && this.invoiceType === 'sales'
                 },
 
                 {
@@ -142,7 +143,7 @@ export default class invoiceListControllerBase {
                         this.generateJournal(current);
                         this.gridOption.refresh();
                     },
-                    canShow: current => current.status !== 'draft' && !current.journalId
+                    canShow: current => current.status !== 'draft'
                 }
             ],
             readUrl
@@ -173,7 +174,11 @@ export default class invoiceListControllerBase {
     printUnofficialInvoice(current) {
         let reportParam = {id: current.id};
 
-        this.navigate('report.print', {key: 703}, reportParam);
+        if (this.invoiceType === 'sales')
+            this.navigate('report.print', {key: 703}, reportParam);
+
+        if (this.invoiceType === 'purchase')
+            this.navigate('report.print', {key: 701}, reportParam);
     }
 
     printPreInvoice(current) {
@@ -206,14 +211,14 @@ export default class invoiceListControllerBase {
 
 
     invoiceTurnover() {
-/*        this.reportParameters.show([{name: "date"}])
-            .then(params => {
-                Object.assign(params);*/
-                this.navigate(
-                    'report.print',
-                    {key: 'sale-invoice-turnover'})
-                    //params);
-            };
+        /*        this.reportParameters.show([{name: "date"}])
+         .then(params => {
+         Object.assign(params);*/
+        this.navigate(
+            'report.print',
+            {key: 'sale-invoice-turnover'})
+        //params);
+    };
 
 
 }

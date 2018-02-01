@@ -500,6 +500,9 @@
             "name": "product"
           },
           {
+            "name":"stock"
+          },
+          {
             "name": "inventoryFixedStatus"
           }
         ]
@@ -517,6 +520,9 @@
           },
           {
             "name": "product"
+          },
+          {
+            "name":"stock"
           },
           {
             "name": "inventoryFixedStatus"

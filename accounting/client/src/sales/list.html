@@ -13,6 +13,7 @@
 
     <dev-tag-button
             ng-click="model.invoiceTurnover()"
+            ng-if="model.invoiceType === 'sales'"
             title="{{'Invoice sale turnover'| translate}}"
             style-type="primary btn-outline"
             icon="fa fa-print fa-lg"></dev-tag-button>
