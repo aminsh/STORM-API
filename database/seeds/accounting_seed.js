@@ -8,11 +8,10 @@ exports.seed = async(function (knex, Promise) {
     const invoices = await(knex.select('*').from('invoices').where('invoiceType', 'sale'));
 
     invoices.forEach(item => {
-        let updatedInvoice = {
-            invoiceStatus:
-                item.invoiceStatus === 'draft' ? undefined : 'confirmed'
-        };
 
-        await(knex('invoices').where('id', item.id).update(updatedInvoice));
+        if(item.invoiceStatus === 'draft')
+            return;
+
+        await(knex('invoices').where('id', item.id).update({invoiceStatus: 'confirmed'}));
     })
 });
