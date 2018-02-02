@@ -10,6 +10,8 @@ export class BaseRepository {
     /** @type {IState}*/
     @inject("State") state = undefined;
 
+    @inject("UnitOfWork") unitOfWork = undefined;
+
     knex = undefined;
     branchId = undefined;
 
@@ -33,7 +35,7 @@ export class BaseRepository {
     }
 
     get transaction() {
-        return new Promise(resolve => this.knex.transaction(trx => resolve(trx)));
+        return this.unitOfWork.currentTransaction;
     }
 }
 
