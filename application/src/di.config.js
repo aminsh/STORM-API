@@ -44,7 +44,9 @@ import {
     ScaleDomainService,
     SettingsDomainService,
     StockDomainService,
-    SubsidiaryLedgerAccountDomainService
+    SubsidiaryLedgerAccountDomainService,
+    InvoiceInventoryDomainService,
+    JournalInvoiceGenerationDomainService
 } from "./domain/services";
 
 import {InvoiceEventListener} from "./domain/eventHandlers/InvoiceEventListener";
@@ -102,6 +104,8 @@ container.bind("ScaleDomainService").to(ScaleDomainService);
 container.bind("SettingsDomainService").to(SettingsDomainService);
 container.bind("StockDomainService").to(StockDomainService);
 container.bind("SubsidiaryLedgerAccountDomainService").to(SubsidiaryLedgerAccountDomainService);
+container.bind("InvoiceInventoryDomainService").to(InvoiceInventoryDomainService);
+container.bind("JournalInvoiceGenerationDomainService").to(JournalInvoiceGenerationDomainService);
 
 
 container.bind("InvoiceEventListener").to(InvoiceEventListener).inRequestScope();

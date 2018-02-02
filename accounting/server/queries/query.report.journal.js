@@ -26,8 +26,8 @@ module.exports = class ReportQueryJournals extends BaseQuery {
             knex = this.knex,
             currentFiscalPeriodId = this.currentFiscalPeriodId;
 
-        let journals = `"groupJournals".number as "number", 
-            "groupJournals".date as "date",
+        let journals = `"groupJournals"."temporaryNumber" as "number", 
+            "groupJournals"."temporaryDate" as "date",
             "groupJournals".month as "journalmonth",
             "groupJournals".description as "journalsDescription",
             "groupJournals"."sumDebtor" as "debtor",
@@ -62,7 +62,7 @@ module.exports = class ReportQueryJournals extends BaseQuery {
                 groupJournals.call(this, knex,
                     options,
                     currentFiscalPeriodId,
-                    ['number','date','month','generalLedgerAccountId', 'subsidiaryLedgerAccountId', 'detailAccountId',
+                    ['temporaryNumber','temporaryDate','month','generalLedgerAccountId', 'subsidiaryLedgerAccountId', 'detailAccountId',
                         'journalStatus','description']);
             })
             .leftJoin('generalLedgerAccounts', 'groupJournals.generalLedgerAccountId', 'generalLedgerAccounts.id')
@@ -81,8 +81,8 @@ module.exports = class ReportQueryJournals extends BaseQuery {
 
         let journals = `"groupJournals".id as "journalId",
             "groupJournals"."periodId" as "journalPeriodId",
-            "groupJournals"."date" as "date",
-            "groupJournals".number as "number",
+            "groupJournals"."temporaryDate" as "date",
+            "groupJournals"."temporaryNumber" as "number",
             "groupJournals".month as "month",
             "groupJournals".description as "journalsDescription",
             "groupJournals"."sumDebtor" as "debtor",
@@ -117,7 +117,7 @@ module.exports = class ReportQueryJournals extends BaseQuery {
             subsidiaryLedgerAccounts + ',' + detailAccounts))
             .from(function () {
                 groupJournals.call(this, knex, options, currentFiscalPeriodId,
-                    ['id','periodId','number','date','month','generalLedgerAccountId', 'subsidiaryLedgerAccountId',
+                    ['id','periodId','temporaryNumber','temporaryDate','month','generalLedgerAccountId', 'subsidiaryLedgerAccountId',
                         'journalStatus','detailAccountId','description','chequeId','chequeDate','row','article']);
             })
             .leftJoin('generalLedgerAccounts', 'groupJournals.generalLedgerAccountId', 'generalLedgerAccounts.id')

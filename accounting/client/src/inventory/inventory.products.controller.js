@@ -12,8 +12,10 @@ class InventoryProductsController {
         this.getFixedStatus = devConstants.enums.getInventoryFixedStatus().data;
 
         this.filter = {
-            fixedStatus: 'all'
-        };
+            fixedStatus: 'all',
+            stockId: 'all'
+        }
+        ;
 
         this.gridOption = {
             name: 'inventoryProduct',
@@ -56,19 +58,21 @@ class InventoryProductsController {
 
     onStockChanged(item) {
         const extra = item.id === 'all' ? {} : {filter: {stockId: item.id}};
+        this.filter.stockId = item.id;
         this.$scope.$broadcast(`${this.gridOption.name}/execute-advanced-search`, extra);
     }
 
     inventoryProductsTurnover() {
         const ids = this.gridOption.getSelected(),
-            fixedType = this.filter.fixedStatus;
+            fixedType = this.filter.fixedStatus,
+            stockId = this.filter.stockId;
 
         if (ids.length === 0)
             return this.logger.error(this.translate('Select product'));
 
         this.reportParameters.show([{name: "date"}])
             .then(params => {
-                Object.assign(params, {ids: ids}, {fixedType: fixedType});
+                Object.assign(params, {ids: ids}, {fixedType: fixedType},{stockId: stockId});
                 this.navigate(
                     'report.print',
                     {key: 900},
@@ -79,16 +83,14 @@ class InventoryProductsController {
 
     inventoryProductsTurnoverTotal() {
         const ids = this.gridOption.getSelected(),
-            fixedType = this.filter.fixedStatus;
+            fixedType = this.filter.fixedStatus,
+            stockId = this.filter.stockId;
         if (ids.length === 0)
             return this.logger.error(this.translate('Select product'));
 
         this.reportParameters.show([{name: "date"}])
             .then(params => {
-                /*if (!this.gridOption.isSelectedAll)
-                    Object.assign(params, {ids: ids});
-                Object.assign(params, {fixedType: fixedType});*/
-                Object.assign(params, {ids: ids}, {fixedType: fixedType});
+                Object.assign(params, {ids: ids}, {fixedType: fixedType},{stockId: stockId});
                 this.navigate(
                     'report.print',
                     {key: 901},

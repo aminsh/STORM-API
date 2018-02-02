@@ -253,8 +253,8 @@
   },
   {
     "name": "journalGenerateForInvoice",
-    "class": "JournalDomainService",
-    "method": "generateForInvoice",
+    "class": "JournalInvoiceGenerationDomainService",
+    "method": "generate",
     "params": [
       "invoiceId"
     ],

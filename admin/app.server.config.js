@@ -24,6 +24,6 @@ app.use(async((req, res, next) => {
 
 app.get('*', (req, res) => res.render('admin.ejs',{
     version: config.version,
-    events: require("../application/events/events.json"),
-    services: require("../application/config.services.json"),
+    events: require("../application/src/config/events.json"),
+    services: require("../application/src/config/config.services.json"),
 }));

@@ -90,6 +90,7 @@ class ReturnSaleEntryController extends InvoiceEntryControllerBase {
                 this.invoice.ofInvoiceId = result.id;
                 this.invoice.detailAccountId = result.customerId;
                 this.invoice.invoiceLines = result.invoiceLines;
+                this.invoice.discount = result.discount;
 
                 this.invoice.invoiceLines.forEach(line => {
                     if (!line.productId) return;

@@ -18,7 +18,8 @@ class SaleEntryController extends InvoiceEntryControllerBase {
                 formService,
                 createPersonService,
                 productCreateService,
-                selectProductFromStockService) {
+                selectProductFromStockService,
+                confirmSavingInvoiceWithEffectsService) {
 
         super(
             $scope,
@@ -38,6 +39,8 @@ class SaleEntryController extends InvoiceEntryControllerBase {
             selectProductFromStockService);
 
         this.pageTitle = this.onEditMode ? 'Edit sale' : 'Create sale';
+
+        this.confirmSavingInvoiceWithEffectsService = confirmSavingInvoiceWithEffectsService;
 
         $scope.$watch(
             () => this.settings,
@@ -92,7 +95,7 @@ class SaleEntryController extends InvoiceEntryControllerBase {
         item.canShowStockSection = this.settings.productOutputCreationMethod === 'stockOnRequest'
             && product.productType === 'good';
 
-        if(item.canShowStockSection)
+        if (item.canShowStockSection)
             this.onShowSelectStock(item);
 
         super.onProductChanged(item, product);
@@ -115,6 +118,36 @@ class SaleEntryController extends InvoiceEntryControllerBase {
 
     canShowAddButton() {
         return true;
+    }
+
+    saveInvoice(form) {
+        let args = arguments,
+            formService = this.formService;
+
+        if (form.$invalid) {
+            formService.setDirty(form);
+            Object.keys(form).asEnumerable()
+                .where(key => key.includes('form-'))
+                .toArray()
+                .forEach(key => formService.setDirty(form[key]));
+            return;
+        }
+
+        if (!this.onEditMode || this.invoice.status === 'draft')
+            return super.saveInvoice(...args);
+
+        this.api.getCompareChangesEditingInvoice(this.invoice.id, this.invoice.invoiceLines)
+            .then(result => {
+                let haveOutput = result.output && result.output.length > 0,
+                    haveInput = result.input && result.input.length > 0;
+                if (result && (haveOutput || haveInput))
+                    return this.confirmSavingInvoiceWithEffectsService
+                        .show({effects: result, saveAction: () => super.saveInvoice(...args)});
+
+                return super.saveInvoice(...args);
+
+            });
+
     }
 }
 

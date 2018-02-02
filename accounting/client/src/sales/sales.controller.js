@@ -24,6 +24,38 @@ class SalesController extends InvoiceListControllerBase {
             'sales');
 
         this.createStateName = 'createSale';
+
+        this.gridOption.columns.unshift({
+            name: 'invoiceStatus',
+            title: translate('Fixed ?'),
+            type: 'invoiceStatus',
+            width: '120px',
+            template: `<i ng-if="item.invoiceStatus == 'Fixed'"
+                            class="fa fa-lock fa-lg"></i>`,
+            css:'text-center',
+            header:{
+                css: 'text-center'
+            }
+        });
+
+        this.gridOption.columns.push({
+            name: '',
+            title: translate('Is paid?'),
+            filterable: false,
+            sortable: false,
+            type: '',
+            template: `<i ng-if="item.sumRemainder <= 0"
+                            class="fa fa-check fa-lg text-navy"></i>`,
+            css:'text-center',
+            header:{
+                css: 'text-center'
+            }
+        });
+
+        let editActionCommand = this.gridOption.commands.asEnumerable()
+            .single(cmd => cmd.name ==='edit');
+
+        editActionCommand.canShow = current => current.status !== 'fixed';
     }
 
     edit(current) {

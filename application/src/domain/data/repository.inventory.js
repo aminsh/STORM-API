@@ -36,9 +36,13 @@ export class InventoryRepository extends BaseRepository {
     }
 
     findByInvoiceId(invoiceId, inventoryType) {
-        const ids = toResult(this.knex.select('id').from('inventories')
-            .where('invoiceId', invoiceId)
-            .where('inventoryType', inventoryType));
+        let query = this.knex.select('id').from('inventories')
+            .where('invoiceId', invoiceId);
+
+        if(inventoryType)
+            query.where('inventoryType', inventoryType);
+
+        let ids = toResult(query);
 
         if (!(ids && ids.length > 0))
             return [];
@@ -92,6 +96,7 @@ export class InventoryRepository extends BaseRepository {
     }
 
     inputMaxNumber(fiscalPeriodId, stockId, ioType) {
+
         if (!ioType)
             throw new Error('ioType is undefined');
 

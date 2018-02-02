@@ -110,14 +110,16 @@ class ReportApi {
 
     getProductTurnover(params) {
         let ids = params.products.length === 0 ? params.ids : params.products,
-            fixedType = params.fixedType ? params.fixedType : params.inventoryFixedStatuses;
-        return this.apiPromise.get(`${this.urlPrefix}/product-turnover`, {ids, fixedType})
+            fixedType = params.fixedType ? params.fixedType : params.inventoryFixedStatuses,
+            stockId = params.stockId ? [params.stockId] : params.stocks;
+        return this.apiPromise.get(`${this.urlPrefix}/product-turnover`, {ids, fixedType, stockId})
     }
 
     getProductTurnoverTotal(params) {
         let ids = params.products.length === 0 ? params.ids : params.products,
-            fixedType = params.fixedType ? params.fixedType : params.inventoryFixedStatuses;
-        return this.apiPromise.get(`${this.urlPrefix}/product-turnover-total`, {ids, fixedType})
+            fixedType = params.fixedType ? params.fixedType : params.inventoryFixedStatuses,
+            stockId = params.stockId ? [params.stockId] : params.stocks;
+        return this.apiPromise.get(`${this.urlPrefix}/product-turnover-total`, {ids, fixedType, stockId})
     }
 
     generalLedgerAccountReview(params) {

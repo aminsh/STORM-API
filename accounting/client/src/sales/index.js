@@ -14,6 +14,7 @@ import ReturnSalesController from "./returnSales.controller";
 import SaleInvoiceEntryController from './saleEntryController';
 import ReturnSaleEntryController from './returnSaleEntryController'
 import ReturnSaleViewVController from "./returnSaleViewController";
+import ConfirmSavingInvoiceWithEffectsController from "./confirmSavingInvoiceWithEffectsController"
 
 
 function sendInvoiceEmail(modalBase) {
@@ -26,6 +27,17 @@ function sendInvoiceEmail(modalBase) {
     });
 
 }
+
+function confirmSavingInvoiceWithEffectsService(modalBase) {
+
+    return modalBase({
+        controller: "confirmSavingInvoiceWithEffectsController",
+        controllerAs: 'model',
+        templateUrl: 'partials/sales/confirmSavingInvoiceWithEffectsController.html'
+    });
+
+}
+
 
 accModule
 
@@ -40,10 +52,12 @@ accModule
     .controller('returnSalesController', ReturnSalesController)
     .controller('returnSaleEntryController', ReturnSaleEntryController)
     .controller('returnSaleViewController', ReturnSaleViewVController)
+    .controller('confirmSavingInvoiceWithEffectsController', ConfirmSavingInvoiceWithEffectsController)
 
     .factory('saleApi', saleApi)
     .factory('returnSaleApi', returnSaleApi)
     .factory('sendInvoiceEmail', sendInvoiceEmail)
+    .factory('confirmSavingInvoiceWithEffectsService', confirmSavingInvoiceWithEffectsService)
 
     .config($stateProvider => {
 

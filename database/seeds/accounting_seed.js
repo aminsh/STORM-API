@@ -1,30 +1,17 @@
 "use strict";
 
 const async = require('asyncawait/async'),
-    await = require('asyncawait/await'),
-    TokenGenerator = require('../../shared/services/token.generator'),
-    tokenGenerator = new TokenGenerator();
+    await = require('asyncawait/await');
 
 exports.seed = async(function (knex, Promise) {
 
-    const branches = await(knex.select('*').from('branches'));
+    const invoices = await(knex.select('*').from('invoices').where('invoiceType', 'sale'));
 
-    let data = branches.map(item => ({
-        branchId: item.id,
-        userId: item.ownerId,
-        app: 'accounting',
-        state: 'active',
-        isOwner: true,
-        token: tokenGenerator.generate256Bit()
-    }));
+    invoices.forEach(item => {
 
-    await(knex.table('userInBranches').insert(data));
+        if(item.invoiceStatus === 'draft')
+            return;
 
-    const userInBranchesTokenIsNull = await(knex.select('id').from("userInBranches").whereNull('token'));
-
-    userInBranchesTokenIsNull.forEach(e => await(knex("userInBranches").where('id', e.id).update({token: tokenGenerator.generate256Bit()})));
-
-    let users = await(knex.select('id').from('users'));
-
-    users.forEach(item => await(knex('users').where('id', item.id).update({token: tokenGenerator.generate256Bit()})));
+        await(knex('invoices').where('id', item.id).update({invoiceStatus: 'confirmed'}));
+    })
 });
