@@ -91,22 +91,6 @@ export class InvoiceDomainService {
         return errors;
     }
 
-    /**
-     * @private
-     * @param {string} id
-     */
-    _changeStatusIfPaidIsCompleted(id) {
-
-        let invoice = this.invoiceRepository.findById(id),
-            sumPayments = this.paymentRepository.getBySumAmountByInvoiceId(invoice.id).sum || 0,
-
-            totalPrice = invoice.invoiceLines.asEnumerable()
-                .sum(e => (e.unitPrice * e.quantity) - e.discount + e.vat) - invoice.discount;
-
-        if (sumPayments >= totalPrice)
-            this.invoiceRepository.update(id, {isPaid: true});
-    }
-
     getNumber(number, persistedInvoice) {
 
         const _getNumber = () => persistedInvoice
@@ -299,8 +283,6 @@ export class InvoiceDomainService {
         const paymentIds = this.paymentDomainService.createMany(payments, 'receive');
 
         this.paymentDomainService.setInvoiceForAll(paymentIds, id);
-
-        this._changeStatusIfPaidIsCompleted(id);
 
         return paymentIds;
     }
