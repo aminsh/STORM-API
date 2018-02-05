@@ -26,6 +26,7 @@ export class BaseRepository {
     create(entity) {
         entity.id = Guid.new();
         entity.branchId = this.branchId;
+        entity.createdById = (this.state.user || {}).id;
     }
 
     modify(queryBuilder, branchId, fieldName) {
