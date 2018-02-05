@@ -12,7 +12,8 @@ const async = require('asyncawait/async'),
     /** @type {UserQuery}*/
     UserQuery = instanceOf('UserQuery'),
     parseFiscalPeriod = require('./parse.fiscalPeriod'),
-    container = require('../application/dist/di.config').container;
+    container = require('../application/dist/di.config').container,
+    knex = instanceOf('knex');
 
 
 module.exports = app;
@@ -56,7 +57,10 @@ app.use(async((req, res, next) => {
 
     parseFiscalPeriod(req);
 
-    let childContainer = container.createChild();
+    let childContainer = container.createChild(),
+        transaction = req.method.toUpperCase() !== 'GET'
+            ? await(new Promise(resolve => knex.transaction(trx => resolve(trx))))
+            : undefined;
 
     childContainer.bind("State").toConstantValue({
         branchId: req.branchId,
@@ -65,7 +69,8 @@ app.use(async((req, res, next) => {
         query: req.query,
         body: req.body,
         params: req.params,
-        originalUrl: req.originalUrl
+        originalUrl: req.originalUrl,
+        transaction
     });
 
     req.container = childContainer;

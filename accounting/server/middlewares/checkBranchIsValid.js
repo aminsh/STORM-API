@@ -1,12 +1,14 @@
 "use strict";
 
 const async = require('asyncawait/async'),
+    await = require('asyncawait/await'),
     /**
      * @type {BranchService} */
     BranchService = instanceOf('BranchService'),
 
     parseFiscalPeriod = require('../../../api/parse.fiscalPeriod'),
-    container = require('../../../application/dist/di.config').container;
+    container = require('../../../application/dist/di.config').container,
+    knex = instanceOf('knex');
 
 module.exports = async(function (req, res, next) {
 
@@ -27,9 +29,17 @@ module.exports = async(function (req, res, next) {
 
     res.cookie('current-period', req.fiscalPeriodId);
 
-    let childContainer = container.createChild();
+    let childContainer = container.createChild(),
+        transaction = req.method.toUpperCase() !== 'GET'
+            ? await(new Promise(resolve => knex.transaction(trx => resolve(trx))))
+            : undefined;
 
-    childContainer.bind("State").toConstantValue({branchId: req.branchId,fiscalPeriodId: req.fiscalPeriodId, user: req.user });
+    childContainer.bind("State").toConstantValue({
+        branchId: req.branchId,
+        fiscalPeriodId: req.fiscalPeriodId,
+        user: req.user,
+        transaction
+    });
 
     req.container = childContainer;
 

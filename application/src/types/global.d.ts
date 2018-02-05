@@ -42,7 +42,8 @@ declare class ValidationException {
 declare interface IState {
     branchId: string;
     fiscalPeriodId: string;
-    user: IUser
+    user: IUser;
+    transaction: any
 }
 
 declare interface IUser {

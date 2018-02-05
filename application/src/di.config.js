@@ -2,6 +2,7 @@ import {Container} from "inversify";
 import {CommandBus} from "./bus/CommandBus";
 import {EventBus} from "./bus/EventBus";
 import {EventHandler} from "./bus/EventHandler";
+import {UnitOfWorkImplementedByKnex} from "./core/UnitOfWorkImplementedByKnex";
 
 //import {GenericRepository} from "./domain/data/GenericRepository";
 
@@ -51,11 +52,12 @@ import {
 
 import {InvoiceEventListener} from "./domain/eventHandlers/InvoiceEventListener";
 
-const container = new Container();
+const container = new Container({ defaultScope: "Request" });
 
 container.bind("CommandBus").to(CommandBus).inRequestScope();
 container.bind("EventBus").to(EventBus).inRequestScope();
 container.bind("EventHandler").to(EventHandler).inRequestScope();
+container.bind("UnitOfWork").to(UnitOfWorkImplementedByKnex).inRequestScope();
 
 container.bind("Factory<DomainService>").toFactory(context => {
     return (name) => context.container.get(name);
@@ -81,31 +83,31 @@ container.bind("SettingsRepository").to(SettingsRepository).inRequestScope();
 container.bind("StockRepository").to(StockRepository).inRequestScope();
 container.bind("SubsidiaryLedgerAccountRepository").to(SubsidiaryLedgerAccountRepository).inRequestScope();
 
-container.bind("BankDomainService").to(BankDomainService);
-container.bind("DetailAccountDomainService").to(DetailAccountDomainService);
-container.bind("FiscalPeriodDomainService").to(FiscalPeriodDomainService);
-container.bind("FundDomainService").to(FundDomainService);
-container.bind("GeneralLedgerAccountDomainService").to(GeneralLedgerAccountDomainService);
-container.bind("InputPurchaseDomainService").to(InputPurchaseDomainService);
-container.bind("InputReturnInvoiceDomainService").to(InputReturnInvoiceDomainService);
-container.bind("InventoryControlDomainService").to(InventoryControlDomainService);
-container.bind("InventoryInputDomainService").to(InventoryInputDomainService);
-container.bind("InventoryOutputDomainService").to(InventoryOutputDomainService);
-container.bind("InvoiceDomainService").to(InvoiceDomainService);
-container.bind("InvoicePurchaseDomainService").to(InvoicePurchaseDomainService);
-container.bind("InvoiceReturnDomainService").to(InvoiceReturnDomainService);
-container.bind("JournalDomainService").to(JournalDomainService);
-container.bind("JournalGenerationTemplateDomainService").to(JournalGenerationTemplateDomainService);
-container.bind("PaymentDomainService").to(PaymentDomainService);
-container.bind("PersonDomainService").to(PersonDomainService);
-container.bind("ProductDomainService").to(ProductDomainService);
-container.bind("ProductCategoryDomainService").to(ProductCategoryDomainService);
-container.bind("ScaleDomainService").to(ScaleDomainService);
-container.bind("SettingsDomainService").to(SettingsDomainService);
-container.bind("StockDomainService").to(StockDomainService);
-container.bind("SubsidiaryLedgerAccountDomainService").to(SubsidiaryLedgerAccountDomainService);
-container.bind("InvoiceInventoryDomainService").to(InvoiceInventoryDomainService);
-container.bind("JournalInvoiceGenerationDomainService").to(JournalInvoiceGenerationDomainService);
+container.bind("BankDomainService").to(BankDomainService).inRequestScope();
+container.bind("DetailAccountDomainService").to(DetailAccountDomainService).inRequestScope();
+container.bind("FiscalPeriodDomainService").to(FiscalPeriodDomainService).inRequestScope();
+container.bind("FundDomainService").to(FundDomainService).inRequestScope();
+container.bind("GeneralLedgerAccountDomainService").to(GeneralLedgerAccountDomainService).inRequestScope();
+container.bind("InputPurchaseDomainService").to(InputPurchaseDomainService).inRequestScope();
+container.bind("InputReturnInvoiceDomainService").to(InputReturnInvoiceDomainService).inRequestScope();
+container.bind("InventoryControlDomainService").to(InventoryControlDomainService).inRequestScope();
+container.bind("InventoryInputDomainService").to(InventoryInputDomainService).inRequestScope();
+container.bind("InventoryOutputDomainService").to(InventoryOutputDomainService).inRequestScope();
+container.bind("InvoiceDomainService").to(InvoiceDomainService).inRequestScope();
+container.bind("InvoicePurchaseDomainService").to(InvoicePurchaseDomainService).inRequestScope();
+container.bind("InvoiceReturnDomainService").to(InvoiceReturnDomainService).inRequestScope();
+container.bind("JournalDomainService").to(JournalDomainService).inRequestScope();
+container.bind("JournalGenerationTemplateDomainService").to(JournalGenerationTemplateDomainService).inRequestScope();
+container.bind("PaymentDomainService").to(PaymentDomainService).inRequestScope();
+container.bind("PersonDomainService").to(PersonDomainService).inRequestScope();
+container.bind("ProductDomainService").to(ProductDomainService).inRequestScope();
+container.bind("ProductCategoryDomainService").to(ProductCategoryDomainService).inRequestScope();
+container.bind("ScaleDomainService").to(ScaleDomainService).inRequestScope();
+container.bind("SettingsDomainService").to(SettingsDomainService).inRequestScope();
+container.bind("StockDomainService").to(StockDomainService).inRequestScope();
+container.bind("SubsidiaryLedgerAccountDomainService").to(SubsidiaryLedgerAccountDomainService).inRequestScope();
+container.bind("InvoiceInventoryDomainService").to(InvoiceInventoryDomainService).inRequestScope();
+container.bind("JournalInvoiceGenerationDomainService").to(JournalInvoiceGenerationDomainService).inRequestScope();
 
 
 container.bind("InvoiceEventListener").to(InvoiceEventListener).inRequestScope();

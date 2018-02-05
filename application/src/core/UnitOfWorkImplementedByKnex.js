@@ -1,22 +1,17 @@
-import {injectable, postConstruct} from "inversify";
+import {inject, injectable, postConstruct} from "inversify";
 import toResult from "asyncawait/await";
 
 @injectable()
 export class UnitOfWorkImplementedByKnex {
 
-    currentTransaction = undefined;
-
-    @postConstruct()
-    init() {
-        let knex = instanceOf('knex');
-        this.currentTransaction = toResult(new Promise(resolve => knex.transaction(trx => resolve(trx))));
-    }
+    /**@type {IState}*/
+    @inject("State") state = undefined;
 
     commit() {
-        this.currentTransaction.commit();
+        toResult(this.state.transaction.commit());
     }
 
     rollback(error) {
-        this.currentTransaction.rollback(error);
+        toResult(this.state.transaction.rollback(error));
     }
 }
