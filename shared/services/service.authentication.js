@@ -41,6 +41,7 @@ module.exports = class {
 
     logout(req, res){
         res.clearCookie("USER-KEY");
+        res.clearCookie("BRANCH-KEY");
     }
 
     serialize() {
