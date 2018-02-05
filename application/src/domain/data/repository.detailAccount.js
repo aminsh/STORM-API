@@ -66,7 +66,9 @@ export class DetailAccountRepository extends BaseRepository {
     create(entity) {
         super.create(entity);
 
-        toResult(this.knex('detailAccounts').insert(entity));
+        toResult(this.knex('detailAccounts')
+            .transacting(this.transaction)
+            .insert(entity));
     }
 
     update(entity) {

@@ -10,7 +10,7 @@ export class JournalGenerationTemplateRepository extends BaseRepository {
     findBySourceType(sourceType) {
         return toResult(this.knex.select('*')
             .from(this.tableName)
-            .where('branchId', this.branchId)
+            .modify(this.modify, this.branchId)
             .where('sourceType', sourceType)
             .first());
     }
@@ -20,18 +20,22 @@ export class JournalGenerationTemplateRepository extends BaseRepository {
 
         entity.sourceType = sourceType;
 
-        return toResult(this.knex(this.tableName).insert(entity));
+        return toResult(this.knex(this.tableName)
+            .modify(this.modify, this.branchId)
+            .insert(entity));
     }
 
     update(sourceType, entity) {
         entity.sourceType = sourceType;
 
         toResult(this.knex(this.tableName)
-            .where('branchId', this.branchId)
+            .modify(this.modify, this.branchId)
             .where('sourceType', sourceType).update(entity));
     }
 
     remove(id) {
-        toResult(this.knex(this.tableName).where('id', id).del());
+        toResult(this.knex(this.tableName)
+            .modify(this.modify, this.branchId)
+            .where('id', id).del());
     }
 }

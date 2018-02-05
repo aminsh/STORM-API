@@ -7,7 +7,7 @@ export class StockRepository extends BaseRepository {
 
     findById(id) {
         return toResult(this.knex
-            .table('stocks')
+            .from('stocks')
             .modify(this.modify, this.branchId)
             .where('id', id)
             .first());
@@ -23,14 +23,16 @@ export class StockRepository extends BaseRepository {
 
     getDefaultStock() {
         return toResult(this.knex
-            .table('stocks')
+            .from('stocks')
             .modify(this.modify, this.branchId)
             .first());
     }
 
     create(entity) {
         super.create(entity);
-        return toResult(this.knex('stocks').insert(entity));
+        return toResult(this.knex('stocks')
+            .transacting(this.transaction)
+            .insert(entity));
     }
 
     update(id, entity) {

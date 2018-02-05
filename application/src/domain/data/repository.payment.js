@@ -7,14 +7,14 @@ export class PaymentRepository extends BaseRepository {
 
     findById(id) {
         return toResult(this.knex.select('*').table('payments')
-            .where('branchId', this.branchId)
+            .modify(this.modify, this.branchId)
             .andWhere('id', id)
             .first());
     }
 
     getBySumAmountByInvoiceId(invoiceId) {
         return toResult(this.knex.table('payments')
-            .where('branchId', this.branchId)
+            .modify(this.modify, this.branchId)
             .andWhere('invoiceId', invoiceId)
             .sum('amount')
             .first());
@@ -37,6 +37,8 @@ export class PaymentRepository extends BaseRepository {
     }
 
     update(id, entity) {
-        toResult(this.knex('payments').where('id', id).update(entity));
+        toResult(this.knex('payments').where('id', id)
+            .modify(this.modify, this.branchId)
+            .update(entity));
     }
 }

@@ -13,7 +13,9 @@ export class ScaleRepository extends BaseRepository {
 
     create(entity) {
         super.create(entity);
-        toResult(this.knex('scales').insert(entity));
+        toResult(this.knex('scales')
+            .transacting(this.transaction)
+            .insert(entity));
     }
 
     update(id, entity) {

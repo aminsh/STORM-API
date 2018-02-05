@@ -14,7 +14,9 @@ export class FiscalPeriodRepository extends BaseRepository {
 
     create(entity) {
         super.create(entity);
-        toResult(this.knex('fiscalPeriods').insert(entity));
+        toResult(this.knex('fiscalPeriods')
+            .transacting(this.transaction)
+            .insert(entity));
     }
 }
 

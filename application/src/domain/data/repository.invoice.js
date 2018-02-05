@@ -20,7 +20,7 @@ export class InvoiceRepository extends BaseRepository {
             ).from('invoices')
                 .leftJoin('invoiceLines', 'invoices.id', 'invoiceLines.invoiceId')
                 .leftJoin('detailAccounts','detailAccounts.id','invoices.detailAccountId')
-                .where('invoices.branchId', this.branchId)
+                .modify(this.modify, this.branchId, 'invoices.branchId')
                 .andWhere('invoices.id', id));
 
         let first = data[0];
@@ -78,7 +78,9 @@ export class InvoiceRepository extends BaseRepository {
     }
 
     findInvoiceLinesByInvoiceId(id) {
-        return toResult(this.knex.table('invoiceLines').where('invoiceId', id));
+        return toResult(this.knex.table('invoiceLines')
+            .modify(this.modify, this.branchId)
+            .where('invoiceId', id));
     }
 
     maxNumber(invoiceType) {
@@ -106,7 +108,7 @@ export class InvoiceRepository extends BaseRepository {
 
     create(entity) {
 
-        const trx = toResult(this.transaction);
+        const trx = this.transaction;
 
         try {
             let lines = entity.invoiceLines;
@@ -131,13 +133,15 @@ export class InvoiceRepository extends BaseRepository {
     }
 
     update(id, entity) {
-        toResult(this.knex('invoices').where('id', id).update(entity));
+        toResult(this.knex('invoices')
+            .transacting(this.transaction)
+            .where('id', id).update(entity));
     }
 
     updateBatch(id, entity) {
         this.entity = entity;
 
-        let trx = toResult(this.transaction);
+        let trx = this.transaction;
 
         try {
             let lines = this.entity.invoiceLines;
@@ -160,7 +164,9 @@ export class InvoiceRepository extends BaseRepository {
     }
 
     remove(id) {
-        return toResult(this.knex('invoices').where('id', id).del());
+        return toResult(this.knex('invoices')
+            .modify(this.modify, this.branchId)
+            .where('id', id).del());
     }
 
     createInvoice(entity, trx) {

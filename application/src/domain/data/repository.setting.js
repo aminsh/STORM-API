@@ -12,12 +12,14 @@ export class SettingsRepository extends BaseRepository {
     }
 
     update(entity) {
-        return toResult(this.knex('settings').where('branchId', this.branchId).update(entity));
+        return toResult(this.knex('settings')
+            .modify(this.modify, this.branchId)
+            .update(entity));
     }
 
     get() {
         return toResult(this.knex.table('settings')
-            .where('branchId', this.branchId)
+            .modify(this.modify, this.branchId)
             .first());
     }
 

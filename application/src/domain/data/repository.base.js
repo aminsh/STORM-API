@@ -10,8 +10,6 @@ export class BaseRepository {
     /** @type {IState}*/
     @inject("State") state = undefined;
 
-    @inject("UnitOfWork") unitOfWork = undefined;
-
     knex = undefined;
     branchId = undefined;
 
@@ -30,12 +28,14 @@ export class BaseRepository {
         entity.branchId = this.branchId;
     }
 
-    modify(queryBuilder, branchId) {
-        queryBuilder.where('branchId', branchId);
+    modify(queryBuilder, branchId, fieldName) {
+        queryBuilder
+            .transacting(this.transaction)
+            .where(fieldName || 'branchId', branchId);
     }
 
     get transaction() {
-        return this.unitOfWork.currentTransaction;
+        return this.state.transaction;
     }
 }
 

@@ -14,7 +14,9 @@ export class ProductCategoryRepository extends BaseRepository {
 
     create(entity) {
         super.create(entity);
-        toResult(this.knex('productCategories').insert(entity));
+        toResult(this.knex('productCategories')
+            .transacting(this.transaction)
+            .insert(entity));
     }
 
     update(id, entity) {

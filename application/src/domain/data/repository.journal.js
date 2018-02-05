@@ -29,7 +29,7 @@ export class JournalRepository extends BaseRepository {
             .first());
 
         journal.journalLines = toResult(this.knex.select('*').from('journalLines')
-            .where('branchId', this.branchId)
+            .modify(this.modify, this.branchId)
             .where('journalId', id));
 
         return journal;
@@ -52,7 +52,9 @@ export class JournalRepository extends BaseRepository {
     create(entity) {
         super.create(entity);
 
-        toResult(this.knex('journals').insert(entity));
+        toResult(this.knex('journals')
+            .transacting(this.transaction)
+            .insert(entity));
 
         return entity.id;
     }
@@ -67,6 +69,7 @@ export class JournalRepository extends BaseRepository {
     remove(id) {
         return toResult(this.knex('journals')
             .modify(this.modify, this.branchId)
+            .transacting(this.transaction)
             .where('id', id)
             .del());
     }
@@ -90,7 +93,7 @@ export class JournalRepository extends BaseRepository {
                     .where('journalId', id)
                     .first()).remainder;
 
-            isInComplete = remainder != 0;
+            isInComplete = remainder !== 0;
         } else {
             isInComplete = true;
         }
@@ -134,14 +137,16 @@ export class JournalRepository extends BaseRepository {
 
             addedTags.forEach(t => super.create(t));
 
-            toResult(knex('journalTags').insert(addedTags));
+            toResult(knex('journalTags')
+                .transacting(this.transaction)
+                .insert(addedTags));
         }
     }
 
     batchCreate(journalLines, journal) {
         super.create(journal);
 
-        const trx = toResult(this.transaction),
+        const trx = this.transaction,
             knex = this.knex;
 
         try {
@@ -173,7 +178,9 @@ export class JournalRepository extends BaseRepository {
     }
 
     _updateLines(id, lines, trx) {
-        let persistedLines = toResult(this.knex.table('journalLines').where('journalId', id)),
+        let persistedLines = toResult(this.knex.table('journalLines')
+                .modify(this.modify, this.branchId)
+                .where('journalId', id)),
 
             shouldDeletedLines = persistedLines.asEnumerable()
                 .where(e => !lines.asEnumerable().any(p => p.id === e.id))
@@ -208,7 +215,7 @@ export class JournalRepository extends BaseRepository {
 
     batchUpdate(id, journal) {
         const knex = this.knex,
-            trx = toResult(this.transaction);
+            trx = this.transaction;
 
         try {
 
@@ -216,7 +223,7 @@ export class JournalRepository extends BaseRepository {
             delete journal.journalLines;
 
             toResult(knex('journals')
-                .transacting(trx)
+                .modify(this.modify, this.branchId)
                 .where('id', id)
                 .update(journal));
 

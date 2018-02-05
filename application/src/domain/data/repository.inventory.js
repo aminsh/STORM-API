@@ -21,7 +21,7 @@ export class InventoryRepository extends BaseRepository {
 
         let query = this.knex.select('id')
             .from('inventories')
-            .where('branchId', this.branchId)
+            .modify(this.modify, this.branchId)
             .where('fiscalPeriodId', fiscalPeriodId)
             .where('inventoryType', 'input')
             .where('ioType', 'inputFirst')
@@ -37,9 +37,10 @@ export class InventoryRepository extends BaseRepository {
 
     findByInvoiceId(invoiceId, inventoryType) {
         let query = this.knex.select('id').from('inventories')
+            .modify(this.modify, this.branchId)
             .where('invoiceId', invoiceId);
 
-        if(inventoryType)
+        if (inventoryType)
             query.where('inventoryType', inventoryType);
 
         let ids = toResult(query);
@@ -64,7 +65,7 @@ export class InventoryRepository extends BaseRepository {
                      end) * "inventoryLines"."quantity") as "countOfProduct"`))
                     .from('inventories')
                     .leftJoin('inventoryLines', 'inventories.id', 'inventoryLines.inventoryId')
-                    .where('inventories.branchId', branchId)
+                    .modify(this.modify, branchId, 'inventories.branchId')
 
                     /* TODO this control is disabled temporarily .where('fixedQuantity', true)*/
 
@@ -83,7 +84,7 @@ export class InventoryRepository extends BaseRepository {
 
         let query = this.knex.select('inventoryLines.*', 'inventories.inventoryType', 'inventories.ioType').from('inventories')
             .leftJoin('inventoryLines', 'inventories.id', 'inventoryLines.inventoryId')
-            .where('inventoryLines.branchId', this.branchId)
+            .modify(this.modify, branchId, 'inventories.branchId')
             .andWhere('fiscalPeriodId', fiscalPeriodId)
             .andWhere('productId', productId)
             .andWhere('stockId', stockId)
@@ -135,7 +136,7 @@ export class InventoryRepository extends BaseRepository {
     }
 
     create(entity) {
-        const trx = toResult(this.transaction);
+        const trx = this.transaction;
 
         try {
             let lines = entity.inventoryLines;
@@ -161,12 +162,14 @@ export class InventoryRepository extends BaseRepository {
     }
 
     update(id, entity) {
-        return toResult(this.knex('inventories').where('id', id).update(entity));
+        return toResult(this.knex('inventories')
+            .transacting(this.transaction)
+            .where('id', id).update(entity));
     }
 
     updateBatch(id, entity) {
 
-        const trx = toResult(this.transaction);
+        const trx = this.transaction;
 
         try {
             let lines = entity.inventoryLines;
@@ -190,7 +193,7 @@ export class InventoryRepository extends BaseRepository {
 
     updateLines(lines) {
 
-        const trx = toResult(this.transaction);
+        const trx = this.transaction;
 
         try {
             lines.forEach(e => toResult(this.knex('inventoryLines').transacting(trx).where('id', e.id).update(e)));
@@ -206,7 +209,9 @@ export class InventoryRepository extends BaseRepository {
     }
 
     remove(id) {
-        return toResult(this.knex('inventories').where('id', id).del());
+        return toResult(this.knex('inventories')
+            .transacting(this.transaction)
+            .where('id', id).del());
     }
 
     createInventory(entity, trx) {

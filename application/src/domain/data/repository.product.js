@@ -60,7 +60,9 @@ export class ProductRepository extends BaseRepository {
         else
             super.create(entity);
 
-        return toResult(this.knex('products').insert(entity));
+        return toResult(this.knex('products')
+            .transacting(this.transaction)
+            .insert(entity));
     }
 
     update(id, entity) {
@@ -78,6 +80,7 @@ export class ProductRepository extends BaseRepository {
     isExistsCategory(categoryId){
         return toResult(this.knex.select('id')
             .from('products')
+            .modify(this.modify, this.branchId)
             .where('categoryId', categoryId)
             .first())
     }
@@ -85,6 +88,7 @@ export class ProductRepository extends BaseRepository {
     isExistsScale(scaleId){
         return toResult(this.knex.select('id')
             .from('products')
+            .modify(this.modify, this.branchId)
             .where('scaleId', scaleId)
             .first())
     }
