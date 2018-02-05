@@ -20,16 +20,16 @@
         <div class="feed-element"
              ng-repeat="item in model.branches">
             <div class="row">
-                <div class="col-md-3">
+                <div class="col-md-3 ph+++ so-align-center" >
                     <img alt="image"
                          class="center-block"
                          ng-src="{{item.logo}}"
                          preload-image
                          default-image="/public/images/business.png"
                          fallback-image="/public/images/business.png"
-                         style="height: 100px;max-width: 200px">
+                         style="display: inline-block;vertical-align: center;max-width: 100%;height: auto;">
                 </div>
-                <div class="col-md-6 text-right" >
+                <div class="col-md-5 text-right" >
                     <strong>{{item.name}}</strong>
                     <span ng-show="item.status !== 'active'" class="label label-danger">{{'It`s not active'|translate}}</span>
                     <br>
@@ -42,23 +42,49 @@
                     </p>
 
                 </div>
-                <div class="col-md-3">
-                    <dev-tag-button
+                <div class="col-md-4" style="text-align: right;position: relative;" >
+
+                    <a style="display: inline-block;"
+                       class="btn btn-primary mb+"
+                       ng-if="item.status === 'active'"
+                       ng-click="model.select(item)"
+                       ng-disabled="false"
+                       is-waiting="isSaving"
+                       title="{{'Enter' | translate}}" ><!--ng-disabled="isSaving"-->
+                        <span>
+                            <i class="fa fa-sign-in fa-lg" ></i> {{'Enter' | translate}}
+                        </span>
+                    </a>
+
+                    <a style="display: inline-block;max-width: 100%;position: relative;"
+                       class="btn btn-danger"
+                       ng-if="!item.isOwner"
+                       ng-click="model.remove(item)"
+                       title="{{'Remove me from this branch'|translate}}" ><!--ng-disabled="isSaving"-->
+                        <span>
+                            <i class="fa fa-user-times" ></i> {{'Remove me from this branch'|translate}}
+                        </span>
+                    </a>
+
+                    <!--<dev-tag-button
+                            style="display: inline-block;"
                             ng-if="item.status === 'active'"
                             ng-click="model.select(item)"
                             icon="fa fa-sign-in fa-lg"
                             ng-disabled="isSaving"
                             is-waiting="isSaving"
-                            style-type="primary"
+                            style-type="primary mb+"
                             title="{{'Enter' | translate}}"
-                            ng-disabled="false"></dev-tag-button>
+                            ng-disabled="false"></dev-tag-button>-->
 
-                    <dev-tag-button
-                            style="text-align: right"
+                    <!--<dev-tag-button
+                            style="display: inline-block;max-width: 100%;position: relative;"
                             ng-if="!item.isOwner"
                             ng-click="model.remove(item)"
-                            style-type="white btn-xs"
-                            title="{{'Remove me from this branch'|translate}}"></dev-tag-button>
+                            icon="fa fa-user-times"
+                            style-type="danger"
+                            title="{{'Remove me from this branch'|translate}}" ></dev-tag-button>-->
+
                 </div>
 
             </div>

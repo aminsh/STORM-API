@@ -11,7 +11,10 @@ const taskGroups = [
         tasks: [
             {
                 name: "build-template",
-                globs: ["./accounting/client/partials/**/*.*"]
+                globs: [
+                    "./accounting/client/partials/**/*.*",
+                    "./accounting/client/src/**/*.html",
+                ]
             },
             {
                 name: "build-js",

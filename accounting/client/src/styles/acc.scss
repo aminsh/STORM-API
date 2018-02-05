@@ -31,6 +31,7 @@ $propValues: (
         "disp-block": "block",
         "vert-align-middle": "middle"
 );
+@import "../../../../shared/styles/general.components/classes.spacing";
 
 @import "loadingbar.start";
 @import "bootstrap-sass-directional/assets/stylesheets/bootstrap";
