@@ -1,3 +1,9 @@
+.so-grid-container{
+  .dropdown-menu{
+    max-height: 120px !important;
+    @include overflow-y(#{"auto !important"});
+  }
+}
 
 .command-cell{
   padding: 2px !important;

@@ -30,17 +30,7 @@ $dir: rtl;
 @import "stimulsoft.designer.office2013.whitegreen";
 @import "font-awesome/scss/font-awesome";
 
-@import "@dev-storm/so-sass-requirements/index";
-@import "general.components/fonts";
-@import "general.components/animate";
-@import "general.components/classes";
-// @import "mdi/css/materialdesignicons.min.css";
-// @import "../../vendors/storm-lumx/css/lumx.scss";
-@import "./resources/colors";
-@import "help";
-@import "inspina.style";
-@import "./resources/materializecss/materializecss";
-
+@import "@dev-storm/so-sass-requirements/index.scss";
 $propNames: (
         "align-left": "text-align",
         "align-right": "text-align",
@@ -59,6 +49,14 @@ $propValues: (
         "disp-block": "block",
         "vert-align-middle": "middle"
 );
+
+@import "general.components/fonts";
+@import "general.components/animate";
+@import "general.components/classes";
+@import "../../vendors/storm-lumx/css/lumx.scss";
+@import "help";
+@import "inspina.style";
+@import "./resources/materializecss/materializecss";
 
 // For Each Defined Color
 @each $key , $val in $color-map {
@@ -90,5 +88,4 @@ body{
   width: 100%;
   min-height: 100vh;
   font-family: $font-family;
-  direction: rtl;
 }

@@ -122,6 +122,7 @@
     "yargs": "^7.0.2"
   },
   "devDependencies": {
+    "@dev-storm/so-sass-requirements": "^1.0.8",
     "babel-cli": "^6.26.0",
     "babel-plugin-inline-json": "^1.2.2",
     "babel-plugin-syntax-async-functions": "^6.1.4",
