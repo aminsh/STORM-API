@@ -1,7 +1,6 @@
 "use strict";
 
 const tables = [
-    'detailAccountsCategories',
     'detailAccounts',
     'dimensionCategories',
     'dimensions',
@@ -9,19 +8,18 @@ const tables = [
     'generalLedgerAccounts',
     'journalLines',
     'journalTemplates',
-    'journals',
     'journalGenerationTemplates',
     'subsidiaryLedgerAccounts',
     'tags',
     'products',
     'productCategories',
     'scales',
+    'stocks',
     'invoices',
     'invoiceLines',
     'inventories',
     'inventoryLines',
     'payments'
-
 ];
 exports.up = function(knex, Promise) {
     return Promise.all(
