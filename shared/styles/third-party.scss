@@ -30,7 +30,6 @@ body{
   // max-height: 100vh;
   @include overflow-x(hidden);
   @include overflow-y(auto);
-  border-bottom: 2px solid $color-cyan-green;
   background-color: white;
   @include border-radius();
   @include anim(fadeInUp ease 1s);

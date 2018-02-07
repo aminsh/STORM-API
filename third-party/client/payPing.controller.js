@@ -20,6 +20,8 @@ export default class PayPingController{
             username: ""
         };
 
+        $("#payping-username").focus();
+
     }
 
     send(form){
