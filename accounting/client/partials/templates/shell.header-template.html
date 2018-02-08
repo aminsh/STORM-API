@@ -42,10 +42,11 @@
                 <div class="feed-element">
                     <a ui-sref="branches">{{'Branches management'|translate}}</a>
                 </div>
-                <div class="feed-element pointer pv+"
+                <div class="feed-element pointer pv+ so-top-left-branches-dropdown-item"
                      style="margin: 0;"
                      ng-click="selectBranch(item)"
-                     ng-repeat="item in branches|filter: {status: 'active'}" >
+                     ng-repeat="item in branches|filter: {status: 'active'}"
+                     ng-class="{ 'so-top-left-branches-dropdown-current-item': item.id === branch.id }" >
                     <div class="row ph+" >
                         <div class="col-md-3">
 
