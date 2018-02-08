@@ -18,7 +18,8 @@ class PurchaseEntryController extends InvoiceEntryController {
                 formService,
                 createPersonService,
                 productCreateService,
-                selectProductFromStockService) {
+                selectProductFromStockService,
+                confirmWindowClosing) {
 
         super(
             $scope,
@@ -35,7 +36,8 @@ class PurchaseEntryController extends InvoiceEntryController {
             formService,
             createPersonService,
             productCreateService,
-            selectProductFromStockService);
+            selectProductFromStockService,
+            confirmWindowClosing);
 
         this.pageTitle = this.onEditMode ? 'Edit purchase' : 'Create purchase';
         this.isPurchase = true;
@@ -133,6 +135,7 @@ class PurchaseEntryController extends InvoiceEntryController {
     }
 
     goAfterSave() {
+        super.goAfterSave();
         this.$state.go('inventory.purchases');
     }
 

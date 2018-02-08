@@ -1,7 +1,8 @@
 import accModule from "../acc.module";
 
-function detailAccountUpdateModalController($scope, $uibModalInstance, formService, detailAccountApi, logger, data, devConstants, $rootScope) {
-    "use strict";
+function detailAccountUpdateModalController($scope, $uibModalInstance, formService, detailAccountApi, logger, data, devConstants, $rootScope, confirmWindowClosing) {
+
+    confirmWindowClosing.activate();
 
     let id = data.id;
 
@@ -39,12 +40,16 @@ function detailAccountUpdateModalController($scope, $uibModalInstance, formServi
                 $rootScope.$broadcast('onDetailAccountChanged');
                 logger.success();
                 $uibModalInstance.close(result);
+                confirmWindowClosing.activate();
             })
             .catch((errors) => $scope.errors = errors)
             .finally(() => $scope.isSaving = false);
     };
 
-    $scope.close = () => $uibModalInstance.dismiss();
+    $scope.close = () => {
+        $uibModalInstance.dismiss();
+        confirmWindowClosing.activate();
+    };
 }
 
 function detailAccountUpdateModalService(modalBase) {

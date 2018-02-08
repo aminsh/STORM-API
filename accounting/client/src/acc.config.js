@@ -87,7 +87,7 @@ import "./directives/uploader";
 import button from "./directives/button";
 import "./directives/combobox";
 import "./directives/uiSelectCombobox";
-import {content, heading, footer, body} from "./directives/content";
+import {body, content, footer, heading} from "./directives/content";
 import "./directives/datepicker";
 import "./directives/toolbar";
 import "./directives/numeric";
@@ -118,7 +118,6 @@ import fileBrowserButton from './directives/fileBrowserButton';
 import autocomplete from "./directives/autocomplelete";
 import radio from "./directives/radio";
 import combo from "./directives/combobox";
-
 //filter
 import "./filters/amount";
 import totalSum from "./filters/total";
@@ -139,6 +138,7 @@ import Promise from "./services/promise";
 import formService from './services/formService';
 import FileService from './services/fileService';
 import exportToExcel from "./services/exportToExcel";
+import ConfirmWindowClosing from "./services/confirmWindowClosing";
 
 import "./journal";
 import "./report";
@@ -157,7 +157,6 @@ import "./bankAndFund";
 import "./detailAccount";
 import "./journalTemplateGeneration";
 import "./settings";
-
 //factory
 import saleApi from "./sales/saleApi";
 // Configs
@@ -215,6 +214,7 @@ accModule
     .service('userApi', UserApi)
     .service('formService', formService)
     .service('fileService', FileService)
+    .service('confirmWindowClosing', ConfirmWindowClosing)
 
     .factory('navigate', routeNavigatorService)
     .factory('apiPromise', apiPromise)

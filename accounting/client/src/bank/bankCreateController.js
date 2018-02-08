@@ -1,5 +1,15 @@
 export default class bankCreateController {
-    constructor($scope, $rootScope, $uibModalInstance, formService, bankApi, logger, $state) {
+    constructor($scope,
+                $rootScope,
+                $uibModalInstance,
+                formService,
+                bankApi,
+                logger,
+                $state,
+                confirmWindowClosing) {
+
+        confirmWindowClosing.activate();
+        this.confirmWindowClosing = confirmWindowClosing;
 
         this.$scope = $scope;
         this.$rootScope = $rootScope;
@@ -23,7 +33,7 @@ export default class bankCreateController {
 
         this.id = $state.params.id;
 
-        if (this.id != undefined)
+        if (this.id !== undefined)
             this.editMode = true;
 
         if (this.editMode) {
@@ -51,6 +61,7 @@ export default class bankCreateController {
                     logger.success();
                     this.$rootScope.$emit('onBankChanged');
                     this.$scope.$close(result);
+                    this.confirmWindowClosing.deactivate();
                 })
                 .catch(err => this.errors = err)
                 .finally(() => this.isSaving = false);
@@ -60,6 +71,7 @@ export default class bankCreateController {
                     logger.success();
                     this.$rootScope.$emit('onBankChanged');
                     this.close();
+                    this.confirmWindowClosing.deactivate();
                 })
                 .catch(err => this.errors = err)
                 .finally(() => this.isSaving = false);
@@ -69,6 +81,7 @@ export default class bankCreateController {
     }
 
     close() {
-        this.$uibModalInstance.dismiss()
+        this.$uibModalInstance.dismiss();
+        this.confirmWindowClosing.deactivate();
     }
 }

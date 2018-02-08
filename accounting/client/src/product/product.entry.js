@@ -12,7 +12,11 @@ export default class ProductEntryController {
                 productCategoryApi,
                 inventoryApi,
                 prompt,
-                translate) {
+                translate,
+                confirmWindowClosing) {
+
+        this.confirmWindowClosing = confirmWindowClosing;
+        this.confirmWindowClosing.activate();
 
         this.$scope = $scope;
         this.$rootScope = $rootScope;
@@ -75,6 +79,7 @@ export default class ProductEntryController {
 
         promise
             .then(result => {
+                this.confirmWindowClosing.deactivate();
                 this.$rootScope.$broadcast('onProductChanged');
 
                 this.id = this.id ? this.id : result.id;
@@ -144,6 +149,7 @@ export default class ProductEntryController {
 
     close() {
         this.$scope.$dismiss();
+        this.confirmWindowClosing.deactivate();
     }
 
     onCategoryChanged(category) {

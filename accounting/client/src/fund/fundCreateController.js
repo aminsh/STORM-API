@@ -1,5 +1,8 @@
 export default class peopleCreateController {
-    constructor($scope, $rootScope, $uibModalInstance, formService, fundApi, logger, $state) {
+    constructor($scope, $rootScope, $uibModalInstance, formService, fundApi, logger, $state, confirmWindowClosing) {
+
+        this.confirmWindowClosing = confirmWindowClosing;
+        this.confirmWindowClosing.activate();
 
         this.$scope = $scope;
         this.$rootScope = $rootScope;
@@ -47,6 +50,7 @@ export default class peopleCreateController {
 
                     this.$rootScope.$emit('onFundChanged');
                     this.$scope.$close();
+                    this.confirmWindowClosing.deactivate();
 
                 })
                 .catch(err => this.errors = err)
@@ -58,6 +62,7 @@ export default class peopleCreateController {
 
                     this.$rootScope.$emit('onFundChanged');
                     this.$scope.$close();
+                    this.confirmWindowClosing.deactivate();
                 })
                 .catch(err => this.errors = err)
                 .finally(() => this.isSaving = false);
@@ -67,6 +72,7 @@ export default class peopleCreateController {
     }
 
     close() {
-        this.$uibModalInstance.dismiss()
+        this.$uibModalInstance.dismiss();
+        this.confirmWindowClosing.deactivate();
     }
 }

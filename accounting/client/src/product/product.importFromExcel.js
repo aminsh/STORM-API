@@ -7,7 +7,11 @@ class ProductImportFromExcelController {
                 confirm,
                 productApi,
                 promise,
-                translate) {
+                translate,
+                confirmWindowClosing) {
+
+        this.confirmWindowClosing = confirmWindowClosing;
+        this.confirmWindowClosing.activate();
 
         this.$scope = $scope;
         this.logger = logger;
@@ -119,7 +123,10 @@ class ProductImportFromExcelController {
                         .toArray();
 
                     this.productApi.createBatch({products: correctData, stockId: this.stockId})
-                        .then(() => this.$scope.$close());
+                        .then(() => {
+                            this.$scope.$close();
+                            this.confirmWindowClosing.deactivate();
+                        });
                 })
         }
     }
@@ -135,6 +142,7 @@ class ProductImportFromExcelController {
 
     close() {
         this.$scope.$dismiss();
+        this.confirmWindowClosing.deactivate();
     }
 }
 

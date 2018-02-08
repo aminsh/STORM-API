@@ -15,7 +15,13 @@ export default class InvoiceEntryControllerBase {
                 formService,
                 createPersonService,
                 productCreateService,
-                selectProductFromStockService) {
+                selectProductFromStockService,
+                confirmWindowClosing) {
+
+        $scope.$on('$destroy', () => this.confirmWindowClosing.deactivate());
+
+        this.confirmWindowClosing = confirmWindowClosing;
+        this.confirmWindowClosing.activate();
 
         settingsApi.get().then(settings => this.settings = settings);
         this.api = api;
@@ -51,7 +57,7 @@ export default class InvoiceEntryControllerBase {
                 sumRemainder: null,
                 sumTotalPrice: null,
                 number: null,
-                discount:0,
+                discount: 0,
                 date: localStorage.getItem('today'),
                 description: '',
                 invoiceLines: [],
@@ -165,7 +171,7 @@ export default class InvoiceEntryControllerBase {
 
     saveInvoice(form, status) {
 
-        if(this.isSaving)
+        if (this.isSaving)
             return;
 
         let logger = this.logger,
@@ -208,7 +214,7 @@ export default class InvoiceEntryControllerBase {
     }
 
     goAfterSave() {
-        throw new Error('This method is not implemented');
+        this.confirmWindowClosing.deactivate();
     }
 
     print() {

@@ -10,8 +10,13 @@ class JournalGenerationTemplateEntryController {
                 formService,
                 translate,
                 logger,
-                $sce,
-                settingsApi) {
+                settingsApi,
+                confirmWindowClosing) {
+
+        $scope.$on('$destroy', () => this.confirmWindowClosing.deactivate());
+
+        this.confirmWindowClosing = confirmWindowClosing;
+        this.confirmWindowClosing.activate();
 
         this.journalGenerationTemplateApi = journalGenerationTemplateApi;
         this.formService = formService;

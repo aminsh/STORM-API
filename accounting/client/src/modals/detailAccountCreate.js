@@ -7,8 +7,10 @@ function detailAccountCreateModalController($scope,
                                             detailAccountApi,
                                             detailAccountCategoryApi,
                                             logger,
-                                            devConstants) {
-    "use strict";
+                                            devConstants,
+                                            confirmWindowClosing) {
+
+    confirmWindowClosing.activate();
 
     $scope.errors = [];
     $scope.personType = devConstants.enums.PersonType().data;
@@ -58,13 +60,16 @@ function detailAccountCreateModalController($scope,
                 logger.success();
                 $rootScope.$broadcast('onDetailAccountChanged');
                 $uibModalInstance.close(result);
-
+                confirmWindowClosing.deactivate();
             })
             .catch((errors) => $scope.errors = errors)
             .finally(() => $scope.isSaving = false);
     };
 
-    $scope.close = () => $uibModalInstance.dismiss();
+    $scope.close = () => {
+        $uibModalInstance.dismiss();
+        confirmWindowClosing.deactivate();
+    };
 }
 
 function detailAccountCreateModalService(modalBase) {

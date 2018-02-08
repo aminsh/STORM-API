@@ -19,7 +19,8 @@ class SaleEntryController extends InvoiceEntryControllerBase {
                 createPersonService,
                 productCreateService,
                 selectProductFromStockService,
-                confirmSavingInvoiceWithEffectsService) {
+                confirmSavingInvoiceWithEffectsService,
+                confirmWindowClosing) {
 
         super(
             $scope,
@@ -36,7 +37,8 @@ class SaleEntryController extends InvoiceEntryControllerBase {
             formService,
             createPersonService,
             productCreateService,
-            selectProductFromStockService);
+            selectProductFromStockService,
+            confirmWindowClosing);
 
         this.pageTitle = this.onEditMode ? 'Edit sale' : 'Create sale';
 
@@ -103,6 +105,8 @@ class SaleEntryController extends InvoiceEntryControllerBase {
 
 
     goAfterSave() {
+        super.goAfterSave();
+
         this.$state.go('sale.sales');
     }
 
