@@ -14,9 +14,9 @@ import "angular-sanitize";
 import "angular-resource";
 
 // [START] Storm Lumx Dependencies
-import "moment";
+/*import "moment";
 import "velocity-animate";
-import "storm-lumx";
+import "storm-lumx";*/
 // [-END-] Storm Lumx Dependencies
 
 import apiPromise from "../accounting/client/src/services/apiPromise";
@@ -45,8 +45,7 @@ let thirdPartyModule = angular.module('thirdParty.module', [
         'ngResource',
         'ngSanitize',
         'ui.router',
-        'pascalprecht.translate',
-        'lumx'
+        'pascalprecht.translate'
     ]),
     devConstants = {
         urls: {

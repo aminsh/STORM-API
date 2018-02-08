@@ -5,24 +5,35 @@ const express = require('express'),
     async = require('asyncawait/async'),
     await = require('asyncawait/await'),
     branchThirdPartyRepository = instanceOf('branchThirdParty.repository'),
-    branchThirdPartyQuery = instanceOf('branchThirdParty.query');
+    branchThirdPartyQuery = instanceOf('branchThirdParty.query'),
+    branchRepository = instanceOf("branch.repository");
 
+router.use(async(function (req, res, next) {
+    const branchKey = req.cookies['BRANCH-KEY'];
+
+    if (!branchKey)
+        return res.status(404).send("Not found");
+
+    let result = branchRepository.findByToken(branchKey);
+
+    if (!result)
+        return res.status(404).send("Not found");
+
+    req.branchId = result.branchId;
+
+    next();
+}));
 router.route('/')
     .get(async((req, res) => {
 
-        let branchId,
-            thirdPartyList;
+        let branchId = req.branchId,
+        thirdPartyList;
 
-        if(!(req.cookies['branch-id']))
-            return res.status(400).send("Sorry, You have no branch id !");
-
-        branchId = req.cookies['branch-id'];
-
-        try{
+        try {
 
             thirdPartyList = await(branchThirdPartyQuery.getSelected(branchId));
 
-        } catch(err) {
+        } catch (err) {
 
             console.log(err);
             return res.json({isValid: false, error: ["Your branch ID is wrong"]});
@@ -35,13 +46,13 @@ router.route('/')
 
 router.route('/:key')
     .get(async((req, res) => {
-        const branchId = req.cookies['branch-id'],
+        const branchId = req.branchId,
             entity = await(branchThirdPartyRepository.get(branchId, req.params.key));
 
         res.json(entity);
     }))
     .post(async((req, res) => {
-        const branchId = req.cookies['branch-id'],
+        const branchId = req.branchId,
             key = req.params.key;
 
         try {
@@ -62,18 +73,15 @@ router.route('/:key')
     }))
     .delete(async((req, res) => {
 
-        let branchId = req.cookies['branch-id'],
+        let branchId = req.branchId,
             key = req.params.key;
 
-        if(!(branchId))
-            return res.status(400).send("Sorry, You have no branch id !");
-
-        try{
+        try {
 
             await(branchThirdPartyRepository.remove(branchId, key));
             return res.json({isValid: true});
 
-        } catch(err) {
+        } catch (err) {
 
             console.log(err);
             res.json({isValid: false, error: ["The Branch ID or The Third-party key is wrong"]});

@@ -79,6 +79,32 @@ const taskGroups = [
             }
         ]
     },
+    // Third-Party Group
+    {
+        name: "thirdParty",
+        tasks: [
+            {
+                name: "build-template",
+                globs: ["./third-party/client/**/*.html"]
+            },
+            {
+                name: "build-js",
+                globs: [
+                    "./third-party/app.client.config.js",
+                    "./third-party/client/*.js"
+                ]
+            },
+            {
+                name: "build-sass",
+                globs: [
+                    "./shared/styles/third-party.scss",
+                    "./shared/styles/_general.scss",
+                    "./shared/styles/general.components/**/*.*",
+                    "./shared/styles/resources/**/*.*"
+                ]
+            }
+        ]
+    }
 ];
 
 let allTaskNames = [];

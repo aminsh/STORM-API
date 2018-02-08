@@ -1,28 +1,24 @@
 <h1 class="third-party-title" ><img src="/public/images/payping-logo.png" /></h1>
 <div class="third-party-container-s" >
     <form name="form" novalidate >
-        <div class="form-group" >
-            <lx-text-field lx-label="نام کاربری پی پینگ:"
-                           lx-focus="true"
-                           lx-error="!(model.payping.username) && form.username.$dirty" >
-                <input id="payping-username"
-                       type="text"
-                       class="form-control"
-                       dir="ltr"
-                       name="username"
-                       ng-model="model.payping.username" />
-            </lx-text-field>
+        <div class="form-group"
+             ng-class="{ 'has-error': !(model.payping.username) && form.username.$dirty }" >
+            <label for="payping-username" >نام کاربری پی پینگ:</label>
+            <input id="payping-username"
+                   type="text"
+                   class="form-control"
+                   dir="ltr"
+                   name="username"
+                   ng-model="model.payping.username" />
             <span class="text-danger" ng-show="!(model.payping.username) && form.username.$dirty" >وارد کردن نام کاربری الزامیست</span>
         </div>
         <div class="form-group" >
             <button type="button"
                     ng-click="model.send(form)"
-                    class="btn btn--raised btn--m btn--green"
-                    lx-ripple >فعال سازی</button>
+                    class="btn btn-md btn-primary" >فعال سازی</button>
             <button ui-sref="third-party"
                     type="button"
-                    class="btn btn--flat btn--m btn--blue"
-                    lx-ripple >بازگشت</button>
+                    class="btn btn-md btn-default" >بازگشت</button>
         </div>
     </form>
 </div>
