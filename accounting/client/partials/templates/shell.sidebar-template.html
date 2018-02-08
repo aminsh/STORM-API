@@ -17,14 +17,14 @@
             </li>
 
             <li>
-                <a href="/acc">
+                <a href="/acc" title="{{'Home'|translate}}" >
                     <i class="fa fa-home fa-lg"></i>
                     <span class="nav-label">{{'Home'|translate}}</span>
                 </a>
             </li>
 
             <li ng-repeat="item in items" ng-if="canShowMenu(item)">
-                <a href="{{item.url}}">
+                <a href="{{item.url}}" title="{{item.title}}" >
                     <i class="{{item.icon}} fa-lg"></i>
                     <span class="nav-label">{{item.title}}</span>
                     <span class="fa arrow" ng-if="item.children.length"></span>
@@ -41,7 +41,7 @@
 
             </li>
             <li class="special_link" ng-if="canShowMenu({})">
-                <a href="{{window.location.origin + '/third-party'}}" target="_blank">
+                <a href="{{window.location.origin + '/third-party'}}" target="_blank" title="افزونه های استورم">
                     <i class="fa fa-puzzle-piece fa-lg"></i>
                     <span class="nav-label">افزونه های استورم</span>
                 </a>
