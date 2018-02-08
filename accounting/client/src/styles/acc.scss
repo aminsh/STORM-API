@@ -13,6 +13,7 @@ $dir: rtl;
 
 // @import "resources/mixins";
 @import "@dev-storm/so-sass-requirements/index.scss";
+@import "menu-btn";
 $propNames: (
         "align-left": "text-align",
         "align-right": "text-align",
