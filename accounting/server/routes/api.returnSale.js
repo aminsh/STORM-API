@@ -76,8 +76,26 @@ router.route('/:id')
 
 router.route('/:id/pay')
     .post(async((req, res) => {
+        let id = req.params.id,
+            payments = req.body,
+            paymentIds;
 
+        try {
 
+            paymentIds = req.container.get("CommandBus").send("invoiceReturnPay", [req.params.id, req.body]);
+
+            res.json({isValid: true});
+
+        }
+        catch (e) {
+            res.json({isValid: false, errors: e.errors})
+        }
+
+        payments.forEach((item, i) => item.id = paymentIds[i]);
+
+        let paymentsAndJournalLines = req.container.get("CommandBus").send("journalGenerateForReturnInvoicePayments", [payments, id]);
+
+        req.container.get("CommandBus").send("paymentSetJournalLineForAll", [paymentsAndJournalLines]);
     }));
 
 router.route('/:id/payments').get(async((req, res) => {

@@ -254,6 +254,8 @@ export class InvoiceReturnDomainService {
         this.paymentDomainService.setInvoiceForAll(paymentIds, id);
 
         this._changeStatusIfPaidIsCompleted(id);
+
+        return paymentIds;
     }
 
     setJournal(id, journalId) {
