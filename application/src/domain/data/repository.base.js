@@ -10,14 +10,19 @@ export class BaseRepository {
     /** @type {IState}*/
     @inject("State") state = undefined;
 
-    knex = undefined;
+    _knex = undefined;
     branchId = undefined;
 
     @postConstruct()
     onLoad() {
-        this.knex = knex;
+        this._knex = knex;
         this.branchId = this.state.branchId;
     }
+
+    get knex(){
+        return this.transaction;
+    }
+
 
     constructor(branchId) {
 
@@ -30,9 +35,7 @@ export class BaseRepository {
     }
 
     modify(queryBuilder, branchId, fieldName) {
-        queryBuilder
-            .transacting(this.transaction)
-            .where(fieldName || 'branchId', branchId);
+        queryBuilder.where(fieldName || 'branchId', branchId);
     }
 
     get transaction() {

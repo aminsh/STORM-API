@@ -8,6 +8,7 @@ export class InvoiceRepository extends BaseRepository {
     findById(id) {
 
         let knex = this.knex,
+
             data = toResult(this.knex.select(
                 'invoices.*', 'invoiceLines.*',
                 knex.raw('"invoices"."description" as "invoiceDescription"'),
@@ -110,26 +111,17 @@ export class InvoiceRepository extends BaseRepository {
 
         const trx = this.transaction;
 
-        try {
-            let lines = entity.invoiceLines;
+        let lines = entity.invoiceLines;
 
-            delete  entity.invoiceLines;
+        delete  entity.invoiceLines;
 
-            toResult(this.createInvoice(entity, trx));
+        toResult(this.createInvoice(entity, trx));
 
-            toResult(this.createInvoiceLines(lines, entity.id, trx));
+        toResult(this.createInvoiceLines(lines, entity.id, trx));
 
-            entity.invoiceLines = lines;
+        entity.invoiceLines = lines;
 
-            trx.commit();
-
-            return entity;
-        }
-        catch (e) {
-            trx.rollback();
-
-            throw new Error(e);
-        }
+        return entity;
     }
 
     update(id, entity) {
@@ -143,24 +135,15 @@ export class InvoiceRepository extends BaseRepository {
 
         let trx = this.transaction;
 
-        try {
-            let lines = this.entity.invoiceLines;
+        let lines = this.entity.invoiceLines;
 
-            delete  entity.invoiceLines;
+        delete  entity.invoiceLines;
 
-            toResult(this.updateInvoice(id, entity, trx));
+        toResult(this.updateInvoice(id, entity, trx));
 
-            toResult(this.updateInvoiceLines(id, lines, trx));
+        toResult(this.updateInvoiceLines(id, lines, trx));
 
-            entity.invoiceLines = lines;
-
-            trx.commit();
-        }
-        catch (e){
-            trx.rollback();
-
-            throw new Error(e);
-        }
+        entity.invoiceLines = lines;
     }
 
     remove(id) {

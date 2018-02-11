@@ -29,16 +29,12 @@ module.exports = async(function (req, res, next) {
 
     res.cookie('current-period', req.fiscalPeriodId);
 
-    let childContainer = container.createChild(),
-        transaction = req.method.toUpperCase() !== 'GET'
-            ? await(new Promise(resolve => knex.transaction(trx => resolve(trx))))
-            : undefined;
+    let childContainer = container.createChild();
 
     childContainer.bind("State").toConstantValue({
         branchId: req.branchId,
         fiscalPeriodId: req.fiscalPeriodId,
-        user: req.user,
-        transaction
+        user: req.user
     });
 
     req.container = childContainer;
