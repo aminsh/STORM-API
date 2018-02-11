@@ -320,7 +320,7 @@ export class JournalDomainService {
         return this.create(journal);
     }
 
-    generatePaymentForInvoice(payments, invoiceId) {
+    generateInvoiceReceive(payments, invoiceId) {
 
         let invoice,
             subLedger = this.subsidiaryLedgerAccountDomainService;
@@ -429,6 +429,130 @@ export class JournalDomainService {
         }
 
         function getDetailAccountForDebtor(p) {
+            if (p.paymentType == 'cash')
+                return p.fundId;
+
+            if (p.paymentType == 'receipt')
+                return p.bankId;
+
+            if (p.paymentType == 'cheque')
+                return invoice.detailAccountId;
+
+            if (p.paymentType === 'person')
+                return p.personId;
+        }
+    }
+
+    generateInvoicePayment(payments, invoiceId) {
+        let invoice,
+            subLedger = this.subsidiaryLedgerAccountDomainService;
+
+        if (!invoiceId)
+            throw new Error('invoiceId is empty');
+
+        invoice = this.invoiceRepository.findById(invoiceId);
+
+        if (!invoice)
+            throw new ValidationException(['فاکتور وجود ندارد']);
+
+        if (!this.subsidiaryLedgerAccountDomainService.receivableAccount)
+            throw new ValidationException(['حسابهای دریافتنی در معین های پیش فرض وجود ندارد']);
+
+
+        let invoiceTypeDisplay = Enums.InvoiceType().getDisplay(invoice.invoiceType),
+            description = invoice
+                ? 'پرداخت وجه بابت فاکتور {0} شماره {1}'.format(invoiceTypeDisplay, invoice.number)
+                : 'پرداخت وجه',
+
+            payableAccount = this.subsidiaryLedgerAccountDomainService.payableAccount,
+            journalLines = [];
+
+        if (!payableAccount)
+            throw new ValidationException('حسابهای پرداختنی در معین ها پیش فرض تعریف نشده');
+
+        payments.forEach(p => {
+            let article = getArticle(p),
+                errors = checkIsValid(p);
+
+            if (errors.length > 0)
+                throw new ValidationException(errors);
+
+            journalLines.push({
+                generalLedgerAccountId: payableAccount.generalLedgerAccountId,
+                subsidiaryLedgerAccountId: payableAccount.id,
+                detailAccountId: invoice.detailAccountId,
+                article,
+                debtor: p.amount,
+                creditor: 0
+            });
+
+            let account = getSubLedger(p),
+                id = Guid.new();
+
+            journalLines.push({
+                id,
+                generalLedgerAccountId: account.generalLedgerAccountId,
+                subsidiaryLedgerAccountId: account.id,
+                detailAccountId: getDetailAccount(p),
+                article,
+                debtor: 0,
+                creditor: p.amount
+            });
+
+            p.journalLineId = id;
+        });
+
+
+        this.create({description, journalLines});
+
+        return payments;
+
+        function checkIsValid(p) {
+            let errors = [];
+
+            if (p.paymentType === 'cash' && !subLedger.fundAccount)
+                errors.push('حساب معین صندوق در حسابهای معین پیش فرض تعریف نشده');
+
+            if (p.paymentType === 'receipt' && !subLedger.bankAccount)
+                errors.push('حساب معین بانک در حسابهای معین پیش فرض تعریف نشده');
+
+            if (p.paymentType === 'cheque' && !subLedger.payableDocument)
+                errors.push('حساب معین اسناد پرداختنی در حسابهای معین پیش فرض تعریف نشده');
+
+            return [];
+        }
+
+
+        function getArticle(p) {
+            if (p.paymentType === 'cash')
+                return 'پرداخت نقدی';
+
+            if (p.paymentType === 'receipt')
+                return 'پرداخت طی فیش / رسید';
+
+            if (p.paymentType === 'cheque')
+                return 'دریافت چک به شماره {0} سررسید {1} بانک {2} شعبه {3}'
+                    .format(p.number, p.date, p.bankName, p.bankBranch);
+
+            if (p.paymentType === 'person')
+                return 'دریافت توسط شخص';
+        }
+
+        function getSubLedger(p) {
+            if (p.paymentType === 'cash')
+                return subLedger.fundAccount;
+
+            if (p.paymentType === 'receipt')
+                return subLedger.bankAccount;
+
+            if (p.paymentType === 'cheque')
+                return subLedger.payableDocument;
+
+            if (p.paymentType === 'person')
+                return subLedger.payableAccount;
+        }
+
+        function getDetailAccount(p) {
             if (p.paymentType == 'cash')
                 return p.fundId;
 
