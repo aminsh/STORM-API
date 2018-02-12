@@ -1,5 +1,8 @@
 export default class StockController {
-    constructor($scope, $rootScope ,formService, stockApi, logger,data) {
+    constructor($scope, $rootScope ,formService, stockApi, logger,data, confirmWindowClosing) {
+
+        this.confirmWindowClosing = confirmWindowClosing;
+        this.confirmWindowClosing.activate();
 
         this.$scope = $scope;
         this.$rootScope = $rootScope;
@@ -40,6 +43,7 @@ export default class StockController {
 
                     this.$rootScope.$emit('onStockChanged');
                     this.$scope.$close();
+                    this.confirmWindowClosing.deactivate();
 
                 })
                 .catch(err => this.errors = err)
@@ -51,6 +55,7 @@ export default class StockController {
 
                     this.$rootScope.$emit('onStockChanged');
                     this.$scope.$close();
+                    this.confirmWindowClosing.deactivate();
                 })
                 .catch(err => this.errors = err)
                 .finally(() => this.isSaving = false);
@@ -60,6 +65,7 @@ export default class StockController {
     }
 
     close() {
-        this.$scope.$dismiss()
+        this.$scope.$dismiss();
+        this.confirmWindowClosing.deactivate();
     }
 }

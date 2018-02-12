@@ -10,7 +10,8 @@ class InputEntryController extends InventoryEntryControllerBase {
                 inventoryApi,
                 formService,
                 devConstants,
-                productCreateService) {
+                productCreateService,
+                confirmWindowClosing) {
         super(
             $scope,
             $state,
@@ -20,7 +21,8 @@ class InputEntryController extends InventoryEntryControllerBase {
             inventoryApi,
             formService,
             devConstants,
-            productCreateService);
+            productCreateService,
+            confirmWindowClosing);
 
         this.ioTypes = this.ioTypes.asEnumerable()
             .where(item => item.key.includes('input'))
@@ -67,6 +69,7 @@ class InputEntryController extends InventoryEntryControllerBase {
             .then(() => {
                 this.logger.success();
                 this.$state.go('inventory.inputs');
+                this.confirmWindowClosing.deactivate();
             })
             .catch(errors => this.errors = errors)
             .finally(() => this.isSaving = false);

@@ -8,7 +8,12 @@ class InventoryEntryControllerBase {
                 inventoryApi,
                 formService,
                 devConstants,
-                productCreateService) {
+                productCreateService, confirmWindowClosing) {
+
+        $scope.$on('$destroy', () => this.confirmWindowClosing.deactivate());
+
+        this.confirmWindowClosing = confirmWindowClosing;
+        this.confirmWindowClosing.activate();
 
         this.$scope = $scope;
         this.$state = $state;

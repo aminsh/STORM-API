@@ -1,7 +1,7 @@
 import {inject, injectable} from "inversify"
 import serviceConfig from "../config/config.services.json";
 import {ApplicationServiceLogger} from "../ApplicationLogger";
-
+import toResult from "asyncawait/await";
 
 @injectable()
 export class CommandBus {
@@ -34,6 +34,8 @@ export class CommandBus {
         console.log(`apiService => ${serviceId} started ...`);
 
         try {
+
+            this.unitOfWork.init();
 
             let instance = this.factory(service.class),
                 result = instance[service.method](...parameters);

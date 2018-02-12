@@ -149,32 +149,21 @@ export class JournalRepository extends BaseRepository {
         const trx = this.transaction,
             knex = this.knex;
 
-        try {
+        toResult(knex('journals').transacting(trx).insert(journal));
 
-            toResult(knex('journals').transacting(trx).insert(journal));
+        journalLines.forEach(line => {
 
-            journalLines.forEach(line => {
+            if(line.id)
+                line.branchId = this.branchId;
+            else
+                super.create(line);
 
-                if(line.id)
-                    line.branchId = this.branchId;
-                else
-                    super.create(line);
+            line.journalId = journal.id;
+        });
 
-                line.journalId = journal.id;
-            });
+        toResult(knex('journalLines').transacting(trx).insert(journalLines));
 
-            toResult(knex('journalLines').transacting(trx).insert(journalLines));
-
-            trx.commit();
-
-            return journal.id;
-        }
-        catch (e) {
-
-            trx.rollback();
-
-            throw new Error(e);
-        }
+        return journal.id;
     }
 
     _updateLines(id, lines, trx) {
@@ -217,25 +206,15 @@ export class JournalRepository extends BaseRepository {
         const knex = this.knex,
             trx = this.transaction;
 
-        try {
+        let lines = journal.journalLines;
+        delete journal.journalLines;
 
-            let lines = journal.journalLines;
-            delete journal.journalLines;
+        toResult(knex('journals')
+            .modify(this.modify, this.branchId)
+            .where('id', id)
+            .update(journal));
 
-            toResult(knex('journals')
-                .modify(this.modify, this.branchId)
-                .where('id', id)
-                .update(journal));
-
-            this._updateLines(id, lines, trx);
-
-            trx.commit();
-        }
-        catch (e) {
-            trx.rollback();
-
-            throw new Error(e);
-        }
+        this._updateLines(id, lines, trx);
     }
 
     isExistsDetailAccount(detailAccountId) {

@@ -236,6 +236,8 @@ export class InvoicePurchaseDomainService {
         this.paymentDomainService.setInvoiceForAll(paymentIds, id);
 
         this._changeStatusIfPaidIsCompleted(id);
+
+        return paymentIds;
     }
 
     setJournal(id, journalId) {

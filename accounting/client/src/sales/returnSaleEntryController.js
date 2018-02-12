@@ -20,7 +20,8 @@ class ReturnSaleEntryController extends InvoiceEntryControllerBase {
                 formService,
                 createPersonService,
                 productCreateService,
-                selectProductFromStockService) {
+                selectProductFromStockService,
+                confirmWindowClosing) {
 
         super(
             $scope,
@@ -37,7 +38,8 @@ class ReturnSaleEntryController extends InvoiceEntryControllerBase {
             formService,
             createPersonService,
             productCreateService,
-            selectProductFromStockService);
+            selectProductFromStockService,
+            confirmWindowClosing);
 
         this.pageTitle = this.onEditMode ? 'Edit return sale' : 'Create return sale';
 
@@ -103,6 +105,8 @@ class ReturnSaleEntryController extends InvoiceEntryControllerBase {
     }
 
     goAfterSave() {
+        super.goAfterSave();
+
         this.$state.go('sale.returnSales');
     }
 

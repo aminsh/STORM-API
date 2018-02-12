@@ -57,6 +57,7 @@ export class InventoryRepository extends BaseRepository {
 
         let knex = this.knex,
             branchId = this.branchId,
+            modify=this.modify,
 
             query = toResult(knex.from(function () {
                 this.select(knex.raw(`((case
@@ -65,7 +66,7 @@ export class InventoryRepository extends BaseRepository {
                      end) * "inventoryLines"."quantity") as "countOfProduct"`))
                     .from('inventories')
                     .leftJoin('inventoryLines', 'inventories.id', 'inventoryLines.inventoryId')
-                    .modify(this.modify, branchId, 'inventories.branchId')
+                    .modify(modify, branchId, 'inventories.branchId')
 
                     /* TODO this control is disabled temporarily .where('fixedQuantity', true)*/
 
@@ -138,27 +139,18 @@ export class InventoryRepository extends BaseRepository {
     create(entity) {
         const trx = this.transaction;
 
-        try {
-            let lines = entity.inventoryLines;
+        let lines = entity.inventoryLines;
 
-            delete  entity.inventoryLines;
+        delete  entity.inventoryLines;
 
-            toResult(this.createInventory(entity, trx));
+        toResult(this.createInventory(entity, trx));
 
-            if (lines && lines.length > 0)
-                toResult(this.createInventoryLines(lines, entity.id, trx));
+        if (lines && lines.length > 0)
+            toResult(this.createInventoryLines(lines, entity.id, trx));
 
-            entity.inventoryLines = lines;
+        entity.inventoryLines = lines;
 
-            trx.commit();
-
-            return entity;
-        }
-        catch (e) {
-            trx.rollback();
-
-            throw new Error(e);
-        }
+        return entity;
     }
 
     update(id, entity) {
@@ -171,41 +163,22 @@ export class InventoryRepository extends BaseRepository {
 
         const trx = this.transaction;
 
-        try {
-            let lines = entity.inventoryLines;
+        let lines = entity.inventoryLines;
 
-            delete  entity.inventoryLines;
+        delete  entity.inventoryLines;
 
-            toResult(this.updateInventory(id, entity, trx));
+        toResult(this.updateInventory(id, entity, trx));
 
-            toResult(this.updateInventoryLines(id, lines, trx));
+        toResult(this.updateInventoryLines(id, lines, trx));
 
-            entity.inventoryLines = lines;
-
-            trx.commit();
-        }
-        catch (e) {
-            trx.rollback();
-
-            throw new Error(e);
-        }
+        entity.inventoryLines = lines;
     }
 
     updateLines(lines) {
 
         const trx = this.transaction;
 
-        try {
-            lines.forEach(e => toResult(this.knex('inventoryLines').transacting(trx).where('id', e.id).update(e)));
-
-            trx.commit();
-        }
-        catch (e) {
-            trx.rollback();
-
-            throw new Error(e);
-        }
-
+        lines.forEach(e => toResult(this.knex('inventoryLines').transacting(trx).where('id', e.id).update(e)));
     }
 
     remove(id) {

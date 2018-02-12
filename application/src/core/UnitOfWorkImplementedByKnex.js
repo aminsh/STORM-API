@@ -7,6 +7,10 @@ export class UnitOfWorkImplementedByKnex {
     /**@type {IState}*/
     @inject("State") state = undefined;
 
+    init(){
+        this.state.transaction = toResult(new Promise(resolve => instanceOf('knex').transaction(trx => resolve(trx))));
+    }
+
     commit() {
         toResult(this.state.transaction.commit());
     }

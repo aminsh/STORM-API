@@ -38,9 +38,7 @@ export class GeneralLedgerAccountRepository extends BaseRepository {
         else
             super.create(entity);
 
-        toResult(this.knex('generalLedgerAccounts')
-            .transacting(this.transaction)
-            .insert(entity));
+        toResult(this.knex('generalLedgerAccounts').insert(entity));
     }
 
     update(entity) {

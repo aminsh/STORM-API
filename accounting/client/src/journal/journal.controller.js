@@ -23,7 +23,13 @@ export default class {
                 journalAttachImageService,
                 createAccountService,
                 journalLineAdditionalInformation,
-                formService) {
+                formService,
+                confirmWindowClosing) {
+
+        $scope.$on('$destroy', () => this.confirmWindowClosing.deactivate());
+
+        this.confirmWindowClosing = confirmWindowClosing;
+        this.confirmWindowClosing.activate();
 
         $scope.$emit('close-sidebar');
 
@@ -205,6 +211,7 @@ export default class {
                     logger.success();
                     journal.id = result.id;
                     this.$state.go('^.list');
+                    this.confirmWindowClosing.deactivate();
                 })
                 .catch(err => {
                     this.errors = err;
@@ -215,6 +222,7 @@ export default class {
             .then(() => {
                 logger.success();
                 this.$state.go('^.list');
+                this.confirmWindowClosing.deactivate();
             })
             .catch(err => {
                 console.log(err);

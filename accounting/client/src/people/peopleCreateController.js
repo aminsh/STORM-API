@@ -5,7 +5,10 @@ export default class peopleCreateController {
                 peopleApi,
                 logger,
                 devConstants,
-                $state, data) {
+                $state, data, confirmWindowClosing) {
+
+        this.confirmWindowClosing = confirmWindowClosing;
+        this.confirmWindowClosing.activate();
 
         this.$scope = $scope;
         this.$rootScope = $rootScope;
@@ -79,6 +82,7 @@ export default class peopleCreateController {
                     logger.success();
                     this.$rootScope.$broadcast('onPersonChanged');
                     this.$scope.$close();
+                    this.confirmWindowClosing.deactivate();
                 })
                 .catch(err => this.errors = err)
                 .finally(() => this.isSaving = false);
@@ -88,6 +92,7 @@ export default class peopleCreateController {
                     logger.success();
                     this.$rootScope.$broadcast('onPersonChanged');
                     this.$scope.$close(result);
+                    this.confirmWindowClosing.deactivate();
                 })
                 .catch(err => this.errors = err)
                 .finally(() => this.isSaving = false);
@@ -97,6 +102,7 @@ export default class peopleCreateController {
     }
 
     close() {
-        this.$uibModalInstance.dismiss()
+        this.$uibModalInstance.dismiss();
+        this.confirmWindowClosing.deactivate();
     }
 }

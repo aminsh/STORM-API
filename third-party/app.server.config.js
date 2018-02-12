@@ -26,7 +26,7 @@ app.use('/api', (req, res, next) => {
 
 app.get('*', async((req, res) => {
 
-    if(!(req.cookies['branch-id']) || !(req.isAuthenticated()))
+    if(!(req.cookies['BRANCH-KEY']))
         return res.redirect("/404");
 
     res.render('index.ejs',{

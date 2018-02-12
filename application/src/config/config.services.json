@@ -104,7 +104,7 @@
   },
   {
     "name": "invoiceReturnPay",
-    "class": "InvoiceDomainService",
+    "class": "InvoiceReturnDomainService",
     "method": "pay",
     "params": [
       "id",
@@ -263,7 +263,27 @@
   {
     "name": "journalGenerateForInvoicePayments",
     "class": "JournalDomainService",
-    "method": "generatePaymentForInvoice",
+    "method": "generateInvoiceReceive",
+    "params": [
+      "payments",
+      "invoiceId"
+    ],
+    "returns": "journalId"
+  },
+  {
+    "name": "journalGenerateForPurchaseInvoicePayments",
+    "class": "JournalDomainService",
+    "method": "generateInvoicePayment",
+    "params": [
+      "payments",
+      "invoiceId"
+    ],
+    "returns": "journalId"
+  },
+  {
+    "name": "journalGenerateForReturnInvoicePayments",
+    "class": "JournalDomainService",
+    "method": "generateInvoicePayment",
     "params": [
       "payments",
       "invoiceId"
