@@ -214,11 +214,12 @@ router.route('/:invoiceId/send-email')
 
             let html = await(render("/accounting/server/templates/send.invoice.template.ejs", {
                 invoiceUrl: link,
-                branchLogo: branch.logo,
+                branchLogo: config.url.origin + branch.logo,
                 branchName: branch.name,
                 date: invoice.date,
                 number: invoice.number,
-                detailAccountDisplay: invoice.detailAccountDisplay
+                detailAccountDisplay: invoice.detailAccountDisplay,
+                originUrl: config.url.origin
             }));
 
             await(Email.send({
