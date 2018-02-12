@@ -41,7 +41,7 @@ export default function ($rootScope,
                 return;
 
             if (!branchToken)
-                return goToChooseBranchAction();
+                return goToChooseBranchAction(event);
 
 
             if (!branch) {
@@ -52,7 +52,7 @@ export default function ($rootScope,
 
         });
 
-    function goToChooseBranchAction() {
+    function goToChooseBranchAction(event) {
         $rootScope.branch = undefined;
 
         event.preventDefault();
