@@ -229,25 +229,7 @@ export class InvoiceReturnDomainService {
         this.invoiceRepository.remove(id);
     }
 
-    createReturnSale(cmd) {
-
-        let entity = this.mapToEntity(cmd),
-            errors = this._validate(entity);
-
-        if (errors.length > 0)
-            throw new ValidationException(errors);
-
-        entity.invoiceType = 'returnPurchase';
-        entity.ofInvoiceId = cmd.ofInvoiceId;
-        entity.number = this.invoiceRepository.maxNumber('returnPurchase') + 1;
-
-        this.invoiceRepository.create(entity);
-
-        return entity.id;
-    }
-
     pay(id, payments) {
-
 
         const paymentIds = this.paymentDomainService.createMany(payments, 'pay');
 

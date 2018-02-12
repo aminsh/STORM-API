@@ -1365,7 +1365,7 @@ label.error {
   outline: none
 }
 
-.noWarp{
+.noWarp {
   white-space: nowrap;
 }
 
@@ -1374,6 +1374,10 @@ label.error {
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 100px;
+}
+
+.ltr {
+  direction: ltr;
 }
 
 

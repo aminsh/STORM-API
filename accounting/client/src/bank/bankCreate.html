@@ -27,10 +27,15 @@
 
                 <div class="form-group">
                     <label class="title1">{{'Bank Account Number'| translate}}</label>
-                    <input type="text" class="form-control input-sm"  ng-model="model.bank.bankAccountNumber" name="accountNumber" required>
+                    <input type="text" class="form-control input-sm ltr"  ng-model="model.bank.bankAccountNumber" name="accountNumber" required>
                     <div ng-messages="form.accountNumber.$error" ng-if="form.accountNumber.$dirty">
                         <label ng-message="required" class="error">{{'This field is required'|translate}}</label>
                     </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="title1">{{'Bank Account Cart Number'| translate}}</label>
+                    <input type="text" class="form-control input-sm ltr"  ng-model="model.bank.bankAccountCartNumber" name="accountCartNumber">
                 </div>
 
             </div>

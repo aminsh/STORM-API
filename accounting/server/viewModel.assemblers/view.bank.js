@@ -1,9 +1,7 @@
 "use strict";
 
-const enums = require('../../../shared/enums');
-
 function bankAssembler(entity) {
-    var viewModel = {
+    return {
         id: entity.id,
         code: entity.code,
         display: entity.display,
@@ -11,10 +9,9 @@ function bankAssembler(entity) {
         description: entity.description,
         bank: entity.bank,
         bankAccountNumber: entity.bankAccountNumber,
+        bankAccountCartNumber: entity.bankAccountCartNumber,
         bankBranch: entity.bankBranch
     };
-
-    return viewModel;
 }
 
 module.exports = bankAssembler;
