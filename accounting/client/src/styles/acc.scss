@@ -13,6 +13,7 @@ $dir: rtl;
 
 // @import "resources/mixins";
 @import "@dev-storm/so-sass-requirements/index.scss";
+@import "menu-btn";
 $propNames: (
         "align-left": "text-align",
         "align-right": "text-align",
@@ -133,7 +134,14 @@ body, h1, a,
   left: 50%;
   @include transform(translate(-50%, -50%));
 }
-
+.so-top-left-branches-dropdown-current-item{
+  background-color: lighten($color-madang,10);
+  cursor: default !important;
+}
+.so-top-left-branches-dropdown-item:not([class~="so-top-left-branches-dropdown-current-item"]):hover{
+  background-color: #f5f5f5;
+  cursor: pointer;
+}
 // [-END-] SMRSAN
 
 .button-click-menu {

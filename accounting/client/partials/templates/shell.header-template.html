@@ -1,8 +1,14 @@
 <nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
     <div class="navbar-header">
         <a ng-click="toggleSidebar()"
-           class="navbar-minimalize minimalize-styl-2 btn btn-primary hidden-sm">
-            <i class="fa fa-bars"></i>
+           class="so-toggle-sidebar-btn so-menu-btn so-menu-btn-active hidden-sm"
+           style="margin: 25px 25px 5px 25px;" >
+            <!--navbar-minimalize minimalize-styl-2-->
+            <div>
+                <div class="so-menu-btn-bars" ></div>
+                <div class="so-menu-btn-bars" ></div>
+                <div class="so-menu-btn-bars" ></div>
+            </div>
         </a>
     </div>
 
@@ -42,10 +48,11 @@
                 <div class="feed-element">
                     <a ui-sref="branches">{{'Branches management'|translate}}</a>
                 </div>
-                <div class="feed-element pointer pv+"
+                <div class="feed-element pointer pv+ so-top-left-branches-dropdown-item"
                      style="margin: 0;"
                      ng-click="selectBranch(item)"
-                     ng-repeat="item in branches|filter: {status: 'active'}" >
+                     ng-repeat="item in branches|filter: {status: 'active'}"
+                     ng-class="{ 'so-top-left-branches-dropdown-current-item': item.id === branch.id }" >
                     <div class="row ph+" >
                         <div class="col-md-3">
 
