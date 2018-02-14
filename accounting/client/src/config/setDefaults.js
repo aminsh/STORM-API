@@ -47,7 +47,7 @@ export default function ($rootScope,
             if (!branch) {
                 branchApi.getByToken(branchToken)
                     .then(branch => $rootScope.branch = branch)
-                    .catch(e => goToChooseBranchAction());
+                    .catch(e => goToChooseBranchAction(event));
             }
 
         });
