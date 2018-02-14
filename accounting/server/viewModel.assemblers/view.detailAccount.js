@@ -17,6 +17,7 @@ function detailAccountAssembler(entity) {
         province: entity.province,
         city: entity.city,
         phone: entity.phone,
+        mobile: entity.mobile,
         fax: entity.fax,
         nationalCode: entity.nationalCode,
         economicCode: entity.economicCode,
