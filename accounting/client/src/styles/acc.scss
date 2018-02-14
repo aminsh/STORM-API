@@ -162,6 +162,14 @@ body, h1, a,
   text-align: center;
   background-color: $color-dark-gray-blue;
 }
+#page-wrapper,
+#page-wrapper > .row,
+.sidebar-collapse,
+.navbar-default,
+.navbar-default .nav{
+  $trans-dur: 0.3s;
+  @include trans(#{"width ease #{$trans-dur}, margin ease #{$trans-dur}, padding ease #{$trans-dur}"});
+}
 // [-END-] SMRSAN
 
 .button-click-menu {
