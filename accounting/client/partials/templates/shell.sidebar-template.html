@@ -2,17 +2,25 @@
     <div class="sidebar-collapse">
         <ul class="nav" id="side-menu">
             <li class="nav-header">
-                <div class="dropdown profile-element"> <span>
-                            <img alt="image" class="img-circle" ng-src="{{user.image}}"
-                                 style="width: 50px;height: 50px"
-                                 preload-image
-                                 default-image="/public/images/user.png"
-                                 fallback-image="/public/images/user.png"/>
-                             </span>
+                <img class="so-sidebar-bg-logo"
+                     alt="Storm"
+                     src="/public/images/logo-grayscale.png" />
+                <div class="dropdown profile-element" style="z-index: 1;" >
+                    <span>
+                        <img alt="image"
+                             class="img-circle"
+                             ng-src="{{user.image}}"
+                             style="position: relative;width: 50px;height: 50px;"
+                             preload-image
+                             default-image="/public/images/user.png"
+                             fallback-image="/public/images/user.png"/>
+                    </span >
                     <span class="text-muted text-xs block" style="color:white">{{user.name}}</span>
                 </div>
-                <div class="logo-element text-navy">
-                    <i class="fa fa-calculator"></i>
+                <div class="logo-element" style="position: relative;" >
+                    <img style="max-width: 85%;height: auto;"
+                         alt="Storm"
+                         src="/public/images/logo-grayscale.png" />
                 </div>
             </li>
 
