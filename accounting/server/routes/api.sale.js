@@ -214,7 +214,7 @@ router.route('/:invoiceId/send-email')
 
             let html = await(render("/accounting/server/templates/send.invoice.template.ejs", {
                 invoiceUrl: link,
-                branchLogo: config.url.origin + branch.logo,
+                branchLogo: `${config.url.origin}/data/uploads/;/${branch.logo}`,
                 branchName: branch.name,
                 date: invoice.date,
                 number: invoice.number,
