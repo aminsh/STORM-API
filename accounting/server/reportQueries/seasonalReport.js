@@ -54,16 +54,14 @@ class SeasonalReport extends BaseQuery {
                 "returnInvoice"."ofInvoiceId",
                 COALESCE("returnInvoice"."returnPrice",0) as "returnPrice",
                 COALESCE("returnInvoice"."totalReturnPrice",0) as "totalReturnPrice",
-                CAST(substring("invoices"."date" from 7 for 1) as INTEGER) as "month",
-                CASE WHEN CAST(substring("invoices"."date" from 7 for 1) as INTEGER) BETWEEN 1 AND 3 THEN 1
-                     WHEN CAST(substring("invoices"."date" from 7 for 1) as INTEGER) BETWEEN 4 AND 6 THEN 2 
-                     WHEN CAST(substring("invoices"."date" from 7 for 1) as INTEGER) BETWEEN 7 AND 9 THEN 3 
-                     WHEN CAST(substring("invoices"."date" from 7 for 1) as INTEGER) BETWEEN 10 AND 12 THEN 4 END as season
+                CAST(substring("invoices"."date" from 6 for 2) as INTEGER) as "month",
+                CASE WHEN CAST(substring("invoices"."date" from 6 for 2) as INTEGER) BETWEEN 1 AND 3 THEN 1
+                     WHEN CAST(substring("invoices"."date" from 6 for 2) as INTEGER) BETWEEN 4 AND 6 THEN 2 
+                     WHEN CAST(substring("invoices"."date" from 6 for 2) as INTEGER) BETWEEN 7 AND 9 THEN 3 
+                     WHEN CAST(substring("invoices"."date" from 6 for 2) as INTEGER) BETWEEN 10 AND 12 THEN 4 END as season
                 `))
                     .from('invoiceLines')
                     .innerJoin('invoices', 'invoiceLines.invoiceId', 'invoices.id')
-                    .where('invoices.invoiceType', options.filter.invoiceType)
-                    .where('invoices.invoiceStatus', '!=', 'draft')
                     .innerJoin('products', 'products.id', 'invoiceLines.productId')
                     .innerJoin('detailAccounts', 'detailAccounts.id', 'invoices.detailAccountId')
                     .leftJoin(knex.raw(`(SELECT invoices."ofInvoiceId",
@@ -73,6 +71,8 @@ class SeasonalReport extends BaseQuery {
                       INNER JOIN invoices ON "invoiceLines"."invoiceId" = invoices."id"
                       WHERE "invoiceType" in ('returnSale','returnPurchase')) as "returnInvoice"`), 'returnInvoice.ofInvoiceId', '=', 'invoices.id')
                     .where('invoices.branchId', branchId)
+                    .where('invoices.invoiceType', options.filter.invoiceType)
+                    .where('invoices.invoiceStatus', '!=', 'draft')
                     .whereBetween('invoices.date', [options.fromMainDate, options.toDate])
                     .as('seasonal')
                     .orderBy('date', 'desc');
@@ -114,11 +114,11 @@ class SeasonalReport extends BaseQuery {
                 "invoiceType", 
                 CASE WHEN "invoiceLines".vat > 0 then 1 else 0 END as "haveVat",
                 CASE WHEN "detailAccounts"."nationalCode" is NULL then 0 else 1 END as "haveNationalCode",
-                CAST(substring("invoices"."date" from 7 for 1) as INTEGER) as "month",
-                CASE WHEN CAST(substring("invoices"."date" from 7 for 1) as INTEGER) BETWEEN 1 AND 3 THEN 1
-                     WHEN CAST(substring("invoices"."date" from 7 for 1) as INTEGER) BETWEEN 4 AND 6 THEN 2 
-                     WHEN CAST(substring("invoices"."date" from 7 for 1) as INTEGER) BETWEEN 7 AND 9 THEN 3 
-                     WHEN CAST(substring("invoices"."date" from 7 for 1) as INTEGER) BETWEEN 10 AND 12 THEN 4 END as season,
+                CAST(substring("invoices"."date" from 6 for 2) as INTEGER) as "month",
+                CASE WHEN CAST(substring("invoices"."date" from 6 for 2) as INTEGER) BETWEEN 1 AND 3 THEN 1
+                     WHEN CAST(substring("invoices"."date" from 6 for 2) as INTEGER) BETWEEN 4 AND 6 THEN 2 
+                     WHEN CAST(substring("invoices"."date" from 6 for 2) as INTEGER) BETWEEN 7 AND 9 THEN 3 
+                     WHEN CAST(substring("invoices"."date" from 6 for 2) as INTEGER) BETWEEN 10 AND 12 THEN 4 END as season,
                 COALESCE (("invoiceLines"."unitPrice" * "invoiceLines".quantity),0) AS "price",
                 COALESCE ("invoiceLines".discount,0) as discount,
                 "invoiceLines".vat as vat,
