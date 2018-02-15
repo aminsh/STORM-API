@@ -19,15 +19,17 @@ class InvoiceTurnover extends BaseQuery {
         this.options = await(this.filterConfig.getDateOptions());
     }
 
-    getAll(invoiceType) {
+    getAll() {
         let knex = this.knex,
+            option = this.options,
+            minNumber = option.filter.minNumber || option.filter.maxNumber,
+            maxNumber = option.filter.maxNumber || option.filter.minNumber,
             branchId = this.branchId,
-            options = this.options,
             baseQuery = `select coalesce(sum(value),0) from invoices as i left join json_to_recordset(i.charges) as x(key text, value int, "vatIncluded" boolean) on true where i.id = "base".id`,
             sumChargesQuery = `(${baseQuery}) + ((${baseQuery} and "vatIncluded" = true) *  
             coalesce((select (100 * line.vat) / ((line.quantity * line."unitPrice") - line.discount) from "invoiceLines" as line where "invoiceId" = "base".id and vat <> 0 limit 1), 0) /100)`,
 
-            query = await(knex.select().table(function () {
+            query = knex.select().table(function () {
                 this.select(
                     'id',
                     'number',
@@ -50,8 +52,8 @@ class InvoiceTurnover extends BaseQuery {
                             .leftJoin('invoiceLines', 'invoices.id', 'invoiceLines.invoiceId')
                             .leftJoin('detailAccounts', 'invoices.detailAccountId', 'detailAccounts.id')
                             .where('invoices.branchId', branchId)
-                            .andWhere('invoiceType', invoiceType)
-                            .whereBetween('invoices.date', [options.fromMainDate, options.toDate])
+                            .where('invoiceType','sale')
+                            .whereBetween('invoices.date', [option.fromMainDate, option.toDate])
                             .as('base');
                     }).as("group")
                     .groupBy(
@@ -66,8 +68,12 @@ class InvoiceTurnover extends BaseQuery {
                         'journalId')
                     .orderBy('number', 'desc')
 
-            }));
-        return query;
+            });
+
+        if (minNumber || maxNumber)
+            query.andWhereBetween('number', [minNumber, maxNumber]);
+
+        return await(query);
     }
 
     peopleSaleInvoiceTurnover(){

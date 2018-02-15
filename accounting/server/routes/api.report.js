@@ -22,7 +22,8 @@ const fs = require('fs'),
     BalanceSheet = require('../reportQueries/balanceSheet'),
     ProfitLossStatement = require('../reportQueries/profit.loss.statement'),
     CustomerReceipts = require('../reportQueries/customer.receipts'),
-    InvoiceTurnover = require('../queries/query.invoice');
+    InvoiceTurnover = require('../queries/query.invoice'),
+    SaleInvoice = require('../reportQueries/invoice.sale');
 
 function getReport(fileName) {
     return JSON.parse(
@@ -382,12 +383,12 @@ router.route('/customer-receipts')
 
 router.route('/sale-invoice-turnover')
     .get(async((req, res) => {
-        let ins = new InvoiceTurnover(req.branchId,
+        let ins = new SaleInvoice(req.branchId,
             req.cookies['current-period'],
             req.cookies['current-mode'],
             req.query),
-            result = await(ins.getAll(req.query.params,'sale'));
-        res.json(result.data);
+            result = await(ins.getAll());
+        res.json(result);
     }));
 
 module.exports = router;

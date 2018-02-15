@@ -9,8 +9,7 @@ export default class invoiceListControllerBase {
                 api,
                 navigate,
                 $scope,
-                invoiceType,
-                reportParameters) {
+                invoiceType) {
 
         this.confirm = confirm;
         this.translate = translate;
@@ -22,7 +21,6 @@ export default class invoiceListControllerBase {
         this.translate = translate;
         this.errors = [];
         this.api = api;
-        this.reportParameters = reportParameters;
         this.invoiceType = invoiceType;
 
         let urls = {
@@ -210,15 +208,7 @@ export default class invoiceListControllerBase {
     }
 
 
-    invoiceTurnover() {
-        /*        this.reportParameters.show([{name: "date"}])
-         .then(params => {
-         Object.assign(params);*/
-        this.navigate(
-            'report.print',
-            {key: 'sale-invoice-turnover'})
-        //params);
-    };
+
 
 
 }

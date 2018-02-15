@@ -10,7 +10,8 @@ class SalesController extends InvoiceListControllerBase {
                 $state,
                 saleApi,
                 navigate,
-                $scope) {
+                $scope,
+                reportParameters) {
 
         super(translate,
             confirm,
@@ -24,6 +25,7 @@ class SalesController extends InvoiceListControllerBase {
             'sales');
 
         this.createStateName = 'createSale';
+        this.reportParameters = reportParameters;
 
         this.gridOption.columns.unshift({
             name: 'invoiceStatus',
@@ -64,6 +66,16 @@ class SalesController extends InvoiceListControllerBase {
 
     view(current) {
         this.$state.go('viewSale', {id: current.id});
+    }
+
+    invoiceTurnover() {
+        this.reportParameters.show([{name: "date"},{ name: "number"}])
+            .then(params => {
+                this.navigate(
+                    'report.print',
+                    {key: 'sale-invoice-turnover'},
+                    params);
+            });
     }
 }
 
