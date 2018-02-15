@@ -36,7 +36,9 @@ class InvoiceTurnover extends BaseQuery {
                     'date',
                     'detailAccountId',
                     'detailAccountDisplay',
-                    'invoiceStatus',
+                    knex.raw(`CASE WHEN "invoiceStatus" = 'confirmed' THEN 'تایید شده' 
+                        WHEN "invoiceStatus" = 'fixed' THEN 'قطعی'
+                        WHEN "invoiceStatus" = 'draft' THEN 'پیش نویس' END as "invoiceStatusText"`),
                     'description',
                     'title',
                     'journalId',
@@ -73,7 +75,7 @@ class InvoiceTurnover extends BaseQuery {
         if (minNumber || maxNumber)
             query.andWhereBetween('number', [minNumber, maxNumber]);
 
-        return await(query);
+        return query;
     }
 
     peopleSaleInvoiceTurnover(){
