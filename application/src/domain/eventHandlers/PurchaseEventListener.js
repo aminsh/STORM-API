@@ -9,8 +9,8 @@ export class PurchaseEventListener {
     /**@type {InvoiceRepository}*/
     @inject("InvoiceRepository") invoiceRepository = undefined;
 
-    /**@type {ApplicationServiceRunner}*/
-    @inject("ApplicationServiceRunner") serviceRunner;
+    /**@type {CommandBus}*/
+    @inject("CommandBus") commandBus = undefined;
 
     onPurchaseCreated(invoiceId) {
         let invoice = this.invoiceRepository.findById(invoiceId),
@@ -22,15 +22,15 @@ export class PurchaseEventListener {
         if (!settings.canSaleGenerateAutomaticJournal)
             return;
 
-        this.serviceRunner.execute("journalGenerateForInvoicePurchase", [invoiceId]);
+        this.commandBus.send("journalGenerateForInvoicePurchase", [invoice.id]);
     }
 
     onPurchaseChanged(invoice) {
-        this.onPurchaseChanged(invoice);
+        this.onPurchaseCreated(invoice);
     }
 
     onPurchaseConfirmed(invoice) {
-        this.onPurchaseChanged(invoice);
+        this.onPurchaseCreated(invoice);
     }
 
     onPurchaseRemoved(invoice) {

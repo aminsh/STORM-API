@@ -141,11 +141,10 @@ export class JournalRepository extends BaseRepository {
     batchCreate(journalLines, journal) {
         super.create(journal);
 
-        const trx = this.transaction,
-            knex = this.knex;
+        const trx = this.transaction;
 
         try {
-            toResult(knex('journals').transacting(trx).insert(journal));
+            toResult(trx('journals').insert(journal));
 
             journalLines.forEach(line => {
 
@@ -157,7 +156,7 @@ export class JournalRepository extends BaseRepository {
                 line.journalId = journal.id;
             });
 
-            toResult(knex('journalLines').insert(journalLines));
+            toResult(trx('journalLines').insert(journalLines));
 
             trx.commit();
 
@@ -205,14 +204,13 @@ export class JournalRepository extends BaseRepository {
     }
 
     batchUpdate(id, journal) {
-        const knex = this.knex,
-            trx = this.transaction;
+        const trx = this.transaction;
 
         try {
             let lines = journal.journalLines;
             delete journal.journalLines;
 
-            toResult(knex('journals')
+            toResult(trx('journals')
                 .modify(this.modify, this.branchId)
                 .where('id', id)
                 .update(journal));

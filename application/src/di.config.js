@@ -48,6 +48,7 @@ import {
 } from "./domain/services";
 
 import {InvoiceEventListener} from "./domain/eventHandlers/InvoiceEventListener";
+import {PurchaseEventListener} from "./domain/eventHandlers/PurchaseEventListener";
 
 const container = new Container({ defaultScope: "Request" });
 
@@ -105,5 +106,6 @@ container.bind("InvoiceInventoryDomainService").to(InvoiceInventoryDomainService
 container.bind("JournalInvoiceGenerationDomainService").to(JournalInvoiceGenerationDomainService).inRequestScope();
 
 container.bind("InvoiceEventListener").to(InvoiceEventListener).inRequestScope();
+container.bind("PurchaseEventListener").to(PurchaseEventListener);
 
 export {container};

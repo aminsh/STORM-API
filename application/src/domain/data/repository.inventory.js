@@ -196,7 +196,16 @@ export class InventoryRepository extends BaseRepository {
 
         const trx = this.transaction;
 
-        lines.forEach(e => toResult(this.knex('inventoryLines').transacting(trx).where('id', e.id).update(e)));
+        try {
+            lines.forEach(e => toResult(trx('inventoryLines').where('id', e.id).update(e)));
+
+            trx.commit();
+        }
+        catch(e){
+            trx.rollback(e);
+
+            throw new Error(e);
+        }
     }
 
     remove(id) {
