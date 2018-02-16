@@ -33,6 +33,9 @@ export class InvoicePurchaseDomainService {
     /** @type {IState}*/
     @inject("State") state = undefined;
 
+    /** @type {EventBus}*/
+    @inject("EventBus") eventBus = undefined;
+
     @postConstruct()
     init() {
         this.settings = this.settingsRepository.get();
@@ -180,6 +183,8 @@ export class InvoicePurchaseDomainService {
         if (entity.invoiceStatus !== 'draft')
             this._setForInventoryPurchase(entity);
 
+        this.eventBus.send('onPurchaseCreated', entity.id);
+
         return entity.id;
     }
 
@@ -197,6 +202,8 @@ export class InvoicePurchaseDomainService {
         let data = {invoiceStatus: 'waitForPayment'};
 
         this.invoiceRepository.update(id, data);
+
+        this.eventBus.send('onPurchaseConfirmed', entity.id);
 
         this._setForInventoryPurchase(entity);
     }
@@ -219,6 +226,8 @@ export class InvoicePurchaseDomainService {
 
         if (entity.invoiceStatus !== 'draft')
             this._setForInventoryPurchase(entity);
+
+        this.eventBus.send('onPurchaseChanged', entity.id);
     }
 
     remove(id) {
@@ -228,6 +237,8 @@ export class InvoicePurchaseDomainService {
             throw new ValidationException(['فاکتور جاری قابل حذف نمیباشد']);
 
         this.invoiceRepository.remove(id);
+
+        this.eventBus.send('onPurchaseRemoved', id);
     }
 
     pay(id, payments) {

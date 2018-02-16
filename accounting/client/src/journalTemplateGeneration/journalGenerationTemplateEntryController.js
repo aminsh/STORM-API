@@ -4,7 +4,8 @@ _.templateSettings.interpolate = /#([\s\S]+?)#/g;
 
 class JournalGenerationTemplateEntryController {
 
-    constructor(devConstants,
+    constructor($scope,
+                devConstants,
                 journalGenerationTemplateApi,
                 $stateParams,
                 formService,

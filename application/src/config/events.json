@@ -22,5 +22,29 @@
     "method": "onInvoiceRemoved",
     "module": "invoice",
     "event": "removed"
+  },
+  {
+    "class": "PurchaseEventListener",
+    "method": "onPurchaseCreated",
+    "module": "purchase",
+    "event": "created"
+  },
+  {
+    "class": "PurchaseEventListener",
+    "method": "onPurchaseChanged",
+    "module": "purchase",
+    "event": "edited"
+  },
+  {
+    "class": "PurchaseEventListener",
+    "method": "onPurchaseConfirmed",
+    "module": "purchase",
+    "event": "confirmed"
+  },
+  {
+    "class": "PurchaseEventListener",
+    "method": "onPurchaseRemoved",
+    "module": "purchase",
+    "event": "removed"
   }
 ]
