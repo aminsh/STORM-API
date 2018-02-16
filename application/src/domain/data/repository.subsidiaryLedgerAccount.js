@@ -34,7 +34,6 @@ export class SubsidiaryLedgerAccountRepository extends BaseRepository {
             super.create(entity);
 
         toResult(this.knex('subsidiaryLedgerAccounts')
-            .transacting(this.transaction)
             .insert(entity));
     }
 

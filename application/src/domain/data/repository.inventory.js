@@ -139,39 +139,57 @@ export class InventoryRepository extends BaseRepository {
     create(entity) {
         const trx = this.transaction;
 
-        let lines = entity.inventoryLines;
+        try {
+            let lines = entity.inventoryLines;
 
-        delete  entity.inventoryLines;
+            delete  entity.inventoryLines;
 
-        toResult(this.createInventory(entity, trx));
+            toResult(this.createInventory(entity, trx));
 
-        if (lines && lines.length > 0)
-            toResult(this.createInventoryLines(lines, entity.id, trx));
+            if (lines && lines.length > 0)
+                toResult(this.createInventoryLines(lines, entity.id, trx));
 
-        entity.inventoryLines = lines;
+            entity.inventoryLines = lines;
 
-        return entity;
+            trx.commit();
+
+            return entity;
+        }
+        catch (e){
+            trx.rollback(e);
+
+            throw new Error(e);
+        }
     }
 
     update(id, entity) {
-        return toResult(this.knex('inventories')
-            .transacting(this.transaction)
-            .where('id', id).update(entity));
+        return toResult(this.knex('inventories').where('id', id).update(entity));
     }
 
     updateBatch(id, entity) {
 
         const trx = this.transaction;
 
-        let lines = entity.inventoryLines;
+        try {
 
-        delete  entity.inventoryLines;
+            let lines = entity.inventoryLines;
 
-        toResult(this.updateInventory(id, entity, trx));
+            delete  entity.inventoryLines;
 
-        toResult(this.updateInventoryLines(id, lines, trx));
+            toResult(this.updateInventory(id, entity, trx));
 
-        entity.inventoryLines = lines;
+            toResult(this.updateInventoryLines(id, lines, trx));
+
+            entity.inventoryLines = lines;
+
+            trx.commit();
+        }
+        catch (e){
+            trx.rollback(e);
+
+            throw new Error(e);
+        }
+
     }
 
     updateLines(lines) {
@@ -182,45 +200,38 @@ export class InventoryRepository extends BaseRepository {
     }
 
     remove(id) {
-        return toResult(this.knex('inventories')
-            .transacting(this.transaction)
-            .where('id', id).del());
+        return toResult(this.knex('inventories').where('id', id).del());
     }
 
-    createInventory(entity, trx) {
+    createInventory(entity, knex) {
         super.create(entity);
 
-        toResult(this.knex('inventories')
-            .transacting(trx)
-            .insert(entity));
+        toResult(knex('inventories').insert(entity));
 
         return entity;
     }
 
-    updateInventory(id, entity, trx) {
+    updateInventory(id, entity, knex) {
 
-        entity.id = toResult(this.knex('inventories')
-            .transacting(trx)
+        entity.id = toResult(knex('inventories')
             .where('id', id)
             .update(entity));
 
         return entity;
     }
 
-    createInventoryLines(lines, id, trx) {
+    createInventoryLines(lines, id, knex) {
         lines.forEach(line => {
             super.create(line);
             line.inventoryId = id;
 
         });
 
-        toResult(this.knex('inventoryLines')
-            .transacting(trx)
-            .insert(lines));
+        toResult(knex('inventoryLines').insert(lines));
     }
 
-    updateInventoryLines(id, lines, trx) {
-        let persistedLines = toResult(this.knex.table('inventoryLines').where('inventoryId', id)),
+    updateInventoryLines(id, lines, knex) {
+        let persistedLines = toResult(knex.table('inventoryLines').where('inventoryId', id)),
 
             shouldDeletedLines = persistedLines.asEnumerable()
                 .where(e => !lines.asEnumerable().any(p => p.id == e.id))
@@ -238,18 +249,14 @@ export class InventoryRepository extends BaseRepository {
                 line.inventoryId = id;
             });
 
-            toResult(this.knex('inventoryLines')
-                .transacting(trx)
-                .insert(shouldAddedLines));
+            toResult(knex('inventoryLines').insert(shouldAddedLines));
         }
 
         if (shouldDeletedLines.asEnumerable().any())
-            shouldDeletedLines.forEach(e => toResult(this.knex('inventoryLines')
-                .transacting(trx).where('id', e.id).del()));
+            shouldDeletedLines.forEach(e => toResult(knex('inventoryLines').where('id', e.id).del()));
 
         if (shouldUpdatedLines.asEnumerable().any())
-            shouldUpdatedLines.forEach(e => toResult(this.knex('inventoryLines')
-                .transacting(trx).where('id', e.id).update(e)));
+            shouldUpdatedLines.forEach(e => toResult(knex('inventoryLines').where('id', e.id).update(e)));
     }
 
     isExistsProduct(productId) {

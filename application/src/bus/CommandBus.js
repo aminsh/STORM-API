@@ -12,10 +12,6 @@ export class CommandBus {
     @inject("State")
     state = undefined;
 
-    /**@type {IUnitOfWork}*/
-    @inject("UnitOfWork") unitOfWork = undefined;
-
-
     logger = new ApplicationServiceLogger();
 
     send(serviceName, parameters) {
@@ -35,21 +31,15 @@ export class CommandBus {
 
         try {
 
-            this.unitOfWork.init();
-
             let instance = this.factory(service.class),
                 result = instance[service.method](...parameters);
 
             this.logger.success(serviceId, result);
             console.log(`apiService => ${serviceId} succeed ...`);
 
-            this.unitOfWork.commit();
-
             return result;
         }
         catch (e) {
-
-            this.unitOfWork.rollback(e);
 
             console.log(e);
 

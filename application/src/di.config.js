@@ -2,9 +2,6 @@ import {Container} from "inversify";
 import {CommandBus} from "./bus/CommandBus";
 import {EventBus} from "./bus/EventBus";
 import {EventHandler} from "./bus/EventHandler";
-import {UnitOfWorkImplementedByKnex} from "./core/UnitOfWorkImplementedByKnex";
-
-//import {GenericRepository} from "./domain/data/GenericRepository";
 
 import {
     DetailAccountRepository,
@@ -57,7 +54,6 @@ const container = new Container({ defaultScope: "Request" });
 container.bind("CommandBus").to(CommandBus).inRequestScope();
 container.bind("EventBus").to(EventBus).inRequestScope();
 container.bind("EventHandler").to(EventHandler).inRequestScope();
-container.bind("UnitOfWork").to(UnitOfWorkImplementedByKnex).inRequestScope();
 
 container.bind("Factory<DomainService>").toFactory(context => {
     return (name) => context.container.get(name);
@@ -66,7 +62,6 @@ container.bind("Factory<DomainService>").toFactory(context => {
 container.bind("Factory<EventHandler>").toFactory(context => {
     return (name) => context.container.get(name);
 });
-//container.bind("GenericRepository").to(GenericRepository).inRequestScope();
 
 container.bind("DetailAccountRepository").to(DetailAccountRepository).inRequestScope();
 container.bind("FiscalPeriodRepository").to(FiscalPeriodRepository).inRequestScope();
@@ -108,7 +103,6 @@ container.bind("StockDomainService").to(StockDomainService).inRequestScope();
 container.bind("SubsidiaryLedgerAccountDomainService").to(SubsidiaryLedgerAccountDomainService).inRequestScope();
 container.bind("InvoiceInventoryDomainService").to(InvoiceInventoryDomainService).inRequestScope();
 container.bind("JournalInvoiceGenerationDomainService").to(JournalInvoiceGenerationDomainService).inRequestScope();
-
 
 container.bind("InvoiceEventListener").to(InvoiceEventListener).inRequestScope();
 

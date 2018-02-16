@@ -61,7 +61,6 @@ export class ProductRepository extends BaseRepository {
             super.create(entity);
 
         return toResult(this.knex('products')
-            .transacting(this.transaction)
             .insert(entity));
     }
 

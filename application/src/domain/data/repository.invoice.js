@@ -111,39 +111,54 @@ export class InvoiceRepository extends BaseRepository {
 
         const trx = this.transaction;
 
-        let lines = entity.invoiceLines;
+        try {
+            let lines = entity.invoiceLines;
 
-        delete  entity.invoiceLines;
+            delete  entity.invoiceLines;
 
-        toResult(this.createInvoice(entity, trx));
+            toResult(this.createInvoice(entity, trx));
 
-        toResult(this.createInvoiceLines(lines, entity.id, trx));
+            toResult(this.createInvoiceLines(lines, entity.id, trx));
 
-        entity.invoiceLines = lines;
+            entity.invoiceLines = lines;
 
-        return entity;
+            trx.commit();
+
+            return entity;
+        }
+        catch (e){
+            trx.rollback(e);
+
+            throw new Error(e);
+        }
     }
 
     update(id, entity) {
-        toResult(this.knex('invoices')
-            .transacting(this.transaction)
-            .where('id', id).update(entity));
+        toResult(this.knex('invoices').where('id', id).update(entity));
     }
 
     updateBatch(id, entity) {
-        this.entity = entity;
-
         let trx = this.transaction;
 
-        let lines = this.entity.invoiceLines;
+        try {
 
-        delete  entity.invoiceLines;
+            let lines = entity.invoiceLines;
 
-        toResult(this.updateInvoice(id, entity, trx));
+            delete  entity.invoiceLines;
 
-        toResult(this.updateInvoiceLines(id, lines, trx));
+            toResult(this.updateInvoice(id, entity, trx));
 
-        entity.invoiceLines = lines;
+            toResult(this.updateInvoiceLines(id, lines, trx));
+
+            entity.invoiceLines = lines;
+
+            trx.commit();
+        }
+        catch (e){
+            trx.rollback(e);
+
+            throw new Error(e);
+        }
     }
 
     remove(id) {
@@ -152,39 +167,34 @@ export class InvoiceRepository extends BaseRepository {
             .where('id', id).del());
     }
 
-    createInvoice(entity, trx) {
+    createInvoice(entity, knex) {
         super.create(entity);
 
-        toResult(this.knex('invoices')
-            .transacting(trx)
-            .insert(entity));
+        toResult(knex('invoices').insert(entity));
 
         return entity;
     }
 
-    updateInvoice(id, entity, trx) {
+    updateInvoice(id, entity, knex) {
 
-        toResult(this.knex('invoices')
-            .transacting(trx)
+        toResult(knex('invoices')
             .where('id', id)
             .update(entity));
 
         return entity;
     }
 
-    createInvoiceLines(lines, id, trx) {
+    createInvoiceLines(lines, id, knex) {
         lines.forEach(line => {
             super.create(line);
             line.invoiceId = id;
         });
 
-        toResult(this.knex('invoiceLines')
-            .transacting(trx)
-            .insert(lines));
+        toResult(knex('invoiceLines').insert(lines));
     }
 
-    updateInvoiceLines(id, lines, trx) {
-        let persistedLines = toResult(this.knex.table('invoiceLines').where('invoiceId', id)),
+    updateInvoiceLines(id, lines, knex) {
+        let persistedLines = toResult(knex.table('invoiceLines').where('invoiceId', id)),
 
             shouldDeletedLines = persistedLines.asEnumerable()
                 .where(e => !lines.asEnumerable().any(p => p.id == e.id))
@@ -202,18 +212,17 @@ export class InvoiceRepository extends BaseRepository {
                 line.invoiceId = id;
             });
 
-            toResult(this.knex('invoiceLines')
-                .transacting(trx)
+            toResult(knex('invoiceLines')
                 .insert(shouldAddedLines));
         }
 
         if (shouldDeletedLines.asEnumerable().any())
-            shouldDeletedLines.forEach(e => toResult(this.knex('invoiceLines')
-                .transacting(trx).where('id', e.id).del()));
+            shouldDeletedLines.forEach(e => toResult(knex('invoiceLines')
+                .where('id', e.id).del()));
 
         if (shouldUpdatedLines.asEnumerable().any())
-            shouldUpdatedLines.forEach(e => toResult(this.knex('invoiceLines')
-                .transacting(trx).where('id', e.id).update(e)));
+            shouldUpdatedLines.forEach(e => toResult(knex('invoiceLines')
+                .where('id', e.id).update(e)));
     }
 
     isExistsProduct(productId) {

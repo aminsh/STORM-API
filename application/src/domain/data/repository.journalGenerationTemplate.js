@@ -21,7 +21,6 @@ export class JournalGenerationTemplateRepository extends BaseRepository {
         entity.sourceType = sourceType;
 
         return toResult(this.knex(this.tableName)
-            .transacting(this.transaction)
             .insert(entity));
     }
 

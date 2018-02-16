@@ -31,7 +31,6 @@ export class StockRepository extends BaseRepository {
     create(entity) {
         super.create(entity);
         return toResult(this.knex('stocks')
-            .transacting(this.transaction)
             .insert(entity));
     }
 

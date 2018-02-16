@@ -52,9 +52,7 @@ export class JournalRepository extends BaseRepository {
     create(entity) {
         super.create(entity);
 
-        toResult(this.knex('journals')
-            .transacting(this.transaction)
-            .insert(entity));
+        toResult(this.knex('journals').insert(entity));
 
         return entity.id;
     }
@@ -69,7 +67,6 @@ export class JournalRepository extends BaseRepository {
     remove(id) {
         return toResult(this.knex('journals')
             .modify(this.modify, this.branchId)
-            .transacting(this.transaction)
             .where('id', id)
             .del());
     }
@@ -137,9 +134,7 @@ export class JournalRepository extends BaseRepository {
 
             addedTags.forEach(t => super.create(t));
 
-            toResult(knex('journalTags')
-                .transacting(this.transaction)
-                .insert(addedTags));
+            toResult(knex('journalTags').insert(addedTags));
         }
     }
 
@@ -149,25 +144,34 @@ export class JournalRepository extends BaseRepository {
         const trx = this.transaction,
             knex = this.knex;
 
-        toResult(knex('journals').transacting(trx).insert(journal));
+        try {
+            toResult(knex('journals').transacting(trx).insert(journal));
 
-        journalLines.forEach(line => {
+            journalLines.forEach(line => {
 
-            if(line.id)
-                line.branchId = this.branchId;
-            else
-                super.create(line);
+                if(line.id)
+                    line.branchId = this.branchId;
+                else
+                    super.create(line);
 
-            line.journalId = journal.id;
-        });
+                line.journalId = journal.id;
+            });
 
-        toResult(knex('journalLines').transacting(trx).insert(journalLines));
+            toResult(knex('journalLines').insert(journalLines));
 
-        return journal.id;
+            trx.commit();
+
+            return journal.id;
+        }
+        catch(e){
+            trx.rollback(e);
+
+            throw new Error(e);
+        }
     }
 
-    _updateLines(id, lines, trx) {
-        let persistedLines = toResult(this.knex.table('journalLines')
+    _updateLines(id, lines, knex) {
+        let persistedLines = toResult(knex.table('journalLines')
                 .modify(this.modify, this.branchId)
                 .where('journalId', id)),
 
@@ -187,34 +191,41 @@ export class JournalRepository extends BaseRepository {
                 line.journalId = id;
             });
 
-            toResult(this.knex('journalLines')
-                .transacting(trx)
+            toResult(knex('journalLines')
                 .insert(shouldAddedLines));
         }
 
         if (shouldDeletedLines.asEnumerable().any())
-            toResult(this.knex('journalLines')
-                .transacting(trx)
+            toResult(knex('journalLines')
                 .whereIn('id', shouldDeletedLines.asEnumerable().select(item => item.id).toArray()).del());
 
         if (shouldUpdatedLines.asEnumerable().any())
-            shouldUpdatedLines.forEach(e => toResult(this.knex('journalLines')
-                .transacting(trx).where('id', e.id).update(e)));
+            shouldUpdatedLines.forEach(e => toResult(knex('journalLines')
+                .where('id', e.id).update(e)));
     }
 
     batchUpdate(id, journal) {
         const knex = this.knex,
             trx = this.transaction;
 
-        let lines = journal.journalLines;
-        delete journal.journalLines;
+        try {
+            let lines = journal.journalLines;
+            delete journal.journalLines;
 
-        toResult(knex('journals')
-            .modify(this.modify, this.branchId)
-            .where('id', id)
-            .update(journal));
+            toResult(knex('journals')
+                .modify(this.modify, this.branchId)
+                .where('id', id)
+                .update(journal));
 
-        this._updateLines(id, lines, trx);
+            this._updateLines(id, lines, trx);
+
+            trx.commit();
+        }
+        catch(e){
+            trx.rollback(e);
+
+            throw new Error(e);
+        }
     }
 
     isExistsDetailAccount(detailAccountId) {

@@ -1,4 +1,5 @@
 import {inject, injectable, postConstruct} from "inversify";
+import toResult from "asyncawait/await";
 
 const knex = instanceOf('knex'),
     Guid = Utility.Guid;
@@ -10,19 +11,13 @@ export class BaseRepository {
     /** @type {IState}*/
     @inject("State") state = undefined;
 
-    _knex = undefined;
+    knex = knex;
     branchId = undefined;
 
     @postConstruct()
     onLoad() {
-        this._knex = knex;
         this.branchId = this.state.branchId;
     }
-
-    get knex(){
-        return this.transaction;
-    }
-
 
     constructor(branchId) {
 
@@ -39,7 +34,9 @@ export class BaseRepository {
     }
 
     get transaction() {
-        return this.state.transaction;
+        return toResult(new Promise(resolve => knex.transaction(trx => resolve(trx))));
     }
+
+
 }
 
