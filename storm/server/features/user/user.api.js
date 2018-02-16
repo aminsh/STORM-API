@@ -56,7 +56,7 @@ router.route('/register').post(async((req, res) => {
             name: user.name
         },
         activateUrl: url,
-
+        originUrl: config.url.origin
     }).then((html) => {
 
         Email.send({

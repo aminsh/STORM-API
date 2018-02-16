@@ -19,7 +19,6 @@
                         <li>ردیف اول فایل اکسل ، نام ستونها باشد.</li>
                         <li>پس از انتخاب فایل اکسل، در لیست باز شده، نام هر ستون فایل اکسل را در ردیف مربوط به آن وصل کنید.  </li>
                         <li>نوع شخص در فایل اکسل، برای شخص حقیقی real و برای شخص حقوقی legal وارد نمایید در غیر اینصورت بصورت پیشفرض حقیقی در سیستم وارد می شود که می توانید در فرم اشخاص ویرایش نمایید. </li>
-                        <li>کد شخص، کد تفصیل شخص در حساب های تفصیل می باشد.</li>
                     </ul>
                 </dev-tag-guide>
 
@@ -39,6 +38,10 @@
                         </li>
                         <li class="list-group-item">
                             <div class="row">
+                                <h6 style="text-align: right">
+                                    <i class="fa fa-exclamation-triangle fa-lg" aria-hidden="true" style="color: orangered;"></i>
+                                    کد شخص، کد تفصیل شخص در حساب های تفصیل می باشد.
+                                </h6>
                                 <div class="col-md-6">{{'Person code'|translate}}</div>
                                 <div class="col-md-6">
                                     <select ng-model="model.mapper.code"
@@ -126,16 +129,7 @@
                                 </div>
                             </div>
                         </li>
-                    </ul>
-                </div>
-                <div class="col-md-6">
-                    <ul ng-if="model.excelList" class="list-group  clear-list m-t">
-                        <li class="list-group-item">
-                            <div class="row">
-                                <div class="col-md-6">{{'Field name'|translate}}</div>
-                                <div class="col-md-6">{{'Excel header'|translate}}</div>
-                            </div>
-                        </li>
+
                         <li class="list-group-item">
                             <div class="row">
                                 <div class="col-md-6">{{'Address'|translate}}</div>
@@ -149,7 +143,16 @@
                                 </div>
                             </div>
                         </li>
-
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <ul ng-if="model.excelList" class="list-group  clear-list m-t">
+                        <li class="list-group-item">
+                            <div class="row">
+                                <div class="col-md-6">{{'Field name'|translate}}</div>
+                                <div class="col-md-6">{{'Excel header'|translate}}</div>
+                            </div>
+                        </li>
                         <li class="list-group-item">
                             <div class="row">
                                 <div class="col-md-6">{{'Province'|translate}}</div>
@@ -198,6 +201,34 @@
                                 <div class="col-md-6">
                                     <select ng-model="model.mapper.mobile"
                                             name="mobile"
+                                            ng-options="p as p for p in model.excelFields"
+                                            class="form-control">
+                                    </select>
+
+                                </div>
+                            </div>
+                        </li>
+
+                        <li class="list-group-item">
+                            <div class="row">
+                                <div class="col-md-6">{{'Fax'|translate}}</div>
+                                <div class="col-md-6">
+                                    <select ng-model="model.mapper.fax"
+                                            name="fax"
+                                            ng-options="p as p for p in model.excelFields"
+                                            class="form-control">
+                                    </select>
+
+                                </div>
+                            </div>
+                        </li>
+
+                        <li class="list-group-item">
+                            <div class="row">
+                                <div class="col-md-6">{{'Email'|translate}}</div>
+                                <div class="col-md-6">
+                                    <select ng-model="model.mapper.email"
+                                            name="email"
                                             ng-options="p as p for p in model.excelFields"
                                             class="form-control">
                                     </select>

@@ -28,6 +28,7 @@ export default class peopleCreateController {
             province: '',
             city: '',
             phone: '',
+            mobile: '',
             registrationNumber: '',
             nationalCode: '',
             economicCode: '',

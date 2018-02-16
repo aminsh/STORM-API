@@ -69,20 +69,6 @@ router.route('/batch')
         catch (e) {
             res.json({isValid: false, errors: e.errors});
         }
-        /*let firstInputList = new PersonQuery(req.branchId).getManyByIds(ids).asEnumerable()
-            .join(
-                cmd.people.asEnumerable().where(item => item.quantity && item.quantity > 0).toArray(),
-                first => first.title,
-                second => second.title,
-                (first, second) => ({
-                    productId: first.id,
-                    stockId: cmd.stockId,
-                    quantity: second.quantity,
-                    unitPrice: second.unitPrice
-                }))
-            .toArray();*/
-
-        //req.container.get("CommandBus").send("peopleAddToInventoryInputFirst", [firstInputList]);
 
     }));
 module.exports = router;

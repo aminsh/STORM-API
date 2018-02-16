@@ -24,8 +24,9 @@
                                     ng-click="model.toggleThirdParty(item.key, item.isActivated)"
                                     class="btn btn-primary btn-sm"
                                     ng-class="{ 'btn-danger' : item.isActivated, 'btn-primary' : !item.isActivated}"
-                                    title="فعال سازی" >
-                                <i ng-class="{ 'glyphicon glyphicon-minus' : item.isActivated, 'glyphicon glyphicon-plus' : !item.isActivated}" ></i> فعال سازی
+                                    title="{{ item.isActivated ?'حذف' : 'فعال سازی' }}" >
+                                <i ng-class="{ 'glyphicon glyphicon-minus' : item.isActivated, 'glyphicon glyphicon-plus' : !item.isActivated}" ></i>
+                                {{ item.isActivated ? 'حذف' : 'فعال سازی' }}
                             </button>
                         </td>
                     </tr>

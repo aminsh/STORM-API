@@ -143,20 +143,24 @@ router.route('/:id/activate')
 
         let branch = await(branchRepository.getById(branchId));
 
-        render("/storm/server/templates/email-activated-template.ejs", {
+        render("/storm/server/templates/email-branch-activated-template.ejs", {
+            originUrl: config.url.origin,
             user: {
                 name: branch.ownerName
             },
             branch: {
-                name: branch.name
+                name: branch.name,
+                logo: branch.logo === "/public/images/noimage.svg" || branch.logo === "" ?
+                      config.url.origin + "/public/images/email-briefcase-flat.svg":
+                      config.url.origin + branch.logo
             },
             loginUrl: config.url.origin,
-            sendTime: {
+            /*sendTime: {
                 date: `${persianDate.current()}`
             },
             btn: {
                 text: "ورود به کسب و کار"
-            },
+            },*/
 
         }).then(function (html) {
 

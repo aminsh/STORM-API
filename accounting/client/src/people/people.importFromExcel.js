@@ -22,7 +22,7 @@ class PeopleImportFromExcelController {
         this.excelFields = false;
         this.mapper = {
             code: '', title: '', personType: '', nationalCode: ''
-            , economicCode: '', postalCode: '', address: '', province: '', city: '', phone: '', mobile: ''
+            , economicCode: '', postalCode: '', address: '', province: '', city: '', phone: '', mobile: '', email:'', fax:''
         };
         this.isSaving = false;
         this.hasFirstInput = false;
@@ -54,7 +54,9 @@ class PeopleImportFromExcelController {
                     province: item[this.mapper.province],
                     city: item[this.mapper.city],
                     phone: item[this.mapper.phone],
-                    mobile: item[this.mapper.mobile]
+                    mobile: item[this.mapper.mobile],
+                    email: item[this.mapper.email],
+                    fax: item[this.mapper.fax]
                 };
             })
             .toArray();
