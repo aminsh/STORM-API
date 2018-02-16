@@ -6,7 +6,7 @@
     <meta name="token" content="<%- token %>"/>
     <meta http-equiv="Content-Type" content="text/html" charset="utf-8"/>
 
-    <title ng-bind="branch.name">STORM</title>
+    <title ng-bind="branch ? branch.name : 'STORM'">STORM</title>
 
     <link href="/public/css/acc.min.css?v=<%- version.app %>" rel="stylesheet"/>
 

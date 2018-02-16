@@ -47,6 +47,10 @@ export default class BranchesController {
                 this.branchApi.removeMeFromBranch(branch.id)
                     .then(() => {
                         this.logger.success();
+
+                        if(this.$rootScope.branch.id === branch.id)
+                            return this.$rootScope.$emit('onBranchIsInvalid');
+
                         this.fetch();
                     })
                     .catch((errors) => {
