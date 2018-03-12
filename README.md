@@ -42,21 +42,17 @@
 
 
             // Enviroment for webstorm debug
-            <env name="NODE_ENV" value="development" />
-            <env name="RECAPCH_KEY_SITE" value="6LcB-ysUAAAAAE_uDz0N0IiwjdwFGbqUTfcFi_Ey" />
-            <env name="RECAPCH_KEY_SECRET" value="6LcB-ysUAAAAAIF1O8KjVQG0ykrQLJb5AUkRK44y" />
-            <env name="PORT" value="2000" />
-            <env name="EMAIL_FROM" value="STORM &lt;info@storm-online.ir&gt;" />
-            <env name="EMAIL_HOST" value="smtp.zoho.com" />
-            <env name="EMAIL_PORT" value="465" />
-            <env name="EMAIL_AUTH_USER" value="info@storm-online.ir" />
-            <env name="EMAIL_AUTH_PASSWORD" value="rAEMtxezr3UN" />
-            <env name="ORIGIN_URL" value="http://localhost:2000" />
-            <env name="GOOGLE_AUTH_CLIENTID" value="44908669153-rgtap5scj693g240t9p3k69tplearpto.apps.googleusercontent.com" />
-            <env name="GOOGLE_AUTH_SECRET" value="ZAc3SYGLyKenCssgRzs0iY-1" />
-            <env name="DATABASE_URL" value="postgres://postgres:P@ssw0rd@localhost:5432/dbAccounting" />
-            <env name="PAYPING_USERNAME" value="aminsh" />
-            <env name="PAYPING_PASSWORD" value="am681980" />
+            NODE_ENV	development
+            PORT	2001
+            EMAIL_FROM	STORM <info@storm-online.ir>
+            EMAIL_HOST	smtp.zoho.com
+            EMAIL_PORT	465
+            EMAIL_AUTH_USER	info@storm-online.ir
+            EMAIL_AUTH_PASSWORD	rAEMtxezr3UN
+            ORIGIN_URL	http://localhost:2001
+            DATABASE_URL	postgres://postgres:P@ssw0rd@localhost:5432/dbAccounting
+            PAYPING_USERNAME	aminsh
+            PAYPING_PASSWORD	am681980
 
 
 For report including on ejs use this :
