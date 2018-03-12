@@ -2,7 +2,7 @@
 
 let async = require('asyncawait/async'),
     await = require('asyncawait/await'),
-    Guid = require('../services/shared').utility.Guid,
+    Guid = Utility.Guid,
     BaseRepository = require('./repository.base'),
     JournalLineRepository = require('./repository.journalLine'),
     Promise = require('promise');

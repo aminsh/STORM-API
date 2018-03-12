@@ -598,6 +598,8 @@ export class JournalDomainService {
 
             journal = this.journalGenerationTemplateDomainService.generate(model, 'purchase');
 
-        return this.create(journal);
+        this.create(journal);
+
+        return journal.id;
     }
 }

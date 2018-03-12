@@ -3,41 +3,28 @@
 const async = require('asyncawait/async'),
     await = require('asyncawait/await'),
     express = require('express'),
+    bodyParser = require('body-parser'),
+    cookieParser = require('cookie-parser'),
+    favicon = require('serve-favicon'),
+    cors = require('cors'),
+    flash = require('connect-flash'),
+    compression = require('compression'),
+    config = instanceOf('config'),
     app = express(),
 
-    /**
-     * @type {BranchService} */
-    BranchService = instanceOf('BranchService'),
-
-    /** @type {UserQuery}*/
-    UserQuery = instanceOf('UserQuery'),
+    BranchService = require('./branchService'),
     parseFiscalPeriod = require('./parse.fiscalPeriod'),
     container = require('../application/dist/di.config').container,
     knex = instanceOf('knex');
 
+app.use(compression());
+app.use(cors());
+app.use(bodyParser.urlencoded({limit: '50mb', extended: false}));
+app.use(bodyParser.json({limit: '50mb'}));
+app.use(cookieParser());
 
-module.exports = app;
-
-app.use(async(function (req, res, next) {
-
-    let userToken = req.headers["authorization"];
-
-    if (!userToken)
-        return next();
-
-    let user = UserQuery.getByToken(userToken);
-
-    if (!user)
-        return next();
-
-    req.user = user;
-    req.isAuth = true;
-
-    next();
-}));
-
-app.use('/login', require('./api.login'));
-app.use('/branches', require('./api.branch'));
+app.use('/api/v1/login', require('./api.login'));
+app.use('/api/v1/branches', require('./api.branch'));
 
 app.use(async((req, res, next) => {
     const token = req.body.token || req.query.token || req.headers['x-access-token'],
@@ -78,33 +65,37 @@ app.use(async((req, res, next) => {
     next();
 }));
 
+app.use('/api/v1/account-review', require('../accounting/server/routes/api.accountReview'));
+app.use('/api/v1/detail-accounts', require('../accounting/server/routes/api.detailAccount'));
+app.use('/api/v1/api/detail-account-categories', require('../accounting/server/routes/api.detailAccountCategory'));
+app.use('/api/v1/banks', require('../accounting/server/routes/api.bank'));
+app.use('/api/v1/people', require('../accounting/server/routes/api.people'));
+app.use('/api/v1/funds', require('../accounting/server/routes/api.fund'));
+app.use('/api/v1/dimensions', require('../accounting/server/routes/api.dimension'));
+app.use('/api/v1/dimension-categories', require('../accounting/server/routes/api.dimensionCategory'));
+app.use('/api/v1/fiscal-periods', require('../accounting/server/routes/api.fiscalPeriod'));
+app.use('/api/v1/general-ledger-accounts', require('../accounting/server/routes/api.generalLedgerAccount'));
+app.use('/api/v1/journals', require('../accounting/server/routes/api.journal'));
+app.use('/api/v1/journal-templates', require('../accounting/server/routes/api.journalTemplate'));
+app.use('/api/v1/subsidiary-ledger-accounts', require('../accounting/server/routes/api.subsidiaryLedgerAccount'));
+app.use('/api/v1/tags', require('../accounting/server/routes/api.tag'));
+app.use('/api/v1/reports', require('../accounting/server/routes/api.report'));
+app.use('/api/v1/sales', require('../accounting/server/routes/api.sale'));
+app.use('/api/v1/purchases', require('../accounting/server/routes/api.purchase'));
+app.use('/api/v1/products', require('../accounting/server/routes/api.product'));
+app.use('/api/v1/product-categories', require('../accounting/server/routes/api.productCategory'));
+app.use('/api/v1/settings', require('../accounting/server/routes/api.setting'));
+app.use('/api/v1/transfer-money', require('../accounting/server/routes/api.moneyTransfer'));
+app.use('/api/v1/receive', require('../accounting/server/routes/api.receive'));
+app.use('/api/v1/pay', require('../accounting/server/routes/api.pay'));
+app.use('/api/v1/bank-and-fund', require('../accounting/server/routes/api.bankAndFund'));
+app.use('/api/v1/scales', require('../accounting/server/routes/api.scale'));
+app.use('/api/v1/stocks', require('../accounting/server/routes/api.stock'));
+app.use('/api/v1/inventory', require('../accounting/server/routes/api.inventory'));
+app.use('/api/v1/inventories', require('../accounting/server/routes/api.inventory'));
+app.use('/api/v1/journal-generation-templates', require('../accounting/server/routes/api.journalGenerationTemplate'));
+app.use('/api/v1/return-sales', require('../accounting/server/routes/api.returnSale'));
 
-app.use('/account-review', require('../accounting/server/routes/api.accountReview'));
+module.exports = app;
 
-app.use('/detail-accounts', require('../accounting/server/routes/api.detailAccount'));
-app.use('/banks', require('../accounting/server/routes/api.bank'));
-app.use('/people', require('../accounting/server/routes/api.people'));
-app.use('/funds', require('../accounting/server/routes/api.fund'));
-
-app.use('/dimensions', require('../accounting/server/routes/api.dimension'));
-app.use('/dimension-categories', require('../accounting/server/routes/api.dimensionCategory'));
-app.use('/fiscal-periods', require('../accounting/server/routes/api.fiscalPeriod'));
-app.use('/general-ledger-accounts', require('../accounting/server/routes/api.generalLedgerAccount'));
-app.use('/journals', require('../accounting/server/routes/api.journal'));
-app.use('/journal-lines', require('../accounting/server/routes/api.journalLine'));
-app.use('/journal-templates', require('../accounting/server/routes/api.journalTemplate'));
-app.use('/subsidiary-ledger-accounts', require('../accounting/server/routes/api.subsidiaryLedgerAccount'));
-app.use('/tags', require('../accounting/server/routes/api.tag'));
-app.use('/reports', require('../accounting/server/routes/api.report'));
-app.use('/sales', require('../accounting/server/routes/api.sale'));
-app.use('/purchases', require('../accounting/server/routes/api.purchase'));
-app.use('/products', require('../accounting/server/routes/api.product'));
-app.use('/product-categories', require('../accounting/server/routes/api.productCategory'));
-app.use('/settings', require('../accounting/server/routes/api.setting'));
-app.use('/transfer-money', require('../accounting/server/routes/api.moneyTransfer'));
-app.use('/receive', require('../accounting/server/routes/api.receive'));
-app.use('/pay', require('../accounting/server/routes/api.pay'));
-app.use('/bank-and-fund', require('../accounting/server/routes/api.bankAndFund'));
-app.use('/scales', require('../accounting/server/routes/api.scale'));
-app.use('/inventory', require('../accounting/server/routes/api.inventory'));
 

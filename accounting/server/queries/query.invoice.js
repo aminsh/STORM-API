@@ -272,7 +272,8 @@ class InvoiceQuery extends BaseQuery {
                     item => item,
                     (productId, items) => ({
                         productId,
-                        quantity: items.sum(e => e.inventoryType === 'output' ? e.quantity : e.quantity * -1)
+                        quantity: items.sum(e => e.inventoryType === 'output' ? e.quantity : e.quantity * -1),
+                        stockId: items.first().stockId
                     }))
                 .toArray(),
 

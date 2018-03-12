@@ -32,7 +32,9 @@ declare interface IGuid {
 }
 
 declare interface IPersianDate {
-    current(): string
+    current(): string;
+
+    getDate(date: Date): string;
 }
 
 declare class ValidationException {

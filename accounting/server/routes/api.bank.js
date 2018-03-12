@@ -50,13 +50,13 @@ router.route('/:id')
 
 router.route('/:id/tiny-turnover').get(async((req, res) => {
     let detailAccountQuery = new DetailAccountQuery(req.branchId),
-        result = await(detailAccountQuery.getAllTurnoversWithRemainder(
+        result = await(detailAccountQuery.getBankAndFundTurnover(
             req.params.id,
             'bank',
             req.fiscalPeriodId,
             req.query));
 
-    res.json({data: result});
+    res.json(result);
 
 }));
 

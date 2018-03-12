@@ -57,27 +57,15 @@ export class InventoryInputDomainService {
 
     _setInvoice(id, invoiceId, ioType) {
 
-        let inventory = this.inventoryRepository.findById(id),
-            invoice = this.invoiceRepository.findById(invoiceId),
+        let invoice = this.invoiceRepository.findById(invoiceId),
 
             ioTypeDisplay = Enums.InventoryIOType().getDisplay(ioType);
 
-        inventory.invoiceId = invoice.id;
-        inventory.description = 'بابت فاکتور {0} شماره {1}'.format(ioTypeDisplay, invoice.number);
-        inventory.ioType = ioType;
-
-        inventory.inventoryLines = inventory.inventoryLines.asEnumerable()
-            .join(
-                invoice.invoiceLines,
-                inventoryLine => inventoryLine.productId,
-                invoiceLine => invoiceLine.productId,
-                (inventoryLine, invoiceLine) => ({
-                    id: inventoryLine.id,
-                    invoiceLineId: invoiceLine.id,
-                }))
-            .toArray();
-
-        this.inventoryRepository.updateBatch(id, inventory);
+        this.inventoryRepository.updateBatch(id, {
+            invoiceId,
+            description: 'بابت فاکتور {0} شماره {1}'.format(ioTypeDisplay, invoice.number),
+            ioType
+        });
     }
 
     _mapToEntity(cmd) {

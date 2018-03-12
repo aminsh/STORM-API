@@ -5,12 +5,11 @@ const async = require('asyncawait/async'),
     router = require('express').Router(),
     InvoiceQuery = require('../queries/query.invoice'),
     PaymentQuery = require('../queries/query.payment'),
-    Crypto = require('../services/shared').service.Crypto,
+    Crypto = instanceOf("Crypto"),
     config = instanceOf('config'),
     md5 = require('md5'),
     Email = instanceOf('Email'),
-    render = instanceOf('htmlRender').renderFile,
-    branchRepository = instanceOf('branch.repository');
+    render = instanceOf('htmlRender').renderFile;
 
 
 router.route('/summary')
@@ -129,9 +128,7 @@ router.route('/:id/generate-journal')
 
             const id = req.params.id;
 
-            let journalId = req.container.get("CommandBus").send("journalGenerateForInvoice", [id]);
-
-            req.container.get("CommandBus").send("invoiceSetJournal", [id, journalId]);
+            req.container.get("CommandBus").send("journalGenerateForInvoice", [id]);
 
             res.json({isValid: true});
         }
@@ -163,6 +160,8 @@ router.route('/:id/compare-changes-invoice').get(async((req, res) => {
 
         res.json(result);
     } catch (e) {
+        console.log(e);
+
         res.status(403).send('Bad Request');
     }
 }));
@@ -195,7 +194,7 @@ router.route('/:invoiceId/send-email')
             invoiceId = req.params.invoiceId;
             invoice = await(invoiceQuery.getById(invoiceId));
             branchId = req.branchId;
-            branch = await(branchRepository.getById(branchId));
+            branch = await(instanceOf('knex').select('id', 'name', 'logo').from('branches').where({id: branchId}).first());
             token = Crypto.sign({
                 branchId: branchId,
                 invoiceId: invoiceId
@@ -214,7 +213,7 @@ router.route('/:invoiceId/send-email')
 
             let html = await(render("/accounting/server/templates/send.invoice.template.ejs", {
                 invoiceUrl: link,
-                branchLogo: `${config.url.origin}/data/uploads/;/${branch.logo}`,
+                branchLogo: `${config.url.origin}${branch.logo}`,
                 branchName: branch.name,
                 date: invoice.date,
                 number: invoice.number,

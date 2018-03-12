@@ -55,19 +55,11 @@ export class InvoiceInventoryDomainService {
 
             if (compareResult.input && compareResult.input.length > 0)
                 this.createInput(
-                    compareResult.input.asEnumerable()
-                        .join(
-                            invoice.invoiceLines,
-                            input => input.productId,
-                            invoice => invoice.productId,
-                            (input, invoice) => ({
-                                productId: input.productId,
-                                quantity: Math.abs(input.quantity),
-                                stockId: input.stockId,
-                                unitPrice: invoice.unitPrice
-                            })
-                        ).toArray(),
-                    invoice
+                    compareResult.input.map(input => ({
+                        productId: input.productId,
+                        quantity: Math.abs(input.quantity),
+                        stockId: input.stockId
+                    })), invoice
                 );
 
         }
@@ -122,14 +114,15 @@ export class InvoiceInventoryDomainService {
             inventoryLines = invoice.inventories.asEnumerable()
                 .selectMany(
                     e => e.inventoryLines,
-                    (inventory, inventoryLine) => Object.assign({}, inventoryLine, {type: inventory.inventoryType})
+                    (inventory, inventoryLine) => Object.assign({}, inventoryLine, {type: inventory.inventoryType, stockId: inventory.stockId})
                 )
                 .groupBy(
                     item => item.productId,
                     item => item,
                     (productId, items) => ({
                         productId,
-                        quantity: items.sum(e => e.type === 'output' ? e.quantity : e.quantity * -1)
+                        quantity: items.sum(e => e.type === 'output' ? e.quantity : e.quantity * -1),
+                        stockId: items.first().stockId
                     }))
                 .toArray(),
 

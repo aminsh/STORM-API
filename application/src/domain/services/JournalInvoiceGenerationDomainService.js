@@ -48,7 +48,14 @@ export class JournalInvoiceGenerationDomainService {
                 title: invoice.title,
                 amount: invoice.invoiceLines.asEnumerable().sum(line => line.unitPrice * line.quantity),
                 discount: invoice.invoiceLines.asEnumerable().sum(line => line.discount) + invoice.discount,
-                vat: invoice.invoiceLines.asEnumerable().sum(line => line.vat) + (invoice.charges.asEnumerable().sum(e => e.value) * persistedVat / 100),
+                vat: invoice.invoiceLines.asEnumerable().sum(function (line) {
+                    return line.vat;
+                }) + invoice.charges.asEnumerable().sum(function (e) {
+                    if (e.vatIncluded)
+                        return e.value;
+                    else
+                        return 0;
+                }) * persistedVat / 100,
                 customer: invoice.detailAccountId,
                 customerCode: invoice.detailAccount.code,
                 customerTitle: invoice.detailAccount.title,

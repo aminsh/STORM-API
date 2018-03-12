@@ -144,33 +144,53 @@ class DetailAccountQuery extends BaseQuery {
         return kendoQueryResolve(query, parameters, views[`${type}View`]);
     }
 
-    getAllSmallTurnoverById(id, type, fiscalPeriodId, parameters) {
+    getBankAndFundTurnover(id, type, fiscalPeriodId, parameters) {
         let knex = this.knex,
             branchId = this.branchId,
             subsidiaryLedgerAccounts = await(knex.from('settings').where('branchId', this.branchId).first())
                 .subsidiaryLedgerAccounts,
             subledger = subsidiaryLedgerAccounts.asEnumerable().toObject(item => item.key, item=> item.id),
 
-            query = knex.from(function () {
-                this.select(
-                    'detailAccounts.title',
+            withQuery = knex.with('journals-row', (qb) => {
+                qb.select ('detailAccounts.title',
                     'journalLines.article',
-                    'journalLines.debtor',
-                    'journalLines.creditor',
+                    knex.raw(`cast("journalLines".debtor as float) as debtor`),
+                    knex.raw(`cast("journalLines".creditor as float) as creditor`),
+                    'journalLines.detailAccountId',
                     knex.raw('journals."temporaryDate" as date'),
-                    knex.raw('journals."temporaryNumber" as number'))
-                    .from('detailAccounts')
-                    .leftJoin('journalLines', 'detailAccounts.id', 'journalLines.detailAccountId')
-                    .leftJoin('journals', 'journals.id', 'journalLines.journalId')
+                    knex.raw('journals."temporaryNumber" as number'),
+                    knex.raw(`ROW_NUMBER () OVER (ORDER BY "temporaryNumber") as "seq_row"`))
+                    .from('journals')
+                    .leftJoin('journalLines','journals.id','journalLines.journalId')
+                    .leftJoin('detailAccounts','detailAccounts.id', 'journalLines.detailAccountId')
                     .leftJoin('subsidiaryLedgerAccounts', 'journalLines.subsidiaryLedgerAccountId', 'subsidiaryLedgerAccounts.id')
                     .where('detailAccounts.id', id)
-                    .andWhere('detailAccounts.branchId', branchId)
-                    .andWhere('journals.periodId', fiscalPeriodId)
-                    .andWhere('detailAccounts.detailAccountType', type)
+                    .where('journals.branchId',branchId)
+                    .where('journals.periodId',fiscalPeriodId)
+                    .where('detailAccounts.detailAccountType', type)
                     .whereIn('subsidiaryLedgerAccounts.id', [subledger.bank, subledger.fund])
-                    .as('base')
-                    .orderBy(knex.raw(`journals."temporaryDate", journals."temporaryNumber"`), 'asc');
             }),
+
+            query = withQuery.select().from(function () {
+                this.select('*',
+                    knex.raw(`(select cast(sum(debtor - creditor) as float) 
+                               from "journals-row" 
+                               where "seq_row" <= base."seq_row" and "detailAccountId" = base."detailAccountId") as remainder`))
+                    .from('journals-row as base')
+                    .groupBy(
+                        'title',
+                        'article',
+                        'debtor',
+                        'creditor',
+                        'detailAccountId',
+                        'date',
+                        'number',
+                        'seq_row'
+                    )
+                    .orderBy('base.seq_row','desc')
+                    .as('baseQuery')
+            }),
+
 
             view = entity => ({
                 title: entity.title,
@@ -178,53 +198,13 @@ class DetailAccountQuery extends BaseQuery {
                 debtor: entity.debtor,
                 creditor: entity.creditor,
                 date: entity.date,
-                number: entity.number
+                number: entity.number,
+                remainder: entity.remainder,
+                row_seq: entity.row_seq
             });
 
-        return kendoQueryResolve(query, parameters, view);
+        return await(kendoQueryResolve(query, parameters, view));
     }
-
-    getAllTurnoversWithRemainder(id, type, fiscalPeriodId, parameters) {
-        let turnovers = await(this.getAllSmallTurnoverById(id, type, fiscalPeriodId, parameters));
-
-        if (turnovers.data.length === 0){
-            return turnovers.data;
-        }
-        if (turnovers.data.length === 1) {
-            return turnovers.data.asEnumerable().
-            select(item =>
-                Object.assign({}, item,
-                    {
-                        remainder: item.debtor - item.creditor
-                    })
-            ).toArray();
-        }
-
-        let query = turnovers.data
-            .map(item => {
-                item.crrentRemainder = item.debtor - item.creditor;
-                return item;
-            })
-            .reduce((memory, current) => {
-                if (Array.isArray(memory)) {
-                    let last = memory[memory.length - 1];
-
-                    current.remainder = current.crrentRemainder + last.remainder;
-                    memory.push(current);
-                    return memory;
-                }
-                else {
-                    memory.remainder = memory.crrentRemainder;
-                    current.remainder = memory.remainder + current.crrentRemainder;
-
-                    return [memory, current];
-                }
-            });
-
-        let result = query.asEnumerable().orderByDescending(e => e.date && e.number).toArray();
-        return result;
-    }
-
-};
+}
 
 module.exports = DetailAccountQuery;

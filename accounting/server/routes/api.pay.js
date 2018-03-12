@@ -6,8 +6,7 @@ const async = require('asyncawait/async'),
     PaymentQuery = require('../queries/query.payment'),
     translate = require('../services/translateService'),
     FiscalPeriodRepository = require('../data/repository.fiscalPeriod'),
-    PaymentRepository = require('../data/repository.payment'),
-    EventEmitter = require('../services/shared').service.EventEmitter;
+    PaymentRepository = require('../data/repository.payment');
 
 router.route('/cheques')
     .get(async((req, res) => {

@@ -33,16 +33,16 @@ module.exports = function (knex, options, currentFiscalPeriod, groupByFields) {
         ];
 
     this.select([
-        knex.raw('SUM("beforeRemainder") as "sumBeforeRemainder"'),
-        knex.raw('SUM("debtor") as "sumDebtor"'),
-        knex.raw('SUM("debtor"-"creditor") as "remainder"'),
-        knex.raw('SUM("creditor") as "sumCreditor"'),
-        knex.raw('SUM("beforeDebtor") as "sumBeforeDebtor"'),
-        knex.raw('SUM("beforeCreditor") as "sumBeforeCreditor"'),
-        knex.raw('SUM("beforeDebtor") + SUM("debtor") as "totalDebtorRemainder"'),
-        knex.raw('SUM("beforeCreditor") + SUM("creditor") as "totalCreditorRemainder"'),
-        knex.raw('(SUM("beforeDebtor") + SUM("debtor")) - (SUM("beforeCreditor") + SUM("creditor")) as "totalRemainder"'),
-        knex.raw('SUM("beforeRemainder") + SUM("debtor") - SUM("creditor") as "sumRemainder"'),
+        knex.raw('SUM(cast("beforeRemainder" as float)) as "sumBeforeRemainder"'),
+        knex.raw('SUM(cast("debtor" as float)) as "sumDebtor"'),
+        knex.raw('SUM(cast("debtor" as float)-cast("creditor" as float)) as "remainder"'),
+        knex.raw('SUM(cast("creditor" as float)) as "sumCreditor"'),
+        knex.raw('SUM(cast("beforeDebtor" as float)) as "sumBeforeDebtor"'),
+        knex.raw('SUM(cast("beforeCreditor" as float)) as "sumBeforeCreditor"'),
+        knex.raw('SUM(cast("beforeDebtor" as float)) + SUM(cast("debtor" as float)) as "totalDebtorRemainder"'),
+        knex.raw('SUM(cast("beforeCreditor" as float)) + SUM(cast("creditor" as float)) as "totalCreditorRemainder"'),
+        knex.raw('(SUM(cast("beforeDebtor" as float)) + SUM(cast("debtor" as float))) - (SUM(cast("beforeCreditor" as float)) + SUM(cast("creditor" as float))) as "totalRemainder"'),
+        knex.raw('SUM(cast("beforeRemainder" as float)) + SUM(cast("debtor" as float)) - SUM(cast("creditor" as float)) as "sumRemainder"'),
     ].concat(groupByField))
         .from(function () {
         filterJournals.call(this, knex, options, currentFiscalPeriod);

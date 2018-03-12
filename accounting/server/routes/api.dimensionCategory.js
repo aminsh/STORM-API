@@ -2,7 +2,7 @@
 
 const async = require('asyncawait/async'),
     await = require('asyncawait/await'),
-    string = require('../utilities/string'),
+    string = Utility.String,
     translate = require('../services/translateService'),
     router = require('express').Router(),
     DimensionCategoryRepository = require('../data/repository.dimensionCategory'),

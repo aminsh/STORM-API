@@ -122,6 +122,9 @@ export class InventoryOutputDomainService {
                 unitPrice: line.unitPrice
             })).toArray();
 
+        if(!(output.inventoryLines &&  output.inventoryLines.length > 0))
+            throw new ValidationException('ردیف های حواله وجود ندارد');
+
         this.inventoryRepository.create(output);
 
         EventEmitter.emit("onOutputCreated", output.id, this.state);
@@ -198,6 +201,9 @@ export class InventoryOutputDomainService {
             }))
             .toArray();
 
+        if(!(entity.inventoryLines &&  entity.inventoryLines.length > 0))
+            throw new ValidationException('ردیف های حواله وجود ندارد');
+
         this.inventoryRepository.updateBatch(id, entity);
     }
 
@@ -228,27 +234,15 @@ export class InventoryOutputDomainService {
 
     _setInvoice(id, invoiceId) {
 
-        let inventory = this.inventoryRepository.findById(id),
-            invoice = this.invoiceRepository.findById(invoiceId),
-
+        let invoice = this.invoiceRepository.findById(invoiceId),
             ioTypeDisplay = Enums.InventoryIOType().getDisplay('outputSale');
 
-        inventory.invoiceId = invoice.id;
-        inventory.description = 'بابت فاکتور {0} شماره {1}'.format(ioTypeDisplay, invoice.number);
-        inventory.ioType = 'outputSale';
 
-        inventory.inventoryLines = inventory.inventoryLines.asEnumerable()
-            .join(
-                invoice.invoiceLines,
-                inventoryLine => inventoryLine.productId,
-                invoiceLine => invoiceLine.productId,
-                (inventoryLine, invoiceLine) => ({
-                    id: inventoryLine.id,
-                    invoiceLineId: invoiceLine.id,
-                }))
-            .toArray();
-
-        this.inventoryRepository.updateBatch(id, inventory);
+        this.inventoryRepository.update(id, {
+            invoiceId,
+            description: 'بابت فاکتور {0} شماره {1}'.format(ioTypeDisplay, invoice.number),
+            ioType: 'outputSale'
+        });
     }
 
     calculatePrice(id) {

@@ -10,7 +10,12 @@
      style="font-family: Geneva,Tahoma,Verdana,sans-serif;color: #404040;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;"
      align="center" >
     <!--Container-->
-    <table width="500px" cellspacing="0" >
+    <!--[if (gte mso 9)|(IE)]>
+    <table align="center" border="0" cellspacing="0" cellpadding="0" width="600">
+        <tr>
+            <td align="center" valign="top" width="600">
+    <![endif]-->
+    <table style="max-width: 600px;" width="100%" cellspacing="0" >
         <!--Header-->
         <tr>
             <td style="background: #4693D7;background-size: 100% 100%;background-position: center center;" height="118px" ><!--bgcolor="#4693D7"-->
@@ -18,7 +23,7 @@
                        cellspacing="0"
                        cellpadding="24px" >
                     <tr>
-                        <td style="width: 80px;max-width: 118px;max-height: 118px;" align="center" >
+                        <td style="width: 80px;height: 80px;" align="center" >
                             <table cellspacing="0"
                                    cellpadding="0"
                                    style="width: 75px;height: 75px;line-height: 65px;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;" >
@@ -55,10 +60,10 @@
                     <!--Top Image-->
                     <tr>
                         <td style="background: url('<%- originUrl %>/public/images/email-invoice-bg-img.png') #b9e4ba no-repeat;background-size: 100% 100%"
-                            height="305px"
+                            height="366px"
                             valign="center"
                             align="center" >
-                            <img id="<%- branchLogo %>" style="max-width: 40%;max-height: 50%"
+                            <img id="<%- branchLogo %>" width="40%" style="max-height: 50%"
                                  alt="branch-logo"
                                  src="<%- branchLogo %>" />
                         </td>
@@ -122,11 +127,10 @@
                                     <td>
                                         <table cellspacing="0" style="width: 100%" >
                                             <tr>
-                                                <td style="font-size: 12px;padding: 25px 50px 25px 10px" align="left" dir="ltr" >+98 21 46016695</td>
-                                                <td style="width: 25%;padding: 25px 0 25px 25px;" align="right" >
+                                                <td style="width: 25%;padding: 25px 0 25px 25px;" align="center" dir="ltr" >
                                                     <!--Icon Circle-->
-                                                    <a href="tel:+982146016695" target="_blank" >
-                                                        <div style="display: block;width: 35px;height: 35px;overflow: hidden;border: 1px solid #2c3e50;-webkit-border-radius: 50%;-moz-border-radius: 50%;border-radius: 50%;" >
+                                                    <a href="tel:+982146016695" >
+                                                        <div style="display: inline-block;vertical-align: middle;width: 35px;height: 35px;overflow: hidden;border: 1px solid #2c3e50;-webkit-border-radius: 50%;-moz-border-radius: 50%;border-radius: 50%;" >
                                                             <table style="width: 35px;height: 35px;"
                                                                    cellpadding="0"
                                                                    cellspacing="0" >
@@ -136,20 +140,21 @@
                                                                     </td>
                                                                 </tr>
                                                             </table>
-                                                        </div>
-                                                    </a>
+                                                        </div></a>
+                                                    +98 21 46016695
                                                 </td>
                                             </tr>
                                         </table>
                                     </td>
+                                </tr>
+                                <tr>
                                     <td>
                                         <table cellspacing="0" style="width: 100%" >
                                             <tr>
-                                                <td style="font-size: 12px;padding: 25px 50px 25px 10px" align="left" dir="ltr" >+98 903 960 3096</td>
-                                                <td style="width: 25%;padding: 25px 0 25px 25px;" align="right" >
+                                                <td style="width: 25%;padding: 25px 0 25px 25px;" align="center" dir="ltr" >
                                                     <!--Icon Circle-->
-                                                    <a href="tel:+989039603096" target="_blank" >
-                                                        <div style="display: block;width: 35px;height: 35px;overflow: hidden;border: 1px solid #2c3e50;-webkit-border-radius: 50%;-moz-border-radius: 50%;border-radius: 50%;" >
+                                                    <a href="tel:+989039603096" >
+                                                        <div style="display: inline-block;vertical-align: middle;width: 35px;height: 35px;overflow: hidden;border: 1px solid #2c3e50;-webkit-border-radius: 50%;-moz-border-radius: 50%;border-radius: 50%;" >
                                                             <table style="width: 35px;height: 35px;"
                                                                    cellpadding="0"
                                                                    cellspacing="0" >
@@ -159,8 +164,8 @@
                                                                     </td>
                                                                 </tr>
                                                             </table>
-                                                        </div>
-                                                    </a>
+                                                        </div></a>
+                                                    +98 903 960 3096
                                                 </td>
                                             </tr>
                                         </table>
@@ -245,6 +250,11 @@
             </td>
         </tr>
     </table>
+    <!--[if (gte mso 9)|(IE)]>
+    </td>
+    </tr>
+    </table>
+    <![endif]-->
 </div>
 
 </body>

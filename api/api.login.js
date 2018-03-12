@@ -4,33 +4,33 @@ const async = require('asyncawait/async'),
     await = require('asyncawait/await'),
     router = require('express').Router(),
     express = require('express'),
-
-    userRepository = instanceOf('user.repository'),
-    /** @type {TokenGenerator}*/
-    TokenGenerator = instanceOf('TokenGenerator');
+    md5 = require('md5'),
+    knex = instanceOf('knex');
 
 
 router.route('/')
     .post(async(function (req, res) {
 
-        if(!(req.body.email && req.body.password))
-            return res.status(400).send('نام کاربری یا کلمه عبور صحیح نیست');
+        let badRequestResponseAction = () => res.status(400).send('نام کاربری یا کلمه عبور صحیح نیست'),
 
-        let user = userRepository.getUserByEmailAndPassword(req.body.email, req.body.password);
+            email = req.body.email,
+            password = req.body.password;
 
-        if (user) {
-            if (!user.token) {
-                let token = TokenGenerator.generate256Bit();
+        if (!(email && password))
+            return badRequestResponseAction();
 
-                user.token = token;
+        let user = await(knex
+            .select('id', 'token', 'email', 'name')
+            .from('users')
+            .where('state', 'active')
+            .where('email', 'ILIKE', email)
+            .where('password', md5(password.toString()))
+            .first());
 
-                userRepository.update(user.id, {token});
-            }
+        if (!user)
+            return badRequestResponseAction();
 
-            return res.json({name: user.name, token: user.token});
-        }
-
-        return res.status(400).send('نام کاربری یا کلمه عبور صحیح نیست');
+        return res.json({name: user.name, token: user.token});
     }));
 
 module.exports = router;

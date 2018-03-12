@@ -4,11 +4,9 @@
 const fs = require('fs'),
     path = require('path'),
     config = require('../config'),
-    reportConfig = require('../../reporting/report.config.json'),
     async = require('asyncawait/async'),
     await = require('asyncawait/await'),
     router = require('express').Router(),
-    layout = getReport('layout'),
     ReportQueryAccounts = require('../queries/query.report.accounts'),
     ReportQueryBalance = require('../queries/query.report.balance'),
     ReportQueryFinancialOffices = require('../queries/query.report.financialOffices'),
@@ -24,52 +22,6 @@ const fs = require('fs'),
     CustomerReceipts = require('../reportQueries/customer.receipts'),
     InvoiceTurnover = require('../queries/query.invoice'),
     SaleInvoice = require('../reportQueries/invoice.sale');
-
-function getReport(fileName) {
-    return JSON.parse(
-        fs.readFileSync(
-            path.normalize(`${config.rootPath}/reporting/files/${fileName}`)));
-}
-
-router.route('/')
-    .post((req, res) => {
-        let report = req.body;
-
-        fs.writeFile(
-            path.normalize(`${config.rootPath}/reporting/files/${report.fileName}`),
-            report.data,
-            err => {
-                if (err)
-                    return res.status(500).send({isValid: false, error: err});
-
-                res.json({isValid: true});
-            }
-        );
-    });
-
-router.route('/file/:fileName').get((req, res) => {
-    let withLayout = reportConfig.asEnumerable()
-            .selectMany(rc => rc.items)
-            .any(rc => [undefined, true].includes(rc.useLayout) && rc.fileName == req.params.fileName),
-        report = getReport(req.params.fileName);
-
-    if (withLayout) {
-        let reportComponents = report.Pages[0].Components,
-            reportComponentsMaxKeys = (Object.keys(reportComponents)
-                    .asEnumerable()
-                    .select(c => parseInt(c))
-                    .max() || 0) + 1,
-            layoutComponents = layout.Pages[0].Components,
-            header = layoutComponents[0],
-            footer = layoutComponents[1];
-
-        reportComponents[++reportComponentsMaxKeys] = header;
-        reportComponents[++reportComponentsMaxKeys] = footer;
-    }
-
-    res.json(report);
-
-});
 
 router.route('/general-ledger-accounts')
     .get(async((req, res) => {
@@ -98,8 +50,8 @@ router.route('/general-balance')
     .get(async((req, res) => {
         let ins = new ReportQueryBalance(
             req.branchId,
-            req.cookies['current-period'],
-            req.cookies['current-mode'],
+            req.fiscalPeriodId,
+            'create',
             req.query),
             result = await(ins.getGeneralBalance());
         res.json(result);
@@ -108,8 +60,8 @@ router.route('/general-balance')
 router.route('/subsidiary-balance')
     .get(async((req, res) => {
         let ins = new ReportQueryBalance(req.branchId,
-            req.cookies['current-period'],
-            req.cookies['current-mode'],
+            req.fiscalPeriodId,
+            'create',
             req.query),
             result = await(ins.getSubsidiaryBalance());
         res.json(result);
@@ -118,8 +70,8 @@ router.route('/subsidiary-balance')
 router.route('/subsidiary-detail-balance')
     .get(async((req, res) => {
         let ins = new ReportQueryBalance(req.branchId,
-            req.cookies['current-period'],
-            req.cookies['current-mode'],
+            req.fiscalPeriodId,
+            'create',
             req.query),
             result = await(ins.getSubsidiaryDetailBalance());
         res.json(result);
@@ -128,8 +80,8 @@ router.route('/subsidiary-detail-balance')
 router.route('/general-subsidiary-detail-balance')
     .get(async((req, res) => {
         let ins = new ReportQueryBalance(req.branchId,
-            req.cookies['current-period'],
-            req.cookies['current-mode'],
+            req.fiscalPeriodId,
+            'create',
             req.query),
             result = await(ins.getSubsidiaryDetailBalance());
         res.json(result);
@@ -138,8 +90,8 @@ router.route('/general-subsidiary-detail-balance')
 router.route('/journal-office')
     .get(async((req, res) => {
         let ins = new ReportQueryFinancialOffices(req.branchId,
-            req.cookies['current-period'],
-            req.cookies['current-mode'],
+            req.fiscalPeriodId,
+            'create',
             req.query),
             result = await(ins.getJournalOffice());
         res.json(result);
@@ -148,8 +100,8 @@ router.route('/journal-office')
 router.route('/general-office')
     .get(async((req, res) => {
         let ins = new ReportQueryFinancialOffices(req.branchId,
-            req.cookies['current-period'],
-            req.cookies['current-mode'],
+            req.fiscalPeriodId,
+            'create',
             req.query),
             result = await(ins.getGeneralOffice());
         res.json(result);
@@ -158,8 +110,8 @@ router.route('/general-office')
 router.route('/subsidiary-office')
     .get(async((req, res) => {
         let ins = new ReportQueryFinancialOffices(req.branchId,
-            req.cookies['current-period'],
-            req.cookies['current-mode'],
+            req.fiscalPeriodId,
+            'create',
             req.query),
             result = await(ins.getSubsidiaryOffice());
         res.json(result);
@@ -168,8 +120,8 @@ router.route('/subsidiary-office')
 router.route('/total-general-subsidiary-turnover')
     .get(async((req, res) => {
         let ins = new ReportQueryTurnover(req.branchId,
-            req.cookies['current-period'],
-            req.cookies['current-mode'],
+            req.fiscalPeriodId,
+            'create',
             req.query),
             result = await(ins.getTotalTurnover());
         res.json(result);
@@ -178,8 +130,8 @@ router.route('/total-general-subsidiary-turnover')
 router.route('/total-subsidiary-detail-turnover')
     .get(async((req, res) => {
         let ins = new ReportQueryTurnover(req.branchId,
-            req.cookies['current-period'],
-            req.cookies['current-mode'],
+            req.fiscalPeriodId,
+            'create',
             req.query),
             result = await(ins.getTotalTurnover());
         res.json(result);
@@ -188,8 +140,8 @@ router.route('/total-subsidiary-detail-turnover')
 router.route('/total-general-subsidiary-detail-turnover')
     .get(async((req, res) => {
         let ins = new ReportQueryTurnover(req.branchId,
-            req.cookies['current-period'],
-            req.cookies['current-mode'],
+            req.fiscalPeriodId,
+            'create',
             req.query),
             result = await(ins.getTotalTurnover());
         res.json(result);
@@ -198,8 +150,8 @@ router.route('/total-general-subsidiary-detail-turnover')
 router.route('/detail-general-subsidiary-turnover')
     .get(async((req, res) => {
         let ins = new ReportQueryTurnover(req.branchId,
-            req.cookies['current-period'],
-            req.cookies['current-mode'],
+            req.fiscalPeriodId,
+            'create',
             req.query),
             result = await(ins.getDetailTurnover());
         res.json(result);
@@ -208,8 +160,8 @@ router.route('/detail-general-subsidiary-turnover')
 router.route('/detail-subsidiary-detail-turnover')
     .get(async((req, res) => {
         let ins = new ReportQueryTurnover(req.branchId,
-            req.cookies['current-period'],
-            req.cookies['current-mode'],
+            req.fiscalPeriodId,
+            'create',
             req.query),
             result = await(ins.getDetailTurnover());
         res.json(result);
@@ -218,8 +170,8 @@ router.route('/detail-subsidiary-detail-turnover')
 router.route('/detail-general-subsidiary-detail-turnover')
     .get(async((req, res) => {
         let ins = new ReportQueryTurnover(req.branchId,
-            req.cookies['current-period'],
-            req.cookies['current-mode'],
+            req.fiscalPeriodId,
+            'create',
             req.query),
             result = await(ins.getDetailTurnover());
         res.json(result);
@@ -228,8 +180,8 @@ router.route('/detail-general-subsidiary-detail-turnover')
 router.route('/detail-journal')
     .get(async((req, res) => {
         let ins = new ReportQueryJournal(req.branchId,
-            req.cookies['current-period'],
-            req.cookies['current-mode'],
+            req.fiscalPeriodId,
+            'create',
             req.query),
             result = await(ins.getDetailJournals());
         res.json(result);
@@ -238,8 +190,8 @@ router.route('/detail-journal')
 router.route('/detail-general-journal')
     .get(async((req, res) => {
         let ins = new ReportQueryJournal(req.branchId,
-            req.cookies['current-period'],
-            req.cookies['current-mode'],
+            req.fiscalPeriodId,
+            'create',
             req.query),
             result = await(ins.getDetailJournals());
         res.json(result);
@@ -248,8 +200,8 @@ router.route('/detail-general-journal')
 router.route('/detail-general-subsidiary-journal')
     .get(async((req, res) => {
         let ins = new ReportQueryJournal(req.branchId,
-            req.cookies['current-period'],
-            req.cookies['current-mode'],
+            req.fiscalPeriodId,
+            'create',
             req.query),
             result = await(ins.getDetailJournals());
         res.json(result);
@@ -258,8 +210,8 @@ router.route('/detail-general-subsidiary-journal')
 router.route('/detail-subsidiary-detail-journal')
     .get(async((req, res) => {
         let ins = new ReportQueryJournal(req.branchId,
-            req.cookies['current-period'],
-            req.cookies['current-mode'],
+            req.fiscalPeriodId,
+            'create',
             req.query),
             result = await(ins.getDetailJournals());
         res.json(result);
@@ -286,7 +238,7 @@ router.route('/pre-invoices')
         res.json(result);
     }));
 
-router.route('/inventory-output')
+router.route('/inventory-outputs')
     .get(async((req, res) => {
         let ins = new InventoriesReport(req.branchId),
             result = await(ins.getInventories(req.query.ids));
@@ -305,8 +257,8 @@ router.route('/inventory-input')
 router.route('/inventory-turnover')
     .get(async((req, res) => {
         let ins = new InventoriesTurnoverReport(req.branchId,
-            req.cookies['current-period'],
-            req.cookies['current-mode'],
+            req.fiscalPeriodId,
+            'create',
             req.query),
             result = await(ins.getInventoriesTurnover(req.query.ids));
         res.json(result);
@@ -315,8 +267,8 @@ router.route('/inventory-turnover')
 router.route('/product-turnover')
     .get(async((req, res) => {
         let ins = new ProductReports(req.branchId,
-            req.cookies['current-period'],
-            req.cookies['current-mode'],
+            req.fiscalPeriodId,
+            'create',
             req.query),
             result = await(ins.getProductTurnovers(req.query.ids, req.query.fixedType, req.query.stockId));
         res.json(result);
@@ -325,8 +277,8 @@ router.route('/product-turnover')
 router.route('/product-turnover-total')
     .get(async((req, res) => {
         let ins = new ProductReports(req.branchId,
-            req.cookies['current-period'],
-            req.cookies['current-mode'],
+            req.fiscalPeriodId,
+            'create',
             req.query),
             result = await(ins.getProductTurnovers(req.query.ids, req.query.fixedType, req.query.stockId));
         res.json(result);
@@ -335,8 +287,8 @@ router.route('/product-turnover-total')
 router.route('/seasonal')
     .get(async((req, res) => {
         let ins = new SeasonalReport(req.branchId,
-            req.cookies['current-period'],
-            req.cookies['current-mode'],
+            req.fiscalPeriodId,
+            'create',
             req.query.extra ? req.query.extra.filter : req.query),
             resultDetail = await(ins.getSeasonalWithFilter(req.query)),
             resultTotal = await(ins.getTotalSeasonal());
@@ -347,8 +299,8 @@ router.route('/seasonal')
 router.route('/balance-sheet')
     .get(async((req, res) => {
         let ins = new BalanceSheet(req.branchId,
-            req.cookies['current-period'],
-            req.cookies['current-mode'],
+            req.fiscalPeriodId,
+            'create',
             req.query),
             result = await(ins.getBalanceSheet());
         res.json(result);
@@ -357,8 +309,8 @@ router.route('/balance-sheet')
 router.route('/profit-loss-statement')
     .get(async((req, res) => {
         let ins = new ProfitLossStatement(req.branchId,
-            req.cookies['current-period'],
-            req.cookies['current-mode'],
+            req.fiscalPeriodId,
+            'create',
             req.query),
             result = await(ins.getProfitLossStatement());
         res.json(result);
@@ -367,8 +319,8 @@ router.route('/profit-loss-statement')
 router.route('/compare-profit-loss-statement')
     .get(async((req, res) => {
         let ins = new ProfitLossStatement(req.branchId,
-            req.cookies['current-period'],
-            req.cookies['current-mode'],
+            req.fiscalPeriodId,
+            'create',
             req.query),
             result = await(ins.getCompareProfitLossStatement());
         res.json(result);
@@ -384,8 +336,8 @@ router.route('/customer-receipts')
 router.route('/sale-invoice-turnover')
     .get(async((req, res) => {
         let ins = new SaleInvoice(req.branchId,
-            req.cookies['current-period'],
-            req.cookies['current-mode'],
+            req.fiscalPeriodId,
+            'create',
             req.query),
             result = await(ins.getAll());
         res.json(result);

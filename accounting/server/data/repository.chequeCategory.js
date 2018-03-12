@@ -4,7 +4,7 @@ let async = require('asyncawait/async'),
     await = require('asyncawait/await'),
     BaseRepository = require('./repository.base'),
     Promise = require('promise'),
-    Guid = require('../services/shared').utility.Guid;
+    Guid = Utility.Guid;
 
 class ChequeCategoryRepository extends BaseRepository {
     constructor(branchId) {
