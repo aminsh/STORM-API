@@ -10,7 +10,7 @@ WORKDIR /usr/src/app
 # Install app dependencies
 COPY package.json /usr/src/app/
 
-RUN npm install -g gulp babel babel-cli && npm install
+RUN npm install -g babel babel-cli && npm install
 
 # Bundle app source
 COPY . /tmp/app
@@ -21,7 +21,6 @@ RUN mkdir /.config && \
     rm -rf /tmp/app
 
 RUN npm run build-production
-RUN gulp --production
 
 RUN \
   apt-get -y update && \
