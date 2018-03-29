@@ -128,7 +128,9 @@ export class InvoiceDomainService {
             invoiceLines: this._mapLines(cmd.invoiceLines).asEnumerable()
                 .select(line => {
 
-                    const product = this.productDomainService.findByIdOrCreate(line.product);
+                    let product = this.productDomainService.findByIdOrCreate(line.product);
+
+                    product = product ? product : {id: undefined, title: undefined};
 
                     return {
                         id: line.id,

@@ -296,6 +296,41 @@ export class JournalDomainService {
         return this.create(journal);
     }
 
+    generateForReturnInvoice(invoiceId) {
+        const settings = this.settingsRepository.get(),
+            invoice = this.invoiceRepository.findById(invoiceId);
+
+        if (!invoice)
+            throw new ValidationException(['فاکتور وجود ندارد']);
+
+        if (!Utility.String.isNullOrEmpty(invoice.journalId))
+            throw new ValidationException(['برای فاکتور {0} قبلا سند حسابداری صادر شده'.format(invoice.number)]);
+
+        const charge = (settings.saleCharges || []).asEnumerable()
+            .select(e => ({
+                key: e.key,
+                value: (invoice.charges.asEnumerable().firstOrDefault(p => p.key === e.key) || {value: 0}).value
+            }))
+            .toObject(item => `charge_${item.key}`, item => item.value);
+
+        let model = Object.assign({
+                number: invoice.number,
+                date: invoice.date,
+                title: invoice.title,
+                amount: invoice.invoiceLines.asEnumerable().sum(line => line.unitPrice * line.quantity),
+                discount: invoice.invoiceLines.asEnumerable().sum(line => line.discount) + invoice.discount,
+                vat: invoice.invoiceLines.asEnumerable().sum(line => line.vat),
+                customer: invoice.detailAccountId,
+                customerCode: invoice.detailAccount.code,
+                customerTitle: invoice.detailAccount.title,
+            }, charge),
+
+            journal = this.journalGenerationTemplateDomainService.generate(model, 'returnSale');
+
+
+        return this.create(journal);
+    }
+
     generateForOutputSale(outputId) {
 
         const output = this.inventoryRepository.findById(outputId);
@@ -598,8 +633,163 @@ export class JournalDomainService {
 
             journal = this.journalGenerationTemplateDomainService.generate(model, 'purchase');
 
-        this.create(journal);
+        return this.create(journal);
+    }
 
-        return journal.id;
+    generateForReturnPurchase(invoiceId) {
+        const settings = this.settingsRepository.get(),
+            invoice = this.invoiceRepository.findById(invoiceId);
+
+        if (!invoice)
+            throw new ValidationException(['فاکتور وجود ندارد']);
+
+        if (!Utility.String.isNullOrEmpty(invoice.journalId))
+            throw new ValidationException(['برای فاکتور {0} قبلا سند حسابداری صادر شده'.format(invoice.number)]);
+
+        const charge = (settings.saleCharges || []).asEnumerable()
+            .select(e => ({
+                key: e.key,
+                value: (invoice.charges.asEnumerable().firstOrDefault(p => p.key === e.key) || {value: 0}).value
+            }))
+            .toObject(item => `charge_${item.key}`, item => item.value);
+
+        let model = Object.assign({
+                number: invoice.number,
+                date: invoice.date,
+                title: invoice.title,
+                amount: invoice.invoiceLines.asEnumerable().sum(line => line.unitPrice * line.quantity),
+                discount: invoice.invoiceLines.asEnumerable().sum(line => line.discount) + invoice.discount,
+                vat: invoice.invoiceLines.asEnumerable().sum(line => line.vat),
+                vendor: invoice.detailAccountId,
+                vendorCode: invoice.detailAccount.code,
+                vendorTitle: invoice.detailAccount.title,
+            }, charge),
+
+            journal = this.journalGenerationTemplateDomainService.generate(model, 'returnPurchase');
+
+
+        return this.create(journal);
+    }
+
+    generateReturnPurchaseInvoiceReceive(payments, invoiceId) {
+        let invoice,
+            subLedger = this.subsidiaryLedgerAccountDomainService;
+
+        if (!invoiceId)
+            throw new Error('invoiceId is empty');
+
+        invoice = this.invoiceRepository.findById(invoiceId);
+
+        if (!invoice)
+            throw new ValidationException(['فاکتور وجود ندارد']);
+
+        if (!this.subsidiaryLedgerAccountDomainService.receivableAccount)
+            throw new ValidationException(['حسابهای دریافتنی در معین های پیش فرض وجود ندارد']);
+
+
+        let description = invoice
+            ? `دریافت بابت فاکتور برگشت از خرید شماره ${invoice.number}`
+            : 'دریافت وجه',
+
+            receivableAccount = this.subsidiaryLedgerAccountDomainService.receivableAccount,
+            journalLines = [];
+
+        payments.forEach(p => {
+            let article = getArticle(p),
+                errors = checkIsValid(p);
+
+            if (errors.length > 0)
+                throw new ValidationException(errors);
+
+            /* معین حسابهای دریافتنی بستانکار میشود */
+            journalLines.push({
+                generalLedgerAccountId: receivableAccount.generalLedgerAccountId,
+                subsidiaryLedgerAccountId: receivableAccount.id,
+                detailAccountId: invoice.detailAccountId,
+                article,
+                debtor: 0,
+                creditor: p.amount
+            });
+
+            let debtorSubLedger = getSubLedgerForDebtor(p),
+                id = Guid.new();
+
+            journalLines.push({
+                id,
+                generalLedgerAccountId: debtorSubLedger.generalLedgerAccountId,
+                subsidiaryLedgerAccountId: debtorSubLedger.id,
+                detailAccountId: getDetailAccountForDebtor(p),
+                article,
+                debtor: p.amount,
+                creditor: 0
+            });
+
+            p.journalLineId = id;
+        });
+
+
+        this.create({description, journalLines});
+
+        return payments;
+
+        function checkIsValid(p) {
+            let errors = [];
+
+            if (p.paymentType === 'cash' && !subLedger.fundAccount)
+                errors.push('حساب معین صندوق در حسابهای معین پیش فرض تعریف نشده');
+
+            if (p.paymentType === 'receipt' && !subLedger.bankAccount)
+                errors.push('حساب معین بانک در حسابهای معین پیش فرض تعریف نشده');
+
+            if (p.paymentType === 'cheque' && !subLedger.receivableDocument)
+                errors.push('حساب معین اسناد دریافتنی در حسابهای معین پیش فرض تعریف نشده');
+
+            return [];
+        }
+
+
+        function getArticle(p) {
+            if (p.paymentType == 'cash')
+                return 'دریافت نقدی بابت فاکتور شماره {0}'.format(invoice.number);
+
+            if (p.paymentType == 'receipt')
+                return 'دریافت طی فیش / رسید {0} بابت فاکتور شماره {1}'
+                    .format(p.number, invoice.number);
+
+            if (p.paymentType == 'cheque')
+                return 'دریافت چک به شماره {0} سررسید {1} بانک {2} شعبه {3} بابت فاکتور شماره {4}'
+                    .format(p.number, p.date, p.bankName, p.bankBranch, invoice.number);
+
+            if (p.paymentType === 'person')
+                return 'دریافت توسط شخص بابت فاکتور شماره {0}'.format(invoice.number);
+        }
+
+        function getSubLedgerForDebtor(p) {
+            if (p.paymentType === 'cash')
+                return subLedger.fundAccount;
+
+            if (p.paymentType === 'receipt')
+                return subLedger.bankAccount;
+
+            if (p.paymentType === 'cheque')
+                return subLedger.receivableDocument;
+
+            if (p.paymentType === 'person')
+                return subLedger.receivableAccount;
+        }
+
+        function getDetailAccountForDebtor(p) {
+            if (p.paymentType == 'cash')
+                return p.fundId;
+
+            if (p.paymentType == 'receipt')
+                return p.bankId;
+
+            if (p.paymentType == 'cheque')
+                return invoice.detailAccountId;
+
+            if (p.paymentType === 'person')
+                return p.personId;
+        }
     }
 }

@@ -33,6 +33,9 @@ export class InvoiceReturnDomainService {
     /** @type {IState}*/
     @inject("State") state = undefined;
 
+    /** @type {EventBus}*/
+    @inject("EventBus") eventBus = undefined;
+
     validation(entity) {
         let errors = [];
 
@@ -113,7 +116,7 @@ export class InvoiceReturnDomainService {
         if (!(inventoryIds && inventoryIds.length > 0))
             return;
 
-        this.inventoryInputDomainService.setInvoice(inventoryIds, entity.id);
+        this.inventoryInputDomainService.setInvoice(inventoryIds, entity.id, 'inputBackFromSaleOrConsuming');
 
         if (!(entity.inventoryIds && entity.inventoryIds.length > 0))
             this.invoiceRepository.update(entity.id, {inventoryIds: JSON.stringify(inventoryIds)});
@@ -178,6 +181,8 @@ export class InvoiceReturnDomainService {
 
         if (entity.invoiceStatus !== 'draft')
             this._setForInventoryReturn(entity);
+
+        this.eventBus.send('onReturnSaleCreated', entity.id);
 
         return entity.id;
     }

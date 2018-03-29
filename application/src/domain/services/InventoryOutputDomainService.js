@@ -26,6 +26,9 @@ export class InventoryOutputDomainService {
     /** @type {IState}*/
     @inject("State") state = undefined;
 
+    /** @type {InventoryIOTypeRepository}*/
+    @inject("InventoryIOTypeRepository") inventoryIOTypeRepository = undefined;
+
     createForInvoice(cmd) {
         const settings = this.settingsRepository.get(),
 
@@ -73,6 +76,7 @@ export class InventoryOutputDomainService {
                 item => item,
                 (key, items) => ({
                     stockId: key,
+                    ioType: 'outputSale',
                     lines: items.toArray()
                 }))
             .select(item => this.create(item))
@@ -100,7 +104,7 @@ export class InventoryOutputDomainService {
         if (errors.length > 0)
             throw new ValidationException(errors);
 
-        const number = this.inventoryRepository.outputMaxNumber(this.state.fiscalPeriodId, cmd.stockId, 'outputSale').max || 0;
+        const number = this.inventoryRepository.outputMaxNumber(this.state.fiscalPeriodId, cmd.stockId, cmd.ioType).max || 0;
 
         let output = {
             number: number + 1,
@@ -118,8 +122,7 @@ export class InventoryOutputDomainService {
             }))
             .select(line => ({
                 productId: line.productId,
-                quantity: line.quantity,
-                unitPrice: line.unitPrice
+                quantity: line.quantity
             })).toArray();
 
         if(!(output.inventoryLines &&  output.inventoryLines.length > 0))
@@ -213,35 +216,25 @@ export class InventoryOutputDomainService {
         if (!output)
             throw new ValidationException(['حواله وجود ندارد']);
 
-        if (output.fixedQuantity)
-            throw new ValidationException(['حواله ثبت تعدادی شده ، امکان حذف وجود ندارد']);
-
-        if (!Utility.String.isNullOrEmpty(output.invoiceId))
-            throw new ValidationException(['برای حواله جاری فاکتور صادر شده ، امکان حذف وجود ندارد']);
-
-        if (!Utility.String.isNullOrEmpty(output.journalId))
-            throw new ValidationException(['برای حواله جاری سند حسابداری صادر شده ، امکان حذف وجود ندارد']);
-
         this.inventoryRepository.remove(id);
     }
 
-    setInvoice(id, invoiceId) {
+    setInvoice(id, invoiceId, ioType) {
         if (Array.isArray(id))
-            return id.forEach(id => this._setInvoice(id, invoiceId));
+            return id.forEach(id => this._setInvoice(id, invoiceId, ioType));
 
-        this._setInvoice(id, invoiceId);
+        this._setInvoice(id, invoiceId, ioType);
     }
 
-    _setInvoice(id, invoiceId) {
+    _setInvoice(id, invoiceId, ioTypeId) {
 
         let invoice = this.invoiceRepository.findById(invoiceId),
-            ioTypeDisplay = Enums.InventoryIOType().getDisplay('outputSale');
-
+            ioTypeDisplay = Enums.InventoryIOType().getDisplay(ioTypeId);
 
         this.inventoryRepository.update(id, {
             invoiceId,
             description: 'بابت فاکتور {0} شماره {1}'.format(ioTypeDisplay, invoice.number),
-            ioType: 'outputSale'
+            ioType: ioTypeId
         });
     }
 

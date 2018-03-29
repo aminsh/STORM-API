@@ -36,7 +36,7 @@ export class InvoiceInventoryDomainService {
 
     setInvoiceToOutput(invoiceId, inventoryIds) {
 
-        this.inventoryOutputDomainService.setInvoice(inventoryIds, invoiceId);
+        this.inventoryOutputDomainService.setInvoice(inventoryIds, invoiceId, 'outputSale');
     }
 
     control(invoiceDTO) {

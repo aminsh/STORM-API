@@ -21,6 +21,9 @@ export class InventoryInputDomainService {
     /** @type {InventoryRepository}*/
     @inject("InventoryRepository") inventoryRepository = undefined;
 
+    /** @type {InventoryIOTypeRepository}*/
+    @inject("InventoryIOTypeRepository") inventoryIOTypeRepository = undefined;
+
     /** @type {IState}*/
     @inject("State") state = undefined;
 
@@ -55,16 +58,18 @@ export class InventoryInputDomainService {
         return this.inventoryControlDomainService.validateTurnover(input);
     }
 
-    _setInvoice(id, invoiceId, ioType) {
+    _setInvoice(id, invoiceId, ioTypeId) {
 
         let invoice = this.invoiceRepository.findById(invoiceId),
 
-            ioTypeDisplay = Enums.InventoryIOType().getDisplay(ioType);
+            ioType = ioTypeId ? this.inventoryIOTypeRepository.findById(ioTypeId) : undefined,
 
-        this.inventoryRepository.updateBatch(id, {
+            ioTypeDisplay = ioType ? ioType.title : '';
+
+        this.inventoryRepository.update(id, {
             invoiceId,
             description: 'بابت فاکتور {0} شماره {1}'.format(ioTypeDisplay, invoice.number),
-            ioType
+            ioType: ioTypeId
         });
     }
 
@@ -196,9 +201,6 @@ export class InventoryInputDomainService {
     remove(id) {
         let input = this.inventoryRepository.findById(id);
 
-        if (input.fixedQuantity)
-            throw new ValidationException(['رسید ثبت تعدادی شده ، امکان حذف وجود ندارد']);
-
         let errors = this._validateTurnover({
             stockId: input.stockId,
             inventoryLines: input.inventoryLines.asEnumerable()
@@ -216,11 +218,11 @@ export class InventoryInputDomainService {
         this.inventoryRepository.remove(id);
     }
 
-    setInvoice(id, invoiceId) {
+    setInvoice(id, invoiceId, ioTypeId) {
         if (Array.isArray(id))
-            return id.forEach(id => this._setInvoice(id, invoiceId));
+            return id.forEach(id => this._setInvoice(id, invoiceId, ioTypeId));
 
-        this._setInvoice(id, invoiceId);
+        this._setInvoice(id, invoiceId, ioTypeId);
     }
 
     setJournal(id, journalId) {

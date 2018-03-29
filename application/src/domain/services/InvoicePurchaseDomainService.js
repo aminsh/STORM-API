@@ -116,7 +116,7 @@ export class InvoicePurchaseDomainService {
         if (!(inventoryIds && inventoryIds.length > 0))
             return;
 
-        this.inventoryInputDomainService.setInvoice(inventoryIds, entity.id);
+        this.inventoryInputDomainService.setInvoice(inventoryIds, entity.id, 'inputPurchase');
 
         if (!(entity.inventoryIds && entity.inventoryIds.length > 0))
             this.invoiceRepository.update(entity.id, {inventoryIds: JSON.stringify(inventoryIds)});

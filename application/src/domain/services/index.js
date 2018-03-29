@@ -23,3 +23,15 @@ export * from "./StockDomainService";
 export * from "./SubsidiaryLedgerAccountDomainService";
 export * from "./InvoiceInventoryDomainService";
 export * from "./JournalInvoiceGenerationDomainService"
+export * from "./InventoryIOTypeDomainService";
+export * from "./ReturnPurchaseDomainService";
+export * from "./OutputReturnPurchaseDomainService";
+export * from "./TreasuryCashDomainService";
+export * from "./TreasuryChequeDomainService";
+export * from "./TreasuryDemandNoteDomainService";
+export * from "./TreasuryReceiptDomainService";
+export * from "./BanksNameDomainService";
+export * from "./PayableChequeCategoryDomainService";
+export * from "./PayableChequeDomainService";
+export * from "./TreasuryJournalGenerationDomainService";
+export * from "./TreasuryTransferDomainService";
