@@ -151,11 +151,10 @@ enums.JournalStatus = function () {
 
 enums.ChequeStatus = function () {
     return new Enum([
-        {key: 'normal', display: 'عادی'},
-        {key: 'inProcessOnPassing', display: 'در جریان وصول'},
-        {key: 'passed', display: 'پاس شده'},
-        {key: 'return', display: 'عودت داده'},
-        {key: 'spend', display: 'خرج شده'}
+        {key: 'White', display: 'سفید'},
+        {key: 'Used', display: 'استفاده شده'},
+        {key: 'Cancel', display: 'باطل'},
+        {key: 'Passed', display: 'پاس شده'}
     ]);
 };
 
@@ -259,7 +258,8 @@ enums.InventoryIOType = function () {
 
         {key: 'outputSale', display: 'فروش'},
         {key: 'outputWaste', display: 'ضایعات'},
-        {key: 'outputStockToStock', display: 'انبار به انبار'}
+        {key: 'outputStockToStock', display: 'انبار به انبار'},
+        {key: 'outputReturnPurchase', display: 'برگشت از خرید'}
     ])
 };
 
@@ -311,7 +311,8 @@ enums.JournalGenerationTemplateSourceType = function () {
         {key: 'purchase', display: 'فاکتور خرید'},
         {key: 'returnSale', display: 'فاکتور برگشت از فروش'},
         {key: 'inventoryOutputSale', display: 'حواله فروش'},
-        {key: 'inventoryInputReturnSale', display: 'رسید برگشت از فروش'}
+        {key: 'inventoryInputReturnSale', display: 'رسید برگشت از فروش'},
+        {key: 'returnPurchase', display: 'فاکتور برگشت از خرید'}
     ]);
 };
 
@@ -337,5 +338,36 @@ enums.getInventoryFixedStatus = function () {
     ]);
 };
 
+enums.ReceiveChequeStatus = function () {
+    return new Enum([
+        {key: 'inProcessOnPassing', display: 'در جریان وصول'},
+        {key: 'passed', display: 'پاس شده'},
+        {key: 'inFund', display: 'نزد صندوق'},
+        {key: 'revocation', display: 'ابطالی'},
+        {key: 'missing', display: 'مفقودی/ سرقتی'},
+        {key: 'spend', display: 'انتقالی/ خرج شده'},
+        {key: 'return', display: 'برگشتی'}
+
+    ]);
+};
+
+enums.TreasuryReceiveDocumentTypes = function () {
+    return new Enum([
+        {key: 'cheque', display: "چک"},
+        {key: 'cash', display: "نقدی"},
+        {key: 'receipt', display: "واریزی"},
+        {key: 'demandNote', display: "سفته"}
+    ])
+};
+
+enums.TreasuryPaymentDocumentTypes = function () {
+    return new Enum([
+        {key: 'cheque', display: "چک"},
+        {key: 'cash', display: "نقدی"},
+        {key: 'receipt', display: "فیش واریزی"},
+        {key: 'demandNote', display: "سفته"},
+        {key: 'spendCheque', display: "خرج چک"},
+    ])
+};
 
 module.exports = enums;

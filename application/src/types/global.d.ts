@@ -32,9 +32,7 @@ declare interface IGuid {
 }
 
 declare interface IPersianDate {
-    current(): string;
-
-    getDate(date: Date): string;
+    current(): string
 }
 
 declare class ValidationException {
@@ -52,10 +50,6 @@ declare interface IUser {
     id: string;
     name: string;
     email: string;
-}
-
-declare interface Promise<any> {
-    toDirectResult(): any
 }
 
 declare interface Builder {
