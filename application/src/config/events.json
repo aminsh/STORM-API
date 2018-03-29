@@ -24,6 +24,12 @@
     "event": "removed"
   },
   {
+    "class": "ReturnSaleEventListener",
+    "method": "onReturnSaleCreated",
+    "module": "returnSale",
+    "event": "created"
+  },
+  {
     "class": "PurchaseEventListener",
     "method": "onPurchaseCreated",
     "module": "purchase",
@@ -46,5 +52,83 @@
     "method": "onPurchaseRemoved",
     "module": "purchase",
     "event": "removed"
+  },
+  {
+    "class": "ReturnPurchaseEventListener",
+    "method": "onReturnPurchaseCreated",
+    "module": "returnPurchase",
+    "event": "created"
+  },
+  {
+    "class": "ReturnPurchaseEventListener",
+    "method": "onReturnPurchaseChanged",
+    "module": "returnPurchase",
+    "event": "edited"
+  },
+  {
+    "class": "ReturnPurchaseEventListener",
+    "method": "onReturnPurchaseConfirmed",
+    "module": "returnPurchase",
+    "event": "confirmed"
+  },
+  {
+    "class": "ReturnPurchaseEventListener",
+    "method": "onReturnPurchaseRemoved",
+    "module": "returnPurchase",
+    "event": "removed"
+  },
+  {
+    "class": "TreasuryEventListener",
+    "method": "onReceiveCashCreated",
+    "module": "receiveCash",
+    "event": "created"
+  },
+  {
+    "class": "TreasuryEventListener",
+    "method": "onPaymentCashCreated",
+    "module": "paymentCash",
+    "event": "created"
+  },
+  {
+    "class": "TreasuryEventListener",
+    "method": "onReceiveReceiptCreated",
+    "module": "receiveReceipt",
+    "event": "created"
+  },
+  {
+    "class": "TreasuryEventListener",
+    "method": "onPaymentReceiptCreated",
+    "module": "paymentReceipt",
+    "event": "created"
+  },
+  {
+    "class": "TreasuryEventListener",
+    "method": "onReceiveDemandNoteCreated",
+    "module": "receiveDemandNote",
+    "event": "created"
+  },
+  {
+    "class": "TreasuryEventListener",
+    "method": "onPaymentDemandNoteCreated",
+    "module": "paymentDemandNote",
+    "event": "created"
+  },
+  {
+    "class": "TreasuryEventListener",
+    "method": "onChequeCreated",
+    "module": "cheque",
+    "event": "created"
+  },
+  {
+    "class": "TreasuryEventListener",
+    "method": "onChequeStatusChanged",
+    "module": "chequeStatus",
+    "event": "edited"
+  },
+  {
+    "class": "TreasuryEventListener",
+    "method": "onTransferCreated",
+    "module": "transfer",
+    "event": "created"
   }
 ]

@@ -170,6 +170,64 @@
   },
 
   {
+    "name":"returnPurchaseCreate",
+    "class":"ReturnPurchaseDomainService",
+    "method":"create",
+    "params": ["command"],
+    "returns": "id"
+  },
+  {
+    "name": "returnPurchaseUpdate",
+    "class": "ReturnPurchaseDomainService",
+    "method": "update",
+    "params": [
+      "id",
+      "command"
+    ],
+    "returns": "undefined"
+  },
+  {
+    "name": "returnPurchaseConfirm",
+    "class": "ReturnPurchaseDomainService",
+    "method": "confirm",
+    "params": [
+      "id",
+      "status"
+    ],
+    "returns": "undefined"
+  },
+  {
+    "name": "returnPurchaseRemove",
+    "class": "ReturnPurchaseDomainService",
+    "method": "remove",
+    "params": [
+      "id"
+    ],
+    "returns": "undefined"
+  },
+  {
+    "name": "returnPurchaseSetJournal",
+    "class": "ReturnPurchaseDomainService",
+    "method": "setJournal",
+    "params": [
+      "id",
+      "journalId"
+    ],
+    "returns": "undefined"
+  },
+  {
+    "name": "returnPurchasePay",
+    "class": "ReturnPurchaseDomainService",
+    "method": "pay",
+    "params": [
+      "id",
+      "payments"
+    ],
+    "returns": "undefined"
+  },
+
+
+  {
     "name": "journalCreate",
     "class": "JournalDomainService",
     "method": "create",
@@ -281,6 +339,16 @@
     "returns": "journalId"
   },
   {
+    "name": "journalGenerateForReturnPurchaseInvoicePayments",
+    "class": "JournalDomainService",
+    "method": "generateReturnPurchaseInvoiceReceive",
+    "params": [
+      "payments",
+      "invoiceId"
+    ],
+    "returns": "journalId"
+  },
+  {
     "name": "journalGenerateForReturnInvoicePayments",
     "class": "JournalDomainService",
     "method": "generateInvoicePayment",
@@ -294,6 +362,15 @@
     "name": "journalGenerateForInvoicePurchase",
     "class": "JournalDomainService",
     "method": "generateForPurchase",
+    "params": [
+      "invoiceId"
+    ],
+    "returns": "journalId"
+  },
+  {
+    "name": "journalGenerateForReturnPurchase",
+    "class": "JournalDomainService",
+    "method": "generateForReturnPurchase",
     "params": [
       "invoiceId"
     ],
@@ -656,6 +733,35 @@
   },
 
   {
+    "name": "inventoryIOTypeCreate",
+    "class": "InventoryIOTypeDomainService",
+    "method": "create",
+    "params": [
+      "command"
+    ],
+    "returns": "id"
+  },
+  {
+    "name": "inventoryIOTypeUpdate",
+    "class": "InventoryIOTypeDomainService",
+    "method": "update",
+    "params": [
+      "id",
+      "command"
+    ],
+    "returns": ""
+  },
+  {
+    "name": "inventoryIOTypeRemove",
+    "class": "InventoryIOTypeDomainService",
+    "method": "remove",
+    "params": [
+      "id"
+    ],
+    "returns": ""
+  },
+
+  {
     "name": "productCreate",
     "class": "ProductDomainService",
     "method": "create",
@@ -793,7 +899,7 @@
   {
     "name": "fiscalPeriodCreate",
     "class": "FiscalPeriodDomainService",
-    "method": "remove",
+    "method": "create",
     "params": [
       "command"
     ],
@@ -808,6 +914,486 @@
       "massage"
     ],
     "returns": ""
-  }
+  },
 
+  {
+    "name": "treasuryReceiveChequeCreate",
+    "class": "TreasuryChequeDomainService",
+    "method": "createReceive",
+    "params": [
+      "command"
+    ],
+    "returns": "id"
+  },
+  {
+    "name": "treasuryReceiveChequeUpdate",
+    "class": "TreasuryChequeDomainService",
+    "method": "update",
+    "params": [
+      "id",
+      "command"
+    ],
+    "returns": ""
+  },
+  {
+    "name": "treasuryPaymentChequeCreate",
+    "class": "TreasuryChequeDomainService",
+    "method": "createPayment",
+    "params": [
+      "command"
+    ],
+    "returns": "id"
+  },
+  {
+    "name": "treasuryPaymentChequeUpdate",
+    "class": "TreasuryChequeDomainService",
+    "method": "update",
+    "params": [
+      "id",
+      "command"
+    ],
+    "returns": ""
+  },
+  {
+    "name": "treasuryChequeRemove",
+    "class": "TreasuryChequeDomainService",
+    "method": "remove",
+    "params": [
+      "id"
+    ],
+    "returns": ""
+  },
+  {
+    "name": "journalGenerateForCheque",
+    "class": "TreasuryJournalGenerationDomainService",
+    "method": "generateForCheque",
+    "params": [
+      "treasuryId"
+    ],
+    "returns": "id"
+  },
+  {
+    "name": "chequeSetJournal",
+    "class": "TreasuryChequeDomainService",
+    "method": "setJournal",
+    "params": [
+      "id",
+      "journalId"
+    ],
+    "returns": "undefined"
+  },
+  {
+    "name": "chequeSpendSetJournal",
+    "class": "TreasuryChequeDomainService",
+    "method": "setJournalForSpend",
+    "params": [
+      "receiveId",
+      "paymentId",
+      "journalId"
+    ],
+    "returns": "undefined"
+  },
+  {
+    "name": "treasuryReceiveChequePass",
+    "class": "TreasuryChequeDomainService",
+    "method": "receiveChequePass",
+    "params": [
+      "id",
+      "command"
+    ],
+    "returns": "undefined"
+  },
+  {
+    "name": "treasuryPaymentChequePass",
+    "class": "TreasuryChequeDomainService",
+    "method": "paymentChequePass",
+    "params": [
+      "id",
+      "command"
+    ],
+    "returns": "undefined"
+  },
+  {
+    "name": "treasuryChequeInProcess",
+    "class": "TreasuryChequeDomainService",
+    "method": "ChequeInProcess",
+    "params": [
+      "id",
+      "command"
+    ],
+    "returns": "undefined"
+  },
+  {
+    "name": "treasuryChequeReturn",
+    "class": "TreasuryChequeDomainService",
+    "method": "chequeReturn",
+    "params": [
+      "id",
+      "command"
+    ],
+    "returns": "undefined"
+  },
+  {
+    "name": "treasuryChequeInFund",
+    "class": "TreasuryChequeDomainService",
+    "method": "chequeInFund",
+    "params": [
+      "id",
+      "command"
+    ],
+    "returns": "undefined"
+  },
+  {
+    "name": "treasuryChequeRevocation",
+    "class": "TreasuryChequeDomainService",
+    "method": "chequeRevocation",
+    "params": [
+      "id",
+      "command"
+    ],
+    "returns": "undefined"
+  },
+  {
+    "name": "treasuryChequeMissing",
+    "class": "TreasuryChequeDomainService",
+    "method": "chequeMissing",
+    "params": [
+      "id",
+      "command"
+    ],
+    "returns": "undefined"
+  },
+  {
+    "name": "treasuryChequeSpend",
+    "class": "TreasuryChequeDomainService",
+    "method": "chequeSpend",
+    "params": [
+      "id",
+      "command"
+    ],
+    "returns": "id"
+  },
+
+  {
+    "name": "treasuryReceiveCashCreate",
+    "class": "TreasuryCashDomainService",
+    "method": "createReceive",
+    "params": [
+      "command"
+    ],
+    "returns": "id"
+  },
+  {
+    "name": "treasuryPaymentCashCreate",
+    "class": "TreasuryCashDomainService",
+    "method": "createPayment",
+    "params": [
+      "command"
+    ],
+    "returns": "id"
+  },
+  {
+    "name": "treasuryCashUpdate",
+    "class": "TreasuryCashDomainService",
+    "method": "update",
+    "params": [
+      "id",
+      "command"
+    ],
+    "returns": ""
+  },
+  {
+    "name": "treasuryCashRemove",
+    "class": "TreasuryCashDomainService",
+    "method": "remove",
+    "params": [
+      "id"
+    ],
+    "returns": ""
+  },
+  {
+    "name": "journalGenerateForReceiveCash",
+    "class": "TreasuryJournalGenerationDomainService",
+    "method": "generateForReceiveCash",
+    "params": [
+      "treasuryId"
+    ],
+    "returns": "id"
+  },
+  {
+    "name": "journalGenerateForPaymentCash",
+    "class": "TreasuryJournalGenerationDomainService",
+    "method": "generateForPaymentCash",
+    "params": [
+      "treasuryId"
+    ],
+    "returns": "id"
+  },
+  {
+    "name": "cashSetJournal",
+    "class": "TreasuryCashDomainService",
+    "method": "setJournal",
+    "params": [
+      "id",
+      "journalId"
+    ],
+    "returns": "undefined"
+  },
+
+  {
+    "name": "treasuryReceiveReceiptCreate",
+    "class": "TreasuryReceiptDomainService",
+    "method": "createReceive",
+    "params": [
+      "command"
+    ],
+    "returns": "id"
+  },
+  {
+    "name": "treasuryPaymentReceiptCreate",
+    "class": "TreasuryReceiptDomainService",
+    "method": "createPayment",
+    "params": [
+      "command"
+    ],
+    "returns": "id"
+  },
+  {
+    "name": "treasuryReceiptUpdate",
+    "class": "TreasuryReceiptDomainService",
+    "method": "update",
+    "params": [
+      "id",
+      "command"
+    ],
+    "returns": ""
+  },
+  {
+    "name": "treasuryReceiptRemove",
+    "class": "TreasuryReceiptDomainService",
+    "method": "remove",
+    "params": [
+      "id"
+    ],
+    "returns": ""
+  },
+  {
+    "name": "journalGenerateForReceiveReceipt",
+    "class": "TreasuryJournalGenerationDomainService",
+    "method": "generateForReceiveReceipt",
+    "params": [
+      "treasuryId"
+    ],
+    "returns": "id"
+  },
+  {
+    "name": "journalGenerateForPaymentReceipt",
+    "class": "TreasuryJournalGenerationDomainService",
+    "method": "generateForPaymentReceipt",
+    "params": [
+      "treasuryId"
+    ],
+    "returns": "id"
+  },
+  {
+    "name": "receiptSetJournal",
+    "class": "TreasuryReceiptDomainService",
+    "method": "setJournal",
+    "params": [
+      "id",
+      "journalId"
+    ],
+    "returns": "undefined"
+  },
+
+  {
+    "name": "treasuryReceiveDemandNoteCreate",
+    "class": "TreasuryDemandNoteDomainService",
+    "method": "createReceive",
+    "params": [
+      "command"
+    ],
+    "returns": "id"
+  },
+  {
+    "name": "treasuryPaymentDemandNoteCreate",
+    "class": "TreasuryDemandNoteDomainService",
+    "method": "createPayment",
+    "params": [
+      "command"
+    ],
+    "returns": "id"
+  },
+  {
+    "name": "treasuryDemandNoteUpdate",
+    "class": "TreasuryDemandNoteDomainService",
+    "method": "update",
+    "params": [
+      "id",
+      "command"
+    ],
+    "returns": ""
+  },
+  {
+    "name": "treasuryDemandNoteRemove",
+    "class": "TreasuryDemandNoteDomainService",
+    "method": "remove",
+    "params": [
+      "id"
+    ],
+    "returns": ""
+  },
+  {
+    "name": "journalGenerateForReceiveDemandNote",
+    "class": "TreasuryJournalGenerationDomainService",
+    "method": "generateForReceiveDemandNote",
+    "params": [
+      "treasuryId"
+    ],
+    "returns": "id"
+  },
+  {
+    "name": "journalGenerateForPaymentDemandNote",
+    "class": "TreasuryJournalGenerationDomainService",
+    "method": "generateForPaymentDemandNote",
+    "params": [
+      "treasuryId"
+    ],
+    "returns": "id"
+  },
+  {
+    "name": "demandNoteSetJournal",
+    "class": "TreasuryDemandNoteDomainService",
+    "method": "setJournal",
+    "params": [
+      "id",
+      "journalId"
+    ],
+    "returns": "undefined"
+  },
+
+  {
+    "name": "treasuryTransferCreate",
+    "class": "TreasuryTransferDomainService",
+    "method": "create",
+    "params": [
+      "command"
+    ],
+    "returns": "id"
+  },
+  {
+    "name": "treasuryTransferUpdate",
+    "class": "TreasuryTransferDomainService",
+    "method": "update",
+    "params": [
+      "id",
+      "command"
+    ],
+    "returns": ""
+  },
+  {
+    "name": "treasuryTransferRemove",
+    "class": "TreasuryTransferDomainService",
+    "method": "remove",
+    "params": [
+      "id"
+    ],
+    "returns": ""
+  },
+  {
+    "name": "journalGenerateForTransfer",
+    "class": "TreasuryJournalGenerationDomainService",
+    "method": "generateForTransfer",
+    "params": [
+      "treasuryId"
+    ],
+    "returns": "id"
+  },
+  {
+    "name": "transferSetJournal",
+    "class": "TreasuryDemandNoteDomainService",
+    "method": "setJournal",
+    "params": [
+      "id",
+      "journalId"
+    ],
+    "returns": "undefined"
+  },
+
+  {
+    "name": "banksNameCreate",
+    "class": "BanksNameDomainService",
+    "method": "create",
+    "params": [
+      "command"
+    ],
+    "returns": "id"
+  },
+
+  {
+    "name": "payableChequeCategoryCreate",
+    "class": "PayableChequeCategoryDomainService",
+    "method": "create",
+    "params": [
+      "command"
+    ],
+    "returns": "id"
+  },
+  {
+    "name": "payableChequeCategoryUpdate",
+    "class": "PayableChequeCategoryDomainService",
+    "method": "update",
+    "params": [
+      "id",
+      "command"
+    ],
+    "returns": ""
+  },
+  {
+    "name": "payableChequeCategoryRemove",
+    "class": "PayableChequeCategoryDomainService",
+    "method": "remove",
+    "params": [
+      "id"
+    ],
+    "returns": ""
+  },
+
+  {
+    "name": "payableChequeCreate",
+    "class": "PayableChequeDomainService",
+    "method": "create",
+    "params": [
+      "command"
+    ],
+    "returns": "id"
+  },
+  {
+    "name": "payableChequeChangedNumber",
+    "class": "PayableChequeDomainService",
+    "method": "changeNumber",
+    "params": [
+      "number"
+    ],
+    "returns": ""
+  },
+  {
+    "name": "payableChequeWrite",
+    "class": "PayableChequeDomainService",
+    "method": "write",
+    "params": [
+      "id",
+      "command"
+    ],
+    "returns": ""
+  },
+  {
+    "name": "payableChequeRemove",
+    "class": "PayableChequeDomainService",
+    "method": "remove",
+    "params": [
+      "id"
+    ],
+    "returns": ""
+  }
 ]
