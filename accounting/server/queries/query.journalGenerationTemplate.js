@@ -10,13 +10,15 @@ const templateSale = require('../config/defaultJournalGenerationTemplates/sale.j
     templateReturnSale = require('../config/defaultJournalGenerationTemplates/returnSale.json'),
     templateInventoryOutputSale = require('../config/defaultJournalGenerationTemplates/inventoryOutputSale.json'),
     templateInventoryInputReturnSale = require('../config/defaultJournalGenerationTemplates/inventoryInputReturnSale.json'),
+    templateReturnPurchase = require('../config/defaultJournalGenerationTemplates/returnPurchase'),
 
     templates = {
         sale: templateSale,
         purchase: templatePurchase,
         returnSale: templateReturnSale,
         inventoryOutputSale: templateInventoryOutputSale,
-        inventoryInputReturnSale: templateInventoryInputReturnSale
+        inventoryInputReturnSale: templateInventoryInputReturnSale,
+        returnPurchase: templateReturnPurchase
     };
 
 

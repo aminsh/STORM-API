@@ -8,7 +8,7 @@ const BaseQuery = require('./query.base'),
     async = require('asyncawait/async'),
     await = require('asyncawait/await');
 
-module.exports = class ReportQueryJournals extends BaseQuery {
+class ReportQueryJournals extends BaseQuery {
     constructor(branchId, currentFiscalPeriodId, mode, filter) {
         super(branchId);
 
@@ -128,3 +128,5 @@ module.exports = class ReportQueryJournals extends BaseQuery {
     };
 
 }
+
+module.exports = ReportQueryJournals;

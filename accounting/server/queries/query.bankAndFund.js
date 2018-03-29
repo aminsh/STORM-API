@@ -1,7 +1,5 @@
 "use strict";
 
-"use strict";
-
 const async = require('asyncawait/async'),
     await = require('asyncawait/await'),
     BaseQuery = require('./query.base'),
@@ -48,8 +46,9 @@ class BankQuery extends BaseQuery {
             }));
     }
 
-    getAll(fiscalPeriodId) {
+    getAll(fiscalPeriodId, parameters) {
         let knex = this.knex,
+            branchId = this.branchId,
 
             subsidiaryLedgerAccounts = (await(knex.from('settings').where('branchId', this.branchId).first()) || {subsidiaryLedgerAccounts: []})
                 .subsidiaryLedgerAccounts,
@@ -64,20 +63,24 @@ class BankQuery extends BaseQuery {
                 and "detailAccountId" = "detailAccounts"."id"
                 and "subsidiaryLedgerAccounts".id in ('${subsidiaryLedgerAccount.bank || 0}', '${subsidiaryLedgerAccount.fund || 0}') ) as "remainder"`);
 
+        let query = knex.from(function () {
+            this.select('*', remainderSubQuery)
+                .from('detailAccounts')
+                .where('branchId', branchId)
+                .whereIn('detailAccountType', ['bank', 'fund'])
+                .as('base');
+        });
 
-        return knex.select('*', remainderSubQuery)
-            .from('detailAccounts')
-            .where('branchId', this.branchId)
-            .whereIn('detailAccountType', ['bank', 'fund'])
-            .map(item => ({
-                id: item.id,
-                title: item.title,
-                type: item.detailAccountType,
-                typeDisplay: item.detailAccountType
-                    ? enums.DetailAccountType().getDisplay(item.detailAccountType)
-                    : '',
-                remainder: getRemainder(item.detailAccountType, item.remainder)
-            }));
+
+        return kendoQueryResolve(query, parameters, item => ({
+            id: item.id,
+            title: item.title,
+            type: item.detailAccountType,
+            typeDisplay: item.detailAccountType
+                ? enums.DetailAccountType().getDisplay(item.detailAccountType)
+                : '',
+            remainder: getRemainder(item.detailAccountType, item.remainder)
+        }));
 
         function getRemainder(detailAccountType, remainder) {
             if (detailAccountType === 'bank' && !subsidiaryLedgerAccount.bank)

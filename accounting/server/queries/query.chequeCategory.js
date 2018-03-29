@@ -6,7 +6,7 @@ const async = require('asyncawait/async'),
     kendoQueryResolve = require('../services/kendoQueryResolve'),
     view = require('../viewModel.assemblers/view.chequeCategory');
 
-module.exports = class ChequeCategoryQuery extends BaseQuery {
+class ChequeCategoryQuery extends BaseQuery {
     constructor(branchId) {
         super(branchId);
 
@@ -18,13 +18,13 @@ module.exports = class ChequeCategoryQuery extends BaseQuery {
             branchId = this.branchId;
 
         let query = knex.select().from(function () {
-            let selectExp = '"chequeCategories".*, "detailAccounts".code || \' \' || "detailAccounts".title as "detailAccount","banks".title as "bank"';
+            let selectExp = knex.raw('"chequeCategories".*, "detailAccounts".code || \' \' || "detailAccounts".title as "bankDisplay"');
 
-            this.select(knex.raw(selectExp)).from('chequeCategories')
-                .leftJoin('detailAccounts', 'chequeCategories.detailAccountId', 'detailAccounts.id')
-                .leftJoin('banks', 'chequeCategories.bankId', 'banks.id')
+            this.select(selectExp)
+                .from('chequeCategories')
+                .leftJoin('detailAccounts', 'chequeCategories.bankId', 'detailAccounts.id')
                 .where('chequeCategories.branchId', branchId)
-                .as('baseChequeCategories');
+                .as('base');
         });
 
         return kendoQueryResolve(query, parameters, view);
@@ -52,4 +52,25 @@ module.exports = class ChequeCategoryQuery extends BaseQuery {
                 .first());
         return view(category);
     }
-};
+
+    getCheque(bankId){
+        let firstOpenCategory = await(
+            this.knex.table('chequeCategories')
+                .where('branchId', this.branchId)
+                .where('isClosed', false)
+                .where('bankId', bankId)
+                .orderBy('createdAt')
+                .first());
+
+        if(!firstOpenCategory)
+            return 'NULL';
+
+        let cheque = firstOpenCategory.cheques.asEnumerable()
+            .orderBy(item => item.number)
+            .first(item => !item.isUsed);
+
+        return cheque.number;
+    }
+}
+
+module.exports = ChequeCategoryQuery;

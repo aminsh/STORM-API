@@ -154,8 +154,8 @@ class DetailAccountQuery extends BaseQuery {
             withQuery = knex.with('journals-row', (qb) => {
                 qb.select ('detailAccounts.title',
                     'journalLines.article',
-                    knex.raw(`cast("journalLines".debtor as float) as debtor`),
-                    knex.raw(`cast("journalLines".creditor as float) as creditor`),
+                    knex.raw(`"journalLines".debtor as debtor`),
+                    knex.raw(`"journalLines".creditor as creditor`),
                     'journalLines.detailAccountId',
                     knex.raw('journals."temporaryDate" as date'),
                     knex.raw('journals."temporaryNumber" as number'),
@@ -173,7 +173,7 @@ class DetailAccountQuery extends BaseQuery {
 
             query = withQuery.select().from(function () {
                 this.select('*',
-                    knex.raw(`(select cast(sum(debtor - creditor) as float) 
+                    knex.raw(`(select sum(debtor - creditor) 
                                from "journals-row" 
                                where "seq_row" <= base."seq_row" and "detailAccountId" = base."detailAccountId") as remainder`))
                     .from('journals-row as base')

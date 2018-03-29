@@ -16,7 +16,7 @@ const BaseQuery = require('./query.base'),
         inventoryType: item.inventoryType,
         inventoryTypeDisplay: item.inventoryType ? Enums.InventoryType().getDisplay(item.inventoryType) : null,
         ioType: item.ioType,
-        ioTypeDisplay: item.ioType ? Enums.InventoryIOType().getDisplay(item.ioType) : null,
+        ioTypeDisplay: item.ioTypeDisplay,
         stockId: item.stockId,
         stockDisplay: item.stockDisplay,
         journalId: item.journalId,
@@ -74,7 +74,13 @@ class InventoryQuery extends BaseQuery {
             knex = this.knex,
 
             query = knex.from(function () {
-                let query = this.select('inventories.*', knex.raw('stocks.title as "stockDisplay"')).from('inventories')
+                let query = this.select(
+                    'inventories.*',
+                    knex.raw('stocks.title as "stockDisplay"'),
+                    knex.raw('"inventoryIOTypes".title as "ioTypeDisplay"')
+                )
+                    .from('inventories')
+                    .leftJoin('inventoryIOTypes', 'inventoryIOTypes.id', 'inventories.ioType')
                     .leftJoin('stocks', 'stocks.id', 'inventories.stockId')
                     .where('inventories.branchId', branchId)
                     .where('inventoryType', inventoryType)
@@ -95,12 +101,37 @@ class InventoryQuery extends BaseQuery {
                 this.select(
                     'inventories.*',
                     knex.raw(`inventories.number || ' - ' || inventories.date || ' - ' || stocks.title as display`),
+                    knex.raw('stocks.title as "stockDisplay"'),
+                     knex.raw('"inventoryIOTypes".title as "ioTypeDisplay"')
+                )
+                    .from('inventories')
+                    .leftJoin('stocks', 'stocks.id', 'inventories.stockId')
+                    .leftJoin('inventoryIOTypes', 'inventoryIOTypes.id', 'inventories.ioType')
+                    .where('inventories.branchId', branchId)
+                    .where('inventoryType', inventoryType)
+                    .whereNull('invoiceId')
+                    .whereNull('journalId')
+                    .as('base');
+            });
+
+        return kendoQueryResolve(query, parameters, view);
+    }
+
+    getAllInputsWithIoType(ioType, parameters) {
+        const branchId = this.branchId,
+            knex = this.knex,
+
+            query = knex.from(function () {
+                this.select(
+                    'inventories.*',
+                    knex.raw(`inventories.number || ' - ' || inventories.date || ' - ' || stocks.title as display`),
                     knex.raw('stocks.title as "stockDisplay"')
                 )
                     .from('inventories')
                     .leftJoin('stocks', 'stocks.id', 'inventories.stockId')
+                    .leftJoin('inventoryIOTypes', 'inventoryIOTypes.id', 'inventories.ioType')
                     .where('inventories.branchId', branchId)
-                    .where('inventoryType', inventoryType)
+                    .where('inventoryIOTypes.id', ioType)
                     .whereNull('invoiceId')
                     .whereNull('journalId')
                     .as('base');
@@ -116,9 +147,15 @@ class InventoryQuery extends BaseQuery {
 
     getById(id) {
         let knex = this.knex,
-            inventory = await(knex.select('inventories.*', knex.raw('stocks.title as "stockDisplay"'))
+            inventory = await(knex
+                .select(
+                    'inventories.*',
+                    knex.raw('stocks.title as "stockDisplay"'),
+                     knex.raw('"inventoryIOTypes".title as "ioTypeDisplay"')
+                )
                 .from('inventories')
                 .leftJoin('stocks', 'inventories.stockId', 'stocks.id')
+                .leftJoin('inventoryIOTypes', 'inventoryIOTypes.id', 'inventories.ioType')
                 .where('inventories.id', id)
                 .first()),
             inventoryLines = await(

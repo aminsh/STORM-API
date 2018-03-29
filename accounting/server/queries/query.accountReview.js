@@ -34,10 +34,10 @@ module.exports = class AccountReview extends BaseQuery {
         let knex = this.knex;
         let aggregates = await(query
             .select(
-                knex.raw('SUM(cast("sumBeforeRemainder" as float)) as "totalBeforeRemainder"'),
-                knex.raw('SUM(cast("sumDebtor" as float)) as "totalDebtor"'),
-                knex.raw('SUM(cast("sumCreditor" as float)) as "totalCreditor"'),
-                knex.raw('SUM(cast("sumRemainder" as float)) as "totalRemainder"')
+                knex.raw('SUM("sumBeforeRemainder") as "totalBeforeRemainder"'),
+                knex.raw('SUM("sumDebtor") as "totalDebtor"'),
+                knex.raw('SUM("sumCreditor") as "totalCreditor"'),
+                knex.raw('SUM("sumRemainder") as "totalRemainder"')
             ).first());
 
         return {
@@ -55,7 +55,7 @@ module.exports = class AccountReview extends BaseQuery {
 
         let query = knex.select().from(function () {
             this.select('generalLedgerAccountId',
-                'sumBeforeRemainder','sumDebtor','sumCreditor','sumRemainder',
+                'sumBeforeRemainder', 'sumDebtor', 'sumCreditor', 'sumRemainder',
                 knex.raw('"generalLedgerAccounts"."code" as "generalLedgerAccountCode"'),
                 knex.raw('"generalLedgerAccounts"."title" as "generalLedgerAccountTitle"'))
                 .from(function () {
@@ -126,7 +126,7 @@ module.exports = class AccountReview extends BaseQuery {
 
         let query = knex.select().from(function () {
             this.select('subsidiaryLedgerAccountId',
-                'sumBeforeRemainder','sumDebtor','sumCreditor','sumRemainder',
+                'sumBeforeRemainder', 'sumDebtor', 'sumCreditor', 'sumRemainder',
                 knex.raw('"subsidiaryLedgerAccounts"."code" as "subsidiaryLedgerAccountCode"'),
                 knex.raw('"subsidiaryLedgerAccounts"."title" as "subsidiaryLedgerAccountTitle"'),
                 knex.raw('"generalLedgerAccounts"."code" as "generalLedgerAccountCode"'))
@@ -168,7 +168,7 @@ module.exports = class AccountReview extends BaseQuery {
 
         let query = knex.select().from(function () {
             this.select('detailAccountId',
-                'sumBeforeRemainder','sumDebtor','sumCreditor','sumRemainder',
+                'sumBeforeRemainder', 'sumDebtor', 'sumCreditor', 'sumRemainder',
                 knex.raw('"detailAccounts"."code" as "detailAccountCode"'),
                 knex.raw('"detailAccounts"."title" as "detailAccountTitle"')
             )
@@ -328,54 +328,54 @@ module.exports = class AccountReview extends BaseQuery {
 
         //options.groupByField = this.tinyGroupByFields;
 
-        let withQuery = knex.with('journals-row',(qb) => {
-           qb.select(
-               'groupJournals.id',
-               'date',
-               'number',
-               'article',
-               'periodId',
-               'journalStatus',
-               'journalType',
-               'sumBeforeRemainder',
-               knex.raw(`cast("sumDebtor" as float)`),
-               knex.raw(`cast("sumCreditor" as float)`),
-               knex.raw(`cast("sumRemainder" as float)`),
-               'groupJournals.generalLedgerAccountId',
-               knex.raw('"generalLedgerAccounts"."code" as "generalLedgerAccountCode"'),
-               knex.raw('"generalLedgerAccounts"."title" as "generalLedgerAccountTitle"'),
-               'subsidiaryLedgerAccountId',
-               knex.raw('"subsidiaryLedgerAccounts"."code" as "subsidiaryLedgerAccountCode"'),
-               knex.raw('"subsidiaryLedgerAccounts"."title" as "subsidiaryLedgerAccountTitle"'),
-               'detailAccountId',
-               knex.raw('"detailAccounts"."code" as "detailAccountCode"'),
-               knex.raw('"detailAccounts"."title" as "detailAccountTitle"'),
-               'dimension1Id',
-               knex.raw('"dimension1s"."code" as "dimension1Code"'),
-               knex.raw('"dimension1s"."title" as "dimension1Title"'),
-               'dimension2Id',
-               knex.raw('"dimension2s"."code" as "dimension2Code"'),
-               knex.raw('"dimension2s"."title" as "dimension2Title"'),
-               'dimension3Id',
-               knex.raw('"dimension3s"."code" as "dimension3Code"'),
-               knex.raw('"dimension3s"."title" as "dimension3Title"'),
-               knex.raw(`ROW_NUMBER () OVER (ORDER BY "temporaryNumber") as "seq_row"`)
-           )
-               .from(function () {
-                   groupBy.call(this, knex, options, fiscalPeriodId, 'tiny');
-               })
-               .leftJoin('generalLedgerAccounts', 'generalLedgerAccounts.id', 'groupJournals.generalLedgerAccountId')
-               .leftJoin('subsidiaryLedgerAccounts', 'subsidiaryLedgerAccounts.id', 'groupJournals.subsidiaryLedgerAccountId')
-               .leftJoin('detailAccounts', 'detailAccounts.id', 'groupJournals.detailAccountId')
-               .leftJoin(knex.raw('"dimensions" as "dimension1s"'), 'dimension1s.id', 'groupJournals.dimension1Id')
-               .leftJoin(knex.raw('"dimensions" as "dimension2s"'), 'dimension2s.id', 'groupJournals.dimension2Id')
-               .leftJoin(knex.raw('"dimensions" as "dimension3s"'), 'dimension3s.id', 'groupJournals.dimension3Id')
-               .orderBy('number')
-        }),
+        let withQuery = knex.with('journals-row', (qb) => {
+                qb.select(
+                    'groupJournals.id',
+                    'date',
+                    'number',
+                    'article',
+                    'periodId',
+                    'journalStatus',
+                    'journalType',
+                    'sumBeforeRemainder',
+                    'sumDebtor',
+                    'sumCreditor',
+                    'sumRemainder',
+                    'groupJournals.generalLedgerAccountId',
+                    knex.raw('"generalLedgerAccounts"."code" as "generalLedgerAccountCode"'),
+                    knex.raw('"generalLedgerAccounts"."title" as "generalLedgerAccountTitle"'),
+                    'subsidiaryLedgerAccountId',
+                    knex.raw('"subsidiaryLedgerAccounts"."code" as "subsidiaryLedgerAccountCode"'),
+                    knex.raw('"subsidiaryLedgerAccounts"."title" as "subsidiaryLedgerAccountTitle"'),
+                    'detailAccountId',
+                    knex.raw('"detailAccounts"."code" as "detailAccountCode"'),
+                    knex.raw('"detailAccounts"."title" as "detailAccountTitle"'),
+                    'dimension1Id',
+                    knex.raw('"dimension1s"."code" as "dimension1Code"'),
+                    knex.raw('"dimension1s"."title" as "dimension1Title"'),
+                    'dimension2Id',
+                    knex.raw('"dimension2s"."code" as "dimension2Code"'),
+                    knex.raw('"dimension2s"."title" as "dimension2Title"'),
+                    'dimension3Id',
+                    knex.raw('"dimension3s"."code" as "dimension3Code"'),
+                    knex.raw('"dimension3s"."title" as "dimension3Title"'),
+                    knex.raw(`ROW_NUMBER () OVER (ORDER BY "temporaryNumber") as "seq_row"`)
+                )
+                    .from(function () {
+                        groupBy.call(this, knex, options, fiscalPeriodId, 'tiny');
+                    })
+                    .leftJoin('generalLedgerAccounts', 'generalLedgerAccounts.id', 'groupJournals.generalLedgerAccountId')
+                    .leftJoin('subsidiaryLedgerAccounts', 'subsidiaryLedgerAccounts.id', 'groupJournals.subsidiaryLedgerAccountId')
+                    .leftJoin('detailAccounts', 'detailAccounts.id', 'groupJournals.detailAccountId')
+                    .leftJoin(knex.raw('"dimensions" as "dimension1s"'), 'dimension1s.id', 'groupJournals.dimension1Id')
+                    .leftJoin(knex.raw('"dimensions" as "dimension2s"'), 'dimension2s.id', 'groupJournals.dimension2Id')
+                    .leftJoin(knex.raw('"dimensions" as "dimension3s"'), 'dimension3s.id', 'groupJournals.dimension3Id')
+                    .orderBy('number')
+            }),
 
             query = withQuery.select().from(function () {
                 this.select('*',
-                    knex.raw(`(select cast(sum("sumRemainder") as float) 
+                    knex.raw(`(select sum("sumRemainder") 
                         from "journals-row" 
                         where "seq_row" <= base."seq_row" and "detailAccountId" = base."detailAccountId") as remainder`))
                     .from('journals-row as base')
@@ -388,15 +388,15 @@ module.exports = class AccountReview extends BaseQuery {
                         'journalStatus',
                         'journalType',
                         'sumBeforeRemainder', 'sumDebtor', 'sumCreditor', 'sumRemainder',
-                        'generalLedgerAccountId','generalLedgerAccountCode','generalLedgerAccountTitle',
-                        'subsidiaryLedgerAccountId','subsidiaryLedgerAccountCode','subsidiaryLedgerAccountTitle',
-                        'detailAccountId','detailAccountCode','detailAccountTitle',
-                        'dimension1Id','dimension1Code','dimension1Title',
-                        'dimension2Id','dimension2Code','dimension2Title',
-                        'dimension3Id','dimension3Code','dimension3Title',
+                        'generalLedgerAccountId', 'generalLedgerAccountCode', 'generalLedgerAccountTitle',
+                        'subsidiaryLedgerAccountId', 'subsidiaryLedgerAccountCode', 'subsidiaryLedgerAccountTitle',
+                        'detailAccountId', 'detailAccountCode', 'detailAccountTitle',
+                        'dimension1Id', 'dimension1Code', 'dimension1Title',
+                        'dimension2Id', 'dimension2Code', 'dimension2Title',
+                        'dimension3Id', 'dimension3Code', 'dimension3Title',
                         'seq_row'
                     )
-                    .orderBy('base.seq_row','desc')
+                    .orderBy('base.seq_row', 'desc')
                     .as('baseQuery')
             });
 

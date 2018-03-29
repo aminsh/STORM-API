@@ -6,7 +6,7 @@ const BaseQuery = require('./query.base'),
     await = require('asyncawait/await'),
     SettingsQuery = require('./query.settings');
 
-module.exports = class InvoicesQuery extends BaseQuery {
+class InvoicesQuery extends BaseQuery {
     constructor(branchId) {
         super(branchId);
     };
@@ -18,7 +18,7 @@ module.exports = class InvoicesQuery extends BaseQuery {
 
         invoice = await(knex.select(knex.raw(` invoices."id" as "invoiceId",
                 "invoiceLines"."id" as "invoiceLinesId",
-                invoices.discount as "invoiceDiscount",
+                COALESCE(invoices.discount,0) as "invoiceDiscount",
                 products.code as "iranCode",
                 invoices."number" as "number", invoices."date" as "date",
                 CASE WHEN charges is NULL OR charges::TEXT = '[]' THEN '[{"key":"","value":0}]'::json ELSE charges END as charges,
@@ -72,4 +72,6 @@ module.exports = class InvoicesQuery extends BaseQuery {
 
         return invoice;
     }
-};
+}
+
+module.exports = InvoicesQuery;
