@@ -1,17 +1,17 @@
 "use strict";
 
 const async = require('asyncawait/async'),
-    await = require('asyncawait/await');
+    await = require('asyncawait/await'),
+    enums = require('../../shared/enums');
 
 exports.seed = async(function (knex, Promise) {
 
-    const invoices = await(knex.select('*').from('invoices').where('invoiceType', 'sale'));
+    let ioTypes = enums.InventoryIOType().data,
+        types = ioTypes.map(type => ({
+            id: type.key,
+            title: type.display,
+            type: type.key.startsWith("input") ? 'input' : 'output',
+        }));
 
-    invoices.forEach(item => {
-
-        if(item.invoiceStatus === 'draft')
-            return;
-
-        await(knex('invoices').where('id', item.id).update({invoiceStatus: 'confirmed'}));
-    })
+    await(knex('inventoryIOTypes').insert(types));
 });
