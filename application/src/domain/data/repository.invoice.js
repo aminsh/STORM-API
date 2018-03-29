@@ -20,7 +20,7 @@ export class InvoiceRepository extends BaseRepository {
                 knex.raw('"detailAccounts"."code" as "detailAccountCode"')
             ).from('invoices')
                 .leftJoin('invoiceLines', 'invoices.id', 'invoiceLines.invoiceId')
-                .leftJoin('detailAccounts','detailAccounts.id','invoices.detailAccountId')
+                .leftJoin('detailAccounts', 'detailAccounts.id', 'invoices.detailAccountId')
                 .modify(this.modify, this.branchId, 'invoices.branchId')
                 .andWhere('invoices.id', id));
 
@@ -47,7 +47,8 @@ export class InvoiceRepository extends BaseRepository {
             costs: first.costs,
             charges: first.charges,
             bankReceiptNumber: (first.custom || {}).bankReceiptNumber,
-            discount: first.invoiceDiscount
+            discount: first.invoiceDiscount,
+            inventoryIds: first.inventoryIds
         };
 
         invoice.invoiceLines = data.asEnumerable().select(line => ({
@@ -64,6 +65,30 @@ export class InvoiceRepository extends BaseRepository {
             .toArray();
 
         return invoice;
+    }
+
+    findReturnInvoiceByInvoiceId(ofInvoiceId) {
+
+        let knex = this.knex,
+
+            result = toResult(this.knex.select(
+                'invoices.*', 'invoiceLines.*',
+                knex.raw('"invoices"."description" as "invoiceDescription"'),
+                knex.raw('"invoiceLines"."description" as "invoiceLineDescription"'),
+                knex.raw('"invoices"."discount" as "invoiceDiscount"'),
+                knex.raw('"invoiceLines"."discount" as "invoiceLineDiscount"'),
+                knex.raw('"invoiceLines"."id" as "invoiceLineId"'),
+                knex.raw('"detailAccounts"."title" as "detailAccountTitle"'),
+                knex.raw('"detailAccounts"."code" as "detailAccountCode"')
+                ).from('invoices')
+                    .leftJoin('invoiceLines', 'invoices.id', 'invoiceLines.invoiceId')
+                    .leftJoin('detailAccounts', 'detailAccounts.id', 'invoices.detailAccountId')
+                    .modify(this.modify, this.branchId, 'invoices.branchId')
+                    .andWhere('invoices.ofInvoiceId', ofInvoiceId)
+                    .andWhere('invoices.invoiceStatus', '!=', 'draft')
+            );
+
+        return result;
     }
 
     findByNumber(number, type, notEqualId) {
@@ -94,14 +119,14 @@ export class InvoiceRepository extends BaseRepository {
         return result && result.max ? result.max || 0 : 0;
     }
 
-    isNumberDuplicated(number, invoiceType, notEqualId){
+    isNumberDuplicated(number, invoiceType, notEqualId) {
         let query = this.knex.select('id')
             .from('invoices')
             .modify(this.modify, this.branchId)
             .where('invoiceType', invoiceType)
             .where('number', number);
 
-        if(notEqualId)
+        if (notEqualId)
             query.where('id', '!=', notEqualId);
 
         return toResult(query.first());
@@ -126,7 +151,7 @@ export class InvoiceRepository extends BaseRepository {
 
             return entity;
         }
-        catch (e){
+        catch (e) {
             trx.rollback(e);
 
             throw new Error(e);
@@ -154,7 +179,7 @@ export class InvoiceRepository extends BaseRepository {
 
             trx.commit();
         }
-        catch (e){
+        catch (e) {
             trx.rollback(e);
 
             throw new Error(e);

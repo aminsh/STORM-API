@@ -85,7 +85,7 @@ export class InventoryRepository extends BaseRepository {
 
         let query = this.knex.select('inventoryLines.*', 'inventories.inventoryType', 'inventories.ioType').from('inventories')
             .leftJoin('inventoryLines', 'inventories.id', 'inventoryLines.inventoryId')
-            .modify(this.modify, branchId, 'inventories.branchId')
+            .modify(this.modify, this.branchId, 'inventories.branchId')
             .andWhere('fiscalPeriodId', fiscalPeriodId)
             .andWhere('productId', productId)
             .andWhere('stockId', stockId)

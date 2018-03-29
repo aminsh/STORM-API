@@ -12,5 +12,8 @@ export * from "./repository.scale";
 export * from "./repository.setting";
 export * from "./repository.stock";
 export * from "./repository.subsidiaryLedgerAccount";
-
-
+export * from "./repository.inventoryIOType";
+export * from "./repository.treasury";
+export * from "./repository.banksName";
+export * from "./repository.treasury.setting";
+export * from "./repository.chequeCategory";
