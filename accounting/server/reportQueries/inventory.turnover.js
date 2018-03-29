@@ -1,4 +1,4 @@
-    "use strict";
+"use strict";
 
 
 const BaseQuery = require('../queries/query.base'),
@@ -7,7 +7,7 @@ const BaseQuery = require('../queries/query.base'),
     async = require('asyncawait/async'),
     await = require('asyncawait/await');
 
-module.exports = class InventoriesTurnoverReport extends BaseQuery {
+class InventoriesTurnoverReport extends BaseQuery {
     constructor(branchId, currentFiscalPeriodId, mode, filter) {
         super(branchId);
 
@@ -31,21 +31,19 @@ module.exports = class InventoriesTurnoverReport extends BaseQuery {
                 ELSE '${translate('Input')}' END AS "inventoryTypeText",
             "inventoryLines".quantity, "inventoryLines"."unitPrice",
             "inventoryLines".quantity*"inventoryLines"."unitPrice" as "totalPrice",
-            inventories.date, inventories.number, stocks.title as stock, stocks.id as "stockId",
-            CASE WHEN inventories."ioType" = 'inputFirst' THEN '${translate('First input')}' 
-                  WHEN inventories."ioType" = 'inputPurchase' THEN '${translate('Purchase')}'
-                  WHEN inventories."ioType" = 'inputStockToStock' THEN '${translate('stock to stock')}'
-                  WHEN inventories."ioType" = 'inputBackFromSaleOrConsuming' THEN '${translate('ReturnSales')}'
-                  WHEN inventories."ioType" = 'outputSale' THEN '${translate('Sale')}'
-                  WHEN inventories."ioType" = 'outputWaste' THEN '${translate('damages')}' END AS "ioType"`
-        ))
+            inventories.date, inventories.number, stocks.title as stock, stocks.id as "stockId"`),
+            knex.raw('"inventoryIOTypes".title as "ioType"')
+        )
             .from('stocks')
             .where('stocks.branchId', branchId)
             .whereIn('stocks.id', ids)
             .innerJoin('inventories', 'inventories.stockId', 'stocks.id')
+            .innerJoin('inventoryIOTypes', 'inventoryIOTypes.id', 'inventories.ioType')
             .innerJoin('inventoryLines', 'inventoryLines.inventoryId', 'inventories.id')
             .innerJoin('products', 'products.id', 'inventoryLines.productId')
             .whereBetween('inventories.date', [options.fromMainDate, options.toDate])
             .as('inventoriesTurnover')
     }
 }
+
+module.exports = InventoriesTurnoverReport;

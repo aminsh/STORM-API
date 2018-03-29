@@ -24,10 +24,9 @@ class ProductReports extends BaseQuery {
         let knex = this.knex,
             branchId = this.branchId,
 
-            query = this.knex.select(knex.raw(
-                `products.title as product,
+            query = this.knex.select(
+                knex.raw(`products.title as product,
             inventories."fixedAmount",
-            
             inventories."createdAt",
             products.id as "productId",
             inventories."inventoryType",
@@ -39,22 +38,18 @@ class ProductReports extends BaseQuery {
             scales.title as "scaleTitle",
             CASE WHEN inventories."inventoryType" = 'input' THEN '${translate('Input')}'
              ELSE '${translate('Output')}' END as "inventoryTypeTitle",
-            inventories."ioType" as ioType,
-            CASE WHEN inventories."ioType" = 'inputFirst' THEN '${translate('First input')}' 
-                  WHEN inventories."ioType" = 'inputPurchase' THEN '${translate('Purchase')}'
-                  WHEN inventories."ioType" = 'inputStockToStock' THEN '${translate('stock to stock')}'
-                  WHEN inventories."ioType" = 'inputBackFromSaleOrConsuming' THEN '${translate('ReturnSales')}'
-                  WHEN inventories."ioType" = 'outputSale' THEN '${translate('Sale')}'
-                  WHEN inventories."ioType" = 'outputWaste' THEN '${translate('damages')}' END AS "ioTypeText"`
-            ))
+            inventories."ioType" as ioType`),
+                knex.raw('"inventoryIOTypes".title as "ioTypeText"')
+            )
                 .from('products')
                 .where('products.branchId', branchId)
                 .innerJoin('inventoryLines', 'inventoryLines.productId', 'products.id')
                 .innerJoin('inventories', 'inventories.id', 'inventoryLines.inventoryId')
+                .innerJoin('inventoryIOTypes', 'inventoryIOTypes.id', 'inventories.ioType')
                 .leftJoin('scales', 'scales.id', 'products.scaleId')
                 .innerJoin('stocks', 'stocks.id', 'inventories.stockId')
                 .orderBy('inventories.createdAt');
-        ;
+
 
         if (fixedType === 'fixedQuantity')
             query.where('fixedQuantity', true);
@@ -70,8 +65,8 @@ class ProductReports extends BaseQuery {
         if (productIds)
             query.whereIn('products.id', productIds);
 
-        if (stockId && !stockId.includes('all')){
-            query.whereIn('stocks.id',stockId);
+        if (stockId && !stockId.includes('all')) {
+            query.whereIn('stocks.id', stockId);
         }
 
 

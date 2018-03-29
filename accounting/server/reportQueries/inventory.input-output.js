@@ -3,7 +3,7 @@
 
 const BaseQuery = require('../queries/query.base');
 
-module.exports = class InventoriesReport extends BaseQuery{
+class InventoriesReport extends BaseQuery{
     constructor(branchId){
         super(branchId);
     }
@@ -31,3 +31,5 @@ module.exports = class InventoriesReport extends BaseQuery{
             .as('inventory')
     }
 }
+
+module.exports = InventoriesReport;
