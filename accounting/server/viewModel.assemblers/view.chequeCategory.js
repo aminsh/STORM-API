@@ -3,11 +3,10 @@ var enums = instanceOf('Enums');
 function chequeCategoryAssembler(entity) {
     var viewModel = {
         id: entity.id,
-        display: entity.display,
+        receiveDate: entity.receiveDate,
         bankId: entity.bankId,
-        bank: entity.bank,
-        detailAccountId: entity.detailAccountId,
-        detailAccount: entity.detailAccount,
+        bankDisplay: entity.bankDisplay,
+        bankName: entity.bankName,
         totalPages: entity.totalPages,
         firstPageNumber: entity.firstPageNumber,
         lastPageNumber: entity.lastPageNumber,

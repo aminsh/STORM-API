@@ -28,7 +28,7 @@ module.exports = function (entity, settings) {
         customerId: entity.detailAccountId,
         customerDisplay: entity.detailAccountDisplay,
         status: entity.invoiceStatus,
-        statusDisplay: enums.InvoiceStatus().getDisplay(entity.invoiceStatus),
+        statusDisplay:enums.InvoiceStatus().getDisplay(entity.invoiceStatus),
         invoiceLines: entity.invoiceLines,
         sumTotalPrice: entity.sumTotalPrice,
         sumPaidAmount: entity.sumPaidAmount,
