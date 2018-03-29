@@ -3,9 +3,7 @@ import eventConfigs from "../config/events.json";
 import * as Queries from "../../../queries";
 
 @injectable()
-export class EventHandler {
-
-    @inject("Factory<EventHandler>") factory = undefined;
+export class UserEventHandler {
 
     /**@type {SettingsDomainService}*/
     @inject("SettingsDomainService") settingsDomainService = undefined;
@@ -16,9 +14,8 @@ export class EventHandler {
     /**@type {CommandBus}*/
     @inject("CommandBus") commandBus = undefined;
 
-    handle(eventName, parameters) {
-        let eventConfig = eventConfigs.asEnumerable().singleOrDefault(e => e.method === eventName),
-            params = Array.isArray(parameters) ? parameters : [parameters];
+    getHandler(eventName){
+        let eventConfig = eventConfigs.asEnumerable().singleOrDefault(e => e.method === eventName);
 
         if (!eventConfig)
             throw new Error("Event not found");
@@ -26,19 +23,16 @@ export class EventHandler {
         let event = this.settingsDomainService.getEvent(eventConfig.module, eventConfig.event);
 
         if (event && event.handler && typeof eval(`(${event.handler})`) === 'function')
-            return this.runUserEventHandler(event.handler, parameters);
-
-        let instance = this.factory(eventConfig.class);
-
-            instance[eventConfig.method](...params);
+            return event;
     }
 
-    runUserEventHandler(handler, params) {
+    run(eventName, params) {
         let self = this,
             parameters = Array.isArray(params) ? params : [params],
             settings = new Queries.SettingsQuery(this.state.branchId),
+            event = this.getHandler(eventName),
 
-            func = eval(`(${handler})`);
+            func = eval(`(${event.handler})`);
 
         func.apply({runService, query, settings}, parameters);
 

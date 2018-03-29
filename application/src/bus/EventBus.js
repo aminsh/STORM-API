@@ -2,13 +2,13 @@ import {inject, injectable} from "inversify";
 import {container} from "../di.config";
 import async from "asyncawait/async";
 
-EventEmitter.on("EventHandler", async(function (state, eventName, parameters) {
+/*EventEmitter.on("EventHandler", async(function (state, eventName, parameters) {
      let childContainer = container.createChild();
 
     childContainer.bind("State").toConstantValue(state);
 
     childContainer.get("EventHandler").handle(eventName, parameters);
-}));
+}));*/
 
 @injectable()
 export class EventBus {
@@ -21,6 +21,6 @@ export class EventBus {
      * @param {Array} parameters
      */
     send(eventName, parameters) {
-        EventEmitter.emit("EventHandler", this.state, eventName, parameters);
+        EventEmitter.emit(eventName, this.state, parameters);
     }
 }

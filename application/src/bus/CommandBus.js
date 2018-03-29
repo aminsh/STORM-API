@@ -21,7 +21,7 @@ export class CommandBus {
             state = this.state,
             command = {};
 
-        for (let i = 0; i <= service.params.length; i++) {
+        for (let i = 0; i < service.params.length; i++) {
             command[service.params[i]] = parameters[i];
         }
 
