@@ -175,6 +175,22 @@ router.route('/inputs/without-invoice')
         return res.json(result);
     }));
 
+router.route('/inputs/return-sale')
+    .get(async((req, res) => {
+        let inventoryQuery = new InventoryQuery(req.branchId),
+            result = await(inventoryQuery.getAllInputsWithIoType('inputBackFromSaleOrConsuming', req.query));
+
+        return res.json(result);
+    }));
+
+router.route('/outputs/return-purchase')
+    .get(async((req, res) => {
+        let inventoryQuery = new InventoryQuery(req.branchId),
+            result = await(inventoryQuery.getAllInputsWithIoType('outputReturnPurchase', req.query));
+
+        return res.json(result);
+    }));
+
 router.route('/:id/lines')
     .get(async((req, res) => {
         let inventoryQuery = new InventoryQuery(req.branchId),

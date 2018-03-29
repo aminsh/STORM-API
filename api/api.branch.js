@@ -5,7 +5,8 @@ const async = require('asyncawait/async'),
     router = require('express').Router(),
     express = require('express'),
     knex = instanceOf('knex'),
-    config = instanceOf('config');
+    config = instanceOf('config'),
+    TokenGenerator = instanceOf('TokenGenerator');
 
 router.route('/')
     .get(async(function (req, res) {
@@ -130,6 +131,74 @@ router.route('/:id')
             .update(entity));
 
         res.json({isValid: true});
+    }));
+
+router.route('/by-token/:token')
+    .get(async(function (req, res) {
+        if (!req.params.token)
+            return res.status(404).send('Not found');
+
+        let branch = await(knex.select(
+            'branches.id',
+            'name',
+            'logo',
+            'userInBranches.token',
+            'userInBranches.isOwner',
+            'status',
+            'address',
+            'phone',
+            'mobile',
+            'webSite',
+            'ownerName',
+            'city',
+            'branches.createdAt')
+            .from('branches')
+            .leftJoin("userInBranches", "branches.id", "userInBranches.branchId")
+            .where('userInBranches.token', req.params.token)
+            .first());
+
+        if (!branch)
+            res.status(404).send('Not found');
+
+        res.json(branch);
+    }));
+
+router.route('/users/:token/regenerate-token')
+    .put(async((req, res) => {
+        let members = await(knex.select(
+            knex.raw('users.id as "userId"'),
+            'users.email',
+            'users.name',
+            'users.image',
+            'userInBranches.token',
+            'userInBranches.id',
+            'userInBranches.isOwner')
+            .from('users')
+            .leftJoin('userInBranches', 'users.id', 'userInBranches.userId')
+            .where('userInBranches.branchId', req.branchId)
+            .as('base')
+        ),
+
+        memberId = parseInt(req.params.id),
+            isOwner = members.asEnumerable().any(e => e.isOwner && e.userId === req.user.id),
+            userIsRegeneratingOwnToken = members.asEnumerable().any(e => e.id === memberId && e.userId === req.user.id);
+
+        if(!members.asEnumerable().any(e => e.id === memberId))
+            return res.status(404).send('No Found');
+
+        if (!isOwner && !userIsRegeneratingOwnToken)
+            return res.status(401).send('No Authorized');
+
+        try {
+            let newToken = TokenGenerator.generate256Bit();
+
+            await(knex('userInBranches').where('id', memberId).update({token: newToken}));
+            res.json({isValid: true});
+        }
+        catch (e) {
+            res.json({isValid: false, errors: ['internal error']});
+        }
+
     }));
 
 module.exports = router;

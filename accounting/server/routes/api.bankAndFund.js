@@ -16,7 +16,7 @@ router.route('/summary')
 router.route('/')
     .get(async((req, res)=> {
         let bankAndFundQuery = new BankAndFundQuery(req.branchId),
-            result = await(bankAndFundQuery.getAll(req.fiscalPeriodId));
+            result = await(bankAndFundQuery.getAll(req.fiscalPeriodId,req.query));
 
         res.json(result);
     }));

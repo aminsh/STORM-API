@@ -120,6 +120,24 @@ router.route('/max/number')
         res.json(result.max);
     }));
 
+router.route('/:id/generate-journal')
+    .post(async((req, res) => {
+
+        try {
+
+            const id = req.params.id;
+
+            let journalId = req.container.get("CommandBus").send("journalGenerateForReturnInvoice", [id]);
+
+            req.container.get("CommandBus").send("invoiceReturnSetJournal", [id, journalId]);
+
+            res.json({isValid: true});
+        }
+        catch (e) {
+            res.json({isValid: false, errors: e.errors});
+        }
+
+    }));
 
 module.exports = router;
 

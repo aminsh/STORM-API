@@ -5,11 +5,12 @@ const async = require('asyncawait/async'),
     router = require('express').Router(),
     InvoiceQuery = require('../queries/query.invoice'),
     PaymentQuery = require('../queries/query.payment'),
-    Crypto = instanceOf("Crypto"),
+    Crypto = require('../services/shared').service.Crypto,
     config = instanceOf('config'),
     md5 = require('md5'),
     Email = instanceOf('Email'),
-    render = instanceOf('htmlRender').renderFile;
+    render = instanceOf('htmlRender').renderFile,
+    branchRepository = instanceOf('branch.repository');
 
 
 router.route('/summary')
@@ -194,7 +195,7 @@ router.route('/:invoiceId/send-email')
             invoiceId = req.params.invoiceId;
             invoice = await(invoiceQuery.getById(invoiceId));
             branchId = req.branchId;
-            branch = await(instanceOf('knex').select('id', 'name', 'logo').from('branches').where({id: branchId}).first());
+            branch = await(branchRepository.getById(branchId));
             token = Crypto.sign({
                 branchId: branchId,
                 invoiceId: invoiceId

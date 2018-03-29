@@ -4,9 +4,11 @@
 const fs = require('fs'),
     path = require('path'),
     config = require('../config'),
+    reportConfig = require('../../reporting/report.config.json'),
     async = require('asyncawait/async'),
     await = require('asyncawait/await'),
     router = require('express').Router(),
+    layout = getReport('layout'),
     ReportQueryAccounts = require('../queries/query.report.accounts'),
     ReportQueryBalance = require('../queries/query.report.balance'),
     ReportQueryFinancialOffices = require('../queries/query.report.financialOffices'),
@@ -22,6 +24,52 @@ const fs = require('fs'),
     CustomerReceipts = require('../reportQueries/customer.receipts'),
     InvoiceTurnover = require('../queries/query.invoice'),
     SaleInvoice = require('../reportQueries/invoice.sale');
+
+function getReport(fileName) {
+    return JSON.parse(
+        fs.readFileSync(
+            path.normalize(`${config.rootPath}/reporting/files/${fileName}`)));
+}
+
+router.route('/')
+    .post((req, res) => {
+        let report = req.body;
+
+        fs.writeFile(
+            path.normalize(`${config.rootPath}/reporting/files/${report.fileName}`),
+            report.data,
+            err => {
+                if (err)
+                    return res.status(500).send({isValid: false, error: err});
+
+                res.json({isValid: true});
+            }
+        );
+    });
+
+router.route('/file/:fileName').get((req, res) => {
+    let withLayout = reportConfig.asEnumerable()
+            .selectMany(rc => rc.items)
+            .any(rc => [undefined, true].includes(rc.useLayout) && rc.fileName == req.params.fileName),
+        report = getReport(req.params.fileName);
+
+    if (withLayout) {
+        let reportComponents = report.Pages[0].Components,
+            reportComponentsMaxKeys = (Object.keys(reportComponents)
+                    .asEnumerable()
+                    .select(c => parseInt(c))
+                    .max() || 0) + 1,
+            layoutComponents = layout.Pages[0].Components,
+            header = layoutComponents[0],
+            footer = layoutComponents[1];
+
+        reportComponents[++reportComponentsMaxKeys] = header;
+        reportComponents[++reportComponentsMaxKeys] = footer;
+    }
+
+    res.json(report);
+
+});
 
 router.route('/general-ledger-accounts')
     .get(async((req, res) => {

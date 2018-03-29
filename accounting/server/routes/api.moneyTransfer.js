@@ -8,7 +8,18 @@ const async = require('asyncawait/async'),
     router = require('express').Router(),
     JournalRepository = require('../data/repository.journal'),
     SubsidiaryLedgetAccount = require('../data/repository.subsidiaryLedgerAccount'),
-    DetailAccountRepository = require('../data/repository.detailAccount');
+    DetailAccountRepository = require('../data/repository.detailAccount'),
+
+    Subledger = require('../domain/subledger'),
+
+    getSubLedgerByType = (type, branchId) => {
+        let subledger = new Subledger(branchId);
+
+        if (type === 'fund')
+            return subledger.fundAccount();
+        if (type === 'bank')
+            return subledger.bankAccount()
+    };
 
 
 router.route('/')

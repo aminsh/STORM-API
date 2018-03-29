@@ -103,7 +103,13 @@ app.use('/v1/inventory', require('../accounting/server/routes/api.inventory'));
 app.use('/v1/inventories', require('../accounting/server/routes/api.inventory'));
 app.use('/v1/journal-generation-templates', require('../accounting/server/routes/api.journalGenerationTemplate'));
 app.use('/v1/return-sales', require('../accounting/server/routes/api.returnSale'));
+app.use('/v1/inventory-io-types', require('../accounting/server/routes/api.inventoryIOType'));
+app.use('/v1/banks-name', require('../accounting/server/routes/api.banksName'));
+app.use('/v1/treasury/receives',require('../accounting/server/routes/api.treasury.receive'));
+app.use('/v1/treasury/payments',require('../accounting/server/routes/api.treasury.payment'));
+app.use('/v1/treasury/settings',require('../accounting/server/routes/api.treasury.setting'));
+app.use('/v1/cheque-categories', require('../accounting/server/routes/api.chequeCategory'));
+
 
 module.exports = app;
-
 
