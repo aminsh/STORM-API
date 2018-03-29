@@ -61,6 +61,19 @@ router.route('/')
 
     }))
     .post(async(function (req, res) {
+
+        let NoAuthorizedResponseAction = () => res.status(401).send('No Authorized'),
+
+            userToken = req.headers["authorization"];
+
+        if (!userToken)
+            return NoAuthorizedResponseAction();
+
+        let user = await(knex.select('id').from('users').where({token: userToken}).first());
+
+        if (!user)
+            return NoAuthorizedResponseAction();
+
         let cmd = req.body,
             entity = {
                 id: instanceOf('TokenGenerator').generate128Bit(),
@@ -75,7 +88,7 @@ router.route('/')
                 postalCode: cmd.postalCode,
                 nationalCode: cmd.nationalCode,
                 registrationNumber: cmd.registrationNumber,
-                ownerId: req.user.id,
+                ownerId: user.id,
                 webSite: cmd.webSite,
                 offCode: cmd.offCode,
                 fax: cmd.fax,

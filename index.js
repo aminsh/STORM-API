@@ -13,6 +13,8 @@ require('./config/ioc');
 
 require('./shared/globals');
 
+require('./setup');
+
 require('./application/dist/bootstrap');
 
 let config = instanceOf("config"),
