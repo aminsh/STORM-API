@@ -53,9 +53,9 @@ container.singleton('user.repository', function () {
     return new UserRepository();
 });
 
-container.singleton('branch.repository', function () {
-    let BranchRepository = require('../storm/server/features/branch/branch.repository');
-    return new BranchRepository();
+container.singleton('branchService', function () {
+    let BranchService = require('../api/branchService');
+    return new BranchService();
 });
 
 container.singleton('persistedConfig.repository', function () {

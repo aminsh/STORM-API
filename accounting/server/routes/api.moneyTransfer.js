@@ -10,8 +10,6 @@ const async = require('asyncawait/async'),
     SubsidiaryLedgetAccount = require('../data/repository.subsidiaryLedgerAccount'),
     DetailAccountRepository = require('../data/repository.detailAccount'),
 
-    Subledger = require('../domain/subledger'),
-
     getSubLedgerByType = (type, branchId) => {
         let subledger = new Subledger(branchId);
 

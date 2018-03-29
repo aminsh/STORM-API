@@ -13,7 +13,7 @@ const async = require('asyncawait/async'),
     enums = instanceOf('Enums'),
     app = express(),
 
-    BranchService = require('./branchService'),
+    BranchService = instanceOf('branchService'),
     parseFiscalPeriod = require('./parse.fiscalPeriod'),
     container = require('../application/dist/di.config').container,
     knex = instanceOf('knex');

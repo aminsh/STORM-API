@@ -5,12 +5,12 @@ const async = require('asyncawait/async'),
     router = require('express').Router(),
     InvoiceQuery = require('../queries/query.invoice'),
     PaymentQuery = require('../queries/query.payment'),
-    Crypto = require('../services/shared').service.Crypto,
+    Crypto = instanceOf('Crypto'),
     config = instanceOf('config'),
     md5 = require('md5'),
     Email = instanceOf('Email'),
     render = instanceOf('htmlRender').renderFile,
-    branchRepository = instanceOf('branch.repository');
+    branchService = instanceOf('branchService');
 
 
 router.route('/summary')
@@ -195,7 +195,7 @@ router.route('/:invoiceId/send-email')
             invoiceId = req.params.invoiceId;
             invoice = await(invoiceQuery.getById(invoiceId));
             branchId = req.branchId;
-            branch = await(branchRepository.getById(branchId));
+            branch = await(branchService.findById(branchId));
             token = Crypto.sign({
                 branchId: branchId,
                 invoiceId: invoiceId
