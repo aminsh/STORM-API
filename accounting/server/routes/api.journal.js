@@ -3,12 +3,13 @@
 const async = require('asyncawait/async'),
     await = require('asyncawait/await'),
     router = require('express').Router(),
-    JournalQuery = require('../queries/query.journal');
+    JournalQuery = require('../queries/query.journal'),
+    JournalLineQuery = require('../queries/query.journalLine');
 
 router.route('/')
     .get(async((req, res) => {
         let journalQuery = new JournalQuery(req.branchId),
-            result = await(journalQuery.getAll(req.cookies['current-period'], req.query));
+            result = await(journalQuery.getAll(req.fiscalPeriodId, req.query));
         res.json(result);
     }))
     .post(async((req, res) => {
@@ -25,14 +26,14 @@ router.route('/')
 
 router.route('/total-info').get((req, res) => {
     let journalQuery = new JournalQuery(req.branchId),
-        result = await(journalQuery.getTotalInfo(req.cookies['current-period']));
+        result = await(journalQuery.getTotalInfo(req.fiscalPeriodId));
 
     res.json(result);
 });
 
 router.route('/max-number').get(async((req, res) => {
     let journalQuery = new JournalQuery(req.branchId),
-        result = await(journalQuery.getMaxNumber(req.cookies['current-period']));
+        result = await(journalQuery.getMaxNumber(req.fiscalPeriodId));
     res.json(result);
 }));
 
@@ -103,7 +104,7 @@ router.route('/:id/change-date')
 router.route('/by-number/:number').get(async((req, res) => {
     let journalQuery = new JournalQuery(req.branchId),
         result = await(journalQuery.getByNumber(
-            req.cookies['current-period'],
+            req.fiscalPeriodId,
             req.params.number));
 
     res.json(result);
@@ -111,7 +112,7 @@ router.route('/by-number/:number').get(async((req, res) => {
 
 router.route('/summary/grouped-by-month').get(async((req, res) => {
     let journalQuery = new JournalQuery(req.branchId),
-        result = await(journalQuery.getGroupedByMouth(req.cookies['current-period']));
+        result = await(journalQuery.getGroupedByMouth(req.fiscalPeriodId));
     res.json(result);
 }));
 
@@ -119,14 +120,14 @@ router.route('/month/:month').get(async((req, res) => {
     let journalQuery = new JournalQuery(req.branchId),
         result = await(journalQuery.getJournalsByMonth(
             req.params.month,
-            req.cookies['current-period'],
+            req.fiscalPeriodId,
             req.query));
     res.json(result);
 }));
 
 router.route('/period/:periodId').get(async((req, res) => {
     let journalQuery = new JournalQuery(req.branchId),
-        result = await(journalQuery.getAllByPeriod(req.cookies['current-period'], req.query));
+        result = await(journalQuery.getAllByPeriod(req.fiscalPeriodId, req.query));
     res.json(result);
 }));
 
@@ -170,9 +171,16 @@ router.route('/:detailAccountId/payable-transactions/not-have-cheque')
     .get(async((req, res) => {
         let journalQuery = new JournalQuery(req.branchId),
             result = await(journalQuery.getPayablesNotHaveChequeLines(
-                req.cookies['current-period'],
+                req.fiscalPeriodId,
                 req.params.detailAccountId, req.query));
 
+        res.json(result);
+    }));
+
+router.route('/:id/lines')
+    .get(async((req, res) => {
+        let journalLineQuery = new JournalLineQuery(req.branchId),
+            result = await(journalLineQuery.getAll(req.params.id, req.query));
         res.json(result);
     }));
 
