@@ -1,4 +1,3 @@
-
 function treasuryCashAssembler(entity) {
     var viewModel = {
         id: entity.id,
@@ -12,12 +11,13 @@ function treasuryCashAssembler(entity) {
         documentType: entity.documentType,
         imageUrl: entity.imageUrl,
         journal: entity.journals,
-        documentDetailId: entity.documentDetailId,
-        documentDetail: treasuryDocumentDetail(entity.documentDetail)
+        documentDetailId: entity.documentDetailId || null,
+        documentDetail: entity.documentDetailId ? treasuryDocumentDetail(entity.documentDetail) : null
     };
 
     return viewModel;
 }
+
 function treasuryDocumentDetail(documentDetail) {
     return {
         id: documentDetail.id,
