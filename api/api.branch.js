@@ -6,6 +6,7 @@ const async = require('asyncawait/async'),
     express = require('express'),
     knex = instanceOf('knex'),
     config = instanceOf('config'),
+    kendoQueryResolve = instanceOf('kendoQueryResolve'),
     TokenGenerator = instanceOf('TokenGenerator');
 
 router.route('/')
@@ -107,6 +108,32 @@ router.route('/')
 
 router.route('/:id')
     .put(async((req, res) => {
+
+        let NoAuthorizedResponseAction = () => res.status(401).send('No Authorized'),
+            token = req.headers["x-access-token"],
+            id = req.params.id;
+
+        if (!token)
+            return NoAuthorizedResponseAction();
+
+
+        let branch = await(knex.select('id')
+            .from('branches')
+            .where('id', id)
+            .first());
+
+        if (!branch)
+            return res.sendStatus(404);
+
+        let isUserMemberOfBranch = await(knex.select('id')
+            .from('userInBranches')
+            .where('token', token)
+            .where('branchId', id)
+            .first());
+
+        if (!isUserMemberOfBranch)
+            return NoAuthorizedResponseAction();
+
         let cmd = req.body,
 
             entity = {
@@ -127,7 +154,7 @@ router.route('/:id')
             entity.logo = `/${cmd.logoFileName}`;
 
         await(knex('branches')
-            .where({id: req.params.branchId})
+            .where({id})
             .update(entity));
 
         res.json({isValid: true});
@@ -150,6 +177,11 @@ router.route('/by-token/:token')
             'mobile',
             'webSite',
             'ownerName',
+            'nationalCode',
+            'postalCode',
+            'fax',
+            'registrationNumber',
+            'province',
             'city',
             'branches.createdAt')
             .from('branches')
@@ -163,36 +195,67 @@ router.route('/by-token/:token')
         res.json(branch);
     }));
 
-router.route('/users/:token/regenerate-token')
+router.route('/users')
+    .get(async(function (req, res) {
+        let NoAuthorizedResponseAction = () => res.status(401).send('No Authorized'),
+            token = req.headers["x-access-token"];
+
+        if (!token)
+            return NoAuthorizedResponseAction();
+
+
+        let userInBranch = await(knex.select('branchId')
+            .from('userInBranches')
+            .where('token', token)
+            .first());
+
+        if (!userInBranch)
+            return NoAuthorizedResponseAction();
+
+        let query = knex.from(function () {
+                this.select(
+                    knex.raw('users.id as "userId"'),
+                    'users.email',
+                    'users.name',
+                    'users.image',
+                    'userInBranches.token',
+                    'userInBranches.id',
+                    'userInBranches.isOwner')
+                    .from('users')
+                    .leftJoin('userInBranches', 'users.id', 'userInBranches.userId')
+                    .where('userInBranches.branchId', userInBranch.branchId)
+                    .as('base');
+            }),
+            result = await(kendoQueryResolve(query, req.query, item => item));
+
+        res.json(result);
+    }));
+router.route('/users/:userId/regenerate-token')
     .put(async((req, res) => {
-        let members = await(knex.select(
-            knex.raw('users.id as "userId"'),
-            'users.email',
-            'users.name',
-            'users.image',
-            'userInBranches.token',
-            'userInBranches.id',
-            'userInBranches.isOwner')
-            .from('users')
-            .leftJoin('userInBranches', 'users.id', 'userInBranches.userId')
-            .where('userInBranches.branchId', req.branchId)
-            .as('base')
-        ),
 
-        memberId = parseInt(req.params.id),
-            isOwner = members.asEnumerable().any(e => e.isOwner && e.userId === req.user.id),
-            userIsRegeneratingOwnToken = members.asEnumerable().any(e => e.id === memberId && e.userId === req.user.id);
 
-        if(!members.asEnumerable().any(e => e.id === memberId))
-            return res.status(404).send('No Found');
+        let NoAuthorizedResponseAction = () => res.status(401).send('No Authorized'),
+            userId = req.params.userId,
+            token = req.headers["x-access-token"];
 
-        if (!isOwner && !userIsRegeneratingOwnToken)
-            return res.status(401).send('No Authorized');
+        if (!token)
+            return NoAuthorizedResponseAction();
+
+        let userInBranch = await(knex.select('*')
+            .from('userInBranches')
+            .where('token', token)
+            .first());
+
+        if(!userInBranch)
+            return res.sendStatus(401);
+
+        if(!(userInBranch.isOwner || userInBranch.userId === userId))
+            return NoAuthorizedResponseAction();
 
         try {
             let newToken = TokenGenerator.generate256Bit();
 
-            await(knex('userInBranches').where('id', memberId).update({token: newToken}));
+            await(knex('userInBranches').where({userId, branchId: userInBranch.branchId}).update({token: newToken}));
             res.json({isValid: true});
         }
         catch (e) {
