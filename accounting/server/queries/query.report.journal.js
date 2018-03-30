@@ -87,8 +87,6 @@ class ReportQueryJournals extends BaseQuery {
             "groupJournals".description as "journalsDescription",
             "groupJournals"."sumDebtor" as "debtor",
             "groupJournals"."sumCreditor" as "creditor",
-            "groupJournals"."chequeId" as "chequeId",
-            "groupJournals"."chequeDate" as "chequeDate",
             "groupJournals".article as "article",
             "groupJournals".row as "row",
             CASE WHEN "groupJournals"."journalStatus"= 'BookKeeped' 
@@ -118,7 +116,7 @@ class ReportQueryJournals extends BaseQuery {
             .from(function () {
                 groupJournals.call(this, knex, options, currentFiscalPeriodId,
                     ['id','periodId','temporaryNumber','temporaryDate','month','generalLedgerAccountId', 'subsidiaryLedgerAccountId',
-                        'journalStatus','detailAccountId','description','chequeId','chequeDate','row','article']);
+                        'journalStatus','detailAccountId','description','row','article']);
             })
             .leftJoin('generalLedgerAccounts', 'groupJournals.generalLedgerAccountId', 'generalLedgerAccounts.id')
             .leftJoin('subsidiaryLedgerAccounts', 'groupJournals.subsidiaryLedgerAccountId', 'subsidiaryLedgerAccounts.id')

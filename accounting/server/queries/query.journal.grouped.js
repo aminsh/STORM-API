@@ -26,9 +26,6 @@ module.exports = function (knex, options, currentFiscalPeriod, groupByFields) {
             'dimension3Id',
             'article',
             'row',
-            'chequeId',
-            'chequeDate',
-            'chequeDescription',
             'createdBy'
         ];
 
