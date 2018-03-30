@@ -73,8 +73,6 @@ class ReportQueryturnover extends BaseQuery {
             "groupJournals"."description" as "journalsDescription",
             "groupJournals"."sumDebtor" as "debtor",
             "groupJournals"."sumCreditor" as "creditor",
-            "groupJournals"."chequeId" as "chequeId",
-            "groupJournals"."chequeDate" as "chequeDate",
             "groupJournals"."journalType" as "journalType",
             "groupJournals"."article" as "article",
             "groupJournals"."sumRemainder" as "remainder",
@@ -105,7 +103,7 @@ class ReportQueryturnover extends BaseQuery {
             .from(function () {
                 groupJournals.call(this, knex, options, currentFiscalPeriodId,
                     ['periodId','number','date','generalLedgerAccountId', 'subsidiaryLedgerAccountId', 'detailAccountId',
-                    'journalType','chequeId','chequeDate','description','article']);
+                    'journalType','description','article']);
             })
             .leftJoin('generalLedgerAccounts', 'groupJournals.generalLedgerAccountId', 'generalLedgerAccounts.id')
             .leftJoin('subsidiaryLedgerAccounts', 'groupJournals.subsidiaryLedgerAccountId', 'subsidiaryLedgerAccounts.id')

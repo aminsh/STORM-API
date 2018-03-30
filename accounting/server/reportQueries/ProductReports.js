@@ -181,7 +181,7 @@ class ProductReports extends BaseQuery {
                             .select(item => Object.assign(
                                 {},
                                 item,
-                                {remainderToString: item.unitPriceRemainder.toString()}
+                                {remainderToString: item.unitPriceRemainder ? item.unitPriceRemainder.toString() : item.unitPriceRemainder}
                                 )
                             )
                     }))
