@@ -75,6 +75,7 @@ app.use(async((req, res, next) => {
 
 app.use('/v1/account-review', require('../accounting/server/routes/api.accountReview'));
 app.use('/v1/detail-accounts', require('../accounting/server/routes/api.detailAccount'));
+app.use('/v1/detail-account-categories', require('../accounting/server/routes/api.detailAccountCategory'));
 app.use('/v1/api/detail-account-categories', require('../accounting/server/routes/api.detailAccountCategory'));
 app.use('/v1/banks', require('../accounting/server/routes/api.bank'));
 app.use('/v1/people', require('../accounting/server/routes/api.people'));
@@ -110,6 +111,10 @@ app.use('/v1/treasury/payments',require('../accounting/server/routes/api.treasur
 app.use('/v1/treasury/settings',require('../accounting/server/routes/api.treasury.setting'));
 app.use('/v1/cheque-categories', require('../accounting/server/routes/api.chequeCategory'));
 
+app.use(function (err, req, res, next) {
+    console.error(err.stack);
+    res.status(500).send('Something broke!');
+});
 
 module.exports = app;
 
