@@ -99,7 +99,6 @@ app.use('/v1/pay', require('../accounting/server/routes/api.pay'));
 app.use('/v1/bank-and-fund', require('../accounting/server/routes/api.bankAndFund'));
 app.use('/v1/scales', require('../accounting/server/routes/api.scale'));
 app.use('/v1/stocks', require('../accounting/server/routes/api.stock'));
-app.use('/v1/inventory', require('../accounting/server/routes/api.inventory'));
 app.use('/v1/inventories', require('../accounting/server/routes/api.inventory'));
 app.use('/v1/journal-generation-templates', require('../accounting/server/routes/api.journalGenerationTemplate'));
 app.use('/v1/return-sales', require('../accounting/server/routes/api.returnSale'));
@@ -109,6 +108,7 @@ app.use('/v1/treasury/receives',require('../accounting/server/routes/api.treasur
 app.use('/v1/treasury/payments',require('../accounting/server/routes/api.treasury.payment'));
 app.use('/v1/treasury/settings',require('../accounting/server/routes/api.treasury.setting'));
 app.use('/v1/cheque-categories', require('../accounting/server/routes/api.chequeCategory'));
+app.use('/v1/return-purchase', require('../accounting/server/routes/api.returnPurchase'));
 
 
 module.exports = app;
