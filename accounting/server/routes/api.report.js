@@ -21,7 +21,8 @@ const fs = require('fs'),
     ProfitLossStatement = require('../reportQueries/profit.loss.statement'),
     CustomerReceipts = require('../reportQueries/customer.receipts'),
     InvoiceTurnover = require('../queries/query.invoice'),
-    SaleInvoice = require('../reportQueries/invoice.sale');
+    SaleInvoice = require('../reportQueries/invoice.sale'),
+    ChequeReportQueries = require('../reportQueries/treasury.Cheque');
 
 router.route('/')
     .post((req, res) => {
@@ -356,6 +357,66 @@ router.route('/sale-invoice-turnover')
             'create',
             req.query),
             result = await(ins.getAll());
+        res.json(result);
+    }));
+
+router.route('/receive-cheque-due-date')
+    .get(async((req, res) => {
+        let ins = new ChequeReportQueries(req.branchId,
+            req.fiscalPeriodId,
+            'create',
+            req.query),
+            result = await(ins.getChequesDueDate('receive'));
+        res.json(result);
+    }));
+
+router.route('/payment-cheque-due-date')
+    .get(async((req, res) => {
+        let ins = new ChequeReportQueries(req.branchId,
+            req.fiscalPeriodId,
+            'create',
+            req.query),
+            result = await(ins.getChequesDueDate('payment'));
+        res.json(result);
+    }));
+
+router.route('/receive-cheque-passed')
+    .get(async((req, res) => {
+        let ins = new ChequeReportQueries(req.branchId,
+            req.fiscalPeriodId,
+            'create',
+            req.query),
+            result = await(ins.getPassedCheque('receive'));
+        res.json(result);
+    }));
+
+router.route('/payment-cheque-passed')
+    .get(async((req, res) => {
+        let ins = new ChequeReportQueries(req.branchId,
+            req.fiscalPeriodId,
+            'create',
+            req.query),
+            result = await(ins.getPassedCheque('payment'));
+        res.json(result);
+    }));
+
+router.route('/receive-cheques-with-status')
+    .get(async((req, res) => {
+        let ins = new ChequeReportQueries(req.branchId,
+            req.fiscalPeriodId,
+            'create',
+            req.query),
+            result = await(ins.getChequesWithStatus('receive'));
+        res.json(result);
+    }));
+
+router.route('/payment-cheques-with-status')
+    .get(async((req, res) => {
+        let ins = new ChequeReportQueries(req.branchId,
+            req.fiscalPeriodId,
+            'create',
+            req.query),
+            result = await(ins.getChequesWithStatus('payment'));
         res.json(result);
     }));
 
