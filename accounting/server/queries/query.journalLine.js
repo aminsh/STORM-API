@@ -7,7 +7,7 @@ const async = require('asyncawait/async'),
     view = require('../viewModel.assemblers/view.journalLine'),
     journalLineBase = require('./query.jounalLine.base');
 
-module.exports = class JournalLineQuery extends BaseQuery {
+class JournalLineQuery extends BaseQuery {
     constructor(branchId) {
         super(branchId);
         this.getAll = async(this.getAll);
@@ -62,4 +62,6 @@ module.exports = class JournalLineQuery extends BaseQuery {
                 .andWhere('id', id).first());
         return view(journalLine);
     }
-};
+}
+
+module.exports = JournalLineQuery;
