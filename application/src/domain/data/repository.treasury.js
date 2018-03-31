@@ -31,7 +31,7 @@ export class TreasuryRepository extends BaseRepository {
 
     findByNumber(number) {
         let query = this.knex.table('treasuryDocumentDetails')
-            .innerJoin('treasury','treasury.documentDetailId','treasuryDocumentDetails.id')
+            .innerJoin('treasury', 'treasury.documentDetailId', 'treasuryDocumentDetails.id')
             .modify(this.modify, this.branchId)
             .where('number', number);
 
@@ -58,8 +58,9 @@ export class TreasuryRepository extends BaseRepository {
 
             delete entity.documentDetail;
 
-            toResult(this.createDocumentDetail(documentDetail, trx));
-            entity.documentDetailId = documentDetail.id;
+            if (documentDetail)
+                toResult(this.createDocumentDetail(documentDetail, trx));
+            entity.documentDetailId = documentDetail ? documentDetail.id : null;
 
             toResult(this.createTreasury(entity, trx));
 
@@ -92,12 +93,18 @@ export class TreasuryRepository extends BaseRepository {
 
         try {
 
-            let documentDetail = entity.documentDetail;
+            let documentDetail = entity.documentDetail,
+                persistedDocumentDetail = this.findById(entity.id);
 
             delete entity.documentDetail;
 
-            if (documentDetail)
+            if (documentDetail && persistedDocumentDetail.documentDetailId)
                 toResult(this.updateDocumentDetail(documentDetail, trx));
+
+            if (documentDetail && !persistedDocumentDetail.documentDetailId){
+                toResult(this.createDocumentDetail(documentDetail, trx));
+                entity.documentDetailId = documentDetail.id;
+            }
 
             toResult(this.updateTreasury(id, entity, trx));
 
