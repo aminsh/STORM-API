@@ -9,7 +9,8 @@ const BaseQuery = require('./query.base'),
     cashView = require('../viewModel.assemblers/view.treasury.cash'),
     chequeView = require('../viewModel.assemblers/view.treasury.cheque'),
     receiptView = require('../viewModel.assemblers/view.treasury.receipt'),
-    demandNote = require('../viewModel.assemblers/view.treasury.demandNote');
+    demandNote = require('../viewModel.assemblers/view.treasury.demandNote'),
+    queryObjectMapper = require('./queryObjectMapper');
 
 class TreasuryPayment
     extends BaseQuery {
@@ -49,15 +50,17 @@ class TreasuryPayment
     }
 
     getById(id, receiveType) {
+
         let knex = this.knex,
             branchId = this.branchId,
+            treasuryColumns = queryObjectMapper.columnsToSelect('treasury'),
+            treasuryDocumentDetailsColumns = queryObjectMapper.columnsToSelect('treasuryDocumentDetails'),
 
             query = await(knex.select(
-                'treasury.*',
-                'treasuryDocumentDetails.*',
+                    ...treasuryColumns,
+                    ...treasuryDocumentDetailsColumns,
                 knex.raw(`"sourceDetailAccounts".title as "sourceTitle"`),
-                knex.raw(`"destinationDetailAccounts".title as "destinationTitle"`),
-                knex.raw(`"bankDetailAccounts".title as "bankDisplay"`)
+                knex.raw(`"destinationDetailAccounts".title as "destinationTitle"`)
                 )
                     .from('treasury')
                     .leftJoin(knex.raw(`(select da.title, da.id
@@ -70,18 +73,19 @@ class TreasuryPayment
                     .where('treasury.branchId', branchId)
                     .where('treasury.id', id)
                     .first()
-            );
+            ),
+            result  = queryObjectMapper.mapResult(query, item => Object.assign({}, item.treasury, {documentDetail: item.treasuryDocumentDetails}));
 
         if (receiveType === 'cheque') {
-            return chequeView(query);
+            return chequeView(result);
         }
 
         if (receiveType === 'cash') {
-            return cashView(query);
+            return cashView(result);
         }
 
         if (receiveType === 'receipt') {
-            return receiptView(query);
+            return receiptView(result);
         }
 
         if (receiveType === 'demandNote') {
