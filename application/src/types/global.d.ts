@@ -13,8 +13,8 @@ declare interface IEventEmitter {
 
 declare interface IUtility {
     String: IString;
-    Guid: IGuid,
-    PersianDate: IPersianDate
+    Guid: IGuid;
+    PersianDate: IPersianDate;
 }
 
 declare interface IString {
@@ -32,7 +32,8 @@ declare interface IGuid {
 }
 
 declare interface IPersianDate {
-    current(): string
+    current(): string;
+    getDate(date: Date);
 }
 
 declare class ValidationException {

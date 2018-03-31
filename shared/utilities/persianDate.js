@@ -4,13 +4,13 @@ const moment = require('moment-jalaali'),
     Number = require('./number');
 
 module.exports = {
-    toDay(){
+    toDay() {
         return moment().format('jYYYY/jMM/jDD');
     },
     current: function () {
         return moment().format('jYYYY/jMM/jDD');
     },
-    dateToWord(date){
+    dateToWord(date) {
         const months = {
                 1: "فروردین",
                 2: "اردیبهشت",
@@ -33,10 +33,14 @@ module.exports = {
 
         return '{0} {1} ماه {2}'.format(fn(day), months[month], fn(year));
     },
-    getDate(date){
-      let dateToString = `${date.getFullYear()}/${date.getMonth()+1}/${date.getDate()}`;
+    getDate(date) {
 
-      return moment(dateToString).format('jYYYY/jM/jD');
+        if (typeof date === 'string')
+            date = new Date(date);
+
+        let dateToString = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
+
+        return moment(dateToString).format('jYYYY/jMM/jDD');
     }
 };
 
