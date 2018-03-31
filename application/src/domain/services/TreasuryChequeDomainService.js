@@ -102,7 +102,7 @@ export class TreasuryChequeDomainService {
         if (Utility.String.isNullOrEmpty(entity.documentDetail.dueDate))
             errors.push('تاریخ سررسید نباید خالی باشد.');
 
-        if (Utility.String.isNullOrEmpty(entity.documentDetail.number))
+        if (Utility.String.isNullOrEmpty(entity.documentDetail.number.toString()))
             errors.push('شماره چک نباید خالی باشد');
 
         return errors;
@@ -138,7 +138,7 @@ export class TreasuryChequeDomainService {
 
         entity.treasuryType = 'payment';
         entity.documentType = entity.documentType || 'cheque';
-        entity.documentDetail.canTransferToAnother = entity.documentDetail.canTransferToAnother || false;
+        entity.documentDetail.canTransferToAnother = entity.documentDetail.canTransferToAnother || true;
 
         entity = this.treasuryRepository.create(entity);
 

@@ -32,7 +32,7 @@ export class TreasuryRepository extends BaseRepository {
     findByNumber(number) {
         let query = this.knex.table('treasuryDocumentDetails')
             .innerJoin('treasury', 'treasury.documentDetailId', 'treasuryDocumentDetails.id')
-            .modify(this.modify, this.branchId)
+            .modify(this.modify, this.branchId, 'treasury.branchId')
             .where('number', number);
 
         return toResult(query.first());
