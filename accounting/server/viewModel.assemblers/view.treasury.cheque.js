@@ -33,9 +33,26 @@ function treasuryDocumentDetail(documentDetail) {
         chequeAccountNumber: documentDetail.chequeAccountNumber,
         canTransferToAnother: documentDetail.canTransferToAnother,
         status: documentDetail.status,
-        chequeStatusHistory: documentDetail.chequeStatusHistory,
+        chequeStatusHistory: (documentDetail.chequeStatusHistory || []).asEnumerable()
+            .select(chequeStatusHistoryMapper)
+            .orderByDescending(item => item.date)
+            .toArray(),
         statusDisplay: enums.ReceiveChequeStatus().getDisplay(documentDetail.status),
         chequeCategoryId: documentDetail.chequeCategoryId
+    }
+}
+
+function chequeStatusHistoryMapper(item) {
+
+    if (!item)
+        return null;
+
+    return {
+        status: item.status,
+        createdAt: item.createdAt,
+        statusDisplay: item.status ? enums.ReceiveChequeStatus().getDisplay(item.status) : '',
+        date: Utility.PersianDate.getDate(item.createdAt),
+        journalId: item.journalId
     }
 }
 
