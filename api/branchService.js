@@ -2,110 +2,63 @@
 
 const knex = instanceOf('knex'),
     Crypto = instanceOf('Crypto'),
+    Memory = instanceOf('Memory'),
     async = require('asyncawait/async'),
     await = require('asyncawait/await');
 
-/*module.exports = {
-    findByToken(token){
-        let userInBranch = await(knex.select('userId', 'branchId')
-            .from('userInBranches')
-            .where('token', token)
-            .first());
-
-        if (userInBranch) {
-            let branch = await(knex.select('branches.*',
-                knex.raw('users.email as "ownerEmail"'),
-                knex.raw('users.name as "ownerName"'))
-                .from('branches')
-                .leftJoin('users', 'branches.ownerId', 'users.id')
-                .where('branches.id', userInBranch.branchId)
-                .first());
-
-            return {
-                userId: userInBranch.userId,
-                branchId: userInBranch.branchId,
-                isActive: branch.status === 'active'
-            };
-        }
-
-        try {
-            userInBranch = Crypto.verify(token);
-
-            if (userInBranch) {
-                let branch = await(knex.select('branches.*',
-                    knex.raw('users.email as "ownerEmail"'),
-                    knex.raw('users.name as "ownerName"'))
-                    .from('branches')
-                    .leftJoin('users', 'branches.ownerId', 'users.id')
-                    .where('branches.id', userInBranch.branchId)
-                    .first());
-                return {
-                    userId: userInBranch.userId,
-                    branchId: userInBranch.branchId,
-                    isActive: branch.status === 'active'
-                };
-            }
-        }
-        catch (e) {
-
-        }
-    },
-
-    findById: async.result(function (id) {
-
-    })
-};*/
-
-
 class BranchService {
 
-    findByToken(token){
+    findByToken(token) {
+
+        let readFromMemory = Memory.get(`token:${token}-branch-member`);
+
+        if (readFromMemory)
+            return readFromMemory;
+
         let userInBranch = await(knex.select('userId', 'branchId')
             .from('userInBranches')
             .where('token', token)
             .first());
 
         if (userInBranch) {
-            let branch = await(knex.select('branches.*',
-                knex.raw('users.email as "ownerEmail"'),
-                knex.raw('users.name as "ownerName"'))
-                .from('branches')
-                .leftJoin('users', 'branches.ownerId', 'users.id')
-                .where('branches.id', userInBranch.branchId)
-                .first());
 
-            return {
-                userId: userInBranch.userId,
-                branchId: userInBranch.branchId,
-                isActive: branch.status === 'active'
-            };
+            Memory.set(`token:${token}-branch-member`, userInBranch);
+
+            return userInBranch;
         }
 
         try {
             userInBranch = Crypto.verify(token);
 
             if (userInBranch) {
-                let branch = await(knex.select('branches.*',
-                    knex.raw('users.email as "ownerEmail"'),
-                    knex.raw('users.name as "ownerName"'))
-                    .from('branches')
-                    .leftJoin('users', 'branches.ownerId', 'users.id')
-                    .where('branches.id', userInBranch.branchId)
-                    .first());
-                return {
-                    userId: userInBranch.userId,
-                    branchId: userInBranch.branchId,
-                    isActive: branch.status === 'active'
-                };
+
+                Memory.set(`token:${token}-branch-member`, userInBranch);
+
+                return userInBranch;
             }
         }
         catch (e) {
-
+            return;
         }
     }
 
     findById(id) {
         return await(knex.select('*').from('branches').where({id}).first());
+    }
+
+    isActive(id) {
+
+        let readFromMemory = Memory.get(`branch:${id}-isActive`);
+
+        if (readFromMemory)
+            return readFromMemory.isActive;
+
+        let branch = await(knex.select('status').from('branches').where({id}).first()),
+            isActive = branch.status === 'active';
+
+        Memory.set(`branch:${id}-isActive`, {isActive});
+
+        return isActive;
     }
 }
 

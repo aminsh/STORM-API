@@ -83,6 +83,7 @@
     "material-components-web": "^0.17.0",
     "md5": "^2.2.1",
     "mdi": "^2.1.19",
+    "memory-cache": "^0.2.0",
     "metismenu": "^2.7.0",
     "moment": "^2.18.1",
     "moment-jalaali": "^0.4.0",

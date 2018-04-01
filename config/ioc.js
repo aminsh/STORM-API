@@ -36,6 +36,11 @@ container.singleton('TokenGenerator', function () {
     return new TokenGenerator();
 });
 
+container.singleton('Memory', function () {
+    let Memory = require('../shared/services/Memory');
+    return new Memory;
+});
+
 container.bind('PaymentService', function (key) {
     if (key === 'payping') {
         const PaypingService = require('../integration/payping/service');

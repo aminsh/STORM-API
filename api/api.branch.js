@@ -6,6 +6,7 @@ const async = require('asyncawait/async'),
     express = require('express'),
     knex = instanceOf('knex'),
     config = instanceOf('config'),
+    Memory = instanceOf('Memory'),
     kendoQueryResolve = instanceOf('kendoQueryResolve'),
     TokenGenerator = instanceOf('TokenGenerator');
 
@@ -160,6 +161,157 @@ router.route('/:id')
         res.json({isValid: true});
     }));
 
+router.route('/:id/on-activated')
+    .post(async((req, res) => {
+        let id = req.params.id;
+
+        Memory.remove(`branch:${id}-isActive`);
+
+        res.sendStatus(200);
+    }));
+
+router.route('/:id/on-deactivated')
+    .post(async((req, res) => {
+        let id = req.params.id;
+
+        Memory.remove(`branch:${id}-isActive`);
+
+        res.sendStatus(200);
+    }));
+
+router.route('/:id/users')
+    .get(async((req, res) => {
+        let id = req.params.id,
+            NoAuthorizedResponseAction = () => res.status(401).send('No Authorized'),
+            token = req.headers["x-access-token"],
+
+            member = await(knex.select('*').from('userInBranches').where({token}).first());
+
+        if(!member)
+            return NoAuthorizedResponseAction();
+
+        if(member.branchId !== id)
+            return NoAuthorizedResponseAction();
+
+        if(!member.isOwner)
+            return NoAuthorizedResponseAction();
+
+        let query = knex.from(function () {
+                this.select(
+                    knex.raw('users.id as "userId"'),
+                    'users.email',
+                    'users.name',
+                    'users.image',
+                    'userInBranches.token',
+                    'userInBranches.id',
+                    'userInBranches.isOwner')
+                    .from('users')
+                    .leftJoin('userInBranches', 'users.id', 'userInBranches.userId')
+                    .where('userInBranches.branchId', id)
+                    .as('base');
+            }),
+            result = await(kendoQueryResolve(query, req.query, item => item));
+
+        res.json(result);
+    }))
+    .post(async(function (req, res) {
+
+        let id = req.params.id,
+            userId = req.body.userId,
+            NoAuthorizedResponseAction = () => res.status(401).send('No Authorized'),
+            token = req.headers["x-access-token"],
+
+            member = await(knex.select('*').from('userInBranches').where({token}).first());
+
+        if(!member)
+            return NoAuthorizedResponseAction();
+
+        if(member.branchId !== id)
+            return NoAuthorizedResponseAction();
+
+        if(!member.isOwner)
+            return NoAuthorizedResponseAction();
+
+        let isUserMember = await(
+            knex.select('id').from('userInBranches').where({branchId: id, userId}).first()
+        );
+
+        if(isUserMember)
+            return res.status(400).send(['کاربر عضو این کسب و کار هست']);
+
+        member = {
+            userId,
+            branchId: id,
+            state: 'active',
+            app: 'accounting',
+            token: TokenGenerator.generate256Bit()
+        };
+
+        await(knex('userInBranches').insert(member));
+
+        res.sendStatus(200);
+
+    }));
+
+router.route('/:id/users/:userId')
+    .delete(async(function (req, res) {
+        let id = req.params.id,
+            userId = req.params.userId,
+            NoAuthorizedResponseAction = () => res.status(401).send('No Authorized'),
+            token = req.headers["x-access-token"],
+
+            member = await(knex.select('*').from('userInBranches').where({token}).first());
+
+        if(!member)
+            return NoAuthorizedResponseAction();
+
+        if(member.branchId !== id)
+            return NoAuthorizedResponseAction();
+
+        if(!member.isOwner)
+            return NoAuthorizedResponseAction();
+
+        let userInBranch = await(knex.select('*').from('userInBranches').where({branchId: id, userId}).first());
+
+        await(knex('userInBranches').where({id: userInBranch.id}).del());
+
+        res.sendStatus(200);
+
+        Memory.remove(`token:${userInBranch.token}-branch-member`);
+    }));
+
+router.route('/:id/users/:userId/regenerate-token')
+    .delete(async(function (req, res) {
+        let id = req.params.id,
+            userId = req.params.userId,
+            NoAuthorizedResponseAction = () => res.status(401).send('No Authorized'),
+            token = req.headers["x-access-token"],
+
+            member = await(knex.select('*').from('userInBranches').where({token}).first());
+
+        if(!member)
+            return NoAuthorizedResponseAction();
+
+        if(member.branchId !== id)
+            return NoAuthorizedResponseAction();
+
+        if(!member.isOwner)
+            return NoAuthorizedResponseAction();
+
+        let newToken = TokenGenerator.generate256Bit(),
+            lastToken = await(knex
+                .select('token')
+                .from('userInBranches')
+                .where({userId, branchId: id})
+                .first());
+
+        await(knex('userInBranches').where({userId, branchId: id}).update({token: newToken}));
+
+        res.sendStatus(200);
+
+        Memory.remove(`token:${lastToken.token}-branch-member`);
+    }));
+
 router.route('/by-token/:token')
     .get(async(function (req, res) {
         if (!req.params.token)
@@ -195,74 +347,7 @@ router.route('/by-token/:token')
         res.json(branch);
     }));
 
-router.route('/users')
-    .get(async(function (req, res) {
-        let NoAuthorizedResponseAction = () => res.status(401).send('No Authorized'),
-            token = req.headers["x-access-token"];
 
-        if (!token)
-            return NoAuthorizedResponseAction();
-
-
-        let userInBranch = await(knex.select('branchId')
-            .from('userInBranches')
-            .where('token', token)
-            .first());
-
-        if (!userInBranch)
-            return NoAuthorizedResponseAction();
-
-        let query = knex.from(function () {
-                this.select(
-                    knex.raw('users.id as "userId"'),
-                    'users.email',
-                    'users.name',
-                    'users.image',
-                    'userInBranches.token',
-                    'userInBranches.id',
-                    'userInBranches.isOwner')
-                    .from('users')
-                    .leftJoin('userInBranches', 'users.id', 'userInBranches.userId')
-                    .where('userInBranches.branchId', userInBranch.branchId)
-                    .as('base');
-            }),
-            result = await(kendoQueryResolve(query, req.query, item => item));
-
-        res.json(result);
-    }));
-router.route('/users/:userId/regenerate-token')
-    .put(async((req, res) => {
-
-
-        let NoAuthorizedResponseAction = () => res.status(401).send('No Authorized'),
-            userId = req.params.userId,
-            token = req.headers["x-access-token"];
-
-        if (!token)
-            return NoAuthorizedResponseAction();
-
-        let userInBranch = await(knex.select('*')
-            .from('userInBranches')
-            .where('token', token)
-            .first());
-
-        if(!userInBranch)
-            return res.sendStatus(401);
-
-        if(!(userInBranch.isOwner || userInBranch.userId === userId))
-            return NoAuthorizedResponseAction();
-
-        try {
-            let newToken = TokenGenerator.generate256Bit();
-
-            await(knex('userInBranches').where({userId, branchId: userInBranch.branchId}).update({token: newToken}));
-            res.json({isValid: true});
-        }
-        catch (e) {
-            res.json({isValid: false, errors: ['internal error']});
-        }
-
-    }));
 
 module.exports = router;
 
