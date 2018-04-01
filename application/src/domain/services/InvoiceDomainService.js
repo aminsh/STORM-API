@@ -124,7 +124,7 @@ export class InvoiceDomainService {
             costs: this._mapCostAndCharge(cmd.costs),
             charges: this._mapCostAndCharge(cmd.charges),
             bankReceiptNumber: cmd.bankReceiptNumber,
-            discount: cmd.discount,
+            discount: isNaN(parseFloat(cmd.discount)) ? 0 : parseFloat(cmd.discount),
             invoiceLines: this._mapLines(cmd.invoiceLines).asEnumerable()
                 .select(line => {
 

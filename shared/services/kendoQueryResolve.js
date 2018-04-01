@@ -32,7 +32,7 @@ function resolveFilter(query, filter) {
         return;
 
 
-    var methodName = filter.logic = 'and' ? 'andWhere' : 'orWhere';
+    var methodName = filter.logic === 'and' ? 'andWhere' : 'orWhere';
 
     filter.filters.forEach(function (f) {
         if (f.logic)
@@ -55,13 +55,13 @@ function resolveFilter(query, filter) {
                 query[methodName](f.field, '<=', f.value);
                 break;
             case 'contains':
-                query[methodName](f.field, 'like', '%{0}%'.format(f.value));
+                query[methodName](f.field, 'ilike', '%{0}%'.format(f.value));
                 break;
             case 'startswith':
-                query[methodName](f.field, 'like', '{0}%'.format(f.value));
+                query[methodName](f.field, 'ilike', '{0}%'.format(f.value));
                 break;
             case 'endswith':
-                query[methodName](f.field, 'like', '%{0}'.format(f.value));
+                query[methodName](f.field, 'ilike', '%{0}'.format(f.value));
                 break;
         }
     })
