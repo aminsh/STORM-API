@@ -13,7 +13,7 @@ const async = require('asyncawait/async'),
     enums = instanceOf('Enums'),
     app = express(),
 
-    BranchService = instanceOf('branchService'),
+    /**@type {BranchService}*/branchService = instanceOf('branchService'),
     parseFiscalPeriod = require('./parse.fiscalPeriod'),
     container = require('../application/dist/di.config').container,
     knex = instanceOf('knex');
@@ -31,31 +31,33 @@ app.get('/v1/enums', function (req, res) {
 
     res.json(enumsJson);
 });
+app.use('/v1/users', require('./api.user'));
 app.use('/v1/login', require('./api.login'));
 app.use('/v1/branches', require('./api.branch'));
 
 app.use(async((req, res, next) => {
     const token = req.body.token || req.query.token || req.headers['x-access-token'],
 
-        noTokenProvidedMessage = 'No token provided.';
+        noTokenProvidedMessage = 'No token provided.',
+        NoTokenAction = () => res.status(403).send(noTokenProvidedMessage);
 
     if (!token)
         return res.status(403).send(noTokenProvidedMessage);
 
-    let decode = BranchService.findByToken(token);
+    let member = branchService.findByToken(token);
 
-    if (!(decode && decode.isActive))
-        return res.status(403).send(noTokenProvidedMessage);
+    if(!member)
+        return NoTokenAction();
 
-    req.branchId = decode.branchId;
-    req.user = {id: decode.userId};
+    if(!branchService.isActive(member.branchId))
+        return NoTokenAction();
+
+    req.branchId = member.branchId;
+    req.user = {id: member.userId};
 
     parseFiscalPeriod(req);
 
-    let childContainer = container.createChild(),
-        transaction = req.method.toUpperCase() !== 'GET'
-            ? await(new Promise(resolve => knex.transaction(trx => resolve(trx))))
-            : undefined;
+    let childContainer = container.createChild();
 
     childContainer.bind("State").toConstantValue({
         branchId: req.branchId,
@@ -64,8 +66,7 @@ app.use(async((req, res, next) => {
         query: req.query,
         body: req.body,
         params: req.params,
-        originalUrl: req.originalUrl,
-        transaction
+        originalUrl: req.originalUrl
     });
 
     req.container = childContainer;
