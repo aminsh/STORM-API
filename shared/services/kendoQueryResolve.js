@@ -6,14 +6,18 @@ function kendoQueryResolve(query, request, mapper) {
 
     resolveFilter(query, request.filter);
 
-    var count = await(query.clone().count())[0].count;
+    var count = await(query.clone().count())[0].count,
+        isFirst = request.hasOwnProperty('first');
+
+    request.take = isFirst ? 1 : request.take;
 
     resolveLimitAndOffset(query, request.skip, request.take);
     resolveSort(query, request.sort);
 
     var viewData = await(query.map(mapper));
 
-    return {
+
+    return isFirst ? viewData[0] : {
         data: viewData,
         total: count
     }
