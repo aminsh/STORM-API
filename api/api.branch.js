@@ -312,6 +312,26 @@ router.route('/:id/users/:userId/regenerate-token')
         Memory.remove(`token:${lastToken.token}-branch-member`);
     }));
 
+router.route('/:id/users/:userId/is-member')
+    .get(async(function (req, res) {
+        let id = req.params.id,
+            userId = req.params.userId,
+            NoAuthorizedResponseAction = () => res.status(401).send('No Authorized'),
+            token = req.headers["x-access-token"],
+
+            member = await(knex.select('*').from('userInBranches').where({token}).first());
+
+        if(!member)
+            return NoAuthorizedResponseAction();
+
+        if(member.branchId !== id)
+            return NoAuthorizedResponseAction();
+
+        let isMember = await(knex.select('id').from('userInBranches').where({userId}).first());
+
+        res.send(isMember ? true : false);
+    }));
+
 router.route('/by-token/:token')
     .get(async(function (req, res) {
         if (!req.params.token)
