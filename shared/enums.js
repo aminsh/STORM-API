@@ -282,9 +282,10 @@ enums.ThirdParty = function () {
         {
             key: "payping",
             data: {
-                display: "پی پینگ",
+                website: 'https://www.payping.ir',
+                title: "پی پینگ",
                 logo: "payping-logo.png",
-                title: "سرویس پرداخت پی پینگ",
+                display: "سرویس پرداخت پی پینگ",
                 description: "با استفاده از این افزونه، مشتریان شما می توانند صورت حساب شما را پرداخت کنند و اسناد مالی مربوطه به صورت اتوماتیک صادر می شود."
             }
         }

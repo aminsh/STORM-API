@@ -74,6 +74,8 @@ app.use(async((req, res, next) => {
     next();
 }));
 
+app.use('/v1/third-party', require('./api.thirdParty'));
+
 app.use('/v1/account-review', require('../accounting/server/routes/api.accountReview'));
 app.use('/v1/detail-accounts', require('../accounting/server/routes/api.detailAccount'));
 app.use('/v1/detail-account-categories', require('../accounting/server/routes/api.detailAccountCategory'));
