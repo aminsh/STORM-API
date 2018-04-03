@@ -6,9 +6,8 @@ const async = require('asyncawait/async'),
     rp = require('request-promise'),
     utility = instanceOf('utility'),
     config = instanceOf('config'),
-    HttpException = instanceOf('httpException'),
-    persistedConfigRepository = instanceOf('persistedConfig.repository'),
-    branchThirdParty = instanceOf('branchThirdParty.repository');
+    persistedConfig = instanceOf('persistedConfig'),
+    HttpException = instanceOf('httpException');
 
 
 module.exports = class PaypingService {
@@ -37,7 +36,7 @@ module.exports = class PaypingService {
             let body = await(rp(options)),
                 value = `bearer ${JSON.parse(body).access_token}`;
 
-            await(persistedConfigRepository.set(key, value));
+            await(persistedConfig.set(key, value));
         }
         catch (e) {
             throw new HttpException(e.statusCode, e.response.statusMessage, e.error);
@@ -45,11 +44,11 @@ module.exports = class PaypingService {
     }
 
     get serviceToken() {
-        let serviceToken = await(persistedConfigRepository.get(this.key));
+        let serviceToken = await(persistedConfig.get(this.key));
 
         if (!serviceToken) {
             await(this.setServiceToken());
-            serviceToken = await(persistedConfigRepository.get(this.key));
+            serviceToken = await(persistedConfig.get(this.key));
         }
 
         return serviceToken.value;
@@ -107,7 +106,7 @@ module.exports = class PaypingService {
 
     //public method
 
-    register(branchId, data) {
+    register(token, data) {
         let result,
             username = data.username;
 
@@ -117,7 +116,7 @@ module.exports = class PaypingService {
 
             if (e.statusCode === 401) {
                 await(this.setServiceToken());
-                result = await(this.getUserKey(username));
+                result = await(this.setUserKey(username));
             }
             else if (e.statusCode === 400) {
                 throw new Error('Wrong username');
@@ -127,14 +126,49 @@ module.exports = class PaypingService {
 
         }
 
-        const bankId = await(instanceOf('service.detailAccount', branchId)
-            .create('حساب پی پینگ', 'payping', 'bank'));
+        let bankId,
+            paypingAccount = instanceOf('HttpRequest')
+            .get(`${process.env.ORIGIN_URL}/v1/banks`)
+            .query({first: '',filter: {logic: 'and', filters: [{field: 'referenceId', operator: 'eq', value: 'payping'}]}})
+            .setHeader('x-access-token', token)
+            .execute();
 
-        await(branchThirdParty.create(branchId, 'payping', {username, userKey: result, bankId}));
+        if(paypingAccount)
+            bankId = paypingAccount.id;
+        else {
+            let bankResult = instanceOf('HttpRequest')
+                    .post(`${process.env.ORIGIN_URL}/v1/banks`)
+                    .setHeader('x-access-token', token)
+                    .body({
+                        title: 'حساب پی پینگ',
+                        referenceId: 'payping'
+                    })
+                    .execute();
+
+            if (bankResult.isValid)
+                bankId = bankResult.returnValue.id;
+        }
+
+        instanceOf('HttpRequest')
+            .post(`${process.env.ORIGIN_URL}/v1/third-party`)
+            .body({
+                key: 'payping',
+                data: {username, userKey: result, bankId}
+            })
+            .setHeader('x-access-token', token)
+            .execute();
     }
 
-    pay(branchId, parameters, response) {
-        let userKey = await(branchThirdParty.get(branchId, 'payping')).data.userKey,
+    pay(token, parameters, response) {
+        let userKey = await(rp({
+                uri: `${process.env.ORIGIN_URL}/v1/third-party/payping`,
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-access-token': token
+                }
+            })).data.userKey,
+
             paymentParams = {
                 UserKey: userKey,
                 ReturnUrl: parameters.returnUrl,
@@ -159,7 +193,7 @@ module.exports = class PaypingService {
     }
 
     savePayment(branchId, reference) {
-        const userKey = await(branchThirdParty.get(branchId, 'payping')).data.userKey,
+        const userKey = await().data.userKey,
             referenceId = reference.refid,
             options = {
                 uri: paypingConfig.verifyPayment,
@@ -182,7 +216,14 @@ module.exports = class PaypingService {
                 amount,
                 paymentType: 'receipt',
                 receiveOrPay: 'receive',
-                bankId: await(branchThirdParty.get(branchId, 'payping')).data.bankId
+                bankId: await(rp({
+                    uri: `${process.env.ORIGIN_URL}/v1/bane/payping`,
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'x-access-token': token
+                    }
+                }))
             };
         }
         catch (e) {
