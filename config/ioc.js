@@ -48,9 +48,19 @@ container.bind('PaymentService', function (key) {
     }
 });
 
+container.bind('HttpRequest', function () {
+   let HttpRequest = require('../shared/services/HttpRequest');
+   return new HttpRequest;
+});
+
 container.singleton('webhook', function () {
     let Webhook = require('../shared/services/webhook');
     return new Webhook();
+});
+
+container.singleton('persistedConfig', function () {
+   let PersistedConfigService = require('../shared/services/persistedConfig');
+   return new PersistedConfigService;
 });
 
 container.singleton('user.repository', function () {
