@@ -11,7 +11,8 @@ class TreasurySettingQuery extends BaseQuery {
 
     get() {
         return await(this.knex.select(
-            'subsidiaryLedgerAccounts')
+            'subsidiaryLedgerAccounts',
+            'journalGenerateAutomatic')
             .from('treasurySettings')
             .where('branchId', this.branchId)
             .first());
