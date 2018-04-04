@@ -14,7 +14,9 @@ router.route('/')
             result = await(treasurySettingQuery.get());
 
         if (!result) {
-            let entity = {};
+            let entity = {
+                journalGenerateAutomatic: false
+            };
             await(treasurySettingRepository.create(entity));
             result = entity;
         }
@@ -33,41 +35,16 @@ router.route('/')
 
         res.json(result);
     }))
-    .post(async((req, res) => {
-        let treasurySettingRepository = new TreasurySettingRepository(req.branchId),
-            entity = {};
-
-        await(treasurySettingRepository.create(entity));
-
-        res.json({isValid: true});
-
-    }))
     .put(async((req, res) => {
         let treasurySettingRepository = new TreasurySettingRepository(req.branchId),
             cmd = req.body;
 
         let entity = {
-            subsidiaryLedgerAccounts: JSON.stringify(cmd.subsidiaryLedgerAccounts)
+            subsidiaryLedgerAccounts: JSON.stringify(cmd.subsidiaryLedgerAccounts),
+            journalGenerateAutomatic: cmd.journalGenerateAutomatic
         };
 
         await(treasurySettingRepository.update(entity));
-
-        res.json({isValid: true});
-    }));
-
-router.route('/:branchId')
-    .get(async((req, res) => {
-        const result = new TreasurySettingRepository(req.params.branchId).get();
-
-        res.json(result);
-    }))
-    .put(async((req, res) => {
-        let cmd = req.body,
-        entity = {
-            subsidiaryLedgerAccounts: JSON.stringify(cmd.subsidiaryLedgerAccounts)
-        };
-
-        new TreasurySettingRepository(req.params.branchId).update(entity);
 
         res.json({isValid: true});
     }));
