@@ -41,10 +41,10 @@ export class TreasuryTransferDomainService {
             source = this.detailAccountRepository.findById(entity.sourceDetailAccountId),
             destination = this.detailAccountRepository.findById(entity.destinationDetailAccountId);
 
-        if (!source.length)
+        if (!source)
             errors.push('مبدا دارای حساب تفصیل نیست');
 
-        if (!destination.length)
+        if (!destination)
             errors.push('مقصد دارای حساب تفصیل نیست');
 
         if (!entity.amount || entity.amount <= 0)
@@ -69,6 +69,7 @@ export class TreasuryTransferDomainService {
             throw new ValidationException(errors);
 
         entity.treasuryType = 'transfer';
+        entity.documentType = 'transfer';
 
         entity = this.treasuryRepository.create(entity);
 

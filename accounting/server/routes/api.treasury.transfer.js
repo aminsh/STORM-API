@@ -8,11 +8,9 @@ const async = require('asyncawait/async'),
 router.route('/')
     .get(async((req, res) => {
         let treasuryTransfer = new TransferQuery(req.branchId),
-            result = await(treasuryTransfer.getAll( req.fiscalPeriodId, req.query));
+            result = await(treasuryTransfer.getAll(req.fiscalPeriodId, req.query));
         res.json(result);
-    }));
-
-router.route('/transfers')
+    }))
     .post(async((req, res) => {
         try {
             const id = req.container.get("CommandBus").send("treasuryTransferCreate", [req.body]);
@@ -23,7 +21,7 @@ router.route('/transfers')
         }
     }));
 
-router.route('/transfers/:id')
+router.route('/:id')
     .get(async((req, res) => {
         let treasuryTransfer = new TransferQuery(req.branchId),
             result = await(treasuryTransfer.getById(req.params.id));
@@ -48,7 +46,7 @@ router.route('/transfers/:id')
         }
     }));
 
-router.route('/transfers/:id/generate-journal')
+router.route('/:id/generate-journal')
     .post(async((req, res) => {
 
         try {
