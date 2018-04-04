@@ -169,188 +169,202 @@ export class TreasuryChequeDomainService {
     }
 
     setJournal(id, journalId) {
-        let persistedTreasury = this.treasuryRepository.findById(id);
+        let persistedTreasury = this.treasuryRepository.findById(id),
+            entity = this.mapToEntity(persistedTreasury);
 
-        if (persistedTreasury.documentType === 'spendCheque')
-            return this.setJournalForSpend(persistedTreasury.receiveId, id, journalId);
+        if (entity.documentType === 'spendCheque')
+            return this.setJournalForSpend(entity.receiveId, id, journalId);
 
-        persistedTreasury.journalId = journalId;
-        persistedTreasury.documentDetail.chequeStatusHistory =
-            persistedTreasury.documentDetail.chequeStatusHistory.asEnumerable()
+        entity.journalId = journalId;
+        entity.documentDetail.chequeStatusHistory =
+            entity.documentDetail.chequeStatusHistory.asEnumerable()
                 .select(item => ({
                     createdAt: item.createdAt,
                     status: item.status,
-                    journalId: item.status === persistedTreasury.documentDetail.status ? journalId : item.journalId
+                    journalId: item.status === entity.documentDetail.status ? journalId : item.journalId
                 }))
                 .toArray();
 
-        persistedTreasury.documentDetail.chequeStatusHistory = JSON.stringify(persistedTreasury.documentDetail.chequeStatusHistory);
+        entity.documentDetail.chequeStatusHistory = JSON.stringify(entity.documentDetail.chequeStatusHistory);
 
-        return this.treasuryRepository.update(id, persistedTreasury);
+        return this.treasuryRepository.update(id, entity);
     }
 
     chequeInFund(id, cmd) {
-        let cheque = this.treasuryRepository.findById(id);
-        cheque.isCompleted = false;
-        cheque.documentDetail.status = 'inFund';
+        let cheque = this.treasuryRepository.findById(id),
+            entity = this.mapToEntity(cheque);
+        entity.isCompleted = false;
+        entity.documentDetail.status = 'inFund';
 
-        cheque.documentDetail.chequeStatusHistory = cheque.documentDetail.chequeStatusHistory || [];
-        cheque.documentDetail.chequeStatusHistory.push({
+        entity.documentDetail.chequeStatusHistory = entity.documentDetail.chequeStatusHistory || [];
+        entity.documentDetail.chequeStatusHistory.push({
             createdAt: new Date(),
             status: 'inFund',
             journalId: null
         });
-        cheque.documentDetail.chequeStatusHistory = JSON.stringify(cheque.documentDetail.chequeStatusHistory);
+        entity.documentDetail.chequeStatusHistory = JSON.stringify(entity.documentDetail.chequeStatusHistory);
 
         this.eventBus.send('onChequeStatusChanged', id);
 
-        return this.treasuryRepository.update(cheque.id, cheque);
+        return this.treasuryRepository.update(entity.id, entity);
     }
 
     receiveChequePass(id, cmd) {
-        let cheque = this.treasuryRepository.findById(id);
-        cheque.destinationDetailAccountId = cmd.receiverId;
-        cheque.transferDate = cmd.date || null;
-        cheque.documentDetail.status = 'passed';
-        cheque.isCompleted = true;
+        let cheque = this.treasuryRepository.findById(id),
+            entity = this.mapToEntity(cheque);
 
-        cheque.documentDetail.chequeStatusHistory = cheque.documentDetail.chequeStatusHistory || [];
-        cheque.documentDetail.chequeStatusHistory.push({
+        entity.destinationDetailAccountId = cmd.receiverId;
+        entity.transferDate = cmd.date || null;
+        entity.documentDetail.status = 'passed';
+        entity.isCompleted = true;
+
+        entity.documentDetail.chequeStatusHistory = entity.documentDetail.chequeStatusHistory || [];
+        entity.documentDetail.chequeStatusHistory.push({
             createdAt: cmd.date || new Date(),
             status: 'passed',
             journalId: null
         });
-        cheque.documentDetail.chequeStatusHistory = JSON.stringify(cheque.documentDetail.chequeStatusHistory);
+        entity.documentDetail.chequeStatusHistory = JSON.stringify(entity.documentDetail.chequeStatusHistory);
 
         this.eventBus.send('onChequeStatusChanged', id);
 
-        return this.treasuryRepository.update(cheque.id, cheque);
+        return this.treasuryRepository.update(entity.id, entity);
     }
 
     paymentChequePass(id, cmd) {
-        let cheque = this.treasuryRepository.findById(id);
-        cheque.sourceDetailAccountId = cmd.payerId;
-        cheque.transferDate = cmd.date || null;
-        cheque.documentDetail.status = 'passed';
-        cheque.isCompleted = true;
+        let cheque = this.treasuryRepository.findById(id),
+            entity = this.mapToEntity(cheque);
 
-        cheque.documentDetail.chequeStatusHistory = cheque.documentDetail.chequeStatusHistory || [];
-        cheque.documentDetail.chequeStatusHistory.push({
+        entity.sourceDetailAccountId = cmd.payerId;
+        entity.transferDate = cmd.date || null;
+        entity.documentDetail.status = 'passed';
+        entity.isCompleted = true;
+
+        entity.documentDetail.chequeStatusHistory = entity.documentDetail.chequeStatusHistory || [];
+        entity.documentDetail.chequeStatusHistory.push({
             createdAt: cmd.date || new Date(),
             status: 'passed',
             journalId: null
         });
-        cheque.documentDetail.chequeStatusHistory = JSON.stringify(cheque.documentDetail.chequeStatusHistory);
+        entity.documentDetail.chequeStatusHistory = JSON.stringify(entity.documentDetail.chequeStatusHistory);
 
         this.eventBus.send('onChequeStatusChanged', id);
 
-        return this.treasuryRepository.update(cheque.id, cheque);
+        return this.treasuryRepository.update(entity.id, entity);
     }
 
     chequeInProcess(id, cmd) {
-        let cheque = this.treasuryRepository.findById(id);
-        cheque.isCompleted = false;
-        cheque.documentDetail.status = 'inProcessOnPassing';
+        let cheque = this.treasuryRepository.findById(id),
+            entity = this.mapToEntity(cheque);
 
-        cheque.documentDetail.chequeStatusHistory = cheque.documentDetail.chequeStatusHistory || [];
-        cheque.documentDetail.chequeStatusHistory.push({
+        entity.isCompleted = false;
+        entity.documentDetail.status = 'inProcessOnPassing';
+
+        entity.documentDetail.chequeStatusHistory = entity.documentDetail.chequeStatusHistory || [];
+        entity.documentDetail.chequeStatusHistory.push({
             createdAt: new Date(),
             status: 'inProcessOnPassing',
             journalId: null
         });
-        cheque.documentDetail.chequeStatusHistory = JSON.stringify(cheque.documentDetail.chequeStatusHistory);
+        entity.documentDetail.chequeStatusHistory = JSON.stringify(entity.documentDetail.chequeStatusHistory);
 
         this.eventBus.send('onChequeStatusChanged', id);
 
-        return this.treasuryRepository.update(cheque.id, cheque);
+        return this.treasuryRepository.update(entity.id, entity);
     }
 
     chequeReturn(id, cmd) {
-        let cheque = this.treasuryRepository.findById(id);
-        cheque.isCompleted = false;
-        cheque.documentDetail.status = 'return';
-        cheque.documentDetail.trackingNumber = cmd.trackingNumber || null;
-        cheque.documentDetail.transferTo = cmd.transferTo || null;
+        let cheque = this.treasuryRepository.findById(id),
+            entity = this.mapToEntity(cheque);
 
-        cheque.documentDetail.chequeStatusHistory = cheque.documentDetail.chequeStatusHistory || [];
-        cheque.documentDetail.chequeStatusHistory.push({
+        entity.isCompleted = false;
+        entity.documentDetail.status = 'return';
+        entity.documentDetail.trackingNumber = cmd.trackingNumber || null;
+        entity.documentDetail.transferTo = cmd.transferTo || null;
+
+        entity.documentDetail.chequeStatusHistory = entity.documentDetail.chequeStatusHistory || [];
+        entity.documentDetail.chequeStatusHistory.push({
             createdAt: new Date(),
             status: 'return',
             journalId: null
         });
-        cheque.documentDetail.chequeStatusHistory = JSON.stringify(cheque.documentDetail.chequeStatusHistory);
+        entity.documentDetail.chequeStatusHistory = JSON.stringify(entity.documentDetail.chequeStatusHistory);
 
         this.eventBus.send('onChequeStatusChanged', id);
 
-        return this.treasuryRepository.update(cheque.id, cheque);
+        return this.treasuryRepository.update(entity.id, entity);
     }
 
     chequeRevocation(id, cmd) {
-        let cheque = this.treasuryRepository.findById(id);
-        cheque.isCompleted = false;
-        cheque.documentDetail.status = 'revocation';
+        let cheque = this.treasuryRepository.findById(id),
+            entity = this.mapToEntity(cheque);
+        entity.isCompleted = false;
+        entity.documentDetail.status = 'revocation';
 
-        cheque.documentDetail.chequeStatusHistory = cheque.documentDetail.chequeStatusHistory || [];
-        cheque.documentDetail.chequeStatusHistory.push({
+        entity.documentDetail.chequeStatusHistory = entity.documentDetail.chequeStatusHistory || [];
+        entity.documentDetail.chequeStatusHistory.push({
             createdAt: new Date(),
             status: 'revocation',
             journalId: null
         });
-        cheque.documentDetail.chequeStatusHistory = JSON.stringify(cheque.documentDetail.chequeStatusHistory);
+        entity.documentDetail.chequeStatusHistory = JSON.stringify(entity.documentDetail.chequeStatusHistory);
 
         this.eventBus.send('onChequeStatusChanged', id);
 
-        return this.treasuryRepository.update(cheque.id, cheque);
+        return this.treasuryRepository.update(entity.id, entity);
     }
 
     chequeMissing(id, cmd) {
-        let cheque = this.treasuryRepository.findById(id);
-        cheque.isCompleted = false;
-        cheque.documentDetail.status = 'missing';
+        let cheque = this.treasuryRepository.findById(id),
+            entity = this.mapToEntity(cheque);
 
-        cheque.documentDetail.chequeStatusHistory = cheque.documentDetail.chequeStatusHistory || [];
-        cheque.documentDetail.chequeStatusHistory.push({
+        entity.isCompleted = false;
+        entity.documentDetail.status = 'missing';
+
+        entity.documentDetail.chequeStatusHistory = entity.documentDetail.chequeStatusHistory || [];
+        entity.documentDetail.chequeStatusHistory.push({
             createdAt: new Date(),
             status: 'missing',
             journalId: null
         });
-        cheque.documentDetail.chequeStatusHistory = JSON.stringify(cheque.documentDetail.chequeStatusHistory);
+        entity.documentDetail.chequeStatusHistory = JSON.stringify(entity.documentDetail.chequeStatusHistory);
 
         this.eventBus.send('onChequeStatusChanged', id);
 
-        return this.treasuryRepository.update(cheque.id, cheque);
+        return this.treasuryRepository.update(entity.id, entity);
     }
 
     chequeSpend(receiveId, cmd) {
         let cheque = receiveId ? this.treasuryRepository.findById(receiveId) : null,
-            receiver = this.detailAccountRepository.findById(cmd.receiverId);
+            receiver = this.detailAccountRepository.findById(cmd.receiverId),
+            entity = this.mapToEntity(cheque);
 
 
         if (receiver.detailAccountType !== 'person')
             throw new ValidationException('دریافت کننده چک باید شخص باشد.');
 
         if (cheque) {
-            cheque.isCompleted = true;
-            cheque.documentDetail.status = 'spend';
-            cheque.destinationDetailAccountId = cmd.receiverId;
+            entity.isCompleted = true;
+            entity.documentDetail.status = 'spend';
+            entity.destinationDetailAccountId = cmd.receiverId;
 
-            cheque.documentDetail.chequeStatusHistory = cheque.documentDetail.chequeStatusHistory || [];
-            cheque.documentDetail.chequeStatusHistory.push({
+            entity.documentDetail.chequeStatusHistory = entity.documentDetail.chequeStatusHistory || [];
+            entity.documentDetail.chequeStatusHistory.push({
                 createdAt: new Date(),
                 status: 'spend',
                 journalId: null
             });
-            cheque.documentDetail.chequeStatusHistory = JSON.stringify(cheque.documentDetail.chequeStatusHistory);
+            entity.documentDetail.chequeStatusHistory = JSON.stringify(entity.documentDetail.chequeStatusHistory);
 
-            this.treasuryRepository.update(cheque.id, cheque);
+            this.treasuryRepository.update(entity.id, entity);
         }
 
-        cheque.documentDetail.chequeStatusHistory = [];
-        cheque.documentDetail.chequeStatusHistory = JSON.stringify(cheque.documentDetail.chequeStatusHistory);
-        cheque.receiveId = receiveId;
-        cheque.documentType = 'spendCheque';
+        entity.documentDetail.chequeStatusHistory = [];
+        entity.documentDetail.chequeStatusHistory = JSON.stringify(entity.documentDetail.chequeStatusHistory);
+        entity.receiveId = receiveId;
+        entity.documentType = 'spendCheque';
 
-        let paymentId = this.createPayment(cheque);
+        let paymentId = this.createPayment(entity);
         this.eventBus.send('onChequeStatusChanged', [receiveId, paymentId]);
 
         return paymentId;
@@ -358,34 +372,36 @@ export class TreasuryChequeDomainService {
 
     setJournalForSpend(receiveId, paymentId, journalId) {
         let receive = this.treasuryRepository.findById(receiveId),
-            payment = this.treasuryRepository.findById(paymentId);
+            receiveEntity = this.mapToEntity(receive),
+            payment = this.treasuryRepository.findById(paymentId),
+            paymentEntity = this.mapToEntity(payment);
 
-        receive.journalId = journalId;
-        payment.journalId = journalId;
+        receiveEntity.journalId = journalId;
+        paymentEntity.journalId = journalId;
 
-        receive.documentDetail.chequeStatusHistory =
-            receive.documentDetail.chequeStatusHistory.asEnumerable()
+        receiveEntity.documentDetail.chequeStatusHistory =
+            receiveEntity.documentDetail.chequeStatusHistory.asEnumerable()
                 .select(item => ({
                     createdAt: item.createdAt,
                     status: item.status,
-                    journalId: item.status === receive.documentDetail.status ? journalId : item.journalId
+                    journalId: item.status === receiveEntity.documentDetail.status ? journalId : item.journalId
                 }))
                 .toArray();
 
-        receive.documentDetail.chequeStatusHistory = JSON.stringify(receive.documentDetail.chequeStatusHistory);
+        receiveEntity.documentDetail.chequeStatusHistory = JSON.stringify(receiveEntity.documentDetail.chequeStatusHistory);
 
-        payment.documentDetail.chequeStatusHistory =
-            payment.documentDetail.chequeStatusHistory.asEnumerable()
+        paymentEntity.documentDetail.chequeStatusHistory =
+            paymentEntity.documentDetail.chequeStatusHistory.asEnumerable()
                 .select(item => ({
                     createdAt: item.createdAt,
                     status: item.status,
-                    journalId: item.status === payment.documentDetail.status ? journalId : item.journalId
+                    journalId: item.status === paymentEntity.documentDetail.status ? journalId : item.journalId
                 }))
                 .toArray();
 
-        payment.documentDetail.chequeStatusHistory = JSON.stringify(payment.documentDetail.chequeStatusHistory);
+        paymentEntity.documentDetail.chequeStatusHistory = JSON.stringify(paymentEntity.documentDetail.chequeStatusHistory);
 
-        this.treasuryRepository.update(receiveId, receive);
-        return this.treasuryRepository.update(paymentId, payment);
+        this.treasuryRepository.update(receiveId, receiveEntity);
+        return this.treasuryRepository.update(paymentId, paymentEntity);
     }
 }
