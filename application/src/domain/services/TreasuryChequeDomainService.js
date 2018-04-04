@@ -24,8 +24,8 @@ export class TreasuryChequeDomainService {
         return {
             id: cmd.id,
             transferDate: cmd.transferDate || PersianDate.current(),
-            sourceDetailAccountId: cmd.payerId || null,
-            destinationDetailAccountId: cmd.receiverId || null,
+            sourceDetailAccountId: cmd.payerId || cmd.sourceDetailAccountId || null,
+            destinationDetailAccountId: cmd.receiverId || cmd.destinationDetailAccountId || null,
             amount: cmd.amount,
             imageUrl: JSON.stringify(cmd.imageUrl || []),
             description: cmd.description,
