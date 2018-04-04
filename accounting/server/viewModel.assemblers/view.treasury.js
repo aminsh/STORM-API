@@ -9,7 +9,7 @@ function treasuryAssembler(entity) {
         documentType: entity.documentType,
         documentTypeDisplay: entity.documentType
             ? enums.TreasuryPaymentDocumentTypes().getDisplay(entity.documentType)
-            :'',
+            : '',
         transferDate: entity.transferDate,
         payerId: entity.sourceDetailAccountId,
         payerTitle: entity.sourceTitle,
@@ -17,7 +17,8 @@ function treasuryAssembler(entity) {
         receiverTitle: entity.destinationTitle,
         amount: entity.amount,
         chequeStatus: entity.status,
-        chequeStatusDisplay: entity.status ? enums.ReceiveChequeStatus().getDisplay(entity.status) : ''
+        chequeStatusDisplay: entity.status ? enums.ReceiveChequeStatus().getDisplay(entity.status) : '',
+        number: entity.number
     };
 
     return viewModel;

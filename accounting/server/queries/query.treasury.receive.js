@@ -34,7 +34,8 @@ class TreasuryReceive
                     knex.raw(`source.title as "sourceTitle"`),
                     'treasury.destinationDetailAccountId',
                     knex.raw(`destination.title as "destinationTitle"`),
-                    'treasuryDocumentDetails.status'
+                    'treasuryDocumentDetails.status',
+                    'treasuryDocumentDetails.number'
                 )
                     .from('treasury')
                     .leftJoin('detailAccounts as source', 'source.id', 'treasury.sourceDetailAccountId')
