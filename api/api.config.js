@@ -31,6 +31,7 @@ app.get('/v1/enums', function (req, res) {
 
     res.json(enumsJson);
 });
+app.use('/v1/send-invoice', require('../accounting/server/routes/api.sendInvoice'));
 app.use('/v1/users', require('./api.user'));
 app.use('/v1/login', require('./api.login'));
 app.use('/v1/branches', require('./api.branch'));
@@ -46,10 +47,10 @@ app.use(async((req, res, next) => {
 
     let member = branchService.findByToken(token);
 
-    if(!member)
+    if (!member)
         return NoTokenAction();
 
-    if(!branchService.isActive(member.branchId))
+    if (!branchService.isActive(member.branchId))
         return NoTokenAction();
 
     req.branchId = member.branchId;
@@ -108,9 +109,9 @@ app.use('/v1/journal-generation-templates', require('../accounting/server/routes
 app.use('/v1/return-sales', require('../accounting/server/routes/api.returnSale'));
 app.use('/v1/inventory-io-types', require('../accounting/server/routes/api.inventoryIOType'));
 app.use('/v1/banks-name', require('../accounting/server/routes/api.banksName'));
-app.use('/v1/treasury/receives',require('../accounting/server/routes/api.treasury.receive'));
-app.use('/v1/treasury/payments',require('../accounting/server/routes/api.treasury.payment'));
-app.use('/v1/treasury/settings',require('../accounting/server/routes/api.treasury.setting'));
+app.use('/v1/treasury/receives', require('../accounting/server/routes/api.treasury.receive'));
+app.use('/v1/treasury/payments', require('../accounting/server/routes/api.treasury.payment'));
+app.use('/v1/treasury/settings', require('../accounting/server/routes/api.treasury.setting'));
 app.use('/v1/cheque-categories', require('../accounting/server/routes/api.chequeCategory'));
 app.use('/v1/return-purchase', require('../accounting/server/routes/api.returnPurchase'));
 
