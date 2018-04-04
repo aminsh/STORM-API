@@ -27,7 +27,7 @@ export class TreasuryCashDomainService {
             sourceDetailAccountId: cmd.payerId || null,
             destinationDetailAccountId: cmd.receiverId || null,
             amount: cmd.amount,
-            imageUrl: cmd.imageUrl,
+            imageUrl: JSON.stringify(cmd.imageUrl || []),
             description: cmd.description,
             treasuryType: cmd.treasuryType,
             documentType: cmd.documentType,
