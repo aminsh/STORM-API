@@ -78,7 +78,7 @@ class TreasuryReceive
                 .first()
             ),
 
-            journalIds = treasury.documentType === 'cheque'
+            journalIds = treasury.documentType === 'cheque' && documentDetail.chequeStatusHistory
                 ? documentDetail.chequeStatusHistory.asEnumerable()
                     .where(e => e.journalId)
                     .select(item => item.journalId)
