@@ -23,7 +23,6 @@ class TreasuryTransfer
                 this.select(
                     'treasury.id',
                     'treasury.imageUrl',
-                    'treasury.documentType',
                     'treasury.amount',
                     'treasury.transferDate',
                     'treasury.sourceDetailAccountId',
@@ -36,7 +35,7 @@ class TreasuryTransfer
                     .leftJoin('detailAccounts as source', 'source.id', 'treasury.sourceDetailAccountId')
                     .leftJoin('detailAccounts as destination', 'destination.id', 'treasury.destinationDetailAccountId')
                     .where('treasury.branchId', branchId)
-                    .where('treasuryType', 'payment')
+                    .where('treasuryType', 'transfer')
                     .as('base')
             });
 
