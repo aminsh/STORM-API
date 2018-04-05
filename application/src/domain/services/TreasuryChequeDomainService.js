@@ -203,7 +203,12 @@ export class TreasuryChequeDomainService {
 
     chequeInFund(id, cmd) {
         let cheque = this.treasuryRepository.findById(id),
-            entity = this.mapToEntity(cheque);
+            entity = this.mapToEntity(cheque),
+            errors = this._changeStatusValidate(entity);
+
+        if(errors.length > 0)
+            throw new ValidationException(errors);
+
         entity.isCompleted = false;
         entity.documentDetail.status = 'inFund';
 
@@ -248,10 +253,13 @@ export class TreasuryChequeDomainService {
 
     paymentChequePass(id, cmd) {
         let cheque = this.treasuryRepository.findById(id),
-            entity = this.mapToEntity(cheque);
+            entity = this.mapToEntity(cheque),
+            errors = this._changeStatusValidate(entity);
+
+        if(errors.length > 0)
+            throw new ValidationException(errors);
 
         entity.sourceDetailAccountId = cmd.payerId;
-        entity.transferDate = cmd.date || null;
         entity.documentDetail.status = 'passed';
         entity.isCompleted = true;
 
@@ -259,6 +267,7 @@ export class TreasuryChequeDomainService {
         entity.documentDetail.chequeStatusHistory.push({
             createdAt: cmd.date || new Date(),
             status: 'passed',
+            passedDate: cmd.date,
             journalId: null
         });
         entity.documentDetail.chequeStatusHistory = JSON.stringify(entity.documentDetail.chequeStatusHistory);
@@ -268,9 +277,13 @@ export class TreasuryChequeDomainService {
         return this.treasuryRepository.update(entity.id, entity);
     }
 
-    chequeInProcess(id) {
+    chequeInProcess(id, cmd) {
         let cheque = this.treasuryRepository.findById(id),
-            entity = this.mapToEntity(cheque);
+            entity = this.mapToEntity(cheque),
+            errors = this._changeStatusValidate(entity);
+
+        if(errors.length > 0)
+            throw new ValidationException(errors);
 
         entity.isCompleted = false;
         entity.documentDetail.status = 'inProcessOnPassing';
@@ -290,7 +303,11 @@ export class TreasuryChequeDomainService {
 
     chequeReturn(id, cmd) {
         let cheque = this.treasuryRepository.findById(id),
-            entity = this.mapToEntity(cheque);
+            entity = this.mapToEntity(cheque),
+            errors = this._changeStatusValidate(entity);
+
+        if(errors.length > 0)
+            throw new ValidationException(errors);
 
         entity.isCompleted = false;
         entity.documentDetail.status = 'return';
@@ -312,7 +329,12 @@ export class TreasuryChequeDomainService {
 
     chequeRevocation(id, cmd) {
         let cheque = this.treasuryRepository.findById(id),
-            entity = this.mapToEntity(cheque);
+            entity = this.mapToEntity(cheque),
+            errors = this._changeStatusValidate(entity);
+
+        if(errors.length > 0)
+            throw new ValidationException(errors);
+
         entity.isCompleted = false;
         entity.documentDetail.status = 'revocation';
 
@@ -331,7 +353,11 @@ export class TreasuryChequeDomainService {
 
     chequeMissing(id, cmd) {
         let cheque = this.treasuryRepository.findById(id),
-            entity = this.mapToEntity(cheque);
+            entity = this.mapToEntity(cheque),
+            errors = this._changeStatusValidate(entity);
+
+        if(errors.length > 0)
+            throw new ValidationException(errors);
 
         entity.isCompleted = false;
         entity.documentDetail.status = 'missing';
@@ -352,11 +378,15 @@ export class TreasuryChequeDomainService {
     chequeSpend(receiveId, cmd) {
         let cheque = receiveId ? this.treasuryRepository.findById(receiveId) : null,
             receiver = this.detailAccountRepository.findById(cmd.receiverId),
-            entity = this.mapToEntity(cheque);
-
+            entity = this.mapToEntity(cheque),
+            errors = this._changeStatusValidate(entity);
 
         if (receiver.detailAccountType !== 'person')
-            throw new ValidationException('دریافت کننده چک باید شخص باشد.');
+            errors.push('دریافت کننده چک باید شخص باشد.');
+
+        if(errors.length > 0)
+            throw new ValidationException(errors);
+
 
         if (cheque) {
             entity.isCompleted = true;
