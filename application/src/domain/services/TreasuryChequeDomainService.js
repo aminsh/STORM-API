@@ -32,6 +32,7 @@ export class TreasuryChequeDomainService {
             treasuryType: cmd.treasuryType,
             documentType: cmd.documentType,
             journalId: cmd.journalId,
+            isCompleted: cmd.isCompleted,
             receiveId: cmd.receiverId,
             documentDetail: this._documentDetailMapToEntity(cmd.documentDetail)
         }
@@ -54,6 +55,7 @@ export class TreasuryChequeDomainService {
             chequeAccountNumber: documentDetail.chequeAccountNumber,
             canTransferToAnother: documentDetail.canTransferToAnother,
             status: documentDetail.status,
+            chequeStatusHistory: documentDetail.chequeStatusHistory || [],
             trackingNumber: documentDetail.trackingNumber
         }
     }
@@ -104,6 +106,15 @@ export class TreasuryChequeDomainService {
 
         if (Utility.String.isNullOrEmpty(entity.documentDetail.number.toString()))
             errors.push('شماره چک نباید خالی باشد');
+
+        return errors;
+    }
+
+    _changeStatusValidate(entity){
+        let errors = [];
+
+        if (entity.isCompleted)
+            errors.push('چک قبلا پاس شده است!');
 
         return errors;
     }
@@ -211,17 +222,21 @@ export class TreasuryChequeDomainService {
 
     receiveChequePass(id, cmd) {
         let cheque = this.treasuryRepository.findById(id),
-            entity = this.mapToEntity(cheque);
+            entity = this.mapToEntity(cheque),
+            errors = this._changeStatusValidate(entity);
+
+        if(errors.length > 0)
+            throw new ValidationException(errors);
 
         entity.destinationDetailAccountId = cmd.receiverId;
-        entity.transferDate = cmd.date || null;
         entity.documentDetail.status = 'passed';
         entity.isCompleted = true;
 
         entity.documentDetail.chequeStatusHistory = entity.documentDetail.chequeStatusHistory || [];
         entity.documentDetail.chequeStatusHistory.push({
-            createdAt: cmd.date || new Date(),
+            createdAt: new Date(),
             status: 'passed',
+            passedDate: cmd.date,
             journalId: null
         });
         entity.documentDetail.chequeStatusHistory = JSON.stringify(entity.documentDetail.chequeStatusHistory);
@@ -253,7 +268,7 @@ export class TreasuryChequeDomainService {
         return this.treasuryRepository.update(entity.id, entity);
     }
 
-    chequeInProcess(id, cmd) {
+    chequeInProcess(id) {
         let cheque = this.treasuryRepository.findById(id),
             entity = this.mapToEntity(cheque);
 
@@ -279,7 +294,7 @@ export class TreasuryChequeDomainService {
 
         entity.isCompleted = false;
         entity.documentDetail.status = 'return';
-        entity.documentDetail.trackingNumber = cmd.trackingNumber || null;
+        entity.documentDetail.trackingNumber = cmd.identity || null;
         entity.documentDetail.transferTo = cmd.transferTo || null;
 
         entity.documentDetail.chequeStatusHistory = entity.documentDetail.chequeStatusHistory || [];

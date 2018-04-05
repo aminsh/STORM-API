@@ -1016,10 +1016,9 @@
   {
     "name": "treasuryChequeInProcess",
     "class": "TreasuryChequeDomainService",
-    "method": "ChequeInProcess",
+    "method": "chequeInProcess",
     "params": [
-      "id",
-      "command"
+      "id"
     ],
     "returns": "undefined"
   },

@@ -66,7 +66,7 @@ router.route('/cheques/:id/in-process')
     .put(async((req, res) => {
 
         try {
-            req.container.get("CommandBus").send("treasuryChequeInProcess", [req.params.id, req.body]);
+            req.container.get("CommandBus").send("treasuryChequeInProcess", [req.params.id]);
             res.json({isValid: true});
         }
         catch (e) {
