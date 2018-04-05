@@ -27,7 +27,7 @@ router.route('/cheques')
 router.route('/cheques/:id')
     .get(async((req, res) => {
         let paymentQuery = new PaymentQuery(req.branchId),
-            result = await(paymentQuery.getById(req.params.id, 'cheque'));
+            result = await(paymentQuery.getById(req.params.id));
         res.json(result);
     }))
     .put(async((req, res) => {

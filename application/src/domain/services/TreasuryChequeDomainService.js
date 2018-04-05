@@ -55,7 +55,7 @@ export class TreasuryChequeDomainService {
             chequeAccountNumber: documentDetail.chequeAccountNumber,
             canTransferToAnother: documentDetail.canTransferToAnother,
             status: documentDetail.status,
-            chequeStatusHistory: documentDetail.chequeStatusHistory || [],
+            //chequeStatusHistory: documentDetail.chequeStatusHistory || [],
             trackingNumber: documentDetail.trackingNumber
         }
     }
@@ -113,7 +113,7 @@ export class TreasuryChequeDomainService {
     _changeStatusValidate(entity){
         let errors = [];
 
-        if (entity.isCompleted)
+        if (entity.isCompleted && entity.documentDetail.status === 'passed')
             errors.push('چک قبلا پاس شده است!');
 
         return errors;
@@ -149,7 +149,7 @@ export class TreasuryChequeDomainService {
 
         entity.treasuryType = 'payment';
         entity.documentType = entity.documentType || 'cheque';
-        entity.documentDetail.canTransferToAnother = entity.documentDetail.canTransferToAnother || true;
+        entity.documentDetail.canTransferToAnother = entity.documentDetail.canTransferToAnother || false;
 
         entity = this.treasuryRepository.create(entity);
 
@@ -212,7 +212,7 @@ export class TreasuryChequeDomainService {
         entity.isCompleted = false;
         entity.documentDetail.status = 'inFund';
 
-        entity.documentDetail.chequeStatusHistory = entity.documentDetail.chequeStatusHistory || [];
+        entity.documentDetail.chequeStatusHistory = cheque.documentDetail.chequeStatusHistory || [];
         entity.documentDetail.chequeStatusHistory.push({
             createdAt: new Date(),
             status: 'inFund',
@@ -237,7 +237,7 @@ export class TreasuryChequeDomainService {
         entity.documentDetail.status = 'passed';
         entity.isCompleted = true;
 
-        entity.documentDetail.chequeStatusHistory = entity.documentDetail.chequeStatusHistory || [];
+        entity.documentDetail.chequeStatusHistory = cheque.documentDetail.chequeStatusHistory || [];
         entity.documentDetail.chequeStatusHistory.push({
             createdAt: new Date(),
             status: 'passed',
@@ -259,13 +259,12 @@ export class TreasuryChequeDomainService {
         if(errors.length > 0)
             throw new ValidationException(errors);
 
-        entity.sourceDetailAccountId = cmd.payerId;
         entity.documentDetail.status = 'passed';
         entity.isCompleted = true;
 
-        entity.documentDetail.chequeStatusHistory = entity.documentDetail.chequeStatusHistory || [];
+        entity.documentDetail.chequeStatusHistory = cheque.documentDetail.chequeStatusHistory || [];
         entity.documentDetail.chequeStatusHistory.push({
-            createdAt: cmd.date || new Date(),
+            createdAt: new Date(),
             status: 'passed',
             passedDate: cmd.date,
             journalId: null
@@ -288,7 +287,7 @@ export class TreasuryChequeDomainService {
         entity.isCompleted = false;
         entity.documentDetail.status = 'inProcessOnPassing';
 
-        entity.documentDetail.chequeStatusHistory = entity.documentDetail.chequeStatusHistory || [];
+        entity.documentDetail.chequeStatusHistory = cheque.documentDetail.chequeStatusHistory || [];
         entity.documentDetail.chequeStatusHistory.push({
             createdAt: new Date(),
             status: 'inProcessOnPassing',
@@ -309,12 +308,12 @@ export class TreasuryChequeDomainService {
         if(errors.length > 0)
             throw new ValidationException(errors);
 
-        entity.isCompleted = false;
+        entity.isCompleted = true;
         entity.documentDetail.status = 'return';
         entity.documentDetail.trackingNumber = cmd.identity || null;
         entity.documentDetail.transferTo = cmd.transferTo || null;
 
-        entity.documentDetail.chequeStatusHistory = entity.documentDetail.chequeStatusHistory || [];
+        entity.documentDetail.chequeStatusHistory = cheque.documentDetail.chequeStatusHistory || [];
         entity.documentDetail.chequeStatusHistory.push({
             createdAt: new Date(),
             status: 'return',
@@ -335,10 +334,10 @@ export class TreasuryChequeDomainService {
         if(errors.length > 0)
             throw new ValidationException(errors);
 
-        entity.isCompleted = false;
+        entity.isCompleted = true;
         entity.documentDetail.status = 'revocation';
 
-        entity.documentDetail.chequeStatusHistory = entity.documentDetail.chequeStatusHistory || [];
+        entity.documentDetail.chequeStatusHistory = cheque.documentDetail.chequeStatusHistory || [];
         entity.documentDetail.chequeStatusHistory.push({
             createdAt: new Date(),
             status: 'revocation',
@@ -362,7 +361,7 @@ export class TreasuryChequeDomainService {
         entity.isCompleted = false;
         entity.documentDetail.status = 'missing';
 
-        entity.documentDetail.chequeStatusHistory = entity.documentDetail.chequeStatusHistory || [];
+        entity.documentDetail.chequeStatusHistory = cheque.documentDetail.chequeStatusHistory || [];
         entity.documentDetail.chequeStatusHistory.push({
             createdAt: new Date(),
             status: 'missing',
@@ -393,7 +392,7 @@ export class TreasuryChequeDomainService {
             entity.documentDetail.status = 'spend';
             entity.destinationDetailAccountId = cmd.receiverId;
 
-            entity.documentDetail.chequeStatusHistory = entity.documentDetail.chequeStatusHistory || [];
+            entity.documentDetail.chequeStatusHistory = cheque.documentDetail.chequeStatusHistory || [];
             entity.documentDetail.chequeStatusHistory.push({
                 createdAt: new Date(),
                 status: 'spend',
@@ -408,6 +407,8 @@ export class TreasuryChequeDomainService {
         entity.documentDetail.chequeStatusHistory = JSON.stringify(entity.documentDetail.chequeStatusHistory);
         entity.receiveId = receiveId;
         entity.documentType = 'spendCheque';
+        entity.isCompleted = false;
+        entity.documentDetail.status = 'inProcessOnPassing';
 
         let paymentId = this.createPayment(entity);
         this.eventBus.send('onChequeStatusChanged', [receiveId, paymentId]);

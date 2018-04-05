@@ -49,16 +49,12 @@ class TreasuryPayment
 
     }
 
-    getById(id, receiveType) {
-
+    getById(id) {
         let knex = this.knex,
             branchId = this.branchId,
-            treasuryColumns = queryObjectMapper.columnsToSelect('treasury'),
-            treasuryDocumentDetailsColumns = queryObjectMapper.columnsToSelect('treasuryDocumentDetails'),
 
-            query = await(knex.select(
-                    ...treasuryColumns,
-                    ...treasuryDocumentDetailsColumns,
+            treasury = await(knex.select(
+                'treasury.*',
                 knex.raw(`"sourceDetailAccounts".title as "sourceTitle"`),
                 knex.raw(`"destinationDetailAccounts".title as "destinationTitle"`)
                 )
@@ -69,30 +65,60 @@ class TreasuryPayment
                     .leftJoin(knex.raw(`(select da.title, da.id
                                      from "detailAccounts" as da )as "destinationDetailAccounts"`),
                         'treasury.destinationDetailAccountId', '=', 'destinationDetailAccounts.id')
-                    .leftJoin('treasuryDocumentDetails', 'treasury.documentDetailId', 'treasuryDocumentDetails.id')
                     .where('treasury.branchId', branchId)
                     .where('treasury.id', id)
                     .first()
             ),
-            result  = queryObjectMapper.mapResult(query, item => Object.assign({}, item.treasury, {documentDetail: item.treasuryDocumentDetails}));
 
-        if (receiveType === 'cheque') {
-            return chequeView(result);
+            documentDetail = await(knex.select('treasuryDocumentDetails.*')
+                .from('treasuryDocumentDetails')
+                .where('id', treasury.documentDetailId)
+                .where('branchId', branchId)
+                .first()
+            ),
+
+            journalIds = treasury.documentType === 'cheque' && documentDetail.chequeStatusHistory
+                ? documentDetail.chequeStatusHistory.asEnumerable()
+                    .where(e => e.journalId)
+                    .select(item => item.journalId)
+                    .toArray()
+                : treasury.journalId ? [treasury.journalId] : null;
+
+        let journals = (journalIds || []).length > 0
+            ? await(knex.select(
+                'journals.temporaryDate',
+                'journals.temporaryNumber',
+                'journals.id',
+                'journals.description'
+                )
+                    .from('journals')
+                    .whereIn('id', journalIds)
+                    .where('branchId', branchId)
+                    .toArray()
+            )
+            :null;
+
+
+        treasury.documentDetail = documentDetail;
+        treasury.journals = journals;
+
+        if (treasury.documentType === 'cheque') {
+            return chequeView(treasury);
         }
 
-        if (receiveType === 'cash') {
-            return cashView(result);
+        if (treasury.documentType === 'cash') {
+            return cashView(treasury);
         }
 
-        if (receiveType === 'receipt') {
-            return receiptView(result);
+        if (treasury.documentType === 'receipt') {
+            return receiptView(treasury);
         }
 
-        if (receiveType === 'demandNote') {
-            return demandNote(query);
+        if (treasury.documentType === 'demandNote') {
+            return demandNote(treasury);
         }
 
-        return view(query);
+        return view(treasury);
     }
 
 }
