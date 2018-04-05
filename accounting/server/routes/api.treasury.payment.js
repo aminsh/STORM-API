@@ -16,7 +16,7 @@ router.route('/cheques')
     .post(async((req, res) => {
         try {
             const id = req.container.get("CommandBus").send("treasuryPaymentChequeCreate", [req.body]);
-            req.container.get("CommandBus").send("treasuryChequeInProcess", [id, req.body]);
+            req.container.get("CommandBus").send("treasuryChequeInProcess", [id]);
             res.json({isValid: true, returnValue: {id}});
         }
         catch (e) {
