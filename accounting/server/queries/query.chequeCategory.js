@@ -53,7 +53,7 @@ class ChequeCategoryQuery extends BaseQuery {
         return view(category);
     }
 
-    getCheque(bankId){
+    getCheque(bankId) {
         let firstOpenCategory = await(
             this.knex.table('chequeCategories')
                 .where('branchId', this.branchId)
@@ -62,7 +62,7 @@ class ChequeCategoryQuery extends BaseQuery {
                 .orderBy('createdAt')
                 .first());
 
-        if(!firstOpenCategory)
+        if (!firstOpenCategory)
             return 'NULL';
 
         let cheque = firstOpenCategory.cheques.asEnumerable()
@@ -70,6 +70,54 @@ class ChequeCategoryQuery extends BaseQuery {
             .first(item => !item.isUsed);
 
         return cheque.number;
+    }
+
+    getAllCheques(id) {
+        let knex = this.knex,
+            category = await(knex.select('cheques').from('chequeCategories').where({id}).first()),
+            chequesUsed = category.cheques
+                .asEnumerable()
+                .where(item => item.isUsed && item.treasuryPayableChequeId)
+                .toArray(),
+
+            treasuryPayableCheques = chequesUsed && chequesUsed.length
+                ? await(
+                    knex.select(
+                        'treasury.amount',
+                        'treasuryDocumentDetails.number',
+                        'treasuryDocumentDetails.dueDate',
+                        'treasuryDocumentDetails.payTo',
+                        knex.raw('treasury."destinationDetailAccountId" as "receiverId"'),
+                        knex.raw(`destination.title as "receiverDisplay"`)
+                    )
+                        .from('treasury')
+                        .leftJoin('treasuryDocumentDetails', 'treasury.documentDetailId', 'treasuryDocumentDetails.id')
+                        .leftJoin('detailAccounts as destination', 'destination.id', 'treasury.destinationDetailAccountId')
+                        .where('treasury.branchId', this.branchId)
+                        .where('treasuryType', 'payment')
+                        .whereIn('treasury.id', chequesUsed.map(item => item.treasuryPayableChequeId))
+                ):[],
+
+            result = chequesUsed.asEnumerable()
+                .join(
+                    treasuryPayableCheques,
+                    first => first.number,
+                    second => parseInt(second.number),
+                    (first, second) => ({
+                        number: first.number,
+                        isUsed: first.isUsed,
+                        amount: second.amount,
+                        date: second.dueDate,
+                        payTo: second.payTo,
+                        receiverId: second.receiverId,
+                        receiverDisplay: second.receiverDisplay
+                    }))
+                .concat(category.cheques.asEnumerable().where(item => !(item.isUsed && item.treasuryPayableChequeId)))
+                .orderBy(item => item.number)
+                .toArray();
+
+        return result;
+
     }
 }
 
