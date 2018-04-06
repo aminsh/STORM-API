@@ -7,11 +7,17 @@ export class ChequeEventListener {
     @inject("PayableChequeDomainService")
     /** @type {PayableChequeDomainService}*/payableChequeDomainService = undefined;
 
-    @eventHandler("onChequeIssued")
-    onIssued(treasuryPayableCheque) {
+    @inject("TreasuryRepository")
+    /** @type {TreasuryRepository}*/ treasuryRepository = undefined;
+
+    @eventHandler("onChequeCreated")
+    onIssued(treasuryPayableChequeId) {
+
+        let treasuryPayableCheque = this.treasuryRepository.findById(treasuryPayableChequeId);
 
         this.payableChequeDomainService.issue(
             treasuryPayableCheque.documentDetail.number,
-            treasuryPayableCheque.sourceDetailAccountId);
+            treasuryPayableCheque.sourceDetailAccountId,
+            treasuryPayableChequeId);
     }
 }
