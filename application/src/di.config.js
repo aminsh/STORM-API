@@ -140,7 +140,7 @@ container.bind("TreasuryDemandNoteDomainService").to(TreasuryDemandNoteDomainSer
 container.bind("BanksNameDomainService").to(BanksNameDomainService).inRequestScope();
 container.bind("PayableChequeCategoryDomainService").to(PayableChequeCategoryDomainService).inRequestScope();
 container.bind("PayableChequeDomainService").to(PayableChequeDomainService).inRequestScope();
-container.bind("TreasuryJournalGenerationDomainService").to(TreasuryJournalGenerationDomainService);
+container.bind("TreasuryJournalGenerationDomainService").to(TreasuryJournalGenerationDomainService).inRequestScope();
 container.bind("TreasuryTransferDomainService").to(TreasuryTransferDomainService);
 
 container.bind("InvoiceEventListener").to(InvoiceEventListener).inRequestScope();
