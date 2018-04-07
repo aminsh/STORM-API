@@ -45,8 +45,9 @@ class ChequeReportQueries extends BaseQuery {
                                      from "detailAccounts")as "destinationDetailAccounts"`),
                         'treasury.destinationDetailAccountId', '=', 'destinationDetailAccounts.id')
                     .where('treasury.branchId', branchId)
+                    .where('treasury.documentType', 'cheque')
                     .where('treasury.treasuryType', treasuryType)
-                    .whereBetween('treasuryDocumentDetails.dueDate', [options.filter.minDate, options.filter.maxDate])
+                    .whereBetween('treasuryDocumentDetails.dueDate', [options.fromMainDate, options.toDate])
             );
 
         query.forEach(item => item.statusDisplay = enums.ReceiveChequeStatus().getDisplay(item.status));
@@ -82,6 +83,7 @@ class ChequeReportQueries extends BaseQuery {
                                      from "detailAccounts")as "destinationDetailAccounts"`),
                         'treasury.destinationDetailAccountId', '=', 'destinationDetailAccounts.id')
                     .where('treasury.branchId', branchId)
+                    .where('treasury.documentType', 'cheque')
                     .where('treasury.treasuryType', treasuryType)
                     .where('treasuryDocumentDetails.status', 'passed')
                     .whereBetween('treasuryDocumentDetails.dueDate', [options.filter.minDate, options.filter.maxDate])
