@@ -69,6 +69,7 @@ import {PurchaseEventListener} from "./domain/eventHandlers/PurchaseEventListene
 import {ReturnPurchaseEventListener} from "./domain/eventHandlers/ReturnPurchaseEventListener";
 import {ReturnSaleEventListener} from "./domain/eventHandlers/ReturnSaleEventListener";
 import {TreasuryEventListener} from "./domain/eventHandlers/TreasuryEventListener";
+import {ChequeEventListener} from "./domain/eventHandlers/ChequeEventListener";
 
 const container = new Container({ defaultScope: "Request" });
 
@@ -147,5 +148,6 @@ container.bind("PurchaseEventListener").to(PurchaseEventListener);
 container.bind("ReturnPurchaseEventListener").to(ReturnPurchaseEventListener);
 container.bind("ReturnSaleEventListener").to(ReturnSaleEventListener);
 container.bind("TreasuryEventListener").to(TreasuryEventListener);
+container.bind("ChequeEventListener").to(ChequeEventListener);
 
 export {container};

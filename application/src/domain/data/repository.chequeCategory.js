@@ -18,7 +18,7 @@ export class ChequeCategoryRepository extends BaseRepository {
         return toResult(this.knex
             .select('*')
             .from(this.tableName)
-            .where('id', this.branchId)
+            .modify(this.modify, this.branchId)
             .where(criteria)
             .orderBy('receiveDate')
             .first());

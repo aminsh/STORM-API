@@ -4,7 +4,7 @@ import {inject, injectable} from "inversify";
 export class PayableChequeDomainService {
 
     @inject("ChequeCategoryRepository")
-    chequeCategoryRepository = undefined;
+    /** {ChequeCategoryRepository}*/chequeCategoryRepository = undefined;
 
     generateFromCategory(category) {
         let cheques = [],
@@ -19,22 +19,23 @@ export class PayableChequeDomainService {
         category.cheques = cheques;
     }
 
-    issue(chequeNumber, bankId) {
+    issue(chequeNumber, bankId, treasuryPayableChequeId) {
 
         let firstOpenCategory = this.chequeCategoryRepository.findOne({bankId, isClosed: false});
 
         if (!firstOpenCategory)
             return;
 
-        let cheque = firstOpenCategory.cheques.asEnumerable().firstOrDefault(item => item.number === chequeNumber);
+        let cheque = firstOpenCategory.cheques.asEnumerable().firstOrDefault(item => item.number === parseInt(chequeNumber));
 
         if (!cheque)
             return;
 
         cheque.isUsed = true;
+        cheque.treasuryPayableChequeId = treasuryPayableChequeId;
 
         let entity = {
-            cheques: firstOpenCategory.cheques
+            cheques: JSON.stringify(firstOpenCategory.cheques)
         };
 
         if (firstOpenCategory.cheques.asEnumerable().all(item => item.isUsed))

@@ -60,4 +60,11 @@ router.route('/:id')
         }
     }));
 
+router.route('/:id/cheques')
+    .get(async(function (req, res) {
+        let chequeCategoryQuery = new ChequeCategoryQuery(req.branchId),
+            result = await(chequeCategoryQuery.getAllCheques(req.params.id));
+        res.json(result);
+    }));
+
 module.exports = router;
