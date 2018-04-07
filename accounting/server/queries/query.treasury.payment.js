@@ -86,15 +86,14 @@ class TreasuryPayment
 
         let journals = (journalIds || []).length > 0
             ? await(knex.select(
-                'journals.temporaryDate',
-                'journals.temporaryNumber',
+                'journals.temporaryDate as date',
+                'journals.temporaryNumber as number',
                 'journals.id',
                 'journals.description'
                 )
                     .from('journals')
                     .whereIn('id', journalIds)
                     .where('branchId', branchId)
-                    .toArray()
             )
             :null;
 

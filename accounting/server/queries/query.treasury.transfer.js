@@ -71,8 +71,8 @@ class TreasuryTransfer
             ),
 
             journal = treasury.journalId ? await(knex.select(
-                'journals.temporaryDate',
-                'journals.temporaryNumber',
+                'journals.temporaryDate as date',
+                'journals.temporaryNumber as number',
                 'journals.id',
                 'journals.description'
                 )
