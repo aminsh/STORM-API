@@ -1,6 +1,7 @@
 import {inject, injectable, postConstruct} from "inversify";
 import {TreasurySettingRepository} from "../data/repository.treasury.setting";
 import {JournalRepository} from "../data/repository.journal";
+import {SubsidiaryLedgerAccountDomainService} from "./SubsidiaryLedgerAccountDomainService";
 
 @injectable()
 export class TreasuryJournalGenerationDomainService {
@@ -10,6 +11,9 @@ export class TreasuryJournalGenerationDomainService {
 
     /**@type {TreasurySettingRepository}*/
     @inject("TreasurySettingRepository") treasurySettingRepository = undefined;
+
+    /**@type {SubsidiaryLedgerAccountDomainService}*/
+    @inject("SubsidiaryLedgerAccountDomainService") subsidiaryLedgerAccountDomainService = undefined;
 
     /**@type {TreasuryRepository}*/
     @inject("TreasuryRepository") treasuryRepository = undefined;
@@ -269,18 +273,23 @@ export class TreasuryJournalGenerationDomainService {
     }
 
     setReceiveJournalLines(treasury) {
-        let subLedger = this.treasurySettingRepository,
+        let subLedger = this.subsidiaryLedgerAccountDomainService,
             receiver = this.detailAccountRepository.findById(treasury.destinationDetailAccountId),
             payer = this.detailAccountRepository.findById(treasury.sourceDetailAccountId),
-            lastSubLedger = treasury.journalId ? this.journalRepository.findById(treasury.journalId) : null;
+            persistedJournal = treasury.journalId ? this.journalRepository.findById(treasury.journalId) : null,
+            lastSubLedger = persistedJournal.journalLines.asEnumerable().where(item => item.creditor === 0)
+                .select(item => ({
+                    generalLedgerAccountId: item.generalLedgerAccountId,
+                    subsidiaryLedgerAccountId: item.subsidiaryLedgerAccountId
+                })).first();
 
         let journalLines = [];
 
         if (treasury.documentDetail.status === 'inFund') {
 
             journalLines.push({
-                generalLedgerAccountId: subLedger.receiveBusinessNotesInFund.generalLedgerAccountId,
-                subsidiaryLedgerAccountId: subLedger.receiveBusinessNotesInFund.id,
+                generalLedgerAccountId: subLedger.treasuryReceiveBusinessNotesInFund.generalLedgerAccountId,
+                subsidiaryLedgerAccountId: subLedger.treasuryReceiveBusinessNotesInFund.id,
                 detailAccountId: treasury.sourceDetailAccountId,
                 article: 'چک به شماره {0} نزدصندوق '.format(treasury.documentDetail.number),
                 debtor: treasury.amount,
@@ -288,8 +297,8 @@ export class TreasuryJournalGenerationDomainService {
             });
 
             journalLines.push({
-                generalLedgerAccountId: subLedger.debtors.generalLedgerAccountId,
-                subsidiaryLedgerAccountId: subLedger.debtors.id,
+                generalLedgerAccountId: subLedger.treasuryDebtors.generalLedgerAccountId,
+                subsidiaryLedgerAccountId: subLedger.treasuryDebtors.id,
                 detailAccountId: treasury.sourceDetailAccountId,
                 article: 'دریافت چک از {0}  '.format(payer.title),
                 debtor: 0,
@@ -300,8 +309,8 @@ export class TreasuryJournalGenerationDomainService {
         if (treasury.documentDetail.status === 'inProcessOnPassing') {
 
             journalLines.push({
-                generalLedgerAccountId: subLedger.receiveBusinessNotesInProcess.generalLedgerAccountId,
-                subsidiaryLedgerAccountId: subLedger.receiveBusinessNotesInProcess.id,
+                generalLedgerAccountId: subLedger.treasuryReceiveBusinessNotesInProcess.generalLedgerAccountId,
+                subsidiaryLedgerAccountId: subLedger.treasuryReceiveBusinessNotesInProcess.id,
                 detailAccountId: treasury.sourceDetailAccountId,
                 article: 'چک به شماره {0} درجریان وصول '.format(treasury.documentDetail.number),
                 debtor: treasury.amount,
@@ -309,10 +318,12 @@ export class TreasuryJournalGenerationDomainService {
             });
 
             journalLines.push({
-                generalLedgerAccountId: lastSubLedger.journalLines.generalLedgerAccountId,
-                subsidiaryLedgerAccountId: lastSubLedger.journalLines.subsidiaryLedgerAccountId,
+                generalLedgerAccountId: lastSubLedger ? lastSubLedger.generalLedgerAccountId
+                    : subLedger.treasuryDebtors.generalLedgerAccountId,
+                subsidiaryLedgerAccountId: lastSubLedger ? lastSubLedger.subsidiaryLedgerAccountId
+                    : subLedger.treasuryDebtors.id,
                 detailAccountId: treasury.sourceDetailAccountId,
-                article: 'دریافت چک از {0}  '.format(payer.title),
+                article: 'دریافت چک از {0}'.format(payer.title),
                 debtor: 0,
                 creditor: treasury.amount
             });
@@ -321,8 +332,8 @@ export class TreasuryJournalGenerationDomainService {
         if (treasury.documentDetail.status === 'return') {
 
             journalLines.push({
-                generalLedgerAccountId: subLedger.debtors.generalLedgerAccountId,
-                subsidiaryLedgerAccountId: subLedger.debtors.id,
+                generalLedgerAccountId: subLedger.treasuryDebtors.generalLedgerAccountId,
+                subsidiaryLedgerAccountId: subLedger.treasuryDebtors.id,
                 detailAccountId: treasury.sourceDetailAccountId,
                 article: 'برگشت چک به شماره {0} از {1}'.format(treasury.documentDetail.number, payer.title),
                 debtor: treasury.amount,
@@ -330,8 +341,10 @@ export class TreasuryJournalGenerationDomainService {
             });
 
             journalLines.push({
-                generalLedgerAccountId: lastSubLedger.journalLines.generalLedgerAccountId,
-                subsidiaryLedgerAccountId: lastSubLedger.journalLines.subsidiaryLedgerAccountId,
+                generalLedgerAccountId: lastSubLedger ? lastSubLedger.journalLines.generalLedgerAccountId
+                    : subLedger.treasuryDebtors.generalLedgerAccountId,
+                subsidiaryLedgerAccountId: lastSubLedger ? lastSubLedger.journalLines.subsidiaryLedgerAccountId
+                    : subLedger.treasuryDebtors.id,
                 detailAccountId: treasury.sourceDetailAccountId,
                 article: 'برگشت چک به شماره {0}'.format(treasury.documentDetail.number),
                 debtor: 0,
@@ -341,21 +354,32 @@ export class TreasuryJournalGenerationDomainService {
 
         if (treasury.documentDetail.status === 'passed') {
 
-            journalLines.push({
+            console.log('before error maybe ...');
+
+            let item = {
                 generalLedgerAccountId: receiver.detailAccountType === 'bank'
-                    ? subLedger.bankAccount.generalLedgerAccountId : subLedger.fundAccount.generalLedgerAccountId,
-                subsidiaryLedgerAccountId: receiver.detailAccountType === 'bank' ? subLedger.bankAccount.id : subLedger.fundAccount.id,
+                    ? subLedger.treasuryBankAccount.generalLedgerAccountId : subLedger.treasuryFundAccount.generalLedgerAccountId,
+                subsidiaryLedgerAccountId: receiver.detailAccountType === 'bank'
+                    ? subLedger.treasuryBankAccount.id : subLedger.treasuryFundAccount.id,
                 detailAccountId: treasury.destinationDetailAccountId,
                 article: 'بابت پاس شدن چک شماره {0} '.format(treasury.documentDetail.number),
                 debtor: treasury.amount,
                 creditor: 0
-            });
+            };
+
+            console.log(JSON.stringify(item));
+
+            journalLines.push(item);
+
+            console.log('after error maybe ...');
 
             journalLines.push({
-                generalLedgerAccountId: lastSubLedger.journalLines.generalLedgerAccountId,
-                subsidiaryLedgerAccountId: lastSubLedger.journalLines.subsidiaryLedgerAccountId,
+                generalLedgerAccountId: lastSubLedger ? lastSubLedger.journalLines.generalLedgerAccountId
+                    : subLedger.treasuryDebtors.generalLedgerAccountId,
+                subsidiaryLedgerAccountId: lastSubLedger ? lastSubLedger.journalLines.subsidiaryLedgerAccountId
+                    : subLedger.treasuryDebtors.id,
                 detailAccountId: treasury.sourceDetailAccountId,
-                article: 'پاس چک {0} به شماره {0} '.format(payer.title, treasury.documentDetail.number),
+                article: 'پاس چک {0} به شماره {1} '.format(payer.title, treasury.documentDetail.number),
                 debtor: 0,
                 creditor: treasury.amount
             });
@@ -364,8 +388,8 @@ export class TreasuryJournalGenerationDomainService {
         if (treasury.documentDetail.status === 'revocation') {
 
             journalLines.push({
-                generalLedgerAccountId: subLedger.debtors.generalLedgerAccountId,
-                subsidiaryLedgerAccountId: subLedger.debtors.id,
+                generalLedgerAccountId: subLedger.treasuryDebtors.generalLedgerAccountId,
+                subsidiaryLedgerAccountId: subLedger.treasuryDebtors.id,
                 detailAccountId: treasury.sourceDetailAccountId,
                 article: 'ابطال چک دریافتی از {0} به شماره {1}'.format(payer.title, treasury.documentDetail.number),
                 debtor: treasury.amount,
@@ -373,8 +397,10 @@ export class TreasuryJournalGenerationDomainService {
             });
 
             journalLines.push({
-                generalLedgerAccountId: lastSubLedger.journalLines.generalLedgerAccountId,
-                subsidiaryLedgerAccountId: lastSubLedger.journalLines.subsidiaryLedgerAccountId,
+                generalLedgerAccountId: lastSubLedger ? lastSubLedger.journalLines.generalLedgerAccountId
+                    : subLedger.treasuryDebtors.generalLedgerAccountId,
+                subsidiaryLedgerAccountId: lastSubLedger ? lastSubLedger.journalLines.subsidiaryLedgerAccountId
+                    : subLedger.treasuryDebtors.id,
                 detailAccountId: treasury.sourceDetailAccountId,
                 article: 'ابطال چک به شماره {0}'.format(payer.title),
                 debtor: 0,
@@ -385,10 +411,12 @@ export class TreasuryJournalGenerationDomainService {
         if (treasury.documentDetail.status === 'missing') {
 
             journalLines.push({
-                generalLedgerAccountId: lastSubLedger.journalLines.generalLedgerAccountId,
-                subsidiaryLedgerAccountId: lastSubLedger.journalLines.subsidiaryLedgerAccountId,
+                generalLedgerAccountId: lastSubLedger ? lastSubLedger.journalLines.generalLedgerAccountId
+                    : subLedger.treasuryDebtors.generalLedgerAccountId,
+                subsidiaryLedgerAccountId: lastSubLedger ? lastSubLedger.journalLines.subsidiaryLedgerAccountId
+                    : subLedger.treasuryDebtors.id,
                 detailAccountId: treasury.sourceDetailAccountId,
-                article: 'سرقت چک دریافتی از {0} به شماره {1}'.format(payer.title, treasury.documentDetail.number),
+                article: 'مفقود چک دریافتی از {0} به شماره {1}'.format(payer.title, treasury.documentDetail.number),
                 debtor: treasury.amount,
                 creditor: 0
             });
@@ -406,17 +434,19 @@ export class TreasuryJournalGenerationDomainService {
         if (treasury.documentDetail.status === 'spend') {
 
             journalLines.push({
-                generalLedgerAccountId: subLedger.creditors.generalLedgerAccountId,
-                subsidiaryLedgerAccountId: subLedger.creditors.id,
+                generalLedgerAccountId: subLedger.treasuryCreditors.generalLedgerAccountId,
+                subsidiaryLedgerAccountId: subLedger.treasuryCreditors.id,
                 detailAccountId: treasury.destinationDetailAccountId,
-                article: 'انتقال/خرج چک به شماره {0} به {1} '.format(treasury.documentDetail.number, receiver.title),
+                article: 'انتقال/خرج چک شماره {0} به {1} '.format(treasury.documentDetail.number, receiver.title),
                 debtor: treasury.amount,
                 creditor: 0
             });
 
             journalLines.push({
-                generalLedgerAccountId: lastSubLedger.journalLines.generalLedgerAccountId,
-                subsidiaryLedgerAccountId: lastSubLedger.journalLines.subsidiaryLedgerAccountId,
+                generalLedgerAccountId: lastSubLedger ? lastSubLedger.journalLines.generalLedgerAccountId
+                    : subLedger.treasuryDebtors.generalLedgerAccountId,
+                subsidiaryLedgerAccountId: lastSubLedger ? lastSubLedger.journalLines.subsidiaryLedgerAccountId
+                    : subLedger.treasuryDebtors.id,
                 detailAccountId: treasury.sourceDetailAccountId,
                 article: 'انتقال/خرج چک {0} به شماره {1} '.format(payer.title, treasury.documentDetail.number),
                 debtor: 0,
@@ -430,15 +460,20 @@ export class TreasuryJournalGenerationDomainService {
     setPaymentJournalLines(treasury) {
         let subLedger = this.treasurySettingRepository,
             receiver = this.detailAccountRepository.findById(treasury.destinationDetailAccountId),
-            lastSubLedger = treasury.journalId ? this.journalRepository.findById(treasury.journalId) : null;
+            persistedJournal = treasury.journalId ? this.journalRepository.findById(treasury.journalId) : null,
+            lastSubLedger = persistedJournal.journalLines.asEnumerable().where(item => item.creditor === 0)
+                .select(item => ({
+                    generalLedgerAccountId: item.generalLedgerAccountId,
+                    subsidiaryLedgerAccountId: item.subsidiaryLedgerAccountId
+                })).first();
 
         let journalLines = [];
 
         if (treasury.documentDetail.status === 'inProcessOnPassing') {
 
             journalLines.push({
-                generalLedgerAccountId: subLedger.paymentNotes.generalLedgerAccountId,
-                subsidiaryLedgerAccountId: subLedger.paymentNotes.id,
+                generalLedgerAccountId: subLedger.treasuryPaymentNotes.generalLedgerAccountId,
+                subsidiaryLedgerAccountId: subLedger.treasuryPaymentNotes.id,
                 detailAccountId: treasury.destinationDetailAccountId,
                 article: 'پرذاخت چک به شماره {0}'.format(treasury.documentDetail.number),
                 debtor: treasury.amount,
@@ -446,8 +481,8 @@ export class TreasuryJournalGenerationDomainService {
             });
 
             journalLines.push({
-                generalLedgerAccountId: subLedger.creditors.generalLedgerAccountId,
-                subsidiaryLedgerAccountId: subLedger.creditors.id,
+                generalLedgerAccountId: subLedger.treasuryCreditors.generalLedgerAccountId,
+                subsidiaryLedgerAccountId: subLedger.treasuryCreditors.id,
                 detailAccountId: treasury.destinationDetailAccountId,
                 article: 'پرداخت چک به {0}  '.format(receiver.title),
                 debtor: 0,
@@ -458,17 +493,19 @@ export class TreasuryJournalGenerationDomainService {
         if (treasury.documentDetail.status === 'return') {
 
             journalLines.push({
-                generalLedgerAccountId: subLedger.creditors.generalLedgerAccountId,
-                subsidiaryLedgerAccountId: subLedger.creditors.id,
+                generalLedgerAccountId: subLedger.treasuryCreditors.generalLedgerAccountId,
+                subsidiaryLedgerAccountId: subLedger.treasuryCreditors.id,
                 detailAccountId: treasury.destinationDetailAccountId,
-                article: 'برگشت چک پرداختی به {0} شماره {1}'.format( receiver.title, treasury.documentDetail.number),
+                article: 'برگشت چک پرداختی به {0} شماره {1}'.format(receiver.title, treasury.documentDetail.number),
                 debtor: treasury.amount,
                 creditor: 0
             });
 
             journalLines.push({
-                generalLedgerAccountId: lastSubLedger.journalLines.generalLedgerAccountId,
-                subsidiaryLedgerAccountId: lastSubLedger.journalLines.subsidiaryLedgerAccountId,
+                generalLedgerAccountId: lastSubLedger ? lastSubLedger.journalLines.generalLedgerAccountId
+                    : subLedger.treasuryCreditors.generalLedgerAccountId,
+                subsidiaryLedgerAccountId: lastSubLedger ? lastSubLedger.journalLines.subsidiaryLedgerAccountId
+                    : subLedger.treasuryCreditors.generalLedgerAccountId,
                 detailAccountId: treasury.destinationDetailAccountId,
                 article: 'برگشت چک به شماره {0}'.format(treasury.documentDetail.number),
                 debtor: 0,
@@ -478,8 +515,10 @@ export class TreasuryJournalGenerationDomainService {
 
         if (treasury.documentDetail.status === 'passed') {
             journalLines.push({
-                generalLedgerAccountId: lastSubLedger.journalLines.generalLedgerAccountId,
-                subsidiaryLedgerAccountId: lastSubLedger.journalLines.subsidiaryLedgerAccountId,
+                generalLedgerAccountId: lastSubLedger ? lastSubLedger.journalLines.generalLedgerAccountId
+                    : subLedger.treasuryCreditors.generalLedgerAccountId,
+                subsidiaryLedgerAccountId: lastSubLedger ? lastSubLedger.journalLines.subsidiaryLedgerAccountId
+                    : subLedger.treasuryCreditors.generalLedgerAccountId,
                 detailAccountId: treasury.destinationDetailAccountId,
                 article: 'پاس چک {0} به شماره {0} '.format(receiver.title, treasury.documentDetail.number),
                 debtor: treasury.amount,
@@ -487,8 +526,8 @@ export class TreasuryJournalGenerationDomainService {
             });
 
             journalLines.push({
-                generalLedgerAccountId: subLedger.bankAccount.generalLedgerAccountId,
-                subsidiaryLedgerAccountId: subLedger.bankAccount.id,
+                generalLedgerAccountId: subLedger.treasuryBankAccount.generalLedgerAccountId,
+                subsidiaryLedgerAccountId: subLedger.treasuryBankAccount.id,
                 detailAccountId: treasury.sourceDetailAccountId,
                 article: 'بابت پاس شدن چک شماره {0} '.format(treasury.documentDetail.number),
                 debtor: 0,
@@ -501,8 +540,8 @@ export class TreasuryJournalGenerationDomainService {
         if (treasury.documentDetail.status === 'revocation') {
 
             journalLines.push({
-                generalLedgerAccountId: subLedger.creditors.generalLedgerAccountId,
-                subsidiaryLedgerAccountId: subLedger.creditors.id,
+                generalLedgerAccountId: subLedger.treasuryCreditors.generalLedgerAccountId,
+                subsidiaryLedgerAccountId: subLedger.treasuryCreditors.id,
                 detailAccountId: treasury.destinationDetailAccountId,
                 article: 'ابطال چک پرداختی به {0} به شماره {1}'.format(receiver.title, treasury.documentDetail.number),
                 debtor: treasury.amount,
@@ -510,8 +549,10 @@ export class TreasuryJournalGenerationDomainService {
             });
 
             journalLines.push({
-                generalLedgerAccountId: lastSubLedger.journalLines.generalLedgerAccountId,
-                subsidiaryLedgerAccountId: lastSubLedger.journalLines.subsidiaryLedgerAccountId,
+                generalLedgerAccountId: lastSubLedger ? lastSubLedger.journalLines.generalLedgerAccountId
+                    : subLedger.treasuryCreditors.generalLedgerAccountId,
+                subsidiaryLedgerAccountId: lastSubLedger ? lastSubLedger.journalLines.subsidiaryLedgerAccountId
+                    : subLedger.treasuryCreditors.generalLedgerAccountId,
                 detailAccountId: treasury.destinationDetailAccountId,
                 article: 'ابطال چک پرداختی به {0} شماره {1}'.format(receiver.title, treasury.documentDetail.number),
                 debtor: 0,
@@ -540,11 +581,11 @@ export class TreasuryJournalGenerationDomainService {
 
         journalLines.push({
             generalLedgerAccountId: destination.detailAccountType === 'bank'
-                ? subLedger.bankAccount.generalLedgerAccountId
-                : subLedger.fundAccount.generalLedgerAccountId,
+                ? subLedger.treasuryBankAccount.generalLedgerAccountId
+                : subLedger.treasuryFundAccount.generalLedgerAccountId,
             subsidiaryLedgerAccountId: destination.detailAccountType === 'bank'
-                ? subLedger.bankAccount.id
-                : subLedger.fundAccount.id,
+                ? subLedger.treasuryBankAccount.id
+                : subLedger.treasuryFundAccount.id,
             detailAccountId: persistedTreasury.destinationDetailAccountId,
             article: 'انتقال وجه به {0} در تاریخ {1} '.format(destination.title, persistedTreasury.transferDate),
             debtor: persistedTreasury.amount,
@@ -553,11 +594,11 @@ export class TreasuryJournalGenerationDomainService {
 
         journalLines.push({
             generalLedgerAccountId: source.detailAccountType === 'bank'
-                ? subLedger.bankAccount.generalLedgerAccountId
-                : subLedger.fundAccount.generalLedgerAccountId,
+                ? subLedger.treasuryBankAccount.generalLedgerAccountId
+                : subLedger.treasuryFundAccount.generalLedgerAccountId,
             subsidiaryLedgerAccountId: source.detailAccountType === 'bank'
-            ? subLedger.bankAccount.id
-            : subLedger.fundAccount.id,
+                ? subLedger.treasuryBankAccount.id
+                : subLedger.treasuryFundAccount.id,
             detailAccountId: persistedTreasury.sourceDetailAccountId,
             article: 'انتقال وجه از {0} در تاریخ {1} '.format(source.title, persistedTreasury.transferDate),
             debtor: 0,

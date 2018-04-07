@@ -33,7 +33,7 @@ export class TreasuryChequeDomainService {
             documentType: cmd.documentType,
             journalId: cmd.journalId,
             isCompleted: cmd.isCompleted,
-            receiveId: cmd.receiverId,
+            receiveId: cmd.receiveId,
             documentDetail: this._documentDetailMapToEntity(cmd.documentDetail)
         }
     }
@@ -188,11 +188,11 @@ export class TreasuryChequeDomainService {
 
         entity.journalId = journalId;
         entity.documentDetail.chequeStatusHistory =
-            entity.documentDetail.chequeStatusHistory.asEnumerable()
+            persistedTreasury.documentDetail.chequeStatusHistory.asEnumerable()
                 .select(item => ({
                     createdAt: item.createdAt,
                     status: item.status,
-                    journalId: item.status === entity.documentDetail.status ? journalId : item.journalId
+                    journalId: item.status === persistedTreasury.documentDetail.status ? journalId : null
                 }))
                 .toArray();
 
@@ -426,22 +426,22 @@ export class TreasuryChequeDomainService {
         paymentEntity.journalId = journalId;
 
         receiveEntity.documentDetail.chequeStatusHistory =
-            receiveEntity.documentDetail.chequeStatusHistory.asEnumerable()
+            receive.documentDetail.chequeStatusHistory.asEnumerable()
                 .select(item => ({
                     createdAt: item.createdAt,
                     status: item.status,
-                    journalId: item.status === receiveEntity.documentDetail.status ? journalId : item.journalId
+                    journalId: item.status === receive.documentDetail.status ? journalId : null
                 }))
                 .toArray();
 
         receiveEntity.documentDetail.chequeStatusHistory = JSON.stringify(receiveEntity.documentDetail.chequeStatusHistory);
 
         paymentEntity.documentDetail.chequeStatusHistory =
-            paymentEntity.documentDetail.chequeStatusHistory.asEnumerable()
+            payment.documentDetail.chequeStatusHistory.asEnumerable()
                 .select(item => ({
                     createdAt: item.createdAt,
                     status: item.status,
-                    journalId: item.status === paymentEntity.documentDetail.status ? journalId : item.journalId
+                    journalId: item.status === payment.documentDetail.status ? journalId : null
                 }))
                 .toArray();
 
