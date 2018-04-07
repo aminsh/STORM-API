@@ -1,7 +1,5 @@
 "use strict";
 
-const enums = require('../../../shared/enums');
-
 function treasuryAssembler(entity) {
     var viewModel = {
         id: entity.id,
