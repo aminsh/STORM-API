@@ -1,10 +1,14 @@
 import {inject, injectable, postConstruct} from "inversify";
+import {TreasurySettingRepository} from "../data/repository.treasury.setting";
 
 @injectable()
 export class SubsidiaryLedgerAccountDomainService {
         
     /**@type {SettingsRepository}*/
     @inject("SettingsRepository") settingsRepository = undefined;
+
+    /**@type {TreasurySettingRepository}*/
+    @inject("TreasurySettingRepository") treasurySettingRepository = undefined;
 
     /**@type {SubsidiaryLedgerAccountRepository}*/
     @inject("SubsidiaryLedgerAccountRepository") subsidiaryLedgerAccountRepository = undefined;
@@ -13,12 +17,18 @@ export class SubsidiaryLedgerAccountDomainService {
     @inject("GeneralLedgerAccountRepository") generalLedgerAccountRepository = undefined;
 
     defaultAccounts = undefined;
+    treasuryAccounts = undefined;
     
     @postConstruct()
     init(){
-        const settings = this.settings =this.settingsRepository.get();
+        const settings = this.settings =this.settingsRepository.get(),
+            treasurySettings = this.treasurySettings = this.treasurySettingRepository.get();
 
         this.defaultAccounts = (settings.subsidiaryLedgerAccounts || [])
+            .asEnumerable()
+            .toObject(item => item.key, item => item.id);
+
+        this.treasuryAccounts = (treasurySettings.subsidiaryLedgerAccounts || [])
             .asEnumerable()
             .toObject(item => item.key, item => item.id);
     }
@@ -70,6 +80,53 @@ export class SubsidiaryLedgerAccountDomainService {
     get payableDocument() {
         return this.subsidiaryLedgerAccountRepository.findById(this.defaultAccounts['businessNotesPayables']);
     }
+
+
+    get treasuryDebtors() {
+        return this.subsidiaryLedgerAccountRepository.findById(this.treasuryAccounts['debtors']);
+    }
+
+    get treasuryCreditors() {
+        return this.subsidiaryLedgerAccountRepository.findById(this.treasuryAccounts['creditors']);
+    }
+
+    get treasuryReceiveBusinessNotesInFund() {
+        return this.subsidiaryLedgerAccountRepository.findById(this.treasuryAccounts['receiveBusinessNotesInFund']);
+    }
+
+    get treasuryReceiveBusinessNotesInProcess() {
+        return this.subsidiaryLedgerAccountRepository.findById(this.treasuryAccounts['receiveBusinessNotesInProcess']);
+    }
+
+    get treasuryReceiveBusinessNotesRevocation() {
+        return this.subsidiaryLedgerAccountRepository.findById(this.treasuryAccounts['receiveBusinessNotesRevocation']);
+    }
+
+    get treasuryReceiveBusinessNotesMissing() {
+        return this.subsidiaryLedgerAccountRepository.findById(this.treasuryAccounts['receiveBusinessNotesMissing']);
+    }
+
+    get treasuryReceiveBusinessNotesSpend() {
+        return this.subsidiaryLedgerAccountRepository.findById(this.treasuryAccounts['receiveBusinessNotesSpend']);
+    }
+
+    get treasuryReceiveBusinessNotesReturned() {
+        return this.subsidiaryLedgerAccountRepository.findById(this.treasuryAccounts['receiveBusinessNotesReturned']);
+    }
+
+    get treasuryFundAccount() {
+        return this.subsidiaryLedgerAccountRepository.findById(this.treasuryAccounts['fund']);
+    }
+
+    get treasuryBankAccount() {
+        return this.subsidiaryLedgerAccountRepository.findById(this.treasuryAccounts['bank']);
+    }
+
+    get treasuryPaymentNotes() {
+        return this.subsidiaryLedgerAccountRepository.findById(this.treasuryAccounts['paymentNotes']);
+    }
+
+
 
     create(generalLedgerAccountId, cmd) {
         let errors = [];
