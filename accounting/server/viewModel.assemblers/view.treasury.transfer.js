@@ -10,7 +10,8 @@ function treasuryAssembler(entity) {
         receiverId: entity.destinationDetailAccountId,
         receiverTitle: entity.destinationTitle,
         amount: entity.amount,
-        journal: entity.journal
+        journal: entity.journal,
+        description: entity.description
     };
 
     return viewModel;
