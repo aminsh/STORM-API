@@ -5,7 +5,7 @@ const BaseQuery = require('./query.base'),
     await = require('asyncawait/await'),
     FiscalPeriodQuery = require('./query.fiscalPeriod'),
     kendoQueryResolve = require('../services/kendoQueryResolve'),
-    view = require('../viewModel.assemblers/view.treasury')
+    view = require('../viewModel.assemblers/view.treasury.transfer');
 
 class TreasuryTransfer
     extends BaseQuery {
@@ -43,14 +43,19 @@ class TreasuryTransfer
 
     }
 
-    getById(id, receiveType) {
+    getById(id) {
         let knex = this.knex,
             branchId = this.branchId,
 
-            query = await(knex.select(
-                'treasury.*',
-                knex.raw(`"sourceDetailAccounts".title as "sourceDetailAccountTitle"`),
-                knex.raw(`"destinationDetailAccounts".title as "destinationDetailAccountTitle"`)
+            treasury = await(knex.select(
+                'treasury.id',
+                'treasury.imageUrl',
+                'treasury.transferDate',
+                'treasury.sourceDetailAccountId',
+                'treasury.destinationDetailAccountId',
+                'treasury.amount',
+                knex.raw(`"sourceDetailAccounts".title as "sourceTitle"`),
+                knex.raw(`"destinationDetailAccounts".title as "destinationTitle"`)
                 )
                     .from('treasury')
                     .leftJoin(knex.raw(`(select da.title, da.id
@@ -62,9 +67,22 @@ class TreasuryTransfer
                     .where('treasury.branchId', branchId)
                     .where('treasury.id', id)
                     .first()
-            );
+            ),
 
-        return view(query);
+            journal = treasury.journalId ? await(knex.select(
+                'journals.temporaryDate',
+                'journals.temporaryNumber',
+                'journals.id',
+                'journals.description'
+                )
+                    .from('journals')
+                    .where('id', treasury.journalId)
+                    .where('branchId', branchId)
+            ) : null;
+
+        treasury.journal = journal;
+
+        return view(treasury);
     }
 
 }
