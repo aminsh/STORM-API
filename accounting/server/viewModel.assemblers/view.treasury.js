@@ -11,9 +11,9 @@ function treasuryAssembler(entity) {
             ? enums.TreasuryPaymentDocumentTypes().getDisplay(entity.documentType)
             : '',
         transferDate: entity.transferDate,
-        payerId: entity.sourceDetailAccountId,
+        payerId: entity.payerId,
         payerTitle: entity.sourceTitle,
-        receiverId: entity.destinationDetailAccountId,
+        receiverId: entity.receiverId,
         receiverTitle: entity.destinationTitle,
         amount: entity.amount,
         chequeStatus: entity.status,
