@@ -1310,7 +1310,7 @@
   },
   {
     "name": "transferSetJournal",
-    "class": "TreasuryDemandNoteDomainService",
+    "class": "TreasuryTransferDomainService",
     "method": "setJournal",
     "params": [
       "id",
