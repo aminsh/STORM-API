@@ -14,6 +14,12 @@ export class TreasuryCashDomainService {
     /** @type {TreasuryRepository}*/
     @inject("TreasuryRepository") treasuryRepository = undefined;
 
+    /** @type {JournalDomainService}*/
+    @inject("JournalDomainService") journalDomainService = undefined;
+
+    /** @type {TreasuryJournalGenerationDomainService}*/
+    @inject("TreasuryJournalGenerationDomainService") treasuryJournalGenerationDomainService = undefined;
+
     /** @type {EventBus}*/
     @inject("EventBus") eventBus = undefined;
 
@@ -24,14 +30,14 @@ export class TreasuryCashDomainService {
         return {
             id: cmd.id,
             transferDate: cmd.transferDate || PersianDate.current(),
-            sourceDetailAccountId: cmd.payerId || null,
-            destinationDetailAccountId: cmd.receiverId || null,
+            sourceDetailAccountId: cmd.payerId || cmd.sourceDetailAccountId || null,
+            destinationDetailAccountId: cmd.receiverId || cmd.destinationDetailAccountId || null,
             amount: cmd.amount,
             imageUrl: JSON.stringify(cmd.imageUrl || []),
             description: cmd.description,
             treasuryType: cmd.treasuryType,
             documentType: cmd.documentType,
-            journalId: cmd.journalId,
+            journalId: cmd.journal ? cmd.journal[0].id : cmd.journalId,
             documentDetail: this._documentDetailMapToEntity(cmd.documentDetail)
         }
     }
@@ -138,20 +144,42 @@ export class TreasuryCashDomainService {
         let entity = this.mapToEntity(cmd),
             persistedTreasury = this.treasuryRepository.findById(id),
             errors = persistedTreasury.treasuryType === 'payment'
-                ? this._paymentValidate(entity) : this._receiveValidate(entity);
+                ? this._paymentValidate(entity) : this._receiveValidate(entity),
+            journalId = entity.journalId;
 
         if (errors.length > 0)
             throw new ValidationException(errors);
 
+
+        entity.journalId = null;
         this.treasuryRepository.update(id, entity);
+
+        if (journalId) {
+            this.journalDomainService.remove(journalId);
+
+            entity.treasuryType === 'receive' ?
+                this.treasuryJournalGenerationDomainService.generateForReceiveCash(id) :
+                this.treasuryJournalGenerationDomainService.generateForPaymentCash(id);
+        }
+
     }
 
     remove(id) {
+        let persistedTreasury = this.treasuryRepository.findById(id);
+
         this.treasuryRepository.remove(id);
+
+        if (persistedTreasury.journalId)
+            this.journalDomainService.remove(persistedTreasury.journalId);
     }
 
 
     setJournal(id, journalId) {
-        return this.treasuryRepository.update(id, {journalId});
+        let persistedTreasury = this.treasuryRepository.findById(id),
+            entity = this.mapToEntity(persistedTreasury);
+
+        entity.journalId = journalId;
+
+        return this.treasuryRepository.update(id, entity);
     }
 }
