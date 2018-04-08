@@ -67,6 +67,12 @@ function resolveFilter(query, filter) {
             case 'endswith':
                 query[methodName](f.field, 'ilike', '%{0}'.format(f.value));
                 break;
+            case 'isNull':
+                query[filter.logic === 'or' ? 'orWhereNull' : 'whereNull'](f.field);
+                break;
+            case 'isNotNull':
+                query[filter.logic === 'or' ? 'orWhereNotNull' : 'whereNotNull'](f.field);
+                break;
         }
     })
 }
