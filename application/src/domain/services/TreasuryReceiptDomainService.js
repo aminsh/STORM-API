@@ -11,8 +11,14 @@ export class TreasuryReceiptDomainService {
     /** @type {TreasuryRepository}*/
     @inject("TreasuryRepository") treasuryRepository = undefined;
 
+    /** @type {JournalDomainService}*/
+    @inject("JournalDomainService") journalDomainService = undefined;
+
     /** @type {EventBus}*/
     @inject("EventBus") eventBus = undefined;
+
+    /** @type {TreasuryJournalGenerationDomainService}*/
+    @inject("TreasuryJournalGenerationDomainService") treasuryJournalGenerationDomainService = undefined;
 
     mapToEntity(cmd) {
 
@@ -21,8 +27,8 @@ export class TreasuryReceiptDomainService {
         return {
             id: cmd.id,
             transferDate: cmd.transferDate || PersianDate.current(),
-            sourceDetailAccountId: cmd.payerId || null,
-            destinationDetailAccountId: cmd.receiverId || null,
+            sourceDetailAccountId: cmd.payerId || cmd.sourceDetailAccountId || null,
+            destinationDetailAccountId: cmd.receiverId || cmd.destinationDetailAccountId || null,
             amount: cmd.amount,
             imageUrl: JSON.stringify(cmd.imageUrl || []),
             description: cmd.description,
@@ -149,7 +155,8 @@ export class TreasuryReceiptDomainService {
         let entity = this.mapToEntity(cmd),
             persistedTreasury = this.treasuryRepository.findById(id),
             errors = persistedTreasury.treasuryType === 'receive' ? this._receiveValidate(entity)
-                : this._paymentValidate(entity);
+                : this._paymentValidate(entity),
+            journalId = entity.journalId;
 
         if (!persistedTreasury)
             errors.push('{0} وجود ندارد!'.format(Enums.TreasuryPaymentDocumentTypes().getDisplay(entity.documentType)));
@@ -157,15 +164,34 @@ export class TreasuryReceiptDomainService {
         if (errors.length > 0)
             throw new ValidationException(errors);
 
+        entity.journalId = null;
         this.treasuryRepository.update(id, entity);
+
+        if (journalId) {
+            this.journalDomainService.remove(journalId);
+
+            entity.treasuryType === 'receive' ?
+                this.treasuryJournalGenerationDomainService.generateForReceiveReceipt(id) :
+                this.treasuryJournalGenerationDomainService.generateForPaymentReceipt(id);
+        }
 
     }
 
     remove(id) {
+        let persistedTreasury = this.treasuryRepository.findById(id);
+
         this.treasuryRepository.remove(id);
+
+        if (persistedTreasury.journalId)
+            this.journalDomainService.remove(persistedTreasury.journalId);
     }
 
     setJournal(id, journalId) {
-        return this.treasuryRepository.update(id, {journalId});
+        let persistedTreasury = this.treasuryRepository.findById(id),
+            entity = this.mapToEntity(persistedTreasury);
+
+        entity.journalId = journalId;
+
+        return this.treasuryRepository.update(id, entity);
     }
 }
