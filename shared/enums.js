@@ -344,10 +344,10 @@ enums.ReceiveChequeStatus = function () {
         {key: 'inProcessOnPassing', display: 'در جریان وصول'},
         {key: 'passed', display: 'پاس شده'},
         {key: 'inFund', display: 'نزد صندوق'},
-        {key: 'revocation', display: 'ابطالی'},
-        {key: 'missing', display: 'مفقودی/ سرقتی'},
-        {key: 'spend', display: 'انتقالی/ خرج شده'},
-        {key: 'return', display: 'برگشتی'}
+        {key: 'revocation', display: 'ابطال'},
+        {key: 'missing', display: 'مفقود/ سرقت'},
+        {key: 'spend', display: 'انتقال/ خرج شده'},
+        {key: 'return', display: 'برگشت'}
 
     ]);
 };
@@ -368,6 +368,14 @@ enums.TreasuryPaymentDocumentTypes = function () {
         {key: 'receipt', display: "فیش واریزی"},
         {key: 'demandNote', display: "سفته"},
         {key: 'spendCheque', display: "خرج چک"}
+    ])
+};
+
+enums.TreasuryType = function () {
+    return new Enum([
+        {key: 'receive', display: "دریافتی"},
+        {key: 'payment', display: "پرداختی"},
+        {key: 'transfer', display: "انتقالی"},
     ])
 };
 
