@@ -33,6 +33,9 @@ export class JournalDomainService {
     /** @type {SubsidiaryLedgerAccountDomainService}*/
     @inject("SubsidiaryLedgerAccountDomainService") subsidiaryLedgerAccountDomainService = undefined;
 
+    /** @type {TreasuryRepository}*/
+    @inject("TreasuryRepository") treasuryRepository = undefined;
+
     /** @type {IState}*/
     @inject("State") state = undefined;
 
@@ -240,6 +243,9 @@ export class JournalDomainService {
 
         if (this.invoiceRepository.isExitsJournal(id))
             throw new ValidationException(['این سند برای اسناد انباری صادر شده ، امکان حذف وجود ندارد']);
+
+        if (this.treasuryRepository.isExitsJournal(id))
+            throw new ValidationException(['این سند برای اسناد خزانه داری صادر شده ، امکان حذف وجود ندارد']);
 
         this.journalRepository.remove(id);
     }
