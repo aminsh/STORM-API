@@ -23,11 +23,7 @@ module.exports = function(knex, branchId) {
         'journalLines.dimension2Id',
         knex.raw('"dimension2s"."code" || \' \' || "dimension2s"."title" as "dimension2Display"'),
         'journalLines.dimension3Id',
-        knex.raw('"dimension3s"."code" || \' \' || "dimension3s"."title" as "dimension3Display"'),
-        knex.raw('"cheques"."id" as "chequeId"'),
-        knex.raw('"cheques"."number" as "chequeNumber"'),
-        knex.raw('"cheques"."date" as "chequeDate"'),
-        knex.raw('"cheques"."description" as "chequeDescription"')
+        knex.raw('"dimension3s"."code" || \' \' || "dimension3s"."title" as "dimension3Display"')
     ).from('journalLines')
         .leftJoin('generalLedgerAccounts', 'journalLines.generalLedgerAccountId', 'generalLedgerAccounts.id')
         .leftJoin('subsidiaryLedgerAccounts', 'journalLines.subsidiaryLedgerAccountId', 'subsidiaryLedgerAccounts.id')
@@ -35,7 +31,6 @@ module.exports = function(knex, branchId) {
         .leftJoin(knex.raw('"dimensions" as "dimension1s"'), 'journalLines.dimension1Id', 'dimension1s.id')
         .leftJoin(knex.raw('"dimensions" as "dimension2s"'), 'journalLines.dimension2Id', 'dimension2s.id')
         .leftJoin(knex.raw('"dimensions" as "dimension3s"'), 'journalLines.dimension3Id', 'dimension3s.id')
-        .leftJoin('cheques', 'journalLines.id', 'cheques.journalLineId')
         .where('journalLines.branchId', branchId)
         .orderBy('journalLines.row')
         .as('baseJournalLines');
