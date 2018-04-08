@@ -342,11 +342,11 @@ enums.getInventoryFixedStatus = function () {
 enums.ReceiveChequeStatus = function () {
     return new Enum([
         {key: 'inProcessOnPassing', display: 'در جریان وصول'},
-        {key: 'passed', display: 'پاس شده'},
+        {key: 'passed', display: 'وصول'},
         {key: 'inFund', display: 'نزد صندوق'},
         {key: 'revocation', display: 'ابطال'},
         {key: 'missing', display: 'مفقود/ سرقت'},
-        {key: 'spend', display: 'انتقال/ خرج شده'},
+        {key: 'spend', display: 'انتقال/ خرج'},
         {key: 'return', display: 'برگشت'}
 
     ]);
