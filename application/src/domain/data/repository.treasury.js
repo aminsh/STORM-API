@@ -142,4 +142,12 @@ export class TreasuryRepository extends BaseRepository {
             throw new Error(e);
         }
     }
+
+    isExitsJournal(journalId) {
+        return toResult(this.knex('id')
+            .from('treasury')
+            .modify(this.modify, this.branchId)
+            .where('journalId', journalId)
+            .first());
+    }
 }
