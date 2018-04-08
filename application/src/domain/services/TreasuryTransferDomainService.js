@@ -14,8 +14,14 @@ export class TreasuryTransferDomainService {
     /** @type {TreasuryRepository}*/
     @inject("TreasuryRepository") treasuryRepository = undefined;
 
+    /** @type {JournalDomainService}*/
+    @inject("JournalDomainService") journalDomainService = undefined;
+
     /** @type {EventBus}*/
     @inject("EventBus") eventBus = undefined;
+
+    /** @type {TreasuryJournalGenerationDomainService}*/
+    @inject("TreasuryJournalGenerationDomainService") treasuryJournalGenerationDomainService = undefined;
 
     mapToEntity(cmd) {
 
@@ -24,8 +30,8 @@ export class TreasuryTransferDomainService {
         return {
             id: cmd.id,
             transferDate: cmd.transferDate || PersianDate.current(),
-            sourceDetailAccountId: cmd.payerId || null,
-            destinationDetailAccountId: cmd.receiverId || null,
+            sourceDetailAccountId: cmd.payerId || cmd.sourceDetailAccountId || null,
+            destinationDetailAccountId: cmd.receiverId || cmd.destinationDetailAccountId || null,
             amount: cmd.amount,
             imageUrl: JSON.stringify(cmd.imageUrl || []),
             description: cmd.description,
@@ -80,20 +86,37 @@ export class TreasuryTransferDomainService {
 
     update(id, cmd) {
         let entity = this.mapToEntity(cmd),
-            errors = this._validate(entity);
+            errors = this._validate(entity),
+            journalId = entity.journalId;
 
         if (errors.length > 0)
             throw new ValidationException(errors);
 
+        entity.journalId = null;
         this.treasuryRepository.update(id, entity);
+
+        if (journalId) {
+            this.journalDomainService.remove(journalId);
+            this.treasuryJournalGenerationDomainService.generateForTransfer(id);
+        }
     }
 
     remove(id) {
+        let persistedTreasury = this.treasuryRepository.findById(id);
+
         this.treasuryRepository.remove(id);
+
+        if (persistedTreasury.journalId)
+            this.journalDomainService.remove(persistedTreasury.journalId);
     }
 
 
     setJournal(id, journalId) {
-        return this.treasuryRepository.update(id, {journalId});
+        let persistedTreasury = this.treasuryRepository.findById(id),
+            entity = this.mapToEntity(persistedTreasury);
+
+        entity.journalId = journalId;
+
+        return this.treasuryRepository.update(id, entity);
     }
 }
