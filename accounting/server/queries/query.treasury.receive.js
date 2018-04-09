@@ -31,6 +31,8 @@ class TreasuryReceive
                     'treasury.amount',
                     'treasury.transferDate',
                     'treasury.sourceDetailAccountId',
+                    knex.raw(`treasury."sourceDetailAccountId" as "payerId"`),
+                    knex.raw(`treasury."destinationDetailAccountId" as "receiverId"`),
                     knex.raw(`source.title as "sourceTitle"`),
                     'treasury.destinationDetailAccountId',
                     knex.raw(`destination.title as "destinationTitle"`),
