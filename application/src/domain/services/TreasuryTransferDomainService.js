@@ -86,13 +86,17 @@ export class TreasuryTransferDomainService {
 
     update(id, cmd) {
         let entity = this.mapToEntity(cmd),
+            persistedTreasury = this.treasuryRepository.findById(id),
             errors = this._validate(entity),
             journalId = entity.journalId;
+
+        if (persistedTreasury.journalId)
+            errors.push('برای انتقال وجه سند صادر شده است و امکان ویرایش وجود ندارد!');
 
         if (errors.length > 0)
             throw new ValidationException(errors);
 
-        entity.journalId = null;
+        //entity.journalId = null;
         this.treasuryRepository.update(id, entity);
 
         if (journalId) {
@@ -102,12 +106,19 @@ export class TreasuryTransferDomainService {
     }
 
     remove(id) {
-        let persistedTreasury = this.treasuryRepository.findById(id);
+        let persistedTreasury = this.treasuryRepository.findById(id),
+            errors = [];
+
+        if (persistedTreasury.journalId)
+            errors.push('برای انتقال وجه سند صادر شده است و امکان حذف وجود ندارد!');
+
+        if (errors.length > 0)
+            throw new ValidationException(errors);
 
         this.treasuryRepository.remove(id);
 
-        if (persistedTreasury.journalId)
-            this.journalDomainService.remove(persistedTreasury.journalId);
+        /*if (persistedTreasury.journalId)
+            this.journalDomainService.remove(persistedTreasury.journalId);*/
     }
 
 
