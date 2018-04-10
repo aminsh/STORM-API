@@ -366,7 +366,7 @@ router.route('/receive-cheque-due-date')
             req.fiscalPeriodId,
             'create',
             req.query),
-            result = await(ins.getChequesDueDate('receive'));
+            result = await(ins.getChequesDueDate('receive',req.query));
         res.json(result);
     }));
 
@@ -376,7 +376,7 @@ router.route('/payment-cheque-due-date')
             req.fiscalPeriodId,
             'create',
             req.query),
-            result = await(ins.getChequesDueDate('payment'));
+            result = await(ins.getChequesDueDate('payment',req.query));
         res.json(result);
     }));
 
@@ -386,7 +386,7 @@ router.route('/receive-cheque-passed')
             req.fiscalPeriodId,
             'create',
             req.query),
-            result = await(ins.getPassedCheque('receive'));
+            result = await(ins.getPassedCheque('receive', req.query));
         res.json(result);
     }));
 
@@ -396,7 +396,7 @@ router.route('/payment-cheque-passed')
             req.fiscalPeriodId,
             'create',
             req.query),
-            result = await(ins.getPassedCheque('payment'));
+            result = await(ins.getPassedCheque('payment', req.query));
         res.json(result);
     }));
 
@@ -406,7 +406,7 @@ router.route('/receive-cheques-with-status')
             req.fiscalPeriodId,
             'create',
             req.query),
-            result = await(ins.getChequesWithStatus('receive'));
+            result = await(ins.getChequesWithStatus('receive', req.query));
         res.json(result);
     }));
 
@@ -416,7 +416,7 @@ router.route('/payment-cheques-with-status')
             req.fiscalPeriodId,
             'create',
             req.query),
-            result = await(ins.getChequesWithStatus('payment'));
+            result = await(ins.getChequesWithStatus('payment', req.query));
         res.json(result);
     }));
 
