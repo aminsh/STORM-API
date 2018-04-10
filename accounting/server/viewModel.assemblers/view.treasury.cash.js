@@ -10,7 +10,7 @@ function treasuryCashAssembler(entity) {
         amount: entity.amount,
         documentType: entity.documentType,
         imageUrl: entity.imageUrl,
-        journal: entity.journals,
+        journal: entity.journals[0],
         documentDetailId: entity.documentDetailId || null,
         documentDetail: entity.documentDetailId ? treasuryDocumentDetail(entity.documentDetail) : null
     };

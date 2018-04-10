@@ -4,7 +4,8 @@ const BaseQuery = require('../queries/query.base'),
     filterQueryConfig = require('./report.filter.config'),
     async = require('asyncawait/async'),
     await = require('asyncawait/await'),
-    enums = instanceOf('Enums');
+    enums = instanceOf('Enums'),
+    kendoQueryResolve = require('../services/kendoQueryResolve');
 
 
 class ChequeReportQueries extends BaseQuery {
@@ -18,25 +19,26 @@ class ChequeReportQueries extends BaseQuery {
         this.options = await(this.filterConfig.getDateOptions());
     }
 
-    getChequesDueDate(treasuryType) {
+    getChequesDueDate(treasuryType, parameters) {
         let knex = this.knex,
             branchId = this.branchId,
             options = this.options,
 
-            query = await(knex.select(
-                'treasury.transferDate',
-                'treasury.description',
-                'treasury.amount',
-                'treasury.sourceDetailAccountId',
-                'treasury.destinationDetailAccountId',
-                knex.raw(`"sourceDetailAccounts".title as "payerTitle"`),
-                knex.raw(`"destinationDetailAccounts".title as "receiverTitle"`),
-                'treasuryDocumentDetails.number',
-                'treasuryDocumentDetails.dueDate',
-                'treasuryDocumentDetails.bank',
-                'treasuryDocumentDetails.status',
-                knex.raw(`'${options.filter.minDate}' as "fromDate"`),
-                knex.raw(`'${options.filter.maxDate}' as "toDate"`)
+            query = knex.from(function () {
+                this.select(
+                    'treasury.transferDate',
+                    'treasury.description',
+                    'treasury.amount',
+                    'treasury.sourceDetailAccountId',
+                    'treasury.destinationDetailAccountId',
+                    knex.raw(`"sourceDetailAccounts".title as "payerTitle"`),
+                    knex.raw(`"destinationDetailAccounts".title as "receiverTitle"`),
+                    'treasuryDocumentDetails.number',
+                    'treasuryDocumentDetails.dueDate',
+                    'treasuryDocumentDetails.bank',
+                    'treasuryDocumentDetails.status',
+                    knex.raw(`'${options.fromMainDate}' as "fromDate"`),
+                    knex.raw(`'${options.toDate}' as "toDate"`)
                 )
                     .from('treasury')
                     .leftJoin('treasuryDocumentDetails', 'treasury.documentDetailId', 'treasuryDocumentDetails.id')
@@ -51,33 +53,50 @@ class ChequeReportQueries extends BaseQuery {
                     .where('treasury.treasuryType', treasuryType)
                     .where('treasury.isCompleted', 'false')
                     .whereBetween('treasuryDocumentDetails.dueDate', [options.fromMainDate, options.toDate])
-            );
+                    .as('base')
+            });
 
-        query.forEach(item => item.statusDisplay = enums.ReceiveChequeStatus().getDisplay(item.status));
+        let view = (item) => ({
+            transferDate: item.transferDate,
+            description: item.description,
+            amount: item.amount,
+            payerId: item.sourceDetailAccountId,
+            payerTitle: item.payerTitle,
+            receiverId: item.destinationDetailAccountId,
+            receiverTitle: item.receiverTitle,
+            number: item.number,
+            dueDate: item.dueDate,
+            bank: item.bank,
+            status: item.status,
+            statusDisplay: enums.ReceiveChequeStatus().getDisplay(item.status),
+            fromDate: item.fromDate,
+            toDate: item.toDate
+        });
 
-        return query;
+        return kendoQueryResolve(query, parameters, view);
 
     }
 
-    getPassedCheque(treasuryType) {
+    getPassedCheque(treasuryType, parameters) {
         let knex = this.knex,
             branchId = this.branchId,
             options = this.options,
 
-            query = await(knex.select(
-                'treasury.transferDate',
-                'treasury.description',
-                'treasury.amount',
-                'treasury.sourceDetailAccountId',
-                'treasury.destinationDetailAccountId',
-                knex.raw(`"sourceDetailAccounts".title as "payerTitle"`),
-                knex.raw(`"destinationDetailAccounts".title as "receiverTitle"`),
-                'treasuryDocumentDetails.number',
-                'treasuryDocumentDetails.dueDate',
-                'treasuryDocumentDetails.bank',
-                'treasuryDocumentDetails.status',
-                knex.raw(`'${options.filter.minDate}' as "fromDate"`),
-                knex.raw(`'${options.filter.maxDate}' as "toDate"`)
+            query = knex.from(function () {
+                this.select(
+                    'treasury.transferDate',
+                    'treasury.description',
+                    'treasury.amount',
+                    'treasury.sourceDetailAccountId',
+                    'treasury.destinationDetailAccountId',
+                    knex.raw(`"sourceDetailAccounts".title as "payerTitle"`),
+                    knex.raw(`"destinationDetailAccounts".title as "receiverTitle"`),
+                    'treasuryDocumentDetails.number',
+                    'treasuryDocumentDetails.dueDate',
+                    'treasuryDocumentDetails.bank',
+                    'treasuryDocumentDetails.status',
+                    knex.raw(`'${options.fromMainDate}' as "fromDate"`),
+                    knex.raw(`'${options.toDate}' as "toDate"`)
                 )
                     .from('treasury')
                     .leftJoin('treasuryDocumentDetails', 'treasury.documentDetailId', 'treasuryDocumentDetails.id')
@@ -91,31 +110,50 @@ class ChequeReportQueries extends BaseQuery {
                     .where('treasury.documentType', 'cheque')
                     .where('treasury.treasuryType', treasuryType)
                     .where('treasuryDocumentDetails.status', 'passed')
-                    .whereBetween('treasuryDocumentDetails.dueDate', [options.filter.minDate, options.filter.maxDate])
-            )
+                    .whereBetween('treasuryDocumentDetails.dueDate', [options.fromMainDate, options.toDate])
+                    .as('base')
+            });
 
-        return query;
+        let view = (item) => ({
+            transferDate: item.transferDate,
+            description: item.description,
+            amount: item.amount,
+            payerId: item.sourceDetailAccountId,
+            payerTitle: item.payerTitle,
+            receiverId: item.destinationDetailAccountId,
+            receiverTitle: item.receiverTitle,
+            number: item.number,
+            dueDate: item.dueDate,
+            bank: item.bank,
+            status: item.status,
+            statusDisplay: enums.ReceiveChequeStatus().getDisplay(item.status),
+            fromDate: item.fromDate,
+            toDate: item.toDate
+        });
+
+        return kendoQueryResolve(query, parameters, view);
     }
 
-    getChequesWithStatus(treasuryType) {
+    getChequesWithStatus(treasuryType, parameters) {
         let knex = this.knex,
             branchId = this.branchId,
             options = this.options,
 
-            query = await(knex.select(
-                'treasury.transferDate',
-                'treasury.description',
-                'treasury.amount',
-                'treasury.sourceDetailAccountId',
-                'treasury.destinationDetailAccountId',
-                knex.raw(`"sourceDetailAccounts".title as "payerTitle"`),
-                knex.raw(`"destinationDetailAccounts".title as "receiverTitle"`),
-                'treasuryDocumentDetails.number',
-                'treasuryDocumentDetails.dueDate',
-                'treasuryDocumentDetails.bank',
-                'treasuryDocumentDetails.status',
-                knex.raw(`'${options.filter.minDate}' as "fromDate"`),
-                knex.raw(`'${options.filter.maxDate}' as "toDate"`)
+            query = knex.from(function () {
+                this.select(
+                    'treasury.transferDate',
+                    'treasury.description',
+                    'treasury.amount',
+                    'treasury.sourceDetailAccountId',
+                    'treasury.destinationDetailAccountId',
+                    knex.raw(`"sourceDetailAccounts".title as "payerTitle"`),
+                    knex.raw(`"destinationDetailAccounts".title as "receiverTitle"`),
+                    'treasuryDocumentDetails.number',
+                    'treasuryDocumentDetails.dueDate',
+                    'treasuryDocumentDetails.bank',
+                    'treasuryDocumentDetails.status',
+                    knex.raw(`'${options.fromMainDate}' as "fromDate"`),
+                    knex.raw(`'${options.toDate}' as "toDate"`)
                 )
                     .from('treasury')
                     .leftJoin('treasuryDocumentDetails', 'treasury.documentDetailId', 'treasuryDocumentDetails.id')
@@ -129,11 +167,27 @@ class ChequeReportQueries extends BaseQuery {
                     .where('treasury.documentType', 'cheque')
                     .where('treasury.treasuryType', treasuryType)
                     .whereBetween('treasuryDocumentDetails.dueDate', [options.fromMainDate, options.toDate])
-            );
+                    .as('base')
+            });
 
-        query.forEach(item => item.statusDisplay = enums.ReceiveChequeStatus().getDisplay(item.status));
+        let view = (item) => ({
+            transferDate: item.transferDate,
+            description: item.description,
+            amount: item.amount,
+            payerId: item.sourceDetailAccountId,
+            payerTitle: item.payerTitle,
+            receiverId: item.destinationDetailAccountId,
+            receiverTitle: item.receiverTitle,
+            number: item.number,
+            dueDate: item.dueDate,
+            bank: item.bank,
+            status: item.status,
+            statusDisplay: enums.ReceiveChequeStatus().getDisplay(item.status),
+            fromDate: item.fromDate,
+            toDate: item.toDate
+        });
 
-        return query;
+        return kendoQueryResolve(query, parameters, view);
     }
 
 }

@@ -9,7 +9,8 @@ const BaseQuery = require('./query.base'),
     cashView = require('../viewModel.assemblers/view.treasury.cash'),
     chequeView = require('../viewModel.assemblers/view.treasury.cheque'),
     receiptView = require('../viewModel.assemblers/view.treasury.receipt'),
-    demandNote = require('../viewModel.assemblers/view.treasury.demandNote');
+    demandNote = require('../viewModel.assemblers/view.treasury.demandNote'),
+    enums = instanceOf('Enums');
 
 class TreasuryReceive
     extends BaseQuery {
@@ -50,6 +51,51 @@ class TreasuryReceive
 
         return kendoQueryResolve(query, parameters, view)
 
+    }
+
+    getAllChequesForSpend(parameters){
+        let knex = this.knex,
+            branchId = this.branchId,
+
+            query = knex.from(function () {
+                this.select(
+                    'treasury.id',
+                    'treasury.amount',
+                    'treasury.transferDate',
+                    knex.raw(`treasury."sourceDetailAccountId" as "payerId"`),
+                    knex.raw(`treasury."destinationDetailAccountId" as "receiverId"`),
+                    knex.raw(`source.title as "payerTitle"`),
+                    knex.raw(`destination.title as "receiverTitle"`),
+                    'treasuryDocumentDetails.status',
+                    'treasuryDocumentDetails.number',
+                    'treasuryDocumentDetails.dueDate'
+                )
+                    .from('treasury')
+                    .leftJoin('detailAccounts as source', 'source.id', 'treasury.sourceDetailAccountId')
+                    .leftJoin('detailAccounts as destination', 'destination.id', 'treasury.destinationDetailAccountId')
+                    .leftJoin('treasuryDocumentDetails', 'treasuryDocumentDetails.id', 'treasury.documentDetailId')
+                    .where('treasury.branchId', branchId)
+                    .where('treasuryType', 'receive')
+                    .where('treasury.documentType', 'cheque')
+                    .where('treasury.isCompleted', 'false')
+                    .as('base')
+            }),
+
+        spendChequeView = (item) => ({
+            id: item.id,
+            transferDate: item.transferDate,
+            amount: item.amount,
+            payerId: item.payerId,
+            payerTitle: item.payerTitle,
+            receiverId: item.receiverId,
+            receiverTitle: item.receiverTitle,
+            number: item.number,
+            dueDate: item.dueDate,
+            status: item.status,
+            statusDisplay: enums.ReceiveChequeStatus().getDisplay(item.status)
+        });
+
+        return kendoQueryResolve(query, parameters, spendChequeView)
     }
 
     getById(id) {
