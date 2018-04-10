@@ -4,20 +4,30 @@ var await = require('asyncawait/await');
 function kendoQueryResolve(query, request, mapper) {
     request = request || {};
 
+    request.paging = request.hasOwnProperty('paging') ? eval(request.paging) : true;
+
     resolveFilter(query, request.filter);
 
-    var count = await(query.clone().count())[0].count,
+    var count = request.paging ? await(query.clone().count())[0].count : 0,
+
         isFirst = request.hasOwnProperty('first');
 
     request.take = isFirst ? 1 : request.take;
 
-    resolveLimitAndOffset(query, request.skip, request.take);
+    if (request.paging)
+        resolveLimitAndOffset(query, request.skip, request.take);
+
     resolveSort(query, request.sort);
 
     var viewData = await(query.map(mapper));
 
+    if(isFirst)
+        return viewData[0];
 
-    return isFirst ? viewData[0] : {
+    if(!request.paging)
+        return viewData;
+
+    return {
         data: viewData,
         total: count
     }
