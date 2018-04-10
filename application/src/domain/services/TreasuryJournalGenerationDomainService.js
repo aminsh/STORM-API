@@ -38,14 +38,14 @@ export class TreasuryJournalGenerationDomainService {
         if (entity.documentType !== 'cheque' && entity.journalId)
             errors.push('قبلا سند حسابداری صادر شده است!');
 
-/*        if (entity.documentType === 'cheque') {
-            if (entity.documentDetail.chequeStatusHistory && entity.documentDetail.chequeStatusHistory.asEnumerable()
-                    .any(item => item.status === entity.documentDetail.status && item.journalId))
-                errors.push('برای وضعیت {0} قبلا سند حسابداری با شماره {1} صادر شده است!'
-                    .format(Enums.ReceiveChequeStatus().getDisplay(entity.documentDetail.status), journal.temporaryNumber)
-                );
+        /*        if (entity.documentType === 'cheque') {
+                    if (entity.documentDetail.chequeStatusHistory && entity.documentDetail.chequeStatusHistory.asEnumerable()
+                            .any(item => item.status === entity.documentDetail.status && item.journalId))
+                        errors.push('برای وضعیت {0} قبلا سند حسابداری با شماره {1} صادر شده است!'
+                            .format(Enums.ReceiveChequeStatus().getDisplay(entity.documentDetail.status), journal.temporaryNumber)
+                        );
 
-        }*/
+                }*/
 
         return errors;
 
@@ -283,8 +283,8 @@ export class TreasuryJournalGenerationDomainService {
         return this.journalDomainService.create({description, journalLines});
     }
 
-    updateChequeJournals(journalId, treasury) {
-        let persistedJournal = this.journalRepository.findById(journalId),
+    /*updateChequeJournals(id, cmd) {
+        let persistedJournal = this.journalRepository.findById(id),
 
             journal = {
                 temporaryDate: persistedJournal.temporaryDate,
@@ -296,27 +296,57 @@ export class TreasuryJournalGenerationDomainService {
                         treasury.documentDetail.number),
                 attachmentFileName: persistedJournal.attachmentFileName,
                 tagId: persistedJournal.tagId,
-                journalLines: persistedJournal.journalLines.asEnumerable()
-                    .select(item => {
+                journalLines:
 
-                        const subsidiaryLedgerAccount = this.subsidiaryLedgerAccountRepository
-                            .findById(item.subsidiaryLedgerAccountId);
+
+                    persistedJournal.journalLines.asEnumerable()
+                    .select(item => {
+                        let subsidiary = this.subsidiaryLedgerAccountRepository.findById()
 
                         return {
                             id: item.id,
-                            generalLedgerAccountId: subsidiaryLedgerAccount.generalLedgerAccountId,
-                            subsidiaryLedgerAccountId: item.subsidiaryLedgerAccountId,
-                            detailAccountId: treasury.treasuryType === 'receive'
-                                ? treasury.sourceDetailAccountId : treasury.destinationDetailAccountId,
+                            generalLedgerAccountId: getGeneralLedgerAccountId(),
+                            subsidiaryLedgerAccountId: getSubsidiaryLedgerAccountId(),
+                            detailAccountId: getDetailAccount(treasury),
                             article: getArticle(),
-                            debtor: item.debtor,
-                            creditor: item.creditor
+                            debtor: getDebtor(),
+                            creditor: getCreditor()
                         }
                     })
                     .toArray()
-            }
+            };
 
-    }
+        function getGeneralLedgerAccountId(){
+
+        }
+
+        function getSubsidiaryLedgerAccountId() {
+
+        }
+
+        function getDetailAccount(treasury) {
+
+            if (treasury.treasuryType === 'receive')
+                return treasury.sourceDetailAccountId;
+
+            if (treasury.treasuryType === 'payment')
+                return treasury.destinationDetailAccountId;
+
+        }
+
+        function getArticle() {
+
+        }
+
+        function getDebtor() {
+
+        }
+
+        function getCreditor() {
+
+        }
+
+    }*/
 
     generateForCheque(treasuryId) {
         let persistedTreasury = this.treasuryRepository.findById(treasuryId),

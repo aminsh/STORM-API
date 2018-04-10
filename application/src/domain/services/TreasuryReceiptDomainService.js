@@ -158,32 +158,45 @@ export class TreasuryReceiptDomainService {
                 : this._paymentValidate(entity),
             journalId = entity.journalId;
 
+
         if (!persistedTreasury)
             errors.push('{0} وجود ندارد!'.format(Enums.TreasuryPaymentDocumentTypes().getDisplay(entity.documentType)));
+
+        if (persistedTreasury.journalId)
+            errors.push('برای واریزی {0} سند صادر شده است و امکان ویرایش وجود ندارد!'
+                .format(Enums.TreasuryType().getDisplay(persistedTreasury.treasuryType)));
 
         if (errors.length > 0)
             throw new ValidationException(errors);
 
-        entity.journalId = null;
+        //entity.journalId = null;
         this.treasuryRepository.update(id, entity);
 
-        if (journalId) {
+        /*if (journalId) {
             this.journalDomainService.remove(journalId);
 
             entity.treasuryType === 'receive' ?
                 this.treasuryJournalGenerationDomainService.generateForReceiveReceipt(id) :
                 this.treasuryJournalGenerationDomainService.generateForPaymentReceipt(id);
-        }
+        }*/
 
     }
 
     remove(id) {
-        let persistedTreasury = this.treasuryRepository.findById(id);
+        let persistedTreasury = this.treasuryRepository.findById(id),
+            errors = [];
+
+        if (persistedTreasury.journalId)
+            errors.push('برای واریزی {0} سند صادر شده است و امکان حذف وجود ندارد!'
+                .format(Enums.TreasuryType().getDisplay(persistedTreasury.treasuryType)));
+
+        if (errors.length > 0)
+            throw new ValidationException(errors);
 
         this.treasuryRepository.remove(id);
 
-        if (persistedTreasury.journalId)
-            this.journalDomainService.remove(persistedTreasury.journalId);
+        /*if (persistedTreasury.journalId)
+            this.journalDomainService.remove(persistedTreasury.journalId);*/
     }
 
     setJournal(id, journalId) {
