@@ -12,6 +12,7 @@ module.exports = async.result(function (branchId) {
         maxDate = `${year}/12/${isLeap ? '30' : '29'}`,
 
         entity = {
+            id: Utility.Guid.new(),
             isClosed: false,
             title: `سال مالی منتهی به ${maxDate}`,
             minDate: `${year}/01/01`,

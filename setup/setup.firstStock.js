@@ -5,13 +5,13 @@ const async = require('asyncawait/async'),
     knex = instanceOf('knex');
 
 
-
 module.exports = async.result(function (branchId) {
 
     let entity = {
-            title: 'انبار اصلی',
-            branchId
-        };
+        id: Utility.Guid.new(),
+        title: 'انبار اصلی',
+        branchId
+    };
 
     await(knex('stocks').insert(entity));
 

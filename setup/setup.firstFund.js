@@ -7,10 +7,11 @@ const async = require('asyncawait/async'),
 module.exports = async.result(function (branchId) {
 
     let entity = {
-            title: 'صندوق اصلی',
-            detailAccountType: 'fund',
-            branchId
-        };
+        id: Utility.Guid.new(),
+        title: 'صندوق اصلی',
+        detailAccountType: 'fund',
+        branchId
+    };
 
     await(knex('detailAccounts').insert(entity));
 
