@@ -13,6 +13,11 @@ router.route('/')
     }));
 
 router.route('/cheques')
+    .get(async((req, res) => {
+        let receiveQuery = new ReceiveQuery(req.branchId),
+            result = await(receiveQuery.getAllChequesForSpend(req.query));
+        res.json(result);
+    }))
     .post(async((req, res) => {
         try {
             const id = req.container.get("CommandBus").send("treasuryReceiveChequeCreate", [req.body]);
@@ -120,19 +125,6 @@ router.route('/cheques/:id/missing')
         try {
             req.container.get("CommandBus").send("treasuryChequeMissing", [req.params.id, req.body]);
             res.json({isValid: true});
-        }
-        catch (e) {
-            res.json({isValid: false, errors: e.errors});
-        }
-
-    }));
-
-router.route('/cheques/:id/spend')
-    .put(async((req, res) => {
-
-        try {
-            const id = req.container.get("CommandBus").send("treasuryChequeSpend", [req.params.id, req.body]);
-            res.json({isValid: true, returnValue: {id}});
         }
         catch (e) {
             res.json({isValid: false, errors: e.errors});
