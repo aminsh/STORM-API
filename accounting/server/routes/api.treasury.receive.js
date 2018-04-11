@@ -15,7 +15,7 @@ router.route('/')
 router.route('/cheques')
     .get(async((req, res) => {
         let receiveQuery = new ReceiveQuery(req.branchId),
-            result = await(receiveQuery.getAllChequesForSpend(req.query));
+            result = await(receiveQuery.getAllCheques(req.query));
         res.json(result);
     }))
     .post(async((req, res) => {
