@@ -187,13 +187,13 @@ router.route('/:id/users')
 
             member = await(knex.select('*').from('userInBranches').where({token}).first());
 
-        if(!member)
+         if (!member)
             return NoAuthorizedResponseAction();
 
-        if(member.branchId !== id)
+        if (member.branchId !== id)
             return NoAuthorizedResponseAction();
 
-        if(!member.isOwner)
+        if (!member.isOwner)
             return NoAuthorizedResponseAction();
 
         let query = knex.from(function () {
@@ -223,20 +223,20 @@ router.route('/:id/users')
 
             member = await(knex.select('*').from('userInBranches').where({token}).first());
 
-        if(!member)
+        if (!member)
             return NoAuthorizedResponseAction();
 
-        if(member.branchId !== id)
+        if (member.branchId !== id)
             return NoAuthorizedResponseAction();
 
-        if(!member.isOwner)
+        if (!member.isOwner)
             return NoAuthorizedResponseAction();
 
         let isUserMember = await(
             knex.select('id').from('userInBranches').where({branchId: id, userId}).first()
         );
 
-        if(isUserMember)
+        if (isUserMember)
             return res.status(400).send(['کاربر عضو این کسب و کار هست']);
 
         member = {
@@ -262,13 +262,16 @@ router.route('/:id/users/:userId')
 
             member = await(knex.select('*').from('userInBranches').where({token}).first());
 
-        if(!member)
+        if (!member)
             return NoAuthorizedResponseAction();
 
-        if(member.branchId !== id)
+        if (member.branchId !== id)
             return NoAuthorizedResponseAction();
 
-        if(!member.isOwner)
+        if (member.isOwner && member.userId === userId)
+            return res.sendStatus(400);
+
+        if (!(member.isOwner || member.userId === userId))
             return NoAuthorizedResponseAction();
 
         let userInBranch = await(knex.select('*').from('userInBranches').where({branchId: id, userId}).first());
@@ -281,7 +284,7 @@ router.route('/:id/users/:userId')
     }));
 
 router.route('/:id/users/:userId/regenerate-token')
-    .delete(async(function (req, res) {
+    .put(async(function (req, res) {
         let id = req.params.id,
             userId = req.params.userId,
             NoAuthorizedResponseAction = () => res.status(401).send('No Authorized'),
@@ -289,13 +292,13 @@ router.route('/:id/users/:userId/regenerate-token')
 
             member = await(knex.select('*').from('userInBranches').where({token}).first());
 
-        if(!member)
+        if (!member)
             return NoAuthorizedResponseAction();
 
-        if(member.branchId !== id)
+        if (member.branchId !== id)
             return NoAuthorizedResponseAction();
 
-        if(!member.isOwner)
+        if (!member.isOwner)
             return NoAuthorizedResponseAction();
 
         let newToken = TokenGenerator.generate256Bit(),
@@ -321,10 +324,10 @@ router.route('/:id/users/:userId/is-member')
 
             member = await(knex.select('*').from('userInBranches').where({token}).first());
 
-        if(!member)
+        if (!member)
             return NoAuthorizedResponseAction();
 
-        if(member.branchId !== id)
+        if (member.branchId !== id)
             return NoAuthorizedResponseAction();
 
         let isMember = await(knex.select('id').from('userInBranches').where({userId}).first());
@@ -366,7 +369,6 @@ router.route('/by-token/:token')
 
         res.json(branch);
     }));
-
 
 
 module.exports = router;
