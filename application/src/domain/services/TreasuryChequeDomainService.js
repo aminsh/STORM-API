@@ -34,6 +34,7 @@ export class TreasuryChequeDomainService {
             journalId: cmd.journalId,
             isCompleted: cmd.isCompleted,
             receiveId: cmd.receiveId,
+            documentDetailId: cmd.documentDetailId,
             documentDetail: this._documentDetailMapToEntity(cmd.documentDetail)
         }
     }
@@ -55,7 +56,7 @@ export class TreasuryChequeDomainService {
             chequeAccountNumber: documentDetail.chequeAccountNumber,
             canTransferToAnother: documentDetail.canTransferToAnother,
             status: documentDetail.status,
-            //chequeStatusHistory: documentDetail.chequeStatusHistory || [],
+            chequeStatusHistory: JSON.stringify(documentDetail.chequeStatusHistory || []),
             trackingNumber: documentDetail.trackingNumber
         }
     }
@@ -111,10 +112,14 @@ export class TreasuryChequeDomainService {
     }
 
     _changeStatusValidate(entity) {
-        let errors = [];
+        let errors = [],
+            paymentCheque = this.treasuryRepository.isSpendCheque(entity.id);
 
         if (entity.isCompleted && entity.documentDetail.status === 'passed')
             errors.push('چک قبلا پاس شده است!');
+
+        if (paymentCheque && entity.treasuryType === 'receive' && entity.documentDetail.status === 'spend')
+            errors.push('امکان تغییر وضعیت چک خرج شده وجود ندارد!');
 
         return errors;
     }
@@ -141,7 +146,9 @@ export class TreasuryChequeDomainService {
             errors = this._paymentValidate(entity),
             cheque = this.treasuryRepository.findByNumber(entity.documentDetail.number);
 
-        if (cheque && cheque.sourceDetailAccountId === entity.sourceDetailAccountId)
+        if (cheque
+            && cheque.sourceDetailAccountId === entity.sourceDetailAccountId
+            && cheque.treasuryType === entity.treasuryType)
             errors.push('شماره چک تکراری است');
 
         if (errors.length > 0)
@@ -167,6 +174,10 @@ export class TreasuryChequeDomainService {
 
         if (persistedTreasury.journalId)
             errors.push('برای چک سند صادر شده است و امکان ویرایش چک وجود ندارد!');
+
+
+        if (persistedTreasury.treasuryType === 'receive' && entity.documentDetail.status === 'spend')
+            errors.push('امکان تغییر چک خرج شده وجود ندارد!');
 
         //journalService = this.journalDomainService,
         //treasuryJournalGeneration = this.treasuryJournalGenerationDomainService,
@@ -207,6 +218,7 @@ export class TreasuryChequeDomainService {
 
     remove(id) {
         let persistedTreasury = this.treasuryRepository.findById(id),
+            spendCheque = this.treasuryRepository.isSpendCheque(persistedTreasury.id),
             errors = [];
         /*    journalService = this.journalDomainService,
 
@@ -219,6 +231,10 @@ export class TreasuryChequeDomainService {
 
         if (persistedTreasury.journalId)
             errors.push('برای چک سند صادر شده است و امکان حذف چک وجود ندارد!');
+
+        if (spendCheque)
+            errors.push('چک خرج شده است و قابل حذف نمی باشد!');
+
 
         if (errors.length > 0)
             throw new ValidationException(errors);
@@ -270,6 +286,8 @@ export class TreasuryChequeDomainService {
         entity.documentDetail.chequeStatusHistory = cheque.documentDetail.chequeStatusHistory || [];
         entity.documentDetail.chequeStatusHistory.push({
             createdAt: new Date(),
+            order: entity.documentDetail.chequeStatusHistory.length === 0 ? 1 :
+                entity.documentDetail.chequeStatusHistory.asEnumerable().max(item => item.order) + 1,
             status: 'inFund',
             journalId: null
         });
@@ -299,6 +317,8 @@ export class TreasuryChequeDomainService {
         entity.documentDetail.chequeStatusHistory.push({
             createdAt: new Date(),
             status: 'passed',
+            order: entity.documentDetail.chequeStatusHistory.length === 0 ? 1 :
+                entity.documentDetail.chequeStatusHistory.asEnumerable().max(item => item.order) + 1,
             passedDate: cmd.date,
             journalId: null
         });
@@ -327,6 +347,8 @@ export class TreasuryChequeDomainService {
         entity.documentDetail.chequeStatusHistory.push({
             createdAt: new Date(),
             status: 'passed',
+            order: entity.documentDetail.chequeStatusHistory.length === 0 ? 1 :
+                entity.documentDetail.chequeStatusHistory.asEnumerable().max(item => item.order) + 1,
             passedDate: cmd.date,
             journalId: null
         });
@@ -354,6 +376,8 @@ export class TreasuryChequeDomainService {
         entity.documentDetail.chequeStatusHistory = cheque.documentDetail.chequeStatusHistory || [];
         entity.documentDetail.chequeStatusHistory.push({
             createdAt: new Date(),
+            order: entity.documentDetail.chequeStatusHistory.length === 0 ? 1 :
+                entity.documentDetail.chequeStatusHistory.asEnumerable().max(item => item.order) + 1,
             status: 'inProcessOnPassing',
             journalId: null
         });
@@ -384,11 +408,19 @@ export class TreasuryChequeDomainService {
         entity.documentDetail.chequeStatusHistory.push({
             createdAt: new Date(),
             status: 'return',
+            order: entity.documentDetail.chequeStatusHistory.length === 0 ? 1 :
+                entity.documentDetail.chequeStatusHistory.asEnumerable().max(item => item.order) + 1,
             journalId: null
         });
         entity.documentDetail.chequeStatusHistory = JSON.stringify(entity.documentDetail.chequeStatusHistory);
 
         this.eventBus.send('onChequeStatusChanged', id);
+
+        if (cheque.receiveId){
+            let receiveCheque = this.treasuryRepository.findById(cheque.receiveId);
+            this.chequeReturn(receiveCheque);
+        }
+
 
         return this.treasuryRepository.update(entity.id, entity);
     }
@@ -411,6 +443,8 @@ export class TreasuryChequeDomainService {
         entity.documentDetail.chequeStatusHistory.push({
             createdAt: new Date(),
             status: 'revocation',
+            order: entity.documentDetail.chequeStatusHistory.length === 0 ? 1 :
+                entity.documentDetail.chequeStatusHistory.asEnumerable().max(item => item.order) + 1,
             journalId: null
         });
         entity.documentDetail.chequeStatusHistory = JSON.stringify(entity.documentDetail.chequeStatusHistory);
@@ -438,6 +472,8 @@ export class TreasuryChequeDomainService {
         entity.documentDetail.chequeStatusHistory.push({
             createdAt: new Date(),
             status: 'missing',
+            order: entity.documentDetail.chequeStatusHistory.length === 0 ? 1 :
+                entity.documentDetail.chequeStatusHistory.asEnumerable().max(item => item.order) + 1,
             journalId: null
         });
         entity.documentDetail.chequeStatusHistory = JSON.stringify(entity.documentDetail.chequeStatusHistory);
@@ -447,31 +483,36 @@ export class TreasuryChequeDomainService {
         return this.treasuryRepository.update(entity.id, entity);
     }
 
-    chequeSpend(receiveId, cmd) {
-        let cheque = receiveId ? this.treasuryRepository.findById(receiveId) : null,
+    chequeSpend(cmd) {
+        let receiveCheque = cmd.receiveId ? this.treasuryRepository.findById(cmd.receiveId) : null,
             receiver = this.detailAccountRepository.findById(cmd.receiverId),
-            entity = this.mapToEntity(cheque),
+            entity = this.mapToEntity(receiveCheque),
             errors = this._changeStatusValidate(entity);
 
-        if (entity.documentDetail.status === 'spend')
+        if (receiveCheque.documentDetail.status === 'spend')
             errors.push('چک با وضعیت خرج/ انتقالی ثبت شده است!');
 
         if (receiver.detailAccountType !== 'person')
             errors.push('دریافت کننده چک باید شخص باشد.');
 
+        if (receiveCheque.documentDetail.status === 'passed')
+            errors.push('چک پاس شده نمی تواند خرج شود!');
+
         if (errors.length > 0)
             throw new ValidationException(errors);
 
 
-        if (cheque) {
+        if (receiveCheque) {
+
             entity.isCompleted = true;
             entity.documentDetail.status = 'spend';
             entity.destinationDetailAccountId = cmd.receiverId;
-
-            entity.documentDetail.chequeStatusHistory = cheque.documentDetail.chequeStatusHistory || [];
+            entity.documentDetail.chequeStatusHistory = receiveCheque.documentDetail.chequeStatusHistory || [];
             entity.documentDetail.chequeStatusHistory.push({
                 createdAt: new Date(),
                 status: 'spend',
+                order: entity.documentDetail.chequeStatusHistory.length === 0 ? 1 :
+                    entity.documentDetail.chequeStatusHistory.asEnumerable().max(item => item.order) + 1,
                 journalId: null
             });
             entity.documentDetail.chequeStatusHistory = JSON.stringify(entity.documentDetail.chequeStatusHistory);
@@ -479,17 +520,36 @@ export class TreasuryChequeDomainService {
             this.treasuryRepository.update(entity.id, entity);
         }
 
-        entity.documentDetail.chequeStatusHistory = [];
-        entity.documentDetail.chequeStatusHistory = JSON.stringify(entity.documentDetail.chequeStatusHistory);
-        entity.receiveId = receiveId;
+
         entity.documentType = 'spendCheque';
+        entity.treasuryType = 'payment';
+        entity.journalId = null;
+        entity.receiveId = receiveCheque.id;
+        entity.imageUrl = receiveCheque.imageUrl.length > 0 ? receiveCheque.imageUrl.push(cmd.imageUrl) : cmd.imageUrl;
+        entity.documentDetail.transferTo = cmd.documentDetail.transferTo;
+        entity.documentDetail.transferFrom = cmd.documentDetail.transferFrom;
+        entity.description = cmd.description;
+        delete entity.id;
+        delete entity.documentDetail.id;
+        delete entity.documentDetailId;
+
         entity.isCompleted = false;
-        entity.documentDetail.status = 'inProcessOnPassing';
+        entity.documentDetail.status = 'spend';
+
+        entity.documentDetail.chequeStatusHistory = [];
+        entity.documentDetail.chequeStatusHistory.push({
+            createdAt: new Date(),
+            status: 'spend',
+            order: entity.documentDetail.chequeStatusHistory.length === 0 ? 1 :
+                entity.documentDetail.chequeStatusHistory.asEnumerable().max(item => item.order) + 1,
+            journalId: null
+        });
 
         let paymentId = this.createPayment(entity);
-        this.eventBus.send('onChequeStatusChanged', [receiveId, paymentId]);
 
         return paymentId;
+
+        //this.eventBus.send('onChequeStatusChanged', [cmd.receiveId, paymentId]);
     }
 
     setJournalForSpend(receiveId, paymentId, journalId) {
@@ -506,7 +566,8 @@ export class TreasuryChequeDomainService {
                 .select(item => ({
                     createdAt: item.createdAt,
                     status: item.status,
-                    journalId: item.status === receive.documentDetail.status ? journalId : null
+                    journalId: item.status === receive.documentDetail.status ? journalId : null,
+                    order: item.order
                 }))
                 .toArray();
 
@@ -517,7 +578,8 @@ export class TreasuryChequeDomainService {
                 .select(item => ({
                     createdAt: item.createdAt,
                     status: item.status,
-                    journalId: item.status === payment.documentDetail.status ? journalId : null
+                    journalId: item.status === payment.documentDetail.status ? journalId : null,
+                    order: item.order
                 }))
                 .toArray();
 

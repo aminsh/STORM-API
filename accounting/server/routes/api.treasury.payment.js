@@ -121,8 +121,50 @@ router.route('/cheques/:id/generate-journal')
 router.route('/spend-cheques')
     .post(async((req, res) => {
         try {
-            const id = req.container.get("CommandBus").send("treasuryChequeSpend", [req.params.id, req.body]);
+            const id = req.container.get("CommandBus").send("treasuryChequeSpend", [req.body]);
             res.json({isValid: true, returnValue: {id}});
+        }
+        catch (e) {
+            res.json({isValid: false, errors: e.errors});
+        }
+
+    }));
+
+router.route('/spend-cheques/:id')
+    .get(async((req, res) => {
+        let paymentQuery = new PaymentQuery(req.branchId),
+            result = await(paymentQuery.getById(req.params.id));
+        res.json(result);
+    }))
+    .put(async((req, res) => {
+        try {
+            req.container.get("CommandBus").send("treasuryPaymentChequeUpdate", [req.params.id, req.body]);
+            res.json({isValid: true})
+        }
+        catch (e) {
+            res.json({isValid: false, errors: e.errors});
+        }
+    }))
+    .delete(async((req, res) => {
+        try {
+            req.container.get("CommandBus").send("treasuryChequeRemove", [req.params.id]);
+            res.json({isValid: true})
+        }
+        catch (e) {
+            res.json({isValid: false, errors: e.errors});
+        }
+    }));
+
+router.route('/spend-cheques/:id/generate-journal')
+    .post(async((req, res) => {
+
+        try {
+
+            const id = req.params.id;
+            let journalId = req.container.get("CommandBus").send("journalGenerateForCheque", [id]);
+            req.container.get("CommandBus").send("chequeSetJournal", [id, journalId]);
+
+            res.json({isValid: true});
         }
         catch (e) {
             res.json({isValid: false, errors: e.errors});
