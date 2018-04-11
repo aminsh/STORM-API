@@ -230,22 +230,26 @@ export class JournalDomainService {
     }
 
     remove(id) {
-        let journal = this.journalRepository.findById(id);
+        let journal = this.journalRepository.findById(id),
+            errors = [];
 
         if (journal.journalStatus === 'Fixed')
-            throw new ValidationException(['سند قطعی شده ، امکان حذف وجود ندارد']);
+            errors.push('سند قطعی شده ، امکان حذف وجود ندارد');
 
         if (this.fiscalPeriodRepository.findById(this.state.fiscalPeriodId).isClosed)
-            throw new ValidationException(['دوره مالی بسته شده ، امکان حذف وجود ندارد']);
+            errors.push('دوره مالی بسته شده ، امکان حذف وجود ندارد');
 
         if (this.invoiceRepository.isExitsJournal(id))
-            throw new ValidationException(['این سند برای فاکتور صادر شده ، امکان حذف وجود ندارد']);
+            errors.push('این سند برای فاکتور صادر شده ، امکان حذف وجود ندارد');
 
         if (this.invoiceRepository.isExitsJournal(id))
-            throw new ValidationException(['این سند برای اسناد انباری صادر شده ، امکان حذف وجود ندارد']);
+            errors.push('این سند برای اسناد انباری صادر شده ، امکان حذف وجود ندارد');
 
         if (this.treasuryRepository.isExitsJournal(id))
-            throw new ValidationException(['این سند برای اسناد خزانه داری صادر شده ، امکان حذف وجود ندارد']);
+            errors.push('این سند برای اسناد خزانه داری صادر شده ، امکان حذف وجود ندارد');
+
+        if (errors.length > 0)
+            throw new ValidationException(errors);
 
         this.journalRepository.remove(id);
     }

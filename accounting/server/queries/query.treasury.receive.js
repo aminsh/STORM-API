@@ -53,7 +53,7 @@ class TreasuryReceive
 
     }
 
-    getAllChequesForSpend(parameters){
+    getAllCheques(parameters) {
         let knex = this.knex,
             branchId = this.branchId,
 
@@ -68,7 +68,8 @@ class TreasuryReceive
                     knex.raw(`destination.title as "receiverTitle"`),
                     'treasuryDocumentDetails.status',
                     'treasuryDocumentDetails.number',
-                    'treasuryDocumentDetails.dueDate'
+                    'treasuryDocumentDetails.dueDate',
+                    'treasury.isCompleted'
                 )
                     .from('treasury')
                     .leftJoin('detailAccounts as source', 'source.id', 'treasury.sourceDetailAccountId')
@@ -77,25 +78,25 @@ class TreasuryReceive
                     .where('treasury.branchId', branchId)
                     .where('treasuryType', 'receive')
                     .where('treasury.documentType', 'cheque')
-                    .where('treasury.isCompleted', 'false')
                     .as('base')
             }),
 
-        spendChequeView = (item) => ({
-            id: item.id,
-            transferDate: item.transferDate,
-            amount: item.amount,
-            payerId: item.payerId,
-            payerTitle: item.payerTitle,
-            receiverId: item.receiverId,
-            receiverTitle: item.receiverTitle,
-            number: item.number,
-            dueDate: item.dueDate,
-            status: item.status,
-            statusDisplay: enums.ReceiveChequeStatus().getDisplay(item.status)
-        });
+            chequeView = (item) => ({
+                id: item.id,
+                transferDate: item.transferDate,
+                amount: item.amount,
+                payerId: item.payerId,
+                payerTitle: item.payerTitle,
+                receiverId: item.receiverId,
+                receiverTitle: item.receiverTitle,
+                number: item.number,
+                dueDate: item.dueDate,
+                status: item.status,
+                statusDisplay: enums.ReceiveChequeStatus().getDisplay(item.status),
+                isCompleted: item.isCompleted
+            });
 
-        return kendoQueryResolve(query, parameters, spendChequeView)
+        return kendoQueryResolve(query, parameters, chequeView)
     }
 
     getById(id) {
@@ -135,16 +136,16 @@ class TreasuryReceive
 
         let journals = (journalIds || []).length > 0
             ? await(knex.select(
-            'journals.temporaryDate as date',
-            'journals.temporaryNumber as number',
-            'journals.id',
-            'journals.description'
+                'journals.temporaryDate as date',
+                'journals.temporaryNumber as number',
+                'journals.id',
+                'journals.description'
+                )
+                    .from('journals')
+                    .whereIn('id', journalIds)
+                    .where('branchId', branchId)
             )
-                .from('journals')
-                .whereIn('id', journalIds)
-                .where('branchId', branchId)
-            )
-            :null;
+            : null;
 
 
         treasury.documentDetail = documentDetail;
