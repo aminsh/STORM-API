@@ -52,7 +52,8 @@ function chequeStatusHistoryMapper(item) {
         createdAt: item.createdAt,
         statusDisplay: item.status ? enums.ReceiveChequeStatus().getDisplay(item.status) : '',
         date: Utility.PersianDate.getDate(item.createdAt),
-        journalId: item.journalId
+        journalId: item.journalId,
+        order: item.order
     }
 }
 
