@@ -9,11 +9,9 @@ const BaseQuery = require('./query.base'),
     cashView = require('../viewModel.assemblers/view.treasury.cash'),
     chequeView = require('../viewModel.assemblers/view.treasury.cheque'),
     receiptView = require('../viewModel.assemblers/view.treasury.receipt'),
-    demandNote = require('../viewModel.assemblers/view.treasury.demandNote'),
-    queryObjectMapper = require('./queryObjectMapper');
+    demandNote = require('../viewModel.assemblers/view.treasury.demandNote');
 
-class TreasuryPayment
-    extends BaseQuery {
+class TreasuryPayment extends BaseQuery {
     constructor(branchId) {
         super(branchId);
     }
@@ -104,6 +102,10 @@ class TreasuryPayment
         treasury.journals = journals;
 
         if (treasury.documentType === 'cheque') {
+            return chequeView(treasury);
+        }
+
+        if (treasury.documentType === 'spendCheque') {
             return chequeView(treasury);
         }
 
