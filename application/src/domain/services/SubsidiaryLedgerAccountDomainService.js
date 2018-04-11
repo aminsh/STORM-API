@@ -21,7 +21,7 @@ export class SubsidiaryLedgerAccountDomainService {
     
     @postConstruct()
     init(){
-        const settings = this.settings =this.settingsRepository.get(),
+        const settings =  this.settings = this.settingsRepository.get(),
             treasurySettings = this.treasurySettings = this.treasurySettingRepository.get();
 
         this.defaultAccounts = (settings.subsidiaryLedgerAccounts || [])
