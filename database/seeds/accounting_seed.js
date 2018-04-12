@@ -6,12 +6,12 @@ const async = require('asyncawait/async'),
 
 exports.seed = async(function (knex, Promise) {
 
-    let ioTypes = enums.InventoryIOType().data,
-        types = ioTypes.map(type => ({
-            id: type.key,
-            title: type.display,
-            type: type.key.startsWith("input") ? 'input' : 'output',
-        }));
+    let detailAccountsNaNCode = await(
+        knex.select('id').from('detailAccounts').where('code', 'ilike', '%NaN%')
+        ),
+        NaNCodeIds = detailAccountsNaNCode.map(item => item.id);
 
-    await(knex('inventoryIOTypes').insert(types));
+    await(
+        knex('detailAccounts').whereIn('id', NaNCodeIds).update({code: null})
+    );
 });
