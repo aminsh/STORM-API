@@ -115,7 +115,7 @@ export class TreasuryDemandNoteDomainService {
 
         entity = this.treasuryRepository.create(entity);
 
-        this.eventBus.send('onReceiveDemandNoteCreated', entity.id);
+        //this.eventBus.send('onReceiveDemandNoteCreated', entity.id);
 
         return entity.id;
     }
@@ -133,7 +133,7 @@ export class TreasuryDemandNoteDomainService {
 
         entity = this.treasuryRepository.create(entity);
 
-        this.eventBus.send('onPaymentDemandNoteCreated', entity.id);
+        //this.eventBus.send('onPaymentDemandNoteCreated', entity.id);
 
         return entity.id;
     }

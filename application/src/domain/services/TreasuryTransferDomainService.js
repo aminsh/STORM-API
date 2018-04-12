@@ -99,10 +99,10 @@ export class TreasuryTransferDomainService {
         //entity.journalId = null;
         this.treasuryRepository.update(id, entity);
 
-        if (journalId) {
+        /*if (journalId) {
             this.journalDomainService.remove(journalId);
             this.treasuryJournalGenerationDomainService.generateForTransfer(id);
-        }
+        }*/
     }
 
     remove(id) {
