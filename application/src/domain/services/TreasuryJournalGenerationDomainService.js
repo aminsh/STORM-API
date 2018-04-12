@@ -186,7 +186,7 @@ export class TreasuryJournalGenerationDomainService {
 
             journalLines = [],
             description = persistedTreasury
-                ? 'بابت فیش واریزی به {0} به شماره {1} در تاریخ {2}'.format(receiver.title, persistedTreasury.transferDate)
+                ? 'بابت فیش واریزی به {0} به شماره {1} در تاریخ {2}'.format(receiver.title, persistedTreasury.documentDetail.number, persistedTreasury.transferDate)
                 : '';
 
         journalLines.push({
