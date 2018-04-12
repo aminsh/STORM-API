@@ -240,7 +240,7 @@ export class JournalRepository extends BaseRepository {
                     from(
                         select 
                             id,
-                            ROW_NUMBER () OVER (ORDER BY "temporaryDate") as row
+                            ROW_NUMBER () OVER (ORDER BY "temporaryDate", "createdAt") as row
                         from journals as j 
                         where "branchId" = '${branchId}'
                         and "periodId" = '${fiscalPeriodId}'
