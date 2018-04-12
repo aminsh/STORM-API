@@ -1033,6 +1033,16 @@
     "returns": "undefined"
   },
   {
+    "name": "treasurySpentChequeReturn",
+    "class": "TreasuryChequeDomainService",
+    "method": "spentChequeReturn",
+    "params": [
+      "id",
+      "command"
+    ],
+    "returns": "undefined"
+  },
+  {
     "name": "treasuryChequeInFund",
     "class": "TreasuryChequeDomainService",
     "method": "chequeInFund",
@@ -1067,7 +1077,6 @@
     "class": "TreasuryChequeDomainService",
     "method": "chequeSpend",
     "params": [
-      "id",
       "command"
     ],
     "returns": "id"
