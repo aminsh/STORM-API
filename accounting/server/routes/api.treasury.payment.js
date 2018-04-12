@@ -155,6 +155,19 @@ router.route('/spend-cheques/:id')
         }
     }));
 
+router.route('/spend-cheques/:id/return')
+    .put(async((req, res) => {
+
+        try {
+            req.container.get("CommandBus").send("treasurySpentChequeReturn", [req.params.id, req.body]);
+            res.json({isValid: true});
+        }
+        catch (e) {
+            res.json({isValid: false, errors: e.errors});
+        }
+
+    }));
+
 router.route('/spend-cheques/:id/generate-journal')
     .post(async((req, res) => {
 

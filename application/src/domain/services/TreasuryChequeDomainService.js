@@ -118,7 +118,8 @@ export class TreasuryChequeDomainService {
         if (entity.isCompleted && entity.documentDetail.status === 'passed')
             errors.push('چک قبلا پاس شده است!');
 
-        if (paymentCheque && entity.treasuryType === 'receive' && entity.documentDetail.status === 'spend')
+        if (paymentCheque && entity.treasuryType === 'receive'
+                && entity.documentDetail.status === 'spend')
             errors.push('امکان تغییر وضعیت چک خرج شده وجود ندارد!');
 
         return errors;
@@ -136,7 +137,8 @@ export class TreasuryChequeDomainService {
         entity.documentDetail.canTransferToAnother = entity.documentDetail.canTransferToAnother || false;
 
         entity = this.treasuryRepository.create(entity);
-        this.eventBus.send('onChequeCreated', entity.id);
+
+        //this.eventBus.send('onChequeCreated', entity.id);
         return entity.id;
     }
 
@@ -293,9 +295,11 @@ export class TreasuryChequeDomainService {
         });
         entity.documentDetail.chequeStatusHistory = JSON.stringify(entity.documentDetail.chequeStatusHistory);
 
+        this.treasuryRepository.update(entity.id, entity);
+
         this.eventBus.send('onChequeStatusChanged', id);
 
-        return this.treasuryRepository.update(entity.id, entity);
+        return entity.id;
     }
 
     receiveChequePass(id, cmd) {
@@ -324,9 +328,11 @@ export class TreasuryChequeDomainService {
         });
         entity.documentDetail.chequeStatusHistory = JSON.stringify(entity.documentDetail.chequeStatusHistory);
 
+        this.treasuryRepository.update(entity.id, entity);
+
         this.eventBus.send('onChequeStatusChanged', id);
 
-        return this.treasuryRepository.update(entity.id, entity);
+        return entity.id;
     }
 
     paymentChequePass(id, cmd) {
@@ -354,9 +360,11 @@ export class TreasuryChequeDomainService {
         });
         entity.documentDetail.chequeStatusHistory = JSON.stringify(entity.documentDetail.chequeStatusHistory);
 
+        this.treasuryRepository.update(entity.id, entity);
+
         this.eventBus.send('onChequeStatusChanged', id);
 
-        return this.treasuryRepository.update(entity.id, entity);
+        return entity.id;
     }
 
     chequeInProcess(id, cmd) {
@@ -383,9 +391,11 @@ export class TreasuryChequeDomainService {
         });
         entity.documentDetail.chequeStatusHistory = JSON.stringify(entity.documentDetail.chequeStatusHistory);
 
+        this.treasuryRepository.update(entity.id, entity);
+
         this.eventBus.send('onChequeStatusChanged', id);
 
-        return this.treasuryRepository.update(entity.id, entity);
+        return entity.id;
     }
 
     chequeReturn(id, cmd) {
@@ -414,15 +424,50 @@ export class TreasuryChequeDomainService {
         });
         entity.documentDetail.chequeStatusHistory = JSON.stringify(entity.documentDetail.chequeStatusHistory);
 
+        this.treasuryRepository.update(entity.id, entity);
+
+        this.eventBus.send('onChequeStatusChanged', id);
+
+        return entity.id;
+    }
+
+    spentChequeReturn(id, cmd) {
+        let cheque = this.treasuryRepository.findById(id),
+            entity = this.mapToEntity(cheque),
+            errors = [];
+
+
+
+        if (entity.documentDetail.status === 'return')
+            errors.push('چک با وضعیت برگشتی ثبت شده است!');
+
+        if (errors.length > 0)
+            throw new ValidationException(errors);
+
+        entity.isCompleted = true;
+        entity.documentDetail.status = 'return';
+        entity.documentDetail.trackingNumber = cmd.identity || null;
+        entity.documentDetail.transferTo = cmd.transferTo || null;
+
+        entity.documentDetail.chequeStatusHistory = cheque.documentDetail.chequeStatusHistory || [];
+        entity.documentDetail.chequeStatusHistory.push({
+            createdAt: new Date(),
+            status: 'return',
+            order: entity.documentDetail.chequeStatusHistory.length === 0 ? 1 :
+                entity.documentDetail.chequeStatusHistory.asEnumerable().max(item => item.order) + 1,
+            journalId: null
+        });
+        entity.documentDetail.chequeStatusHistory = JSON.stringify(entity.documentDetail.chequeStatusHistory);
+
+        this.treasuryRepository.update(entity.id, entity);
         this.eventBus.send('onChequeStatusChanged', id);
 
         if (cheque.receiveId){
             let receiveCheque = this.treasuryRepository.findById(cheque.receiveId);
-            this.chequeReturn(receiveCheque);
+            this.spentChequeReturn(receiveCheque.id, cmd);
         }
 
-
-        return this.treasuryRepository.update(entity.id, entity);
+        return entity.id;
     }
 
     chequeRevocation(id, cmd) {
@@ -449,9 +494,11 @@ export class TreasuryChequeDomainService {
         });
         entity.documentDetail.chequeStatusHistory = JSON.stringify(entity.documentDetail.chequeStatusHistory);
 
+        this.treasuryRepository.update(entity.id, entity);
+
         this.eventBus.send('onChequeStatusChanged', id);
 
-        return this.treasuryRepository.update(entity.id, entity);
+        return entity.id;
     }
 
     chequeMissing(id, cmd) {
@@ -478,9 +525,11 @@ export class TreasuryChequeDomainService {
         });
         entity.documentDetail.chequeStatusHistory = JSON.stringify(entity.documentDetail.chequeStatusHistory);
 
+        this.treasuryRepository.update(entity.id, entity);
+
         this.eventBus.send('onChequeStatusChanged', id);
 
-        return this.treasuryRepository.update(entity.id, entity);
+        return entity.id;
     }
 
     chequeSpend(cmd) {
@@ -547,9 +596,9 @@ export class TreasuryChequeDomainService {
 
         let paymentId = this.createPayment(entity);
 
+        this.eventBus.send('onChequeStatusChanged', paymentId);
         return paymentId;
 
-        //this.eventBus.send('onChequeStatusChanged', [cmd.receiveId, paymentId]);
     }
 
     setJournalForSpend(receiveId, paymentId, journalId) {
