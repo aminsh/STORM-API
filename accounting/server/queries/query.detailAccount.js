@@ -153,6 +153,7 @@ class DetailAccountQuery extends BaseQuery {
 
             withQuery = knex.with('journals-row', (qb) => {
                 qb.select ('detailAccounts.title',
+                    knex.raw(`"detailAccounts".title || ' ${translate('Code')} ' || COALESCE("detailAccounts".code,'--') as display`),
                     'journalLines.article',
                     knex.raw(`"journalLines".debtor as debtor`),
                     knex.raw(`"journalLines".creditor as creditor`),
@@ -179,6 +180,7 @@ class DetailAccountQuery extends BaseQuery {
                     .from('journals-row as base')
                     .groupBy(
                         'title',
+                        'display',
                         'article',
                         'debtor',
                         'creditor',
@@ -198,6 +200,7 @@ class DetailAccountQuery extends BaseQuery {
                 debtor: entity.debtor,
                 creditor: entity.creditor,
                 date: entity.date,
+                display: entity.display,
                 number: entity.number,
                 remainder: entity.remainder,
                 row_seq: entity.row_seq

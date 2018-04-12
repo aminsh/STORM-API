@@ -22,7 +22,8 @@ const fs = require('fs'),
     CustomerReceipts = require('../reportQueries/customer.receipts'),
     InvoiceTurnover = require('../queries/query.invoice'),
     SaleInvoice = require('../reportQueries/invoice.sale'),
-    ChequeReportQueries = require('../reportQueries/treasury.Cheque');
+    ChequeReportQueries = require('../reportQueries/treasury.Cheque'),
+    DetailAccountQuery = require('../queries/query.detailAccount');
 
 router.route('/')
     .post((req, res) => {
@@ -417,6 +418,26 @@ router.route('/payment-cheques-with-status')
             'create',
             req.query),
             result = await(ins.getChequesWithStatus('payment', req.query));
+        res.json(result);
+    }));
+
+router.route('/bank-turnover')
+    .get(async((req, res) => {
+        let ins = new DetailAccountQuery(req.branchId,
+            req.fiscalPeriodId,
+            'create',
+            req.query),
+            result = await(ins.getBankAndFundTurnover(req.query.bankId, 'bank', req.fiscalPeriodId, req.query));
+        res.json(result);
+    }));
+
+router.route('/fund-turnover')
+    .get(async((req, res) => {
+        let ins = new DetailAccountQuery(req.branchId,
+            req.fiscalPeriodId,
+            'create',
+            req.query),
+            result = await(ins.getBankAndFundTurnover(req.query.fundId, 'fund', req.fiscalPeriodId, req.query));
         res.json(result);
     }));
 
