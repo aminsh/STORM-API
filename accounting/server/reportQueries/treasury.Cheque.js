@@ -5,6 +5,7 @@ const BaseQuery = require('../queries/query.base'),
     async = require('asyncawait/async'),
     await = require('asyncawait/await'),
     enums = instanceOf('Enums'),
+    translate = require('../services/translateService'),
     kendoQueryResolve = require('../services/kendoQueryResolve');
 
 
@@ -33,6 +34,8 @@ class ChequeReportQueries extends BaseQuery {
                     'treasury.destinationDetailAccountId',
                     knex.raw(`"sourceDetailAccounts".title as "payerTitle"`),
                     knex.raw(`"destinationDetailAccounts".title as "receiverTitle"`),
+                    knex.raw(`"sourceDetailAccounts".title || ' ${translate('Code')} ' || COALESCE("sourceDetailAccounts".code,'--') as "payerDisplay"`),
+                    knex.raw(`"destinationDetailAccounts".title || ' ${translate('Code')} ' || COALESCE("destinationDetailAccounts".code,'--') as "receiverDisplay"`),
                     'treasuryDocumentDetails.number',
                     'treasuryDocumentDetails.dueDate',
                     'treasuryDocumentDetails.bank',
@@ -42,10 +45,10 @@ class ChequeReportQueries extends BaseQuery {
                 )
                     .from('treasury')
                     .leftJoin('treasuryDocumentDetails', 'treasury.documentDetailId', 'treasuryDocumentDetails.id')
-                    .leftJoin(knex.raw(`(select "detailAccounts".title, "detailAccounts".id
+                    .leftJoin(knex.raw(`(select "detailAccounts".title, "detailAccounts".id, "detailAccounts".code 
                                      from "detailAccounts")as "sourceDetailAccounts"`),
                         'treasury.sourceDetailAccountId', '=', 'sourceDetailAccounts.id')
-                    .leftJoin(knex.raw(`(select "detailAccounts".title, "detailAccounts".id
+                    .leftJoin(knex.raw(`(select "detailAccounts".title, "detailAccounts".id, "detailAccounts".code
                                      from "detailAccounts")as "destinationDetailAccounts"`),
                         'treasury.destinationDetailAccountId', '=', 'destinationDetailAccounts.id')
                     .where('treasury.branchId', branchId)
@@ -62,8 +65,10 @@ class ChequeReportQueries extends BaseQuery {
             amount: item.amount,
             payerId: item.sourceDetailAccountId,
             payerTitle: item.payerTitle,
+            payerDisplay: item.payerDisplay,
             receiverId: item.destinationDetailAccountId,
             receiverTitle: item.receiverTitle,
+            receiverDisplay: item.receiverDisplay,
             number: item.number,
             dueDate: item.dueDate,
             bank: item.bank,
@@ -91,6 +96,8 @@ class ChequeReportQueries extends BaseQuery {
                     'treasury.destinationDetailAccountId',
                     knex.raw(`"sourceDetailAccounts".title as "payerTitle"`),
                     knex.raw(`"destinationDetailAccounts".title as "receiverTitle"`),
+                    knex.raw(`"sourceDetailAccounts".title || ' ${translate('Code')} ' || COALESCE("sourceDetailAccounts".code,'--') as "payerDisplay"`),
+                    knex.raw(`"destinationDetailAccounts".title || ' ${translate('Code')} ' || COALESCE("destinationDetailAccounts".code,'--') as "receiverDisplay"`),
                     'treasuryDocumentDetails.number',
                     'treasuryDocumentDetails.dueDate',
                     'treasuryDocumentDetails.bank',
@@ -100,10 +107,10 @@ class ChequeReportQueries extends BaseQuery {
                 )
                     .from('treasury')
                     .leftJoin('treasuryDocumentDetails', 'treasury.documentDetailId', 'treasuryDocumentDetails.id')
-                    .leftJoin(knex.raw(`(select "detailAccounts".title, "detailAccounts".id
+                    .leftJoin(knex.raw(`(select "detailAccounts".title, "detailAccounts".id, "detailAccounts".code
                                      from "detailAccounts")as "sourceDetailAccounts"`),
                         'treasury.sourceDetailAccountId', '=', 'sourceDetailAccounts.id')
-                    .leftJoin(knex.raw(`(select "detailAccounts".title, "detailAccounts".id
+                    .leftJoin(knex.raw(`(select "detailAccounts".title, "detailAccounts".id, "detailAccounts".code
                                      from "detailAccounts")as "destinationDetailAccounts"`),
                         'treasury.destinationDetailAccountId', '=', 'destinationDetailAccounts.id')
                     .where('treasury.branchId', branchId)
@@ -120,8 +127,10 @@ class ChequeReportQueries extends BaseQuery {
             amount: item.amount,
             payerId: item.sourceDetailAccountId,
             payerTitle: item.payerTitle,
+            payerDisplay: item.payerDisplay,
             receiverId: item.destinationDetailAccountId,
             receiverTitle: item.receiverTitle,
+            receiverDisplay: item.receiverDisplay,
             number: item.number,
             dueDate: item.dueDate,
             bank: item.bank,
@@ -148,6 +157,8 @@ class ChequeReportQueries extends BaseQuery {
                     'treasury.destinationDetailAccountId',
                     knex.raw(`"sourceDetailAccounts".title as "payerTitle"`),
                     knex.raw(`"destinationDetailAccounts".title as "receiverTitle"`),
+                    knex.raw(`"sourceDetailAccounts".title || ' ${translate('Code')} ' || COALESCE("sourceDetailAccounts".code,'--') as "payerDisplay"`),
+                    knex.raw(`"destinationDetailAccounts".title || ' ${translate('Code')} ' || COALESCE("destinationDetailAccounts".code,'--') as "receiverDisplay"`),
                     'treasuryDocumentDetails.number',
                     'treasuryDocumentDetails.dueDate',
                     'treasuryDocumentDetails.bank',
@@ -157,10 +168,10 @@ class ChequeReportQueries extends BaseQuery {
                 )
                     .from('treasury')
                     .leftJoin('treasuryDocumentDetails', 'treasury.documentDetailId', 'treasuryDocumentDetails.id')
-                    .leftJoin(knex.raw(`(select "detailAccounts".title, "detailAccounts".id
+                    .leftJoin(knex.raw(`(select "detailAccounts".title, "detailAccounts".id, "detailAccounts".code
                                      from "detailAccounts")as "sourceDetailAccounts"`),
                         'treasury.sourceDetailAccountId', '=', 'sourceDetailAccounts.id')
-                    .leftJoin(knex.raw(`(select "detailAccounts".title, "detailAccounts".id
+                    .leftJoin(knex.raw(`(select "detailAccounts".title, "detailAccounts".id, "detailAccounts".code
                                      from "detailAccounts")as "destinationDetailAccounts"`),
                         'treasury.destinationDetailAccountId', '=', 'destinationDetailAccounts.id')
                     .where('treasury.branchId', branchId)
@@ -176,8 +187,10 @@ class ChequeReportQueries extends BaseQuery {
             amount: item.amount,
             payerId: item.sourceDetailAccountId,
             payerTitle: item.payerTitle,
+            payerDisplay: item.payerDisplay,
             receiverId: item.destinationDetailAccountId,
             receiverTitle: item.receiverTitle,
+            receiverDisplay: item.receiverDisplay,
             number: item.number,
             dueDate: item.dueDate,
             bank: item.bank,
