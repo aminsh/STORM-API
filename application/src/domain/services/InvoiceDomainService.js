@@ -1,4 +1,5 @@
 import {inject, injectable, postConstruct} from "inversify";
+import {TreasuryPurposeDomainService} from "./TreasuryPurposeDomainService";
 
 const PersianDate = Utility.PersianDate,
     Guid = Utility.Guid;
@@ -29,6 +30,10 @@ export class InvoiceDomainService {
 
     /** @type {InvoiceRepository}*/
     @inject("InvoiceRepository") invoiceRepository = undefined;
+
+    /** @type {TreasuryPurposeDomainService}*/
+    @inject("TreasuryPurposeDomainService") treasuryPurposeDomainService = undefined;
+
 
     /** @type {IState}*/
     @inject("State") state = undefined;
@@ -274,6 +279,7 @@ export class InvoiceDomainService {
             throw new ValidationException(['فاکتور جاری قابل حذف نمیباشد']);
 
         this.invoiceRepository.remove(id);
+        this.treasuryPurposeDomainService.removeByReferenceId(id);
     }
 
     setJournal(id, journalId) {
