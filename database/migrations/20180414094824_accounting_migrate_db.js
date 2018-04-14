@@ -17,7 +17,7 @@ exports.up = function(knex, Promise) {
                 .foreign('treasuryId')
                 .references('id')
                 .inTable('treasury')
-                .onDelete('RESTRICT');
+                .onDelete('CASCADE');
             table.string('reference');
             table.string('referenceId').notNull();
         });
