@@ -4,11 +4,11 @@ const BaseQuery = require('./query.base'),
     async = require('asyncawait/async'),
     await = require('asyncawait/await'),
     kendoQueryResolve = require('../services/kendoQueryResolve'),
-    TreasuryPayment = require('query.treasury.payment'),
-    TreasuryReceive = require('query.treasury.receive'),
-    Invoice = require('query.invoice');
+    TreasuryPayment = require('./query.treasury.payment'),
+    TreasuryReceive = require('./query.treasury.receive'),
+    Invoice = require('./query.invoice');
 
-class TreasuryPayment extends BaseQuery {
+class TreasuryPurposes extends BaseQuery {
     constructor(branchId) {
         super(branchId);
     }
@@ -55,4 +55,4 @@ class TreasuryPayment extends BaseQuery {
 
 }
 
-module.exports = TreasuryPayment;
+module.exports = TreasuryPurposes;
