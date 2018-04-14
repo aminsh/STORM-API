@@ -18,9 +18,6 @@ export class TreasuryChequeDomainService {
     @inject("JournalDomainService") journalDomainService = undefined;
 
     mapToEntity(cmd) {
-
-        let treasury = cmd.id ? this.treasuryRepository.findById(cmd.id) : null;
-
         return {
             id: cmd.id,
             transferDate: cmd.transferDate || PersianDate.current(),
@@ -166,6 +163,14 @@ export class TreasuryChequeDomainService {
             this.eventBus.send('onChequeCreated', entity.id);
 
         return entity.id;
+    }
+
+    create(cmd){
+        if (cmd.treasuryType === 'receive')
+            return this.createReceive(cmd);
+
+        if (cmd.treasuryType === 'payment')
+            return this.createPayment(cmd);
     }
 
     update(id, cmd) {

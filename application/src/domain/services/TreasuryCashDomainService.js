@@ -140,6 +140,14 @@ export class TreasuryCashDomainService {
         return entity.id;
     }
 
+    create(cmd){
+        if (cmd.treasuryType === 'receive')
+            return this.createReceive(cmd);
+
+        if (cmd.treasuryType === 'payment')
+            return this.createPayment(cmd);
+    }
+
     update(id, cmd) {
         let entity = this.mapToEntity(cmd),
             persistedTreasury = this.treasuryRepository.findById(id),
