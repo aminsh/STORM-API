@@ -17,6 +17,9 @@ export class TreasuryChequeDomainService {
     /** @type {JournalDomainService}*/
     @inject("JournalDomainService") journalDomainService = undefined;
 
+    /** @type {TreasuryPurposeDomainService}*/
+    @inject("TreasuryPurposeDomainService") treasuryPurposeDomainService = undefined;
+
     mapToEntity(cmd) {
         return {
             id: cmd.id,
@@ -247,6 +250,7 @@ export class TreasuryChequeDomainService {
             throw new ValidationException(errors);
 
         this.treasuryRepository.remove(id);
+        this.treasuryPurposeDomainService.removeByTreasuryId(id);
 
         /*if (journalIds)
             journalIds.forEach(item => journalService.remove(item));*/

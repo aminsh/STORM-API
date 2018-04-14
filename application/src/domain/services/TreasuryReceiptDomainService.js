@@ -20,6 +20,9 @@ export class TreasuryReceiptDomainService {
     /** @type {TreasuryJournalGenerationDomainService}*/
     @inject("TreasuryJournalGenerationDomainService") treasuryJournalGenerationDomainService = undefined;
 
+    /** @type {TreasuryPurposeDomainService}*/
+    @inject("TreasuryPurposeDomainService") treasuryPurposeDomainService = undefined;
+
     mapToEntity(cmd) {
 
         let treasury = cmd.id ? this.treasuryRepository.findById(cmd.id) : null;
@@ -202,6 +205,7 @@ export class TreasuryReceiptDomainService {
             throw new ValidationException(errors);
 
         this.treasuryRepository.remove(id);
+        this.treasuryPurposeDomainService.removeByTreasuryId(id);
 
         /*if (persistedTreasury.journalId)
             this.journalDomainService.remove(persistedTreasury.journalId);*/
