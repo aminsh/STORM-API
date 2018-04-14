@@ -92,10 +92,13 @@ export class TreasuryPurposeDomainService {
         return entity.id;
     }
 
-    remove(id) {
-        return this.treasuryPurposeRepository.remove(id);
+    removeByReferenceId(invoiceId) {
+        return this.treasuryPurposeRepository.removeByReferenceId(invoiceId);
     }
 
+    removeByTreasuryId(treasuryId) {
+        return this.treasuryPurposeRepository.removeByTreasuryId(treasuryId);
+    }
 
     setJournal(id, journalId) {
     }
