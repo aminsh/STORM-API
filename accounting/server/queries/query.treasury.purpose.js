@@ -16,6 +16,21 @@ class TreasuryPurposes extends BaseQuery {
     getAll(fiscalPeriodId, parameters) {
     }
 
+    getTreasuryAmountById(id) {
+        let knex = this.knex,
+            branchId = this.branchId;
+
+        return await(knex.select(
+            'treasury.id',
+            'treasury.amount'
+            )
+                .from('treasury')
+                .where('treasury.branchId', branchId)
+                .where('treasury.id', id)
+                .first()
+        )
+    }
+
     getByInvoiceId(id, treasuryType) {
 
         let knex = this.knex,
@@ -51,6 +66,24 @@ class TreasuryPurposes extends BaseQuery {
 
         return invoice;
 
+    }
+
+    getTreasuriesTotalAmount(invoiceId) {
+        let knex = this.knex,
+            branchId = this.branchId,
+            treasuriesAmount = [],
+
+            treasuryIds = await(knex.select(
+                'treasuryPurpose.treasuryId')
+                .from('treasuryPurpose')
+                .where('treasuryPurpose.branchId', branchId)
+                .where('treasuryPurpose.referenceId', invoiceId));
+
+        treasuryIds.forEach(item => {
+            treasuriesAmount.push(this.getTreasuryAmountById(item));
+        });
+
+        return treasuriesAmount.length > 0 ? treasuriesAmount.asEnumerable().sum(item => item.amount) : 0 ;
     }
 
 }
