@@ -72,10 +72,23 @@ class TreasuryPurposeRepository extends BaseRepository {
         }
     }
 
-    remove(id) {
+    removeByReferenceId(id) {
         let trx = this.transaction;
         try {
-            return toResult(trx('treasuryPurpose').where('id', id).del());
+            return toResult(trx('treasuryPurpose').where('referenceId', id).del());
+
+            trx.commit();
+        }
+        catch (e) {
+            trx.rollback(e);
+            throw new Error(e);
+        }
+    }
+
+    removeByTreasuryId(id) {
+        let trx = this.transaction;
+        try {
+            return toResult(trx('treasuryPurpose').where('treasuryId', id).del());
 
             trx.commit();
         }
