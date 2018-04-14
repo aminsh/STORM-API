@@ -1,3 +1,5 @@
+var enums = instanceOf('Enums');
+
 function treasuryCashAssembler(entity) {
     var viewModel = {
         id: entity.id,
@@ -9,6 +11,9 @@ function treasuryCashAssembler(entity) {
         description: entity.description,
         amount: entity.amount,
         documentType: entity.documentType,
+        documentTypeDisplay: entity.documentType
+            ? enums.TreasuryPaymentDocumentTypes().getDisplay(entity.documentType)
+            : '',
         imageUrl: entity.imageUrl,
         journal:  entity.journals ? entity.journals[0] : null,
         documentDetailId: entity.documentDetailId || null,
