@@ -1403,5 +1403,24 @@
       "id"
     ],
     "returns": ""
+  },
+
+  {
+    "name": "receiveTreasuriesPurposeCreate",
+    "class": "TreasuryPurposeService",
+    "method": "create",
+    "params": [
+      "commands"
+    ],
+    "returns": "ids"
+  },
+  {
+    "name": "paymentTreasuriesPurposeCreate",
+    "class": "TreasuryPurposeService",
+    "method": "create",
+    "params": [
+      "commands"
+    ],
+    "returns": "ids"
   }
 ]
