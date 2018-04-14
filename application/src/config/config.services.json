@@ -1407,7 +1407,7 @@
 
   {
     "name": "receiveTreasuriesPurposeCreate",
-    "class": "TreasuryPurposeService",
+    "class": "TreasuryPurposeDomainService",
     "method": "create",
     "params": [
       "commands"
@@ -1416,7 +1416,7 @@
   },
   {
     "name": "paymentTreasuriesPurposeCreate",
-    "class": "TreasuryPurposeService",
+    "class": "TreasuryPurposeDomainService",
     "method": "create",
     "params": [
       "commands"

@@ -35,3 +35,4 @@ export * from "./PayableChequeCategoryDomainService";
 export * from "./PayableChequeDomainService";
 export * from "./TreasuryJournalGenerationDomainService";
 export * from "./TreasuryTransferDomainService";
+export * from "./TreasuryPurposeDomainService";

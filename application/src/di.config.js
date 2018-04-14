@@ -22,7 +22,8 @@ import {
     TreasuryRepository,
     BanksNameRepository,
     TreasurySettingRepository,
-    ChequeCategoryRepository
+    ChequeCategoryRepository,
+    TreasuryPurposeRepository
 } from "./domain/data";
 import {
     BankDomainService,
@@ -61,7 +62,8 @@ import {
     TreasuryReceiptDomainService,
     TreasuryDemandNoteDomainService,
     TreasuryJournalGenerationDomainService,
-    TreasuryTransferDomainService
+    TreasuryTransferDomainService,
+    TreasuryPurposeDomainService
 } from "./domain/services";
 
 import {InvoiceEventListener} from "./domain/eventHandlers/InvoiceEventListener";
@@ -104,6 +106,7 @@ container.bind("TreasuryRepository").to(TreasuryRepository).inRequestScope();
 container.bind("BanksNameRepository").to(BanksNameRepository).inRequestScope();
 container.bind("TreasurySettingRepository").to(TreasurySettingRepository).inRequestScope();
 container.bind("ChequeCategoryRepository").to(ChequeCategoryRepository).inRequestScope();
+container.bind("TreasuryPurposeRepository").to(TreasuryPurposeRepository).inRequestScope();
 
 container.bind("BankDomainService").to(BankDomainService).inRequestScope();
 container.bind("DetailAccountDomainService").to(DetailAccountDomainService).inRequestScope();
@@ -141,7 +144,8 @@ container.bind("BanksNameDomainService").to(BanksNameDomainService).inRequestSco
 container.bind("PayableChequeCategoryDomainService").to(PayableChequeCategoryDomainService).inRequestScope();
 container.bind("PayableChequeDomainService").to(PayableChequeDomainService).inRequestScope();
 container.bind("TreasuryJournalGenerationDomainService").to(TreasuryJournalGenerationDomainService).inRequestScope();
-container.bind("TreasuryTransferDomainService").to(TreasuryTransferDomainService);
+container.bind("TreasuryTransferDomainService").to(TreasuryTransferDomainService).inRequestScope();
+container.bind("TreasuryPurposeDomainService").to(TreasuryPurposeDomainService).inRequestScope();
 
 container.bind("InvoiceEventListener").to(InvoiceEventListener).inRequestScope();
 container.bind("PurchaseEventListener").to(PurchaseEventListener);
