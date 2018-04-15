@@ -22,7 +22,7 @@ class InvoiceQuery extends BaseQuery {
         let knex = this.knex,
             branchId = this.branchId,
             settings = new SettingsQuery(this.branchId).get(),
-            treasuryPurpose = new TreasuryPurposeQuery(branchId),
+            treasuryPurpose = new TreasuryPurposeQuery(this.branchId),
             treasuriesTotalAmount = treasuryPurpose.getTreasuriesTotalAmount(id),
 
             invoice = await(knex

@@ -325,7 +325,7 @@ router.route('/purposes/invoice')
 router.route('/purposes/invoice/:id')
     .get(async((req, res) => {
         let treasuryPurposesQuery = new TreasuryPurposesQuery(req.branchId),
-            result = await(treasuryPurposesQuery.getByInvoiceId(req.params.id,'receive'));
+            result = await(treasuryPurposesQuery.getByInvoiceId(req.params.id,req.query));
         res.json(result);
     }));
 

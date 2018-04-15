@@ -4,9 +4,7 @@ const BaseQuery = require('./query.base'),
     async = require('asyncawait/async'),
     await = require('asyncawait/await'),
     kendoQueryResolve = require('../services/kendoQueryResolve'),
-    TreasuryPayment = require('./query.treasury.payment'),
-    TreasuryReceive = require('./query.treasury.receive'),
-    Invoice = require('./query.invoice');
+    view = require('../viewModel.assemblers/view.treasury');
 
 class TreasuryPurposes extends BaseQuery {
     constructor(branchId) {
@@ -31,41 +29,44 @@ class TreasuryPurposes extends BaseQuery {
         )
     }
 
-    getByInvoiceId(id, treasuryType) {
+    getByInvoiceId(id, parameters) {
 
         let knex = this.knex,
             branchId = this.branchId,
-            invoiceQuery = new Invoice(branchId),
-            treasuries = [],
 
             treasuryIds = await(knex.select(
                 'treasuryPurpose.treasuryId')
                 .from('treasuryPurpose')
                 .where('treasuryPurpose.branchId', branchId)
-                .where('treasuryPurpose.referenceId', id));
+                .where('treasuryPurpose.referenceId', id)),
 
-        if (treasuryType === 'receive') {
-            let treasuryReceive = new TreasuryReceive(branchId);
 
-            treasuryIds.forEach(item => {
-                treasuries.push(treasuryReceive.getById(item))
+            treasuries = knex.from(function () {
+                this.select(
+                    'treasury.id',
+                    'treasury.imageUrl',
+                    'treasury.documentType',
+                    'treasury.amount',
+                    'treasury.transferDate',
+                    'treasury.sourceDetailAccountId',
+                    knex.raw(`treasury."sourceDetailAccountId" as "payerId"`),
+                    knex.raw(`treasury."destinationDetailAccountId" as "receiverId"`),
+                    knex.raw(`source.title as "sourceTitle"`),
+                    'treasury.destinationDetailAccountId',
+                    knex.raw(`destination.title as "destinationTitle"`),
+                    'treasuryDocumentDetails.status',
+                    'treasuryDocumentDetails.number'
+                )
+                    .from('treasury')
+                    .leftJoin('detailAccounts as source', 'source.id', 'treasury.sourceDetailAccountId')
+                    .leftJoin('detailAccounts as destination', 'destination.id', 'treasury.destinationDetailAccountId')
+                    .leftJoin('treasuryDocumentDetails', 'treasuryDocumentDetails.id', 'treasury.documentDetailId')
+                    .where('treasury.branchId', branchId)
+                    .whereIn('treasury.id', treasuryIds)
+                    .as('base')
             });
-        }
 
-        if (treasuryType === 'payment') {
-            let treasuryPayment = new TreasuryPayment(branchId);
-
-            treasuryIds.forEach(item => {
-                treasuries.push(treasuryPayment.getById(item))
-            });
-        }
-
-        let invoice = invoiceQuery.getById(id);
-
-        invoice.treasuries = treasuries || null;
-
-        return invoice;
-
+        return kendoQueryResolve(treasuries, parameters, view)
     }
 
     getTreasuriesTotalAmount(invoiceId) {
@@ -83,7 +84,7 @@ class TreasuryPurposes extends BaseQuery {
             treasuriesAmount.push(this.getTreasuryAmountById(item));
         });
 
-        return treasuriesAmount.length > 0 ? treasuriesAmount.asEnumerable().sum(item => item.amount) : 0 ;
+        return treasuriesAmount.length > 0 ? treasuriesAmount.asEnumerable().sum(item => item.amount) : 0;
     }
 
 }
