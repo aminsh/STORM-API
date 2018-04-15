@@ -5,11 +5,7 @@ import {inject, injectable} from "inversify";
 import {BaseRepository} from "./repository.base";
 
 @injectable()
-class TreasuryPurposeRepository extends BaseRepository {
-    constructor(branchId) {
-        super(branchId);
-        this.create = async(this.create);
-    }
+export class TreasuryPurposeRepository extends BaseRepository {
 
     /** @type {InvoiceRepository}*/
     @inject("InvoiceRepository") invoiceRepository = undefined;
@@ -99,5 +95,3 @@ class TreasuryPurposeRepository extends BaseRepository {
     }
 
 }
-
-module.exports = TreasuryPurposeRepository;

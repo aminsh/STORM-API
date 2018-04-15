@@ -20,8 +20,8 @@ export class TreasuryCashDomainService {
     /** @type {TreasuryJournalGenerationDomainService}*/
     @inject("TreasuryJournalGenerationDomainService") treasuryJournalGenerationDomainService = undefined;
 
-    /** @type {TreasuryPurposeDomainService}*/
-    @inject("TreasuryPurposeDomainService") treasuryPurposeDomainService = undefined;
+    /** @type {TreasuryPurposeRepository}*/
+    @inject("TreasuryPurposeRepository") treasuryPurposeRepository = undefined;
 
     /** @type {EventBus}*/
     @inject("EventBus") eventBus = undefined;
@@ -191,7 +191,7 @@ export class TreasuryCashDomainService {
             throw new ValidationException(errors);
 
         this.treasuryRepository.remove(id);
-        this.treasuryPurposeDomainService.removeByTreasuryId(id);
+        this.treasuryPurposeRepository.removeByTreasuryId(id);
 
         /*if (persistedTreasury.journalId)
             this.journalDomainService.remove(persistedTreasury.journalId);*/

@@ -20,8 +20,8 @@ export class TreasuryReceiptDomainService {
     /** @type {TreasuryJournalGenerationDomainService}*/
     @inject("TreasuryJournalGenerationDomainService") treasuryJournalGenerationDomainService = undefined;
 
-    /** @type {TreasuryPurposeDomainService}*/
-    @inject("TreasuryPurposeDomainService") treasuryPurposeDomainService = undefined;
+    /** @type {TreasuryPurposeRepository}*/
+    @inject("TreasuryPurposeRepository") treasuryPurposeRepository = undefined;
 
     mapToEntity(cmd) {
 
@@ -205,7 +205,7 @@ export class TreasuryReceiptDomainService {
             throw new ValidationException(errors);
 
         this.treasuryRepository.remove(id);
-        this.treasuryPurposeDomainService.removeByTreasuryId(id);
+        this.treasuryPurposeRepository.removeByTreasuryId(id);
 
         /*if (persistedTreasury.journalId)
             this.journalDomainService.remove(persistedTreasury.journalId);*/

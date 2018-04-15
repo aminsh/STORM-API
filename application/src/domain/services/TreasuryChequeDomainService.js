@@ -1,4 +1,5 @@
 import {inject, injectable} from "inversify";
+import {TreasuryPurposeRepository} from "../data/repository.treasury.purpose";
 
 const Guid = Utility.Guid,
     PersianDate = Utility.PersianDate;
@@ -17,8 +18,8 @@ export class TreasuryChequeDomainService {
     /** @type {JournalDomainService}*/
     @inject("JournalDomainService") journalDomainService = undefined;
 
-    /** @type {TreasuryPurposeDomainService}*/
-    @inject("TreasuryPurposeDomainService") treasuryPurposeDomainService = undefined;
+    /** @type {TreasuryPurposeRepository}*/
+    @inject("TreasuryPurposeRepository") treasuryPurposeRepository = undefined;
 
     mapToEntity(cmd) {
         return {
@@ -250,7 +251,7 @@ export class TreasuryChequeDomainService {
             throw new ValidationException(errors);
 
         this.treasuryRepository.remove(id);
-        this.treasuryPurposeDomainService.removeByTreasuryId(id);
+        this.treasuryPurposeRepository.removeByTreasuryId(id);
 
         /*if (journalIds)
             journalIds.forEach(item => journalService.remove(item));*/

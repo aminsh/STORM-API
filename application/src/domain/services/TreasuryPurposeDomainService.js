@@ -1,12 +1,5 @@
 import {inject, injectable} from "inversify";
-import {TreasuryRepository} from "../data/repository.treasury";
-import {DetailAccountRepository} from "../data/repository.detailAccount";
-import {TreasuryCashDomainService} from "./TreasuryCashDomainService";
-import {TreasuryChequeDomainService} from "./TreasuryChequeDomainService";
-import {TreasuryReceiptDomainService} from "./TreasuryReceiptDomainService";
 
-const Guid = Utility.Guid,
-    PersianDate = Utility.PersianDate;
 
 @injectable()
 export class TreasuryPurposeDomainService {
@@ -20,9 +13,6 @@ export class TreasuryPurposeDomainService {
     /** @type {TreasuryRepository}*/
     @inject("TreasuryRepository") treasuryRepository = undefined;
 
-    /** @type {JournalDomainService}*/
-    @inject("JournalDomainService") journalDomainService = undefined;
-
     /** @type {TreasuryCashDomainService}*/
     @inject("TreasuryCashDomainService") treasuryCashDomainService = undefined;
 
@@ -32,14 +22,6 @@ export class TreasuryPurposeDomainService {
     /** @type {TreasuryReceiptDomainService}*/
     @inject("TreasuryReceiptDomainService") treasuryReceiptDomainService = undefined;
 
-
-    /** @type {TreasuryJournalGenerationDomainService}*/
-    @inject("TreasuryJournalGenerationDomainService") treasuryJournalGenerationDomainService = undefined;
-
-
-
-    /** @type {EventBus}*/
-    @inject("EventBus") eventBus = undefined;
 
     mapToEntity(cmd) {
         return {
@@ -90,16 +72,5 @@ export class TreasuryPurposeDomainService {
         entity = this.treasuryPurposeRepository.create(entity);
 
         return entity.id;
-    }
-
-    removeByReferenceId(invoiceId) {
-        return this.treasuryPurposeRepository.removeByReferenceId(invoiceId);
-    }
-
-    removeByTreasuryId(treasuryId) {
-        return this.treasuryPurposeRepository.removeByTreasuryId(treasuryId);
-    }
-
-    setJournal(id, journalId) {
     }
 }

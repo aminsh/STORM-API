@@ -31,8 +31,8 @@ export class InvoiceDomainService {
     /** @type {InvoiceRepository}*/
     @inject("InvoiceRepository") invoiceRepository = undefined;
 
-    /** @type {TreasuryPurposeDomainService}*/
-    @inject("TreasuryPurposeDomainService") treasuryPurposeDomainService = undefined;
+    /** @type {TreasuryPurposeRepository}*/
+    @inject("TreasuryPurposeRepository") treasuryPurposeRepository = undefined;
 
 
     /** @type {IState}*/
@@ -279,7 +279,7 @@ export class InvoiceDomainService {
             throw new ValidationException(['فاکتور جاری قابل حذف نمیباشد']);
 
         this.invoiceRepository.remove(id);
-        this.treasuryPurposeDomainService.removeByReferenceId(id);
+        this.treasuryPurposeRepository.removeByReferenceId(id);
     }
 
     setJournal(id, journalId) {
