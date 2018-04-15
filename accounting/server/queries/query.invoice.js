@@ -85,8 +85,6 @@ class InvoiceQuery extends BaseQuery {
             baseQuery = `select coalesce(sum(value),0) from invoices as i left join json_to_recordset(i.charges) as x(key text, value int, "vatIncluded" boolean) on true where i.id = "base".id`,
             sumChargesQuery = `(${baseQuery}) + ((${baseQuery} and "vatIncluded" = true) *  
             coalesce((select (100 * line.vat) / ((line.quantity * line."unitPrice") - line.discount) from "invoiceLines" as line where "invoiceId" = "base".id and vat <> 0 limit 1), 0) /100)`,
-            treasuryPurpose = new TreasuryPurposeQuery(branchId),
-            treasuriesTotalAmount = treasuryPurpose.getTreasuriesTotalAmount(id),
 
             query = knex.select().table(function () {
                 this.select(
