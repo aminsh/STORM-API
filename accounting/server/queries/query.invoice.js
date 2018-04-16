@@ -154,17 +154,15 @@ class InvoiceQuery extends BaseQuery {
         return knex.select(
             knex.raw('"count"(*) as "total"'),
             knex.raw(`"sum"("totalPrice") - sum(DISTINCT coalesce(discount,0)) as "sumTotalPrice"`),
-            knex.raw(`(select coalesce(sum(treasury.amount),0) as "treasuryAmount"
-                        from treasury
-                        inner join "treasuryPurpose" as tp on treasury.id = tp."treasuryId"
-                        where "base"."id" = tp."referenceId") as "sumPaidAmount"`),
-            knex.raw(`"sum"("totalPrice"- (select coalesce(sum(treasury.amount),0) as "treasuryAmount"
-                        from treasury
-                        inner join "treasuryPurpose" as tp on treasury.id = tp."treasuryId"
-                        where "base"."id" = tp."referenceId")) - sum(DISTINCT coalesce(discount,0)) as "sumRemainder"`)
+            knex.raw('"sum"("paidAmount") as "sumPaidAmount"'),
+            knex.raw(`"sum"("totalPrice"-"paidAmount")  - sum(DISTINCT coalesce(discount,0)) as "sumRemainder"`)
         ).from(function () {
             this.select('invoices.*',
-                knex.raw('(select coalesce("sum"("amount"),0) from "payments" where "invoiceId" = "invoices"."id" limit 1) as "paidAmount"'),
+                knex.raw(`(select coalesce(sum(treasury.amount),0) as "treasuryAmount"
+                        from treasury
+                        inner join "treasuryPurpose" on treasury.id = "treasuryPurpose"."treasuryId"
+                        where "invoices"."id" = "treasuryPurpose"."referenceId") as "paidAmount"`),
+
                 knex.raw('"detailAccounts"."title" as "detailAccountDisplay"'),
                 knex.raw(`("invoiceLines"."unitPrice" * "invoiceLines".quantity - "invoiceLines".discount + "invoiceLines".vat) as "totalPrice"`))
                 .from('invoices')
