@@ -348,8 +348,9 @@ router.route('/demand-notes/:id/generate-journal')
 router.route('/purposes/invoice')
     .post(async((req, res) => {
         try {
-            const ids = req.container.get("CommandBus").send("paymentTreasuriesPurposeCreate", [req.body]);
-            res.json({isValid: true, returnValue: [ids]});
+            req.body.treasury.treasuryType = 'payment';
+            const id = req.container.get("CommandBus").send("paymentTreasuriesPurposeCreate", [req.body]);
+            res.json({isValid: true, returnValue: {id}});
         }
         catch (e) {
             res.json({isValid: false, errors: e.errors});
