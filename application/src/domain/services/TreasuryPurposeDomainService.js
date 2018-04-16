@@ -53,20 +53,20 @@ export class TreasuryPurposeDomainService {
             throw new ValidationException(errors);
 
         if (entity.treasury.documentType === 'cheque')
-            this.treasuryChequeDomainService.create(entity.treasury);
+            entity.treasuryId = this.treasuryChequeDomainService.create(entity.treasury);
 
         if (entity.treasury.documentType === 'cash')
-            this.treasuryCashDomainService.create(entity.treasury);
+            entity.treasuryId = this.treasuryCashDomainService.create(entity.treasury);
 
         if (entity.treasury.documentType === 'receipt')
-            this.treasuryReceiptDomainService.create(entity.treasury);
+            entity.treasuryId = this.treasuryReceiptDomainService.create(entity.treasury);
 
         if (entity.treasury.documentType === 'spendCheque'){
             let treasury = entity.treasuryId ? this.treasuryRepository.findById(entity.treasuryId) : null;
             if (!treasury)
                 throw new ValidationException(['چک با شماره {0} ثبت نشده است!'.format(treasury.documentDetail.number)]);
 
-            this.treasuryChequeDomainService.chequeSpend(entity.treasury);
+            entity.treasuryId = this.treasuryChequeDomainService.chequeSpend(entity.treasury);
         }
 
         entity = this.treasuryPurposeRepository.create(entity);
