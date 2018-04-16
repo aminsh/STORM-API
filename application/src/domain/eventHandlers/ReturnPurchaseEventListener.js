@@ -1,4 +1,5 @@
 import {inject, injectable} from "inversify";
+import {eventHandler} from "../../core/@decorators";
 
 @injectable()
 export class ReturnPurchaseEventListener {
@@ -12,6 +13,7 @@ export class ReturnPurchaseEventListener {
     /**@type {CommandBus}*/
     @inject("CommandBus") commandBus = undefined;
 
+    @eventHandler("onReturnPurchaseCreated")
     onReturnPurchaseCreated(invoiceId) {
         let invoice = this.invoiceRepository.findById(invoiceId),
             settings = this.settingsRepository.get();
@@ -22,13 +24,16 @@ export class ReturnPurchaseEventListener {
         if (!settings.canSaleGenerateAutomaticJournal)
             return;
 
-        this.commandBus.send("journalGenerateForReturnPurchase", [invoice.id]);
+        let journalId = this.commandBus.send("journalGenerateForReturnPurchase", [invoice.id]);
+        this.commandBus.send("returnPurchaseSetJournal", [invoice.id, journalId]);
     }
 
+    @eventHandler("onReturnPurchaseChanged")
     onReturnPurchaseChanged(invoice) {
         this.onReturnPurchaseCreated(invoice);
     }
 
+    @eventHandler("onReturnPurchaseConfirmed")
     onReturnPurchaseConfirmed(invoice) {
         this.onReturnPurchaseCreated(invoice);
     }
