@@ -117,7 +117,6 @@ router.route('/:id/pay')
         payments.forEach((item, i) => item.id = paymentIds[i]);
 
         let paymentsAndJournalLines = req.container.get("CommandBus").send("journalGenerateForInvoicePayments", [payments, id]);
-
         req.container.get("CommandBus").send("paymentSetJournalLineForAll", [paymentsAndJournalLines]);
 
     }));
@@ -130,7 +129,6 @@ router.route('/:id/generate-journal')
             const id = req.params.id;
 
             req.container.get("CommandBus").send("journalGenerateForInvoice", [id]);
-
             res.json({isValid: true});
         }
         catch (e) {
