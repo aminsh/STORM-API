@@ -103,7 +103,7 @@ export class TreasuryEventListener {
         if (!treasurySetting.journalGenerateAutomatic)
             return;
 
-        let journalId = this.commandBus.send("journalGenerateForReceiveCash", [treasuryId]);
+        let journalId = this.commandBus.send("journalGenerateForTransfer", [treasuryId]);
         this.commandBus.send("transferSetJournal", [treasuryId, journalId]);
     }
 }
