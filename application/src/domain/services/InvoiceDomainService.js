@@ -1,5 +1,7 @@
 import {inject, injectable, postConstruct} from "inversify";
-import {TreasuryPurposeDomainService} from "./TreasuryPurposeDomainService";
+import toResult from "asyncawait/await";
+import Promise from "promise";
+
 
 const PersianDate = Utility.PersianDate,
     Guid = Utility.Guid;
@@ -268,6 +270,8 @@ export class InvoiceDomainService {
         entity.invoiceStatus = cmd.status !== 'draft' ? 'confirmed' : 'draft';
 
         this.invoiceRepository.updateBatch(id, this._mapToData(entity));
+
+        toResult(new Promise(resolve => setTimeout(() => resolve(), 1000)));
 
         this.eventBus.send("onInvoiceChanged", id);
     }
