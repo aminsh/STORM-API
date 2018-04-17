@@ -9,7 +9,7 @@ const async = require('asyncawait/async'),
 router.route('/')
     .get(async((req, res) => {
         let paymentQuery = new PaymentQuery(req.branchId),
-            result = await(paymentQuery.getAll( req.fiscalPeriodId, req.query));
+            result = await(paymentQuery.getAll(req.fiscalPeriodId, req.query));
         res.json(result);
     }));
 
@@ -360,7 +360,7 @@ router.route('/purposes/invoice')
 router.route('/purposes/invoice/:id')
     .get(async((req, res) => {
         let treasuryPurposesQuery = new TreasuryPurposesQuery(req.branchId),
-            result = await(treasuryPurposesQuery.getByInvoiceId(req.params.id,'payment'));
+            result = await(treasuryPurposesQuery.getByInvoiceId(req.params.id, req.query));
         res.json(result);
     }));
 

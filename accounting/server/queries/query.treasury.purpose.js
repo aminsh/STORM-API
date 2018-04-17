@@ -62,7 +62,7 @@ class TreasuryPurposes extends BaseQuery {
                     .leftJoin('detailAccounts as destination', 'destination.id', 'treasury.destinationDetailAccountId')
                     .leftJoin('treasuryDocumentDetails', 'treasuryDocumentDetails.id', 'treasury.documentDetailId')
                     .where('treasury.branchId', branchId)
-                    .whereIn('treasury.id', treasuryIds)
+                    .whereIn('treasury.id', treasuryIds.map(item => item.treasuryId))
                     .as('base')
             });
 
@@ -81,7 +81,7 @@ class TreasuryPurposes extends BaseQuery {
                 .where('treasuryPurpose.referenceId', invoiceId));
 
         treasuryIds.forEach(item => {
-            treasuriesAmount.push(this.getTreasuryAmountById(item));
+            treasuriesAmount.push(this.getTreasuryAmountById(item.treasuryId));
         });
 
         return treasuriesAmount.length > 0 ? treasuriesAmount.asEnumerable().sum(item => item.amount) : 0;
