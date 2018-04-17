@@ -22,6 +22,9 @@ export class TreasuryPurposeDomainService {
     /** @type {TreasuryReceiptDomainService}*/
     @inject("TreasuryReceiptDomainService") treasuryReceiptDomainService = undefined;
 
+    /** @type {EventBus}*/
+    @inject("EventBus") eventBus = undefined;
+
 
     mapToEntity(cmd) {
         return {
@@ -70,6 +73,8 @@ export class TreasuryPurposeDomainService {
         }
 
         entity = this.treasuryPurposeRepository.create(entity);
+
+        this.eventBus.send("invoicePaymentChanged", entity.referenceId);
 
         return entity.id;
     }

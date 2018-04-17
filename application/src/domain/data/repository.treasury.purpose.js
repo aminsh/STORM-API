@@ -32,6 +32,17 @@ export class TreasuryPurposeRepository extends BaseRepository {
         return treasuryPurpose;
     }
 
+    findByReferenceId(referenceId) {
+        return toResult(
+            this.knex
+                .select('treasuryPurpose.id', 'treasury.transferDate', 'treasury.amount')
+                .from('treasuryPurpose')
+                .leftJoin('treasury', 'treasury.id', 'treasuryPurpose.treasuryId')
+                .modify(this.modify, this.branchId, 'treasuryPurpose.branchId')
+                .where({referenceId})
+        );
+    }
+
     create(entity) {
         const trx = this.transaction;
         try {
