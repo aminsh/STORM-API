@@ -1,4 +1,6 @@
 import {inject, injectable} from "inversify";
+import toResult from "asyncawait/await";
+import Promise from "promise";
 
 
 @injectable()
@@ -71,6 +73,8 @@ export class TreasuryPurposeDomainService {
 
             entity.treasuryId = this.treasuryChequeDomainService.chequeSpend(entity.treasury);
         }
+
+        toResult(new Promise(resolve => setTimeout(() => resolve(), 1000)));
 
         entity = this.treasuryPurposeRepository.create(entity);
 
