@@ -50,8 +50,8 @@ class BankQuery extends BaseQuery {
         let knex = this.knex,
             branchId = this.branchId,
 
-            subsidiaryLedgerAccounts = (await(knex.from('settings').where('branchId', this.branchId).first()) || {subsidiaryLedgerAccounts: []})
-                .subsidiaryLedgerAccounts,
+            subsidiaryLedgerAccounts = (await(knex.from('treasurySettings').where('branchId', this.branchId).first()) || {subsidiaryLedgerAccounts: []})
+                .subsidiaryLedgerAccounts || [],
 
             subsidiaryLedgerAccount = subsidiaryLedgerAccounts.asEnumerable().toObject(item => item.key, item => item.id),
 
