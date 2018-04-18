@@ -3,7 +3,8 @@
 const async = require('asyncawait/async'),
     await = require('asyncawait/await'),
     router = require('express').Router(),
-    ReceiveQuery = require('../queries/query.treasury.receive');
+    ReceiveQuery = require('../queries/query.treasury.receive'),
+    TreasuryPurposesQuery = require('../queries/query.treasury.purpose');
 
 router.route('/')
     .get(async((req, res) => {
@@ -307,6 +308,28 @@ router.route('/demand-notes/:id/generate-journal')
         }
 
     }));
+
+
+router.route('/purposes/invoice')
+    .post(async((req, res) => {
+        try {
+            req.body.treasury.treasuryType = 'receive';
+            const id = req.container.get("CommandBus").send("receiveTreasuriesPurposeCreate", [req.body]);
+            res.json({isValid: true, returnValue: {id}});
+        }
+        catch (e) {
+            res.json({isValid: false, errors: e.errors});
+        }
+    }));
+
+
+router.route('/purposes/invoice/:id')
+    .get(async((req, res) => {
+        let treasuryPurposesQuery = new TreasuryPurposesQuery(req.branchId),
+            result = await(treasuryPurposesQuery.getByInvoiceId(req.params.id,req.query));
+        res.json(result);
+    }));
+
 
 module.exports = router;
 

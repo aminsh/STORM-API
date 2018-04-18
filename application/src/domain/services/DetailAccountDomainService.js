@@ -54,7 +54,9 @@ export class DetailAccountDomainService {
 
         if (Utility.String.isNullOrEmpty(cmd.code)) {
             let maxCode = this.detailAccountRepository.findMaxCode() || 1000;
-            cmd.code = ++maxCode;
+            maxCode++;
+
+            cmd.code = isNaN(maxCode) ? null : maxCode;
         }
 
         let entity = {

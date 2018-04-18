@@ -1,4 +1,7 @@
 import {inject, injectable, postConstruct} from "inversify";
+import toResult from "asyncawait/await";
+import Promise from "promise";
+
 
 const PersianDate = Utility.PersianDate,
     Guid = Utility.Guid;
@@ -29,6 +32,10 @@ export class InvoiceDomainService {
 
     /** @type {InvoiceRepository}*/
     @inject("InvoiceRepository") invoiceRepository = undefined;
+
+    /** @type {TreasuryPurposeRepository}*/
+    @inject("TreasuryPurposeRepository") treasuryPurposeRepository = undefined;
+
 
     /** @type {IState}*/
     @inject("State") state = undefined;
@@ -264,6 +271,8 @@ export class InvoiceDomainService {
 
         this.invoiceRepository.updateBatch(id, this._mapToData(entity));
 
+        toResult(new Promise(resolve => setTimeout(() => resolve(), 1000)));
+
         this.eventBus.send("onInvoiceChanged", id);
     }
 
@@ -274,6 +283,7 @@ export class InvoiceDomainService {
             throw new ValidationException(['فاکتور جاری قابل حذف نمیباشد']);
 
         this.invoiceRepository.remove(id);
+        this.treasuryPurposeRepository.removeByReferenceId(id);
     }
 
     setJournal(id, journalId) {

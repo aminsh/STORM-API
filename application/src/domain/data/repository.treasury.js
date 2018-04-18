@@ -150,4 +150,12 @@ export class TreasuryRepository extends BaseRepository {
             .where('journalId', journalId)
             .first());
     }
+
+    isSpendCheque(id) {
+        return toResult(this.knex('id')
+            .from('treasury')
+            .modify(this.modify, this.branchId)
+            .where('receiveId', id)
+            .first());
+    }
 }

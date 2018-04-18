@@ -1,4 +1,6 @@
 import {inject, injectable} from "inversify";
+import toResult from "asyncawait/await";
+import Promise from "promise";
 
 @injectable()
 export class JournalInvoiceGenerationDomainService {
@@ -72,6 +74,9 @@ export class JournalInvoiceGenerationDomainService {
             this.journalDomainService.update(invoice.journalId, journal);
         else {
             let journalId = this.journalDomainService.create(journal);
+
+            toResult(new Promise(resolve => setTimeout(() => resolve(), 1000)));
+
             this.invoiceRepository.update(invoiceId, {journalId});
         }
     }

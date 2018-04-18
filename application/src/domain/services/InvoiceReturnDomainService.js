@@ -1,4 +1,6 @@
 import {inject, injectable} from "inversify";
+import Promise from "promise";
+import toResult from "asyncawait/await";
 
 const Guid = Utility.Guid,
     PersianDate = Utility.PersianDate;
@@ -176,6 +178,8 @@ export class InvoiceReturnDomainService {
 
         let data = this._mapToData(entity);
         this.invoiceRepository.create(data);
+
+        toResult(new Promise(resolve => setTimeout(() => resolve(), 1000)));
 
         entity.id = data.id;
 

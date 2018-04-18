@@ -33,6 +33,7 @@ export class DetailAccountRepository extends BaseRepository {
     findMaxCode(){
         let result = toResult(this.knex.table('detailAccounts')
             .modify(this.modify, this.branchId)
+            .where(this.knex.raw(`code ~ '^[0-9\\.]+$'`))
             .max('code')
             .first());
 

@@ -2,6 +2,7 @@ import {inject, injectable, postConstruct} from "inversify";
 import {TreasurySettingRepository} from "../data/repository.treasury.setting";
 import {JournalRepository} from "../data/repository.journal";
 import {SubsidiaryLedgerAccountDomainService} from "./SubsidiaryLedgerAccountDomainService";
+import {TreasuryChequeDomainService} from "./TreasuryChequeDomainService";
 
 @injectable()
 export class TreasuryJournalGenerationDomainService {
@@ -23,6 +24,9 @@ export class TreasuryJournalGenerationDomainService {
 
     /**@type {DetailAccountRepository}*/
     @inject("DetailAccountRepository") detailAccountRepository = undefined;
+
+    /**@type {TreasuryChequeDomainService}*/
+    @inject("TreasuryChequeDomainService") treasuryChequeDomainService = undefined;
 
     /**@type {JournalRepository}*/
     @inject("JournalRepository") journalRepository = undefined;
@@ -182,7 +186,7 @@ export class TreasuryJournalGenerationDomainService {
 
             journalLines = [],
             description = persistedTreasury
-                ? 'بابت فیش واریزی به {0} به شماره {1} در تاریخ {2}'.format(receiver.title, persistedTreasury.transferDate)
+                ? 'بابت فیش واریزی به {0} به شماره {1} در تاریخ {2}'.format(receiver.title, persistedTreasury.documentDetail.number, persistedTreasury.transferDate)
                 : '';
 
         journalLines.push({
@@ -351,6 +355,9 @@ export class TreasuryJournalGenerationDomainService {
     generateForCheque(treasuryId) {
         let persistedTreasury = this.treasuryRepository.findById(treasuryId),
             errors = this._validation(persistedTreasury);
+
+        if (persistedTreasury.treasuryType === 'receive' && persistedTreasury.documentDetail.status === 'spend')
+            errors.push('امکان صدور سند برای چک خرج شده در لیست چک های پرداختی می باشد!');
 
         if (errors.length > 0)
             throw new ValidationException(errors);
@@ -522,7 +529,7 @@ export class TreasuryJournalGenerationDomainService {
             });
         }
 
-        if (treasury.documentDetail.status === 'spend') {
+        /*if (treasury.documentDetail.status === 'spend') {
 
             journalLines.push({
                 generalLedgerAccountId: subLedger.treasuryCreditors.generalLedgerAccountId,
@@ -543,7 +550,7 @@ export class TreasuryJournalGenerationDomainService {
                 debtor: 0,
                 creditor: treasury.amount
             });
-        }
+        }*/
 
         return journalLines;
     }
@@ -564,8 +571,8 @@ export class TreasuryJournalGenerationDomainService {
         if (treasury.documentDetail.status === 'inProcessOnPassing') {
 
             journalLines.push({
-                generalLedgerAccountId: subLedger.treasuryPaymentNotes.generalLedgerAccountId,
-                subsidiaryLedgerAccountId: subLedger.treasuryPaymentNotes.id,
+                generalLedgerAccountId: subLedger.treasuryCreditors.generalLedgerAccountId,
+                subsidiaryLedgerAccountId: subLedger.treasuryCreditors.id,
                 detailAccountId: treasury.destinationDetailAccountId,
                 article: 'پرذاخت چک به شماره {0}'.format(treasury.documentDetail.number),
                 debtor: treasury.amount,
@@ -573,9 +580,9 @@ export class TreasuryJournalGenerationDomainService {
             });
 
             journalLines.push({
-                generalLedgerAccountId: subLedger.treasuryCreditors.generalLedgerAccountId,
-                subsidiaryLedgerAccountId: subLedger.treasuryCreditors.id,
-                detailAccountId: treasury.destinationDetailAccountId,
+                generalLedgerAccountId: subLedger.treasuryPaymentNotes.generalLedgerAccountId,
+                subsidiaryLedgerAccountId: subLedger.treasuryPaymentNotes.id,
+                detailAccountId: treasury.sourceDetailAccountId,
                 article: 'پرداخت چک به {0}  '.format(receiver.title),
                 debtor: 0,
                 creditor: treasury.amount
@@ -585,32 +592,35 @@ export class TreasuryJournalGenerationDomainService {
         if (treasury.documentDetail.status === 'return') {
 
             journalLines.push({
-                generalLedgerAccountId: subLedger.treasuryCreditors.generalLedgerAccountId,
-                subsidiaryLedgerAccountId: subLedger.treasuryCreditors.id,
-                detailAccountId: treasury.destinationDetailAccountId,
+                generalLedgerAccountId: lastSubLedger ? lastSubLedger.generalLedgerAccountId
+                    : subLedger.treasuryPaymentNotes.generalLedgerAccountId,
+                subsidiaryLedgerAccountId: lastSubLedger ? lastSubLedger.subsidiaryLedgerAccountId
+                    : subLedger.treasuryPaymentNotes.id,
+                detailAccountId: treasury.sourceDetailAccountId,
                 article: 'برگشت چک پرداختی به {0} شماره {1}'.format(receiver.title, treasury.documentDetail.number),
                 debtor: treasury.amount,
                 creditor: 0
             });
 
             journalLines.push({
-                generalLedgerAccountId: lastSubLedger ? lastSubLedger.generalLedgerAccountId
-                    : subLedger.treasuryCreditors.generalLedgerAccountId,
-                subsidiaryLedgerAccountId: lastSubLedger ? lastSubLedger.subsidiaryLedgerAccountId
-                    : subLedger.treasuryCreditors.generalLedgerAccountId,
+                generalLedgerAccountId: subLedger.treasuryCreditors.generalLedgerAccountId,
+                subsidiaryLedgerAccountId: subLedger.treasuryCreditors.id,
                 detailAccountId: treasury.destinationDetailAccountId,
                 article: 'برگشت چک به شماره {0}'.format(treasury.documentDetail.number),
                 debtor: 0,
                 creditor: treasury.amount
             });
+
+            if (treasury.receiveId)
+                this.generateForCheque(treasury.receiveId);
         }
 
         if (treasury.documentDetail.status === 'passed') {
             journalLines.push({
                 generalLedgerAccountId: lastSubLedger ? lastSubLedger.generalLedgerAccountId
-                    : subLedger.treasuryCreditors.generalLedgerAccountId,
+                    : subLedger.treasuryPaymentNotes.generalLedgerAccountId,
                 subsidiaryLedgerAccountId: lastSubLedger ? lastSubLedger.subsidiaryLedgerAccountId
-                    : subLedger.treasuryCreditors.generalLedgerAccountId,
+                    : subLedger.treasuryPaymentNotes.id,
                 detailAccountId: treasury.destinationDetailAccountId,
                 article: 'پاس چک {0} به شماره {0} '.format(receiver.title, treasury.documentDetail.number),
                 debtor: treasury.amount,
@@ -620,7 +630,7 @@ export class TreasuryJournalGenerationDomainService {
             journalLines.push({
                 generalLedgerAccountId: subLedger.treasuryBankAccount.generalLedgerAccountId,
                 subsidiaryLedgerAccountId: subLedger.treasuryBankAccount.id,
-                detailAccountId: treasury.sourceDetailAccountId,
+                detailAccountId: treasury.destinationDetailAccountId,
                 article: 'بابت پاس شدن چک شماره {0} '.format(treasury.documentDetail.number),
                 debtor: 0,
                 creditor: treasury.amount
@@ -632,8 +642,10 @@ export class TreasuryJournalGenerationDomainService {
         if (treasury.documentDetail.status === 'revocation') {
 
             journalLines.push({
-                generalLedgerAccountId: subLedger.treasuryCreditors.generalLedgerAccountId,
-                subsidiaryLedgerAccountId: subLedger.treasuryCreditors.id,
+                generalLedgerAccountId: lastSubLedger ? lastSubLedger.generalLedgerAccountId
+                    : subLedger.treasuryPaymentNotes.generalLedgerAccountId,
+                subsidiaryLedgerAccountId: lastSubLedger ? lastSubLedger.subsidiaryLedgerAccountId
+                    : subLedger.treasuryPaymentNotes.id,
                 detailAccountId: treasury.destinationDetailAccountId,
                 article: 'ابطال چک پرداختی به {0} به شماره {1}'.format(receiver.title, treasury.documentDetail.number),
                 debtor: treasury.amount,
@@ -641,12 +653,41 @@ export class TreasuryJournalGenerationDomainService {
             });
 
             journalLines.push({
-                generalLedgerAccountId: lastSubLedger ? lastSubLedger.generalLedgerAccountId
-                    : subLedger.treasuryCreditors.generalLedgerAccountId,
-                subsidiaryLedgerAccountId: lastSubLedger ? lastSubLedger.subsidiaryLedgerAccountId
-                    : subLedger.treasuryCreditors.generalLedgerAccountId,
+                generalLedgerAccountId: subLedger.treasuryCreditors.generalLedgerAccountId,
+                subsidiaryLedgerAccountId: subLedger.treasuryCreditors.id,
                 detailAccountId: treasury.destinationDetailAccountId,
                 article: 'ابطال چک پرداختی به {0} شماره {1}'.format(receiver.title, treasury.documentDetail.number),
+                debtor: 0,
+                creditor: treasury.amount
+            });
+        }
+
+        if (treasury.documentDetail.status === 'spend') {
+            let receiveCheque = treasury.receiveId ? this.treasuryRepository.findById(treasury.receiveId) : null,
+                receiveJournal = receiveCheque ? this.journalRepository.findById(receiveCheque.journalId) : null,
+                receiveNote = receiveJournal ? receiveJournal.journalLines.asEnumerable().where(item => item.creditor === 0)
+                        .select(item => ({
+                            generalLedgerAccountId: item.generalLedgerAccountId,
+                            subsidiaryLedgerAccountId: item.subsidiaryLedgerAccountId,
+                            detailAccountId: item.detailAccountId
+                        })).first()
+                    : null,
+                receiveNotePayer = this.detailAccountRepository.findById(receiveNote.detailAccountId);
+
+            journalLines.push({
+                generalLedgerAccountId: subLedger.treasuryCreditors.generalLedgerAccountId,
+                subsidiaryLedgerAccountId: subLedger.treasuryCreditors.id,
+                detailAccountId: treasury.destinationDetailAccountId,
+                article: 'خرج چک شماره {0} به {1}'.format(treasury.documentDetail.number, receiver.title),
+                debtor: treasury.amount,
+                creditor: 0
+            });
+
+            journalLines.push({
+                generalLedgerAccountId: receiveNote.generalLedgerAccountId,
+                subsidiaryLedgerAccountId: receiveNote.subsidiaryLedgerAccountId,
+                detailAccountId: receiveNote.detailAccountId,
+                article: 'خرج چک {0} به شماره {1}'.format(receiveNotePayer.title, treasury.documentDetail.number),
                 debtor: 0,
                 creditor: treasury.amount
             });
