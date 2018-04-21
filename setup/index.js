@@ -32,6 +32,11 @@ EventEmitter.on('on-branch-created', async(function (branchId) {
         subsidiaryLedgerAccounts: JSON.stringify([])
     }));
 
+    await(knex('treasurySettings').insert({
+        id: Utility.Guid.new(),
+        subsidiaryLedgerAccounts: JSON.stringify([])
+    }));
+
     chartOfAccount(branchId);
     fiscalPeriod(branchId);
     firstFund(branchId);
