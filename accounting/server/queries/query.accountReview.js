@@ -27,7 +27,7 @@ module.exports = class AccountReview extends BaseQuery {
         this.filter = filter;
         this.paramters = paramters;
         this.fiscalPeriodId = fiscalPeriodId;
-        this.mode = mode;
+        this.mode = mode || 'create';
     }
 
     aggregates(query) {
