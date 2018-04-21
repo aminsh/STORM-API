@@ -23,4 +23,11 @@ export class TreasurySettingRepository extends BaseRepository {
             .first());
     }
 
+    createOnUndefined(){
+        return toResult(knex('treasurySettings').insert({
+            id: Utility.Guid.new(),
+            subsidiaryLedgerAccounts: JSON.stringify([])
+        }));
+    }
+
 }
