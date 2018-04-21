@@ -28,9 +28,10 @@ export class SubsidiaryLedgerAccountDomainService {
             .asEnumerable()
             .toObject(item => item.key, item => item.id);
 
-        this.treasuryAccounts = (treasurySettings.subsidiaryLedgerAccounts || [])
+        this.treasuryAccounts = treasurySettings ? (treasurySettings.subsidiaryLedgerAccounts || [])
             .asEnumerable()
-            .toObject(item => item.key, item => item.id);
+            .toObject(item => item.key, item => item.id) :
+            this.treasurySettingRepository.createOnUndefined();
     }
 
     get receivableAccount() {
