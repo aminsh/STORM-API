@@ -23,11 +23,10 @@ export class TreasurySettingRepository extends BaseRepository {
             .first());
     }
 
-    createOnUndefined(){
-        return toResult(this.knex('treasurySettings').insert({
-            id: Utility.Guid.new(),
-            subsidiaryLedgerAccounts: JSON.stringify([])
-        }));
+    createOnUndefined(entity){
+        super.create(entity);
+        entity.subsidiaryLedgerAccounts = JSON.stringify([]);
+        return this.knex('treasurySettings').insert(entity);
     }
 
 }
