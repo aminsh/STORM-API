@@ -35,7 +35,8 @@ EventEmitter.on('on-branch-created', async(function (branchId) {
 
     await(knex('treasurySettings').insert({
         id: Utility.Guid.new(),
-        subsidiaryLedgerAccounts: JSON.stringify([])
+        subsidiaryLedgerAccounts: JSON.stringify([]),
+        branchId
     }));
 
     chartOfAccount(branchId);
