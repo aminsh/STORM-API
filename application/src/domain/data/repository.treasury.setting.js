@@ -24,7 +24,7 @@ export class TreasurySettingRepository extends BaseRepository {
     }
 
     createOnUndefined(){
-        return toResult(knex('treasurySettings').insert({
+        return toResult(this.knex('treasurySettings').insert({
             id: Utility.Guid.new(),
             subsidiaryLedgerAccounts: JSON.stringify([])
         }));
