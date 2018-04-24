@@ -404,8 +404,10 @@ export class TreasuryJournalGenerationDomainService {
             });
 
             journalLines.push({
-                generalLedgerAccountId: subLedger.treasuryDebtors.generalLedgerAccountId,
-                subsidiaryLedgerAccountId: subLedger.treasuryDebtors.id,
+                generalLedgerAccountId: lastSubLedger ? lastSubLedger.generalLedgerAccountId
+                    : subLedger.treasuryDebtors.generalLedgerAccountId,
+                subsidiaryLedgerAccountId: lastSubLedger ? lastSubLedger.subsidiaryLedgerAccountId
+                    : subLedger.treasuryDebtors.id,
                 detailAccountId: treasury.sourceDetailAccountId,
                 article: 'دریافت چک از {0}  '.format(payer.title),
                 debtor: 0,
