@@ -199,8 +199,8 @@ export class TreasuryJournalGenerationDomainService {
         });
 
         journalLines.push({
-            generalLedgerAccountId: subLedger.treasuryFundAccount.generalLedgerAccountId,
-            subsidiaryLedgerAccountId: subLedger.treasuryFundAccount.id,
+            generalLedgerAccountId: subLedger.treasuryBankAccount.generalLedgerAccountId,
+            subsidiaryLedgerAccountId: subLedger.treasuryBankAccount.id,
             detailAccountId: persistedTreasury.sourceDetailAccountId,
             article: 'پرداخت از بانک {0} '.format(payer.title),
             debtor: 0,
@@ -363,10 +363,10 @@ export class TreasuryJournalGenerationDomainService {
             throw new ValidationException(errors);
 
         let description = persistedTreasury
-            ? 'بابت {0} چک {1} به شماره {2}'
+            ? 'بابت چک {0} {1} به شماره {2}'
                 .format(
-                    Enums.ReceiveChequeStatus().getDisplay(persistedTreasury.documentDetail.status),
                     Enums.TreasuryType().getDisplay(persistedTreasury.treasuryType),
+                    Enums.ReceiveChequeStatus().getDisplay(persistedTreasury.documentDetail.status),
                     persistedTreasury.documentDetail.number)
             : '',
 
