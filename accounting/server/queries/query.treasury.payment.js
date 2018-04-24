@@ -30,6 +30,7 @@ class TreasuryPayment extends BaseQuery {
                     'treasury.amount',
                     'treasury.transferDate',
                     'treasury.sourceDetailAccountId',
+                    'treasury.createdAt',
                     knex.raw(`treasury."sourceDetailAccountId" as "payerId"`),
                     knex.raw(`treasury."destinationDetailAccountId" as "receiverId"`),
                     knex.raw(`source.title as "sourceTitle"`),

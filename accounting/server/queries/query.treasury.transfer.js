@@ -26,6 +26,7 @@ class TreasuryTransfer
                     'treasury.amount',
                     'treasury.transferDate',
                     'treasury.sourceDetailAccountId',
+                    'treasury.createdAt',
                     knex.raw(`source.title as "sourceTitle"`),
                     'treasury.destinationDetailAccountId',
                     knex.raw(`destination.title as "destinationTitle"`)
