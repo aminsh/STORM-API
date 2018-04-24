@@ -11,7 +11,7 @@ function treasuryDemandNoteAssembler(entity) {
         description: entity.description,
         imageUrl: entity.imageUrl,
         amount: entity.amount,
-        journal: entity.journals[0],
+        journal: entity.journals ? entity.journals[0] : null,
         documentDetailId: entity.documentDetailId,
         documentDetail: treasuryDocumentDetail(entity.documentDetail)
     };
