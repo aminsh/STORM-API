@@ -163,9 +163,6 @@ export class TreasuryChequeDomainService {
 
         entity = this.treasuryRepository.create(entity);
 
-        if (entity.documentType !== 'spendCheque')
-            this.eventBus.send('onChequeCreated', entity.id);
-
         return entity.id;
     }
 
