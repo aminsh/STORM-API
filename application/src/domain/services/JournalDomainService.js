@@ -130,7 +130,7 @@ export class JournalDomainService {
                         id: item.id,
                         generalLedgerAccountId: subsidiaryLedgerAccount.generalLedgerAccountId,
                         subsidiaryLedgerAccountId: item.subsidiaryLedgerAccountId,
-                        detailAccountId: item.detailAccountId,
+                        detailAccountId: subsidiaryLedgerAccount.hasDetailAccount ? item.detailAccountId : null,
                         article: item.article,
                         debtor: item.debtor,
                         creditor: item.creditor
@@ -173,7 +173,7 @@ export class JournalDomainService {
                         id: item.id,
                         generalLedgerAccountId: subsidiaryLedgerAccount.generalLedgerAccountId,
                         subsidiaryLedgerAccountId: item.subsidiaryLedgerAccountId,
-                        detailAccountId: item.detailAccountId,
+                        detailAccountId: subsidiaryLedgerAccount.hasDetailAccount ? item.detailAccountId : null,
                         article: item.article,
                         debtor: item.debtor,
                         creditor: item.creditor
