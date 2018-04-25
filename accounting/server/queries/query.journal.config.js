@@ -17,7 +17,7 @@ module.exports = class JournalQueryConfig extends BaseQuery {
 
     getOptions() {
         let dateRange = await(this.getDateRange()),
-            mode = this.mode;
+            mode = this.mode || 'create';
         return {
             fromDate: dateRange.fromDate,
             toDate: dateRange.toDate,
@@ -44,7 +44,7 @@ module.exports = class JournalQueryConfig extends BaseQuery {
                     : currentPeriod.minDate,
                 toDate: (filter.maxDate && filter.maxDate <= currentPeriod.maxDate)
                     ? filter.maxDate
-                    : currentPeriod.maxDate
+                    : "9999/99/99"
             };
 
         if (!(filter.minDate && filter.maxDate))
