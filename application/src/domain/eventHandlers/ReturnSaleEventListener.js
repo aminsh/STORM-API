@@ -28,4 +28,14 @@ export class ReturnSaleEventListener {
         this.commandBus.send("invoiceReturnSetJournal", [invoice.id, journalId]);
 
     }
+
+    @eventHandler("onReturnSaleChanged")
+    changed(invoiceId){
+        this.onReturnSaleCreated(invoiceId);
+    }
+
+    @eventHandler("onReturnSaleConfirmed")
+    confirmed(invoiceId){
+        this.onReturnSaleCreated(invoiceId);
+    }
 }

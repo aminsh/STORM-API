@@ -207,6 +207,8 @@ export class InvoiceReturnDomainService {
         this.invoiceRepository.update(id, data);
 
         this._setForInventoryReturn(entity);
+
+        this.eventBus.send('onReturnSaleConfirmed', entity.id);
     }
 
     update(id, cmd) {
@@ -227,6 +229,8 @@ export class InvoiceReturnDomainService {
 
         if (entity.invoiceStatus !== 'draft')
             this._setForInventoryReturn(entity);
+
+        this.eventBus.send('onReturnSaleChanged', entity.id);
     }
 
     remove(id) {
