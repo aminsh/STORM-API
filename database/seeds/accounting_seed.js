@@ -6,12 +6,11 @@ const async = require('asyncawait/async'),
 
 exports.seed = async(function (knex, Promise) {
 
-    let detailAccountsNaNCode = await(
-        knex.select('id').from('detailAccounts').where('code', 'ilike', '%NaN%')
-        ),
-        NaNCodeIds = detailAccountsNaNCode.map(item => item.id);
-
-    await(
-        knex('detailAccounts').whereIn('id', NaNCodeIds).update({code: null})
-    );
+    await(knex('users').insert({
+        id: 'STORM-API-USER',
+        name: 'STORM-API-USER',
+        email: 'api@storm-online.ir',
+        state: 'active',
+        image: '/public/images/apiuser.png',
+    }))
 });
