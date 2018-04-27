@@ -163,6 +163,11 @@ class PaypingService {
     }
 
     getPaymentUrl(userKey, parameters) {
+
+        console.log('getPaymentUrl arguments');
+        console.log(userKey);
+        console.log(JSON.stringify(parameters));
+
         let paymentParams = {
                 UserKey: userKey,
                 ReturnUrl: parameters.returnUrl,
