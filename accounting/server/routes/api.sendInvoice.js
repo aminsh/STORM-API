@@ -92,9 +92,19 @@ router.route('/:branchId/:invoiceId/record-payment')
         if (!invoice)
             return NotFoundAction();
 
-        let payementData = process.env['NODE_ENV'] === 'development'
-            ? {amount: invoice.sumRemainder, referenceId: '1248'}
-            : await(instanceOf('PaymentService', 'payping').savePayment(Object.assign({}, req.body, {userKey: paypingInfo.data.userKey})));
+        let payementData;
+
+        try {
+            payementData = process.env['NODE_ENV'] === 'development'
+                ? {amount: invoice.sumRemainder, referenceId: '1248'}
+                : await(instanceOf('PaymentService', 'payping').savePayment(Object.assign({}, req.body, {userKey: paypingInfo.data.userKey})));
+        }
+        catch (e){
+            console.log('verify');
+            console.log(e);
+
+            res.sendStatus(500);
+        }
 
         let childContainer = container.createChild();
 

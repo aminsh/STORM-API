@@ -199,7 +199,7 @@ class PaypingService {
                 form: {RefId: referenceId, UserKey: userKey},
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Content-Type': 'application/json',
                     'Accept': 'application/json',
                     'Authorization': this.serviceToken
                 }
