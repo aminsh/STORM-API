@@ -57,13 +57,14 @@ router.route('/:branchId/:invoiceId/payment-url')
             returnUrl: req.query.returnUrl,
             customerName: invoice.customerDisplay,
             description: 'بابت پرداخت فاکتور شماره ' + invoice.number,
-            amount: invoice.sumRemainder
+            amount: invoice.sumRemainder,
+            referenceId: invoice.id
         };
 
         let url;
 
         try {
-            url = await(instanceOf('PaymentService', 'payping').getPaymentUrl(paypingInfo.data.userKey, parameters));
+            url = await(instanceOf('PaymentService', 'payping').getPaymentUrl(paypingInfo.data.username, parameters));
 
             res.send(url);
         }
