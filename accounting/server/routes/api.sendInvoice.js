@@ -92,20 +92,6 @@ router.route('/:branchId/:invoiceId/record-payment')
         if (!invoice)
             return NotFoundAction();
 
-        let payementData;
-
-        try {
-            payementData = process.env['NODE_ENV'] === 'development'
-                ? {amount: invoice.sumRemainder, referenceId: '1248'}
-                : await(instanceOf('PaymentService', 'payping').savePayment(Object.assign({}, req.body, {userKey: paypingInfo.data.userKey})));
-        }
-        catch (e){
-            console.log('verify');
-            console.log(e);
-
-            res.sendStatus(500);
-        }
-
         let childContainer = container.createChild();
 
         req.branchId = branchId;
@@ -127,14 +113,14 @@ router.route('/:branchId/:invoiceId/record-payment')
             referenceId: invoice.id,
             treasury: {
                 treasuryType: 'receive',
-                amount: payementData.amount,
+                amount: invoice.sumRemainder,
                 documentType: 'receipt',
                 payerId: invoice.customer.id,
                 receiverId: paypingInfo.data.bankId,
                 transferDate: Utility.PersianDate.current(),
                 documentDetail: {
                     date: Utility.PersianDate.current(),
-                    number: payementData.referenceId
+                    number: req.body.refid
                 }
 
             }
@@ -149,6 +135,15 @@ router.route('/:branchId/:invoiceId/record-payment')
             res.sendStatus(500);
         }
 
+        try {
+
+            if (process.env['NODE_ENV'] !== 'development')
+                await(instanceOf('PaymentService', 'payping').savePayment(Object.assign({}, req.body, {userKey: paypingInfo.data.userKey})));
+        }
+        catch (e) {
+            console.log('verify');
+            console.log(e);
+        }
     }));
 
 
