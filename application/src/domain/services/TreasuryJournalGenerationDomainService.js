@@ -33,23 +33,10 @@ export class TreasuryJournalGenerationDomainService {
 
 
     _validation(entity) {
-        let errors = [],
-            journal = entity.journalId ? this.journalRepository.findById(entity.journalId) : null;
+        let errors = [];
 
         if (!entity)
             errors.push('{0} ثبت نشده است!'.format(Enums.TreasuryPaymentDocumentTypes().getDisplay(entity.documentType)));
-
-        if (entity.documentType !== 'cheque' && entity.journalId)
-            errors.push('قبلا سند حسابداری صادر شده است!');
-
-        /*        if (entity.documentType === 'cheque') {
-                    if (entity.documentDetail.chequeStatusHistory && entity.documentDetail.chequeStatusHistory.asEnumerable()
-                            .any(item => item.status === entity.documentDetail.status && item.journalId))
-                        errors.push('برای وضعیت {0} قبلا سند حسابداری با شماره {1} صادر شده است!'
-                            .format(Enums.ReceiveChequeStatus().getDisplay(entity.documentDetail.status), journal.temporaryNumber)
-                        );
-
-                }*/
 
         return errors;
 
@@ -91,7 +78,10 @@ export class TreasuryJournalGenerationDomainService {
             creditor: persistedTreasury.amount
         });
 
-        return this.journalDomainService.create({description, journalLines});
+        return persistedTreasury.journalId
+            ? this.journalDomainService.update(persistedTreasury.journalId, {description, journalLines})
+            : this.journalDomainService.create({description, journalLines});
+
     }
 
     generateForPaymentCash(treasuryId) {
@@ -129,7 +119,9 @@ export class TreasuryJournalGenerationDomainService {
             creditor: persistedTreasury.amount
         });
 
-        return this.journalDomainService.create({description, journalLines});
+        return persistedTreasury.journalId
+            ? this.journalDomainService.update(persistedTreasury.journalId, {description, journalLines})
+            : this.journalDomainService.create({description, journalLines});
     }
 
     generateForReceiveReceipt(treasuryId) {
@@ -147,7 +139,7 @@ export class TreasuryJournalGenerationDomainService {
 
             journalLines = [],
             description = persistedTreasury
-                ? 'بابت فیش واریزی از {0} به شماره {1} در تاریخ {2}'.format(payer.title, persistedTreasury.documentDetail.number, persistedTreasury.transferDate)
+                ? 'بابت فیش واریزی از {0} به شماره {1} در تاریخ {2}'.format(payer.title, persistedTreasury.documentDetail.number, persistedTreasury.documentDetail.date)
                 : '';
 
         journalLines.push({
@@ -168,7 +160,9 @@ export class TreasuryJournalGenerationDomainService {
             creditor: persistedTreasury.amount
         });
 
-        return this.journalDomainService.create({description, journalLines});
+        return persistedTreasury.journalId
+            ? this.journalDomainService.update(persistedTreasury.journalId, {description, journalLines})
+            : this.journalDomainService.create({description, journalLines});
     }
 
     generateForPaymentReceipt(treasuryId) {
@@ -186,7 +180,7 @@ export class TreasuryJournalGenerationDomainService {
 
             journalLines = [],
             description = persistedTreasury
-                ? 'بابت فیش واریزی به {0} به شماره {1} در تاریخ {2}'.format(receiver.title, persistedTreasury.documentDetail.number, persistedTreasury.transferDate)
+                ? 'بابت فیش واریزی به {0} به شماره {1} در تاریخ {2}'.format(receiver.title, persistedTreasury.documentDetail.number, persistedTreasury.documentDetail.date)
                 : '';
 
         journalLines.push({
@@ -207,7 +201,9 @@ export class TreasuryJournalGenerationDomainService {
             creditor: persistedTreasury.amount
         });
 
-        return this.journalDomainService.create({description, journalLines});
+        return persistedTreasury.journalId
+            ? this.journalDomainService.update(persistedTreasury.journalId, {description, journalLines})
+            : this.journalDomainService.create({description, journalLines});
     }
 
     generateForReceiveDemandNote(treasuryId) {
@@ -246,7 +242,9 @@ export class TreasuryJournalGenerationDomainService {
             creditor: persistedTreasury.amount
         });
 
-        return this.journalDomainService.create({description, journalLines});
+        return persistedTreasury.journalId
+            ? this.journalDomainService.update(persistedTreasury.journalId, {description, journalLines})
+            : this.journalDomainService.create({description, journalLines});
     }
 
     generateForPaymentDemandNote(treasuryId) {
@@ -284,73 +282,10 @@ export class TreasuryJournalGenerationDomainService {
             creditor: persistedTreasury.amount
         });
 
-        return this.journalDomainService.create({description, journalLines});
+        return persistedTreasury.journalId
+            ? this.journalDomainService.update(persistedTreasury.journalId, {description, journalLines})
+            : this.journalDomainService.create({description, journalLines});
     }
-
-    /*updateChequeJournals(id, cmd) {
-        let persistedJournal = this.journalRepository.findById(id),
-
-            journal = {
-                temporaryDate: persistedJournal.temporaryDate,
-                isInComplete: false,
-                description: 'بابت {0} چک {1} به شماره {2}'
-                    .format(
-                        Enums.ReceiveChequeStatus().getDisplay(treasury.documentDetail.status),
-                        Enums.TreasuryType().getDisplay(treasury.treasuryType),
-                        treasury.documentDetail.number),
-                attachmentFileName: persistedJournal.attachmentFileName,
-                tagId: persistedJournal.tagId,
-                journalLines:
-
-
-                    persistedJournal.journalLines.asEnumerable()
-                    .select(item => {
-                        let subsidiary = this.subsidiaryLedgerAccountRepository.findById()
-
-                        return {
-                            id: item.id,
-                            generalLedgerAccountId: getGeneralLedgerAccountId(),
-                            subsidiaryLedgerAccountId: getSubsidiaryLedgerAccountId(),
-                            detailAccountId: getDetailAccount(treasury),
-                            article: getArticle(),
-                            debtor: getDebtor(),
-                            creditor: getCreditor()
-                        }
-                    })
-                    .toArray()
-            };
-
-        function getGeneralLedgerAccountId(){
-
-        }
-
-        function getSubsidiaryLedgerAccountId() {
-
-        }
-
-        function getDetailAccount(treasury) {
-
-            if (treasury.treasuryType === 'receive')
-                return treasury.sourceDetailAccountId;
-
-            if (treasury.treasuryType === 'payment')
-                return treasury.destinationDetailAccountId;
-
-        }
-
-        function getArticle() {
-
-        }
-
-        function getDebtor() {
-
-        }
-
-        function getCreditor() {
-
-        }
-
-    }*/
 
     generateForCheque(treasuryId) {
         let persistedTreasury = this.treasuryRepository.findById(treasuryId),
@@ -374,7 +309,9 @@ export class TreasuryJournalGenerationDomainService {
                 ? this.setReceiveJournalLines(persistedTreasury)
                 : this.setPaymentJournalLines(persistedTreasury);
 
-        return this.journalDomainService.create({description, journalLines});
+        return persistedTreasury.journalId
+            ? this.journalDomainService.update(persistedTreasury.journalId, {description, journalLines})
+            : this.journalDomainService.create({description, journalLines});
 
     }
 
@@ -674,7 +611,17 @@ export class TreasuryJournalGenerationDomainService {
                             detailAccountId: item.detailAccountId
                         })).first()
                     : null,
-                receiveNotePayer = this.detailAccountRepository.findById(receiveNote.detailAccountId);
+                receiveNotePayer = this.detailAccountRepository.findById(receiveNote.detailAccountId),
+
+                paymentNote = persistedJournal ? persistedJournal.journalLines.asEnumerable().where(item => item.debtor === 0)
+                        .select(item => ({
+                            generalLedgerAccountId: item.generalLedgerAccountId,
+                            subsidiaryLedgerAccountId: item.subsidiaryLedgerAccountId,
+                            detailAccountId: item.detailAccountId
+                        })).first()
+                    : null,
+                paymentNotePayer = paymentNote && this.detailAccountRepository.findById(paymentNote.detailAccountId);
+
 
             journalLines.push({
                 generalLedgerAccountId: subLedger.treasuryCreditors.generalLedgerAccountId,
@@ -686,16 +633,47 @@ export class TreasuryJournalGenerationDomainService {
             });
 
             journalLines.push({
-                generalLedgerAccountId: receiveNote.generalLedgerAccountId,
-                subsidiaryLedgerAccountId: receiveNote.subsidiaryLedgerAccountId,
-                detailAccountId: receiveNote.detailAccountId,
-                article: 'خرج چک {0} به شماره {1}'.format(receiveNotePayer.title, treasury.documentDetail.number),
+                generalLedgerAccountId: treasury.journalId ? paymentNote.generalLedgerAccountId : receiveNote.generalLedgerAccountId,
+                subsidiaryLedgerAccountId: treasury.journalId ? paymentNote.subsidiaryLedgerAccountId : receiveNote.subsidiaryLedgerAccountId,
+                detailAccountId: treasury.journalId ? paymentNote.detailAccountId : receiveNote.detailAccountId,
+                article: 'خرج چک {0} به شماره {1}'.format(treasury.journalId ? paymentNotePayer.title : receiveNotePayer.title, treasury.documentDetail.number),
                 debtor: 0,
                 creditor: treasury.amount
             });
         }
 
         return journalLines;
+    }
+
+    generateForUpdateCheque(treasuryId) {
+        let persistedTreasury = this.treasuryRepository.findById(treasuryId),
+            errors = this._validation(persistedTreasury),
+            chequeHistory = persistedTreasury.documentDetail.chequeStatusHistory.asEnumerable()
+                .select(item => ({journalId: item.journalId, status: item.status})).toArray();
+
+        if (!persistedTreasury || !persistedTreasury.journalId)
+            errors.push('سند برای چک قبلا صادر نشده است!');
+
+        if (errors.length > 0)
+            throw new ValidationException(errors);
+
+        chequeHistory.forEach(item => {
+
+            persistedTreasury.documentDetail.status = item.status;
+            persistedTreasury.journalId = item.journalId;
+
+            let description = 'بابت چک {0} {1} به شماره {2}'
+                    .format(
+                        Enums.TreasuryType().getDisplay(persistedTreasury.treasuryType),
+                        Enums.ReceiveChequeStatus().getDisplay(persistedTreasury.documentDetail.status),
+                        persistedTreasury.documentDetail.number),
+
+                journalLines = persistedTreasury.treasuryType === 'receive'
+                    ? this.setReceiveJournalLines(persistedTreasury)
+                    : this.setPaymentJournalLines(persistedTreasury);
+
+            this.journalDomainService.update(persistedTreasury.journalId, {description, journalLines});
+        });
     }
 
     generateForTransfer(treasuryId) {
@@ -742,7 +720,9 @@ export class TreasuryJournalGenerationDomainService {
             creditor: persistedTreasury.amount
         });
 
-        return this.journalDomainService.create({description, journalLines});
+        return persistedTreasury.journalId
+            ? this.journalDomainService.update(persistedTreasury.journalId, {description, journalLines})
+            : this.journalDomainService.create({description, journalLines});
     }
 
 }
