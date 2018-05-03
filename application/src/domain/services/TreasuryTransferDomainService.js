@@ -96,13 +96,7 @@ export class TreasuryTransferDomainService {
         if (errors.length > 0)
             throw new ValidationException(errors);
 
-        //entity.journalId = null;
         this.treasuryRepository.update(id, entity);
-
-        /*if (journalId) {
-            this.journalDomainService.remove(journalId);
-            this.treasuryJournalGenerationDomainService.generateForTransfer(id);
-        }*/
     }
 
     remove(id) {
@@ -116,9 +110,6 @@ export class TreasuryTransferDomainService {
             throw new ValidationException(errors);
 
         this.treasuryRepository.remove(id);
-
-        /*if (persistedTreasury.journalId)
-            this.journalDomainService.remove(persistedTreasury.journalId);*/
     }
 
 

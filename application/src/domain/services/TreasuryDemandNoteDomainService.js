@@ -21,9 +21,6 @@ export class TreasuryDemandNoteDomainService {
     @inject("EventBus") eventBus = undefined;
 
     mapToEntity(cmd) {
-
-        let treasury = cmd.id ? this.treasuryRepository.findById(cmd.id) : null;
-
         return {
             id: cmd.id,
             transferDate: cmd.transferDate || PersianDate.current(),

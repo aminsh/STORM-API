@@ -180,17 +180,7 @@ export class TreasuryReceiptDomainService {
         if (errors.length > 0)
             throw new ValidationException(errors);
 
-        //entity.journalId = null;
         this.treasuryRepository.update(id, entity);
-
-        /*if (journalId) {
-            this.journalDomainService.remove(journalId);
-
-            entity.treasuryType === 'receive' ?
-                this.treasuryJournalGenerationDomainService.generateForReceiveReceipt(id) :
-                this.treasuryJournalGenerationDomainService.generateForPaymentReceipt(id);
-        }*/
-
     }
 
     remove(id) {

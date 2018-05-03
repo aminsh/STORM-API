@@ -27,9 +27,6 @@ export class TreasuryCashDomainService {
     @inject("EventBus") eventBus = undefined;
 
     mapToEntity(cmd) {
-
-        let treasury = cmd.id ? this.treasuryRepository.findById(cmd.id) : null;
-
         return {
             id: cmd.id,
             transferDate: cmd.transferDate || PersianDate.current(),
@@ -155,8 +152,7 @@ export class TreasuryCashDomainService {
         let entity = this.mapToEntity(cmd),
             persistedTreasury = this.treasuryRepository.findById(id),
             errors = persistedTreasury.treasuryType === 'payment'
-                ? this._paymentValidate(entity) : this._receiveValidate(entity),
-            journalId = entity.journalId;
+                ? this._paymentValidate(entity) : this._receiveValidate(entity);
 
         if (persistedTreasury.journalId)
             errors.push('برای {0} نقدی سند صادر شده است و امکان ویرایش وجود ندارد!'
@@ -166,16 +162,7 @@ export class TreasuryCashDomainService {
             throw new ValidationException(errors);
 
 
-        //entity.journalId = null;
         this.treasuryRepository.update(id, entity);
-
-/*        if (journalId) {
-            this.journalDomainService.remove(journalId);
-
-            entity.treasuryType === 'receive' ?
-                this.treasuryJournalGenerationDomainService.generateForReceiveCash(id) :
-                this.treasuryJournalGenerationDomainService.generateForPaymentCash(id);
-        }*/
 
     }
 
@@ -193,8 +180,6 @@ export class TreasuryCashDomainService {
         this.treasuryRepository.remove(id);
         this.treasuryPurposeRepository.removeByTreasuryId(id);
 
-        /*if (persistedTreasury.journalId)
-            this.journalDomainService.remove(persistedTreasury.journalId);*/
     }
 
 

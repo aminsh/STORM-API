@@ -187,19 +187,6 @@ export class TreasuryChequeDomainService {
         if (persistedTreasury.treasuryType === 'receive' && entity.documentDetail.status === 'spend')
             errors.push('امکان تغییر چک خرج شده وجود ندارد!');
 
-        //journalService = this.journalDomainService,
-        //treasuryJournalGeneration = this.treasuryJournalGenerationDomainService,
-
-        /*journals = persistedTreasury.documentDetail.chequeStatusHistory
-            ? persistedTreasury.documentDetail.chequeStatusHistory.asEnumerable()
-                .where(e => e.journalId)
-                .select(item => ({
-                    journalId: item.journalId,
-                    status: item.status
-                }))
-                .toArray()
-            : persistedTreasury.journalId ? [persistedTreasury.journalId] : null;*/
-
         if (!persistedTreasury)
             errors.push('{0} وجود ندارد!'.format(Enums.TreasuryPaymentDocumentTypes().getDisplay(entity.documentType)));
 
@@ -209,18 +196,7 @@ export class TreasuryChequeDomainService {
         if (errors.length > 0)
             throw new ValidationException(errors);
 
-        //entity.journalId = null;
         this.treasuryRepository.update(id, entity);
-
-        /*if (journals) {
-            let journalIds = [];
-
-            /!*journals.forEach(item => journalService.remove(item.journalId));
-            journals.forEach(item => journalIds.push(treasuryJournalGeneration.generateForChequeWithStatus(id,item.status)));*!/
-
-            journals.forEach(item => updateChequeJournals(id, entity));
-            journalIds.forEach(item => this.setJournal(id, item));
-        }*/
 
     }
 
