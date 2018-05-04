@@ -206,4 +206,24 @@ export class TreasuryEventListener {
 
         this.commandBus.send("treasuryTransferJournalUpdate", [treasuryId]);
     }
+
+    @eventHandler("onJournalTreasuryRemove")
+    onJournalTreasuryRemove(journalId){
+        let treasurySetting = this.treasurySettingRepository.get();
+
+        if (!treasurySetting.journalGenerateAutomatic)
+            return;
+
+        this.commandBus.send("treasuryJournalRemove", [journalId]);
+    }
+
+    @eventHandler("onTreasuryPurposeRemove")
+    onTreasuryPurposeRemove(journalId){
+        let treasurySetting = this.treasurySettingRepository.get();
+
+        if (!treasurySetting.journalGenerateAutomatic)
+            return;
+
+        this.commandBus.send("treasuryPurposeRemove", [journalId]);
+    }
 }
