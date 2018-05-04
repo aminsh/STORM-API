@@ -1401,6 +1401,16 @@
   },
 
   {
+    "name": "treasuryJournalRemove",
+    "class": "JournalDomainService",
+    "method": "remove",
+    "params": [
+      "id"
+    ],
+    "returns": ""
+  },
+
+  {
     "name": "banksNameCreate",
     "class": "BanksNameDomainService",
     "method": "create",
@@ -1486,6 +1496,17 @@
     ],
     "returns": "ids"
   },
+  {
+    "name": "treasuryPurposeRemove",
+    "class": "TreasuryPurposeDomainService",
+    "method": "remove",
+    "params": [
+      "id"
+    ],
+    "returns": ""
+  },
+
+
   {
     "name": "paymentTreasuriesPurposeCreate",
     "class": "TreasuryPurposeDomainService",
