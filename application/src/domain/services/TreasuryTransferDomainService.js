@@ -100,16 +100,11 @@ export class TreasuryTransferDomainService {
     }
 
     remove(id) {
-        let persistedTreasury = this.treasuryRepository.findById(id),
-            errors = [];
-
-        if (persistedTreasury.journalId)
-            errors.push('برای انتقال وجه سند صادر شده است و امکان حذف وجود ندارد!');
-
-        if (errors.length > 0)
-            throw new ValidationException(errors);
+        let persistedTreasury = this.treasuryRepository.findById(id);
 
         this.treasuryRepository.remove(id);
+
+        this.eventBus.send('onJournalTreasuryRemove', persistedTreasury.journalId);
     }
 
 

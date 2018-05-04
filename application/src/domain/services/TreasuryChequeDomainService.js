@@ -204,17 +204,6 @@ export class TreasuryChequeDomainService {
         let persistedTreasury = this.treasuryRepository.findById(id),
             spendCheque = this.treasuryRepository.isSpendCheque(persistedTreasury.id),
             errors = [];
-        /*    journalService = this.journalDomainService,
-
-            journalIds = persistedTreasury.documentDetail.chequeStatusHistory
-                ? persistedTreasury.documentDetail.chequeStatusHistory.asEnumerable()
-                    .where(e => e.journalId)
-                    .select(item => item.journalId)
-                    .toArray()
-                : persistedTreasury.journalId ? [persistedTreasury.journalId] : null;*/
-
-        if (persistedTreasury.journalId)
-            errors.push('برای چک سند صادر شده است و امکان حذف چک وجود ندارد!');
 
         if (spendCheque)
             errors.push('چک خرج شده است و قابل حذف نمی باشد!');
@@ -223,11 +212,13 @@ export class TreasuryChequeDomainService {
         if (errors.length > 0)
             throw new ValidationException(errors);
 
-        this.treasuryRepository.remove(id);
-        this.treasuryPurposeRepository.removeByTreasuryId(id);
+        let journalIds = persistedTreasury.documentDetail.chequeStatusHistory.asEnumerable()
+            .select(item => item.journalId).toArray();
 
-        /*if (journalIds)
-            journalIds.forEach(item => journalService.remove(item));*/
+        this.treasuryRepository.remove(id);
+
+        journalIds.forEach(item => this.eventBus.send('onJournalTreasuryRemove', item));
+        this.eventBus.send('onTreasuryPurposeRemove', persistedTreasury.id);
     }
 
     setJournal(id, journalId) {

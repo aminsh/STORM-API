@@ -167,19 +167,12 @@ export class TreasuryCashDomainService {
     }
 
     remove(id) {
-        let persistedTreasury = this.treasuryRepository.findById(id),
-            errors = [];
-
-        if (persistedTreasury.journalId)
-            errors.push('برای {0} نقدی سند صادر شده است و امکان حذف وجود ندارد!'
-                .format(Enums.TreasuryType().getDisplay(persistedTreasury.treasuryType)));
-
-        if (errors.length > 0)
-            throw new ValidationException(errors);
+        let persistedTreasury = this.treasuryRepository.findById(id);
 
         this.treasuryRepository.remove(id);
-        this.treasuryPurposeRepository.removeByTreasuryId(id);
 
+        this.eventBus.send('onJournalTreasuryRemove', persistedTreasury.journalId);
+        this.eventBus.send('onTreasuryPurposeRemove', persistedTreasury.id);
     }
 
 
