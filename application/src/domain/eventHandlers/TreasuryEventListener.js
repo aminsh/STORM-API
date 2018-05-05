@@ -226,4 +226,14 @@ export class TreasuryEventListener {
 
         this.commandBus.send("treasuryPurposeRemove", [journalId]);
     }
+
+    @eventHandler("onRemoveReceiveSpendChequeJournal")
+    onRemoveReceiveSpendChequeJournal(journalId){
+        let treasurySetting = this.treasurySettingRepository.get();
+
+        if (!treasurySetting.journalGenerateAutomatic)
+            return;
+
+        this.commandBus.send("receiveSpendChequeJournalRemove", [journalId]);
+    }
 }

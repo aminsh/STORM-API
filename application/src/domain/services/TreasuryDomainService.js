@@ -94,12 +94,29 @@ export class TreasuryDomainService extends BaseDomainService {
         }
     }
 
+    _validate() {
+
+        let errors = [],
+            entity = flatten.unflatten(this.entity);
+
+        if (entity.treasuryType === 'receive' &&  entity.documentDetail.status === 'spend')
+            errors.push('امکان ویرایش چک دریافتی خرج شده وجود ندارد!');
+
+        return errors;
+    }
+
     update(id, cmd) {
         let dto = this.mapToData(cmd);
         dto = flatten(dto);
 
         this.repository = this.treasuryRepository;
         this.execute(id, dto);
+
+
+        let errors = this._validate();
+
+        if (errors.length > 0)
+            throw new ValidationException(errors);
 
         let data = flatten.unflatten(this.data);
         Object.keys(data).length && this.treasuryRepository.patch(id, data);
