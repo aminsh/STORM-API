@@ -116,7 +116,7 @@ export class TreasuryEventListener {
         if (!treasurySetting.journalGenerateAutomatic)
             return;
 
-        //this.commandBus.send("treasuryReceiveDemandNoteJournalUpdate", [treasuryId]);
+        this.commandBus.send("treasuryReceiveDemandNoteJournalUpdate", [treasuryId]);
     }
 
     @eventHandler("onPaymentDemandNoteCreated")
@@ -137,7 +137,7 @@ export class TreasuryEventListener {
         if (!treasurySetting.journalGenerateAutomatic)
             return;
 
-        //this.commandBus.send("treasuryPaymentDemandNoteJournalUpdate", [treasuryId]);
+        this.commandBus.send("treasuryPaymentDemandNoteJournalUpdate", [treasuryId]);
     }
 
     @eventHandler("onChequeCreated")
@@ -207,8 +207,8 @@ export class TreasuryEventListener {
         this.commandBus.send("treasuryTransferJournalUpdate", [treasuryId]);
     }
 
-    @eventHandler("onJournalTreasuryRemove")
-    onJournalTreasuryRemove(journalId){
+    @eventHandler("onRemoveTreasuryJournal")
+    onRemoveTreasuryJournal(journalId){
         let treasurySetting = this.treasurySettingRepository.get();
 
         if (!treasurySetting.journalGenerateAutomatic)

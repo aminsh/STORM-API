@@ -188,7 +188,7 @@ export class TreasuryReceiptDomainService {
         this.treasuryRepository.remove(id);
         this.treasuryPurposeRepository.removeByTreasuryId(id);
 
-        this.eventBus.send('onJournalTreasuryRemove', persistedTreasury.journalId);
+        this.eventBus.send('onRemoveTreasuryJournal', persistedTreasury.journalId);
         this.eventBus.send('onTreasuryPurposeRemove', persistedTreasury.id);
     }
 

@@ -171,7 +171,7 @@ export class TreasuryCashDomainService {
 
         this.treasuryRepository.remove(id);
 
-        this.eventBus.send('onJournalTreasuryRemove', persistedTreasury.journalId);
+        this.eventBus.send('onRemoveTreasuryJournal', persistedTreasury.journalId);
         this.eventBus.send('onTreasuryPurposeRemove', persistedTreasury.id);
     }
 
