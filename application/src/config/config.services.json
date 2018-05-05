@@ -1409,6 +1409,15 @@
     ],
     "returns": ""
   },
+  {
+    "name": "receiveSpendChequeJournalRemove",
+    "class": "TreasuryChequeDomainService",
+    "method": "removeReceiveSpendCheque",
+    "params": [
+      "id"
+    ],
+    "returns": ""
+  },
 
   {
     "name": "banksNameCreate",
