@@ -367,7 +367,7 @@ enums.TreasuryPaymentDocumentTypes = function () {
         {key: 'cash', display: "نقدی"},
         {key: 'receipt', display: "فیش واریزی"},
         {key: 'demandNote', display: "سفته"},
-        {key: 'spendCheque', display: "خرج چک"}
+        {key: 'spendCheque', display: "واگذاری چک"}
     ])
 };
 
