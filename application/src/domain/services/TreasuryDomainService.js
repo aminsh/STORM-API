@@ -43,7 +43,7 @@ export class TreasuryDomainService extends BaseDomainService {
         this.eventBus.send(eventName, this.entity.id);
     }
 
-    @whenPropertyChanged("number")
+    @whenPropertyChanged("documentDetail.number")
     changedNumber() {
         let eventName = 'on' + this.capitalizeFirstLetter(this.existentValue.treasuryType)
             + this.capitalizeFirstLetter(this.existentValue.documentType) + 'Changed';
@@ -63,34 +63,34 @@ export class TreasuryDomainService extends BaseDomainService {
             amount: entity.amount && parseFloat(entity.amount),
             imageUrl: JSON.stringify(entity.imageUrl || []),
             description: entity.description,
-            documentDetail: this.mapDocumentDetail(entity)
+            documentDetail: this.mapDocumentDetail(entity.documentDetail)
         }
     }
 
-    mapDocumentDetail(entity) {
+    mapDocumentDetail(documentDetail) {
         return {
-            id: entity.id,
-            transferTo: entity.transferTo,
-            transferFrom: entity.transferFrom,
-            number: entity.number,
-            issueDate: entity.issueDate,
-            date: entity.date,
-            dueDate: entity.dueDate,
-            bank: entity.bank,
-            bankBranch: entity.bankBranch,
-            payTo: entity.payTo,
-            chequeAccountNumber: entity.chequeAccountNumber,
-            canTransferToAnother: entity.canTransferToAnother,
-            identity: entity.identity,
-            trackingNumber: entity.trackingNumber,
-            totalTreasuryNumber: entity.totalTreasuryNumber,
-            paymentLocation: entity.paymentLocation,
-            paymentPlace: entity.paymentPlace,
-            nationalCode: entity.nationalCode,
-            residence: entity.residence,
-            demandNoteTo: entity.demandNoteTo,
-            status: entity.status,
-            chequeStatusHistory: entity.documentType === 'cheque' ? JSON.stringify(entity.chequeStatusHistory || []) : null
+            id: documentDetail.id,
+            transferTo: documentDetail.transferTo,
+            transferFrom: documentDetail.transferFrom,
+            number: documentDetail.number,
+            issueDate: documentDetail.issueDate,
+            date: documentDetail.date,
+            dueDate: documentDetail.dueDate,
+            bank: documentDetail.bank,
+            bankBranch: documentDetail.bankBranch,
+            payTo: documentDetail.payTo,
+            chequeAccountNumber: documentDetail.chequeAccountNumber,
+            canTransferToAnother: documentDetail.canTransferToAnother,
+            identity: documentDetail.identity,
+            trackingNumber: documentDetail.trackingNumber,
+            totalTreasuryNumber: documentDetail.totalTreasuryNumber,
+            paymentLocation: documentDetail.paymentLocation,
+            paymentPlace: documentDetail.paymentPlace,
+            nationalCode: documentDetail.nationalCode,
+            residence: documentDetail.residence,
+            demandNoteTo: documentDetail.demandNoteTo,
+            status: documentDetail.status,
+            chequeStatusHistory: documentDetail.documentType === 'cheque' ? JSON.stringify(documentDetail.chequeStatusHistory || []) : null
         }
     }
 
