@@ -38,7 +38,7 @@ router.route('/cheques/:id')
     }))
     .put(async((req, res) => {
         try {
-            req.container.get("CommandBus").send("treasuryReceiveChequeUpdate", [req.params.id, req.body]);
+            req.container.get("CommandBus").send("treasuryChequeUpdate", [req.params.id, req.body]);
             res.json({isValid: true})
         }
         catch (e) {

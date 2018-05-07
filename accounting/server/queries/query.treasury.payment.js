@@ -35,7 +35,9 @@ class TreasuryPayment extends BaseQuery {
                     knex.raw(`treasury."destinationDetailAccountId" as "receiverId"`),
                     knex.raw(`source.title as "sourceTitle"`),
                     'treasury.destinationDetailAccountId',
-                    knex.raw(`destination.title as "destinationTitle"`)
+                    knex.raw(`destination.title as "destinationTitle"`),
+                    'treasuryDocumentDetails.status',
+                    'treasuryDocumentDetails.number'
                 )
                     .from('treasury')
                     .leftJoin('treasuryDocumentDetails', 'treasury.documentDetailId', 'treasuryDocumentDetails.id')

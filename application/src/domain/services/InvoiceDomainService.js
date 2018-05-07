@@ -1,7 +1,4 @@
 import {inject, injectable, postConstruct} from "inversify";
-import toResult from "asyncawait/await";
-import Promise from "promise";
-
 
 const PersianDate = Utility.PersianDate,
     Guid = Utility.Guid;
@@ -271,7 +268,7 @@ export class InvoiceDomainService {
 
         this.invoiceRepository.updateBatch(id, this._mapToData(entity));
 
-        toResult(new Promise(resolve => setTimeout(() => resolve(), 1000)));
+        Utility.delay(500);
 
         this.eventBus.send("onInvoiceChanged", id);
     }

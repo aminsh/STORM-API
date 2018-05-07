@@ -101,7 +101,7 @@ export class TreasuryRepository extends BaseRepository {
             if (documentDetail && persistedDocumentDetail.documentDetailId)
                 toResult(this.updateDocumentDetail(documentDetail, trx));
 
-            if (documentDetail && !persistedDocumentDetail.documentDetailId){
+            if (documentDetail && !persistedDocumentDetail.documentDetailId) {
                 toResult(this.createDocumentDetail(documentDetail, trx));
                 entity.documentDetailId = documentDetail.id;
             }
@@ -115,6 +115,37 @@ export class TreasuryRepository extends BaseRepository {
         catch (e) {
             trx.rollback(e);
 
+            throw new Error(e);
+        }
+    }
+
+    patch(id, entity) {
+        let trx = this.transaction;
+
+        try {
+
+            let documentDetail = entity.documentDetail || null;
+            delete entity.documentDetail;
+
+            Object.keys(entity).length && toResult(this.updateTreasury(id, entity, trx));
+
+            if (documentDetail) {
+                let documentDetailId = toResult(this.knex.select('documentDetailId')
+                    .from('treasury')
+                    .modify(this.modify, this.branchId, 'treasury.branchId')
+                    .where('treasury.id', id)
+                    .first()
+                );
+
+                documentDetail.id = documentDetailId.documentDetailId;
+
+                toResult(this.updateDocumentDetail(documentDetail, trx));
+            }
+            trx.commit();
+            return entity.documentDetail = documentDetail;
+        }
+        catch (e) {
+            trx.rollback(e);
             throw new Error(e);
         }
     }

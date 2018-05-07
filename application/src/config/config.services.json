@@ -926,8 +926,8 @@
     "returns": "id"
   },
   {
-    "name": "treasuryReceiveChequeUpdate",
-    "class": "TreasuryChequeDomainService",
+    "name": "treasuryChequeUpdate",
+    "class": "TreasuryDomainService",
     "method": "update",
     "params": [
       "id",
@@ -943,16 +943,6 @@
       "command"
     ],
     "returns": "id"
-  },
-  {
-    "name": "treasuryPaymentChequeUpdate",
-    "class": "TreasuryChequeDomainService",
-    "method": "update",
-    "params": [
-      "id",
-      "command"
-    ],
-    "returns": ""
   },
   {
     "name": "treasuryChequeRemove",
@@ -1081,6 +1071,24 @@
     ],
     "returns": "id"
   },
+  {
+    "name": "treasuryReceiveChequeJournalUpdate",
+    "class": "TreasuryJournalGenerationDomainService",
+    "method": "generateForUpdateCheque",
+    "params": [
+      "id"
+    ],
+    "returns": ""
+  },
+  {
+    "name": "treasuryPaymentChequeJournalUpdate",
+    "class": "TreasuryJournalGenerationDomainService",
+    "method": "generateForUpdateCheque",
+    "params": [
+      "id"
+    ],
+    "returns": ""
+  },
 
   {
     "name": "treasuryReceiveCashCreate",
@@ -1102,7 +1110,7 @@
   },
   {
     "name": "treasuryCashUpdate",
-    "class": "TreasuryCashDomainService",
+    "class": "TreasuryDomainService",
     "method": "update",
     "params": [
       "id",
@@ -1147,6 +1155,24 @@
     ],
     "returns": "undefined"
   },
+  {
+    "name": "treasuryReceiveCashJournalUpdate",
+    "class": "TreasuryJournalGenerationDomainService",
+    "method": "generateForReceiveCash",
+    "params": [
+      "id"
+    ],
+    "returns": ""
+  },
+  {
+    "name": "treasuryPaymentCashJournalUpdate",
+    "class": "TreasuryJournalGenerationDomainService",
+    "method": "generateForPaymentCash",
+    "params": [
+      "id"
+    ],
+    "returns": ""
+  },
 
   {
     "name": "treasuryReceiveReceiptCreate",
@@ -1168,7 +1194,7 @@
   },
   {
     "name": "treasuryReceiptUpdate",
-    "class": "TreasuryReceiptDomainService",
+    "class": "TreasuryDomainService",
     "method": "update",
     "params": [
       "id",
@@ -1213,6 +1239,24 @@
     ],
     "returns": "undefined"
   },
+  {
+    "name": "treasuryReceiveReceiptJournalUpdate",
+    "class": "TreasuryJournalGenerationDomainService",
+    "method": "generateForReceiveReceipt",
+    "params": [
+      "id"
+    ],
+    "returns": ""
+  },
+  {
+    "name": "treasuryPaymentReceiptJournalUpdate",
+    "class": "TreasuryJournalGenerationDomainService",
+    "method": "generateForPaymentReceipt",
+    "params": [
+      "id"
+    ],
+    "returns": ""
+  },
 
   {
     "name": "treasuryReceiveDemandNoteCreate",
@@ -1234,7 +1278,7 @@
   },
   {
     "name": "treasuryDemandNoteUpdate",
-    "class": "TreasuryDemandNoteDomainService",
+    "class": "TreasuryDomainService",
     "method": "update",
     "params": [
       "id",
@@ -1279,6 +1323,25 @@
     ],
     "returns": "undefined"
   },
+  {
+    "name": "treasuryReceiveDemandNoteJournalUpdate",
+    "class": "TreasuryJournalGenerationDomainService",
+    "method": "generateForReceiveDemandNote",
+    "params": [
+      "id"
+    ],
+    "returns": ""
+  },
+  {
+    "name": "treasuryPaymentDemandNoteJournalUpdate",
+    "class": "TreasuryJournalGenerationDomainService",
+    "method": "generateForPaymentDemandNote",
+    "params": [
+      "id"
+    ],
+    "returns": ""
+  },
+
 
   {
     "name": "treasuryTransferCreate",
@@ -1291,7 +1354,7 @@
   },
   {
     "name": "treasuryTransferUpdate",
-    "class": "TreasuryTransferDomainService",
+    "class": "TreasuryDomainService",
     "method": "update",
     "params": [
       "id",
@@ -1326,6 +1389,34 @@
       "journalId"
     ],
     "returns": "undefined"
+  },
+  {
+    "name": "treasuryTransferJournalUpdate",
+    "class": "TreasuryJournalGenerationDomainService",
+    "method": "generateForTransfer",
+    "params": [
+      "id"
+    ],
+    "returns": ""
+  },
+
+  {
+    "name": "treasuryJournalRemove",
+    "class": "JournalDomainService",
+    "method": "remove",
+    "params": [
+      "id"
+    ],
+    "returns": ""
+  },
+  {
+    "name": "receiveSpendChequeJournalRemove",
+    "class": "TreasuryChequeDomainService",
+    "method": "removeReceiveSpendCheque",
+    "params": [
+      "id"
+    ],
+    "returns": ""
   },
 
   {
@@ -1414,6 +1505,17 @@
     ],
     "returns": "ids"
   },
+  {
+    "name": "treasuryPurposeRemove",
+    "class": "TreasuryPurposeDomainService",
+    "method": "remove",
+    "params": [
+      "id"
+    ],
+    "returns": ""
+  },
+
+
   {
     "name": "paymentTreasuriesPurposeCreate",
     "class": "TreasuryPurposeDomainService",

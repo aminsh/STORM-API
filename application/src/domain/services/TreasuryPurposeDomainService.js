@@ -74,12 +74,16 @@ export class TreasuryPurposeDomainService {
             entity.treasuryId = this.treasuryChequeDomainService.chequeSpend(entity.treasury);
         }
 
-        toResult(new Promise(resolve => setTimeout(() => resolve(), 1000)));
+        toResult(new Promise(resolve => setTimeout(() => resolve(), 500)));
 
         entity = this.treasuryPurposeRepository.create(entity);
 
         this.eventBus.send("invoicePaymentChanged", entity.referenceId);
 
         return entity.id;
+    }
+
+    remove(treasuryId){
+        this.treasuryPurposeRepository.removeByTreasuryId(treasuryId);
     }
 }

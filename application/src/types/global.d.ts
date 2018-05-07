@@ -15,6 +15,7 @@ declare interface IUtility {
     String: IString;
     Guid: IGuid;
     PersianDate: IPersianDate;
+    delay(milliseconds: number): void;
 }
 
 declare interface IString {

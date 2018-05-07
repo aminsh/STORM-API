@@ -63,7 +63,9 @@ import {
     TreasuryDemandNoteDomainService,
     TreasuryJournalGenerationDomainService,
     TreasuryTransferDomainService,
-    TreasuryPurposeDomainService
+    TreasuryPurposeDomainService,
+    //BaseDomainService,
+    TreasuryDomainService
 } from "./domain/services";
 
 import {InvoiceEventListener} from "./domain/eventHandlers/InvoiceEventListener";
@@ -146,6 +148,8 @@ container.bind("PayableChequeDomainService").to(PayableChequeDomainService).inRe
 container.bind("TreasuryJournalGenerationDomainService").to(TreasuryJournalGenerationDomainService).inRequestScope();
 container.bind("TreasuryTransferDomainService").to(TreasuryTransferDomainService).inRequestScope();
 container.bind("TreasuryPurposeDomainService").to(TreasuryPurposeDomainService).inRequestScope();
+//container.bind("BaseDomainService").to(BaseDomainService).inRequestScope();
+container.bind("TreasuryDomainService").to(TreasuryDomainService).inRequestScope();
 
 container.bind("InvoiceEventListener").to(InvoiceEventListener).inRequestScope();
 container.bind("PurchaseEventListener").to(PurchaseEventListener);
