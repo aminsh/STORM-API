@@ -239,6 +239,8 @@ export class ReturnPurchaseDomainService {
 
         let data = {invoiceStatus: 'waitForPayment'};
         this.invoiceRepository.update(cmd.id, data);
+
+        this.eventBus.send('onReturnPurchaseConfirmed', entity.id);
     }
 
     update(id, cmd) {
@@ -262,6 +264,8 @@ export class ReturnPurchaseDomainService {
         this.invoiceRepository.updateBatch(id, this._mapToData(entity));
 
         this._setForInventoryReturn(entity);
+
+        this.eventBus.send('onReturnPurchaseChanged', entity.id);
     }
 
     remove(id) {

@@ -11,7 +11,8 @@ function treasuryAssembler(entity) {
         receiverTitle: entity.destinationTitle,
         amount: entity.amount,
         journal: entity.journal,
-        description: entity.description
+        description: entity.description,
+        createdAt: entity.createdAt
     };
 
     return viewModel;

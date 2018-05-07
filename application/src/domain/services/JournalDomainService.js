@@ -130,7 +130,7 @@ export class JournalDomainService {
                         id: item.id,
                         generalLedgerAccountId: subsidiaryLedgerAccount.generalLedgerAccountId,
                         subsidiaryLedgerAccountId: item.subsidiaryLedgerAccountId,
-                        detailAccountId: item.detailAccountId,
+                        detailAccountId: subsidiaryLedgerAccount.hasDetailAccount ? item.detailAccountId : null,
                         article: item.article,
                         debtor: item.debtor,
                         creditor: item.creditor
@@ -144,7 +144,12 @@ export class JournalDomainService {
     update(id, cmd) {
         cmd.id = id;
 
-        let errors = this._validate(cmd);
+        let existentJournal = this.journalRepository.findById(id),
+            errors = this._validate(cmd);
+
+        existentJournal.journalStatus === 'Fixed' &&
+            errors.push('سند با شماره {0} ثبت قطعی شده است و قابل ویرایش نمی باشد!'.format(existentJournal.temporaryNumber));
+
 
         if (errors.length > 0)
             throw new ValidationException(errors);
@@ -173,7 +178,7 @@ export class JournalDomainService {
                         id: item.id,
                         generalLedgerAccountId: subsidiaryLedgerAccount.generalLedgerAccountId,
                         subsidiaryLedgerAccountId: item.subsidiaryLedgerAccountId,
-                        detailAccountId: item.detailAccountId,
+                        detailAccountId: subsidiaryLedgerAccount.hasDetailAccount ? item.detailAccountId : null,
                         article: item.article,
                         debtor: item.debtor,
                         creditor: item.creditor

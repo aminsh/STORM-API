@@ -68,7 +68,7 @@ router.route('/:key')
 
         try {
 
-            let userId = "4QhmRwHwwrgFqXULXNtx4d",
+            let userId = "STORM-API-USER",
                 isMember = await(rp({
                     uri: `${process.env.ORIGIN_URL}/v1/branches/${req.branchId}/users/${userId}/is-member`,
                     method: 'GET',
@@ -93,7 +93,7 @@ router.route('/:key')
                     uri: `${process.env.ORIGIN_URL}/v1/branches/${req.branchId}/users?${qs.stringify({take: 1,
                         filter: {
                             logic: 'and',
-                            filters: [{field: 'userId', operator: 'eq', value: '4QhmRwHwwrgFqXULXNtx4d'}]
+                            filters: [{field: 'userId', operator: 'eq', value: 'STORM-API-USER'}]
                         }
                     })}`,
                     method: 'GET',

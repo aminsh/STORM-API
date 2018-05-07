@@ -12,7 +12,6 @@ module.exports = function(knex, branchId) {
         'journalLines.subsidiaryLedgerAccountId',
         knex.raw('"generalLedgerAccounts"."code" as "generalLedgerAccountCode"'),
         knex.raw('"generalLedgerAccounts"."code" || \' \' || "generalLedgerAccounts"."title" as "generalLedgerAccountDisplay"'),
-        'journalLines.subsidiaryLedgerAccountId',
         knex.raw('"subsidiaryLedgerAccounts"."code" as "subsidiaryLedgerAccountCode"'),
         knex.raw('"subsidiaryLedgerAccounts".code || \' \' || "subsidiaryLedgerAccounts".title as "subsidiaryLedgerAccountDisplay"'),
         'journalLines.detailAccountId',

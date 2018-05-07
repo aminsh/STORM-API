@@ -26,6 +26,7 @@ class TreasuryTransfer
                     'treasury.amount',
                     'treasury.transferDate',
                     'treasury.sourceDetailAccountId',
+                    'treasury.createdAt',
                     knex.raw(`source.title as "sourceTitle"`),
                     'treasury.destinationDetailAccountId',
                     knex.raw(`destination.title as "destinationTitle"`)
@@ -54,6 +55,7 @@ class TreasuryTransfer
                 'treasury.sourceDetailAccountId',
                 'treasury.destinationDetailAccountId',
                 'treasury.amount',
+                'treasury.journalId',
                 'treasury.description',
                 knex.raw(`"sourceDetailAccounts".title as "sourceTitle"`),
                 knex.raw(`"destinationDetailAccounts".title as "destinationTitle"`)
@@ -74,11 +76,13 @@ class TreasuryTransfer
                 'journals.temporaryDate as date',
                 'journals.temporaryNumber as number',
                 'journals.id',
-                'journals.description'
+                'journals.description',
+                'journals.createdAt'
                 )
                     .from('journals')
                     .where('id', treasury.journalId)
                     .where('branchId', branchId)
+                    .first()
             ) : null;
 
         treasury.journal = journal;

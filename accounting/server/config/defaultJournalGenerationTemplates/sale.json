@@ -53,7 +53,7 @@
     }
   ],
   "data": {
-    "description": "بابت فاکتور شماره # number # ",
+    "description": "بابت فاکتور فروش شماره # number # ",
     "lines": [
       {
         "subsidiaryLedgerAccountId": "",

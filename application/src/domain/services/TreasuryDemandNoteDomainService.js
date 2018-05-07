@@ -21,9 +21,6 @@ export class TreasuryDemandNoteDomainService {
     @inject("EventBus") eventBus = undefined;
 
     mapToEntity(cmd) {
-
-        let treasury = cmd.id ? this.treasuryRepository.findById(cmd.id) : null;
-
         return {
             id: cmd.id,
             transferDate: cmd.transferDate || PersianDate.current(),
@@ -151,32 +148,16 @@ export class TreasuryDemandNoteDomainService {
         if (errors.length > 0)
             throw new ValidationException(errors);
 
-        //entity.journalId = null;
         this.treasuryRepository.update(id, entity);
-
-        /*if (journalId) {
-            this.journalDomainService.remove(journalId);
-            entity.treasuryType === 'receive' ?
-                this.treasuryJournalGenerationDomainService.generateForReceiveDemandNote(id) :
-                this.treasuryJournalGenerationDomainService.generateForPaymentDemandNote(id);
-        }*/
     }
 
     remove(id) {
-        let persistedTreasury = this.treasuryRepository.findById(id),
-            errors = [];
-
-        if (persistedTreasury.journalId)
-            errors.push('برای {0} نقدی سند صادر شده است و امکان حذف وجود ندارد!'
-                .format(Enums.TreasuryType().getDisplay(persistedTreasury.treasuryType)));
-
-        if (errors.length > 0)
-            throw new ValidationException(errors);
+        let persistedTreasury = this.treasuryRepository.findById(id);
 
         this.treasuryRepository.remove(id);
 
-        /*if (persistedTreasury.journalId)
-            this.journalDomainService.remove(persistedTreasury.journalId);*/
+        this.eventBus.send('onRemoveTreasuryJournal', persistedTreasury.journalId);
+        this.eventBus.send('onTreasuryPurposeRemove', persistedTreasury.id);
     }
 
     setJournal(id, journalId) {

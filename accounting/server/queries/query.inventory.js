@@ -8,6 +8,7 @@ const BaseQuery = require('./query.base'),
     Enums = instanceOf('Enums'),
 
     view = item => ({
+        createdAt: item.createdAt,
         id: item.id,
         number: item.number,
         date: item.date,
@@ -68,7 +69,7 @@ class InventoryQuery extends BaseQuery {
         return kendoQueryResolve(query, parameters, productView);
     }
 
-    getAll(inventoryType, parameters) {
+    getAll(fiscalPeriodId, inventoryType, parameters) {
         const branchId = this.branchId,
             addFilter = this.addFilter,
             knex = this.knex,
@@ -84,6 +85,7 @@ class InventoryQuery extends BaseQuery {
                     .leftJoin('stocks', 'stocks.id', 'inventories.stockId')
                     .where('inventories.branchId', branchId)
                     .where('inventoryType', inventoryType)
+                    .where('fiscalPeriodId', fiscalPeriodId)
                     .as('base');
 
                 if (parameters.extra)

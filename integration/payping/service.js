@@ -10,7 +10,7 @@ const async = require('asyncawait/async'),
     HttpException = instanceOf('httpException');
 
 
-module.exports = class PaypingService {
+class PaypingService {
     constructor() {
         this.key = 'PAYPING_SERVICE_TOKEN';
     }
@@ -128,22 +128,25 @@ module.exports = class PaypingService {
 
         let bankId,
             paypingAccount = instanceOf('HttpRequest')
-            .get(`${process.env.ORIGIN_URL}/v1/banks`)
-            .query({first: '',filter: {logic: 'and', filters: [{field: 'referenceId', operator: 'eq', value: 'payping'}]}})
-            .setHeader('x-access-token', token)
-            .execute();
+                .get(`${process.env.ORIGIN_URL}/v1/banks`)
+                .query({
+                    first: '',
+                    filter: {logic: 'and', filters: [{field: 'referenceId', operator: 'eq', value: 'payping'}]}
+                })
+                .setHeader('x-access-token', token)
+                .execute();
 
-        if(paypingAccount)
+        if (paypingAccount)
             bankId = paypingAccount.id;
         else {
             let bankResult = instanceOf('HttpRequest')
-                    .post(`${process.env.ORIGIN_URL}/v1/banks`)
-                    .setHeader('x-access-token', token)
-                    .body({
-                        title: 'حساب پی پینگ',
-                        referenceId: 'payping'
-                    })
-                    .execute();
+                .post(`${process.env.ORIGIN_URL}/v1/banks`)
+                .setHeader('x-access-token', token)
+                .body({
+                    title: 'حساب پی پینگ',
+                    referenceId: 'payping'
+                })
+                .execute();
 
             if (bankResult.isValid)
                 bankId = bankResult.returnValue.id;
@@ -159,17 +162,13 @@ module.exports = class PaypingService {
             .execute();
     }
 
-    pay(token, parameters, response) {
-        let userKey = await(rp({
-                uri: `${process.env.ORIGIN_URL}/v1/third-party/payping`,
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'x-access-token': token
-                }
-            })).data.userKey,
+    getPaymentUrl(userKey, parameters) {
 
-            paymentParams = {
+        console.log('getPaymentUrl arguments');
+        console.log(userKey);
+        console.log(JSON.stringify(parameters));
+
+        let paymentParams = {
                 UserKey: userKey,
                 ReturnUrl: parameters.returnUrl,
                 PayerName: parameters.customerName,
@@ -189,18 +188,18 @@ module.exports = class PaypingService {
                 throw new HttpException(e.statusCode, e.response.statusMessage, e.error);
         }
 
-        this.redirectToPayping(paymentToken, response);
+        return paypingConfig.redirectToPaypingUrl.format(paymentToken);
     }
 
-    savePayment(branchId, reference) {
-        const userKey = await().data.userKey,
-            referenceId = reference.refid,
+    savePayment(parameters) {
+        const userKey = parameters.userKey,
+            referenceId = parameters.refid,
             options = {
                 uri: paypingConfig.verifyPayment,
                 form: {RefId: referenceId, UserKey: userKey},
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Content-Type': 'application/json',
                     'Accept': 'application/json',
                     'Authorization': this.serviceToken
                 }
@@ -210,24 +209,12 @@ module.exports = class PaypingService {
             let body = await(rp(options)),
                 amount = JSON.parse(body) * 10;
 
-            return {
-                number: referenceId,
-                date: utility.PersianDate.current(),
-                amount,
-                paymentType: 'receipt',
-                receiveOrPay: 'receive',
-                bankId: await(rp({
-                    uri: `${process.env.ORIGIN_URL}/v1/bane/payping`,
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'x-access-token': token
-                    }
-                }))
-            };
+            return {referenceId, amount};
         }
         catch (e) {
             throw new HttpException(e.statusCode, e.response.statusMessage, e.error);
         }
     }
-};
+}
+
+module.exports = PaypingService;

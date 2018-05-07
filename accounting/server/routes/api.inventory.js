@@ -9,7 +9,7 @@ const async = require('asyncawait/async'),
 router.route('/inputs')
     .get(async((req, res) => {
         let inventoryQuery = new InventoryQuery(req.branchId),
-            result = await(inventoryQuery.getAll('input', req.query));
+            result = await(inventoryQuery.getAll(req.fiscalPeriodId, 'input', req.query));
 
         return res.json(result);
     }))
@@ -85,7 +85,7 @@ router.route('/inputs/max-number')
 router.route('/outputs')
     .get(async((req, res) => {
         let inventoryQuery = new InventoryQuery(req.branchId),
-            result = await(inventoryQuery.getAll('output', req.query));
+            result = await(inventoryQuery.getAll(req.fiscalPeriodId, 'output', req.query));
 
         return res.json(result);
     }))

@@ -11,14 +11,14 @@
   {"parentCode": "102", "code": "10202", "key": "", "title": "سرمایه گذاری در سهام", "balanceType": "debit", "hasDetailAccount": true},
   {"parentCode": "102", "code": "10203", "key": "", "title": "سرمایه گذاری در اوراق مشارکت", "balanceType": "debit", "hasDetailAccount": true},
 
-  {"parentCode": "103", "code": "10301", "key": "", "title": "اسناد دریافتنی تجاری در جریان وصول", "hasDetailAccount": false},
+  {"parentCode": "103", "code": "10301", "key": "", "title": "اسناد دریافتنی تجاری در جریان وصول", "hasDetailAccount": true},
   {"parentCode": "103", "code": "10302", "key": "", "title": "اسنادر دریافتنی تجاری نزد صندوق", "hasDetailAccount": true},
   {"parentCode": "103", "code": "10303", "key": "", "title": "اسناد دریافتنی تجاری واخواستی", "hasDetailAccount": false},
   {"parentCode": "103", "code": "10304", "key": "", "title": "حساب های دریافتنی تجاری", "hasDetailAccount": true},
-  {"parentCode": "103", "code": "10305", "key": "", "title": "اسناد دریافتنی ابطالی", "hasDetailAccount": false},
-  {"parentCode": "103", "code": "10306", "key": "", "title": "حساب های دریافتنی مفقودی/ سرقتی", "hasDetailAccount": true},
-  {"parentCode": "103", "code": "10307", "key": "", "title": "اسناد دریافتنی انتقالی/ خرج شده", "hasDetailAccount": false},
-  {"parentCode": "103", "code": "10308", "key": "", "title": "حساب های دریافتنی برگشتی", "hasDetailAccount": true},
+  {"parentCode": "103", "code": "10305", "key": "", "title": "اسناد دریافتنی ابطالی", "hasDetailAccount": true},
+  {"parentCode": "103", "code": "10306", "key": "", "title": "اسناد دریافتنی مفقودی/ سرقتی", "hasDetailAccount": true},
+  {"parentCode": "103", "code": "10307", "key": "", "title": "اسناد دریافتنی انتقالی/ خرج شده", "hasDetailAccount": true},
+  {"parentCode": "103", "code": "10308", "key": "", "title": "اسناد دریافتنی برگشتی", "hasDetailAccount": true},
 
 
   {"parentCode": "104", "code": "10401", "key": "", "title": "حساب های دریافتنی غیرتجاری", "balanceType": "debit", "hasDetailAccount": true},

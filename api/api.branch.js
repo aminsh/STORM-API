@@ -330,7 +330,7 @@ router.route('/:id/users/:userId/is-member')
         if (member.branchId !== id)
             return NoAuthorizedResponseAction();
 
-        let isMember = await(knex.select('id').from('userInBranches').where({userId}).first());
+        let isMember = await(knex.select('id').from('userInBranches').where({branchId: member.branchId, userId}).first());
 
         res.send(isMember ? true : false);
     }));

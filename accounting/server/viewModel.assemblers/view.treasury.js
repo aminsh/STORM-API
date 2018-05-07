@@ -18,7 +18,8 @@ function treasuryAssembler(entity) {
         amount: entity.amount,
         chequeStatus: entity.status,
         chequeStatusDisplay: entity.status ? enums.ReceiveChequeStatus().getDisplay(entity.status) : '',
-        number: entity.number
+        number: entity.number,
+        createdAt: entity.createdAt
     };
 
     return viewModel;

@@ -59,6 +59,7 @@
     "express": "^4.10.4",
     "express-session": "^1.11.1",
     "file-base64": "^1.0.0",
+    "flat": "^4.0.0",
     "font-awesome": "^4.7.0",
     "froala-editor": "^2.6.5",
     "get-parameter-names": "^0.3.0",
