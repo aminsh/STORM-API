@@ -291,16 +291,19 @@ export class TreasuryJournalGenerationDomainService {
         let persistedTreasury = this.treasuryRepository.findById(treasuryId),
             errors = this._validation(persistedTreasury),
             maxOrder = persistedTreasury.documentDetail.chequeStatusHistory.asEnumerable().max(item => item.order),
-            haveJournal = persistedTreasury.documentDetail.chequeStatusHistory.asEnumerable()
-                .where(item => item.status === persistedTreasury.documentDetail.status && item.journalId && item.order === maxOrder)
+            persistedTreasuryJournalId = persistedTreasury.documentDetail.chequeStatusHistory.asEnumerable()
+                .where(item => item.status === persistedTreasury.documentDetail.status
+                    && item.journalId
+                    && item.order === maxOrder)
                 .select(item => item.journalId)
-                .toArray();
+                .first(),
+            persistedJournal = this.journalRepository.findById(persistedTreasuryJournalId);
 
         if (persistedTreasury.treasuryType === 'receive' && persistedTreasury.documentDetail.status === 'spend')
             errors.push('امکان صدور سند برای چک خرج شده در لیست چک های پرداختی می باشد!');
 
-        if (haveJournal.length !== 0)
-            errors.push('برای چک با وضعیت جاری سند حسابداری صادر شده است!');
+        /*if (haveJournal.length !== 0)
+            errors.push('برای چک با وضعیت جاری سند حسابداری صادر شده است!');*/
 
         if (errors.length > 0)
             throw new ValidationException(errors);
@@ -318,7 +321,10 @@ export class TreasuryJournalGenerationDomainService {
                 : this.setPaymentJournalLines(persistedTreasury);
 
 
-        return this.journalDomainService.create({description, journalLines});
+        return persistedTreasury.journalId
+            ? this.journalDomainService.update(persistedTreasuryJournalId,
+                {description: persistedJournal.description, journalLines: persistedJournal.journalLines})
+            : this.journalDomainService.create({description, journalLines});
 
     }
 
