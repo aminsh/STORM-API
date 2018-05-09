@@ -38,7 +38,17 @@ export class PurchaseEventListener {
         this.onPurchaseCreated(invoice);
     }
 
+    @eventHandler("PurchaseRemoved")
     onPurchaseRemoved(invoice) {
+        let settings = this.settingsRepository.get();
 
+        if (!settings.canSaleGenerateAutomaticJournal)
+            return;
+
+        invoice.inventoryIds && invoice.inventoryIds
+            .forEach(id => this.commandBus.send("inventoryInputRemove", [id]));
+
+        this.commandBus.send("journalRemove", [invoice.journalId]);
     }
+
 }
