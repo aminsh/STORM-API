@@ -1,5 +1,4 @@
 import {inject, injectable} from "inversify";
-import {TreasuryPurposeRepository} from "../data/repository.treasury.purpose";
 
 const Guid = Utility.Guid,
     PersianDate = Utility.PersianDate;
