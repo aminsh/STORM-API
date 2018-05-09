@@ -48,6 +48,7 @@ class ProductReports extends BaseQuery {
                 .innerJoin('inventoryIOTypes', 'inventoryIOTypes.id', 'inventories.ioType')
                 .leftJoin('scales', 'scales.id', 'products.scaleId')
                 .innerJoin('stocks', 'stocks.id', 'inventories.stockId')
+                .whereBetween('inventories.date',[this.options.fromMainDate, this.options.toDate])
                 .orderBy('inventories.createdAt');
 
 
