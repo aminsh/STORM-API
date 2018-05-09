@@ -151,7 +151,11 @@ export class InvoicePurchaseDomainService {
             return [];
 
         if (Array.isArray(data))
-            return data.asEnumerable().select(e => ({key: e.key, value: e.value || 0, vatIncluded: e.vatIncluded})).toArray();
+            return data.asEnumerable().select(e => ({
+                key: e.key,
+                value: e.value || 0,
+                vatIncluded: e.vatIncluded
+            })).toArray();
 
         return Object.keys(data).asEnumerable()
             .select(key => ({
@@ -180,9 +184,12 @@ export class InvoicePurchaseDomainService {
 
         entity.id = data.id;
 
-        if (entity.invoiceStatus !== 'draft')
+        if (entity.invoiceStatus !== 'draft'){
+            Utility.delay(500);
             this._setForInventoryPurchase(entity);
+        }
 
+        Utility.delay(500);
         this.eventBus.send('onPurchaseCreated', entity.id);
 
         return entity.id;
@@ -233,12 +240,11 @@ export class InvoicePurchaseDomainService {
     remove(id) {
         const invoice = this.invoiceRepository.findById(id);
 
-        if (invoice.invoiceStatus !== 'draft')
-            throw new ValidationException(['فاکتور جاری قابل حذف نمیباشد']);
+        this.eventBus.send('PurchaseRemoved', invoice);
+
+        Utility.delay(500);
 
         this.invoiceRepository.remove(id);
-
-        this.eventBus.send('onPurchaseRemoved', id);
     }
 
     pay(id, payments) {
