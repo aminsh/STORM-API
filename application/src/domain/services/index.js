@@ -37,3 +37,4 @@ export * from "./TreasuryJournalGenerationDomainService";
 export * from "./TreasuryTransferDomainService";
 export * from "./TreasuryPurposeDomainService";
 export * from "./TreasuryDomainService";
+export * from "./PurchaseDomainService";
