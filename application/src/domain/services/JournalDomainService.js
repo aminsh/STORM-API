@@ -148,7 +148,7 @@ export class JournalDomainService {
             errors = this._validate(cmd);
 
         existentJournal.journalStatus === 'Fixed' &&
-            errors.push('سند با شماره {0} ثبت قطعی شده است و قابل ویرایش نمی باشد!'.format(existentJournal.temporaryNumber));
+        errors.push('سند با شماره {0} ثبت قطعی شده است و قابل ویرایش نمی باشد!'.format(existentJournal.temporaryNumber));
 
 
         if (errors.length > 0)
@@ -187,7 +187,8 @@ export class JournalDomainService {
                 .toArray()
         };
 
-        return this.journalRepository.batchUpdate(id, journal);
+        this.journalRepository.batchUpdate(id, journal);
+        return id;
     }
 
     changeDate(id, date) {
@@ -624,8 +625,8 @@ export class JournalDomainService {
         if (!invoice)
             throw new ValidationException(['فاکتور وجود ندارد']);
 
-        if (!Utility.String.isNullOrEmpty(invoice.journalId))
-            throw new ValidationException(['برای فاکتور {0} قبلا سند حسابداری صادر شده'.format(invoice.number)]);
+        /*if (!Utility.String.isNullOrEmpty(invoice.journalId))
+            throw new ValidationException(['برای فاکتور {0} قبلا سند حسابداری صادر شده'.format(invoice.number)]);*/
 
         const charge = (settings.saleCharges || []).asEnumerable()
             .select(e => ({
@@ -648,7 +649,8 @@ export class JournalDomainService {
 
             journal = this.journalGenerationTemplateDomainService.generate(model, 'purchase');
 
-        return this.create(journal);
+        return invoice.journalId ? this.update(invoice.journalId, journal)
+            : this.create(journal);
     }
 
     generateForReturnPurchase(invoiceId) {
