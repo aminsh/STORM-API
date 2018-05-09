@@ -191,8 +191,7 @@ export class InventoryInputDomainService {
         input.inventoryLines = cmd.inventoryLines.asEnumerable()
             .select(line => ({
                 productId: line.productId,
-                quantity: line.quantity,
-                /*unitPrice: 0*/
+                quantity: line.quantity
             })).toArray();
 
         this.inventoryRepository.updateBatch(id, input);
