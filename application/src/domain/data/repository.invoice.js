@@ -32,6 +32,7 @@ export class InvoiceRepository extends BaseRepository {
             id: first.invoiceId,
             number: first.number,
             date: first.date,
+            title: first.title,
             detailAccountId: first.detailAccountId,
             detailAccount: {
                 title: first.detailAccountTitle,
@@ -248,6 +249,24 @@ export class InvoiceRepository extends BaseRepository {
         if (shouldUpdatedLines.asEnumerable().any())
             shouldUpdatedLines.forEach(e => toResult(knex('invoiceLines')
                 .where('id', e.id).update(e)));
+    }
+
+    patch(id, entity) {
+        let trx = this.transaction;
+
+        try {
+            let invoiceLines = entity.invoiceLines || null;
+            delete entity.invoiceLines;
+
+            Object.keys(entity).length && toResult(this.updateInvoice(id, entity, trx));
+
+            invoiceLines && toResult(this.updateInvoiceLines(id, invoiceLines, trx));
+            trx.commit();
+        }
+        catch (e) {
+            trx.rollback(e);
+            throw new Error(e);
+        }
     }
 
     isExistsProduct(productId) {
