@@ -332,7 +332,7 @@ router.route('/:id/users/:userId/is-member')
 
         let isMember = await(knex.select('id').from('userInBranches').where({branchId: member.branchId, userId}).first());
 
-        res.send(isMember ? true : false);
+        res.send(!!isMember);
     }));
 
 router.route('/by-token/:token')

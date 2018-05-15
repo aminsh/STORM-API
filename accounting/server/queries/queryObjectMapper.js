@@ -37,7 +37,7 @@ class QueryObjectMapper {
                 .toArray()
         }
         else {
-            let data = this._mapResult(result)
+            let data = this._mapResult(result);
             return selector(data);
         }
     }
