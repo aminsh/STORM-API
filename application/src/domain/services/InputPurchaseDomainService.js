@@ -62,7 +62,7 @@ export class InputPurchaseDomainService {
                 .select(line => {
 
                     let invoiceLine = invoice.invoiceLines.asEnumerable()
-                            .single(invoiceLine => invoiceLine.id === line.invoiceLineId),
+                            .single(invoiceLine => invoiceLine.productId === line.productId),
 
                         rate = 100 * ((invoiceLine.quantity * invoiceLine.unitPrice) - invoiceLine.discount) / totalPrice,
                         chargeShare = totalCharges * rate / 100,
