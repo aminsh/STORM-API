@@ -100,6 +100,7 @@
     "pg-connection-string": "^2.0.0",
     "pluralize": "^3.1.0",
     "promise": "^7.1.1",
+    "query-string": "^6.1.0",
     "raven": "^2.1.1",
     "raven-js": "^3.17.0",
     "redis": "^2.6.3",
@@ -117,7 +118,8 @@
     "typeorm": "^0.1.9",
     "ui-select": "^0.19.7",
     "uuid-token-generator": "^1.0.0",
-    "yargs": "^7.0.2"
+    "yargs": "^7.0.2",
+    "zarinpal-checkout": "^0.2.7"
   },
   "devDependencies": {
     "@dev-storm/so-sass-requirements": "^1.0.8",
