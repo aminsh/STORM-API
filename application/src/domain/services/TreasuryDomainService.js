@@ -36,7 +36,7 @@ export class TreasuryDomainService extends BaseDomainService {
         this.eventBus.send(eventName, this.entity.id);
     }
 
-    @whenPropertyChanged("date")
+    @whenPropertyChanged("documentDetail.date")
     changedDate() {
         let eventName = 'on' + this.capitalizeFirstLetter(this.existentValue.treasuryType)
             + this.capitalizeFirstLetter(this.existentValue.documentType) + 'Changed';

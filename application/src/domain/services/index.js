@@ -40,3 +40,4 @@ export * from "./TreasuryDomainService";
 export * from "./InventoryAccountingDomainService";
 export * from "./InventoryDomainService";
 export * from "./RegisteredThirdPartyDomainService"
+export * from "./PurchaseDomainService";
