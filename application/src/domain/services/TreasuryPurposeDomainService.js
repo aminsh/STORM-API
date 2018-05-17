@@ -1,13 +1,13 @@
 import {inject, injectable} from "inversify";
-import toResult from "asyncawait/await";
-import Promise from "promise";
-
 
 @injectable()
 export class TreasuryPurposeDomainService {
 
     /** @type {TreasuryPurposeRepository}*/
     @inject("TreasuryPurposeRepository") treasuryPurposeRepository = undefined;
+
+    /** @type {TreasuryDomainService}*/
+    @inject("TreasuryDomainService") treasuryDomainService = undefined;
 
     /** @type {InvoiceRepository}*/
     @inject("InvoiceRepository") invoiceRepository = undefined;
@@ -57,24 +57,29 @@ export class TreasuryPurposeDomainService {
         if (errors.length > 0)
             throw new ValidationException(errors);
 
-        if (entity.treasury.documentType === 'cheque')
-            entity.treasuryId = this.treasuryChequeDomainService.create(entity.treasury);
+        if (entity.treasuryId && entity.treasury.documentType !== 'spendCheque')
+            this.treasuryDomainService.update(entity.treasuryId, entity.treasury);
 
-        if (entity.treasury.documentType === 'cash')
-            entity.treasuryId = this.treasuryCashDomainService.create(entity.treasury);
+        else {
+            if (entity.treasury.documentType === 'cheque')
+                entity.treasuryId = this.treasuryChequeDomainService.create(entity.treasury);
 
-        if (entity.treasury.documentType === 'receipt')
-            entity.treasuryId = this.treasuryReceiptDomainService.create(entity.treasury);
+            if (entity.treasury.documentType === 'cash')
+                entity.treasuryId = this.treasuryCashDomainService.create(entity.treasury);
 
-        if (entity.treasury.documentType === 'spendCheque'){
-            let treasury = entity.treasuryId ? this.treasuryRepository.findById(entity.treasuryId) : null;
-            if (!treasury)
-                throw new ValidationException(['چک با شماره {0} ثبت نشده است!'.format(treasury.documentDetail.number)]);
+            if (entity.treasury.documentType === 'receipt')
+                entity.treasuryId = this.treasuryReceiptDomainService.create(entity.treasury);
 
-            entity.treasuryId = this.treasuryChequeDomainService.chequeSpend(entity.treasury);
+            if (entity.treasury.documentType === 'spendCheque') {
+                let treasury = entity.treasuryId ? this.treasuryRepository.findById(entity.treasuryId) : null;
+                if (!treasury)
+                    throw new ValidationException(['چک با شماره {0} ثبت نشده است!'.format(entity.treasury.documentDetail.number)]);
+
+                entity.treasuryId = this.treasuryChequeDomainService.chequeSpend(entity.treasury);
+            }
         }
 
-        toResult(new Promise(resolve => setTimeout(() => resolve(), 500)));
+        Utility.delay(500);
 
         entity = this.treasuryPurposeRepository.create(entity);
 
@@ -83,7 +88,7 @@ export class TreasuryPurposeDomainService {
         return entity.id;
     }
 
-    remove(treasuryId){
+    remove(treasuryId) {
         this.treasuryPurposeRepository.removeByTreasuryId(treasuryId);
     }
 }

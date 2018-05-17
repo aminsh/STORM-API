@@ -296,14 +296,13 @@ export class TreasuryJournalGenerationDomainService {
                     && item.journalId
                     && item.order === maxOrder)
                 .select(item => item.journalId)
-                .first(),
-            persistedJournal = this.journalRepository.findById(persistedTreasuryJournalId);
+                .toArray(),
+            persistedJournal = persistedTreasuryJournalId.length > 0
+                ? this.journalRepository.findById(persistedTreasuryJournalId)
+                : null;
 
         if (persistedTreasury.treasuryType === 'receive' && persistedTreasury.documentDetail.status === 'spend')
             errors.push('امکان صدور سند برای چک خرج شده در لیست چک های پرداختی می باشد!');
-
-        /*if (haveJournal.length !== 0)
-            errors.push('برای چک با وضعیت جاری سند حسابداری صادر شده است!');*/
 
         if (errors.length > 0)
             throw new ValidationException(errors);

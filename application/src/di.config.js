@@ -26,6 +26,10 @@ import {
     TreasurySettingRepository,
     ChequeCategoryRepository,
     TreasuryPurposeRepository,
+    DimensionCategoryRepository,
+    DimensionRepository,
+    DimensionDomainService
+    TreasuryPurposeRepository,
     RegisteredThirdPartyRepository
 } from "./domain/data";
 import {
@@ -145,6 +149,8 @@ container.bind("TreasurySettingRepository").to(TreasurySettingRepository).inRequ
 container.bind("ChequeCategoryRepository").to(ChequeCategoryRepository).inRequestScope();
 container.bind("TreasuryPurposeRepository").to(TreasuryPurposeRepository).inRequestScope();
 container.bind("RegisteredThirdPartyRepository").to(RegisteredThirdPartyRepository).inRequestScope();
+container.bind("DimensionCategoryRepository").to(DimensionCategoryRepository).inRequestScope();
+container.bind("DimensionRepository").to(DimensionRepository).inRequestScope();
 
 container.bind("BankDomainService").to(BankDomainService).inRequestScope();
 container.bind("DetailAccountDomainService").to(DetailAccountDomainService).inRequestScope();
@@ -189,6 +195,7 @@ container.bind("TreasuryDomainService").to(TreasuryDomainService).inRequestScope
 container.bind("InventoryAccountingDomainService").to(InventoryAccountingDomainService).inRequestScope();
 container.bind("InventoryDomainService").to(InventoryDomainService).inRequestScope();
 container.bind("RegisteredThirdPartyDomainService").to(RegisteredThirdPartyDomainService).inRequestScope();
+container.bind("DimensionDomainService").to(DimensionDomainService).inRequestScope();
 
 container.bind("InvoiceEventListener").to(InvoiceEventListener).inRequestScope();
 container.bind("PurchaseEventListener").to(PurchaseEventListener);

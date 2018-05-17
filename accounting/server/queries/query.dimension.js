@@ -6,7 +6,7 @@ const async = require('asyncawait/async'),
     kendoQueryResolve = require('../services/kendoQueryResolve'),
     view = require('../viewModel.assemblers/view.dimension');
 
-module.exports = class DimensionQuery extends BaseQuery {
+class DimensionQuery extends BaseQuery {
     constructor(branchId) {
         super(branchId);
         this.getById = async(this.getById);
@@ -34,4 +34,5 @@ module.exports = class DimensionQuery extends BaseQuery {
                 .andWhere('id', id).first());
         return view(dimension);
     }
-};
+}
+module.exports = DimensionQuery;

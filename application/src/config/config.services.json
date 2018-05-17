@@ -1529,8 +1529,6 @@
     ],
     "returns": ""
   },
-
-
   {
     "name": "paymentTreasuriesPurposeCreate",
     "class": "TreasuryPurposeDomainService",
@@ -1555,6 +1553,83 @@
     "method": "remove",
     "params": [
       "key"
+    ],
+    "returns": ""
+  },
+  {
+    "name": "dimensionCreate",
+    "class": "DimensionDomainService",
+    "method": "createDimension",
+    "params": [
+      "command",
+      "categoryId"
+    ],
+    "returns": "id"
+  },
+  {
+    "name": "dimensionUpdate",
+    "class": "DimensionDomainService",
+    "method": "updateDimension",
+    "params": [
+      "id",
+      "command"
+    ],
+    "returns": ""
+  },
+  {
+    "name": "dimensionRemove",
+    "class": "DimensionDomainService",
+    "method": "removeDimension",
+    "params": [
+      "id"
+    ],
+    "returns": ""
+  },
+  {
+    "name": "activeDimension",
+    "class": "DimensionDomainService",
+    "method": "activeDimension",
+    "params": [
+      "id"
+    ],
+    "returns": ""
+  },
+  {
+    "name": "deActiveDimension",
+    "class": "DimensionDomainService",
+    "method": "deActiveDimension",
+    "params": [
+      "id"
+    ],
+    "returns": ""
+  },
+
+  {
+    "name": "dimensionCategoryCreate",
+    "class": "DimensionDomainService",
+    "method": "createDimensionCategory",
+    "params": [
+      "command",
+      "categoryId"
+    ],
+    "returns": "id"
+  },
+  {
+    "name": "dimensionCategoryUpdate",
+    "class": "DimensionDomainService",
+    "method": "updateDimensionCategory",
+    "params": [
+      "id",
+      "command"
+    ],
+    "returns": ""
+  },
+  {
+    "name": "dimensionCategoryRemove",
+    "class": "DimensionDomainService",
+    "method": "removeDimensionCategory",
+    "params": [
+      "id"
     ],
     "returns": ""
   }
