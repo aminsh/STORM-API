@@ -4,9 +4,9 @@ module.exports = {
     isNullOrEmpty: function (str) {
         if (!str) return true;
 
-        if (str.length === 0) return true;
+        if (str.toString().length === 0) return true;
 
-        if (!str.trim()) return true;
+        if (!str.toString().trim()) return true;
 
         return false;
     },
