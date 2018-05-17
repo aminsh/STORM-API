@@ -24,7 +24,8 @@ const BaseQuery = require('./query.base'),
         inputId: item.inputId,
         outputId: item.outputId,
         invoiceId: item.invoiceId,
-        fixedQuantity: item.fixedQuantity
+        fixedQuantity: item.fixedQuantity,
+        fixedAmount: item.fixedAmount
     }),
 
     viewLine = item => ({
@@ -95,6 +96,22 @@ class InventoryQuery extends BaseQuery {
         return kendoQueryResolve(query, parameters, view);
     }
 
+    getAllByIds(ids) {
+        let knex = this.knex,
+            result = await(knex.select(
+                'inventories.*',
+                knex.raw('stocks.title as "stockDisplay"'),
+                knex.raw('"inventoryIOTypes".title as "ioTypeDisplay"')
+            )
+                .from('inventories')
+                .leftJoin('inventoryIOTypes', 'inventoryIOTypes.id', 'inventories.ioType')
+                .leftJoin('stocks', 'stocks.id', 'inventories.stockId')
+                .where('inventories.branchId', this.branchId)
+                .whereIn('inventories.id', ids));
+
+        return  result.map(view);
+    }
+
     getAllWithoutInvoice(inventoryType, parameters) {
         const branchId = this.branchId,
             knex = this.knex,
@@ -104,7 +121,7 @@ class InventoryQuery extends BaseQuery {
                     'inventories.*',
                     knex.raw(`inventories.number || ' - ' || inventories.date || ' - ' || stocks.title as display`),
                     knex.raw('stocks.title as "stockDisplay"'),
-                     knex.raw('"inventoryIOTypes".title as "ioTypeDisplay"')
+                    knex.raw('"inventoryIOTypes".title as "ioTypeDisplay"')
                 )
                     .from('inventories')
                     .leftJoin('stocks', 'stocks.id', 'inventories.stockId')
@@ -153,7 +170,7 @@ class InventoryQuery extends BaseQuery {
                 .select(
                     'inventories.*',
                     knex.raw('stocks.title as "stockDisplay"'),
-                     knex.raw('"inventoryIOTypes".title as "ioTypeDisplay"')
+                    knex.raw('"inventoryIOTypes".title as "ioTypeDisplay"')
                 )
                 .from('inventories')
                 .leftJoin('stocks', 'inventories.stockId', 'stocks.id')
