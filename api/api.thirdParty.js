@@ -63,59 +63,13 @@ router.route('/:key')
         res.json(result);
     }))
     .post(async((req, res) => {
-        const branchId = req.branchId,
-            key = req.params.key;
 
         try {
-
-            let userId = "STORM-API-USER",
-                isMember = await(rp({
-                    uri: `${process.env.ORIGIN_URL}/v1/branches/${req.branchId}/users/${userId}/is-member`,
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'x-access-token': req.headers['x-access-token']
-                    },
-                }));
-
-            if (!eval(isMember))
-                await(rp({
-                    uri: `${process.env.ORIGIN_URL}/v1/branches/${req.branchId}/users`,
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'x-access-token': req.headers['x-access-token']
-                    },
-                    json: {userId}
-                }));
-
-            let apiUser = await(rp({
-                    uri: `${process.env.ORIGIN_URL}/v1/branches/${req.branchId}/users?${qs.stringify({take: 1,
-                        filter: {
-                            logic: 'and',
-                            filters: [{field: 'userId', operator: 'eq', value: 'STORM-API-USER'}]
-                        }
-                    })}`,
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'x-access-token': req.headers['x-access-token']
-                    },
-                })),
-                apiToken = JSON.parse(apiUser).data[0].token;
-
-            await(instanceOf('PaymentService', key).register(apiToken, req.body));
-            res.sendStatus(200);
+            const id = req.container.get("CommandBus").send('registerThirdParty', [req.params.key, req.body]);
+            res.json({isValid: true, returnValue: {id}});
         }
         catch (e) {
-            let message;
-
-            if (e instanceof Error)
-                message = e.message;
-            else
-                message = 'System error';
-
-            res.status(500).send(message);
+            res.json({isValid: false, errors: e.errors});
         }
 
     }))
