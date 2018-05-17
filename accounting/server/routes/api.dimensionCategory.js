@@ -2,10 +2,7 @@
 
 const async = require('asyncawait/async'),
     await = require('asyncawait/await'),
-    string = Utility.String,
-    translate = require('../services/translateService'),
     router = require('express').Router(),
-    DimensionCategoryRepository = require('../data/repository.dimensionCategory'),
     DimensionCategoryQuery = require('../queries/query.dimensionCategory');
 
 router.route('/')
@@ -15,31 +12,13 @@ router.route('/')
         res.json(result);
     }))
     .post(async((req, res) => {
-        let dimensionCategoryRepository = new DimensionCategoryRepository(req.branchId),
-            errors = [],
-            cmd = req.body;
-
-        if (string.isNullOrEmpty(cmd.title))
-            errors.push(translate('The title is required'));
-        else {
-            if (cmd.title.length < 3)
-                errors.push(translate('The title should have at least 3 character'));
+        try {
+            const id = req.container.get("CommandBus").send('dimensionCategoryCreate', [req.body]);
+            res.json({isValid: true, returnValue: {id}});
         }
-
-        if (errors.asEnumerable().any())
-            return res.json({
-                isValid: false,
-                errors: errors
-            });
-
-        var entity = await(dimensionCategoryRepository.create({
-            title: cmd.title
-        }));
-
-        return json({
-            isValid: true,
-            returnValue: { id: entity.id }
-        });
+        catch (e) {
+            res.json({isValid: false, errors: e.errors});
+        }
     }));
 
 router.route('/:id')
@@ -49,39 +28,22 @@ router.route('/:id')
         res.json(result);
     }))
     .put(async((req, res) => {
-        let dimensionCategoryRepository = new DimensionCategoryRepository(req.branchId),
-            errors = [],
-            cmd = req.body;
-
-        if (string.isNullOrEmpty(cmd.title))
-            errors.push(translate('The title is required'));
-        else {
-            if (cmd.title.length < 3)
-                errors.push(translate('The title should have at least 3 character'));
+        try {
+            req.container.get("CommandBus").send('dimensionCategoryUpdate', [req.params.id, req.body]);
+            res.json({isValid: true});
         }
-
-        if (errors.asEnumerable().any())
-            return res.json({
-                isValid: false,
-                errors: errors
-            });
-
-        var entity = await(dimensionCategoryRepository.findById(cmd.id));
-
-        entity.title = cmd.title;
-
-        await(dimensionCategoryRepository.update(entity));
-
-        return res.json({ isValid: true });
+        catch (e) {
+            res.json({isValid: false, errors: e.errors});
+        }
     }))
     .delete(async((req, res) => {
-        let dimensionCategoryRepository = new DimensionCategoryRepository(req.branchId),
-            errors = [],
-            cmd = req.body;
-
-        await(dimensionCategoryRepository.remove(req.params.id));
-
-        return res.json({ isValid: true });
+        try {
+            req.container.get("CommandBus").send('dimensionCategoryRemove', [req.params.id]);
+            res.json({isValid: true});
+        }
+        catch (e) {
+            res.json({isValid: false, errors: e.errors});
+        }
     }));
 
 module.exports = router;

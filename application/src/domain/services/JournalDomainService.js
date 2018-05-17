@@ -71,13 +71,36 @@ export class JournalDomainService {
         if (!subsidiaryLedgerAccount)
             errors.push('حساب معین مقدار ندارد یا صحیح نیست');
         else {
+            let subsidiaryLedgerAccount = this.subsidiaryLedgerAccountRepository
+                    .findById(line.subsidiaryLedgerAccountId),
 
-            let detailAccount = Utility.String.isNullOrEmpty(line.detailAccountId)
+                detailAccount = Utility.String.isNullOrEmpty(line.detailAccountId)
+                    ? null
+                    : this.detailAccountRepository.findById(line.detailAccountId);
+
+            if (!detailAccount && subsidiaryLedgerAccount.hasDetailAccount)
+                errors.push('تفصیل مقدار ندارد یا معتبر نیست');
+
+            let dimension1 = Utility.String.isNullOrEmpty(line.dimension1Id)
                 ? null
-                : this.detailAccountRepository.findById(line.detailAccountId);
+                : this.detailAccountRepository.findById(line.dimension1Id);
 
-            if (!detailAccount)
-                errors.push('تفصیل مقدار ندارد یا صحیح نیست');
+            if (!dimension1 && subsidiaryLedgerAccount.hasDimension1)
+                errors.push('سطح چهارم مقدار ندارد یا معتبر نیست');
+
+            let dimension2 = Utility.String.isNullOrEmpty(line.dimension2Id)
+                ? null
+                : this.detailAccountRepository.findById(line.dimension2Id);
+
+            if (!dimension2 && subsidiaryLedgerAccount.hasDimension2)
+                errors.push('سطح پنجم مقدار ندارد یا معتبر نیست');
+
+            let dimension3 = Utility.String.isNullOrEmpty(line.dimension3Id)
+                ? null
+                : this.detailAccountRepository.findById(line.dimension3Id);
+
+            if (!dimension3 && subsidiaryLedgerAccount.hasDimension3)
+                errors.push('سطح ششم مقدار ندارد یا معتبر نیست');
         }
 
         let debtor = parseFloat(line.debtor),
@@ -131,6 +154,9 @@ export class JournalDomainService {
                         generalLedgerAccountId: subsidiaryLedgerAccount.generalLedgerAccountId,
                         subsidiaryLedgerAccountId: item.subsidiaryLedgerAccountId,
                         detailAccountId: subsidiaryLedgerAccount.hasDetailAccount ? item.detailAccountId : null,
+                        dimension1Id: subsidiaryLedgerAccount.hasDimension1 ? item.dimension1Id : null,
+                        dimension2Id: subsidiaryLedgerAccount.hasDimension2 ? item.dimension2Id : null,
+                        dimension3Id: subsidiaryLedgerAccount.hasDimension3 ? item.dimension3Id : null,
                         article: item.article,
                         debtor: item.debtor,
                         creditor: item.creditor
@@ -179,12 +205,16 @@ export class JournalDomainService {
                         generalLedgerAccountId: subsidiaryLedgerAccount.generalLedgerAccountId,
                         subsidiaryLedgerAccountId: item.subsidiaryLedgerAccountId,
                         detailAccountId: subsidiaryLedgerAccount.hasDetailAccount ? item.detailAccountId : null,
+                        dimension1Id: subsidiaryLedgerAccount.hasDimension1 ? item.dimension1Id : null,
+                        dimension2Id: subsidiaryLedgerAccount.hasDimension2 ? item.dimension2Id : null,
+                        dimension3Id: subsidiaryLedgerAccount.hasDimension3 ? item.dimension3Id : null,
                         article: item.article,
                         debtor: item.debtor,
                         creditor: item.creditor
                     }
                 })
                 .toArray()
+
         };
 
         this.journalRepository.batchUpdate(id, journal);
