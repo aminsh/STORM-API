@@ -69,7 +69,6 @@ import {
     TreasuryPurposeDomainService,
     TreasuryDomainService,
     PurchaseDomainService,
-    TreasuryDomainService,
     InventoryAccountingDomainService,
     InventoryDomainService,
     RegisteredThirdPartyDomainService
