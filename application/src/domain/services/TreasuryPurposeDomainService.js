@@ -31,7 +31,7 @@ export class TreasuryPurposeDomainService {
     mapToEntity(cmd) {
         return {
             id: cmd.id,
-            treasuryId: cmd.treasuryId || null,
+            treasuryId: cmd.treasuryId || cmd.treasury.receiveId || null,
             reference: cmd.reference,
             referenceId: cmd.referenceId,
             treasury: cmd.treasury || null
