@@ -17,8 +17,6 @@ require('./setup');
 
 require('./application/dist/bootstrap');
 
-require('./accounting/server/queries/queryObjectMapper');
-
 let config = instanceOf("config"),
     app = require('./api/api.config');
 
