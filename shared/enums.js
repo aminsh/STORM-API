@@ -281,11 +281,23 @@ enums.ThirdParty = function () {
     return new Enum([
         {
             key: "payping",
+            type: "paymentGateway",
             data: {
                 website: 'https://www.payping.ir',
                 title: "پی پینگ",
                 logo: "payping-logo.png",
                 display: "سرویس پرداخت پی پینگ",
+                description: "با استفاده از این افزونه، مشتریان شما می توانند صورت حساب شما را پرداخت کنند و اسناد مالی مربوطه به صورت اتوماتیک صادر می شود."
+            }
+        },
+        {
+            key: "zarinpal",
+            type: "paymentGateway",
+            data: {
+                website: 'https://www.zarinpal.com',
+                title: "زرین پال",
+                logo: "zarinpal-logo.svg",
+                display: "درگاه پرداخت زرین‌پال",
                 description: "با استفاده از این افزونه، مشتریان شما می توانند صورت حساب شما را پرداخت کنند و اسناد مالی مربوطه به صورت اتوماتیک صادر می شود."
             }
         }

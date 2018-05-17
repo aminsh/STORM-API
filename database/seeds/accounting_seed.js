@@ -6,11 +6,16 @@ const async = require('asyncawait/async'),
 
 exports.seed = async(function (knex, Promise) {
 
-    await(knex('users').insert({
-        id: 'STORM-API-USER',
-        name: 'STORM-API-USER',
-        email: 'api@storm-online.ir',
-        state: 'active',
-        image: '/public/images/apiuser.png',
-    }))
+    const invoices = await(knex.select('*').from('invoices')
+        .where('invoiceType', 'purchase')
+        .where('invoiceStatus', '!=', 'draft')
+    );
+
+    invoices.forEach(item => {
+        let updatedInvoice = {
+            invoiceStatus: 'confirmed'
+        };
+
+        await(knex('invoices').where('id', item.id).update(updatedInvoice));
+    })
 });

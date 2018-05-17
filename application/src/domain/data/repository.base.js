@@ -11,8 +11,18 @@ export class BaseRepository {
     /** @type {IState}*/
     @inject("State") state = undefined;
 
-    knex = knex;
+    _knex = knex;
+    _createdByUnitOfWork = false;
     branchId = undefined;
+
+    get knex(){
+        return this._knex;
+    }
+
+    set knex(value){
+        this._knex = value;
+        this._createdByUnitOfWork = true;
+    }
 
     @postConstruct()
     onLoad() {

@@ -18,3 +18,4 @@ export * from "./repository.banksName";
 export * from "./repository.treasury.setting";
 export * from "./repository.chequeCategory";
 export * from "./repository.treasury.purpose";
+export * from "./RegisteredThirdPartyRepository";

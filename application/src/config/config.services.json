@@ -722,6 +722,21 @@
     "returns": ""
   },
   {
+  "name": "inventoryPricing",
+  "class": "InventoryAccountingDomainService",
+  "method": "pricing",
+  "params": [
+    "cmd"
+  ],
+  "returns": ""
+  },
+  {
+    "name": "inventoryFixQuantity",
+    "class": "InventoryDomainService",
+    "method": "fixQuantity",
+    "params": ["cmd"]
+  },
+  {
     "name": "inventoryOutputSetJournal",
     "class": "InventoryOutputDomainService",
     "method": "setJournal",
@@ -1522,6 +1537,24 @@
       "commands"
     ],
     "returns": "ids"
+  },
+  {
+    "name": "registerThirdParty",
+    "class": "RegisteredThirdPartyDomainService",
+    "method": "create",
+    "params": [
+      "key","data"
+    ],
+    "returns": ""
+  },
+  {
+    "name": "removeThirdParty",
+    "class": "RegisteredThirdPartyDomainService",
+    "method": "remove",
+    "params": [
+      "key"
+    ],
+    "returns": ""
   },
   {
     "name": "dimensionCreate",

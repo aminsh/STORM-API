@@ -122,7 +122,7 @@ router.route('/outputs/:id')
     }));
 
 router.route('/outputs/:id/calculate-price')
-    .put(async((req, res)=> {
+    .put(async((req, res) => {
         try {
             req.container.get("CommandBus").send("inventoryOutputCalculatePrice", [req.params.id]);
             res.json({isValid: true})
@@ -205,6 +205,39 @@ router.route('/by-stock/:productId')
             result = await(inventoryQuery.getInventoriesByStock(req.params.productId, req.fiscalPeriodId));
 
         return res.json(result);
+    }));
+
+router.route('/fix-quantity')
+    .post(async(function (req, res) {
+
+        try {
+            req.container.get("CommandBus").send("inventoryFixQuantity", [req.body]);
+
+            res.json({isValid: true})
+        }
+        catch (e) {
+            res.json({isValid: false, errors: e.errors});
+        }
+    }));
+
+
+router.route('/pricing')
+    .post(async(function (req, res) {
+
+        try {
+            const result = req.container.get("CommandBus").send("inventoryPricing", [req.body]);
+
+            if (result && result.idsHasNoPrice)
+                return res.json({
+                    isValid: false,
+                    errors: {inventoryHasNotPrice: new InventoryQuery(req.branchId).getAllByIds(result.idsHasNoPrice)}
+                });
+
+            res.json({isValid: true})
+        }
+        catch (e) {
+            res.json({isValid: false, errors: e.errors});
+        }
     }));
 
 module.exports = router;

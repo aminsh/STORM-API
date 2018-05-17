@@ -1,13 +1,11 @@
-"use strict";
-
-const knex = instanceOf('knex'),
-    async = require('asyncawait/async'),
-    await = require('asyncawait/await');
+import toResult from "asyncawait/await";
+import async from "asyncawait/async";
 
 class QueryObjectMapper {
 
     init(){
-        let tablesData = await(knex.select('table_name', 'column_name')
+        let knex = instanceOf('knex'),
+            tablesData = toResult(knex.select('table_name', 'column_name')
                 .from('information_schema.columns')
                 .where('table_schema', 'public')),
             tables = tablesData.asEnumerable()
@@ -22,7 +20,8 @@ class QueryObjectMapper {
     }
 
     columnsToSelect(tableName){
-        let cols = this.tables[tableName];
+        let knex = instanceOf('knex'),
+            cols = this.tables[tableName];
 
         return cols.map(col => knex.raw(`"${tableName}"."${col}" as "${tableName}_${col}"`));
     }
@@ -66,4 +65,4 @@ async(function () {
     instance.init();
 })();
 
-module.exports = instance;
+export default instance;
