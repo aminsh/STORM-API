@@ -1,3 +1,5 @@
+npm install -g babel babel-cli
+
 1- install Node.js (https://nodejs.org/en/download/)
 
 2- install PostgreSQL  (https://www.postgresql.org/download/)
