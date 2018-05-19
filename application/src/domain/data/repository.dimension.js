@@ -19,7 +19,7 @@ export class DimensionRepository extends BaseRepository {
             .andWhere('dimensionCategoryId', dimensionCategoryId));
 
         if (notEqualId)
-            query.andWhere('id', '!=', notEqualId);
+            query = query.asEnumerable().where(item => item.id !== notEqualId).toArray();
 
         return query;
     }

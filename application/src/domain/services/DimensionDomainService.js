@@ -55,6 +55,13 @@ export class DimensionDomainService {
         if (Utility.String.isNullOrEmpty(cmd.code))
             errors.push('کد نمی تواند خالی باشد!');
 
+        if (!Utility.String.isNullOrEmpty(entity.code)) {
+            let dimension = this.dimensionRepository.findByCode(entity.code, entity.dimensionCategoryId, id);
+
+            if (dimension.length > 0)
+                errors.push('کد تکراری است!');
+        }
+
         if (Utility.String.isNullOrEmpty(cmd.title))
             errors.push('عنوان اجباری است!');
         else {
