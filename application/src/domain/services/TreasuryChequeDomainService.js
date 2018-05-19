@@ -1,5 +1,4 @@
 import {inject, injectable} from "inversify";
-import {TreasuryPurposeRepository} from "../data/repository.treasury.purpose";
 
 const Guid = Utility.Guid,
     PersianDate = Utility.PersianDate;
@@ -168,11 +167,15 @@ export class TreasuryChequeDomainService {
     }
 
     create(cmd) {
-        if (cmd.treasuryType === 'receive')
-            return this.createReceive(cmd);
+        if (cmd.treasuryType === 'receive') {
+            let id = this.createReceive(cmd);
+            return this.chequeInFund(id, cmd);
+        }
 
-        if (cmd.treasuryType === 'payment')
-            return this.createPayment(cmd);
+        if (cmd.treasuryType === 'payment') {
+            let id = this.createPayment(cmd);
+            return this.chequeInProcess(id, cmd);
+        }
     }
 
     update(id, cmd) {
@@ -235,7 +238,7 @@ export class TreasuryChequeDomainService {
         persistedTreasury.documentDetail.chequeStatusHistory.pop();
 
         let chequeHistory = persistedTreasury.documentDetail.chequeStatusHistory.asEnumerable()
-            .where(item => item.order === maxOrder-1)
+            .where(item => item.order === maxOrder - 1)
             .select(item => ({journalId: item.journalId, status: item.status}))
             .first();
 

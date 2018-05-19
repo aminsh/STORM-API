@@ -210,12 +210,12 @@ export class JournalRepository extends BaseRepository {
             let lines = journal.journalLines;
             delete journal.journalLines;
 
-            toResult(trx('journals')
+            Object.keys(journal).length && toResult(trx('journals')
                 .modify(this.modify, this.branchId)
                 .where('id', id)
                 .update(journal));
 
-            this._updateLines(id, lines, trx);
+            lines && this._updateLines(id, lines, trx);
 
             trx.commit();
         }

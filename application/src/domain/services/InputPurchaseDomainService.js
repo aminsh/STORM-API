@@ -49,6 +49,37 @@ export class InputPurchaseDomainService {
             .toArray();
     }
 
+    update(id, cmd) {
+        const settings = this.settingsRepository.get();
+
+        if (settings.productOutputCreationMethod === 'defaultStock')
+            cmd.invoiceLines.forEach(item => item.stockId = settings.stockId);
+        else {
+
+            let errors = cmd.invoiceLines.asEnumerable()
+                .where(item => this.productRepository.isGood(item.productId))
+                .where(item => Utility.String.isNullOrEmpty(item.stockId))
+                .select(item => 'برای کالای {0} انبار انتخاب نشده'.format(this.productRepository.findById(item.productId).title))
+                .toArray();
+
+            if (errors.length > 0)
+                throw new ValidationException(errors);
+        }
+
+        return cmd.invoiceLines.asEnumerable()
+            .where(item => this.productRepository.isGood(item.productId))
+            .groupBy(
+                item => item.stockId,
+                item => item,
+                (key, items) => ({
+                    stockId: key,
+                    ioType: 'inputPurchase',
+                    inventoryLines: items.toArray()
+                }))
+            .select(item => this.inventoryInputDomainService.update(id, item))
+            .toArray();
+    }
+
     setPrice(ids, invoiceId) {
 
         let invoice = this.invoiceRepository.findById(invoiceId),
@@ -62,7 +93,7 @@ export class InputPurchaseDomainService {
                 .select(line => {
 
                     let invoiceLine = invoice.invoiceLines.asEnumerable()
-                            .single(invoiceLine => invoiceLine.id === line.invoiceLineId),
+                            .single(invoiceLine => invoiceLine.productId === line.productId),
 
                         rate = 100 * ((invoiceLine.quantity * invoiceLine.unitPrice) - invoiceLine.discount) / totalPrice,
                         chargeShare = totalCharges * rate / 100,

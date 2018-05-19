@@ -1,6 +1,7 @@
 import toResult from "asyncawait/await";
 import {BaseRepository} from "./repository.base";
-import {injectable} from "inversify";
+import {injectable, inject} from "inversify";
+import objectQueryMapper from "../services/queryObjectMapper";
 
 @injectable()
 export class InventoryRepository extends BaseRepository {
@@ -35,6 +36,72 @@ export class InventoryRepository extends BaseRepository {
         return first ? this.findById(first.id) : null;
     }
 
+    findAllProduct(filter) {
+        let branchId = this.branchId,
+            state = this.state,
+            query = this.knex.select('productId')
+                .from(function () {
+                    this.from('inventories')
+                        .leftJoin('inventoryLines', 'inventories.id', 'inventoryLines.inventoryId')
+                        .where('inventories.branchId', branchId)
+                        .where('fiscalPeriodId', state.fiscalPeriodId)
+                        .whereBetween('date', [filter.minDate, filter.maxDate])
+                        .as('base');
+                })
+                .groupBy('productId');
+
+        if (filter.stockIds && filter.stockIds.length > 0)
+            query.whereIn('stockId', filter.stockIds);
+
+        let result = toResult(query);
+
+        return result.map(item => item.productId);
+    }
+
+    /**
+     * @param {Object} filter
+     * @param {[{field: String, dir: String} | String]} sort
+     * */
+    findAll(filter, sort = []) {
+        let columns = [
+                ...objectQueryMapper.columnsToSelect('inventories'),
+                ...objectQueryMapper.columnsToSelect('inventoryLines')
+            ],
+            query = this.knex.select(...columns)
+                .from('inventories')
+                .leftJoin('inventoryLines', 'inventories.id', 'inventoryLines.inventoryId')
+                .modify(this.modify, this.branchId, 'inventories.branchId')
+                .where('fiscalPeriodId', this.state.fiscalPeriodId)
+                .where('fixedAmount', false)
+                .whereBetween('date', [filter.minDate, filter.maxDate]);
+
+        if (filter.productId)
+            query.where('productId', filter.productId);
+
+        if (filter.stockIds && filter.stockIds.length > 0)
+            query.whereIn('stockId', filter.stockIds);
+
+        sort.forEach(s => {
+            if (typeof  s === 'string')
+                query.orderBy(s);
+            else
+                query.orderBy(s.field, s.dir);
+        });
+
+        let result = toResult(query),
+            mapped = objectQueryMapper.mapResult(result);
+
+        return mapped.asEnumerable()
+            .groupBy(
+                item => item.inventories.id,
+                item => item, (key, items) => Object.assign(
+                    {},
+                    items.toArray()[0].inventories,
+                    {inventoryLines: items.select(item => item.inventoryLines).toArray()}
+                ))
+            .toArray();
+    }
+
     findByInvoiceId(invoiceId, inventoryType) {
         let query = this.knex.select('id').from('inventories')
             .modify(this.modify, this.branchId)
@@ -57,7 +124,7 @@ export class InventoryRepository extends BaseRepository {
 
         let knex = this.knex,
             branchId = this.branchId,
-            modify=this.modify,
+            modify = this.modify,
 
             query = toResult(knex.from(function () {
                 this.select(knex.raw(`((case
@@ -155,7 +222,7 @@ export class InventoryRepository extends BaseRepository {
 
             return entity;
         }
-        catch (e){
+        catch (e) {
             trx.rollback(e);
 
             throw new Error(e);
@@ -163,7 +230,14 @@ export class InventoryRepository extends BaseRepository {
     }
 
     update(id, entity) {
-        return toResult(this.knex('inventories').where('id', id).update(entity));
+        if (Array.isArray(id))
+            return toResult(this.knex('inventories')
+                .modify(this.modify, this.branchId)
+                .whereIn('id', id).update(entity));
+
+        return toResult(this.knex('inventories')
+            .modify(this.modify, this.branchId)
+            .where('id', id).update(entity));
     }
 
     updateBatch(id, entity) {
@@ -184,7 +258,7 @@ export class InventoryRepository extends BaseRepository {
 
             trx.commit();
         }
-        catch (e){
+        catch (e) {
             trx.rollback(e);
 
             throw new Error(e);
@@ -194,15 +268,15 @@ export class InventoryRepository extends BaseRepository {
 
     updateLines(lines) {
 
-        const trx = this.transaction;
+        const trx = this._createdByUnitOfWork ? this.knex : this.transaction;
 
         try {
             lines.forEach(e => toResult(trx('inventoryLines').where('id', e.id).update(e)));
 
-            trx.commit();
+            this._createdByUnitOfWork === false && trx.commit();
         }
-        catch(e){
-            trx.rollback(e);
+        catch (e) {
+            this._createdByUnitOfWork === false && trx.rollback(e);
 
             throw new Error(e);
         }

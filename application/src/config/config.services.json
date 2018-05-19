@@ -122,7 +122,7 @@
   },
   {
     "name": "invoicePurchaseUpdate",
-    "class": "InvoicePurchaseDomainService",
+    "class": "PurchaseDomainService",
     "method": "update",
     "params": [
       "id",
@@ -720,6 +720,21 @@
       "id"
     ],
     "returns": ""
+  },
+  {
+  "name": "inventoryPricing",
+  "class": "InventoryAccountingDomainService",
+  "method": "pricing",
+  "params": [
+    "cmd"
+  ],
+  "returns": ""
+  },
+  {
+    "name": "inventoryFixQuantity",
+    "class": "InventoryDomainService",
+    "method": "fixQuantity",
+    "params": ["cmd"]
   },
   {
     "name": "inventoryOutputSetJournal",
@@ -1514,8 +1529,6 @@
     ],
     "returns": ""
   },
-
-
   {
     "name": "paymentTreasuriesPurposeCreate",
     "class": "TreasuryPurposeDomainService",
@@ -1524,5 +1537,100 @@
       "commands"
     ],
     "returns": "ids"
+  },
+  {
+    "name": "registerThirdParty",
+    "class": "RegisteredThirdPartyDomainService",
+    "method": "create",
+    "params": [
+      "key","data"
+    ],
+    "returns": ""
+  },
+  {
+    "name": "removeThirdParty",
+    "class": "RegisteredThirdPartyDomainService",
+    "method": "remove",
+    "params": [
+      "key"
+    ],
+    "returns": ""
+  },
+  {
+    "name": "dimensionCreate",
+    "class": "DimensionDomainService",
+    "method": "createDimension",
+    "params": [
+      "command",
+      "categoryId"
+    ],
+    "returns": "id"
+  },
+  {
+    "name": "dimensionUpdate",
+    "class": "DimensionDomainService",
+    "method": "updateDimension",
+    "params": [
+      "id",
+      "command"
+    ],
+    "returns": ""
+  },
+  {
+    "name": "dimensionRemove",
+    "class": "DimensionDomainService",
+    "method": "removeDimension",
+    "params": [
+      "id"
+    ],
+    "returns": ""
+  },
+  {
+    "name": "activeDimension",
+    "class": "DimensionDomainService",
+    "method": "activeDimension",
+    "params": [
+      "id"
+    ],
+    "returns": ""
+  },
+  {
+    "name": "deActiveDimension",
+    "class": "DimensionDomainService",
+    "method": "deActiveDimension",
+    "params": [
+      "id"
+    ],
+    "returns": ""
+  },
+
+  {
+    "name": "dimensionCategoryCreate",
+    "class": "DimensionDomainService",
+    "method": "createDimensionCategory",
+    "params": [
+      "command",
+      "categoryId"
+    ],
+    "returns": "id"
+  },
+  {
+    "name": "dimensionCategoryUpdate",
+    "class": "DimensionDomainService",
+    "method": "updateDimensionCategory",
+    "params": [
+      "id",
+      "command"
+    ],
+    "returns": ""
+  },
+  {
+    "name": "dimensionCategoryRemove",
+    "class": "DimensionDomainService",
+    "method": "removeDimensionCategory",
+    "params": [
+      "id"
+    ],
+    "returns": ""
   }
 ]

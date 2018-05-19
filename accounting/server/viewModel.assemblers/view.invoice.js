@@ -14,6 +14,7 @@ module.exports = function (entity, settings) {
         : undefined;
 
     return Object.assign({}, {
+        branchId: entity.branchId,
         id: entity.id,
         printUrl,
         number: entity.number,

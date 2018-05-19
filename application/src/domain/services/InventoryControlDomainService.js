@@ -55,7 +55,7 @@ export class InventoryControlDomainService {
 
                 return {
                     isValid: this._isValidInventoryTurnover(inventories),
-                    product: this.productRepository.isGood({id: item.productId})
+                    product: this.productRepository.isGood(item.productId)
                 };
             })
             .where(item => !item.isValid)
