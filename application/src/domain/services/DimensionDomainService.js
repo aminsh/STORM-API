@@ -25,9 +25,12 @@ export class DimensionDomainService {
         if (!Utility.String.isNullOrEmpty(entity.code)) {
             let dimension = this.dimensionRepository.findByCode(entity.code, categoryId);
 
-            if (dimension)
+            if (dimension.length > 0)
                 errors.push('کد تکراری است!');
         }
+
+        if (Utility.String.isNullOrEmpty(entity.code))
+            errors.push('کد نمی تواند خالی باشد!');
 
         if (Utility.String.isNullOrEmpty(cmd.title))
             errors.push('عنوان نمی تواند خالی باشد!');
@@ -49,12 +52,8 @@ export class DimensionDomainService {
         let errors = [],
             entity = this.dimensionRepository.findById(id);
 
-        if (!Utility.String.isNullOrEmpty(cmd.code)) {
-            let dimension = this.dimensionRepository.findByCode(cmd.code, cmd.dimensionCategoryId, cmd.id);
-
-            if (dimension)
-                errors.push('کد تکراری است!');
-        }
+        if (Utility.String.isNullOrEmpty(cmd.code))
+            errors.push('کد نمی تواند خالی باشد!');
 
         if (Utility.String.isNullOrEmpty(cmd.title))
             errors.push('عنوان اجباری است!');
@@ -80,6 +79,9 @@ export class DimensionDomainService {
         if (isExist)
             errors.push('حساب تفصیل در سند شماره {0} استفاده شده است و قابل حذف نمی باشد!'
                 .format(isExist.temporaryNumber));
+
+        if (errors.length > 0)
+            throw new ValidationException(errors);
 
         return this.dimensionRepository.remove(id);
     }

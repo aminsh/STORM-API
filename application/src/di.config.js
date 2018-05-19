@@ -28,8 +28,6 @@ import {
     TreasuryPurposeRepository,
     DimensionCategoryRepository,
     DimensionRepository,
-    DimensionDomainService
-    TreasuryPurposeRepository,
     RegisteredThirdPartyRepository
 } from "./domain/data";
 import {
@@ -75,6 +73,7 @@ import {
     PurchaseDomainService,
     InventoryAccountingDomainService,
     InventoryDomainService,
+    DimensionDomainService,
     RegisteredThirdPartyDomainService
 } from "./domain/services";
 

@@ -13,7 +13,7 @@ router.route('/category/:categoryId')
     }))
     .post(async((req, res) => {
         try {
-            const id = req.container.get("CommandBus").send('dimensionCreate', [req.params.id, req.body]);
+            const id = req.container.get("CommandBus").send('dimensionCreate', [req.params.categoryId, req.body]);
             res.json({isValid: true, returnValue: {id}});
         }
         catch (e) {

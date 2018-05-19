@@ -21,7 +21,7 @@ export class DimensionRepository extends BaseRepository {
         if (notEqualId)
             query.andWhere('id', '!=', notEqualId);
 
-        return query.first();
+        return query;
     }
 
     create(entity) {

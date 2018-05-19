@@ -41,3 +41,4 @@ export * from "./InventoryAccountingDomainService";
 export * from "./InventoryDomainService";
 export * from "./RegisteredThirdPartyDomainService"
 export * from "./PurchaseDomainService";
+export * from "./DimensionDomainService";
