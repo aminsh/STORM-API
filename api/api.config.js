@@ -24,6 +24,13 @@ app.use(bodyParser.urlencoded({limit: '50mb', extended: false}));
 app.use(bodyParser.json({limit: '50mb'}));
 app.use(cookieParser());
 
+app.use(function (req, res, next) {
+
+    req.apiCaller = req.headers['api-caller'] || 'External api';
+    
+    next();
+});
+
 app.get('/v1/enums', function (req, res) {
     let enumsJson = Object.keys(enums).asEnumerable()
         .select(key => ({key, value: enums[key]().data}))
@@ -68,6 +75,7 @@ app.use(async((req, res, next) => {
         query: req.query,
         body: req.body,
         params: req.params,
+        apiCaller: req.apiCaller,
         originalUrl: req.originalUrl
     });
 
