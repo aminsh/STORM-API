@@ -71,7 +71,7 @@ export class BaseDomainService {
         this.existentValue = flatten(this.existentValue);
 
         if (!this.existentValue)
-            throw new ValidationException('existent value is undefined!');
+            throw new ValidationException(['existent value is undefined!']);
 
         this.mapper();
     }
