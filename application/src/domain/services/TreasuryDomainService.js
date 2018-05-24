@@ -63,7 +63,7 @@ export class TreasuryDomainService extends BaseDomainService {
             amount: entity.amount && parseFloat(entity.amount),
             imageUrl: JSON.stringify(entity.imageUrl || []),
             description: entity.description,
-            documentDetail: this.mapDocumentDetail(entity.documentDetail)
+            documentDetail: entity.documentDetail && this.mapDocumentDetail(entity.documentDetail)
         }
     }
 

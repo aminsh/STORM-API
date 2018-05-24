@@ -29,7 +29,7 @@ export class TreasurySettingRepository extends BaseRepository {
         };
         super.create(entity);
 
-        return this.knex('treasurySettings').insert(entity);
+        toResult(this.knex('treasurySettings').insert(entity));
     }
 
 }

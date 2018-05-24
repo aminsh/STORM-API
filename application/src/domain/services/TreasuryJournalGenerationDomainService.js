@@ -45,13 +45,18 @@ export class TreasuryJournalGenerationDomainService {
     generateForReceiveCash(treasuryId) {
 
         let persistedTreasury = this.treasuryRepository.findById(treasuryId),
-            errors = this._validation(persistedTreasury);
+            errors = this._validation(persistedTreasury),
+            subLedger = this.subsidiaryLedgerAccountDomainService;
+
+        if (!subLedger.treasuryAccounts
+            || subLedger.treasuryAccounts.fund.length === 0
+            || subLedger.treasuryAccounts.debtors.length === 0)
+            errors.push('تنظیمات خزانه داری برای صدور سند انجام نشده است!');
 
         if (errors.length > 0)
             throw new ValidationException(errors);
 
-        let subLedger = this.subsidiaryLedgerAccountDomainService,
-            receiver = this.detailAccountRepository.findById(persistedTreasury.destinationDetailAccountId),
+        let receiver = this.detailAccountRepository.findById(persistedTreasury.destinationDetailAccountId),
             payer = this.detailAccountRepository.findById(persistedTreasury.sourceDetailAccountId),
 
 
@@ -87,13 +92,18 @@ export class TreasuryJournalGenerationDomainService {
     generateForPaymentCash(treasuryId) {
 
         let persistedTreasury = this.treasuryRepository.findById(treasuryId),
-            errors = this._validation(persistedTreasury);
+            errors = this._validation(persistedTreasury),
+            subLedger = this.subsidiaryLedgerAccountDomainService;
+
+        if (!subLedger.treasuryAccounts
+            || subLedger.treasuryAccounts.fund.length === 0
+            || subLedger.treasuryAccounts.creditors.length === 0)
+            errors.push('تنظیمات خزانه داری برای صدور سند انجام نشده است!');
 
         if (errors.length > 0)
             throw new ValidationException(errors);
 
-        let subLedger = this.subsidiaryLedgerAccountDomainService,
-            receiver = this.detailAccountRepository.findById(persistedTreasury.destinationDetailAccountId),
+        let receiver = this.detailAccountRepository.findById(persistedTreasury.destinationDetailAccountId),
             payer = this.detailAccountRepository.findById(persistedTreasury.sourceDetailAccountId),
 
             journalLines = [],
@@ -127,13 +137,18 @@ export class TreasuryJournalGenerationDomainService {
     generateForReceiveReceipt(treasuryId) {
 
         let persistedTreasury = this.treasuryRepository.findById(treasuryId),
-            errors = this._validation(persistedTreasury);
+            errors = this._validation(persistedTreasury),
+            subLedger = this.subsidiaryLedgerAccountDomainService;
+
+        if (!subLedger.treasuryAccounts
+            || subLedger.treasuryAccounts.bank.length === 0
+            || subLedger.treasuryAccounts.debtors.length === 0)
+            errors.push('تنظیمات خزانه داری برای صدور سند انجام نشده است!');
 
         if (errors.length > 0)
             throw new ValidationException(errors);
 
-        let subLedger = this.subsidiaryLedgerAccountDomainService,
-            receiver = this.detailAccountRepository.findById(persistedTreasury.destinationDetailAccountId),
+        let receiver = this.detailAccountRepository.findById(persistedTreasury.destinationDetailAccountId),
             payer = this.detailAccountRepository.findById(persistedTreasury.sourceDetailAccountId),
 
 
@@ -168,13 +183,18 @@ export class TreasuryJournalGenerationDomainService {
     generateForPaymentReceipt(treasuryId) {
 
         let persistedTreasury = this.treasuryRepository.findById(treasuryId),
-            errors = this._validation(persistedTreasury);
+            errors = this._validation(persistedTreasury),
+            subLedger = this.subsidiaryLedgerAccountDomainService;
+
+        if (!subLedger.treasuryAccounts
+            || subLedger.treasuryAccounts.bank.length === 0
+            || subLedger.treasuryAccounts.creditors.length === 0)
+            errors.push('تنظیمات خزانه داری برای صدور سند انجام نشده است!');
 
         if (errors.length > 0)
             throw new ValidationException(errors);
 
-        let subLedger = this.subsidiaryLedgerAccountDomainService,
-            receiver = this.detailAccountRepository.findById(persistedTreasury.destinationDetailAccountId),
+        let receiver = this.detailAccountRepository.findById(persistedTreasury.destinationDetailAccountId),
             payer = this.detailAccountRepository.findById(persistedTreasury.sourceDetailAccountId),
 
 
@@ -209,13 +229,18 @@ export class TreasuryJournalGenerationDomainService {
     generateForReceiveDemandNote(treasuryId) {
 
         let persistedTreasury = this.treasuryRepository.findById(treasuryId),
-            errors = this._validation(persistedTreasury);
+            errors = this._validation(persistedTreasury),
+            subLedger = this.subsidiaryLedgerAccountDomainService;
+
+        if (!subLedger.treasuryAccounts
+            || subLedger.treasuryAccounts.fund.length === 0
+            || subLedger.treasuryAccounts.debtors.length === 0)
+            errors.push('تنظیمات خزانه داری برای صدور سند انجام نشده است!');
 
         if (errors.length > 0)
             throw new ValidationException(errors);
 
-        let subLedger = this.subsidiaryLedgerAccountDomainService,
-            payer = this.detailAccountRepository.findById(persistedTreasury.sourceDetailAccountId),
+        let payer = this.detailAccountRepository.findById(persistedTreasury.sourceDetailAccountId),
 
 
             journalLines = [],
@@ -250,13 +275,18 @@ export class TreasuryJournalGenerationDomainService {
     generateForPaymentDemandNote(treasuryId) {
 
         let persistedTreasury = this.treasuryRepository.findById(treasuryId),
-            errors = this._validation(persistedTreasury);
+            errors = this._validation(persistedTreasury),
+            subLedger = this.subsidiaryLedgerAccountDomainService;
+
+        if (!subLedger.treasuryAccounts
+            || subLedger.treasuryAccounts.fund.length === 0
+            || subLedger.treasuryAccounts.creditors.length === 0)
+            errors.push('تنظیمات خزانه داری برای صدور سند انجام نشده است!');
 
         if (errors.length > 0)
             throw new ValidationException(errors);
 
-        let subLedger = this.subsidiaryLedgerAccountDomainService,
-            receiver = this.detailAccountRepository.findById(persistedTreasury.destinationDetailAccountId),
+        let receiver = this.detailAccountRepository.findById(persistedTreasury.destinationDetailAccountId),
 
 
             journalLines = [],
@@ -329,6 +359,7 @@ export class TreasuryJournalGenerationDomainService {
 
     setReceiveJournalLines(treasury) {
         let subLedger = this.subsidiaryLedgerAccountDomainService,
+            errors = [],
             receiver = this.detailAccountRepository.findById(treasury.destinationDetailAccountId),
             payer = this.detailAccountRepository.findById(treasury.sourceDetailAccountId),
             persistedJournal = treasury.journalId ? this.journalRepository.findById(treasury.journalId) : null,
@@ -341,6 +372,19 @@ export class TreasuryJournalGenerationDomainService {
                 : null,
 
             journalLines = [];
+
+        if (!subLedger.treasuryAccounts
+            || subLedger.treasuryAccounts.receiveBusinessNotesInFund.length === 0
+            || subLedger.treasuryAccounts.receiveBusinessNotesInProcess.length === 0
+            || subLedger.treasuryAccounts.receiveBusinessNotesMissing.length === 0
+            || subLedger.treasuryAccounts.receiveBusinessNotesReturned.length === 0
+            || subLedger.treasuryAccounts.receiveBusinessNotesRevocation.length === 0
+            || subLedger.treasuryAccounts.bank.length === 0
+            || subLedger.treasuryAccounts.debtors.length === 0)
+            errors.push('تنظیمات خزانه داری برای صدور سند انجام نشده است!');
+
+        if (errors.length > 0)
+            throw new ValidationException(errors);
 
         if (treasury.documentDetail.status === 'inFund') {
 
@@ -493,9 +537,22 @@ export class TreasuryJournalGenerationDomainService {
                         generalLedgerAccountId: item.generalLedgerAccountId,
                         subsidiaryLedgerAccountId: item.subsidiaryLedgerAccountId
                     })).first()
-                : null;
+                : null,
+            errors = [],
+            journalLines = [];
 
-        let journalLines = [];
+        if (!subLedger.treasuryAccounts
+            || subLedger.treasuryAccounts.receiveBusinessNotesInFund.length === 0
+            || subLedger.treasuryAccounts.receiveBusinessNotesInProcess.length === 0
+            || subLedger.treasuryAccounts.receiveBusinessNotesMissing.length === 0
+            || subLedger.treasuryAccounts.receiveBusinessNotesReturned.length === 0
+            || subLedger.treasuryAccounts.receiveBusinessNotesRevocation.length === 0
+            || subLedger.treasuryAccounts.bank.length === 0
+            || subLedger.treasuryAccounts.creditors.length === 0)
+            errors.push('تنظیمات خزانه داری برای صدور سند انجام نشده است!');
+
+        if (errors.length > 0)
+            throw new ValidationException(errors);
 
         if (treasury.documentDetail.status === 'inProcessOnPassing') {
 
@@ -691,9 +748,23 @@ export class TreasuryJournalGenerationDomainService {
                         subsidiaryLedgerAccountId: item.subsidiaryLedgerAccountId,
                         detailAccountId: item.detailAccountId
                     })).first()
-                : null;
+                : null,
 
-        let journalLines = [];
+            errors = [],
+            journalLines = [];
+
+        if (!subLedger.treasuryAccounts
+            || subLedger.treasuryAccounts.receiveBusinessNotesInFund.length === 0
+            || subLedger.treasuryAccounts.receiveBusinessNotesInProcess.length === 0
+            || subLedger.treasuryAccounts.receiveBusinessNotesMissing.length === 0
+            || subLedger.treasuryAccounts.receiveBusinessNotesReturned.length === 0
+            || subLedger.treasuryAccounts.receiveBusinessNotesRevocation.length === 0
+            || subLedger.treasuryAccounts.bank.length === 0
+            || subLedger.treasuryAccounts.debtors.length === 0)
+            errors.push('تنظیمات خزانه داری برای صدور سند انجام نشده است!');
+
+        if (errors.length > 0)
+            throw new ValidationException(errors);
 
         if (treasury.documentDetail.status === 'inFund') {
 
@@ -844,9 +915,23 @@ export class TreasuryJournalGenerationDomainService {
                         subsidiaryLedgerAccountId: item.subsidiaryLedgerAccountId,
                         detailAccountId: item.detailAccountId
                     })).first()
-                : null;
+                : null,
 
-        let journalLines = [];
+            errors = [],
+            journalLines = [];
+
+        if (!subLedger.treasuryAccounts
+            || subLedger.treasuryAccounts.receiveBusinessNotesInFund.length === 0
+            || subLedger.treasuryAccounts.receiveBusinessNotesInProcess.length === 0
+            || subLedger.treasuryAccounts.receiveBusinessNotesMissing.length === 0
+            || subLedger.treasuryAccounts.receiveBusinessNotesReturned.length === 0
+            || subLedger.treasuryAccounts.receiveBusinessNotesRevocation.length === 0
+            || subLedger.treasuryAccounts.bank.length === 0
+            || subLedger.treasuryAccounts.creditors.length === 0)
+            errors.push('تنظیمات خزانه داری برای صدور سند انجام نشده است!');
+
+        if (errors.length > 0)
+            throw new ValidationException(errors);
 
         if (treasury.documentDetail.status === 'inProcessOnPassing') {
 
@@ -965,13 +1050,18 @@ export class TreasuryJournalGenerationDomainService {
     generateForTransfer(treasuryId) {
 
         let persistedTreasury = this.treasuryRepository.findById(treasuryId),
+            subLedger = this.subsidiaryLedgerAccountDomainService,
             errors = this._validation(persistedTreasury);
+
+        if (!subLedger.treasuryAccounts
+            || subLedger.treasuryAccounts.bank.length === 0
+            || subLedger.treasuryAccounts.fund.length === 0)
+            errors.push('تنظیمات خزانه داری برای صدور سند انجام نشده است!');
 
         if (errors.length > 0)
             throw new ValidationException(errors);
 
-        let subLedger = this.subsidiaryLedgerAccountDomainService,
-            destination = this.detailAccountRepository.findById(persistedTreasury.destinationDetailAccountId),
+        let destination = this.detailAccountRepository.findById(persistedTreasury.destinationDetailAccountId),
             source = this.detailAccountRepository.findById(persistedTreasury.sourceDetailAccountId);
 
 
