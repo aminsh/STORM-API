@@ -28,7 +28,8 @@ import {
     TreasuryPurposeRepository,
     DimensionCategoryRepository,
     DimensionRepository,
-    RegisteredThirdPartyRepository
+    RegisteredThirdPartyRepository,
+    VerificationRepository
 } from "./domain/data";
 import {
     BankDomainService,
@@ -74,7 +75,8 @@ import {
     InventoryAccountingDomainService,
     InventoryDomainService,
     DimensionDomainService,
-    RegisteredThirdPartyDomainService
+    RegisteredThirdPartyDomainService,
+    VerificationDomainService
 } from "./domain/services";
 
 import {InvoiceEventListener} from "./domain/eventHandlers/InvoiceEventListener";
@@ -86,6 +88,7 @@ import {ChequeEventListener} from "./domain/eventHandlers/ChequeEventListener";
 
 import {PaypingInterfacePaymentGateway} from "./integration/paymentGateway/payping/PaypingInterfacePaymentGateway";
 import {ZarinpalInterfacePaymentGateway} from "./integration/paymentGateway/zarinpal/ZarinpalInterfacePaymentGateway";
+import {KaveNegarSmsService} from "./integration/smsService/KaveNegar"
 
 const container = new Container({defaultScope: "Request"});
 
@@ -94,6 +97,7 @@ container.bind("EventBus").to(EventBus).inRequestScope();
 container.bind("UserEventHandler").to(UserEventHandler).inRequestScope();
 container.bind("UnitOfWork").to(UnitOfWork).inTransientScope();
 container.bind("HttpRequest").to(HttpRequest).inSingletonScope();
+container.bind("SmsService").to(KaveNegarSmsService).inSingletonScope();
 
 container.bind("Factory<Repository>").toFactory(context => {
     return (name) => context.container.get(name);
@@ -150,6 +154,7 @@ container.bind("TreasuryPurposeRepository").to(TreasuryPurposeRepository).inRequ
 container.bind("RegisteredThirdPartyRepository").to(RegisteredThirdPartyRepository).inRequestScope();
 container.bind("DimensionCategoryRepository").to(DimensionCategoryRepository).inRequestScope();
 container.bind("DimensionRepository").to(DimensionRepository).inRequestScope();
+container.bind("VerificationRepository").to(VerificationRepository).inSingletonScope();
 
 container.bind("BankDomainService").to(BankDomainService).inRequestScope();
 container.bind("DetailAccountDomainService").to(DetailAccountDomainService).inRequestScope();
@@ -195,6 +200,8 @@ container.bind("InventoryAccountingDomainService").to(InventoryAccountingDomainS
 container.bind("InventoryDomainService").to(InventoryDomainService).inRequestScope();
 container.bind("RegisteredThirdPartyDomainService").to(RegisteredThirdPartyDomainService).inRequestScope();
 container.bind("DimensionDomainService").to(DimensionDomainService).inRequestScope();
+container.bind("VerificationDomainService").to(VerificationDomainService).inSingletonScope();
+
 
 container.bind("InvoiceEventListener").to(InvoiceEventListener).inRequestScope();
 container.bind("PurchaseEventListener").to(PurchaseEventListener);

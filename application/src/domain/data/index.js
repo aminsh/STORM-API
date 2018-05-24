@@ -21,3 +21,4 @@ export * from "./repository.treasury.purpose";
 export * from "./RegisteredThirdPartyRepository";
 export * from "./repository.dimension";
 export * from "./repository.dimensionCategory";
+export * from "./VerificationRepository";
