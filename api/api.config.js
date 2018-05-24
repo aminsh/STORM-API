@@ -27,6 +27,19 @@ app.use(cookieParser());
 app.use(function (req, res, next) {
 
     req.apiCaller = req.headers['api-caller'] || 'External api';
+
+    let childContainer = container.createChild();
+
+    childContainer.bind("State").toConstantValue({
+        user: req.user,
+        query: req.query,
+        body: req.body,
+        params: req.params,
+        apiCaller: req.apiCaller,
+        originalUrl: req.originalUrl
+    });
+
+    req.container = childContainer;
     
     next();
 });
