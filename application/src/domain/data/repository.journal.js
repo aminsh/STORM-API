@@ -23,7 +23,7 @@ export class JournalRepository extends BaseRepository {
     }
 
     findById(id) {
-        let journal =  toResult(this.knex.table('journals')
+        let journal = toResult(this.knex.table('journals')
             .modify(this.modify, this.branchId)
             .where('id', id)
             .first());
@@ -140,19 +140,17 @@ export class JournalRepository extends BaseRepository {
 
     batchCreate(journalLines, journal) {
         super.create(journal);
-
         const trx = this.transaction;
 
         try {
             toResult(trx('journals').insert(journal));
-
             journalLines.forEach(line => {
-
-                if(line.id)
+                if (line.id) {
                     line.branchId = this.branchId;
+                    line.createdById = journal.createdById;
+                }
                 else
                     super.create(line);
-
                 line.journalId = journal.id;
             });
 
@@ -162,7 +160,7 @@ export class JournalRepository extends BaseRepository {
 
             return journal.id;
         }
-        catch(e){
+        catch (e) {
             trx.rollback(e);
 
             throw new Error(e);
@@ -219,7 +217,7 @@ export class JournalRepository extends BaseRepository {
 
             trx.commit();
         }
-        catch(e){
+        catch (e) {
             trx.rollback(e);
 
             throw new Error(e);
