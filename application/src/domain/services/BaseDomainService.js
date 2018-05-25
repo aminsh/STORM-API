@@ -40,7 +40,7 @@ export class BaseDomainService {
 
     changedValue(propertyName) {
         if (!this.cmd)
-            throw new ValidationException('command is undefined!');
+            throw new ValidationException(['command is undefined!']);
 
         if(typeof this.cmd[propertyName] === 'undefined')
             return this.existentValue[propertyName];
