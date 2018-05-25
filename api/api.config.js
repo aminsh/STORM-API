@@ -68,7 +68,8 @@ app.use(async((req, res, next) => {
         query: req.query,
         body: req.body,
         params: req.params,
-        originalUrl: req.originalUrl
+        originalUrl: req.originalUrl,
+        method: req.method
     });
 
     req.container = childContainer;
@@ -116,6 +117,7 @@ app.use('/v1/treasury/transfers',require('../accounting/server/routes/api.treasu
 app.use('/v1/treasury/settings',require('../accounting/server/routes/api.treasury.setting'));
 app.use('/v1/cheque-categories', require('../accounting/server/routes/api.chequeCategory'));
 app.use('/v1/return-purchase', require('../accounting/server/routes/api.returnPurchase'));
+app.use('/v1/permissions', require('../accounting/server/routes/api.permissions'));
 
 app.use(function (err, req, res, next) {
     console.error(err.stack);
