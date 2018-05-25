@@ -12,8 +12,8 @@ const async = require('asyncawait/async'),
 
 
 class DetailAccountQuery extends BaseQuery {
-    constructor(branchId) {
-        super(branchId);
+    constructor(branchId, userId) {
+        super(branchId, userId);
 
         this.getById = async(this.getById);
     }
@@ -58,9 +58,13 @@ class DetailAccountQuery extends BaseQuery {
     getById(id) {
         let knex = this.knex,
             branchId = this.branchId,
-            detailAccount = await(
+            userId = this.userId,
+            canView = this.canView(),
+            modify = this.modify,
+
+            detailAccount = this.await(
                 knex.select().from('detailAccounts')
-                    .where('branchId', branchId)
+                    .modify(modify, branchId, userId, canView)
                     .andWhere('id', id)
                     .first());
 
@@ -130,12 +134,15 @@ class DetailAccountQuery extends BaseQuery {
     getAllByDetailAccountType(parameters, type) {
         let knex = this.knex,
             branchId = this.branchId,
+            userId = this.userId,
+            canView = this.canView(),
+            modify = this.modify,
             views = {personView, bankView, fundView};
 
         let query = knex.select().from(function () {
             this.select(knex.raw(`*,coalesce("code", '') || ' ' || title as display`))
                 .from('detailAccounts').as('baseDetailAccounts')
-                .where('branchId', branchId)
+                .modify(modify, branchId, userId, canView)
                 .andWhere('detailAccountType', type)
                 .as('baseDetailAccounts');
         }).as('baseDetailAccounts');
@@ -147,6 +154,10 @@ class DetailAccountQuery extends BaseQuery {
     getBankAndFundTurnover(id, type, fiscalPeriodId, parameters) {
         let knex = this.knex,
             branchId = this.branchId,
+            userId = this.userId,
+            canView = this.canView(),
+            modify = this.modify,
+
             subsidiaryLedgerAccounts = await(knex.from('settings').where('branchId', this.branchId).first())
                 .subsidiaryLedgerAccounts,
             subledger = subsidiaryLedgerAccounts.asEnumerable().toObject(item => item.key, item=> item.id),
@@ -166,7 +177,7 @@ class DetailAccountQuery extends BaseQuery {
                     .leftJoin('detailAccounts','detailAccounts.id', 'journalLines.detailAccountId')
                     .leftJoin('subsidiaryLedgerAccounts', 'journalLines.subsidiaryLedgerAccountId', 'subsidiaryLedgerAccounts.id')
                     .where('detailAccounts.id', id)
-                    .where('journals.branchId',branchId)
+                    .modify(modify, branchId, userId, canView, 'detailAccounts')
                     .where('journals.periodId',fiscalPeriodId)
                     .where('detailAccounts.detailAccountType', type)
                     .whereIn('subsidiaryLedgerAccounts.id', [subledger.bank, subledger.fund])
@@ -206,7 +217,7 @@ class DetailAccountQuery extends BaseQuery {
                 row_seq: entity.row_seq
             });
 
-        return await(kendoQueryResolve(query, parameters, view));
+        return this.await(kendoQueryResolve(query, parameters, view));
     }
 }
 

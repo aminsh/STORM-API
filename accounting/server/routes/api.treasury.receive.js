@@ -8,14 +8,14 @@ const async = require('asyncawait/async'),
 
 router.route('/')
     .get(async((req, res) => {
-        let receiveQuery = new ReceiveQuery(req.branchId),
-            result = await(receiveQuery.getAll( req.fiscalPeriodId, req.query));
+        let receiveQuery = new ReceiveQuery(req.branchId, req.user.id),
+            result = await(receiveQuery.getAll(req.fiscalPeriodId, req.query));
         res.json(result);
     }));
 
 router.route('/cheques')
     .get(async((req, res) => {
-        let receiveQuery = new ReceiveQuery(req.branchId),
+        let receiveQuery = new ReceiveQuery(req.branchId, req.user.id),
             result = await(receiveQuery.getAllCheques(req.query));
         res.json(result);
     }))
@@ -32,7 +32,7 @@ router.route('/cheques')
 
 router.route('/cheques/:id')
     .get(async((req, res) => {
-        let receiveQuery = new ReceiveQuery(req.branchId),
+        let receiveQuery = new ReceiveQuery(req.branchId, req.user.id),
             result = await(receiveQuery.getById(req.params.id));
         res.json(result);
     }))
@@ -163,7 +163,7 @@ router.route('/cash')
 
 router.route('/cash/:id')
     .get(async((req, res) => {
-        let receiveQuery = new ReceiveQuery(req.branchId),
+        let receiveQuery = new ReceiveQuery(req.branchId, req.user.id),
             result = await(receiveQuery.getById(req.params.id));
         res.json(result);
     }))
@@ -216,7 +216,7 @@ router.route('/receipts')
 
 router.route('/receipts/:id')
     .get(async((req, res) => {
-        let receiveQuery = new ReceiveQuery(req.branchId),
+        let receiveQuery = new ReceiveQuery(req.branchId, req.user.id),
             result = await(receiveQuery.getById(req.params.id));
         res.json(result);
     }))
@@ -269,7 +269,7 @@ router.route('/demand-notes')
 
 router.route('/demand-notes/:id')
     .get(async((req, res) => {
-        let receiveQuery = new ReceiveQuery(req.branchId),
+        let receiveQuery = new ReceiveQuery(req.branchId, req.user.id),
             result = await(receiveQuery.getById(req.params.id));
         res.json(result);
     }))
@@ -325,8 +325,8 @@ router.route('/purposes/invoice')
 
 router.route('/purposes/invoice/:id')
     .get(async((req, res) => {
-        let treasuryPurposesQuery = new TreasuryPurposesQuery(req.branchId),
-            result = await(treasuryPurposesQuery.getByInvoiceId(req.params.id,req.query));
+        let treasuryPurposesQuery = new TreasuryPurposesQuery(req.branchId, req.user.id),
+            result = await(treasuryPurposesQuery.getByInvoiceId(req.params.id, req.query));
         res.json(result);
     }));
 

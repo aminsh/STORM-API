@@ -7,60 +7,57 @@ const async = require('asyncawait/async'),
     view = require('../viewModel.assemblers/view.chequeCategory');
 
 class ChequeCategoryQuery extends BaseQuery {
-    constructor(branchId) {
-        super(branchId);
+    constructor(branchId, userId) {
+        super(branchId, userId);
 
         this.getById = async(this.getById);
     }
 
     getAll(parameters) {
         let knex = this.knex,
-            branchId = this.branchId;
+            branchId = this.branchId,
+            userId = this.userId,
+            canView = this.canView(),
+            modify = this.modify,
 
-        let query = knex.select().from(function () {
-            let selectExp = knex.raw('"chequeCategories".*, "detailAccounts".code || \' \' || "detailAccounts".title as "bankDisplay"');
+            query = knex.select().from(function () {
+                let selectExp = knex.raw('"chequeCategories".*, "detailAccounts".code || \' \' || "detailAccounts".title as "bankDisplay"');
 
-            this.select(selectExp)
-                .from('chequeCategories')
-                .leftJoin('detailAccounts', 'chequeCategories.bankId', 'detailAccounts.id')
-                .where('chequeCategories.branchId', branchId)
-                .as('base');
-        });
+                this.select(selectExp)
+                    .from('chequeCategories')
+                    .leftJoin('detailAccounts', 'chequeCategories.bankId', 'detailAccounts.id')
+                    .modify(modify, branchId, userId, canView, 'chequeCategories')
+                    .as('base');
+            });
 
         return kendoQueryResolve(query, parameters, view);
     }
 
-    getOpens(detailAccountId) {
-        let knex = this.knex;
-        let selectExp = ' "id","totalPages", "firstPageNumber", "lastPageNumber", ';
-        selectExp += '(SELECT "count"(*) from cheques where "chequeCategoryId" = "baseChequeCategories".id ' +
-            'AND "status"=\'White\') as "totalWhiteCheques"';
-
-        return knex.select(knex.raw(selectExp))
-            .from(knex.raw('"chequeCategories" as "baseChequeCategories"'))
-            .where('branchId', this.branchId)
-            .andWhere('isClosed', false)
-            .andWhere('detailAccountId', detailAccountId)
-            .as("baseChequeCategories");
-    }
-
     getById(id) {
-        let category = await(
-            this.knex.table('chequeCategories')
-                .where('branchId', this.branchId)
-                .andWhere('id', id)
-                .first());
-        return view(category);
+        let branchId = this.branchId,
+            userId = this.userId,
+            canView = this.canView(),
+            modify = this.modify,
+            category = this.await(
+                this.knex.table('chequeCategories')
+                    .modify(modify, branchId, userId, canView)
+                    .where('id', id)
+                    .first());
+        return category ? view(category) : {};
     }
 
     getCheque(bankId) {
-        let firstOpenCategory = await(
-            this.knex.table('chequeCategories')
-                .where('branchId', this.branchId)
-                .where('isClosed', false)
-                .where('bankId', bankId)
-                .orderBy('createdAt')
-                .first());
+        let branchId = this.branchId,
+            userId = this.userId,
+            canView = this.canView(),
+            modify = this.modify,
+            firstOpenCategory = await(
+                this.knex.table('chequeCategories')
+                    .modify(modify, branchId, userId, canView)
+                    .where('isClosed', false)
+                    .where('bankId', bankId)
+                    .orderBy('createdAt')
+                    .first());
 
         if (!firstOpenCategory)
             return 'NULL';
@@ -74,14 +71,23 @@ class ChequeCategoryQuery extends BaseQuery {
 
     getAllCheques(id) {
         let knex = this.knex,
-            category = await(knex.select('cheques').from('chequeCategories').where({id}).first()),
-            chequesUsed = category.cheques
-                .asEnumerable()
-                .where(item => item.isUsed && item.treasuryPayableChequeId)
-                .toArray(),
+            branchId = this.branchId,
+            userId = this.userId,
+            canView = this.canView(),
+            modify = this.modify,
 
-            treasuryPayableCheques = chequesUsed && chequesUsed.length
-                ? await(
+            category = this.await(knex.select('cheques')
+                .from('chequeCategories')
+                .modify(modify, branchId, userId, canView)
+                .where({id}).first()),
+            chequesUsed = category
+                ? category.cheques.asEnumerable()
+                    .where(item => item.isUsed && item.treasuryPayableChequeId)
+                    .toArray()
+                : [],
+
+            treasuryPayableCheques = chequesUsed && chequesUsed.length > 0
+                ? this.await(
                     knex.select(
                         'treasury.amount',
                         'treasuryDocumentDetails.number',
@@ -93,28 +99,30 @@ class ChequeCategoryQuery extends BaseQuery {
                         .from('treasury')
                         .leftJoin('treasuryDocumentDetails', 'treasury.documentDetailId', 'treasuryDocumentDetails.id')
                         .leftJoin('detailAccounts as destination', 'destination.id', 'treasury.destinationDetailAccountId')
-                        .where('treasury.branchId', this.branchId)
+                        .modify(modify, branchId, userId, canView, 'treasury')
                         .where('treasuryType', 'payment')
                         .whereIn('treasury.id', chequesUsed.map(item => item.treasuryPayableChequeId))
-                ):[],
+                ) : [],
 
-            result = chequesUsed.asEnumerable()
-                .join(
-                    treasuryPayableCheques,
-                    first => first.number,
-                    second => parseInt(second.number),
-                    (first, second) => ({
-                        number: first.number,
-                        isUsed: first.isUsed,
-                        amount: second.amount,
-                        date: second.dueDate,
-                        payTo: second.payTo,
-                        receiverId: second.receiverId,
-                        receiverDisplay: second.receiverDisplay
-                    }))
-                .concat(category.cheques.asEnumerable().where(item => !(item.isUsed && item.treasuryPayableChequeId)))
-                .orderBy(item => item.number)
-                .toArray();
+            result = chequesUsed.length > 0
+                ? chequesUsed.asEnumerable()
+                    .join(
+                        treasuryPayableCheques,
+                        first => first.number,
+                        second => parseInt(second.number),
+                        (first, second) => ({
+                            number: first.number,
+                            isUsed: first.isUsed,
+                            amount: second.amount,
+                            date: second.dueDate,
+                            payTo: second.payTo,
+                            receiverId: second.receiverId,
+                            receiverDisplay: second.receiverDisplay
+                        }))
+                    .concat(category.cheques.asEnumerable().where(item => !(item.isUsed && item.treasuryPayableChequeId)))
+                    .orderBy(item => item.number)
+                    .toArray()
+                : [];
 
         return result;
 

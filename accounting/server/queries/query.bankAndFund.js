@@ -7,12 +7,16 @@ const async = require('asyncawait/async'),
     enums = require('../../../shared/enums');
 
 class BankQuery extends BaseQuery {
-    constructor(branchId) {
-        super(branchId);
+    constructor(branchId, userId) {
+        super(branchId, userId);
     }
 
     getSummary(fiscalPeriodId) {
         let knex = this.knex,
+            branchId = this.branchId,
+            userId = this.userId,
+            canView = this.canView(),
+            modify = this.modify,
             subsidiaryLedgerAccounts = await(knex.from('settings').where('branchId', this.branchId).first())
                 .subsidiaryLedgerAccounts,
             subledger = subsidiaryLedgerAccounts.asEnumerable().toObject(item => item.key, item => item.id);
@@ -26,7 +30,7 @@ class BankQuery extends BaseQuery {
             .from('journalLines')
             .leftJoin('journals', 'journalLines.journalId', 'journals.id')
             .leftJoin('detailAccounts', 'journalLines.detailAccountId', 'detailAccounts.id')
-            .where('journalLines.branchId', this.branchId)
+            .modify(modify, branchId, userId, canView, 'journalLines')
             .andWhere('journals.periodId', fiscalPeriodId)
             .whereIn('journalLines.subsidiaryLedgerAccountId', [subledger.bank, subledger.fund])
             .whereIn('detailAccounts.detailAccountType', ['bank', 'fund'])
@@ -49,7 +53,9 @@ class BankQuery extends BaseQuery {
     getAll(fiscalPeriodId, parameters) {
         let knex = this.knex,
             branchId = this.branchId,
-
+            userId = this.userId,
+            canView = this.canView(),
+            modify = this.modify,
             subsidiaryLedgerAccounts = (await(knex.from('treasurySettings').where('branchId', this.branchId).first()) || {subsidiaryLedgerAccounts: []})
                 .subsidiaryLedgerAccounts || [],
 
@@ -66,7 +72,7 @@ class BankQuery extends BaseQuery {
         let query = knex.from(function () {
             this.select('*', remainderSubQuery)
                 .from('detailAccounts')
-                .where('branchId', branchId)
+                .modify(modify, branchId, userId, canView)
                 .whereIn('detailAccountType', ['bank', 'fund'])
                 .as('base');
         });

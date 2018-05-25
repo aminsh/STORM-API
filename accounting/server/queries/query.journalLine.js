@@ -8,32 +8,34 @@ const async = require('asyncawait/async'),
     journalLineBase = require('./query.jounalLine.base');
 
 class JournalLineQuery extends BaseQuery {
-    constructor(branchId) {
-        super(branchId);
+    constructor(branchId, userId) {
+        super(branchId, userId);
         this.getAll = async(this.getAll);
         this.getById = async(this.getById);
     }
 
     getAll(journalId, parameters) {
         let knex = this.knex,
-            branchId = this.branchId;
+            branchId = this.branchId,
+            userId = this.userId,
+            canView = this.canView(),
+            modify = this.modify;
 
         let query = knex.select()
             .from(function () {
-                journalLineBase.call(this, knex, branchId);
+                journalLineBase.call(this, knex, branchId, userId, canView, modify);
             })
             .where('journalId', journalId);
 
-        let result = await(kendoQueryResolve(query, parameters, view));
-
-        var aggregates = await(knex.select(knex.raw('SUM("debtor") as "sumDebtor", SUM("creditor") as "sumCreditor"'))
-            .from('journalLines')
-            .where('branchId', this.branchId)
-            .andWhere('journalId', journalId).first());
+        let result = this.await(kendoQueryResolve(query, parameters, view)),
+            aggregates = this.await(knex.select(knex.raw('SUM("debtor") as "sumDebtor", SUM("creditor") as "sumCreditor"'))
+                .from('journalLines')
+                .modify(modify, branchId, userId, canView)
+                .andWhere('journalId', journalId).first());
 
         result.aggregates = {
-            debtor: { sum: aggregates.sumDebtor },
-            creditor: { sum: aggregates.sumCreditor }
+            debtor: {sum: aggregates.sumDebtor},
+            creditor: {sum: aggregates.sumCreditor}
         };
 
         return result;

@@ -8,7 +8,7 @@ const async = require('asyncawait/async'),
 
 router.route('/')
     .get(async((req, res) => {
-        let journalQuery = new JournalQuery(req.branchId),
+        let journalQuery = new JournalQuery(req.branchId, req.user.id),
             result = await(journalQuery.getAll(req.fiscalPeriodId, req.query));
         res.json(result);
     }))
@@ -24,18 +24,19 @@ router.route('/')
         }
     }));
 
-router.route('/total-info').get((req, res) => {
-    let journalQuery = new JournalQuery(req.branchId),
-        result = await(journalQuery.getTotalInfo(req.fiscalPeriodId));
+router.route('/total-info')
+    .get((req, res) => {
+        let journalQuery = new JournalQuery(req.branchId),
+            result = await(journalQuery.getTotalInfo(req.fiscalPeriodId));
+        res.json(result);
+    });
 
-    res.json(result);
-});
-
-router.route('/max-number').get(async((req, res) => {
-    let journalQuery = new JournalQuery(req.branchId),
-        result = await(journalQuery.getMaxNumber(req.fiscalPeriodId));
-    res.json(result);
-}));
+router.route('/max-number')
+    .get(async((req, res) => {
+        let journalQuery = new JournalQuery(req.branchId),
+            result = await(journalQuery.getMaxNumber(req.fiscalPeriodId));
+        res.json(result);
+    }));
 
 router.route('/ordering-number-by-date')
     .put(async((req, res) => {
@@ -51,7 +52,7 @@ router.route('/ordering-number-by-date')
 
 router.route('/:id')
     .get(async((req, res) => {
-        let journalQuery = new JournalQuery(req.branchId),
+        let journalQuery = new JournalQuery(req.branchId, req.user.id),
             result = await(journalQuery.batchFindById(req.params.id));
         res.json(result);
     }))
@@ -101,75 +102,80 @@ router.route('/:id/change-date')
         }
     }));
 
-router.route('/by-number/:number').get(async((req, res) => {
-    let journalQuery = new JournalQuery(req.branchId),
-        result = await(journalQuery.getByNumber(
-            req.fiscalPeriodId,
-            req.params.number));
+router.route('/by-number/:number')
+    .get(async((req, res) => {
+        let journalQuery = new JournalQuery(req.branchId, req.user.id),
+            result = await(journalQuery.getByNumber(
+                req.fiscalPeriodId,
+                req.params.number));
 
-    res.json(result);
-}));
+        res.json(result);
+    }));
 
-router.route('/summary/grouped-by-month').get(async((req, res) => {
-    let journalQuery = new JournalQuery(req.branchId),
-        result = await(journalQuery.getGroupedByMouth(req.fiscalPeriodId));
-    res.json(result);
-}));
+router.route('/summary/grouped-by-month')
+    .get(async((req, res) => {
+        let journalQuery = new JournalQuery(req.branchId, req.user.id),
+            result = await(journalQuery.getGroupedByMouth(req.fiscalPeriodId));
+        res.json(result);
+    }));
 
-router.route('/month/:month').get(async((req, res) => {
-    let journalQuery = new JournalQuery(req.branchId),
-        result = await(journalQuery.getJournalsByMonth(
-            req.params.month,
-            req.fiscalPeriodId,
-            req.query));
-    res.json(result);
-}));
+router.route('/month/:month')
+    .get(async((req, res) => {
+        let journalQuery = new JournalQuery(req.branchId, req.user.id),
+            result = await(journalQuery.getJournalsByMonth(
+                req.params.month,
+                req.fiscalPeriodId,
+                req.query));
+        res.json(result);
+    }));
 
-router.route('/period/:periodId').get(async((req, res) => {
-    let journalQuery = new JournalQuery(req.branchId),
-        result = await(journalQuery.getAllByPeriod(req.fiscalPeriodId, req.query));
-    res.json(result);
-}));
+router.route('/period/:periodId')
+    .get(async((req, res) => {
+        let journalQuery = new JournalQuery(req.branchId, req.user.id),
+            result = await(journalQuery.getAllByPeriod(req.fiscalPeriodId, req.query));
+        res.json(result);
+    }));
 
-router.route('/:id/bookkeeping').put(async((req, res) => {
-    try {
-        req.container.get("CommandBus").send("journalBookkeeping", [req.params.id]);
-        res.json({isValid: true});
+router.route('/:id/bookkeeping')
+    .put(async((req, res) => {
+        try {
+            req.container.get("CommandBus").send("journalBookkeeping", [req.params.id]);
+            res.json({isValid: true});
 
-    }
-    catch (e) {
-        res.json({isValid: false, errors: e.errors});
-    }
+        }
+        catch (e) {
+            res.json({isValid: false, errors: e.errors});
+        }
 
-}));
+    }));
 
-router.route('/:id/attach-image').put(async((req, res) => {
+router.route('/:id/attach-image')
+    .put(async((req, res) => {
+        try {
 
-    try {
+            req.container.get("CommandBus").send("journalAttachImage", [req.params.id, req.body.fileName]);
+            res.json({isValid: true});
+        }
+        catch (e) {
+            res.json({isValid: false, errors: e.errors});
+        }
+    }));
 
-        req.container.get("CommandBus").send("journalAttachImage", [req.params.id, req.body.fileName]);
-        res.json({isValid: true});
-    }
-    catch (e) {
-        res.json({isValid: false, errors: e.errors});
-    }
-}));
+router.route('/:id/copy')
+    .post(async((req, res) => {
+        try {
 
-router.route('/:id/copy').post(async((req, res) => {
-
-    try {
-
-        const id = req.container.get("CommandBus").send("journalCopy", [req.params.id]);
-        res.json({isValid: true, returnValue: {id}});
-    }
-    catch (e) {
-        res.json({isValid: false, errors: e.errors});
-    }
-}));
+            const id = req.container.get("CommandBus").send("journalCopy", [req.params.id]);
+            res.json({isValid: true, returnValue: {id}});
+        }
+        catch (e) {
+            res.json({isValid: false, errors: e.errors});
+        }
+    }));
 
 router.route('/:detailAccountId/payable-transactions/not-have-cheque')
     .get(async((req, res) => {
-        let journalQuery = new JournalQuery(req.branchId),
+        let journalQuery = new JournalQuery(req.branchId, req.user.id),
             result = await(journalQuery.getPayablesNotHaveChequeLines(
                 req.fiscalPeriodId,
                 req.params.detailAccountId, req.query));
@@ -179,7 +185,7 @@ router.route('/:detailAccountId/payable-transactions/not-have-cheque')
 
 router.route('/:id/lines')
     .get(async((req, res) => {
-        let journalLineQuery = new JournalLineQuery(req.branchId),
+        let journalLineQuery = new JournalLineQuery(req.branchId, req.user.id),
             result = await(journalLineQuery.getAll(req.params.id, req.query));
         res.json(result);
     }));

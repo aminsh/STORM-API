@@ -7,7 +7,7 @@ const async = require('asyncawait/async'),
 
 router.route('/summary')
     .get(async((req, res) => {
-        let bankAndFundQuery = new BankAndFundQuery(req.branchId),
+        let bankAndFundQuery = new BankAndFundQuery(req.branchId, req.user.id),
             result = await(bankAndFundQuery.getSummary(req.fiscalPeriodId));
 
         res.json(result);
@@ -15,7 +15,7 @@ router.route('/summary')
 
 router.route('/')
     .get(async((req, res)=> {
-        let bankAndFundQuery = new BankAndFundQuery(req.branchId),
+        let bankAndFundQuery = new BankAndFundQuery(req.branchId, req.user.id),
             result = await(bankAndFundQuery.getAll(req.fiscalPeriodId,req.query));
 
         res.json(result);
