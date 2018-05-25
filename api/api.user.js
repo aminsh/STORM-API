@@ -19,16 +19,38 @@ router.route('/')
         res.json(result);
     }));
 
+router.route('/current')
+    .get(async(function (req, res) {
+
+        let NoAuthorizedResponseAction = () => res.status(401).send('No Authorized'),
+            token = req.headers["authorization"];
+
+        if (!token)
+            return NoAuthorizedResponseAction();
+
+        let user = await(knex.select('id', 'token', 'email', 'name', 'mobile').from('users').where({token}).first());
+
+        if (!user)
+            return NoAuthorizedResponseAction();
+
+        res.send(user);
+
+    }));
+
+
 router.route('/login')
     .post(async(function (req, res) {
-        let badRequestResponseAction = () => res.status(400).send('نام کاربری یا کلمه عبور صحیح نیست'),
+        let badRequestResponseAction = (message) => res.status(400).send(message),
 
             email = req.body.email,
             mobile = req.body.mobile,
             password = req.body.password;
 
-        if (!(email && password))
-            return badRequestResponseAction();
+        if(!(email || mobile))
+            return badRequestResponseAction('موبایل یا ایمیل وارد نشده');
+
+        if (!(password))
+            return badRequestResponseAction('کلمه عبور وارد نشده');
 
         let query = knex
             .select('id', 'token', 'email', 'name', 'mobile')
@@ -45,7 +67,7 @@ router.route('/login')
         let user = await(query.first());
 
         if (!user)
-            return badRequestResponseAction();
+            return badRequestResponseAction('{0} یا کلمه عبور صحیح نیست'.format(email ? 'ایمیل' : 'موبایل'));
 
         return res.json(user);
     }));
