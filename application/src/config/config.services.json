@@ -3,7 +3,9 @@
     "name": "invoiceCreate",
     "class": "InvoiceDomainService",
     "method": "create",
-    "params": ["command"],
+    "params": [
+      "command"
+    ],
     "returns": "id"
   },
   {
@@ -55,12 +57,13 @@
     ],
     "returns": "paymentIds"
   },
-
   {
     "name": "invoiceReturnCreate",
     "class": "InvoiceReturnDomainService",
     "method": "create",
-    "params": ["command"],
+    "params": [
+      "command"
+    ],
     "returns": "id"
   },
   {
@@ -112,12 +115,13 @@
     ],
     "returns": "paymentIds"
   },
-
   {
     "name": "invoicePurchaseCreate",
     "class": "InvoicePurchaseDomainService",
     "method": "create",
-    "params": ["command"],
+    "params": [
+      "command"
+    ],
     "returns": "id"
   },
   {
@@ -168,12 +172,13 @@
     ],
     "returns": "undefined"
   },
-
   {
-    "name":"returnPurchaseCreate",
-    "class":"ReturnPurchaseDomainService",
-    "method":"create",
-    "params": ["command"],
+    "name": "returnPurchaseCreate",
+    "class": "ReturnPurchaseDomainService",
+    "method": "create",
+    "params": [
+      "command"
+    ],
     "returns": "id"
   },
   {
@@ -225,8 +230,6 @@
     ],
     "returns": "undefined"
   },
-
-
   {
     "name": "journalCreate",
     "class": "JournalDomainService",
@@ -453,7 +456,6 @@
     ],
     "returns": ""
   },
-
   {
     "name": "detailAccountCreate",
     "class": "DetailAccountDomainService",
@@ -482,7 +484,6 @@
     ],
     "returns": ""
   },
-
   {
     "name": "fundCreate",
     "class": "FundDomainService",
@@ -511,7 +512,6 @@
     ],
     "returns": ""
   },
-
   {
     "name": "bankCreate",
     "class": "BankDomainService",
@@ -540,7 +540,6 @@
     ],
     "returns": ""
   },
-
   {
     "name": "personCreate",
     "class": "PersonDomainService",
@@ -578,7 +577,6 @@
     ],
     "returns": ""
   },
-
   {
     "name": "generalLedgerAccountCreate",
     "class": "GeneralLedgerAccountDomainService",
@@ -636,7 +634,6 @@
     ],
     "returns": ""
   },
-
   {
     "name": "inventoryInputCreate",
     "class": "InventoryInputDomainService",
@@ -722,19 +719,21 @@
     "returns": ""
   },
   {
-  "name": "inventoryPricing",
-  "class": "InventoryAccountingDomainService",
-  "method": "pricing",
-  "params": [
-    "cmd"
-  ],
-  "returns": ""
+    "name": "inventoryPricing",
+    "class": "InventoryAccountingDomainService",
+    "method": "pricing",
+    "params": [
+      "cmd"
+    ],
+    "returns": ""
   },
   {
     "name": "inventoryFixQuantity",
     "class": "InventoryDomainService",
     "method": "fixQuantity",
-    "params": ["cmd"]
+    "params": [
+      "cmd"
+    ]
   },
   {
     "name": "inventoryOutputSetJournal",
@@ -746,7 +745,6 @@
     ],
     "returns": ""
   },
-
   {
     "name": "inventoryIOTypeCreate",
     "class": "InventoryIOTypeDomainService",
@@ -775,7 +773,6 @@
     ],
     "returns": ""
   },
-
   {
     "name": "productCreate",
     "class": "ProductDomainService",
@@ -823,7 +820,6 @@
     ],
     "returns": ""
   },
-
   {
     "name": "productCategoryCreate",
     "class": "ProductCategoryDomainService",
@@ -852,7 +848,6 @@
     ],
     "returns": ""
   },
-
   {
     "name": "scaleCreate",
     "class": "ScaleDomainService",
@@ -881,7 +876,6 @@
     ],
     "returns": ""
   },
-
   {
     "name": "stockCreate",
     "class": "StockDomainService",
@@ -910,7 +904,6 @@
     ],
     "returns": ""
   },
-
   {
     "name": "fiscalPeriodCreate",
     "class": "FiscalPeriodDomainService",
@@ -920,7 +913,6 @@
     ],
     "returns": "id"
   },
-
   {
     "name": "sendSMS",
     "class": "SMSDomainService",
@@ -930,7 +922,6 @@
     ],
     "returns": ""
   },
-
   {
     "name": "treasuryReceiveChequeCreate",
     "class": "TreasuryChequeDomainService",
@@ -1104,7 +1095,6 @@
     ],
     "returns": ""
   },
-
   {
     "name": "treasuryReceiveCashCreate",
     "class": "TreasuryCashDomainService",
@@ -1188,7 +1178,6 @@
     ],
     "returns": ""
   },
-
   {
     "name": "treasuryReceiveReceiptCreate",
     "class": "TreasuryReceiptDomainService",
@@ -1272,7 +1261,6 @@
     ],
     "returns": ""
   },
-
   {
     "name": "treasuryReceiveDemandNoteCreate",
     "class": "TreasuryDemandNoteDomainService",
@@ -1356,8 +1344,6 @@
     ],
     "returns": ""
   },
-
-
   {
     "name": "treasuryTransferCreate",
     "class": "TreasuryTransferDomainService",
@@ -1414,7 +1400,6 @@
     ],
     "returns": ""
   },
-
   {
     "name": "treasuryJournalRemove",
     "class": "JournalDomainService",
@@ -1433,7 +1418,6 @@
     ],
     "returns": ""
   },
-
   {
     "name": "banksNameCreate",
     "class": "BanksNameDomainService",
@@ -1443,7 +1427,6 @@
     ],
     "returns": "id"
   },
-
   {
     "name": "payableChequeCategoryCreate",
     "class": "PayableChequeCategoryDomainService",
@@ -1472,7 +1455,6 @@
     ],
     "returns": ""
   },
-
   {
     "name": "payableChequeCreate",
     "class": "PayableChequeDomainService",
@@ -1510,7 +1492,6 @@
     ],
     "returns": ""
   },
-
   {
     "name": "receiveTreasuriesPurposeCreate",
     "class": "TreasuryPurposeDomainService",
@@ -1543,7 +1524,8 @@
     "class": "RegisteredThirdPartyDomainService",
     "method": "create",
     "params": [
-      "key","data"
+      "key",
+      "data"
     ],
     "returns": ""
   },
@@ -1603,7 +1585,6 @@
     ],
     "returns": ""
   },
-
   {
     "name": "dimensionCategoryCreate",
     "class": "DimensionDomainService",
@@ -1632,5 +1613,62 @@
       "id"
     ],
     "returns": ""
+  },
+  {
+    "name": "createRole",
+    "class": "PermissionDomainService",
+    "method": "createRole",
+    "params": [
+      "command"
+    ],
+    "returns": "id"
+  },
+  {
+    "name": "removeRole",
+    "class": "PermissionDomainService",
+    "method": "removeRole",
+    "params": [
+      "id"
+    ],
+    "returns": "undefined"
+  },
+  {
+    "name": "createUserPermissions",
+    "class": "PermissionDomainService",
+    "method": "createUserPermissions",
+    "params": [
+      "id",
+      "command"
+    ],
+    "returns": "id"
+  },
+  {
+    "name": "updateRole",
+    "class": "PermissionDomainService",
+    "method": "updateRole",
+    "params": [
+      "id",
+      "command"
+    ],
+    "returns": "undefined"
+  },
+  {
+    "name": "updateUserPermission",
+    "class": "PermissionDomainService",
+    "method": "updateUserPermission",
+    "params": [
+      "id",
+      "command"
+    ],
+    "returns": "undefined"
+  },
+  {
+    "name": "controlUserPermission",
+    "class": "UserPermissionsControlDomainService",
+    "method": "controlPermission",
+    "params": [
+      "command"
+    ],
+    "returns": "undefined"
   }
 ]
