@@ -56,50 +56,40 @@ class BankQuery extends BaseQuery {
             userId = this.userId,
             canView = this.canView(),
             modify = this.modify,
-            subsidiaryLedgerAccounts = (await(knex.from('treasurySettings').where('branchId', this.branchId).first()) || {subsidiaryLedgerAccounts: []})
-                .subsidiaryLedgerAccounts || [],
+            subsidiaryLedgerAccounts = await(knex.from('settings').where('branchId', this.branchId).first())
+                .subsidiaryLedgerAccounts,
+            subledger = subsidiaryLedgerAccounts.asEnumerable().toObject(item => item.key, item => item.id),
 
-            subsidiaryLedgerAccount = subsidiaryLedgerAccounts.asEnumerable().toObject(item => item.key, item => item.id),
-
-            remainderSubQuery = knex.raw(`(select sum(CAST(debtor-creditor as FLOAT)) from journals 
-                left join "journalLines" on journals.id = "journalLines"."journalId"
-                left join "subsidiaryLedgerAccounts" on "journalLines"."subsidiaryLedgerAccountId" = "subsidiaryLedgerAccounts"."id"
-                where journals."periodId" = '${fiscalPeriodId}' 
-                and journals."branchId" = '${this.branchId}'
-                and "detailAccountId" = "detailAccounts"."id"
-                and "subsidiaryLedgerAccounts".id in ('${subsidiaryLedgerAccount.bank || 0}', '${subsidiaryLedgerAccount.fund || 0}') ) as "remainder"`);
-
-        let query = knex.from(function () {
-            this.select('*', remainderSubQuery)
-                .from('detailAccounts')
-                .modify(modify, branchId, userId, canView)
-                .whereIn('detailAccountType', ['bank', 'fund'])
-                .as('base');
-        });
+            query = knex.select(
+                'journalLines.detailAccountId',
+                'detailAccounts.detailAccountType',
+                knex.raw('"detailAccounts"."title" as "detailAccountDisplay"'),
+                knex.raw('"sum"(CAST("journalLines"."debtor" - "journalLines"."creditor" as FLOAT)) as "remainder"')
+            )
+                .from('journalLines')
+                .leftJoin('journals', 'journalLines.journalId', 'journals.id')
+                .leftJoin('detailAccounts', 'journalLines.detailAccountId', 'detailAccounts.id')
+                .modify(modify, branchId, userId, canView, 'journalLines')
+                .andWhere('journals.periodId', fiscalPeriodId)
+                .whereIn('journalLines.subsidiaryLedgerAccountId', [subledger.bank, subledger.fund])
+                .whereIn('detailAccounts.detailAccountType', ['bank', 'fund'])
+                .groupBy(
+                    'journalLines.detailAccountId',
+                    'detailAccounts.detailAccountType',
+                    'detailAccounts.title'
+                );
 
 
         return kendoQueryResolve(query, parameters, item => ({
-            id: item.id,
-            title: item.title,
+            id: item.detailAccountId,
             type: item.detailAccountType,
             typeDisplay: item.detailAccountType
                 ? enums.DetailAccountType().getDisplay(item.detailAccountType)
                 : '',
-            remainder: getRemainder(item.detailAccountType, item.remainder)
+            title: item.detailAccountDisplay,
+            remainder: item.remainder
         }));
-
-        function getRemainder(detailAccountType, remainder) {
-            if (detailAccountType === 'bank' && !subsidiaryLedgerAccount.bank)
-                return '?';
-
-            if (detailAccountType === 'fund' && !subsidiaryLedgerAccount.fund)
-                return '?';
-
-            return remainder || 0;
-        }
     }
-
-
 }
 
 module.exports = BankQuery;
