@@ -28,7 +28,8 @@ router.route('/current')
         if (!token)
             return NoAuthorizedResponseAction();
 
-        let user = await(knex.select('id', 'token', 'email', 'name', 'mobile').from('users').where({token}).first());
+        let user = await(knex.select('id', 'token', 'email', 'name', 'mobile', 'isActiveMobile', 'isActiveEmail')
+            .from('users').where({token}).first());
 
         if (!user)
             return NoAuthorizedResponseAction();
@@ -46,14 +47,14 @@ router.route('/login')
             mobile = req.body.mobile,
             password = req.body.password;
 
-        if(!(email || mobile))
+        if (!(email || mobile))
             return badRequestResponseAction('موبایل یا ایمیل وارد نشده');
 
         if (!(password))
             return badRequestResponseAction('کلمه عبور وارد نشده');
 
         let query = knex
-            .select('id', 'token', 'email', 'name', 'mobile')
+            .select('id', 'token', 'email', 'name', 'mobile', 'isActiveMobile', 'isActiveEmail')
             .from('users')
             .where('state', 'active')
             .where('password', md5(password.toString()));
@@ -76,29 +77,68 @@ router.route('/login')
 router.route('/register')
     .post(async(function (req, res) {
 
-        let cmd = req.body,
-            user = {
-                id: TokenGenerator.generate128Bit(),
-                email: cmd.email,
-                mobile: cmd.mobile,
-                name: cmd.name,
-                password: md5(cmd.password.toString()),
-                state: 'pending',
-                token: TokenGenerator.generate256Bit()
-            };
+        let loginByGoogle = req.query.loginByGoogle,
+            cmd = req.body,
+            user = {};
 
         try {
-            let isEmailDuplicated = await(knex.select('id').from('users').where('email', 'ILIKE', user.email).first());
 
-            if (isEmailDuplicated)
-                return res.status(400).send('The email is duplicated');
+            if (loginByGoogle) {
+                let profile = req.body.profile;
 
-            await(knex('users').insert(user));
+                user = await(knex.select('*').from('users').where({id: profile.id}).first());
 
-            if(user.mobile)
-                req.container.get('VerificationDomainService').send(user.mobile, {userId: user.id});
+                if (!user) {
+                    user = {
+                        id: profile.id,
+                        googleToken: req.body.googleToken,
+                        name: profile.displayName,
+                        email: profile.emails[0].value,
+                        image: profile.photos[0].value,
+                        state: 'pending',
+                        isActiveEmail: true,
+                        token: TokenGenerator.generate256Bit()
+                    };
 
-            res.send({id: user.id, name: user.name, email: user.email, mobile: user.mobile, token: user.token});
+                    await(knex('users').insert(user));
+                }
+                else {
+                    if (!user.isActiveEmail)
+                        await(knex('users').where({id: user.id}).update({isActiveEmail: true}));
+                }
+
+            } else {
+
+                user = {
+                    id: TokenGenerator.generate128Bit(),
+                    email: cmd.email,
+                    mobile: cmd.mobile,
+                    name: cmd.name,
+                    password: md5(cmd.password.toString()),
+                    state: 'pending',
+                    token: TokenGenerator.generate256Bit()
+                };
+
+                let isEmailDuplicated = await(knex.select('id').from('users').where('email', 'ILIKE', user.email).first());
+
+                if (isEmailDuplicated)
+                    return res.status(400).send('The email is duplicated');
+
+                await(knex('users').insert(user));
+
+                if (user.mobile)
+                    req.container.get('VerificationDomainService').send(user.mobile, {userId: user.id});
+            }
+
+            user = await(
+                knex
+                    .select('id', 'token', 'email', 'name', 'mobile', 'isActiveMobile', 'isActiveEmail')
+                    .from('users')
+                    .where({id: user.id})
+                    .first()
+            );
+
+            res.send(user);
         }
         catch (e) {
             console.log(e);
@@ -144,7 +184,11 @@ router.route('/verify-mobile/:code')
         try {
             let result = req.container.get('VerificationDomainService').verify(req.params.code);
 
-            await(knex('users').where({id: result.data.userId}).update({mobile: result.mobile, state: 'active'}));
+            await(knex('users').where({id: result.data.userId}).update({
+                mobile: result.mobile,
+                isActiveMobile: true,
+                state: 'active'
+            }));
 
             res.sendStatus(200);
         }
