@@ -104,25 +104,24 @@ class ChequeCategoryQuery extends BaseQuery {
                         .whereIn('treasury.id', chequesUsed.map(item => item.treasuryPayableChequeId))
                 ) : [],
 
-            result = chequesUsed.length > 0
-                ? chequesUsed.asEnumerable()
-                    .join(
-                        treasuryPayableCheques,
-                        first => first.number,
-                        second => parseInt(second.number),
-                        (first, second) => ({
-                            number: first.number,
-                            isUsed: first.isUsed,
-                            amount: second.amount,
-                            date: second.dueDate,
-                            payTo: second.payTo,
-                            receiverId: second.receiverId,
-                            receiverDisplay: second.receiverDisplay
-                        }))
-                    .concat(category.cheques.asEnumerable().where(item => !(item.isUsed && item.treasuryPayableChequeId)))
-                    .orderBy(item => item.number)
-                    .toArray()
-                : [];
+            result = chequesUsed.asEnumerable()
+                .join(
+                    treasuryPayableCheques,
+                    first => first.number,
+                    second => parseInt(second.number),
+                    (first, second) => ({
+                        number: first.number,
+                        isUsed: first.isUsed,
+                        amount: second.amount,
+                        date: second.dueDate,
+                        payTo: second.payTo,
+                        receiverId: second.receiverId,
+                        receiverDisplay: second.receiverDisplay
+                    }))
+                .concat(category && category.cheques.asEnumerable()
+                    .where(item => !(item.isUsed && item.treasuryPayableChequeId)))
+                .orderBy(item => item.number)
+                .toArray();
 
         return result;
 
