@@ -95,6 +95,9 @@ router.route('/register')
 
             await(knex('users').insert(user));
 
+            if(user.mobile)
+                req.container.get('VerificationDomainService').send(user.mobile, {userId: user.id});
+
             res.send({id: user.id, name: user.name, email: user.email, mobile: user.mobile, token: user.token});
         }
         catch (e) {
