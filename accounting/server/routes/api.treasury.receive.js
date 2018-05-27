@@ -33,7 +33,7 @@ router.route('/cheques')
 router.route('/cheques/:id')
     .get(async((req, res) => {
         let receiveQuery = new ReceiveQuery(req.branchId, req.user.id),
-            result = await(receiveQuery.getById(req.params.id));
+            result = await(receiveQuery.getById(req.params.id, 'cheque'));
         res.json(result);
     }))
     .put(async((req, res) => {
@@ -135,7 +135,6 @@ router.route('/cheques/:id/missing')
 
 router.route('/cheques/:id/generate-journal')
     .post(async((req, res) => {
-
         try {
 
             const id = req.params.id;
@@ -164,7 +163,7 @@ router.route('/cash')
 router.route('/cash/:id')
     .get(async((req, res) => {
         let receiveQuery = new ReceiveQuery(req.branchId, req.user.id),
-            result = await(receiveQuery.getById(req.params.id));
+            result = await(receiveQuery.getById(req.params.id, 'cash'));
         res.json(result);
     }))
     .put(async((req, res) => {
@@ -188,9 +187,7 @@ router.route('/cash/:id')
 
 router.route('/cash/:id/generate-journal')
     .post(async((req, res) => {
-
         try {
-
             const id = req.params.id;
             let journalId = req.container.get("CommandBus").send("journalGenerateForReceiveCash", [id]);
             req.container.get("CommandBus").send("cashSetJournal", [id, journalId]);
@@ -217,7 +214,7 @@ router.route('/receipts')
 router.route('/receipts/:id')
     .get(async((req, res) => {
         let receiveQuery = new ReceiveQuery(req.branchId, req.user.id),
-            result = await(receiveQuery.getById(req.params.id));
+            result = await(receiveQuery.getById(req.params.id, 'receipt'));
         res.json(result);
     }))
     .put(async((req, res) => {
@@ -241,9 +238,7 @@ router.route('/receipts/:id')
 
 router.route('/receipts/:id/generate-journal')
     .post(async((req, res) => {
-
         try {
-
             const id = req.params.id;
             let journalId = req.container.get("CommandBus").send("journalGenerateForReceiveReceipt", [id]);
             req.container.get("CommandBus").send("receiptSetJournal", [id, journalId]);
@@ -270,7 +265,7 @@ router.route('/demand-notes')
 router.route('/demand-notes/:id')
     .get(async((req, res) => {
         let receiveQuery = new ReceiveQuery(req.branchId, req.user.id),
-            result = await(receiveQuery.getById(req.params.id));
+            result = await(receiveQuery.getById(req.params.id, 'demandNote'));
         res.json(result);
     }))
     .put(async((req, res) => {
@@ -294,9 +289,7 @@ router.route('/demand-notes/:id')
 
 router.route('/demand-notes/:id/generate-journal')
     .post(async((req, res) => {
-
         try {
-
             const id = req.params.id;
             let journalId = req.container.get("CommandBus").send("journalGenerateForReceiveDemandNote", [id]);
             req.container.get("CommandBus").send("demandNoteSetJournal", [id, journalId]);
