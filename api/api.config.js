@@ -100,7 +100,6 @@ app.use('/v1/purchases', require('../accounting/server/routes/api.purchase'));
 app.use('/v1/products', require('../accounting/server/routes/api.product'));
 app.use('/v1/product-categories', require('../accounting/server/routes/api.productCategory'));
 app.use('/v1/settings', require('../accounting/server/routes/api.setting'));
-app.use('/v1/receive', require('../accounting/server/routes/api.receive'));
 app.use('/v1/bank-and-fund', require('../accounting/server/routes/api.bankAndFund'));
 app.use('/v1/scales', require('../accounting/server/routes/api.scale'));
 app.use('/v1/stocks', require('../accounting/server/routes/api.stock'));
