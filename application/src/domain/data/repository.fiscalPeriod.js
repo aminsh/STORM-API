@@ -12,6 +12,15 @@ export class FiscalPeriodRepository extends BaseRepository {
             .first());
     }
 
+    findFirstOpen(){
+        return toResult(this.knex.select('*').from('fiscalPeriods')
+            .modify(this.modify, this.branchId)
+            .where({isClosed: false})
+            .orderBy('createdAt', 'desc')
+            .first()
+        );
+    }
+
     create(entity) {
         super.create(entity);
         toResult(this.knex('fiscalPeriods').insert(entity));

@@ -123,17 +123,22 @@ export class JournalDomainService {
         if (errors.length > 0)
             throw new ValidationException(errors);
 
-        let maxNumber = this.journalRepository.maxTemporaryNumber(this.state.fiscalPeriodId).max || 0,
-            currentFiscalPeriod = this.fiscalPeriodRepository.findById(this.state.fiscalPeriodId),
-            trueDate =
-                cmd.temporaryDate &&
-                cmd.temporaryDate >= currentFiscalPeriod.minDate &&
-                cmd.temporaryDate <= currentFiscalPeriod.maxDate
-                    ? cmd.temporaryDate
-                    : PersianDate.current();
+        let currentFiscalPeriod = this.fiscalPeriodRepository.findById(this.state.fiscalPeriodId);
+
+        if (currentFiscalPeriod.isClosed)
+            currentFiscalPeriod = this.fiscalPeriodRepository.findFirstOpen();
+
+        let maxNumber = this.journalRepository.maxTemporaryNumber(currentFiscalPeriod.id).max || 0;
+
+        let trueDate =
+            cmd.temporaryDate &&
+            cmd.temporaryDate >= currentFiscalPeriod.minDate &&
+            cmd.temporaryDate <= currentFiscalPeriod.maxDate
+                ? cmd.temporaryDate
+                : PersianDate.current();
 
         let journal = {
-                periodId: this.state.fiscalPeriodId,
+                periodId: currentFiscalPeriod.id,
                 journalStatus: 'Temporary',
                 temporaryNumber: ++maxNumber,
                 temporaryDate: trueDate,
