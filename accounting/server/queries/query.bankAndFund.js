@@ -14,9 +14,7 @@ class BankQuery extends BaseQuery {
     getSummary(fiscalPeriodId) {
         let knex = this.knex,
             branchId = this.branchId,
-            userId = this.userId,
             canView = this.canView(),
-            modify = this.modify,
             subsidiaryLedgerAccounts = await(knex.from('settings').where('branchId', this.branchId).first())
                 .subsidiaryLedgerAccounts,
             subledger = subsidiaryLedgerAccounts.asEnumerable().toObject(item => item.key, item => item.id);
@@ -30,7 +28,7 @@ class BankQuery extends BaseQuery {
             .from('journalLines')
             .leftJoin('journals', 'journalLines.journalId', 'journals.id')
             .leftJoin('detailAccounts', 'journalLines.detailAccountId', 'detailAccounts.id')
-            .modify(modify, branchId, userId, canView, 'journalLines')
+            .where('journalLines.branchId', branchId)
             .andWhere('journals.periodId', fiscalPeriodId)
             .whereIn('journalLines.subsidiaryLedgerAccountId', [subledger.bank, subledger.fund])
             .whereIn('detailAccounts.detailAccountType', ['bank', 'fund'])
@@ -46,16 +44,14 @@ class BankQuery extends BaseQuery {
                     ? enums.DetailAccountType().getDisplay(item.detailAccountType)
                     : '',
                 accountName: item.detailAccountDisplay,
-                remainder: item.remainder
+                remainder: canView ? item.remainder : '?'
             }));
     }
 
     getAll(fiscalPeriodId, parameters) {
         let knex = this.knex,
             branchId = this.branchId,
-            userId = this.userId,
             canView = this.canView(),
-            modify = this.modify,
             subsidiaryLedgerAccounts = await(knex.from('settings').where('branchId', this.branchId).first())
                 .subsidiaryLedgerAccounts,
             subledger = subsidiaryLedgerAccounts.asEnumerable().toObject(item => item.key, item => item.id),
@@ -69,7 +65,7 @@ class BankQuery extends BaseQuery {
                 .from('journalLines')
                 .leftJoin('journals', 'journalLines.journalId', 'journals.id')
                 .leftJoin('detailAccounts', 'journalLines.detailAccountId', 'detailAccounts.id')
-                .modify(modify, branchId, userId, canView, 'journalLines')
+                .where('journalLines.branchId', branchId)
                 .andWhere('journals.periodId', fiscalPeriodId)
                 .whereIn('journalLines.subsidiaryLedgerAccountId', [subledger.bank, subledger.fund])
                 .whereIn('detailAccounts.detailAccountType', ['bank', 'fund'])
@@ -87,7 +83,7 @@ class BankQuery extends BaseQuery {
                 ? enums.DetailAccountType().getDisplay(item.detailAccountType)
                 : '',
             title: item.detailAccountDisplay,
-            remainder: item.remainder
+            remainder: canView ? item.remainder : '?'
         }));
     }
 }
