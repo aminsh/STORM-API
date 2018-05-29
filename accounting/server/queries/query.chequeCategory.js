@@ -16,9 +16,6 @@ class ChequeCategoryQuery extends BaseQuery {
     getAll(parameters) {
         let knex = this.knex,
             branchId = this.branchId,
-            userId = this.userId,
-            canView = this.canView(),
-            modify = this.modify,
 
             query = knex.select().from(function () {
                 let selectExp = knex.raw('"chequeCategories".*, "detailAccounts".code || \' \' || "detailAccounts".title as "bankDisplay"');
@@ -26,7 +23,7 @@ class ChequeCategoryQuery extends BaseQuery {
                 this.select(selectExp)
                     .from('chequeCategories')
                     .leftJoin('detailAccounts', 'chequeCategories.bankId', 'detailAccounts.id')
-                    .modify(modify, branchId, userId, canView, 'chequeCategories')
+                    .where('chequeCategories.branchId', branchId)
                     .as('base');
             });
 
@@ -35,12 +32,9 @@ class ChequeCategoryQuery extends BaseQuery {
 
     getById(id) {
         let branchId = this.branchId,
-            userId = this.userId,
-            canView = this.canView(),
-            modify = this.modify,
             category = this.await(
                 this.knex.table('chequeCategories')
-                    .modify(modify, branchId, userId, canView)
+                    .where('branchId', branchId)
                     .where('id', id)
                     .first());
         return category ? view(category) : {};
@@ -48,12 +42,9 @@ class ChequeCategoryQuery extends BaseQuery {
 
     getCheque(bankId) {
         let branchId = this.branchId,
-            userId = this.userId,
-            canView = this.canView(),
-            modify = this.modify,
             firstOpenCategory = await(
                 this.knex.table('chequeCategories')
-                    .modify(modify, branchId, userId, canView)
+                    .where('branchId', branchId)
                     .where('isClosed', false)
                     .where('bankId', bankId)
                     .orderBy('createdAt')
