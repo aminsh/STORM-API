@@ -4,13 +4,16 @@
 const BaseQuery = require('../queries/query.base');
 
 class InventoriesReport extends BaseQuery{
-    constructor(branchId){
-        super(branchId);
+    constructor(branchId, userId){
+        super(branchId, userId);
     }
 
     getInventories(ids){
         let knex = this.knex,
-            branchId = this.branchId;
+            branchId = this.branchId,
+            userId = this.userId,
+            canView = this.canView(),
+            modify = this.modify;
 
         return knex.select(knex.raw(
             `products.title as product,
@@ -21,7 +24,7 @@ class InventoriesReport extends BaseQuery{
             "invoiceLines".description`
         ))
             .from('inventories')
-            .where('inventories.branchId', branchId)
+            .modify(modify, branchId, userId, canView, 'inventories')
             .whereIn('inventories.id',ids)
             .innerJoin('inventoryLines','inventoryLines.inventoryId','inventories.id')
             .innerJoin('products','products.id','inventoryLines.productId')

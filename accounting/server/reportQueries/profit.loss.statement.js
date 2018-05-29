@@ -7,8 +7,8 @@ const BaseQuery = require('../queries/query.base'),
 
 
 class ProfitLossStatement extends BaseQuery {
-    constructor(branchId, currentFiscalPeriod, mode, filter) {
-        super(branchId);
+    constructor(branchId, currentFiscalPeriod, mode, filter, userId) {
+        super(branchId, userId);
 
         this.currentFiscalPeriod = currentFiscalPeriod;
         this.mode = mode;
@@ -20,6 +20,8 @@ class ProfitLossStatement extends BaseQuery {
     getProfitLossStatement() {
         let knex = this.knex,
             branchId = this.branchId,
+            userId = this.userId,
+            canView = this.canView(),
             options = this.options;
 
         return await(knex.select(knex.raw(`
@@ -37,7 +39,9 @@ class ProfitLossStatement extends BaseQuery {
                                 SUM("journalLines".debtor - "journalLines".creditor) as remainder
                             FROM journals
                             INNER JOIN "journalLines" on "journalLines"."journalId" = journals."id"
-                            WHERE journals."temporaryDate" BETWEEN '${options.fromMainDate}' AND '${options.toDate}'                   
+                            WHERE journals."temporaryDate" BETWEEN '${options.fromMainDate}' AND '${options.toDate}'
+                                AND journals."branchId" = '${branchId}'
+                                AND ('${canView}' or journals."createdById" = '${userId}')                   
                             GROUP BY "journalLines"."generalLedgerAccountId") as journal`),
                 'journal.generalLedgerAccountId', '=', 'generalLedgerAccounts.id')
             .where('generalLedgerAccounts.branchId', branchId)
@@ -49,6 +53,8 @@ class ProfitLossStatement extends BaseQuery {
     getCompareProfitLossStatement() {
         let knex = this.knex,
             branchId = this.branchId,
+            userId = this.userId,
+            canView = this.canView(),
             options = this.options.filter;
 
         return await(knex.select(knex.raw(`
@@ -75,6 +81,7 @@ class ProfitLossStatement extends BaseQuery {
                             FROM journals
                             INNER JOIN "journalLines" on "journalLines"."journalId" = journals."id"
                             WHERE  journals."branchId" = '${branchId}'
+                                   AND ('${canView}' or journals."createdById" = '${userId}')
                                    AND journals."temporaryDate" BETWEEN '${options.minDateRangeFirst}' AND '${options.maxDateRangeFirst}'
                             GROUP BY "journalLines"."generalLedgerAccountId") as journal`),
                 'journal.generalLedgerAccountId', '=', 'generalLedgerAccounts.id')
@@ -92,7 +99,8 @@ class ProfitLossStatement extends BaseQuery {
                                             FROM journals
                                             INNER JOIN "journalLines" on "journalLines"."journalId" = journals."id"
                                             WHERE journals."branchId" = '${branchId}'
-                                             AND journals."temporaryDate" BETWEEN '${options.minDateRangeSecond}' AND '${options.maxDateRangeSecond}'
+                                                  AND ('${canView}' or journals."createdById" = '${userId}')
+                                                  AND journals."temporaryDate" BETWEEN '${options.minDateRangeSecond}' AND '${options.maxDateRangeSecond}'
                                             GROUP BY "journalLines"."generalLedgerAccountId") as journal ON journal."generalLedgerAccountId" = "generalLedgerAccounts"."id"
                 ) as "secondResult"`), 'secondResult.generalLedgerAccountIdSecond', 'generalLedgerAccounts.id')
             .where('generalLedgerAccounts.branchId', branchId)

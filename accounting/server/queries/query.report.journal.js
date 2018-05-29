@@ -9,8 +9,8 @@ const BaseQuery = require('./query.base'),
     await = require('asyncawait/await');
 
 class ReportQueryJournals extends BaseQuery {
-    constructor(branchId, currentFiscalPeriodId, mode, filter) {
-        super(branchId);
+    constructor(branchId, currentFiscalPeriodId, mode, filter, userId) {
+        super(branchId, userId);
 
         this.journalConfig = new JournalQueryConfig(branchId, currentFiscalPeriodId, mode, filter);
         this.currentFiscalPeriodId = currentFiscalPeriodId;
@@ -78,6 +78,11 @@ class ReportQueryJournals extends BaseQuery {
         let options = await(this.journalConfig.getOptions()),
             knex = this.knex,
             currentFiscalPeriodId = this.currentFiscalPeriodId;
+
+        options.branchId = this.branchId;
+        options.userId = this.userId;
+        options.canView = this.canView();
+        options.modify = this.modify;
 
         let journals = `"groupJournals".id as "journalId",
             "groupJournals"."periodId" as "journalPeriodId",

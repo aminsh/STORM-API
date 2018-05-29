@@ -8,8 +8,8 @@ const BaseQuery = require('../queries/query.base'),
     await = require('asyncawait/await');
 
 class InventoriesTurnoverReport extends BaseQuery {
-    constructor(branchId, currentFiscalPeriodId, mode, filter) {
-        super(branchId);
+    constructor(branchId, currentFiscalPeriodId, mode, filter, userId) {
+        super(branchId, userId);
 
         this.currentFiscalPeriodId = currentFiscalPeriodId;
         this.mode = mode;
@@ -21,6 +21,9 @@ class InventoriesTurnoverReport extends BaseQuery {
     getInventoriesTurnover(ids) {
         let knex = this.knex,
             branchId = this.branchId,
+            userId = this.userId,
+            canView = this.canView(),
+            modify = this.modify,
             options = this.options;
 
         return knex.select(knex.raw(
@@ -35,9 +38,9 @@ class InventoriesTurnoverReport extends BaseQuery {
             knex.raw('"inventoryIOTypes".title as "ioType"')
         )
             .from('stocks')
-            .where('stocks.branchId', branchId)
             .whereIn('stocks.id', ids)
             .innerJoin('inventories', 'inventories.stockId', 'stocks.id')
+            .modify(modify, branchId, userId, canView, 'inventories')
             .innerJoin('inventoryIOTypes', 'inventoryIOTypes.id', 'inventories.ioType')
             .innerJoin('inventoryLines', 'inventoryLines.inventoryId', 'inventories.id')
             .innerJoin('products', 'products.id', 'inventoryLines.productId')

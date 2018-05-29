@@ -9,8 +9,8 @@ const BaseQuery = require('./query.base'),
     await = require('asyncawait/await');
 
 class ReportQueryFinancialOffices extends BaseQuery {
-    constructor(branchId, currentFiscalPeriodId, mode, filter) {
-        super(branchId);
+    constructor(branchId, currentFiscalPeriodId, mode, filter, userId) {
+        super(branchId, userId);
 
         this.journalConfig = new JournalQueryConfig(branchId, currentFiscalPeriodId, mode, filter);
         this.currentFiscalPeriodId = currentFiscalPeriodId;
@@ -26,6 +26,11 @@ class ReportQueryFinancialOffices extends BaseQuery {
         let options = await(this.journalConfig.getOptions()),
             knex = this.knex,
             currentFiscalPeriodId = this.currentFiscalPeriodId;
+
+        options.branchId = this.branchId;
+        options.userId = this.userId;
+        options.canView = this.canView();
+        options.modify = this.modify;
 
         let journals = `"groupJournals".number as "number",
             "groupJournals".date as "date",
@@ -50,7 +55,7 @@ class ReportQueryFinancialOffices extends BaseQuery {
                 groupJournals.call(this, knex,
                     options,
                     currentFiscalPeriodId,
-                    ['number','date','generalLedgerAccountId', 'subsidiaryLedgerAccountId','article']);
+                    ['number', 'date', 'generalLedgerAccountId', 'subsidiaryLedgerAccountId', 'article']);
             })
             .leftJoin('generalLedgerAccounts', 'groupJournals.generalLedgerAccountId', 'generalLedgerAccounts.id')
             .leftJoin('subsidiaryLedgerAccounts', 'groupJournals.subsidiaryLedgerAccountId', 'subsidiaryLedgerAccounts.id')
@@ -62,6 +67,11 @@ class ReportQueryFinancialOffices extends BaseQuery {
         let options = await(this.journalConfig.getOptions()),
             knex = this.knex,
             currentFiscalPeriodId = this.currentFiscalPeriodId;
+
+        options.branchId = this.branchId;
+        options.userId = this.userId;
+        options.canView = this.canView();
+        options.modify = this.modify;
 
         let journals = `"groupJournals".number as "number",
             "groupJournals".date as "date",
@@ -81,7 +91,7 @@ class ReportQueryFinancialOffices extends BaseQuery {
                 groupJournals.call(this, knex,
                     options,
                     currentFiscalPeriodId,
-                    ['number','date','generalLedgerAccountId','article']);
+                    ['number', 'date', 'generalLedgerAccountId', 'article']);
             })
             .leftJoin('generalLedgerAccounts', 'groupJournals.generalLedgerAccountId', 'generalLedgerAccounts.id')
             .as('totalJournals')
@@ -92,6 +102,11 @@ class ReportQueryFinancialOffices extends BaseQuery {
         let options = await(this.journalConfig.getOptions()),
             knex = this.knex,
             currentFiscalPeriodId = this.currentFiscalPeriodId;
+
+        options.branchId = this.branchId;
+        options.userId = this.userId;
+        options.canView = this.canView();
+        options.modify = this.modify;
 
         let journals = `"groupJournals".number as "number",
             "groupJournals".date as "date",
@@ -117,7 +132,7 @@ class ReportQueryFinancialOffices extends BaseQuery {
                 groupJournals.call(this, knex,
                     options,
                     currentFiscalPeriodId,
-                    ['number','date','generalLedgerAccountId','subsidiaryLedgerAccountId','article']);
+                    ['number', 'date', 'generalLedgerAccountId', 'subsidiaryLedgerAccountId', 'article']);
             })
             .leftJoin('generalLedgerAccounts', 'groupJournals.generalLedgerAccountId', 'generalLedgerAccounts.id')
             .leftJoin('subsidiaryLedgerAccounts', 'groupJournals.subsidiaryLedgerAccountId', 'subsidiaryLedgerAccounts.id')

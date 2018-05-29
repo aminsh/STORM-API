@@ -2,15 +2,15 @@
 
 const BaseQuery = require('../queries/query.base'),
     FilterQueryConfig = require('./report.filter.config'),
-        translate = require('../services/translateService'),
+    translate = require('../services/translateService'),
     async = require('asyncawait/async'),
     await = require('asyncawait/await'),
     kendoQueryResolve = instanceOf('kendoQueryResolve');
 
 
 class SeasonalReport extends BaseQuery {
-    constructor(branchId, currentFiscalPeriodId, mode, filter) {
-        super(branchId);
+    constructor(branchId, currentFiscalPeriodId, mode, filter, userId) {
+        super(branchId, userId);
 
         this.currentFiscalPeriodId = currentFiscalPeriodId;
 
@@ -23,6 +23,9 @@ class SeasonalReport extends BaseQuery {
     getSeasonal() {
         let knex = this.knex,
             branchId = this.branchId,
+            userId = this.userId,
+            canView = this.canView(),
+            modify = this.modify,
             options = this.options,
 
             query = knex.from(function () {
@@ -70,7 +73,7 @@ class SeasonalReport extends BaseQuery {
                       FROM "invoiceLines"
                       INNER JOIN invoices ON "invoiceLines"."invoiceId" = invoices."id"
                       WHERE "invoiceType" in ('returnSale','returnPurchase')) as "returnInvoice"`), 'returnInvoice.ofInvoiceId', '=', 'invoices.id')
-                    .where('invoices.branchId', branchId)
+                    .modify(modify, branchId, userId, canView, 'invoices')
                     .where('invoices.invoiceType', options.filter.invoiceType)
                     .where('invoices.invoiceStatus', '!=', 'draft')
                     .whereBetween('invoices.date', [options.fromMainDate, options.toDate])
@@ -90,19 +93,23 @@ class SeasonalReport extends BaseQuery {
             nationalCode = parseInt(options.filter.haveNationalCode) === 1 ? [0, 1] :
                 parseInt(options.filter.haveNationalCode) === 2 ? [1] : [0];
 
-        result.data = result.data.asEnumerable()
-            .where(item => options.month.includes(item.month))
-            .where(item => options.season.includes(item.season))
-            .where(item => vat.includes(item.haveVat))
-            .where(item => nationalCode.includes(item.haveNationalCode))
-            .toArray();
+        if (result)
+            result.data = result.data.asEnumerable()
+                .where(item => options.month.includes(item.month))
+                .where(item => options.season.includes(item.season))
+                .where(item => vat.includes(item.haveVat))
+                .where(item => nationalCode.includes(item.haveNationalCode))
+                .toArray();
 
-        return result;
+        return result || [];
     }
 
     getTotalSeasonal() {
         let knex = this.knex,
             branchId = this.branchId,
+            userId = this.userId,
+            canView = this.canView(),
+            modify = this.modify,
             options = this.options,
             vat = parseInt(options.filter.haveVat) === 1 ? [0, 1] :
                 parseInt(options.filter.haveVat) === 2 ? [1] : [0],
@@ -128,7 +135,7 @@ class SeasonalReport extends BaseQuery {
                 .innerJoin('invoices', 'invoiceLines.invoiceId', 'invoices.id')
                 .innerJoin('detailAccounts', 'detailAccounts.id', 'invoices.detailAccountId')
                 .where('invoices.invoiceStatus', '!=', 'draft')
-                .andWhere('invoices.branchId', branchId)
+                .modify(modify, branchId, userId, canView, 'invoices')
                 .whereBetween('invoices.date', [options.fromMainDate, options.toDate])
             ),
 
