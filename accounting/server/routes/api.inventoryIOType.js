@@ -12,9 +12,7 @@ router.route('/:type')
         res.json(result);
     }))
     .post(async((req, res) => {
-
         try {
-
             let cmd = req.body;
             cmd.type = req.params.type;
 
@@ -29,9 +27,7 @@ router.route('/:type')
 
 router.route('/:id')
     .put(async(function (req, res) {
-
         try {
-
             req.container.get("CommandBus").send("inventoryIOTypeUpdate", [req.params.id, req.body]);
             res.json({isValid: true});
         }
@@ -40,9 +36,7 @@ router.route('/:id')
         }
     }))
     .delete(async(function (req, res) {
-
         try {
-
             req.container.get("CommandBus").send("inventoryIOTypeRemove", [req.params.id]);
             res.json({isValid: true});
         }

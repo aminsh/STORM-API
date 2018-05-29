@@ -5,12 +5,13 @@ const async = require('asyncawait/async'),
     router = require('express').Router(),
     ProductQuery = require('../queries/query.product');
 
-router.route('/:id/summary/sale/by-month').get(async((req, res) => {
-    let productQuery = new ProductQuery(req.branchId),
-        result = await(productQuery.getTotalPriceAndCountByMonth(req.params.id, req.fiscalPeriodId));
+router.route('/:id/summary/sale/by-month')
+    .get(async((req, res) => {
+        let productQuery = new ProductQuery(req.branchId, req.user.id),
+            result = await(productQuery.getTotalPriceAndCountByMonth(req.params.id, req.fiscalPeriodId));
 
-    res.json(result);
-}));
+        res.json(result);
+    }));
 
 router.route('/')
     .get(async((req, res) => {
@@ -22,7 +23,7 @@ router.route('/')
     .post(async((req, res) => {
         try {
 
-            const id = req.container.get("CommandBus").send("productCreate",[req.body]);
+            const id = req.container.get("CommandBus").send("productCreate", [req.body]);
 
             res.json({isValid: true, returnValue: {id}});
         }
@@ -72,12 +73,12 @@ router.route('/:id/add-to-input-first')
 
         try {
 
-            let items =  req.body.asEnumerable()
-                    .select(item => ({
-                        stockId: item.stockId,
-                        items: [{productId: req.params.id, quantity: item.quantity, unitPrice: item.unitPrice}]
-                    }))
-                    .toArray();
+            let items = req.body.asEnumerable()
+                .select(item => ({
+                    stockId: item.stockId,
+                    items: [{productId: req.params.id, quantity: item.quantity, unitPrice: item.unitPrice}]
+                }))
+                .toArray();
 
 
             items.forEach(item => req.container.get("CommandBus").send("productAddToInventoryInputFirst", [item.items, item.stockId]));

@@ -9,12 +9,11 @@ const async = require('asyncawait/async'),
 
 router.route('/')
     .get(async((req, res) => {
-        let invoiceQuery = new InvoiceQuery(req.branchId),
+        let invoiceQuery = new InvoiceQuery(req.branchId, req.user.id),
             result = await(invoiceQuery.getAll(req.query, 'returnSale'));
 
         res.json(result);
     }))
-
     .post(async((req, res) => {
 
         try {
@@ -44,7 +43,7 @@ router.route('/:id/confirm')
 
 router.route('/:id')
     .get(async((req, res) => {
-        let invoiceQuery = new InvoiceQuery(req.branchId),
+        let invoiceQuery = new InvoiceQuery(req.branchId, req.user.id),
             result = await(invoiceQuery.getById(req.params.id));
 
         res.json(result);
@@ -98,19 +97,21 @@ router.route('/:id/pay')
         req.container.get("CommandBus").send("paymentSetJournalLineForAll", [paymentsAndJournalLines]);
     }));
 
-router.route('/:id/payments').get(async((req, res) => {
-    let paymentQuery = new PaymentQuery(req.branchId),
-        result = await(paymentQuery.getPeymentsByInvoiceId(req.params.id));
+router.route('/:id/payments')
+    .get(async((req, res) => {
+        let paymentQuery = new PaymentQuery(req.branchId, req.user.id),
+            result = await(paymentQuery.getPeymentsByInvoiceId(req.params.id));
 
-    res.json(result);
-}));
+        res.json(result);
+    }));
 
-router.route('/:id/lines').get(async((req, res) => {
-    let invoiceQuery = new InvoiceQuery(req.branchId),
-        result = await(invoiceQuery.getAllLines(req.params.id, req.query));
+router.route('/:id/lines')
+    .get(async((req, res) => {
+        let invoiceQuery = new InvoiceQuery(req.branchId, req.user.id),
+            result = await(invoiceQuery.getAllLines(req.params.id, req.query));
 
-    res.json(result);
-}));
+        res.json(result);
+    }));
 
 router.route('/max/number')
     .get(async((req, res) => {

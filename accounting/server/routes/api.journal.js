@@ -13,11 +13,9 @@ router.route('/')
         res.json(result);
     }))
     .post(async((req, res) => {
-
         try {
             const id = req.container.get("CommandBus").send("journalCreate", [req.body]);
             res.json({isValid: true, returnValue: {id}});
-
         }
         catch (e) {
             res.json({isValid: false, errors: e.errors});
@@ -76,7 +74,6 @@ router.route('/:id')
             res.json({isValid: false, errors: e.errors});
         }
     }));
-
 
 router.route('/:id/confirm')
     .put(async((req, res) => {

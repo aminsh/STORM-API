@@ -9,13 +9,16 @@ const BaseQuery = require('./query.base'),
 
 class TreasuryTransfer
     extends BaseQuery {
-    constructor(branchId) {
-        super(branchId);
+    constructor(branchId, userId) {
+        super(branchId, userId);
     }
 
     getAll(fiscalPeriodId, parameters) {
         let knex = this.knex,
             branchId = this.branchId,
+            userId = this.userId,
+            canView = this.canView(),
+            modify = this.modify,
             fiscalPeriodQuery = new FiscalPeriodQuery(this.branchId),
             fiscalPeriod = await(fiscalPeriodQuery.getById(fiscalPeriodId)),
 
@@ -35,7 +38,7 @@ class TreasuryTransfer
                     .leftJoin('treasuryDocumentDetails', 'treasury.documentDetailId', 'treasuryDocumentDetails.id')
                     .leftJoin('detailAccounts as source', 'source.id', 'treasury.sourceDetailAccountId')
                     .leftJoin('detailAccounts as destination', 'destination.id', 'treasury.destinationDetailAccountId')
-                    .where('treasury.branchId', branchId)
+                    .modify(modify, branchId, userId, canView, 'treasury')
                     .where('treasuryType', 'transfer')
                     .as('base')
             });
@@ -47,6 +50,9 @@ class TreasuryTransfer
     getById(id) {
         let knex = this.knex,
             branchId = this.branchId,
+            userId = this.userId,
+            canView = this.canView(),
+            modify = this.modify,
 
             treasury = await(knex.select(
                 'treasury.id',
@@ -67,12 +73,13 @@ class TreasuryTransfer
                     .leftJoin(knex.raw(`(select da.title, da.id
                                      from "detailAccounts" as da )as "destinationDetailAccounts"`),
                         'treasury.destinationDetailAccountId', '=', 'destinationDetailAccounts.id')
-                    .where('treasury.branchId', branchId)
+                    .modify(modify, branchId, userId, canView, 'treasury')
                     .where('treasury.id', id)
                     .first()
-            ),
+            );
 
-            journal = treasury.journalId ? await(knex.select(
+        if (treasury) {
+            let journal = treasury.journalId ? await(knex.select(
                 'journals.temporaryDate as date',
                 'journals.temporaryNumber as number',
                 'journals.id',
@@ -85,9 +92,9 @@ class TreasuryTransfer
                     .first()
             ) : null;
 
-        treasury.journal = journal;
-
-        return view(treasury);
+            treasury.journal = journal;
+        }
+        return treasury ? view(treasury) : [];
     }
 
 }

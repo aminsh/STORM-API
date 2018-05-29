@@ -11,11 +11,10 @@ const async = require('asyncawait/async'),
 
 router.route('/journal/:journalId')
     .get(async((req, res) => {
-        let journalLineQuery = new JournalLineQuery(req.branchId),
+        let journalLineQuery = new JournalLineQuery(req.branchId, req.user.id),
             result = await(journalLineQuery.getAll(req.params.journalId, req.query));
         res.json(result);
     }))
-
     .post(async((req, res) => {
         let journalRepository = new JournalRepository(req.branchId),
             journalLineRepository = new JournalLineRepository(req.branchId),
@@ -59,7 +58,7 @@ router.route('/journal/:journalId')
 
 router.route('/:id')
     .get(async((req, res) => {
-        let journalLineQuery = new JournalLineQuery(req.branchId),
+        let journalLineQuery = new JournalLineQuery(req.branchId, req.user.id),
             result = await(journalLineQuery.getById(req.params.id));
         res.json(result);
     }))

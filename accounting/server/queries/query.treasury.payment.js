@@ -12,13 +12,16 @@ const BaseQuery = require('./query.base'),
     demandNote = require('../viewModel.assemblers/view.treasury.demandNote');
 
 class TreasuryPayment extends BaseQuery {
-    constructor(branchId) {
-        super(branchId);
+    constructor(branchId, userId) {
+        super(branchId, userId);
     }
 
     getAll(fiscalPeriodId, parameters) {
         let knex = this.knex,
             branchId = this.branchId,
+            userId = this.userId,
+            canView = this.canView(),
+            modify = this.modify,
             fiscalPeriodQuery = new FiscalPeriodQuery(this.branchId),
             fiscalPeriod = await(fiscalPeriodQuery.getById(fiscalPeriodId)),
 
@@ -43,7 +46,7 @@ class TreasuryPayment extends BaseQuery {
                     .leftJoin('treasuryDocumentDetails', 'treasury.documentDetailId', 'treasuryDocumentDetails.id')
                     .leftJoin('detailAccounts as source', 'source.id', 'treasury.sourceDetailAccountId')
                     .leftJoin('detailAccounts as destination', 'destination.id', 'treasury.destinationDetailAccountId')
-                    .where('treasury.branchId', branchId)
+                    .modify(modify, branchId, userId, canView, 'treasury')
                     .where('treasuryType', 'payment')
                     .as('base')
             });
@@ -52,9 +55,12 @@ class TreasuryPayment extends BaseQuery {
 
     }
 
-    getById(id) {
+    getById(id, documentType) {
         let knex = this.knex,
             branchId = this.branchId,
+            userId = this.userId,
+            canView = this.canView(),
+            modify = this.modify,
 
             treasury = await(knex.select(
                 'treasury.*',
@@ -68,63 +74,61 @@ class TreasuryPayment extends BaseQuery {
                     .leftJoin(knex.raw(`(select da.title, da.id
                                      from "detailAccounts" as da )as "destinationDetailAccounts"`),
                         'treasury.destinationDetailAccountId', '=', 'destinationDetailAccounts.id')
-                    .where('treasury.branchId', branchId)
+                    .modify(modify, branchId, userId, canView, 'treasury')
+                    .where('documentType', documentType)
                     .where('treasury.id', id)
                     .first()
-            ),
+            );
 
-            documentDetail = await(knex.select('treasuryDocumentDetails.*')
-                .from('treasuryDocumentDetails')
-                .where('id', treasury.documentDetailId)
-                .where('branchId', branchId)
-                .first()
-            ),
-
-            journalIds = treasury.documentType === 'cheque' && documentDetail.chequeStatusHistory
-                ? documentDetail.chequeStatusHistory.asEnumerable()
-                    .where(e => e.journalId)
-                    .select(item => item.journalId)
-                    .toArray()
-                : treasury.journalId ? [treasury.journalId] : null;
-
-        let journals = (journalIds || []).length > 0
-            ? await(knex.select(
-                'journals.temporaryDate as date',
-                'journals.temporaryNumber as number',
-                'journals.id',
-                'journals.description'
-                )
-                    .from('journals')
-                    .whereIn('id', journalIds)
+        if (treasury) {
+            let documentDetail = await(knex.select('treasuryDocumentDetails.*')
+                    .from('treasuryDocumentDetails')
+                    .where('id', treasury.documentDetailId)
                     .where('branchId', branchId)
-            )
-            :null;
+                    .first()
+                ),
+
+                journalIds = treasury.documentType === 'cheque' && documentDetail.chequeStatusHistory
+                    ? documentDetail.chequeStatusHistory.asEnumerable()
+                        .where(e => e.journalId)
+                        .select(item => item.journalId)
+                        .toArray()
+                    : treasury.journalId ? [treasury.journalId] : null;
+
+            let journals = (journalIds || []).length > 0
+                ? await(knex.select(
+                    'journals.temporaryDate as date',
+                    'journals.temporaryNumber as number',
+                    'journals.id',
+                    'journals.description'
+                    )
+                        .from('journals')
+                        .whereIn('id', journalIds)
+                        .where('branchId', branchId)
+                )
+                : null;
 
 
-        treasury.documentDetail = documentDetail;
-        treasury.journals = journals;
+            treasury.documentDetail = documentDetail;
+            treasury.journals = journals;
 
-        if (treasury.documentType === 'cheque') {
-            return chequeView(treasury);
+            if (treasury.documentType === 'cheque')
+                return chequeView(treasury);
+
+            if (treasury.documentType === 'spendCheque')
+                return chequeView(treasury);
+
+            if (treasury.documentType === 'cash')
+                return cashView(treasury);
+
+            if (treasury.documentType === 'receipt')
+                return receiptView(treasury);
+
+            if (treasury.documentType === 'demandNote')
+                return demandNote(treasury);
         }
 
-        if (treasury.documentType === 'spendCheque') {
-            return chequeView(treasury);
-        }
-
-        if (treasury.documentType === 'cash') {
-            return cashView(treasury);
-        }
-
-        if (treasury.documentType === 'receipt') {
-            return receiptView(treasury);
-        }
-
-        if (treasury.documentType === 'demandNote') {
-            return demandNote(treasury);
-        }
-
-        return view(treasury);
+        return treasury ? view(treasury) : [];
     }
 
 }

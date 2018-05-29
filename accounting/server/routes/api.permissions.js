@@ -82,4 +82,15 @@ router.route('/users/:id/edit-role')
         }
     }));
 
+router.route('/users/:id/remove-role')
+    .delete(async((req, res) => {
+        try {
+            req.container.get("CommandBus").send("", [req.params.id, req.body]);
+            res.json({isValid: true});
+        }
+        catch (e) {
+            res.json({isValid: false, errors: e.errors});
+        }
+    }));
+
 module.exports = router;

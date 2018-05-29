@@ -8,15 +8,14 @@ const async = require('asyncawait/async'),
 
 router.route('/summary')
     .get(async((req, res) => {
-        let invoiceQuery = new InvoiceQuery(req.branchId),
+        let invoiceQuery = new InvoiceQuery(req.branchId, req.user.id),
             result = await(invoiceQuery.getSummary(req.fiscalPeriodId, 'purchase'));
-
         res.json(result);
     }));
 
 router.route('/')
     .get(async((req, res) => {
-        let invoiceQuery = new InvoiceQuery(req.branchId),
+        let invoiceQuery = new InvoiceQuery(req.branchId, req.user.id),
             result = await(invoiceQuery.getAll(req.query, 'purchase'));
 
         res.json(result);
@@ -38,7 +37,6 @@ router.route('/:id/confirm')
     .post(async((req, res) => {
         try {
             req.container.get("CommandBus").send("invoicePurchaseConfirm", [req.params.id]);
-
             res.json({isValid: true});
         }
         catch (e) {
@@ -48,9 +46,8 @@ router.route('/:id/confirm')
 
 router.route('/:id')
     .get(async((req, res) => {
-        let invoiceQuery = new InvoiceQuery(req.branchId),
+        let invoiceQuery = new InvoiceQuery(req.branchId, req.user.id),
             result = await(invoiceQuery.getById(req.params.id));
-
         res.json(result);
     }))
     .put(async((req, res) => {
@@ -116,18 +113,18 @@ router.route('/:id/generate-journal')
 
     }));
 
-router.route('/:id/payments').get(async((req, res) => {
-    let paymentQuery = new PaymentQuery(req.branchId),
-        result = await(paymentQuery.getPeymentsByInvoiceId(req.params.id));
+router.route('/:id/payments')
+    .get(async((req, res) => {
+        let paymentQuery = new PaymentQuery(req.branchId, req.user.id),
+            result = await(paymentQuery.getPeymentsByInvoiceId(req.params.id));
 
-    res.json(result);
-}));
+        res.json(result);
+    }));
 
-
-router.route('/:id/lines').get(async((req, res) => {
-    let invoiceQuery = new InvoiceQuery(req.branchId),
+router.route('/:id/lines')
+    .get(async((req, res) => {
+    let invoiceQuery = new InvoiceQuery(req.branchId, req.user.id),
         result = await(invoiceQuery.getAllLines(req.params.id, req.query));
-
     res.json(result);
 }));
 

@@ -9,8 +9,8 @@ const async = require('asyncawait/async'),
     JournalQueryConfig = require('./query.journal.config');
 
 module.exports = class AccountReview extends BaseQuery {
-    constructor(branchId, fiscalPeriodId, mode, filter, paramters) {
-        super(branchId);
+    constructor(branchId, fiscalPeriodId, mode, filter, paramters, userId) {
+        super(branchId, userId);
 
         this.journalConfig = new JournalQueryConfig(branchId, fiscalPeriodId, mode, filter);
 
@@ -53,6 +53,11 @@ module.exports = class AccountReview extends BaseQuery {
             knex = this.knex,
             fiscalPeriodId = this.fiscalPeriodId;
 
+        options.branchId = this.branchId;
+        options.userId = this.userId;
+        options.canView = this.canView();
+        options.modify = this.modify;
+
         let query = knex.select().from(function () {
             this.select('generalLedgerAccountId',
                 'sumBeforeRemainder', 'sumDebtor', 'sumCreditor', 'sumRemainder',
@@ -92,6 +97,11 @@ module.exports = class AccountReview extends BaseQuery {
             knex = this.knex,
             fiscalPeriodId = this.fiscalPeriodId;
 
+        options.branchId = this.branchId;
+        options.userId = this.userId;
+        options.canView = this.canView();
+        options.modify = this.modify;
+
         let query = knex.select().from(function () {
             this.select('generalLedgerAccountId', 'month', 'sumBeforeRemainder', 'sumDebtor', 'sumCreditor', 'sumRemainder',
                 knex.raw('"generalLedgerAccounts"."code" as "generalLedgerAccountCode"'),
@@ -123,6 +133,11 @@ module.exports = class AccountReview extends BaseQuery {
         let knex = this.knex,
             options = await(this.journalConfig.getOptions()),
             fiscalPeriodId = this.fiscalPeriodId;
+
+        options.branchId = this.branchId;
+        options.userId = this.userId;
+        options.canView = this.canView();
+        options.modify = this.modify;
 
         let query = knex.select().from(function () {
             this.select('subsidiaryLedgerAccountId',
@@ -166,6 +181,11 @@ module.exports = class AccountReview extends BaseQuery {
             options = await(this.journalConfig.getOptions()),
             fiscalPeriodId = this.fiscalPeriodId;
 
+        options.branchId = this.branchId;
+        options.userId = this.userId;
+        options.canView = this.canView();
+        options.modify = this.modify;
+
         let query = knex.select().from(function () {
             this.select('detailAccountId',
                 'sumBeforeRemainder', 'sumDebtor', 'sumCreditor', 'sumRemainder',
@@ -207,6 +227,11 @@ module.exports = class AccountReview extends BaseQuery {
             options = await(this.journalConfig.getOptions()),
             fiscalPeriodId = this.fiscalPeriodId;
 
+        options.branchId = this.branchId;
+        options.userId = this.userId;
+        options.canView = this.canView();
+        options.modify = this.modify;
+
         let query = knex.select().from(function () {
             this.select('dimension1Id', 'sumBeforeRemainder', 'sumDebtor', 'sumCreditor', 'sumRemainder',
                 knex.raw('"dimensions"."code" as "dimension1Code"'),
@@ -245,6 +270,11 @@ module.exports = class AccountReview extends BaseQuery {
         let knex = this.knex,
             options = await(this.journalConfig.getOptions()),
             fiscalPeriodId = this.fiscalPeriodId;
+
+        options.branchId = this.branchId;
+        options.userId = this.userId;
+        options.canView = this.canView();
+        options.modify = this.modify;
 
         let query = knex.select().from(function () {
             this.select('dimension2Id', 'sumBeforeRemainder', 'sumDebtor', 'sumCreditor', 'sumRemainder',
@@ -286,6 +316,11 @@ module.exports = class AccountReview extends BaseQuery {
             options = await(this.journalConfig.getOptions()),
             fiscalPeriodId = this.fiscalPeriodId;
 
+        options.branchId = this.branchId;
+        options.userId = this.userId;
+        options.canView = this.canView();
+        options.modify = this.modify;
+
         let query = knex.select().from(function () {
             this.select('dimension3Id', 'sumBeforeRemainder', 'sumDebtor', 'sumCreditor', 'sumRemainder',
                 knex.raw('"dimensions"."code" as "dimension3Code"'),
@@ -326,6 +361,10 @@ module.exports = class AccountReview extends BaseQuery {
             options = await(this.journalConfig.getOptions()),
             fiscalPeriodId = this.fiscalPeriodId;
 
+        options.branchId = this.branchId;
+        options.userId = this.userId;
+        options.canView = this.canView();
+        options.modify = this.modify;
         //options.groupByField = this.tinyGroupByFields;
 
         let withQuery = knex.with('journals-row', (qb) => {

@@ -20,13 +20,13 @@ class DetailAccountQuery extends BaseQuery {
 
     getAll(parameters) {
         let knex = this.knex,
-            branchId = this.branchId;
+            branchId = this.branchId,
 
-        let query = knex.select().from(function () {
-            this.select(knex.raw(`*,coalesce("code", '') || ' ' || title as display`))
-                .from('detailAccounts').as('baseDetailAccounts')
-                .where('branchId', branchId);
-        }).as('baseDetailAccounts');
+            query = knex.select().from(function () {
+                this.select(knex.raw(`*,coalesce("code", '') || ' ' || title as display`))
+                    .from('detailAccounts').as('baseDetailAccounts')
+                    .where('branchId', branchId)
+            }).as('baseDetailAccounts');
 
         return kendoQueryResolve(query, parameters, view);
     }
@@ -35,7 +35,7 @@ class DetailAccountQuery extends BaseQuery {
         let knex = this.knex,
             branchId = this.branchId,
 
-            categories = await(knex.select('id')
+            categories = this.await(knex.select('id')
                 .from('detailAccountCategories')
                 .where('subsidiaryLedgerAccountIds', 'like', `%${subsidiaryLedgerAccountId}%`));
 
@@ -58,13 +58,10 @@ class DetailAccountQuery extends BaseQuery {
     getById(id) {
         let knex = this.knex,
             branchId = this.branchId,
-            userId = this.userId,
-            canView = this.canView(),
-            modify = this.modify,
 
             detailAccount = this.await(
                 knex.select().from('detailAccounts')
-                    .modify(modify, branchId, userId, canView)
+                    .where('branchId', branchId)
                     .andWhere('id', id)
                     .first());
 
@@ -85,7 +82,7 @@ class DetailAccountQuery extends BaseQuery {
         else result = view(detailAccount);
 
         let selectedCategories = detailAccount.detailAccountCategoryIds ? detailAccount.detailAccountCategoryIds.split('|') : [],
-            allCategories = await(knex.select('id', 'title')
+            allCategories = this.await(knex.select('id', 'title')
                 .from('detailAccountCategories')
                 .where('branchId', branchId)),
             resultCategories = allCategories.asEnumerable().groupJoin(
@@ -134,15 +131,12 @@ class DetailAccountQuery extends BaseQuery {
     getAllByDetailAccountType(parameters, type) {
         let knex = this.knex,
             branchId = this.branchId,
-            userId = this.userId,
-            canView = this.canView(),
-            modify = this.modify,
             views = {personView, bankView, fundView};
 
         let query = knex.select().from(function () {
             this.select(knex.raw(`*,coalesce("code", '') || ' ' || title as display`))
                 .from('detailAccounts').as('baseDetailAccounts')
-                .modify(modify, branchId, userId, canView)
+                .where('branchId', branchId)
                 .andWhere('detailAccountType', type)
                 .as('baseDetailAccounts');
         }).as('baseDetailAccounts');
@@ -160,10 +154,10 @@ class DetailAccountQuery extends BaseQuery {
 
             subsidiaryLedgerAccounts = await(knex.from('settings').where('branchId', this.branchId).first())
                 .subsidiaryLedgerAccounts,
-            subledger = subsidiaryLedgerAccounts.asEnumerable().toObject(item => item.key, item=> item.id),
+            subledger = subsidiaryLedgerAccounts.asEnumerable().toObject(item => item.key, item => item.id),
 
             withQuery = knex.with('journals-row', (qb) => {
-                qb.select ('detailAccounts.title',
+                qb.select('detailAccounts.title',
                     knex.raw(`"detailAccounts".title || ' ${translate('Code')} ' || COALESCE("detailAccounts".code,'--') as display`),
                     'journalLines.article',
                     knex.raw(`"journalLines".debtor as debtor`),
@@ -173,12 +167,12 @@ class DetailAccountQuery extends BaseQuery {
                     knex.raw('journals."temporaryNumber" as number'),
                     knex.raw(`ROW_NUMBER () OVER (ORDER BY "temporaryNumber") as "seq_row"`))
                     .from('journals')
-                    .leftJoin('journalLines','journals.id','journalLines.journalId')
-                    .leftJoin('detailAccounts','detailAccounts.id', 'journalLines.detailAccountId')
+                    .leftJoin('journalLines', 'journals.id', 'journalLines.journalId')
+                    .leftJoin('detailAccounts', 'detailAccounts.id', 'journalLines.detailAccountId')
                     .leftJoin('subsidiaryLedgerAccounts', 'journalLines.subsidiaryLedgerAccountId', 'subsidiaryLedgerAccounts.id')
                     .where('detailAccounts.id', id)
-                    .modify(modify, branchId, userId, canView, 'detailAccounts')
-                    .where('journals.periodId',fiscalPeriodId)
+                    .modify(modify, branchId, userId, canView, 'journals')
+                    .where('journals.periodId', fiscalPeriodId)
                     .where('detailAccounts.detailAccountType', type)
                     .whereIn('subsidiaryLedgerAccounts.id', [subledger.bank, subledger.fund])
             }),
@@ -200,7 +194,7 @@ class DetailAccountQuery extends BaseQuery {
                         'number',
                         'seq_row'
                     )
-                    .orderBy('base.seq_row','desc')
+                    .orderBy('base.seq_row', 'desc')
                     .as('baseQuery')
             }),
 

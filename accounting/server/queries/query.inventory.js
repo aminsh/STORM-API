@@ -37,8 +37,8 @@ const BaseQuery = require('./query.base'),
     });
 
 class InventoryQuery extends BaseQuery {
-    constructor(branchId) {
-        super(branchId);
+    constructor(branchId, userId) {
+        super(branchId, userId);
     }
 
     getAllInventoryProducts(parameters) {
@@ -72,6 +72,9 @@ class InventoryQuery extends BaseQuery {
 
     getAll(fiscalPeriodId, inventoryType, parameters) {
         const branchId = this.branchId,
+            userId = this.userId,
+            canView = this.canView(),
+            modify = this.modify,
             addFilter = this.addFilter,
             knex = this.knex,
 
@@ -84,7 +87,7 @@ class InventoryQuery extends BaseQuery {
                     .from('inventories')
                     .leftJoin('inventoryIOTypes', 'inventoryIOTypes.id', 'inventories.ioType')
                     .leftJoin('stocks', 'stocks.id', 'inventories.stockId')
-                    .where('inventories.branchId', branchId)
+                    .modify(modify, branchId, userId, canView, 'inventories')
                     .where('inventoryType', inventoryType)
                     .where('fiscalPeriodId', fiscalPeriodId)
                     .as('base');
@@ -109,11 +112,14 @@ class InventoryQuery extends BaseQuery {
                 .where('inventories.branchId', this.branchId)
                 .whereIn('inventories.id', ids));
 
-        return  result.map(view);
+        return result.map(view);
     }
 
     getAllWithoutInvoice(inventoryType, parameters) {
         const branchId = this.branchId,
+            userId = this.userId,
+            canView = this.canView(),
+            modify = this.modify,
             knex = this.knex,
 
             query = knex.from(function () {
@@ -126,7 +132,7 @@ class InventoryQuery extends BaseQuery {
                     .from('inventories')
                     .leftJoin('stocks', 'stocks.id', 'inventories.stockId')
                     .leftJoin('inventoryIOTypes', 'inventoryIOTypes.id', 'inventories.ioType')
-                    .where('inventories.branchId', branchId)
+                    .modify(modify, branchId, userId, canView, 'inventories')
                     .where('inventoryType', inventoryType)
                     .whereNull('invoiceId')
                     .whereNull('journalId')
@@ -138,6 +144,9 @@ class InventoryQuery extends BaseQuery {
 
     getAllInputsWithIoType(ioType, parameters) {
         const branchId = this.branchId,
+            userId = this.userId,
+            canView = this.canView(),
+            modify = this.modify,
             knex = this.knex,
 
             query = knex.from(function () {
@@ -149,7 +158,7 @@ class InventoryQuery extends BaseQuery {
                     .from('inventories')
                     .leftJoin('stocks', 'stocks.id', 'inventories.stockId')
                     .leftJoin('inventoryIOTypes', 'inventoryIOTypes.id', 'inventories.ioType')
-                    .where('inventories.branchId', branchId)
+                    .modify(modify, branchId, userId, canView, 'inventories')
                     .where('inventoryIOTypes.id', ioType)
                     .whereNull('invoiceId')
                     .whereNull('journalId')
@@ -166,7 +175,12 @@ class InventoryQuery extends BaseQuery {
 
     getById(id) {
         let knex = this.knex,
-            inventory = await(knex
+            branchId = this.branchId,
+            userId = this.userId,
+            canView = this.canView(),
+            modify = this.modify,
+
+            inventory = this.await(knex
                 .select(
                     'inventories.*',
                     knex.raw('stocks.title as "stockDisplay"'),
@@ -175,15 +189,19 @@ class InventoryQuery extends BaseQuery {
                 .from('inventories')
                 .leftJoin('stocks', 'inventories.stockId', 'stocks.id')
                 .leftJoin('inventoryIOTypes', 'inventoryIOTypes.id', 'inventories.ioType')
+                .modify(modify, branchId, userId, canView, 'inventories')
                 .where('inventories.id', id)
                 .first()),
-            inventoryLines = await(
-                knex.select('inventoryLines.*', knex.raw('products.title as "productDisplay"'))
-                    .from('inventoryLines')
-                    .leftJoin('products', 'inventoryLines.productId', 'products.id')
-                    .where('inventoryId', inventory.id));
+            inventoryLines = inventory
+                ? this.await(
+                    knex.select('inventoryLines.*', knex.raw('products.title as "productDisplay"'))
+                        .from('inventoryLines')
+                        .leftJoin('products', 'inventoryLines.productId', 'products.id')
+                        .modify(modify, branchId, userId, canView, 'inventoryLines')
+                        .where('inventoryId', inventory.id))
+                : [];
 
-        inventory = view(inventory);
+        inventory = inventory ? view(inventory) : [];
         inventory.inventoryLines = inventoryLines.asEnumerable().select(viewLine).toArray();
 
         return inventory;
@@ -191,19 +209,27 @@ class InventoryQuery extends BaseQuery {
 
     getDetailById(id, parameters) {
         let knex = this.knex,
+            branchId = this.branchId,
+            userId = this.userId,
+            canView = this.canView(),
+            modify = this.modify,
+
             query = knex.from(function () {
                 this.select('inventoryLines.*', knex.raw('products.title as "productDisplay"'))
                     .from('inventoryLines')
                     .leftJoin('products', 'inventoryLines.productId', 'products.id')
+                    .modify(modify, branchId, userId, canView, 'inventoryLines')
                     .where('inventoryId', id)
                     .as('base');
             }),
 
-            result = await(kendoQueryResolve(query, parameters, viewLine)),
+            result = this.await(kendoQueryResolve(query, parameters, viewLine)),
 
-            sumTotalPrice = await(knex
+            sumTotalPrice = this.await(knex
                 .select(knex.raw('SUM(CAST("unitPrice" * quantity as FLOAT)) as "sumTotalPrice"'))
-                .from('inventoryLines').where('inventoryId', id)
+                .from('inventoryLines')
+                .modify(modify, branchId, userId, canView, 'inventoryLines')
+                .where('inventoryId', id)
                 .first())
                 .sumTotalPrice,
             aggregates = {sumTotalPrice};
@@ -216,7 +242,10 @@ class InventoryQuery extends BaseQuery {
 
     getInventoriesByStock(productId, fiscalPeriodId) {
         const knex = this.knex,
-            branchId = this.branchId;
+            branchId = this.branchId,
+            userId = this.userId,
+            canView = this.canView(),
+            modify = this.modify;
 
         return knex.select(
             'stockId',
@@ -230,7 +259,7 @@ class InventoryQuery extends BaseQuery {
                     .from('inventories')
                     .leftJoin('inventoryLines', 'inventoryLines.inventoryId', 'inventories.id')
                     .leftJoin('stocks', 'stocks.id', 'inventories.stockId')
-                    .where('inventories.branchId', branchId)
+                    .modify(modify, branchId, userId, canView, 'inventoryLines')
                     .where('fiscalPeriodId', fiscalPeriodId)
                     .where('productId', productId)
                     .as('base');
@@ -241,7 +270,7 @@ class InventoryQuery extends BaseQuery {
     getMaxNumber(inventoryType, fiscalPeriodId) {
 
         const maxNumber = await(this.knex.table('inventories')
-            .modify(this.modify, this.branchId)
+            .where('branchId', this.branchId)
             .where('inventoryType', inventoryType)
             .andWhere('fiscalPeriodId', fiscalPeriodId)
             .max('number')

@@ -23,8 +23,8 @@ const templateSale = require('../config/defaultJournalGenerationTemplates/sale.j
 
 
 class JournalGenerationTemplateQuery extends BaseQuery {
-    constructor(branchId) {
-        super(branchId);
+    constructor(branchId, userId) {
+        super(branchId, userId);
 
         this.tableName = 'journalGenerationTemplates'
     }
@@ -39,10 +39,11 @@ class JournalGenerationTemplateQuery extends BaseQuery {
 
     getBySourceType(sourceType) {
         const template = templates[sourceType],
+            branchId = this.branchId,
 
             entity = await(this.knex.select('id', 'title', 'sourceType', 'data')
                 .from(this.tableName)
-                .where('branchId', this.branchId)
+                .where('branchId', branchId)
                 .where('sourceType', sourceType)
                 .first());
 

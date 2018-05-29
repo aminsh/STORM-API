@@ -7,8 +7,8 @@ const BaseQuery = require('./query.base'),
     view = require('../viewModel.assemblers/view.treasury');
 
 class TreasuryPurposes extends BaseQuery {
-    constructor(branchId) {
-        super(branchId);
+    constructor(branchId, userId) {
+        super(branchId, userId);
     }
 
     getAll(fiscalPeriodId, parameters) {

@@ -19,20 +19,27 @@ class BaseQuery {
                     .isOwner,
                 isAdmin = await(this.knex.select('roles.isAdmin')
                     .from('userInRole')
-                    .innerJoin('roles','roles.id','userInRole.roleId')
+                    .innerJoin('roles', 'roles.id', 'userInRole.roleId')
                     .where('userInRole.userId', userId)
-                    .where('userInRole.branchId', branchId));
+                    .where('userInRole.branchId', branchId)),
+
+                userRoleId = await(this.knex.select('roleId')
+                    .from('userInRole')
+                    .where('userInRole.userId', userId)
+                    .where('userInRole.branchId', branchId)),
+
+                noPermission = userRoleId.length === 0;
 
             isAdmin = isAdmin.length > 0 ? isAdmin[0].isAdmin : false;
-
             isOwner = isOwner || false;
-            return isOwner || isAdmin;
+
+            return isOwner || isAdmin || noPermission;
         }
     }
 
-    modify(queryBuilder, branchId, userId, isOwner, fieldName) {
-        queryBuilder.where((fieldName && knex.raw(`"${fieldName}"."branchId"`)) || 'branchId', branchId);
-        isOwner !== true && queryBuilder.where((fieldName && knex.raw(`"${fieldName}"."createdById"`)) || 'createdById', userId);
+    modify(queryBuilder, branchId, userId, isOwner, tableName) {
+        queryBuilder.where((tableName && knex.raw(`"${tableName}"."branchId"`)) || 'branchId', branchId);
+        isOwner !== true && queryBuilder.where((tableName && knex.raw(`"${tableName}"."createdById"`)) || 'createdById', userId);
     }
 }
 

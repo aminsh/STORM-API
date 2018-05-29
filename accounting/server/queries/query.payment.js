@@ -7,8 +7,8 @@ const async = require('asyncawait/async'),
     enums = require('../../../shared/enums');
 
 class PaymentQuery extends BaseQuery {
-    constructor(branchId) {
-        super(branchId);
+    constructor(branchId, userId) {
+        super(branchId, userId);
     }
 
     getReceivableCheques(parameters) {
@@ -53,6 +53,9 @@ class PaymentQuery extends BaseQuery {
 
     getPayableCheques(parameters) {
         let branchId = this.branchId,
+            userId = this.userId,
+            canView = this.canView(),
+            modify = this.modify,
             knex = this.knex,
             query = knex.from(function () {
                 this.select(
@@ -67,7 +70,7 @@ class PaymentQuery extends BaseQuery {
                 )
                     .from('payments')
                     .leftJoin('journalLines', 'payments.journalLineId', 'journalLines.id')
-                    .where('payments.branchId', branchId)
+                    .modify(modify, branchId, userId, canView,'payments')
                     .andWhere('receiveOrPay', 'pay')
                     .andWhere('paymentType', 'cheque')
                     .orderBy('payments.date', 'desc')
@@ -92,7 +95,11 @@ class PaymentQuery extends BaseQuery {
     }
 
     getPeymentsByInvoiceId(invoiceId) {
-        let knex = this.knex;
+        let knex = this.knex,
+            branchId = this.branchId,
+            userId = this.userId,
+            canView = this.canView(),
+            modify = this.modify;
 
         return knex.select(
             'payments.id',
@@ -106,7 +113,7 @@ class PaymentQuery extends BaseQuery {
             .from('payments')
             .leftJoin('journalLines', 'journalLines.id', 'payments.journalLineId')
             .leftJoin('detailAccounts', 'detailAccounts.id', 'journalLines.detailAccountId')
-            .where('payments.branchId', this.branchId)
+            .modify(modify, branchId, userId, canView,'payments')
             .andWhere('payments.invoiceId', invoiceId)
             .map(entity => ({
                 id: entity.id,

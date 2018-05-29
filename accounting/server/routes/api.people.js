@@ -6,11 +6,12 @@ const async = require('asyncawait/async'),
     DetailAccountQuery = require('../queries/query.detailAccount'),
     PersonQuery = require('../queries/query.person');
 
-router.route('/:id/summary/sale/by-month').get(async((req, res) => {
-    let personQuery = new PersonQuery(req.branchId),
-        result = await(personQuery.getTotalPriceAndCountByMonth(req.params.id, req.fiscalPeriodId));
-    res.json(result);
-}));
+router.route('/:id/summary/sale/by-month')
+    .get(async((req, res) => {
+        let personQuery = new PersonQuery(req.branchId, req.user.id),
+            result = await(personQuery.getTotalPriceAndCountByMonth(req.params.id, req.fiscalPeriodId));
+        res.json(result);
+    }));
 
 router.route('/')
     .get(async((req, res) => {

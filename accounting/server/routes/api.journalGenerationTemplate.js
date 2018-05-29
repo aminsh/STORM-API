@@ -8,12 +8,11 @@ const async = require('asyncawait/async'),
 
 router.route('/:sourceType')
     .get(async((req, res) => {
-        const journalGenerationTemplateQuery = new JournalGenerationTemplateQuery(req.branchId),
+        const journalGenerationTemplateQuery = new JournalGenerationTemplateQuery(req.branchId, req.user.id),
             result = await(journalGenerationTemplateQuery.getBySourceType(req.params.sourceType));
 
         res.json(result);
     }))
-
     .post(async((req, res) => {
 
         let journalGenerationTemplateRepository = new JournalGenerationTemplateRepository(req.branchId),
@@ -33,6 +32,5 @@ router.route('/:sourceType')
         res.json({isValid: true, returnValue: {id: entity.id}});
 
     }));
-
 
 module.exports = router;

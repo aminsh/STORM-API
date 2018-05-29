@@ -15,35 +15,32 @@ const async = require('asyncawait/async'),
 
 router.route('/summary')
     .get(async((req, res) => {
-        let invoiceQuery = new InvoiceQuery(req.branchId),
+        let invoiceQuery = new InvoiceQuery(req.branchId, req.user.id),
             result = await(invoiceQuery.getSummary(req.fiscalPeriodId, 'sale'));
+        res.json(result);
+    }));
+
+router.route('/summary/by-month')
+    .get(async((req, res) => {
+        let invoiceQuery = new InvoiceQuery(req.branchId, req.user.id),
+            result = await(invoiceQuery.getTotalByMonth(req.fiscalPeriodId, 'sale'));
+        res.json(result);
+    }));
+
+router.route('/summary/by-product')
+    .get(async((req, res) => {
+        let invoiceQuery = new InvoiceQuery(req.branchId, req.user.id),
+            result = await(invoiceQuery.getTotalByProduct(req.fiscalPeriodId, 'sale'));
 
         res.json(result);
     }));
 
-router.route('/summary/by-month').get(async((req, res) => {
-    let invoiceQuery = new InvoiceQuery(req.branchId),
-        result = await(invoiceQuery.getTotalByMonth(req.fiscalPeriodId, 'sale'));
-
-    res.json(result);
-}));
-
-router.route('/summary/by-product').get(async((req, res) => {
-    let invoiceQuery = new InvoiceQuery(req.branchId),
-        result = await(invoiceQuery.getTotalByProduct(req.fiscalPeriodId, 'sale'));
-
-    res.json(result);
-}));
-
-
 router.route('/')
     .get(async((req, res) => {
-        let invoiceQuery = new InvoiceQuery(req.branchId),
+        let invoiceQuery = new InvoiceQuery(req.branchId, req.user.id),
             result = await(invoiceQuery.getAll(req.query, 'sale'));
-
         res.json(result);
     }))
-
     .post(async((req, res) => {
 
         try {
@@ -71,9 +68,8 @@ router.route('/:id/confirm')
 
 router.route('/:id')
     .get(async((req, res) => {
-        let invoiceQuery = new InvoiceQuery(req.branchId),
+        let invoiceQuery = new InvoiceQuery(req.branchId, req.user.id),
             result = await(invoiceQuery.getById(req.params.id));
-
         res.json(result);
     }))
     .put(async((req, res) => {
@@ -137,33 +133,32 @@ router.route('/:id/generate-journal')
 
     }));
 
-router.route('/:id/payments').get(async((req, res) => {
-    let paymentQuery = new PaymentQuery(req.branchId),
-        result = await(paymentQuery.getPeymentsByInvoiceId(req.params.id));
-
-    res.json(result);
-}));
-
-router.route('/:id/lines').get(async((req, res) => {
-    let invoiceQuery = new InvoiceQuery(req.branchId),
-        result = await(invoiceQuery.getAllLines(req.params.id, req.query));
-
-    res.json(result);
-}));
-
-router.route('/:id/compare-changes-invoice').get(async((req, res) => {
-    try {
-        let params = req.query.lines,
-            invoiceQuery = new InvoiceQuery(req.branchId),
-            result = await(invoiceQuery.getCompareInvoiceOnChange(req.params.id, params));
-
+router.route('/:id/payments')
+    .get(async((req, res) => {
+        let paymentQuery = new PaymentQuery(req.branchId, req.user.id),
+            result = await(paymentQuery.getPeymentsByInvoiceId(req.params.id));
         res.json(result);
-    } catch (e) {
-        console.log(e);
+    }));
 
-        res.status(403).send('Bad Request');
-    }
-}));
+router.route('/:id/lines')
+    .get(async((req, res) => {
+        let invoiceQuery = new InvoiceQuery(req.branchId, req.user.id),
+            result = await(invoiceQuery.getAllLines(req.params.id, req.query));
+        res.json(result);
+    }));
+
+router.route('/:id/compare-changes-invoice')
+    .get(async((req, res) => {
+        try {
+            let params = req.query.lines,
+                invoiceQuery = new InvoiceQuery(req.branchId, req.user.id),
+                result = await(invoiceQuery.getCompareInvoiceOnChange(req.params.id, params));
+            res.json(result);
+        } catch (e) {
+            console.log(e);
+            res.status(403).send('Bad Request');
+        }
+    }));
 
 router.route('/max/number')
     .get(async((req, res) => {

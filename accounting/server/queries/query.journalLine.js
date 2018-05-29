@@ -57,10 +57,15 @@ class JournalLineQuery extends BaseQuery {
     }
 
     getById(id) {
-        let journalLine = await(
+        let branchId = this.branchId,
+            userId = this.userId,
+            canView = this.canView(),
+            modify = this.modify,
+
+            journalLine = await(
             this.knex.select()
                 .from('journalLines')
-                .where('branchId', this.branchId)
+                .modify(modify, branchId, userId, canView)
                 .andWhere('id', id).first());
         return view(journalLine);
     }
