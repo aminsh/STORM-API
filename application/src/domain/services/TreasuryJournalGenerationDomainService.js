@@ -48,8 +48,9 @@ export class TreasuryJournalGenerationDomainService {
             errors = this._validation(persistedTreasury),
             subLedger = this.subsidiaryLedgerAccountDomainService;
 
-        if (!subLedger.treasuryAccounts
-            || subLedger.treasuryAccounts.fund.length === 0
+        if (Object.keys(subLedger.treasuryAccounts).length === 0)
+            errors.push('تنظیمات خزانه داری برای صدور سند انجام نشده است!');
+        else if (subLedger.treasuryAccounts.fund.length === 0
             || subLedger.treasuryAccounts.debtors.length === 0)
             errors.push('تنظیمات خزانه داری برای صدور سند انجام نشده است!');
 
@@ -95,8 +96,9 @@ export class TreasuryJournalGenerationDomainService {
             errors = this._validation(persistedTreasury),
             subLedger = this.subsidiaryLedgerAccountDomainService;
 
-        if (!subLedger.treasuryAccounts
-            || subLedger.treasuryAccounts.fund.length === 0
+        if (Object.keys(subLedger.treasuryAccounts).length === 0)
+            errors.push('تنظیمات خزانه داری برای صدور سند انجام نشده است!');
+        else if (subLedger.treasuryAccounts.fund.length === 0
             || subLedger.treasuryAccounts.creditors.length === 0)
             errors.push('تنظیمات خزانه داری برای صدور سند انجام نشده است!');
 
@@ -140,8 +142,9 @@ export class TreasuryJournalGenerationDomainService {
             errors = this._validation(persistedTreasury),
             subLedger = this.subsidiaryLedgerAccountDomainService;
 
-        if (!subLedger.treasuryAccounts
-            || subLedger.treasuryAccounts.bank.length === 0
+        if (Object.keys(subLedger.treasuryAccounts).length === 0)
+            errors.push('تنظیمات خزانه داری برای صدور سند انجام نشده است!');
+        else if (subLedger.treasuryAccounts.bank.length === 0
             || subLedger.treasuryAccounts.debtors.length === 0)
             errors.push('تنظیمات خزانه داری برای صدور سند انجام نشده است!');
 
@@ -186,8 +189,9 @@ export class TreasuryJournalGenerationDomainService {
             errors = this._validation(persistedTreasury),
             subLedger = this.subsidiaryLedgerAccountDomainService;
 
-        if (!subLedger.treasuryAccounts
-            || subLedger.treasuryAccounts.bank.length === 0
+        if (Object.keys(subLedger.treasuryAccounts).length === 0)
+            errors.push('تنظیمات خزانه داری برای صدور سند انجام نشده است!');
+        else if (subLedger.treasuryAccounts.bank.length === 0
             || subLedger.treasuryAccounts.creditors.length === 0)
             errors.push('تنظیمات خزانه داری برای صدور سند انجام نشده است!');
 
@@ -232,8 +236,9 @@ export class TreasuryJournalGenerationDomainService {
             errors = this._validation(persistedTreasury),
             subLedger = this.subsidiaryLedgerAccountDomainService;
 
-        if (!subLedger.treasuryAccounts
-            || subLedger.treasuryAccounts.fund.length === 0
+        if (Object.keys(subLedger.treasuryAccounts).length === 0)
+            errors.push('تنظیمات خزانه داری برای صدور سند انجام نشده است!');
+        else if (subLedger.treasuryAccounts.fund.length === 0
             || subLedger.treasuryAccounts.debtors.length === 0)
             errors.push('تنظیمات خزانه داری برای صدور سند انجام نشده است!');
 
@@ -278,8 +283,9 @@ export class TreasuryJournalGenerationDomainService {
             errors = this._validation(persistedTreasury),
             subLedger = this.subsidiaryLedgerAccountDomainService;
 
-        if (!subLedger.treasuryAccounts
-            || subLedger.treasuryAccounts.fund.length === 0
+        if (Object.keys(subLedger.treasuryAccounts).length === 0)
+            errors.push('تنظیمات خزانه داری برای صدور سند انجام نشده است!');
+        else if (subLedger.treasuryAccounts.fund.length === 0
             || subLedger.treasuryAccounts.creditors.length === 0)
             errors.push('تنظیمات خزانه داری برای صدور سند انجام نشده است!');
 
@@ -373,20 +379,15 @@ export class TreasuryJournalGenerationDomainService {
 
             journalLines = [];
 
-        if (!subLedger.treasuryAccounts
-            || subLedger.treasuryAccounts.receiveBusinessNotesInFund.length === 0
-            || subLedger.treasuryAccounts.receiveBusinessNotesInProcess.length === 0
-            || subLedger.treasuryAccounts.receiveBusinessNotesMissing.length === 0
-            || subLedger.treasuryAccounts.receiveBusinessNotesReturned.length === 0
-            || subLedger.treasuryAccounts.receiveBusinessNotesRevocation.length === 0
-            || subLedger.treasuryAccounts.bank.length === 0
-            || subLedger.treasuryAccounts.debtors.length === 0)
-            errors.push('تنظیمات خزانه داری برای صدور سند انجام نشده است!');
-
-        if (errors.length > 0)
-            throw new ValidationException(errors);
-
         if (treasury.documentDetail.status === 'inFund') {
+            if (Object.keys(subLedger.treasuryAccounts).length === 0)
+                errors.push('تنظیمات خزانه داری برای صدور سند انجام نشده است!');
+            else if (subLedger.treasuryAccounts.receiveBusinessNotesInFund.length === 0
+                || subLedger.treasuryAccounts.debtors.length === 0)
+                errors.push('تنظیمات خزانه داری برای صدور سند انجام نشده است!');
+
+            if (errors.length > 0)
+                throw new ValidationException(errors);
 
             journalLines.push({
                 generalLedgerAccountId: subLedger.treasuryReceiveBusinessNotesInFund.generalLedgerAccountId,
@@ -410,6 +411,14 @@ export class TreasuryJournalGenerationDomainService {
         }
 
         if (treasury.documentDetail.status === 'inProcessOnPassing') {
+            if (Object.keys(subLedger.treasuryAccounts).length === 0)
+                errors.push('تنظیمات خزانه داری برای صدور سند انجام نشده است!');
+            else if (subLedger.treasuryAccounts.receiveBusinessNotesInProcess.length === 0
+                || subLedger.treasuryAccounts.debtors.length === 0)
+                errors.push('تنظیمات خزانه داری برای صدور سند انجام نشده است!');
+
+            if (errors.length > 0)
+                throw new ValidationException(errors);
 
             journalLines.push({
                 generalLedgerAccountId: subLedger.treasuryReceiveBusinessNotesInProcess.generalLedgerAccountId,
@@ -433,6 +442,13 @@ export class TreasuryJournalGenerationDomainService {
         }
 
         if (treasury.documentDetail.status === 'return') {
+            if (Object.keys(subLedger.treasuryAccounts).length === 0)
+                errors.push('تنظیمات خزانه داری برای صدور سند انجام نشده است!');
+            else if (subLedger.treasuryAccounts.debtors.length === 0)
+                errors.push('تنظیمات خزانه داری برای صدور سند انجام نشده است!');
+
+            if (errors.length > 0)
+                throw new ValidationException(errors);
 
             journalLines.push({
                 generalLedgerAccountId: subLedger.treasuryDebtors.generalLedgerAccountId,
@@ -456,6 +472,16 @@ export class TreasuryJournalGenerationDomainService {
         }
 
         if (treasury.documentDetail.status === 'passed') {
+            if (Object.keys(subLedger.treasuryAccounts).length === 0)
+                errors.push('تنظیمات خزانه داری برای صدور سند انجام نشده است!');
+            else if (subLedger.treasuryAccounts.bank.length === 0
+                || subLedger.treasuryAccounts.fund.length === 0
+                || subLedger.treasuryAccounts.debtors.length === 0)
+                errors.push('تنظیمات خزانه داری برای صدور سند انجام نشده است!');
+
+            if (errors.length > 0)
+                throw new ValidationException(errors);
+
             journalLines.push({
                 generalLedgerAccountId: receiver.detailAccountType === 'bank'
                     ? subLedger.treasuryBankAccount.generalLedgerAccountId : subLedger.treasuryFundAccount.generalLedgerAccountId,
@@ -480,6 +506,12 @@ export class TreasuryJournalGenerationDomainService {
         }
 
         if (treasury.documentDetail.status === 'revocation') {
+            if (Object.keys(subLedger.treasuryAccounts).length === 0)
+                errors.push('تنظیمات خزانه داری برای صدور سند انجام نشده است!');
+            else if (subLedger.treasuryAccounts.debtors.length === 0)
+                errors.push('تنظیمات خزانه داری برای صدور سند انجام نشده است!');
+            if (errors.length > 0)
+                throw new ValidationException(errors);
 
             journalLines.push({
                 generalLedgerAccountId: subLedger.treasuryDebtors.generalLedgerAccountId,
@@ -503,6 +535,13 @@ export class TreasuryJournalGenerationDomainService {
         }
 
         if (treasury.documentDetail.status === 'missing') {
+            if (Object.keys(subLedger.treasuryAccounts).length === 0)
+                errors.push('تنظیمات خزانه داری برای صدور سند انجام نشده است!');
+            else if (subLedger.treasuryAccounts.debtors.length === 0)
+                errors.push('تنظیمات خزانه داری برای صدور سند انجام نشده است!');
+
+            if (errors.length > 0)
+                throw new ValidationException(errors);
 
             journalLines.push({
                 generalLedgerAccountId: persistedJournal ? debtorLine.generalLedgerAccountId
@@ -541,20 +580,14 @@ export class TreasuryJournalGenerationDomainService {
             errors = [],
             journalLines = [];
 
-        if (!subLedger.treasuryAccounts
-            || subLedger.treasuryAccounts.receiveBusinessNotesInFund.length === 0
-            || subLedger.treasuryAccounts.receiveBusinessNotesInProcess.length === 0
-            || subLedger.treasuryAccounts.receiveBusinessNotesMissing.length === 0
-            || subLedger.treasuryAccounts.receiveBusinessNotesReturned.length === 0
-            || subLedger.treasuryAccounts.receiveBusinessNotesRevocation.length === 0
-            || subLedger.treasuryAccounts.bank.length === 0
-            || subLedger.treasuryAccounts.creditors.length === 0)
-            errors.push('تنظیمات خزانه داری برای صدور سند انجام نشده است!');
-
-        if (errors.length > 0)
-            throw new ValidationException(errors);
-
         if (treasury.documentDetail.status === 'inProcessOnPassing') {
+            if (Object.keys(subLedger.treasuryAccounts).length === 0)
+                errors.push('تنظیمات خزانه داری برای صدور سند انجام نشده است!');
+            else if (subLedger.treasuryAccounts.paymentNotes.length === 0
+                || subLedger.treasuryAccounts.creditors.length === 0)
+                errors.push('تنظیمات خزانه داری برای صدور سند انجام نشده است!');
+            if (errors.length > 0)
+                throw new ValidationException(errors);
 
             journalLines.push({
                 generalLedgerAccountId: persistedJournal ? creditorLine.generalLedgerAccountId
@@ -578,6 +611,13 @@ export class TreasuryJournalGenerationDomainService {
         }
 
         if (treasury.documentDetail.status === 'return') {
+            if (Object.keys(subLedger.treasuryAccounts).length === 0)
+                errors.push('تنظیمات خزانه داری برای صدور سند انجام نشده است!');
+            else if (subLedger.treasuryAccounts.paymentNotes.length === 0
+                || subLedger.treasuryAccounts.creditors.length === 0)
+                errors.push('تنظیمات خزانه داری برای صدور سند انجام نشده است!');
+            if (errors.length > 0)
+                throw new ValidationException(errors);
 
             journalLines.push({
                 generalLedgerAccountId: persistedJournal ? creditorLine.generalLedgerAccountId
@@ -604,6 +644,14 @@ export class TreasuryJournalGenerationDomainService {
         }
 
         if (treasury.documentDetail.status === 'passed') {
+            if (Object.keys(subLedger.treasuryAccounts).length === 0)
+                errors.push('تنظیمات خزانه داری برای صدور سند انجام نشده است!');
+            else if (subLedger.treasuryAccounts.paymentNotes.length === 0
+                || subLedger.treasuryAccounts.bank.length === 0)
+                errors.push('تنظیمات خزانه داری برای صدور سند انجام نشده است!');
+            if (errors.length > 0)
+                throw new ValidationException(errors);
+
             journalLines.push({
                 generalLedgerAccountId: persistedJournal ? creditorLine.generalLedgerAccountId
                     : subLedger.treasuryPaymentNotes.generalLedgerAccountId,
@@ -628,6 +676,13 @@ export class TreasuryJournalGenerationDomainService {
         }
 
         if (treasury.documentDetail.status === 'revocation') {
+            if (Object.keys(subLedger.treasuryAccounts).length === 0)
+                errors.push('تنظیمات خزانه داری برای صدور سند انجام نشده است!');
+            else if (subLedger.treasuryAccounts.paymentNotes.length === 0
+                || subLedger.treasuryAccounts.creditors.length === 0)
+                errors.push('تنظیمات خزانه داری برای صدور سند انجام نشده است!');
+            if (errors.length > 0)
+                throw new ValidationException(errors);
 
             journalLines.push({
                 generalLedgerAccountId: persistedJournal ? creditorLine.generalLedgerAccountId
@@ -651,6 +706,15 @@ export class TreasuryJournalGenerationDomainService {
         }
 
         if (treasury.documentDetail.status === 'spend') {
+            if (Object.keys(subLedger.treasuryAccounts).length === 0)
+                errors.push('تنظیمات خزانه داری برای صدور سند انجام نشده است!');
+            else if (subLedger.treasuryAccounts.debtors.length === 0
+                || subLedger.treasuryAccounts.creditors.length === 0)
+                errors.push('تنظیمات خزانه داری برای صدور سند انجام نشده است!');
+
+            if (errors.length > 0)
+                throw new ValidationException(errors);
+
             let receiveCheque = treasury.receiveId ? this.treasuryRepository.findById(treasury.receiveId) : null,
                 receiveJournal = receiveCheque ? this.journalRepository.findById(receiveCheque.journalId) : null,
                 receiveDebtorLine = receiveJournal ? receiveJournal.journalLines.asEnumerable().where(item => item.creditor === 0)
@@ -753,19 +817,6 @@ export class TreasuryJournalGenerationDomainService {
             errors = [],
             journalLines = [];
 
-        if (!subLedger.treasuryAccounts
-            || subLedger.treasuryAccounts.receiveBusinessNotesInFund.length === 0
-            || subLedger.treasuryAccounts.receiveBusinessNotesInProcess.length === 0
-            || subLedger.treasuryAccounts.receiveBusinessNotesMissing.length === 0
-            || subLedger.treasuryAccounts.receiveBusinessNotesReturned.length === 0
-            || subLedger.treasuryAccounts.receiveBusinessNotesRevocation.length === 0
-            || subLedger.treasuryAccounts.bank.length === 0
-            || subLedger.treasuryAccounts.debtors.length === 0)
-            errors.push('تنظیمات خزانه داری برای صدور سند انجام نشده است!');
-
-        if (errors.length > 0)
-            throw new ValidationException(errors);
-
         if (treasury.documentDetail.status === 'inFund') {
 
             journalLines.push({
@@ -830,6 +881,16 @@ export class TreasuryJournalGenerationDomainService {
         }
 
         if (treasury.documentDetail.status === 'passed') {
+            if (Object.keys(subLedger.treasuryAccounts).length === 0)
+                errors.push('تنظیمات خزانه داری برای صدور سند انجام نشده است!');
+            else if (subLedger.treasuryAccounts.bank.length === 0
+                || subLedger.treasuryAccounts.fund.length === 0
+                || subLedger.treasuryAccounts.debtors.length === 0)
+                errors.push('تنظیمات خزانه داری برای صدور سند انجام نشده است!');
+
+            if (errors.length > 0)
+                throw new ValidationException(errors);
+
             journalLines.push({
                 generalLedgerAccountId: receiver.detailAccountType === 'bank'
                     ? subLedger.treasuryBankAccount.generalLedgerAccountId : subLedger.treasuryFundAccount.generalLedgerAccountId,
@@ -898,8 +959,7 @@ export class TreasuryJournalGenerationDomainService {
     }
 
     updatePaymentJournalLines(treasury) {
-        let subLedger = this.subsidiaryLedgerAccountDomainService,
-            receiver = this.detailAccountRepository.findById(treasury.destinationDetailAccountId),
+        let receiver = this.detailAccountRepository.findById(treasury.destinationDetailAccountId),
             persistedJournal = treasury.journalId ? this.journalRepository.findById(treasury.journalId) : null,
             debtorLine = persistedJournal ? persistedJournal.journalLines.asEnumerable().where(item => item.creditor === 0)
                     .select(item => ({
@@ -917,21 +977,7 @@ export class TreasuryJournalGenerationDomainService {
                     })).first()
                 : null,
 
-            errors = [],
             journalLines = [];
-
-        if (!subLedger.treasuryAccounts
-            || subLedger.treasuryAccounts.receiveBusinessNotesInFund.length === 0
-            || subLedger.treasuryAccounts.receiveBusinessNotesInProcess.length === 0
-            || subLedger.treasuryAccounts.receiveBusinessNotesMissing.length === 0
-            || subLedger.treasuryAccounts.receiveBusinessNotesReturned.length === 0
-            || subLedger.treasuryAccounts.receiveBusinessNotesRevocation.length === 0
-            || subLedger.treasuryAccounts.bank.length === 0
-            || subLedger.treasuryAccounts.creditors.length === 0)
-            errors.push('تنظیمات خزانه داری برای صدور سند انجام نشده است!');
-
-        if (errors.length > 0)
-            throw new ValidationException(errors);
 
         if (treasury.documentDetail.status === 'inProcessOnPassing') {
 
@@ -1053,8 +1099,9 @@ export class TreasuryJournalGenerationDomainService {
             subLedger = this.subsidiaryLedgerAccountDomainService,
             errors = this._validation(persistedTreasury);
 
-        if (!subLedger.treasuryAccounts
-            || subLedger.treasuryAccounts.bank.length === 0
+        if (Object.keys(subLedger.treasuryAccounts).length === 0)
+            errors.push('تنظیمات خزانه داری برای صدور سند انجام نشده است!');
+        else if (subLedger.treasuryAccounts.bank.length === 0
             || subLedger.treasuryAccounts.fund.length === 0)
             errors.push('تنظیمات خزانه داری برای صدور سند انجام نشده است!');
 
