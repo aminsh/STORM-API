@@ -57,20 +57,25 @@ class BankQuery extends BaseQuery {
             subledger = subsidiaryLedgerAccounts.asEnumerable().toObject(item => item.key, item => item.id),
 
             query = knex.select(
-                'journalLines.detailAccountId',
+                knex.raw('"detailAccounts"."id" as "detailAccountId"'),
                 'detailAccounts.detailAccountType',
                 knex.raw('"detailAccounts"."title" as "detailAccountDisplay"'),
-                knex.raw('"sum"(CAST("journalLines"."debtor" - "journalLines"."creditor" as FLOAT)) as "remainder"')
+                knex.raw('"sum"(coalesce("journalQuery"."debtor" - "journalQuery"."creditor",0)) as "remainder"')
             )
-                .from('journalLines')
-                .leftJoin('journals', 'journalLines.journalId', 'journals.id')
-                .leftJoin('detailAccounts', 'journalLines.detailAccountId', 'detailAccounts.id')
-                .where('journalLines.branchId', branchId)
-                .andWhere('journals.periodId', fiscalPeriodId)
-                .whereIn('journalLines.subsidiaryLedgerAccountId', [subledger.bank, subledger.fund])
+                .from('detailAccounts')
+                .leftJoin(knex.raw(`
+                    (SELECT "journalLines"."detailAccountId", "journalLines".creditor, "journalLines".debtor 
+                        from journals
+                        INNER JOIN "journalLines" ON journals."id" = "journalLines"."journalId"
+                        WHERE journals."periodId" = '${fiscalPeriodId}'
+                            and journals."branchId" = '${branchId}'
+	                        and "journalLines"."subsidiaryLedgerAccountId" in ('${subledger.bank || 0}', '${subledger.fund || 0}'))
+                         as "journalQuery"`)
+                    , 'detailAccounts.id', 'journalQuery.detailAccountId')
+                .where('detailAccounts.branchId', branchId)
                 .whereIn('detailAccounts.detailAccountType', ['bank', 'fund'])
                 .groupBy(
-                    'journalLines.detailAccountId',
+                    'detailAccounts.id',
                     'detailAccounts.detailAccountType',
                     'detailAccounts.title'
                 );
