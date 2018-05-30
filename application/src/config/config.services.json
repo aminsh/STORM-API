@@ -1663,6 +1663,15 @@
     "returns": "undefined"
   },
   {
+    "name": "removeUserPermission",
+    "class": "PermissionDomainService",
+    "method": "removeUserPermissions",
+    "params": [
+      "id"
+    ],
+    "returns": "undefined"
+  },
+  {
     "name": "controlUserPermission",
     "class": "UserPermissionsControlDomainService",
     "method": "controlPermission",
