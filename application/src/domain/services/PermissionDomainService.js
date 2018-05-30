@@ -1,5 +1,6 @@
 import {inject, injectable} from "inversify";
 import {PermissionRepository} from "../data/repository.permission";
+import permissions from "../../../../accounting/server/config/settings/permisions";
 
 
 @injectable()
@@ -27,18 +28,23 @@ export class PermissionDomainService {
         if (errors.length > 0)
             throw new ValidationException(errors);
 
+        let rolePermission = cmd.permissions || permissions;
+        role.permissions = JSON.stringify(rolePermission);
         this.permissionRepository.createRole(role);
-        return role.id;
+        return {id: role.id, permissions: rolePermission};
     }
 
     createUserPermissions(userId, cmd) {
-        let entity = {};
+        let entity = {
+            userInRole: {},
+            userPermissions: {}
+        },
+            role = cmd.roleId ? this.permissionRepository.findRoleById(cmd.roleId) : null;
         entity.userInRole = this._userInRole(userId, cmd);
         entity.userPermissions = this._userPermissions(userId, cmd);
-        entity.rolePermissions = this._rolePermissions(cmd);
 
         this.permissionRepository.create(entity);
-        return entity.userPermissions.id;
+        return role ? role.title : null;
     }
 
     _userInRole(userId, cmd) {
@@ -46,13 +52,16 @@ export class PermissionDomainService {
                 roleId: cmd.roleId,
                 userId: userId
             },
-            role = entity.roleId && this.permissionRepository.findRoleById(entity.roleId),
-            user = entity.userId && this.permissionRepository.findUserById(entity.userId),
+            role = entity.roleId ? this.permissionRepository.findRoleById(entity.roleId) : null,
+            user = entity.userId ? this.permissionRepository.findUserById(entity.userId) : null,
             errors = [];
 
-        role && Object.keys(role).length === 0 && errors.push('نقش موردنظر وجود ندارد!');
-        user && Object.keys(user).length === 0 && errors.push('کاربر موردنظر معتبر نمی باشد!');
-        user && user.state !== 'active' && errors.push('کاربر موردنظر فعال نمی باشد!');
+        if (!role)
+            errors.push('نقش موردنظر وجود ندارد!');
+        if (!user)
+            errors.push('کاربر موردنظر معتبر نمی باشد!');
+        else if (user && user.state !== 'active')
+            errors.push('کاربر موردنظر فعال نمی باشد!');
 
         if (errors.length > 0)
             throw new ValidationException(errors);
@@ -61,22 +70,34 @@ export class PermissionDomainService {
     }
 
     _userPermissions(userId, cmd) {
-        let role = cmd.roleId && this.permissionRepository.findRoleById(cmd.roleId),
-            admin = role && role.isAdmin,
+        let role = cmd.roleId ? this.permissionRepository.findRoleById(cmd.roleId) : null,
+            rolePermission = cmd.roleId
+                ? this.permissionRepository.findRolePermissionByRoleId(cmd.roleId)
+                : null,
+
+            admin = role ? role.isAdmin : false,
+            permission = cmd.permissions
+                ? cmd.permissions.length === 0
+                    ? rolePermission ? rolePermission.permissions : null
+                    : cmd.permissions
+                : rolePermission ? rolePermission.permissions : null,
+
             entity = {
                 userId: userId,
-                permissions: !admin ? JSON.stringify(cmd.permissions) : null
+                permissions: !admin
+                    ? permission ? JSON.stringify(permission) : null
+                    : null
             },
-            user = entity.userId && this.permissionRepository.findUserById(entity.userId),
+            user = entity.userId ? this.permissionRepository.findUserById(entity.userId) : null,
             userPermission = entity.userId
-                && this.permissionRepository.findUserPermissionsByUserId(entity.userId),
+                ? this.permissionRepository.findUserPermissionsByUserId(entity.userId)
+                : null,
             errors = [];
 
-        user && Object.keys(user).length === 0
-        && errors.push('کاربر موردنظر معتبر نمی باشد!');
-
-        userPermission && Object.keys(userPermission).length !== 0
-        && errors.push('برای کاربر {0} نقش و دسترسی تعریف شده است'.format(user.name));
+        if (!user)
+            errors.push('کاربر موردنظر معتبر نمی باشد!');
+        else if (userPermission)
+            errors.push('برای کاربر {0} نقش و دسترسی تعریف شده است'.format(user.name));
 
         if (errors.length > 0)
             throw new ValidationException(errors);
@@ -87,7 +108,7 @@ export class PermissionDomainService {
     _rolePermissions(cmd) {
         let entity = {
                 roleId: cmd.roleId || null,
-                permissions: Array.isArray(cmd.permissions) ? JSON.stringify(cmd.permissions) : null
+                permissions: Array.isArray(cmd.permissions) ? JSON.stringify(cmd.permissions) : []
             },
             role = entity.roleId && this.permissionRepository.findRoleById(entity.roleId),
             rolePermission = entity.roleId && this.permissionRepository.findRolePermissionByRoleId(entity.roleId),
@@ -101,21 +122,62 @@ export class PermissionDomainService {
     }
 
     updateRole(id, cmd) {
-        let entity = {},
+        let entity = {
+                role: {},
+                rolePermissions: {},
+                userPermissions: {}
+            },
+            role = this.permissionRepository.findRoleById(id),
             rolePermission = this.permissionRepository.findRolePermissionByRoleId(id),
-            users = this.permissionRepository.findUsersInRoleByRoleId(id);
+            usersInRole = this.permissionRepository.findUsersInRoleByRoleId(id),
+            usersId = usersInRole.asEnumerable().select(item => item.userId).toArray();
 
-        entity.role.title = cmd.title || null;
+        entity.role.title = cmd.title || role.title;
         entity.rolePermissions = rolePermission;
         entity.rolePermissions.permissions = cmd.permissions || rolePermission.permissions;
         entity.rolePermissions.permissions = JSON.stringify(entity.rolePermissions.permissions);
 
-        entity.usersInRole = users;
+        entity.userPermissions = usersId.asEnumerable()
+            .select(item => this.permissionRepository.findUserPermissionsByUserId(item)).toArray();
+
+        entity.userPermissions = entity.userPermissions.asEnumerable()
+            .select(up => ({
+                id: up.id,
+                permissions: cmd.permissions || up.permissions
+            })).toArray();
 
         return this.permissionRepository.updateRole(id, entity);
     }
 
     updateUserPermission(id, cmd) {
+        let userInRole = this.permissionRepository.findUserInRoleByUserId(id),
+            userPermission = this.permissionRepository.findUserPermissionsByUserId(id),
+            role = cmd.roleId ? this.permissionRepository.findRoleById(cmd.roleId) : null,
+            admin = role ? role.isAdmin : false;
+
+        if (!userInRole || !userPermission)
+            throw new ValidationException(['برای کاربر دسترسی ایجاد نشده است!']);
+
+        let permission = cmd.permissions
+            ? cmd.permissions.length === 0
+                ? userPermission.permissions
+                : cmd.permissions
+            : userPermission.permissions,
+
+            entity = {
+                userInRole: {
+                    id: userInRole.id,
+                    roleId: cmd.roleId || userInRole.roleId
+                },
+                userPermission: {
+                    id: userPermission.id,
+                    permissions: !admin
+                        ? permission
+                            ? JSON.stringify(permission) : null
+                        : null
+                }
+            };
+        return this.permissionRepository.updateUserRoleAndPermissions(entity);
 
     }
 
@@ -125,5 +187,9 @@ export class PermissionDomainService {
             throw new ValidationException(['این نقش به کاربر داده شده و امکان حذف وجود ندارد!']);
 
         return this.permissionRepository.removeRole(id);
+    }
+
+    removeUserPermissions(id) {
+        this.permissionRepository.removeUserRolePermissions(id);
     }
 }

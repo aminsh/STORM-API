@@ -13,8 +13,8 @@ router.route('/roles')
     }))
     .post(async((req, res) => {
         try {
-            const id = req.container.get("CommandBus").send("createRole", [req.body]);
-            res.json({isValid: true, returnValue: {id}});
+            const object = req.container.get("CommandBus").send("createRole", [req.body]);
+            res.json({isValid: true, returnValue: {id: object.id, permissions: object.permissions}});
         }
         catch (e) {
             res.json({isValid: false, errors: e.errors});
@@ -63,8 +63,8 @@ router.route('/users/:id')
 router.route('/users/:id/add-role')
     .post(async((req, res) => {
         try {
-            const userPermissionId = req.container.get("CommandBus").send("createUserPermissions", [req.params.id, req.body]);
-            res.json({isValid: true, returnValue: {userPermissionId}});
+            const role = req.container.get("CommandBus").send("createUserPermissions", [req.params.id, req.body]);
+            res.json({isValid: true, returnValue: {role}});
         }
         catch (e) {
             res.json({isValid: false, errors: e.errors});
@@ -85,7 +85,7 @@ router.route('/users/:id/edit-role')
 router.route('/users/:id/remove-role')
     .delete(async((req, res) => {
         try {
-            req.container.get("CommandBus").send("", [req.params.id, req.body]);
+            req.container.get("CommandBus").send("removeUserPermission", [req.params.id]);
             res.json({isValid: true});
         }
         catch (e) {
