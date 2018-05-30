@@ -8,7 +8,6 @@ export class PermissionRepository extends BaseRepository {
     findRoleById(id) {
         return toResult(this.knex.select()
             .from('roles')
-            .modify(this.modify, this.branchId, 'roles.branchId')
             .where('id', id)
             .first());
     }
@@ -47,11 +46,19 @@ export class PermissionRepository extends BaseRepository {
             .first());
     }
 
-    findUserPermissionsByUserId(id){
-        return toResult(this.knex.select('permissions')
+    findUserPermissionsByUserId(id) {
+        return toResult(this.knex.select()
             .from('userPermissions')
             .where('userId', id)
-            .modify(this.modify, this.branchId, 'userPermissions.branchId')
+            .modify(this.modify, this.branchId)
+            .first());
+    }
+
+    findUserInRoleByUserId(id) {
+        return toResult(this.knex.select()
+            .from('userInRole')
+            .where('userId', id)
+            .where('branchId', this.branchId)
             .first());
     }
 
@@ -60,7 +67,6 @@ export class PermissionRepository extends BaseRepository {
         try {
             toResult(this.createUserInRole(entity.userInRole, trx));
             toResult(this.createUserPermissions(entity.userPermissions, trx));
-            entity.rolePermissions && toResult(this.createRolePermissions(entity.rolePermissions, trx));
 
             trx.commit();
         }
@@ -89,9 +95,28 @@ export class PermissionRepository extends BaseRepository {
     }
 
     createRole(role) {
-        super.create(role);
-        toResult(this.knex('roles').insert(role));
-        return role;
+        let trx = this.transaction;
+        try {
+            let permissions = role.permissions;
+            delete role.permissions;
+
+            super.create(role);
+            toResult(trx('roles').insert(role));
+
+            let rolePermissions = {
+                roleId: role.id,
+                permissions: permissions
+            };
+            this.createRolePermissions(rolePermissions, trx);
+
+            role.permissions = permissions;
+            trx.commit();
+            return role;
+        }
+        catch (e) {
+            trx.rollback(e);
+            throw new Error(e);
+        }
     }
 
     removeRole(id) {
@@ -112,20 +137,21 @@ export class PermissionRepository extends BaseRepository {
         return toResult(trx('rolePermissions').where('id', id).del());
     }
 
-    updateRole(id, entity) {
+    removeUserRolePermissions(id) {
         let trx = this.transaction;
         try {
-            entity.role.title && toResult(trx('roles').where('id', id)
-                .modify(this.modify, this.branchId)
-                .update({title: entity.role.title}));
+            let userInRole = this.findUserInRoleByUserId(id),
+                userPermissions = this.findUserPermissionsByUserId(id);
 
-            entity.rolePermissions &&
-                toResult(this.updateRolePermission(entity.rolePermissions.id, entity.rolePermissions));
+            toResult(trx('userInRole')
+                .where('id', userInRole.id)
+                .where('branchId', this.branchId)
+                .del());
 
-            entity.usersInRole &&
-                entity.usersInRole.users
-                    .forEach(item => toResult(
-                        this.updateRolePermission(item.id, {permissions:entity.rolePermissions.permissions})));
+            toResult(trx('userPermissions')
+                .where('id', userPermissions.id)
+                .where('branchId', this.branchId)
+                .del());
 
             trx.commit();
         }
@@ -135,10 +161,58 @@ export class PermissionRepository extends BaseRepository {
         }
     }
 
-    updateRolePermission(id, entity) {
-        return toResult(trx('rolePermissions').where('id', id)
+    updateRole(id, entity) {
+        let trx = this.transaction;
+        try {
+            if (entity.role.title)
+                toResult(trx('roles').where('id', id)
+                    .modify(this.modify, this.branchId)
+                    .update({title: entity.role.title}));
+
+            if (entity.rolePermissions)
+                toResult(this.updateRolePermission(trx, entity.rolePermissions.id,
+                    {permissions: entity.rolePermissions.permissions}));
+
+            if (entity.userPermissions)
+                entity.userPermissions.forEach(item =>
+                    toResult(this.updateUserPermissions(trx, item.id, {permissions: JSON.stringify(item.permissions)})));
+
+            trx.commit();
+        }
+        catch (e) {
+            trx.rollback(e);
+            throw new Error(e);
+        }
+    }
+
+    updateRolePermission(trx, id, entity) {
+        return toResult(this.knex('rolePermissions').where('id', id)
             .modify(this.modify, this.branchId)
             .update(entity));
     }
 
+    updateUserPermissions(trx, id, entity) {
+        return toResult(trx('userPermissions').where('id', id)
+            .modify(this.modify, this.branchId)
+            .update(entity));
+    }
+
+    updateUserRoleAndPermissions(entity) {
+        let trx = this.transaction;
+        try {
+            toResult(trx('userInRole').where('id', entity.userInRole.id)
+                .modify(this.modify, this.branchId)
+                .update({roleId: entity.userInRole.roleId}));
+
+            toResult(trx('userPermissions').where('id', entity.userPermission.id)
+                .modify(this.modify, this.branchId)
+                .update({permissions: entity.userPermission.permissions}));
+
+            trx.commit();
+        }
+        catch (e) {
+            trx.rollback(e);
+            throw new Error(e);
+        }
+    }
 }

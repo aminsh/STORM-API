@@ -47,7 +47,9 @@ class PermissionsQuery extends BaseQuery {
         roles = roles.asEnumerable().select(item =>
             Object.assign({}, item, {
                 users: users.asEnumerable().where(user => user.roleId === item.id).toArray(),
-                permissions: permissions.asEnumerable().where(permission => permission.roleId === item.id).toArray()
+                permissions: permissions.asEnumerable()
+                    .where(permission => permission.roleId === item.id)
+                    .select(item => item.permissions).toArray()
             })).toArray();
 
         return roles;
@@ -58,33 +60,27 @@ class PermissionsQuery extends BaseQuery {
             branchId = this.branchId,
             userId = this.userId,
             canView = this.canView(),
-            adminId = this.getAdminId(),
 
             role = this.await(knex.select('title', 'id')
                 .from('roles')
                 .modify(this.modify, branchId, userId, canView)
-                .orWhere('isAdmin', true)
                 .where('id', id)
             );
 
-        role = !canView
-            ? role.asEnumerable().where(role => role.id !== adminId).toArray()
-            : role;
-
-        let users = this.await(knex.select('users.id', 'users.name', 'users.email', 'roleId')
+        /*let users = this.await(knex.select('users.id', 'users.name', 'users.email', 'roleId')
                 .from('users')
                 .innerJoin('userInRole', 'users.id', 'userInRole.userId')
                 .where('userInRole.branchId', branchId)
                 .where('userInRole.roleId', id)
-            ),
-            permissions = this.await(knex.select('permissions', 'roleId')
-                .from('rolePermissions')
-                .where('rolePermissions.branchId', branchId)
-                .whereIn('rolePermissions.roleId', id));
+            ),*/
+        let permissions = this.await(knex.select('permissions', 'roleId')
+            .from('rolePermissions')
+            .where('rolePermissions.branchId', branchId)
+            .whereIn('rolePermissions.roleId', id));
 
         role = role.asEnumerable().select(item =>
             Object.assign({}, item, {
-                users: users.asEnumerable().where(user => user.roleId === item.id).toArray(),
+                //users: users.asEnumerable().where(user => user.roleId === item.id).toArray(),
                 permissions: permissions.asEnumerable().where(permission => permission.roleId === item.id).toArray()
             })).toArray();
 
@@ -107,7 +103,7 @@ class PermissionsQuery extends BaseQuery {
             'userPermissions.permissions'
         )
             .from('userInBranches')
-            .innerJoin('users', 'userInBranches.userId','users.id')
+            .innerJoin('users', 'userInBranches.userId', 'users.id')
             .leftJoin('userPermissions', function () {
                 this.on(function () {
                     this.on('userPermissions.userId', '=', 'userInBranches.userId');
@@ -140,7 +136,7 @@ class PermissionsQuery extends BaseQuery {
             'userPermissions.permissions'
         )
             .from('userInBranches')
-            .innerJoin('users', 'userInBranches.userId','users.id')
+            .innerJoin('users', 'userInBranches.userId', 'users.id')
             .leftJoin('userPermissions', function () {
                 this.on(function () {
                     this.on('userPermissions.userId', '=', 'userInBranches.userId');
