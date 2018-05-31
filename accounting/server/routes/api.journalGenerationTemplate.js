@@ -3,7 +3,6 @@
 const async = require('asyncawait/async'),
     await = require('asyncawait/await'),
     router = require('express').Router(),
-    JournalGenerationTemplateRepository = require('../data/repository.journalGenerationTemplate'),
     JournalGenerationTemplateQuery = require('../queries/query.journalGenerationTemplate');
 
 router.route('/:sourceType')
@@ -14,23 +13,13 @@ router.route('/:sourceType')
         res.json(result);
     }))
     .post(async((req, res) => {
-
-        let journalGenerationTemplateRepository = new JournalGenerationTemplateRepository(req.branchId),
-            sourceType = req.params.sourceType,
-            cmd = req.body,
-            entity = {
-                title: cmd.title,
-                data: cmd.data
-            },
-            isExits = await(journalGenerationTemplateRepository.findBySourceType(sourceType));
-
-        if (isExits)
-            await(journalGenerationTemplateRepository.update(sourceType, entity));
-        else
-            await(journalGenerationTemplateRepository.create(sourceType, entity));
-
-        res.json({isValid: true, returnValue: {id: entity.id}});
-
+        try {
+            const id = req.container.get("CommandBus").send("journalTemplateCreate", [req.params.sourceType, req.body]);
+            res.json({isValid: true, returnValue: {id}});
+        }
+        catch (e) {
+            res.json({isValid: false, errors: e.errors});
+        }
     }));
 
 module.exports = router;
