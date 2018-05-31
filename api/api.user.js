@@ -6,7 +6,10 @@ const async = require('asyncawait/async'),
     knex = instanceOf('knex'),
     md5 = require('md5'),
     kendoQueryResolve = instanceOf('kendoQueryResolve'),
-    TokenGenerator = instanceOf('TokenGenerator');
+    TokenGenerator = instanceOf('TokenGenerator'),
+    renderFile = instanceOf('htmlRender').renderFile,
+    Email = instanceOf('Email');
+
 
 router.route('/')
     .get(async(function (req, res) {
@@ -28,8 +31,7 @@ router.route('/current')
         if (!token)
             return NoAuthorizedResponseAction();
 
-        let user = await(knex.select('id', 'token', 'email', 'name', 'mobile', 'isActiveMobile', 'isActiveEmail')
-            .from('users').where({token}).first());
+        let user = getUserView({token});
 
         if (!user)
             return NoAuthorizedResponseAction();
@@ -54,7 +56,7 @@ router.route('/login')
             return badRequestResponseAction('کلمه عبور وارد نشده');
 
         let query = knex
-            .select('id', 'token', 'email', 'name', 'mobile', 'isActiveMobile', 'isActiveEmail')
+            .select('id')
             .from('users')
             .where('state', 'active')
             .where('password', md5(password.toString()));
@@ -70,6 +72,8 @@ router.route('/login')
         if (!user)
             return badRequestResponseAction('{0} یا کلمه عبور صحیح نیست'.format(email ? 'ایمیل' : 'موبایل'));
 
+        user = getUserView({id: user.id});
+
         return res.json(user);
     }));
 
@@ -79,7 +83,8 @@ router.route('/register')
 
         let loginByGoogle = req.query.loginByGoogle,
             cmd = req.body,
-            user = {};
+            user = {},
+            duration;
 
         try {
 
@@ -126,21 +131,23 @@ router.route('/register')
 
                 await(knex('users').insert(user));
 
-                if (user.mobile)
+
+                if (user.mobile) {
                     req.container.get('VerificationDomainService').send(user.mobile, {userId: user.id});
+                    duration = 60000;
+                }
+
             }
 
-            user = await(
-                knex
-                    .select('id', 'token', 'email', 'name', 'mobile', 'isActiveMobile', 'isActiveEmail')
-                    .from('users')
-                    .where({id: user.id})
-                    .first()
-            );
+            user = getUserView({id: user.id});
 
-            res.send(user);
+            res.send({user, duration});
         }
         catch (e) {
+
+            if (e instanceof ValidationException)
+                return res.status(400).send(e.errors);
+
             console.log(e);
 
             return res.status(500).send('Internal server error');
@@ -170,9 +177,12 @@ router.route('/mobile-entry')
         try {
             req.container.get('VerificationDomainService').send(req.body.mobile, {userId: user.id});
 
-            res.send('کد فعالسازی به موبایل شما ارسال خواهد شد');
+            res.send({message: 'کد فعالسازی به موبایل شما ارسال خواهد شد', duration: 60000});
         }
         catch (e) {
+            if (e instanceof ValidationException)
+                return res.status(400).send(e.errors);
+
             res.status(500).send(e);
         }
 
@@ -205,25 +215,29 @@ router.route('/verify-mobile/:code')
 router.route('/change-password')
     .post(async(function (req, res) {
 
-        let token = req.body.token,
-            password = req.body.password,
-            decode;
+        let NoAuthorizedResponseAction = () => res.status(401).send('No Authorized'),
+            token = req.headers["authorization"];
+
+        if (!token)
+            return NoAuthorizedResponseAction();
+
+        let user = await(knex.select('*').from('users').where({token}).first());
+
+        if (!user)
+            return NoAuthorizedResponseAction();
+
+        let password = req.body.password;
 
         if (!password)
             return res.status(400).send('Password is empty');
 
-        try {
-            decode = Crypto.verify(token);
-        }
-        catch (e) {
-            return res.status(400).send('Token is not valid');
-        }
+        let  customFields = user.custom_fields || {};
 
-        let userId = decode.userId;
+        customFields.shouldChangePassword = false;
 
-        await(knex('users').where({id: userId}).update({password: md5(password)}));
+        await(knex('users').where({id: user.id}).update({password: md5(password), custom_fields: customFields}));
 
-        res.send('Your password has changed successfully');
+        res.sendStatus(200);
     }));
 
 router.route('/is-unique-email/:email')
@@ -234,5 +248,64 @@ router.route('/is-unique-email/:email')
         res.send(!isEmailDuplicated);
     }));
 
+router.route('/is-unique-mobile/:mobile')
+    .get(async(function (req, res) {
+
+        let isMobileDuplicated = await(knex.select('id').from('users').where('mobile', req.params.mobile).first());
+
+        res.send(!isMobileDuplicated);
+    }));
+
+router.route('/reset-password/by-mobile')
+    .post(async(function (req, res) {
+        let mobile = req.body.mobile;
+
+        if (!mobile)
+            return res.sendStatus(400);
+
+        let user = await(knex.select('*').from('users').where({mobile}).first());
+
+        if (!user)
+            return res.status(400).send('The mobile is not exist');
+
+
+        let newPassword = randomPassword(),
+            customFields = user.custom_fields || {};
+
+        customFields.shouldChangePassword = true;
+
+        await(knex('users').where({id: user.id}).update({password: md5(newPassword.toString()), custom_fields: customFields}));
+
+        req.container.get('SmsService').resetPassword(req.body.mobile, newPassword);
+
+        res.sendStatus(200);
+
+    }));
+
 
 module.exports = router;
+
+function randomPassword() {
+    let text = "",
+        possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+    for (let i = 0; i < 8; i++)
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+    return text;
+}
+
+function getUserView(filter) {
+    let user = await(
+        knex
+            .select('id', 'token', 'email', 'name', 'mobile', 'isActiveMobile', 'isActiveEmail', 'custom_fields')
+            .from('users')
+            .where(filter)
+            .first()
+    ),
+        customFields = user.custom_fields;
+
+    delete user.custom_fields;
+
+    return Object.assign({}, user, customFields);
+}
