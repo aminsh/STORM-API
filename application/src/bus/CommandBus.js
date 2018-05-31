@@ -73,16 +73,21 @@ export class CommandBus {
             fiscalPeriod = state.fiscalPeriodId && '?fiscalPeriodId=' + state.fiscalPeriodId;
         url = url.replace(fiscalPeriod, '');
         method = method === 'POST' ? 'create' : 'PUT' ? 'update' : 'DELETE' ? 'remove' : 'view';
+        url = url.substr(url.length - 1) === '/' ? url.substring(0, url.length - 1) : url;
 
         let paramsName = params.asEnumerable().where(p => !p.includes('command')).toArray(),
             paramValue = paramsName.asEnumerable().select(key => command[key]).toArray(),
+            paramValueInUrl = paramValue.asEnumerable().where(param => url.includes(param)).toArray(),
+            haveMethod = paramValueInUrl.length > 0 ? !url.includes(paramValueInUrl + '/') : true,
             urlWithoutParam = paramValue.length > 0
                 && paramValue.asEnumerable().select(value => url = url.replace('/' + value, '')).first();
 
         url = urlWithoutParam
             ? urlWithoutParam.substring(4).replaceAll('/', '.')
             : url.substring(4).replaceAll('/', '.');
-        return url + '.' + method;
+
+        method = haveMethod ? '.' + method : '';
+        return url + method;
     }
 
 }

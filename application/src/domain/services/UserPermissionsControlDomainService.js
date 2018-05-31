@@ -20,10 +20,9 @@ export class UserPermissionsControlDomainService {
 
         if (!existsPermission) return true;
 
-        userPermissions = this._haveUserPermissions(userPermissions.permissions);
-        let haveRequestPermission = userPermissions && userPermissions.asEnumerable()
-            .where(up => up === request).toArray();
-        return haveRequestPermission.length > 0;
+        let havePermissions = this._haveUserPermissions(userPermissions.permissions, request);
+
+        return havePermissions;
     }
 
     _existsPermission(request, userPermissions) {
@@ -36,13 +35,12 @@ export class UserPermissionsControlDomainService {
         return exists.length !== 0;
     }
 
-    _haveUserPermissions(userPermissions) {
+    _haveUserPermissions(userPermissions, request) {
         let flatPermissions = flatten(userPermissions),
             permissions = renameKeys(flatPermissions, function (key, val) {
                 return key.substring(2);
             });
-        permissions = Object.keys(permissions).asEnumerable().where(key => permissions[key] === 'true').toArray();
-        return permissions;
+        return permissions[request];
     }
 
 }
