@@ -1688,5 +1688,15 @@
       "command"
     ],
     "returns": "undefined"
+  },
+  {
+    "name": "journalTemplateCreate",
+    "class": "JournalGenerationTemplateDomainService",
+    "method": "createJournalTemplate",
+    "params": [
+      "command",
+      "sourceType"
+    ],
+    "returns": "id"
   }
 ]
