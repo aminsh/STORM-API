@@ -70,9 +70,7 @@ router.route('/batch')
 
 router.route('/:id/add-to-input-first')
     .post(async((req, res) => {
-
         try {
-
             let items = req.body.asEnumerable()
                 .select(item => ({
                     stockId: item.stockId,
