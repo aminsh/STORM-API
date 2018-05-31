@@ -12,6 +12,7 @@ export class KaveNegarSmsService {
 
 
     constructor() {
+
         let apiKey = toResult(persistedConfig.get('KAVENEGAR_APIKEY')).value;
 
         this.api = Kavenegar.KavenegarApi({apikey: apiKey});
@@ -23,6 +24,29 @@ export class KaveNegarSmsService {
     send(receptor, message) {
 
         this.api.Send({message, receptor, sender: this.sender});
+    }
+
+    sendVerification(receptor, code) {
+
+        this.api.VerifyLookup({
+            receptor: receptor,
+            token: code,
+            template: "smsVerify"
+        }, function(response, status) {
+            console.log(response);
+            console.log(status);
+        });
+    }
+
+    resetPassword(receptor, password) {
+        this.api.VerifyLookup({
+            receptor: receptor,
+            token: password,
+            template: "resetPassword"
+        }, function(response, status) {
+            console.log(response);
+            console.log(status);
+        });
     }
 
 }
