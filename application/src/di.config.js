@@ -78,7 +78,8 @@ import {
     RegisteredThirdPartyDomainService,
     PermissionDomainService,
     UserPermissionsControlDomainService,
-    TreasurySettingDomainService
+    TreasurySettingDomainService,
+    SettingDomainService
 } from "./domain/services";
 
 import {InvoiceEventListener} from "./domain/eventHandlers/InvoiceEventListener";
@@ -203,6 +204,7 @@ container.bind("RegisteredThirdPartyDomainService").to(RegisteredThirdPartyDomai
 container.bind("DimensionDomainService").to(DimensionDomainService).inRequestScope();
 container.bind("PermissionDomainService").to(PermissionDomainService).inRequestScope();
 container.bind("UserPermissionsControlDomainService").to(UserPermissionsControlDomainService).inRequestScope();
+container.bind("SettingDomainService").to(SettingDomainService).inRequestScope();
 
 container.bind("InvoiceEventListener").to(InvoiceEventListener).inRequestScope();
 container.bind("PurchaseEventListener").to(PurchaseEventListener);

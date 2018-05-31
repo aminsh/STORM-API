@@ -1698,5 +1698,25 @@
       "sourceType"
     ],
     "returns": "id"
+  },
+
+  {
+    "name": "createSettings",
+    "class": "SettingDomainService",
+    "method": "create",
+    "params": [
+      "command"
+    ],
+    "returns": "undefined"
+  },
+  {
+    "name": "updateSettings",
+    "class": "SettingDomainService",
+    "method": "update",
+    "params": [
+      "command",
+      "sourceType"
+    ],
+    "returns": "undefined"
   }
 ]

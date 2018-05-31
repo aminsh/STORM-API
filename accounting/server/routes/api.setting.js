@@ -34,47 +34,22 @@ router.route('/')
         res.json(result);
     }))
     .post(async((req, res) => {
-        let settingRepository = new SettingRepository(req.branchId),
-            entity = {
-                vat: 9,
-            };
-
-        await(settingRepository.create(entity));
-
-        res.json({isValid: true});
-
+        try {
+            req.container.get("CommandBus").send("createSettings", [req.body]);
+            res.json({isValid: true});
+        }
+        catch (e) {
+            res.json({isValid: false, errors: e.errors});
+        }
     }))
     .put(async((req, res) => {
-        let settingRepository = new SettingRepository(req.branchId),
-            cmd = req.body;
-
-        cmd.canCreateSaleOnNoEnoughInventory = cmd.canControlInventory
-            ? cmd.canCreateSaleOnNoEnoughInventory
-            : false;
-
-        cmd.stockId = cmd.productOutputCreationMethod === 'defaultStock'
-            ? cmd.stockId
-            : null;
-
-        let entity = {
-            vat: cmd.vat,
-            bankId: cmd.bankId,
-            canControlInventory: cmd.canControlInventory,
-            canCreateSaleOnNoEnoughInventory: cmd.canCreateSaleOnNoEnoughInventory,
-            productOutputCreationMethod: cmd.productOutputCreationMethod,
-            canSaleGenerateAutomaticJournal: cmd.canSaleGenerateAutomaticJournal,
-            stakeholders: JSON.stringify(cmd.stakeholders),
-            subsidiaryLedgerAccounts: JSON.stringify(cmd.subsidiaryLedgerAccounts),
-            stockId: cmd.stockId,
-            saleCosts: JSON.stringify(cmd.saleCosts),
-            saleCharges: JSON.stringify(cmd.saleCharges),
-            webhooks: JSON.stringify(cmd.webhooks),
-            invoiceDescription: cmd.invoiceDescription
-        };
-
-        await(settingRepository.update(entity));
-
-        res.json({isValid: true});
+        try {
+            req.container.get("CommandBus").send("updateSettings", [req.body]);
+            res.json({isValid: true});
+        }
+        catch (e) {
+            res.json({isValid: false, errors: e.errors});
+        }
     }));
 
 module.exports = router;
