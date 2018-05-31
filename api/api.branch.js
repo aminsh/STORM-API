@@ -102,7 +102,7 @@ router.route('/')
 
         await(knex('branches').insert(entity));
 
-        res.json({isValid: true});
+        res.json({id: entity.id});
 
         EventEmitter.emit('on-branch-created', entity.id);
     }));

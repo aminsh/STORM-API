@@ -56,6 +56,8 @@ class BranchService {
         let branch = await(knex.select('status').from('branches').where({id}).first()),
             isActive = branch.status === 'active';
 
+
+
         Memory.set(`branch:${id}-isActive`, {isActive});
 
         return isActive;
