@@ -28,7 +28,8 @@ export class UserPermissionsControlDomainService {
     _existsPermission(request, userPermissions) {
         let flatPermissions = flatten(userPermissions),
             permissions = renameKeys(flatPermissions, function (key, val) {
-                return key.substring(2);
+                let firstDot = key.indexOf('.', 0);
+                return key.substring(firstDot + 1);
             }),
             exists = permissions && Object.keys(permissions).asEnumerable()
                 .where(key => key === request).toArray();
@@ -38,7 +39,8 @@ export class UserPermissionsControlDomainService {
     _haveUserPermissions(userPermissions, request) {
         let flatPermissions = flatten(userPermissions),
             permissions = renameKeys(flatPermissions, function (key, val) {
-                return key.substring(2);
+                let firstDot = key.indexOf('.', 0);
+                return key.substring(firstDot + 1);
             });
         return permissions[request];
     }
