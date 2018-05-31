@@ -44,3 +44,4 @@ export * from "./PurchaseDomainService";
 export * from "./DimensionDomainService";
 export * from "./PermissionDomainService";
 export * from "./UserPermissionsControlDomainService";
+export * from "./TreasurySettingDomainService";

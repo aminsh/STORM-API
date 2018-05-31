@@ -923,6 +923,15 @@
     "returns": ""
   },
   {
+    "name": "treasurySettingUpdate",
+    "class": "TreasurySettingDomainService",
+    "method": "update",
+    "params": [
+      "command"
+    ],
+    "returns": "undefined"
+  },
+  {
     "name": "treasuryReceiveChequeCreate",
     "class": "TreasuryChequeDomainService",
     "method": "createReceive",
