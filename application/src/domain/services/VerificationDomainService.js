@@ -11,14 +11,17 @@ export class VerificationDomainService {
 
     send(mobile, data) {
 
+        if(this.verificationRepository.findByMobile(mobile))
+            throw new ValidationException(['شماره در لیست اعتبار سنجی وجود دارد']);
+
         let code = this._getCode(),
             entity = {mobile, data, code};
 
         this.verificationRepository.create(entity);
 
-        this.smsService.send(mobile, 'استورم - کد فعاسازی {0}'.format(code));
+        this.smsService.sendVerification(mobile, code);
 
-        setTimeout(()=> this.verificationRepository.remove(entity.id), 300000);
+        setTimeout(()=> this.verificationRepository.remove(entity.id), 60000);
     }
 
     verify(code) {

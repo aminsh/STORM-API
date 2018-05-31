@@ -11,6 +11,10 @@ export class VerificationRepository extends BaseRepository {
         return toResult(this.knex.from(this.tableName).where({code}).first());
     }
 
+    findByMobile(mobile){
+        return toResult(this.knex.from(this.tableName).where({mobile}).first());
+    }
+
     create(entity) {
 
         entity.id = Utility.Guid.new();
