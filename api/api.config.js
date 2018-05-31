@@ -51,17 +51,23 @@ app.get('/v1/enums', function (req, res) {
 
     res.json(enumsJson);
 });
+
+let x = require('./api.user');
+
 app.use('/v1/send-invoice', require('../accounting/server/routes/api.sendInvoice'));
 app.use('/v1/payment-invoice', require('../accounting/server/routes/api.paymentInvoice'));
 app.use('/v1/users', require('./api.user'));
 app.use('/v1/login', require('./api.login'));
 app.use('/v1/branches', require('./api.branch'));
+app.use('/v1/storm-plans', require('./api.storm-plans'));
+app.use('/v1/storm-orders', require('./api.storm-orders'));
+app.use('/v1/storm-gifts', require('./api.storm-gifts'));
 
 app.use(async((req, res, next) => {
     const token = req.body.token || req.query.token || req.headers['x-access-token'],
 
         noTokenProvidedMessage = 'No token provided.',
-        NoTokenAction = () => res.status(403).send(noTokenProvidedMessage);
+        NoTokenAction = (message) => res.status(403).send(message || noTokenProvidedMessage);
 
     if (!token)
         return res.status(403).send(noTokenProvidedMessage);
@@ -70,6 +76,11 @@ app.use(async((req, res, next) => {
 
     if (!member)
         return NoTokenAction();
+
+    /*let result = req.container.get("BranchValidateService").validate(member.branchId, req.apiCaller, req.originalUrl);
+
+    if (!result.canExecute)
+        return NoTokenAction(result.message);*/
 
     if (!branchService.isActive(member.branchId))
         return NoTokenAction();
@@ -102,7 +113,6 @@ app.use('/v1/third-party', require('./api.thirdParty'));
 app.use('/v1/account-review', require('../accounting/server/routes/api.accountReview'));
 app.use('/v1/detail-accounts', require('../accounting/server/routes/api.detailAccount'));
 app.use('/v1/detail-account-categories', require('../accounting/server/routes/api.detailAccountCategory'));
-app.use('/v1/api/detail-account-categories', require('../accounting/server/routes/api.detailAccountCategory'));
 app.use('/v1/banks', require('../accounting/server/routes/api.bank'));
 app.use('/v1/people', require('../accounting/server/routes/api.people'));
 app.use('/v1/funds', require('../accounting/server/routes/api.fund'));
@@ -120,9 +130,9 @@ app.use('/v1/purchases', require('../accounting/server/routes/api.purchase'));
 app.use('/v1/products', require('../accounting/server/routes/api.product'));
 app.use('/v1/product-categories', require('../accounting/server/routes/api.productCategory'));
 app.use('/v1/settings', require('../accounting/server/routes/api.setting'));
-app.use('/v1/transfer-money', require('../accounting/server/routes/api.moneyTransfer'));
+/*app.use('/v1/transfer-money', require('../accounting/server/routes/api.moneyTransfer'));
 app.use('/v1/receive', require('../accounting/server/routes/api.receive'));
-app.use('/v1/pay', require('../accounting/server/routes/api.pay'));
+app.use('/v1/pay', require('../accounting/server/routes/api.pay'));*/
 app.use('/v1/bank-and-fund', require('../accounting/server/routes/api.bankAndFund'));
 app.use('/v1/scales', require('../accounting/server/routes/api.scale'));
 app.use('/v1/stocks', require('../accounting/server/routes/api.stock'));
