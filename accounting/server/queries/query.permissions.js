@@ -61,12 +61,11 @@ class PermissionsQuery extends BaseQuery {
     getRoleById(id) {
         let knex = this.knex,
             branchId = this.branchId,
-            userId = this.userId,
             canView = this.canView(),
 
             role = this.await(knex.select('title', 'id')
                 .from('roles')
-                .modify(this.modify, branchId, userId, canView)
+                .where(canView)
                 .where('id', id)
             );
 
@@ -82,7 +81,7 @@ class PermissionsQuery extends BaseQuery {
             .whereIn('rolePermissions.roleId', id)
             .first());
 
-        rolePermissions = this._comparePermissions(rolePermissions.permissions);
+        rolePermissions = rolePermissions ? this._comparePermissions(rolePermissions.permissions) : null;
 
         role = role.asEnumerable().select(item =>
             Object.assign({}, item, {
