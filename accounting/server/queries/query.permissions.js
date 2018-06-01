@@ -1,6 +1,9 @@
 "use strict";
 
-const BaseQuery = require('./query.base');
+const BaseQuery = require('./query.base'),
+    Permissions = require('../config/settings/permisions'),
+    flatten = require('flat'),
+    renameKeys = require('rename-keys');
 
 class PermissionsQuery extends BaseQuery {
     constructor(branchId, userId) {
@@ -73,18 +76,44 @@ class PermissionsQuery extends BaseQuery {
                 .where('userInRole.branchId', branchId)
                 .where('userInRole.roleId', id)
             ),*/
-        let permissions = this.await(knex.select('permissions', 'roleId')
+        let rolePermissions = this.await(knex.select('permissions')
             .from('rolePermissions')
             .where('rolePermissions.branchId', branchId)
-            .whereIn('rolePermissions.roleId', id));
+            .whereIn('rolePermissions.roleId', id)
+            .first());
+
+        rolePermissions = this._comparePermissions(rolePermissions.permissions);
 
         role = role.asEnumerable().select(item =>
             Object.assign({}, item, {
                 //users: users.asEnumerable().where(user => user.roleId === item.id).toArray(),
-                permissions: permissions.asEnumerable().where(permission => permission.roleId === item.id).toArray()
+                permissions: rolePermissions
             })).toArray();
 
         return role;
+    }
+
+    _comparePermissions(rolePermissions) {
+        let flatPermissions = flatten(Permissions),
+            flatRolePermissions = flatten(rolePermissions);
+
+        flatPermissions = renameKeys(flatPermissions, function (key, val) {
+            let firstDot = key.indexOf('.', 0);
+            return key.substring(firstDot + 1);
+        });
+        flatRolePermissions = renameKeys(flatRolePermissions, function (key, val) {
+            let firstDot = key.indexOf('.', 0);
+            return key.substring(firstDot + 1);
+        });
+
+        let mergePermissions = Object.assign({}, flatPermissions, flatRolePermissions);
+        mergePermissions = flatten.unflatten(mergePermissions);
+
+        rolePermissions = Object.keys(mergePermissions).asEnumerable().select(item => ({
+            [item]: mergePermissions[item]
+        })).toArray();
+
+        return rolePermissions;
     }
 
     getUsersWithPermissions() {
