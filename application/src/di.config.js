@@ -29,6 +29,7 @@ import {
     DimensionCategoryRepository,
     DimensionRepository,
     RegisteredThirdPartyRepository,
+    VerificationRepository,
     PermissionRepository
 } from "./domain/data";
 import {
@@ -76,6 +77,7 @@ import {
     InventoryDomainService,
     DimensionDomainService,
     RegisteredThirdPartyDomainService,
+    VerificationDomainService,
     PermissionDomainService,
     UserPermissionsControlDomainService,
     TreasurySettingDomainService,
@@ -91,6 +93,7 @@ import {ChequeEventListener} from "./domain/eventHandlers/ChequeEventListener";
 
 import {PaypingInterfacePaymentGateway} from "./integration/paymentGateway/payping/PaypingInterfacePaymentGateway";
 import {ZarinpalInterfacePaymentGateway} from "./integration/paymentGateway/zarinpal/ZarinpalInterfacePaymentGateway";
+import {KaveNegarSmsService} from "./integration/smsService/KaveNegar"
 
 const container = new Container({defaultScope: "Request"});
 
@@ -99,6 +102,7 @@ container.bind("EventBus").to(EventBus).inRequestScope();
 container.bind("UserEventHandler").to(UserEventHandler).inRequestScope();
 container.bind("UnitOfWork").to(UnitOfWork).inTransientScope();
 container.bind("HttpRequest").to(HttpRequest).inSingletonScope();
+container.bind("SmsService").to(KaveNegarSmsService).inSingletonScope();
 
 container.bind("Factory<Repository>").toFactory(context => {
     return (name) => context.container.get(name);
@@ -155,6 +159,7 @@ container.bind("TreasuryPurposeRepository").to(TreasuryPurposeRepository).inRequ
 container.bind("RegisteredThirdPartyRepository").to(RegisteredThirdPartyRepository).inRequestScope();
 container.bind("DimensionCategoryRepository").to(DimensionCategoryRepository).inRequestScope();
 container.bind("DimensionRepository").to(DimensionRepository).inRequestScope();
+container.bind("VerificationRepository").to(VerificationRepository).inSingletonScope();
 container.bind("PermissionRepository").to(PermissionRepository).inRequestScope();
 
 container.bind("BankDomainService").to(BankDomainService).inRequestScope();
@@ -202,6 +207,7 @@ container.bind("InventoryAccountingDomainService").to(InventoryAccountingDomainS
 container.bind("InventoryDomainService").to(InventoryDomainService).inRequestScope();
 container.bind("RegisteredThirdPartyDomainService").to(RegisteredThirdPartyDomainService).inRequestScope();
 container.bind("DimensionDomainService").to(DimensionDomainService).inRequestScope();
+container.bind("VerificationDomainService").to(VerificationDomainService).inSingletonScope();
 container.bind("PermissionDomainService").to(PermissionDomainService).inRequestScope();
 container.bind("UserPermissionsControlDomainService").to(UserPermissionsControlDomainService).inRequestScope();
 container.bind("SettingDomainService").to(SettingDomainService).inRequestScope();

@@ -22,3 +22,4 @@ export * from "./RegisteredThirdPartyRepository";
 export * from "./repository.dimension";
 export * from "./repository.dimensionCategory";
 export * from "./repository.permission";
+export * from "./VerificationRepository";
