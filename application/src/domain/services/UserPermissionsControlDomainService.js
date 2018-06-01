@@ -39,9 +39,9 @@ export class UserPermissionsControlDomainService {
     _haveUserPermissions(userPermissions, request) {
         let flatPermissions = flatten(userPermissions),
             permissions = renameKeys(flatPermissions, function (key, val) {
-                let firstDot = key.indexOf('.', 0);
-                return key.substring(firstDot + 1);
-            });
+            let firstDot = key.indexOf('.', 0);
+            return key.substring(firstDot + 1);
+        });
         return permissions[request];
     }
 
