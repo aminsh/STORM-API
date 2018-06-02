@@ -334,7 +334,7 @@ export class TreasuryJournalGenerationDomainService {
                 .select(item => item.journalId)
                 .toArray(),
             persistedJournal = persistedTreasuryJournalId.length > 0
-                ? this.journalRepository.findById(persistedTreasuryJournalId)
+                ? this.journalRepository.findById(persistedTreasuryJournalId[0])
                 : null;
 
         if (persistedTreasury.treasuryType === 'receive' && persistedTreasury.documentDetail.status === 'spend')
@@ -356,8 +356,8 @@ export class TreasuryJournalGenerationDomainService {
                 : this.setPaymentJournalLines(persistedTreasury);
 
 
-        return persistedTreasury.journalId
-            ? this.journalDomainService.update(persistedTreasuryJournalId,
+        return persistedJournal
+            ? this.journalDomainService.update(persistedTreasuryJournalId[0],
                 {description: persistedJournal.description, journalLines: persistedJournal.journalLines})
             : this.journalDomainService.create({description, journalLines});
 
