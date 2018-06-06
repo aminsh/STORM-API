@@ -30,7 +30,8 @@ export class StormOrderService {
     create(dto) {
 
         let plan = this.planRepository.findById(dto.planId),
-            discount = plan.discount.asEnumerable().singleOrDefault(item => item.duration === dto.duration);
+            discount = plan.discount.asEnumerable().singleOrDefault(item => item.duration === dto.duration),
+            duration = dto.duration;
 
         if (dto.giftId) {
             let gift = this.stormGiftRepository.findById(dto.giftId);
@@ -53,6 +54,8 @@ export class StormOrderService {
             plan = this.planRepository.findById(gift.planId);
 
             discount = {rate: gift.discountRate};
+
+            duration = gift.duration;
         }
 
         let entity = {
@@ -61,14 +64,14 @@ export class StormOrderService {
             number: (this.orderRepository.findMaxNumber() || 10000) + 1,
             issuedDate: new Date(),
             planId: plan.id,
-            duration: dto.duration,
+            duration: duration,
             unitPrice: plan.price,
-            discount: discount ? (plan.price * dto.duration * discount.rate) / 100 : 0
+            discount: discount ? (plan.price * duration * discount.rate) / 100 : 0
         };
 
         this.orderRepository.create(entity);
 
-        if ((dto.unitPrice * dto.duration - dto.discount) === 0)
+        if ((dto.unitPrice * duration - dto.discount) === 0)
             return this.confirm(entity.id);
 
         return {id: entity.id};
@@ -122,10 +125,14 @@ export class StormOrderService {
             return {noPrice: true};
 
         let result = this.httpRequest.post(`${originalUrl}/v1/sales`)
-                .body(dto)
-                .setHeader('x-access-token', persistedConfig.get("STORM_BRANCH_TOKEN").value)
-                .execute(),
-            invoiceId = result.returnValue.id;
+            .body(dto)
+            .setHeader('x-access-token', persistedConfig.get("STORM_BRANCH_TOKEN").value)
+            .execute();
+
+        if(!result.isValid)
+            throw new Error('Error on Storm branch ');
+
+        let invoiceId = result.returnValue.id;
 
         this.orderRepository.update(id, {invoiceId});
 
@@ -147,10 +154,8 @@ export class StormOrderService {
     }
 
     setAsPaid(id) {
-        this.orderRepository.update(id, {paidDate: new Date});
 
-        let order = this.orderRepository.findById(id),
-            plan = this.stormPlanRepository.findById(order.planId);
+        this.orderRepository.update(id, {paidDate: new Date});
 
         this.eventBus.send("ActivateBranch", id);
     }
