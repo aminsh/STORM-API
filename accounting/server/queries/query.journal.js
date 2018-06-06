@@ -49,7 +49,8 @@ class JournalQuery extends BaseQuery {
                 .andWhere('id', journalId)
                 .first());
 
-        journal = journal ? journal.journalLines = journalLines : null;
+        if (journal)
+            journal.journalLines = journalLines;
 
         return journal;
     }
