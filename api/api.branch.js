@@ -77,28 +77,32 @@ router.route('/')
         if (!user)
             return NoAuthorizedResponseAction();
 
-        let cmd = req.body,
-            entity = {
-                id: instanceOf('TokenGenerator').generate128Bit(),
-                name: cmd.name,
-                ownerName: cmd.ownerName,
-                logo: cmd.logo
-                    ? `/${cmd.logo}`
-                    : config.logo,
-                phone: cmd.phone,
-                mobile: cmd.mobile,
-                address: cmd.address,
-                postalCode: cmd.postalCode,
-                nationalCode: cmd.nationalCode,
-                registrationNumber: cmd.registrationNumber,
-                ownerId: user.id,
-                webSite: cmd.webSite,
-                offCode: cmd.offCode,
-                fax: cmd.fax,
-                province: cmd.province,
-                city: cmd.city,
-                status: 'pending'
-            };
+        let cmd = req.body;
+
+        if (Utility.String.isNullOrEmpty(cmd.name))
+            return res.sendStatus(400).send('نام کسب و کار نباید خالی باشد');
+
+        let entity = {
+            id: instanceOf('TokenGenerator').generate128Bit(),
+            name: cmd.name,
+            ownerName: cmd.ownerName,
+            logo: cmd.logo
+                ? `/${cmd.logo}`
+                : config.logo,
+            phone: cmd.phone,
+            mobile: cmd.mobile,
+            address: cmd.address,
+            postalCode: cmd.postalCode,
+            nationalCode: cmd.nationalCode,
+            registrationNumber: cmd.registrationNumber,
+            ownerId: user.id,
+            webSite: cmd.webSite,
+            offCode: cmd.offCode,
+            fax: cmd.fax,
+            province: cmd.province,
+            city: cmd.city,
+            status: 'pending'
+        };
 
         await(knex('branches').insert(entity));
 
@@ -187,7 +191,7 @@ router.route('/:id/users')
 
             member = await(knex.select('*').from('userInBranches').where({token}).first());
 
-         if (!member)
+        if (!member)
             return NoAuthorizedResponseAction();
 
         if (member.branchId !== id)
@@ -330,7 +334,10 @@ router.route('/:id/users/:userId/is-member')
         if (member.branchId !== id)
             return NoAuthorizedResponseAction();
 
-        let isMember = await(knex.select('id').from('userInBranches').where({branchId: member.branchId, userId}).first());
+        let isMember = await(knex.select('id').from('userInBranches').where({
+            branchId: member.branchId,
+            userId
+        }).first());
 
         res.send(!!isMember);
     }));
