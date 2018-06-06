@@ -77,6 +77,23 @@ router.route('/login')
         return res.json(user);
     }));
 
+router.route('/logout')
+    .post(async(function (req, res) {
+        let NoAuthorizedResponseAction = () => res.status(401).send('No Authorized'),
+            token = req.headers["authorization"];
+
+        if (!token)
+            return NoAuthorizedResponseAction();
+
+        let user = await(knex.select('*').from('users').where({token}).first());
+
+        if (!user)
+            return NoAuthorizedResponseAction();
+
+        await(knex('users').where({id: user.id}).update({token: TokenGenerator.generate256Bit()}));
+
+        res.sendStatus(200);
+    }));
 
 router.route('/register')
     .post(async(function (req, res) {
