@@ -38,7 +38,7 @@ export class ZarinpalInterfacePaymentGateway {
             return {success: false};
 
         let thirdParty = this.registeredThirdPartyRepository.get('zarinpal'),
-            isSandbox = process.env.NODE_ENV === 'development',
+            isSandbox = process.env.NODE_ENV !== 'production',
             zarinInstance = ZarinPalCheckout.create(thirdParty.data.merchantId, isSandbox),
             response = toResult(zarinInstance.PaymentVerification(params));
 
