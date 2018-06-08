@@ -65,7 +65,9 @@ router.route('/:id/payment/callback')
     .get(async(function (req, res) {
 
         try {
-            req.container.get('StormOrderService').setAsPaid(req.params.id);
+
+            if (req.query.status !== 'fail')
+                req.container.get('StormOrderService').setAsPaid(req.params.id);
 
             res.redirect(`${process.env.DASHBOARD_URL}/branch/order/${req.params.id}/payment-result?payment_status=${req.query.status}`);
         }
