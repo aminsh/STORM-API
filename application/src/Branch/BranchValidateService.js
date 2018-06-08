@@ -18,9 +18,14 @@ export class BranchValidateService {
 
     validate(id, caller, url) {
 
-        let branch = this.branchRepository.findById(id),
-            subscription = this.branchSubscriptionRepository.getLast(id),
+        let branch = this.branchRepository.findById(id);
+
+        if (branch.isUnlimited)
+            return {canExecute: true};
+
+        let subscription = this.branchSubscriptionRepository.getLast(id),
             plan = this.stormPlanRepository.findById(subscription.planId);
+
 
         if (branch.status === 'expired' && caller === 'STORM-Dashboard')
             return {canExecute: false, message: 'The branch is expired'};
@@ -29,7 +34,6 @@ export class BranchValidateService {
             return {canExecute: false, message: 'The branch is expired'};
 
         let feature = queryString.parseUrl(url).url.split("/").filter(item => item)[1];
-
 
         let canExecute = caller === 'STORM-Dashboard'
             ? this._Validate(feature, plan.features.dashboard)
