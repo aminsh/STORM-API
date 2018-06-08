@@ -52,8 +52,6 @@ app.get('/v1/enums', function (req, res) {
     res.json(enumsJson);
 });
 
-let x = require('./api.user');
-
 app.use('/v1/send-invoice', require('../accounting/server/routes/api.sendInvoice'));
 app.use('/v1/payment-invoice', require('../accounting/server/routes/api.paymentInvoice'));
 app.use('/v1/users', require('./api.user'));

@@ -220,8 +220,6 @@ router.route('/verify-mobile/:code')
             }));
 
             res.send(getUserView({id: result.data.userId}));
-
-
         }
         catch (e) {
 
