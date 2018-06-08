@@ -1,4 +1,5 @@
 import {inject, injectable} from "inversify";
+import async from "asyncawait/async";
 
 @injectable()
 export class VerificationDomainService {
@@ -21,7 +22,7 @@ export class VerificationDomainService {
 
         this.smsService.sendVerification(mobile, code);
 
-        setTimeout(()=> this.verificationRepository.remove(entity.id), 60000);
+        setTimeout(async(()=> this.verificationRepository.remove(entity.id)), 60000);
     }
 
     verify(code) {
