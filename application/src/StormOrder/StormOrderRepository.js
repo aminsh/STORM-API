@@ -11,7 +11,7 @@ export class StormOrderRepository {
 
     findById(id) {
 
-        let order =  toResult(knex.select('*').from(this.tableName).where({id}).first()),
+        let order = toResult(knex.select('*').from(this.tableName).where({id}).first()),
             plan = toResult(knex.select('*').from('storm_plans').where({id: order.planId}).first());
 
         order.plan = plan;
@@ -26,6 +26,19 @@ export class StormOrderRepository {
 
         return result ? parseInt(result.number) : 0;
     }
+
+    isUsedTrialBefore(userId) {
+
+        return toResult(knex.select('storm_plans.id')
+            .from(this.tableName)
+            .leftJoin('storm_plans', this.tableName + '.planId', 'storm_plans.id')
+            .leftJoin('branches', this.tableName + '.branchId', 'branches.id')
+            .where('storm_plans.name', 'Trial')
+            .where('branches.ownerId', userId)
+            .first());
+
+    }
+
 
     isUsedGift(giftId, userId) {
         return toResult(

@@ -6,7 +6,7 @@ const persistedConfig = instanceOf('persistedConfig');
 export class StormOrderService {
 
     @inject("StormOrderRepository")
-    orderRepository = undefined;
+    /** @type {StormOrderRepository} */ orderRepository = undefined;
 
     @inject("StormPlanRepository")
     planRepository = undefined;
@@ -30,8 +30,17 @@ export class StormOrderService {
     create(dto) {
 
         let plan = this.planRepository.findById(dto.planId),
+            branch = this.branchRepository.findById(dto.branchId),
             discount = plan.discount.asEnumerable().singleOrDefault(item => item.duration === dto.duration),
             duration = dto.duration;
+
+        if (plan.name === 'Trial') {
+
+            let isUsedTrial = this.orderRepository.isUsedTrialBefore(branch.ownerId);
+
+            if (isUsedTrial)
+                throw new ValidationException(['شما قبلا از طرح آزمایشی استفاده کرده اید']);
+        }
 
         if (dto.giftId) {
             let gift = this.stormGiftRepository.findById(dto.giftId);
@@ -45,8 +54,7 @@ export class StormOrderService {
             if (!isInRange)
                 throw new ValidationException(['کد تخفیف وارد در این تاریخ قابل استفاده نمیباشد']);
 
-            let branch = this.branchRepository.findById(dto.branchId),
-                isUseGift = this.orderRepository.isUsedGift(gift.id, branch.ownerId);
+            let isUseGift = this.orderRepository.isUsedGift(gift.id, branch.ownerId);
 
             if (isUseGift)
                 throw new ValidationException(['شما قبلا از این کد تخفیف استفاده کرده اید']);
@@ -129,7 +137,7 @@ export class StormOrderService {
             .setHeader('x-access-token', persistedConfig.get("STORM_BRANCH_TOKEN").value)
             .execute();
 
-        if(!result.isValid)
+        if (!result.isValid)
             throw new Error('Error on Storm branch ');
 
         let invoiceId = result.returnValue.id;
