@@ -77,13 +77,13 @@ app.use(async((req, res, next) => {
     if (!member)
         return NoTokenAction();
 
-    /*let result = req.container.get("BranchValidateService").validate(member.branchId, req.apiCaller, req.originalUrl);
+    let result = req.container.get("BranchValidateService").validate(member.branchId, req.apiCaller, req.originalUrl);
 
     if (!result.canExecute)
-        return NoTokenAction(result.message);*/
+        return NoTokenAction(result.message);
 
-    if (!branchService.isActive(member.branchId))
-        return NoTokenAction();
+    /*if (!branchService.isActive(member.branchId))
+        return NoTokenAction();*/
 
     req.branchId = member.branchId;
     req.user = {id: member.userId};
