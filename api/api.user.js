@@ -141,10 +141,12 @@ router.route('/register')
                     token: TokenGenerator.generate256Bit()
                 };
 
-                let isEmailDuplicated = await(knex.select('id').from('users').where('email', 'ILIKE', user.email).first());
+                if (user.email) {
+                    let isEmailDuplicated = await(knex.select('id').from('users').where('email', 'ILIKE', user.email).first());
 
-                if (isEmailDuplicated)
-                    return res.status(400).send('The email is duplicated');
+                    if (isEmailDuplicated)
+                        return res.status(400).send('The email is duplicated');
+                }
 
                 await(knex('users').insert(user));
 
@@ -217,7 +219,9 @@ router.route('/verify-mobile/:code')
                 state: 'active'
             }));
 
-            res.sendStatus(200);
+            res.send(getUserView({id: result.data.userId}));
+
+
         }
         catch (e) {
 
@@ -248,7 +252,7 @@ router.route('/change-password')
         if (!password)
             return res.status(400).send('Password is empty');
 
-        let  customFields = user.custom_fields || {};
+        let customFields = user.custom_fields || {};
 
         customFields.shouldChangePassword = false;
 
@@ -275,6 +279,7 @@ router.route('/is-unique-mobile/:mobile')
 
 router.route('/reset-password/by-mobile')
     .post(async(function (req, res) {
+
         let mobile = req.body.mobile;
 
         if (!mobile)
@@ -291,7 +296,10 @@ router.route('/reset-password/by-mobile')
 
         customFields.shouldChangePassword = true;
 
-        await(knex('users').where({id: user.id}).update({password: md5(newPassword.toString()), custom_fields: customFields}));
+        await(knex('users').where({id: user.id}).update({
+            password: md5(newPassword.toString()),
+            custom_fields: customFields
+        }));
 
         req.container.get('SmsService').resetPassword(req.body.mobile, newPassword);
 
@@ -319,7 +327,7 @@ function getUserView(filter) {
             .from('users')
             .where(filter)
             .first()
-    ),
+        ),
         customFields = user.custom_fields;
 
     delete user.custom_fields;

@@ -28,6 +28,8 @@ export class KaveNegarSmsService {
 
     sendVerification(receptor, code) {
 
+        console.log(code);
+
         this.api.VerifyLookup({
             receptor: receptor,
             token: code,
@@ -39,6 +41,9 @@ export class KaveNegarSmsService {
     }
 
     resetPassword(receptor, password) {
+
+        console.log(password);
+
         this.api.VerifyLookup({
             receptor: receptor,
             token: password,
