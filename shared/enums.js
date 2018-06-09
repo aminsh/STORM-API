@@ -416,7 +416,7 @@ enums.Features = function () {
             ]
         },
         {key: 'treasury', value: ['treasury', 'banks-name', 'cheque-categories', 'funds', 'banks', 'bank-and-fund']},
-        {key: 'other', value: ['reports', 'people', 'settings', 'fiscal-periods']}
+        {key: 'other', value: ['reports', 'people', 'settings', 'fiscal-periods', 'permissions']}
     ]);
 };
 
