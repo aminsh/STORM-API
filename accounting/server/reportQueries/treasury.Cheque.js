@@ -10,8 +10,8 @@ const BaseQuery = require('../queries/query.base'),
 
 
 class ChequeReportQueries extends BaseQuery {
-    constructor(branchId, currentFiscalPeriod, mode, filter) {
-        super(branchId);
+    constructor(branchId, currentFiscalPeriod, mode, filter, userId) {
+        super(branchId, userId);
 
         this.currentFiscalPeriod = currentFiscalPeriod;
         this.mode = mode;
@@ -23,7 +23,11 @@ class ChequeReportQueries extends BaseQuery {
     getChequesDueDate(treasuryType, parameters) {
         let knex = this.knex,
             branchId = this.branchId,
-            options = this.options,
+            userId = this.userId,
+            canView = this.canView(),
+            modify = this.modify,
+            minDate = this.filter.minDate || this.options.fromMainDate,
+            maxDate = this.filter.maxDate || this.options.toDate,
 
             query = knex.from(function () {
                 this.select(
@@ -40,8 +44,8 @@ class ChequeReportQueries extends BaseQuery {
                     'treasuryDocumentDetails.dueDate',
                     'treasuryDocumentDetails.bank',
                     'treasuryDocumentDetails.status',
-                    knex.raw(`'${options.fromMainDate}' as "fromDate"`),
-                    knex.raw(`'${options.toDate}' as "toDate"`)
+                    knex.raw(`'${minDate}' as "fromDate"`),
+                    knex.raw(`'${maxDate}' as "toDate"`)
                 )
                     .from('treasury')
                     .leftJoin('treasuryDocumentDetails', 'treasury.documentDetailId', 'treasuryDocumentDetails.id')
@@ -51,11 +55,11 @@ class ChequeReportQueries extends BaseQuery {
                     .leftJoin(knex.raw(`(select "detailAccounts".title, "detailAccounts".id, "detailAccounts".code
                                      from "detailAccounts")as "destinationDetailAccounts"`),
                         'treasury.destinationDetailAccountId', '=', 'destinationDetailAccounts.id')
-                    .where('treasury.branchId', branchId)
+                    .modify(modify, branchId, userId, canView, 'treasury')
                     .where('treasury.documentType', 'cheque')
                     .where('treasury.treasuryType', treasuryType)
                     .where('treasury.isCompleted', 'false')
-                    .whereBetween('treasuryDocumentDetails.dueDate', [options.fromMainDate, options.toDate])
+                    .whereBetween('treasuryDocumentDetails.dueDate', [minDate, maxDate])
                     .as('base')
             });
 
@@ -85,7 +89,11 @@ class ChequeReportQueries extends BaseQuery {
     getPassedCheque(treasuryType, parameters) {
         let knex = this.knex,
             branchId = this.branchId,
-            options = this.options,
+            userId = this.userId,
+            canView = this.canView(),
+            modify = this.modify,
+            minDate = this.filter.minDate || this.options.fromMainDate,
+            maxDate = this.filter.maxDate || this.options.toDate,
 
             query = knex.from(function () {
                 this.select(
@@ -102,8 +110,8 @@ class ChequeReportQueries extends BaseQuery {
                     'treasuryDocumentDetails.dueDate',
                     'treasuryDocumentDetails.bank',
                     'treasuryDocumentDetails.status',
-                    knex.raw(`'${options.fromMainDate}' as "fromDate"`),
-                    knex.raw(`'${options.toDate}' as "toDate"`)
+                    knex.raw(`'${minDate}' as "fromDate"`),
+                    knex.raw(`'${maxDate}' as "toDate"`)
                 )
                     .from('treasury')
                     .leftJoin('treasuryDocumentDetails', 'treasury.documentDetailId', 'treasuryDocumentDetails.id')
@@ -113,11 +121,11 @@ class ChequeReportQueries extends BaseQuery {
                     .leftJoin(knex.raw(`(select "detailAccounts".title, "detailAccounts".id, "detailAccounts".code
                                      from "detailAccounts")as "destinationDetailAccounts"`),
                         'treasury.destinationDetailAccountId', '=', 'destinationDetailAccounts.id')
-                    .where('treasury.branchId', branchId)
+                    .modify(modify, branchId, userId, canView, 'treasury')
                     .where('treasury.documentType', 'cheque')
                     .where('treasury.treasuryType', treasuryType)
                     .where('treasuryDocumentDetails.status', 'passed')
-                    .whereBetween('treasuryDocumentDetails.dueDate', [options.fromMainDate, options.toDate])
+                    .whereBetween('treasuryDocumentDetails.dueDate', [minDate, maxDate])
                     .as('base')
             });
 
@@ -146,7 +154,11 @@ class ChequeReportQueries extends BaseQuery {
     getChequesWithStatus(treasuryType, parameters) {
         let knex = this.knex,
             branchId = this.branchId,
-            options = this.options,
+            userId = this.userId,
+            canView = this.canView(),
+            modify = this.modify,
+            minDate = this.filter.minDate || this.options.fromMainDate,
+            maxDate = this.filter.maxDate || this.options.toDate,
 
             query = knex.from(function () {
                 this.select(
@@ -163,8 +175,8 @@ class ChequeReportQueries extends BaseQuery {
                     'treasuryDocumentDetails.dueDate',
                     'treasuryDocumentDetails.bank',
                     'treasuryDocumentDetails.status',
-                    knex.raw(`'${options.fromMainDate}' as "fromDate"`),
-                    knex.raw(`'${options.toDate}' as "toDate"`)
+                    knex.raw(`'${minDate}' as "fromDate"`),
+                    knex.raw(`'${maxDate}' as "toDate"`)
                 )
                     .from('treasury')
                     .leftJoin('treasuryDocumentDetails', 'treasury.documentDetailId', 'treasuryDocumentDetails.id')
@@ -174,10 +186,10 @@ class ChequeReportQueries extends BaseQuery {
                     .leftJoin(knex.raw(`(select "detailAccounts".title, "detailAccounts".id, "detailAccounts".code
                                      from "detailAccounts")as "destinationDetailAccounts"`),
                         'treasury.destinationDetailAccountId', '=', 'destinationDetailAccounts.id')
-                    .where('treasury.branchId', branchId)
+                    .modify(modify, branchId, userId, canView, 'treasury')
                     .where('treasury.documentType', 'cheque')
                     .where('treasury.treasuryType', treasuryType)
-                    .whereBetween('treasuryDocumentDetails.dueDate', [options.fromMainDate, options.toDate])
+                    .whereBetween('treasuryDocumentDetails.dueDate', [minDate, maxDate])
                     .as('base')
             });
 

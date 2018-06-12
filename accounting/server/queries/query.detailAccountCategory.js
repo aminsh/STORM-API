@@ -6,8 +6,8 @@ const async = require('asyncawait/async'),
     kendoQueryResolve = require('../services/kendoQueryResolve');
 
 module.exports = class DetailAccountCategoryQuery extends BaseQuery {
-    constructor(branchId) {
-        super(branchId);
+    constructor(branchId, userId) {
+        super(branchId, userId);
 
         this.getById = async(this.getById);
     }
@@ -38,9 +38,11 @@ module.exports = class DetailAccountCategoryQuery extends BaseQuery {
     }
 
     getAll(parameters) {
-        let query = this.knex
+        let branchId = this.branchId,
+
+            query = this.knex
                 .from('detailAccountCategories')
-                .where('branchId', this.branchId),
+                .where('branchId', branchId),
 
             view = item => ({
                 id: item.id,

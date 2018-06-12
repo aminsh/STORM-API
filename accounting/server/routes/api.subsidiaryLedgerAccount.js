@@ -5,29 +5,33 @@ const async = require('asyncawait/async'),
     router = require('express').Router(),
     SubsidiaryLedgerAccountQuery = require('../queries/query.subsidiaryLedgerAccount');
 
-router.route('/').get(async((req, res) => {
-    let subsidiaryLedgerAccountQuery = new SubsidiaryLedgerAccountQuery(req.branchId),
-        result = await(subsidiaryLedgerAccountQuery.getAll(req.query));
-    res.json(result);
-}));
+router.route('/')
+    .get(async((req, res) => {
+        let subsidiaryLedgerAccountQuery = new SubsidiaryLedgerAccountQuery(req.branchId),
+            result = await(subsidiaryLedgerAccountQuery.getAll(req.query));
+        res.json(result);
+    }));
 
-router.route('/incomes').get(async((req, res) => {
-    let subsidiaryLedgerAccountQuery = new SubsidiaryLedgerAccountQuery(req.branchId),
-        result = await(subsidiaryLedgerAccountQuery.getAllIcome(req.query));
-    res.json(result);
-}));
+router.route('/incomes')
+    .get(async((req, res) => {
+        let subsidiaryLedgerAccountQuery = new SubsidiaryLedgerAccountQuery(req.branchId),
+            result = await(subsidiaryLedgerAccountQuery.getAllIcome(req.query));
+        res.json(result);
+    }));
 
-router.route('/expenses').get(async((req, res) => {
-    let subsidiaryLedgerAccountQuery = new SubsidiaryLedgerAccountQuery(req.branchId),
-        result = await(subsidiaryLedgerAccountQuery.getAllExpense(req.query));
-    res.json(result);
-}));
+router.route('/expenses')
+    .get(async((req, res) => {
+        let subsidiaryLedgerAccountQuery = new SubsidiaryLedgerAccountQuery(req.branchId),
+            result = await(subsidiaryLedgerAccountQuery.getAllExpense(req.query));
+        res.json(result);
+    }));
 
-router.route('/account/:id').get(async((req, res) => {
-    let subsidiaryLedgerAccountQuery = new SubsidiaryLedgerAccountQuery(req.branchId),
-        result = await(subsidiaryLedgerAccountQuery.getAll(req.params.id));
-    res.json(result);
-}));
+router.route('/account/:id')
+    .get(async((req, res) => {
+        let subsidiaryLedgerAccountQuery = new SubsidiaryLedgerAccountQuery(req.branchId),
+            result = await(subsidiaryLedgerAccountQuery.getAll(req.params.id));
+        res.json(result);
+    }));
 
 router.route('/general-ledger-account/:parentId')
     .get(async((req, res) => {

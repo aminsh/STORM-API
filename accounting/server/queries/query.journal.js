@@ -10,8 +10,8 @@ const async = require('asyncawait/async'),
     journalBaseFilter = require('./query.journal.baseFilter');
 
 class JournalQuery extends BaseQuery {
-    constructor(branchId) {
-        super(branchId);
+    constructor(branchId, userId) {
+        super(branchId, userId);
     }
 
     getMaxNumber(fiscalPeriodId) {
@@ -24,7 +24,11 @@ class JournalQuery extends BaseQuery {
 
     batchFindById(journalId) {
         let knex = this.knex,
-            journalLines = await(knex.select(
+            branchId = this.branchId,
+            userId = this.userId,
+            canView = this.canView(),
+            modify = this.modify,
+            journalLines = this.await(knex.select(
                 'id',
                 'row',
                 'creditor',
@@ -37,15 +41,16 @@ class JournalQuery extends BaseQuery {
                 'dimension3Id'
             )
                 .from('journalLines')
-                .where('branchId', this.branchId)
+                .modify(modify, branchId, userId, canView)
                 .where('journalId', journalId)),
-            journal = await(knex.select()
+            journal = this.await(knex.select()
                 .from('journals')
-                .where('branchId', this.branchId)
+                .modify(modify, branchId, userId, canView)
                 .andWhere('id', journalId)
                 .first());
 
-        journal.journalLines = journalLines;
+        if (journal)
+            journal.journalLines = journalLines;
 
         return journal;
     }
@@ -53,6 +58,9 @@ class JournalQuery extends BaseQuery {
     getAll(fiscalPeriodId, parameters) {
         let knex = this.knex,
             branchId = this.branchId,
+            userId = this.userId,
+            canView = this.canView(),
+            modify = this.modify,
             extra = (parameters.extra) ? parameters.extra : undefined;
 
         let query = knex.select().from(function () {
@@ -69,7 +77,10 @@ class JournalQuery extends BaseQuery {
                     journalBase.call(this, knex, {
                         numberFieldName: 'temporaryNumber',
                         dateFieldName: 'temporaryDate',
-                        branchId
+                        branchId,
+                        userId,
+                        canView,
+                        modify
                     });
 
                     journalBaseFilter(this, extra, fiscalPeriodId, knex);
@@ -84,24 +95,27 @@ class JournalQuery extends BaseQuery {
 
         });
 
-        return await(kendoQueryResolve(query, parameters, view));
+        return this.await(kendoQueryResolve(query, parameters, view));
     }
 
     getGroupedByMouth(currentFiscalPeriod) {
         let knex = this.knex,
-            branchId = this.branchId;
+            branchId = this.branchId,
+            userId = this.userId,
+            canView = this.canView(),
+            modify = this.modify,
 
-        let selectExp = '"month",' +
-            '"count"(*) as "count",' +
-            '"min"("temporaryNumber") as "minNumber",' +
-            '"max"("temporaryNumber") as "maxNumber",' +
-            '"min"("temporaryDate") as "minDate",' +
-            '"max"("temporaryDate") as "maxDate"';
+            selectExp = '"month",' +
+                '"count"(*) as "count",' +
+                '"min"("temporaryNumber") as "minNumber",' +
+                '"max"("temporaryNumber") as "maxNumber",' +
+                '"min"("temporaryDate") as "minDate",' +
+                '"max"("temporaryDate") as "maxDate"';
 
         let query = knex.select(knex.raw(selectExp)).from(function () {
             this.select(knex.raw('*,cast(substring("temporaryDate" from 6 for 2) as INTEGER) as "month"'))
                 .from('journals')
-                .where('branchId', branchId)
+                .modify(modify, branchId, userId, canView)
                 .andWhere('periodId', currentFiscalPeriod)
                 .as('baseJournals');
         })
@@ -109,7 +123,7 @@ class JournalQuery extends BaseQuery {
             .groupBy('month')
             .orderBy('month');
 
-        let result = await(query);
+        let result = this.await(query);
 
         result.forEach(item => item.monthName = enums.getMonth().getDisplay(item.month));
 
@@ -118,17 +132,20 @@ class JournalQuery extends BaseQuery {
 
     getJournalsByMonth(month, currentFiscalPeriod, parameters) {
         let knex = this.knex,
-            branchId = this.branchId;
+            branchId = this.branchId,
+            userId = this.userId,
+            canView = this.canView(),
+            modify = this.modify,
 
-        let selectExp = '"id","temporaryNumber","temporaryDate","number","date","description",' +
-            'CASE WHEN "journalStatus"=\'Fixed\' THEN TRUE ELSE FALSE END as "isFixed",' +
-            'CASE WHEN "attachmentFileName" IS NOT NULL THEN TRUE ELSE FALSE END as "hasAttachment",' +
-            '(select "sum"("debtor") from "journalLines" WHERE "journalId" = journals."id") as "sumAmount",' +
-            '(select "count"(*) from "journalLines" WHERE "journalId" = journals."id") as "countOfRows"';
+            selectExp = '"id","temporaryNumber","temporaryDate","number","date","description",' +
+                'CASE WHEN "journalStatus"=\'Fixed\' THEN TRUE ELSE FALSE END as "isFixed",' +
+                'CASE WHEN "attachmentFileName" IS NOT NULL THEN TRUE ELSE FALSE END as "hasAttachment",' +
+                '(select "sum"("debtor") from "journalLines" WHERE "journalId" = journals."id") as "sumAmount",' +
+                '(select "count"(*) from "journalLines" WHERE "journalId" = journals."id") as "countOfRows"';
 
         let query = knex.select().from(function () {
             this.select(knex.raw(selectExp)).from('journals')
-                .where('branchId', branchId)
+                .modify(modify, branchId, userId, canView)
                 .andWhere(knex.raw('cast(substring("temporaryDate" from 6 for 2) as INTEGER)'), month)
                 .andWhere('periodId', currentFiscalPeriod)
                 .orderBy('temporaryNumber')
@@ -140,9 +157,13 @@ class JournalQuery extends BaseQuery {
 
     getAllByPeriod(currentFiscalPeriod, parameters) {
         let branchId = this.branchId,
+            userId = this.userId,
+            canView = this.canView(),
+            modify = this.modify,
+
             query = this.knex.select().from(function () {
                 this.select().from('journals')
-                    .where('branchId', branchId)
+                    .modify(modify, branchId, userId, canView)
                     .andWhere('periodId', currentFiscalPeriod)
                     .orderBy('temporaryNumber', 'desc')
                     .as('baseJournals');
@@ -180,8 +201,14 @@ class JournalQuery extends BaseQuery {
     }
 
     getByNumber(currentFiscalPeriodId, number) {
-        return this.knex.select('*').from('journals')
-            .where('branchId', this.branchId)
+        let branchId = this.branchId,
+            userId = this.userId,
+            canView = this.canView(),
+            modify = this.modify;
+
+        return this.knex.select('*')
+            .from('journals')
+            .modify(modify, branchId, userId, canView)
             .andWhere('periodId', currentFiscalPeriodId)
             .andWhere('temporaryNumber', number)
             .first();
@@ -189,16 +216,17 @@ class JournalQuery extends BaseQuery {
 
     getTotalInfo(currentFiscalPeriod) {
         let knex = this.knex,
+            branchId = this.branchId,
             base = knex.from('journals')
-                .where('branchId', this.branchId)
+                .where('branchId', branchId)
                 .andWhere('periodId', currentFiscalPeriod),
 
-            lastNumber = await(base.max('temporaryNumber')
+            lastNumber = this.await(base.max('temporaryNumber')
                 .first()).max,
-            totalFixed = await(base.where('journalStatus', 'Fixed')
+            totalFixed = this.await(base.where('journalStatus', 'Fixed')
                 .select(knex.raw('count(*)'))
                 .first()).count,
-            totalInComplete = await(base.where('isInComplete', true)
+            totalInComplete = this.await(base.where('isInComplete', true)
                 .select(knex.raw('count(*)')).first()).count;
 
         return {lastNumber, totalFixed, totalInComplete};
@@ -207,6 +235,9 @@ class JournalQuery extends BaseQuery {
     getPayablesNotHaveChequeLines(currentFiscalPeriodId, detailAccountId, parameters) {
         let knex = this.knex,
             branchId = this.branchId,
+            userId = this.userId,
+            canView = this.canView(),
+            modify = this.modify,
 
             query = knex.select()
                 .from(function () {
@@ -240,7 +271,7 @@ class JournalQuery extends BaseQuery {
                 'subsidiaryLedgerAccountId')
                 .from('journals')
                 .leftJoin('journalLines', 'journals.id', 'journalLines.journalId')
-                .where('branchId', branchId)
+                .modify(modify, branchId, userId, canView, 'journals')
                 .andWhere('periodId', currentFiscalPeriodId)
                 .andWhere('detailAccountId', detailAccountId)
                 .andWhere('creditor', '>', 0)

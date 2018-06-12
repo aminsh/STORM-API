@@ -3,7 +3,7 @@ import {TreasurySettingRepository} from "../data/repository.treasury.setting";
 
 @injectable()
 export class SubsidiaryLedgerAccountDomainService {
-        
+
     /**@type {SettingsRepository}*/
     @inject("SettingsRepository") settingsRepository = undefined;
 
@@ -18,20 +18,21 @@ export class SubsidiaryLedgerAccountDomainService {
 
     defaultAccounts = undefined;
     treasuryAccounts = undefined;
-    
+
     @postConstruct()
-    init(){
-        const settings =  this.settings = this.settingsRepository.get(),
+    init() {
+        const settings = this.settings = this.settingsRepository.get(),
             treasurySettings = this.treasurySettings = this.treasurySettingRepository.get();
 
         this.defaultAccounts = (settings.subsidiaryLedgerAccounts || [])
             .asEnumerable()
             .toObject(item => item.key, item => item.id);
 
-        this.treasuryAccounts = treasurySettings ? (treasurySettings.subsidiaryLedgerAccounts || [])
-            .asEnumerable()
-            .toObject(item => item.key, item => item.id) :
-            this.treasurySettingRepository.createOnUndefined();
+        this.treasuryAccounts = treasurySettings
+            ? (treasurySettings.subsidiaryLedgerAccounts || [])
+                .asEnumerable()
+                .toObject(item => item.key, item => item.id)
+            :  this.treasurySettingRepository.createOnUndefined();
     }
 
     get receivableAccount() {
@@ -126,7 +127,6 @@ export class SubsidiaryLedgerAccountDomainService {
     get treasuryPaymentNotes() {
         return this.subsidiaryLedgerAccountRepository.findById(this.treasuryAccounts['paymentNotes']);
     }
-
 
 
     create(generalLedgerAccountId, cmd) {

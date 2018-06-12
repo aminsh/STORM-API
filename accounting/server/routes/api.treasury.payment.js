@@ -8,7 +8,7 @@ const async = require('asyncawait/async'),
 
 router.route('/')
     .get(async((req, res) => {
-        let paymentQuery = new PaymentQuery(req.branchId),
+        let paymentQuery = new PaymentQuery(req.branchId, req.user.id),
             result = await(paymentQuery.getAll(req.fiscalPeriodId, req.query));
         res.json(result);
     }));
@@ -27,8 +27,8 @@ router.route('/cheques')
 
 router.route('/cheques/:id')
     .get(async((req, res) => {
-        let paymentQuery = new PaymentQuery(req.branchId),
-            result = await(paymentQuery.getById(req.params.id));
+        let paymentQuery = new PaymentQuery(req.branchId, req.user.id),
+            result = await(paymentQuery.getById(req.params.id, 'cheque'));
         res.json(result);
     }))
     .put(async((req, res) => {
@@ -91,7 +91,6 @@ router.route('/cheques/:id/return')
 
 router.route('/cheques/:id/revocation')
     .put(async((req, res) => {
-
         try {
             req.container.get("CommandBus").send("treasuryChequeRevocation", [req.params.id, req.body]);
             res.json({isValid: true});
@@ -104,7 +103,6 @@ router.route('/cheques/:id/revocation')
 
 router.route('/cheques/:id/generate-journal')
     .post(async((req, res) => {
-
         try {
 
             const id = req.params.id;
@@ -133,8 +131,8 @@ router.route('/spend-cheques')
 
 router.route('/spend-cheques/:id')
     .get(async((req, res) => {
-        let paymentQuery = new PaymentQuery(req.branchId),
-            result = await(paymentQuery.getById(req.params.id));
+        let paymentQuery = new PaymentQuery(req.branchId, req.user.id),
+            result = await(paymentQuery.getById(req.params.id, 'spendCheque'));
         res.json(result);
     }))
     .put(async((req, res) => {
@@ -158,7 +156,6 @@ router.route('/spend-cheques/:id')
 
 router.route('/spend-cheques/:id/return')
     .put(async((req, res) => {
-
         try {
             req.container.get("CommandBus").send("treasurySpentChequeReturn", [req.params.id, req.body]);
             res.json({isValid: true});
@@ -171,9 +168,7 @@ router.route('/spend-cheques/:id/return')
 
 router.route('/spend-cheques/:id/generate-journal')
     .post(async((req, res) => {
-
         try {
-
             const id = req.params.id;
             let journalId = req.container.get("CommandBus").send("journalGenerateForCheque", [id]);
             req.container.get("CommandBus").send("chequeSetJournal", [id, journalId]);
@@ -199,8 +194,8 @@ router.route('/cash')
 
 router.route('/cash/:id')
     .get(async((req, res) => {
-        let paymentQuery = new PaymentQuery(req.branchId),
-            result = await(paymentQuery.getById(req.params.id));
+        let paymentQuery = new PaymentQuery(req.branchId, req.user.id),
+            result = await(paymentQuery.getById(req.params.id, 'cash'));
         res.json(result);
     }))
     .put(async((req, res) => {
@@ -224,9 +219,7 @@ router.route('/cash/:id')
 
 router.route('/cash/:id/generate-journal')
     .post(async((req, res) => {
-
         try {
-
             const id = req.params.id;
             let journalId = req.container.get("CommandBus").send("journalGenerateForPaymentCash", [id]);
             req.container.get("CommandBus").send("cashSetJournal", [id, journalId]);
@@ -252,8 +245,8 @@ router.route('/receipts')
 
 router.route('/receipts/:id')
     .get(async((req, res) => {
-        let paymentQuery = new PaymentQuery(req.branchId),
-            result = await(paymentQuery.getById(req.params.id));
+        let paymentQuery = new PaymentQuery(req.branchId, req.user.id),
+            result = await(paymentQuery.getById(req.params.id, 'receipt'));
         res.json(result);
     }))
     .put(async((req, res) => {
@@ -277,9 +270,7 @@ router.route('/receipts/:id')
 
 router.route('/receipts/:id/generate-journal')
     .post(async((req, res) => {
-
         try {
-
             const id = req.params.id;
             let journalId = req.container.get("CommandBus").send("journalGenerateForPaymentReceipt", [id]);
             req.container.get("CommandBus").send("receiptSetJournal", [id, journalId]);
@@ -305,8 +296,8 @@ router.route('/demand-notes')
 
 router.route('/demand-notes/:id')
     .get(async((req, res) => {
-        let paymentQuery = new PaymentQuery(req.branchId),
-            result = await(paymentQuery.getById(req.params.id));
+        let paymentQuery = new PaymentQuery(req.branchId, req.user.id),
+            result = await(paymentQuery.getById(req.params.id, 'demandNote'));
         res.json(result);
     }))
     .put(async((req, res) => {
@@ -330,9 +321,7 @@ router.route('/demand-notes/:id')
 
 router.route('/demand-notes/:id/generate-journal')
     .post(async((req, res) => {
-
         try {
-
             const id = req.params.id;
             let journalId = req.container.get("CommandBus").send("journalGenerateForPaymentDemandNote", [id]);
             req.container.get("CommandBus").send("demandNoteSetJournal", [id, journalId]);
@@ -359,7 +348,7 @@ router.route('/purposes/invoice')
 
 router.route('/purposes/invoice/:id')
     .get(async((req, res) => {
-        let treasuryPurposesQuery = new TreasuryPurposesQuery(req.branchId),
+        let treasuryPurposesQuery = new TreasuryPurposesQuery(req.branchId, req.user.id),
             result = await(treasuryPurposesQuery.getByInvoiceId(req.params.id, req.query));
         res.json(result);
     }));

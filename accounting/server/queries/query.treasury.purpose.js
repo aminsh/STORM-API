@@ -7,8 +7,8 @@ const BaseQuery = require('./query.base'),
     view = require('../viewModel.assemblers/view.treasury');
 
 class TreasuryPurposes extends BaseQuery {
-    constructor(branchId) {
-        super(branchId);
+    constructor(branchId, userId) {
+        super(branchId, userId);
     }
 
     getAll(fiscalPeriodId, parameters) {
@@ -33,6 +33,9 @@ class TreasuryPurposes extends BaseQuery {
 
         let knex = this.knex,
             branchId = this.branchId,
+            userId = this.userId,
+            canView = this.canView(),
+            modify = this.modify,
 
             treasuryIds = await(knex.select(
                 'treasuryPurpose.treasuryId')
@@ -61,7 +64,7 @@ class TreasuryPurposes extends BaseQuery {
                     .leftJoin('detailAccounts as source', 'source.id', 'treasury.sourceDetailAccountId')
                     .leftJoin('detailAccounts as destination', 'destination.id', 'treasury.destinationDetailAccountId')
                     .leftJoin('treasuryDocumentDetails', 'treasuryDocumentDetails.id', 'treasury.documentDetailId')
-                    .where('treasury.branchId', branchId)
+                    .modify(modify, branchId, userId, canView, 'treasury')
                     .whereIn('treasury.id', treasuryIds.map(item => item.treasuryId))
                     .as('base')
             });

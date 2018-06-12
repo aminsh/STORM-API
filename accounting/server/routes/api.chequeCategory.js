@@ -7,7 +7,7 @@ const async = require('asyncawait/async'),
 
 router.route('/')
     .get(async((req, res) => {
-        let chequeCategoryQuery = new ChequeCategoryQuery(req.branchId),
+        let chequeCategoryQuery = new ChequeCategoryQuery(req.branchId, req.user.id),
             result = await(chequeCategoryQuery.getAll(req.query));
         res.json(result);
     }))
@@ -23,21 +23,14 @@ router.route('/')
 
 router.route('/:bankId/cheque-number')
     .get(async(function (req, res) {
-        let chequeCategoryQuery = new ChequeCategoryQuery(req.branchId),
+        let chequeCategoryQuery = new ChequeCategoryQuery(req.branchId, req.user.id),
             result = await(chequeCategoryQuery.getCheque(req.params.bankId));
-        res.json(result);
-    }));
-
-router.route('/detail-account/:detailAccountId/opens')
-    .get(async((req, res) => {
-        let chequeCategoryQuery = new ChequeCategoryQuery(req.branchId),
-            result = await(chequeCategoryQuery.getOpens(req.params.detailAccountId));
         res.json(result);
     }));
 
 router.route('/:id')
     .get(async((req, res) => {
-        let chequeCategoryQuery = new ChequeCategoryQuery(req.branchId),
+        let chequeCategoryQuery = new ChequeCategoryQuery(req.branchId, req.user.id),
             result = await(chequeCategoryQuery.getById(req.params.id));
         res.json(result);
     }))
@@ -62,7 +55,7 @@ router.route('/:id')
 
 router.route('/:id/cheques')
     .get(async(function (req, res) {
-        let chequeCategoryQuery = new ChequeCategoryQuery(req.branchId),
+        let chequeCategoryQuery = new ChequeCategoryQuery(req.branchId, req.user.id),
             result = await(chequeCategoryQuery.getAllCheques(req.params.id));
         res.json(result);
     }));

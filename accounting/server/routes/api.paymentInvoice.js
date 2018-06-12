@@ -6,7 +6,7 @@ const async = require('asyncawait/async'),
     parseFiscalPeriod = require('../../../api/parse.fiscalPeriod'),
     queryString = require('query-string');
 
-function getContainer(req){
+function getContainer(req) {
     req.branchId = req.query.branch_id;
     parseFiscalPeriod(req);
 
@@ -14,7 +14,7 @@ function getContainer(req){
     childContainer.bind("State").toConstantValue({
         branchId: req.branchId,
         fiscalPeriodId: req.fiscalPeriodId,
-        user: 'STORM-API-USER',
+        user: {id: 'STORM-API-USER'},
         query: {},
         body: {},
         params: {},
@@ -66,9 +66,9 @@ router.route('/:invoiceId/return')
             invoice = invoiceQuery.getById(invoiceId),
             paymentGatewayFactory = getContainer(req).get("Factory<PaymentGateway>"),
 
-            result = paymentGatewayFactory(paymentGateway).verificate(Object.assign({},req.query, {Amount: invoice.sumRemainder /10}));
+            result = paymentGatewayFactory(paymentGateway).verificate(Object.assign({}, req.query, {Amount: invoice.sumRemainder / 10}));
 
-        if(!result.success)
+        if (!result.success)
             return res.redirect(getReturnUrl({status: 'fail'}));
 
         let cmd = {

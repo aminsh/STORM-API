@@ -7,8 +7,8 @@ const BaseQuery = require('../queries/query.base'),
 
 
 class BalanceSheet extends BaseQuery {
-    constructor(branchId, currentFiscalPeriod, mode, filter) {
-        super(branchId);
+    constructor(branchId, currentFiscalPeriod, mode, filter, userId) {
+        super(branchId, userId);
 
         this.currentFiscalPeriod = currentFiscalPeriod;
         this.mode = mode;
@@ -20,9 +20,11 @@ class BalanceSheet extends BaseQuery {
     getBalanceSheet() {
         let knex = this.knex,
             branchId = this.branchId,
+            userId = this.userId,
+            canView = this.canView(),
             options = this.options;
 
-            return await(knex.select(knex.raw(`
+        return await(knex.select(knex.raw(`
                     DISTINCT 
                     "generalLedgerAccounts"."id" as "generalLedgerAccountId",
                     "accountCategories"."key" as "accountCategoriesKey",
@@ -31,21 +33,24 @@ class BalanceSheet extends BaseQuery {
                     "generalLedgerAccounts".title as "generalLedgerAccountsTitle",
                     COALESCE(journal.creditor,0) as creditor, COALESCE(journal.debtor,0) as debtor,
                     COALESCE(journal.remainder,0) as remainder`))
-                .from('generalLedgerAccounts')
-                .innerJoin('accountCategories', 'accountCategories.key', 'generalLedgerAccounts.groupingType')
-                .leftJoin(knex.raw(`(SELECT "journalLines"."generalLedgerAccountId", 
+            .from('generalLedgerAccounts')
+            .innerJoin('accountCategories', 'accountCategories.key', 'generalLedgerAccounts.groupingType')
+            .leftJoin(knex.raw(`(SELECT "journalLines"."generalLedgerAccountId", 
                                 SUM("journalLines".debtor) as debtor, SUM("journalLines".creditor) as creditor,
                                 SUM("journalLines".debtor - "journalLines".creditor) as remainder
                             FROM journals
                             INNER JOIN "journalLines" on "journalLines"."journalId" = journals."id"
-                            WHERE  journals."journalStatus" != 'Temporary' 
+                            WHERE  journals."journalStatus" != 'Temporary'
+                                AND journals."branchId" = '${branchId}'
+                                AND ('${canView}' or journals."createdById" = '${userId}')
                                 AND journals."temporaryDate" BETWEEN '${options.fromMainDate}' AND '${options.toDate}'                   
                             GROUP BY "journalLines"."generalLedgerAccountId") as journal`),
-                        'journal.generalLedgerAccountId', '=', 'generalLedgerAccounts.id')
-                .where('generalLedgerAccounts.branchId', branchId)
-                .whereIn('accountCategories.key', ['10', '20', '30', '40', '50','11','12','21','22','31'])
-                .orderBy('generalLedgerAccountsCode', 'asc')
-            );
+                'journal.generalLedgerAccountId', '=', 'generalLedgerAccounts.id')
+            .where('generalLedgerAccounts.branchId', branchId)
+            .whereIn('accountCategories.key', ['10', '20', '30', '40', '50', '11', '12', '21', '22', '31'])
+            .orderBy('generalLedgerAccountsCode', 'asc')
+        );
     }
 }
+
 module.exports = BalanceSheet;

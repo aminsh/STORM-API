@@ -16,14 +16,14 @@ class GeneralLedgerAccountQuery extends BaseQuery {
 
     getAll(parameters) {
         let knex = this.knex,
-            branchId = this.branchId;
+            branchId = this.branchId,
 
-        let query = knex.select().from(function () {
-            this.select(knex.raw("*,code || ' ' || title as display"))
-                .from('generalLedgerAccounts')
-                .where('branchId', branchId)
-                .as('baseGeneralLedgerAccounts');
-        }).as('baseGeneralLedgerAccounts');
+            query = knex.select().from(function () {
+                this.select(knex.raw("*,code || ' ' || title as display"))
+                    .from('generalLedgerAccounts')
+                    .where('branchId', branchId)
+                    .as('baseGeneralLedgerAccounts');
+            }).as('baseGeneralLedgerAccounts');
 
         return kendoQueryResolve(query, parameters, view);
     }
@@ -65,7 +65,7 @@ class GeneralLedgerAccountQuery extends BaseQuery {
         return view(generalLedgerAccount);
     }
 
-    accountCategory(){
+    accountCategory() {
         return this.knex.select('key', 'display')
             .from('accountCategories')
             .where('branchId', this.branchId);

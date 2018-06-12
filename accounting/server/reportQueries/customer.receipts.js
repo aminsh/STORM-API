@@ -5,13 +5,16 @@ const  BaseQuery = require('../queries/query.base'),
     translate = require('../services/translateService');
 
 class CustomerReceipts extends BaseQuery{
-    constructor(branchId) {
-        super(branchId);
+    constructor(branchId, userId) {
+        super(branchId, userId);
     }
 
     getCustomerReceipt(invoiceId) {
         let knex = this.knex,
             branchId = this.branchId,
+            userId = this.userId,
+            canView = this.canView(),
+            modify = this.modify,
 
             result =await(knex.select(knex.raw(`
             DISTINCT invoices."id" as "invoiceId",invoices."number", "detailAccounts".title as customer, 
@@ -21,30 +24,46 @@ class CustomerReceipts extends BaseQuery{
                 .from('invoices')
                 .innerJoin('detailAccounts', 'detailAccounts.id', 'invoices.detailAccountId')
                 .leftJoin('payments', 'payments.invoiceId', 'invoices.id')
-                .innerJoin(knex.raw(`(SELECT payments."paymentType", payments."number", payments.amount,payments."date", payments."invoiceId",
-                            "detailAccounts".title,
-                            CASE WHEN payments."paymentType" = 'receipt' THEN '${translate('New Receipt receive')}'
-                                    WHEN payments."paymentType" = 'cheque' THEN '${translate('Cheque')}'
-                                    WHEN payments."paymentType" = 'cash' THEN '${translate('Cash')}'
-                                    WHEN payments."paymentType" = 'person' THEN '${translate('By person')}'
-                                 END as "paymentTypeText",
-                    
-                            CASE WHEN payments."paymentType" = 'receipt' THEN 
-                                            CONCAT('${translate('Bank')}',' ',"detailAccounts".title, ' , ' ,'${translate('In number')}',' ',payments."number")
-                                    WHEN payments."paymentType" = 'cheque' THEN 
-                                            CONCAT('${translate('cheque to number')}',' ' ,payments."number",' ، ' ,
-                                            '${translate('Bank')}',' ',"detailAccounts".title ,' ، ' ,'${translate('cheque date')}' ,' ',payments."date")
-                                    WHEN payments."paymentType" = 'cash' THEN 
-                                            '${translate('New Cash receive')}'
-                                    WHEN payments."paymentType" = 'person' THEN
-                                            CONCAT('${translate('Receive from')}' ,' ',"detailAccounts".title)
-                                END as "paymentDescription"
-                        FROM payments
-                        LEFT JOIN "journalLines" ON "journalLines"."id" = payments."journalLineId"
-                        LEFT JOIN "detailAccounts" ON "detailAccounts"."id" = "journalLines"."detailAccountId"
-                        WHERE payments."branchId" = '${branchId}') as payment`),
+                .innerJoin(knex.raw(`(
+                SELECT "documentType" AS "paymentType", 
+                        "number", amount, "transferDate" as "date",
+                        "treasuryPurpose"."referenceId" as "invoiceId",
+                        "detailAccounts".title,
+												CASE WHEN "documentType" = 'cheque' THEN
+													'${translate('Cheque')}' 
+													WHEN "documentType" = 'cash' THEN
+													'${translate('Cash')}'
+													WHEN "documentType" = 'receipt' THEN
+													'${translate('New Receipt receive')}'
+												END AS "paymentTypeText",
+											
+											CASE WHEN "documentType" = 'receipt' THEN
+												CONCAT ( '${translate('Receipt number')}', ' ', "treasuryDocumentDetails"."number" ) 
+												WHEN "documentType" = 'cheque' THEN
+												CONCAT (
+													'${translate('cheque to number')}',
+													' ',
+													"treasuryDocumentDetails"."number",
+													' , ',
+													'${translate('Bank')}',
+													' ',
+													"treasuryDocumentDetails".bank,
+													' , ',
+													'${translate('cheque date')}',
+													' ',
+													"treasuryDocumentDetails"."dueDate" 
+												) 
+												WHEN "documentType" = 'cash' THEN
+												'${translate('New Cash receive')}'
+											END AS "paymentDescription" 																				
+                        FROM treasury
+                        LEFT JOIN "treasuryDocumentDetails" ON treasury."documentDetailId" = "treasuryDocumentDetails"."id"
+                        LEFT JOIN "treasuryPurpose" ON treasury."id" = "treasuryPurpose"."treasuryId"
+                        LEFT JOIN "detailAccounts" ON "detailAccounts"."id" = treasury."sourceDetailAccountId"
+                        WHERE treasury."branchId" = '${branchId}'
+                ) as payment`),
                     'payment.invoiceId', 'invoices.id')
-                .where('invoices.branchId', branchId)
+                .modify(modify, branchId, userId, canView, 'invoices')
                 .where('invoices.id', invoiceId));
 
         return result;

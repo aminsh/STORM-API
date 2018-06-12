@@ -9,8 +9,8 @@ const BaseQuery = require('./query.base'),
     await = require('asyncawait/await');
 
 module.exports = class ReportQueryBalance extends BaseQuery {
-    constructor(branchId, currentFiscalPeriodId, mode, filter) {
-        super(branchId);
+    constructor(branchId, currentFiscalPeriodId, mode, filter, userId) {
+        super(branchId, userId);
 
         this.journalConfig = new JournalQueryConfig(branchId, currentFiscalPeriodId, mode, filter);
         this.currentFiscalPeriodId = currentFiscalPeriodId;
@@ -26,6 +26,11 @@ module.exports = class ReportQueryBalance extends BaseQuery {
         let options = await(this.journalConfig.getOptions()),
             knex = this.knex,
             currentFiscalPeriodId = this.currentFiscalPeriodId;
+
+        options.branchId = this.branchId;
+        options.userId = this.userId;
+        options.canView = this.canView();
+        options.modify = this.modify;
 
         let journals = `"groupJournals"."sumDebtor" as "debtor",
             "groupJournals"."sumCreditor" as "creditor",
@@ -96,6 +101,11 @@ module.exports = class ReportQueryBalance extends BaseQuery {
             knex = this.knex,
             currentFiscalPeriodId = this.currentFiscalPeriodId;
 
+        options.branchId = this.branchId;
+        options.userId = this.userId;
+        options.canView = this.canView();
+        options.modify = this.modify;
+
         let journals = `"groupJournals"."sumDebtor" as "debtor",
             "groupJournals"."sumCreditor" as "creditor",
             "groupJournals"."totalDebtorRemainder" as "totalDebtor",
@@ -139,6 +149,11 @@ module.exports = class ReportQueryBalance extends BaseQuery {
         let options = await(this.journalConfig.getOptions()),
             knex = this.knex,
             currentFiscalPeriodId = this.currentFiscalPeriodId;
+
+        options.branchId = this.branchId;
+        options.userId = this.userId;
+        options.canView = this.canView();
+        options.modify = this.modify;
 
         let journals = `"groupJournals"."sumDebtor" as "debtor",
             "groupJournals"."sumCreditor" as "creditor",

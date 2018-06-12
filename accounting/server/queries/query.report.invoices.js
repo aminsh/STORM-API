@@ -7,16 +7,19 @@ const BaseQuery = require('./query.base'),
     SettingsQuery = require('./query.settings');
 
 class InvoicesQuery extends BaseQuery {
-    constructor(branchId) {
-        super(branchId);
+    constructor(branchId, userId) {
+        super(branchId, userId);
     };
 
     invoice(id) {
         let knex = this.knex,
             branchId = this.branchId,
+            userId = this.userId,
+            canView = this.canView(),
+            modify = this.modify,
             settings = new SettingsQuery(this.branchId).get(),
 
-        invoice = await(knex.select(knex.raw(` invoices."id" as "invoiceId",
+            invoice = await(knex.select(knex.raw(` invoices."id" as "invoiceId",
                 "invoiceLines"."id" as "invoiceLinesId",
                 COALESCE(invoices.discount,0) as "invoiceDiscount",
                 products.code as "iranCode",
@@ -40,7 +43,7 @@ class InvoicesQuery extends BaseQuery {
                 CASE WHEN "detailAccounts"."personType" = 'legal' THEN "detailAccounts"."economicCode" 
                      WHEN "detailAccounts"."personType" = 'real' THEN "detailAccounts"."nationalCode" END as "personCode"`))
                 .from('invoices')
-                .where('invoices.branchId', branchId)
+                .modify(modify, branchId, userId, canView, 'invoices')
                 .where('invoices.id', id)
                 .leftJoin('invoiceLines', 'invoices.id', 'invoiceLines.invoiceId')
                 .leftJoin('detailAccounts', 'detailAccounts.id', 'invoices.detailAccountId')
@@ -54,7 +57,7 @@ class InvoicesQuery extends BaseQuery {
                 ? (100 * lineHaveVat.vat / (((lineHaveVat.quantity * lineHaveVat.unitPrice) - lineHaveVat.discount)))
                 : 0;
 
-            invoice.forEach(item => {
+        invoice.forEach(item => {
             item.charges = (item.charges || []).asEnumerable()
                 .select(c => ({
                     key: c.key,

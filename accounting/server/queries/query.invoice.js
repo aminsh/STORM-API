@@ -13,14 +13,17 @@ const BaseQuery = require('./query.base'),
 
 
 class InvoiceQuery extends BaseQuery {
-    constructor(branchId) {
-        super(branchId);
+    constructor(branchId, userId) {
+        super(branchId, userId);
         this.check = async(this.check);
     }
 
     getById(id) {
         let knex = this.knex,
             branchId = this.branchId,
+            userId = this.userId,
+            canView = this.canView(),
+            modify = this.modify,
             settings = new SettingsQuery(this.branchId).get(),
             treasuryPurpose = new TreasuryPurposeQuery(this.branchId),
             treasuriesTotalAmount = treasuryPurpose.getTreasuriesTotalAmount(id),
@@ -33,7 +36,7 @@ class InvoiceQuery extends BaseQuery {
                 .from('invoices')
                 .leftJoin('detailAccounts', 'invoices.detailAccountId', 'detailAccounts.id')
                 .where('invoices.id', id)
-                .where('invoices.branchId', branchId)
+                .modify(modify, branchId, userId, canView, 'invoices')
                 .first()
             ),
 
@@ -46,42 +49,47 @@ class InvoiceQuery extends BaseQuery {
                 .leftJoin('products', 'invoiceLines.productId', 'products.id')
                 .leftJoin('scales', 'products.scaleId', 'scales.id')
                 .leftJoin('stocks', 'invoiceLines.stockId', 'stocks.id')
-                .where('invoiceLines.branchId', branchId)
+                .modify(modify, branchId, userId, canView, 'invoiceLines')
                 .where('invoiceId', id)
             ),
-            sumCharges = (invoice.charges || []).asEnumerable()
-                .sum(c => c.value),
-            sumChargesVatIncluded = (invoice.charges || []).asEnumerable()
-                .where(e => e.vatIncluded)
-                .sum(e => e.value),
-            invoiceDiscount = invoice.discount || 0;
+            sumCharges = invoice
+                ? (invoice.charges || []).asEnumerable().sum(c => c.value)
+                : 0,
+            sumChargesVatIncluded = invoice
+                ? (invoice.charges || []).asEnumerable().where(e => e.vatIncluded).sum(e => e.value)
+                : 0,
+            invoiceDiscount = invoice ? invoice.discount || 0 : 0;
 
         let lineHaveVat = invoiceLines.asEnumerable().firstOrDefault(e => e.vat !== 0),
             persistedVat = lineHaveVat
                 ? (100 * lineHaveVat.vat / (((lineHaveVat.quantity * lineHaveVat.unitPrice) - lineHaveVat.discount)))
                 : 0;
 
-        invoice.sumTotalPrice = invoiceLines.asEnumerable()
-                .sum(line => line.quantity * line.unitPrice - line.discount + line.vat)
-            - invoiceDiscount +
-            sumCharges + (sumChargesVatIncluded * persistedVat / 100);
+        if (invoice) {
+            invoice.sumTotalPrice = invoiceLines.asEnumerable()
+                    .sum(line => line.quantity * line.unitPrice - line.discount + line.vat)
+                - invoiceDiscount +
+                sumCharges + (sumChargesVatIncluded * persistedVat / 100);
 
-        invoice.sumRemainder = invoice.sumTotalPrice - treasuriesTotalAmount;
+            invoice.sumRemainder = invoice.sumTotalPrice - treasuriesTotalAmount;
 
-        invoice.totalVat = invoiceLines.asEnumerable()
-            .sum(line => line.vat) + (sumChargesVatIncluded * persistedVat / 100);
+            invoice.totalVat = invoiceLines.asEnumerable()
+                .sum(line => line.vat) + (sumChargesVatIncluded * persistedVat / 100);
 
-        invoice.chargesVat = sumChargesVatIncluded * persistedVat / 100;
+            invoice.chargesVat = sumChargesVatIncluded * persistedVat / 100;
 
-        invoice.invoiceLines = invoiceLines.asEnumerable().select(lineView).toArray();
-        invoice.branchId = branchId;
-
-        return view(invoice, settings);
+            invoice.invoiceLines = invoiceLines.asEnumerable().select(lineView).toArray();
+            invoice.branchId = branchId;
+        }
+        return invoice ? view(invoice, settings) : [];
     }
 
     getAll(parameters, invoiceType) {
         let knex = this.knex,
             branchId = this.branchId,
+            userId = this.userId,
+            canView = this.canView(),
+            modify = this.modify,
             baseQuery = `select coalesce(sum(value),0) from invoices as i left join json_to_recordset(i.charges) as x(key text, value int, "vatIncluded" boolean) on true where i.id = "base".id`,
             sumChargesQuery = `(${baseQuery}) + ((${baseQuery} and "vatIncluded" = true) *  
             coalesce((select (100 * line.vat) / ((line.quantity * line."unitPrice") - line.discount) from "invoiceLines" as line where "invoiceId" = "base".id and vat <> 0 limit 1), 0) /100)`,
@@ -111,7 +119,7 @@ class InvoiceQuery extends BaseQuery {
                             .from('invoices')
                             .leftJoin('invoiceLines', 'invoices.id', 'invoiceLines.invoiceId')
                             .leftJoin('detailAccounts', 'invoices.detailAccountId', 'detailAccounts.id')
-                            .where('invoices.branchId', branchId)
+                            .modify(modify, branchId, userId, canView, 'invoices')
                             .andWhere('invoiceType', invoiceType)
                             .as('base');
                     }).as("group")
@@ -134,12 +142,16 @@ class InvoiceQuery extends BaseQuery {
     getAllLines(invoiceId, parameters) {
         let knex = this.knex,
             branchId = this.branchId,
+            userId = this.userId,
+            canView = this.canView(),
+            modify = this.modify,
 
-            query = knex.select('*').table(function () {
+            query = knex.select().from(function () {
                 this.select('*')
                     .from('invoiceLines')
-                    .where('branchId', branchId)
-                    .andWhere('invoiceId', invoiceId).as('invoiceLines')
+                    .modify(modify, branchId, userId, canView)
+                    .andWhere('invoiceId', invoiceId)
+                    .as('invoiceLines')
             });
 
         return kendoQueryResolve(query, parameters, lineView);
@@ -148,6 +160,9 @@ class InvoiceQuery extends BaseQuery {
     getSummary(fiscalPeriodId, invoiceType) {
         let knex = this.knex,
             branchId = this.branchId,
+            userId = this.userId,
+            canView = this.canView(),
+            modify = this.modify,
             fiscalPeriodRepository = new FiscalPeriodQuery(this.branchId),
             fiscalPeriod = await(fiscalPeriodRepository.getById(fiscalPeriodId));
 
@@ -168,7 +183,7 @@ class InvoiceQuery extends BaseQuery {
                 .from('invoices')
                 .leftJoin('invoiceLines', 'invoices.id', 'invoiceLines.invoiceId')
                 .leftJoin('detailAccounts', 'invoices.detailAccountId', 'detailAccounts.id')
-                .where('invoices.branchId', branchId)
+                .modify(modify, branchId, userId, canView, 'invoices')
                 .andWhere('invoiceType', invoiceType)
                 .whereBetween('date', [fiscalPeriod.minDate, fiscalPeriod.maxDate])
                 .as('base');
@@ -177,6 +192,9 @@ class InvoiceQuery extends BaseQuery {
 
     getTotalByMonth(fiscalPeriodId, invoiceType) {
         let branchId = this.branchId,
+            userId = this.userId,
+            canView = this.canView(),
+            modify = this.modify,
             knex = this.knex,
             fiscalPeriodRepository = new FiscalPeriodQuery(this.branchId),
             fiscalPeriod = await(fiscalPeriodRepository.getById(fiscalPeriodId));
@@ -191,7 +209,7 @@ class InvoiceQuery extends BaseQuery {
                     knex.raw(`("invoiceLines"."unitPrice" * "invoiceLines".quantity - "invoiceLines".discount + "invoiceLines".vat) as "totalPrice"`))
                     .from('invoices')
                     .leftJoin('invoiceLines', 'invoices.id', 'invoiceLines.invoiceId')
-                    .where('invoices.branchId', branchId)
+                    .modify(modify, branchId, userId, canView, 'invoices')
                     .andWhere('invoiceType', invoiceType)
                     .whereBetween('date', [fiscalPeriod.minDate, fiscalPeriod.maxDate])
                     .as('base');
@@ -208,6 +226,9 @@ class InvoiceQuery extends BaseQuery {
 
     getTotalByProduct(fiscalPeriodId, invoiceType) {
         let branchId = this.branchId,
+            userId = this.userId,
+            canView = this.canView(),
+            modify = this.modify,
             knex = this.knex,
             fiscalPeriodRepository = new FiscalPeriodQuery(this.branchId),
             fiscalPeriod = await(fiscalPeriodRepository.getById(fiscalPeriodId));
@@ -222,7 +243,7 @@ class InvoiceQuery extends BaseQuery {
                     .from('invoices')
                     .leftJoin('invoiceLines', 'invoices.id', 'invoiceLines.invoiceId')
                     .leftJoin('products', 'invoiceLines.productId', 'products.id')
-                    .where('invoices.branchId', branchId)
+                    .modify(modify, branchId, userId, canView, 'invoices')
                     .andWhere('invoiceType', invoiceType)
                     .whereBetween('date', [fiscalPeriod.minDate, fiscalPeriod.maxDate])
                     .as('base');
@@ -239,7 +260,7 @@ class InvoiceQuery extends BaseQuery {
 
     maxNumber(invoiceType) {
         return this.knex.table('invoices')
-            .modify(this.modify, this.branchId)
+            .where('branchId', this.branchId)
             .where('invoiceType', invoiceType)
             .max('number')
             .first();
@@ -249,10 +270,12 @@ class InvoiceQuery extends BaseQuery {
         return !!(await(this.knex('invoices').where("id", invoiceId).first()))
     }
 
-
     getCompareInvoiceOnChange(id, lines) {
-
-        let settings = await(new SettingsQuery(this.branchId).get()),
+        let branchId = this.branchId,
+            userId = this.userId,
+            canView = this.canView(),
+            modify = this.modify,
+            settings = await(new SettingsQuery(this.branchId).get()),
             goodLines = lines.asEnumerable().where(e =>
                 e.productId &&
                 await(this.knex.select('productType').from('products').where('id', e.productId).first()).productType === 'good'
@@ -265,14 +288,14 @@ class InvoiceQuery extends BaseQuery {
             goodLines.forEach(e => e.stockId = settings.stockId);
         else {
             if (goodLines.asEnumerable().any(e => !e.stockId))
-                throw new ValidationException('StockId is empty');
+                throw new ValidationException(['StockId is empty']);
         }
 
         let inventoryLines = await(this.knex
                 .select('productId', 'quantity', 'stockId', 'inventoryType')
                 .from('inventories')
                 .innerJoin('inventoryLines', 'inventories.id', 'inventoryLines.inventoryId')
-                .where('inventories.branchId', this.branchId)
+                .modify(modify, branchId, userId, canView, 'inventories')
                 .where('invoiceId', id)
             )
                 .asEnumerable()

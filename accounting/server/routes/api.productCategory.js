@@ -9,7 +9,6 @@ router.route('/')
     .get(async((req, res) => {
         let productCategoryQuery = new ProductCategoryQuery(req.branchId),
             result = await(productCategoryQuery.getAll(req.query));
-
         res.json(result);
     }))
     .post(async((req, res) => {

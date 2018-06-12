@@ -7,10 +7,7 @@ const enums = instanceOf('Enums'),
 module.exports = function (entity, settings) {
 
     const printUrl = entity.invoiceType === 'sale' && entity.invoiceStatus !== 'draft'
-        ? `${config.url.origin}/invoice/token/${Crypto.sign({
-            branchId: entity.branchId,
-            invoiceId: entity.id
-        })}`
+        ? `${process.env.DASHBOARD_URL}/invoice/${entity.id}/?branchId=${entity.branchId}`
         : undefined;
 
     return Object.assign({}, {

@@ -8,7 +8,7 @@ const async = require('asyncawait/async'),
 
 router.route('/')
     .get(async((req, res) => {
-        let detailAccountQuery = new DetailAccountQuery(req.branchId),
+        let detailAccountQuery = new DetailAccountQuery(req.branchId, req.user.id),
             result = await(detailAccountQuery.getAllFunds(req.query));
         res.json(result);
     }))
@@ -25,7 +25,7 @@ router.route('/')
 
 router.route('/:id')
     .get(async((req, res) => {
-        let detailAccountQuery = new DetailAccountQuery(req.branchId),
+        let detailAccountQuery = new DetailAccountQuery(req.branchId, req.user.id),
             result = await(detailAccountQuery.getById(req.params.id));
         res.json(result);
     }))
@@ -49,16 +49,17 @@ router.route('/:id')
 
     }));
 
-router.route('/:id/tiny-turnover').get(async((req, res) => {
-    let detailAccountQuery = new DetailAccountQuery(req.branchId),
-        result = await(detailAccountQuery.getBankAndFundTurnover(
-            req.params.id,
-            'fund',
-            req.fiscalPeriodId,
-            req.query));
+router.route('/:id/tiny-turnover')
+    .get(async((req, res) => {
+        let detailAccountQuery = new DetailAccountQuery(req.branchId, req.user.id),
+            result = await(detailAccountQuery.getBankAndFundTurnover(
+                req.params.id,
+                'fund',
+                req.fiscalPeriodId,
+                req.query));
 
-    res.json(result);
-}));
+        res.json(result);
+    }));
 
 
 module.exports = router;

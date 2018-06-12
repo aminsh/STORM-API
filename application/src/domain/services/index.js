@@ -42,3 +42,8 @@ export * from "./InventoryDomainService";
 export * from "./RegisteredThirdPartyDomainService"
 export * from "./PurchaseDomainService";
 export * from "./DimensionDomainService";
+export * from "./PermissionDomainService";
+export * from "./UserPermissionsControlDomainService";
+export * from "./TreasurySettingDomainService";
+export * from "./SettingDomainService";
+export * from "./VerificationDomainService";

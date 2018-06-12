@@ -7,6 +7,8 @@ function journalView(entity) {
         isInComplete: entity.isInComplete,
         number: entity.number,
         date: entity.date,
+        temporaryNumber: entity.temporaryNumber || null,
+        temporaryDate: entity.temporaryDate || null,
         description: entity.description,
         journalStatus: entity.journalStatus,
         journalStatusDisplay: enums.JournalStatus().getDisplay(entity.journalStatus),

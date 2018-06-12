@@ -16,7 +16,8 @@ export class ApplicationServiceLogger {
                 query: req.query,
                 body: req.body,
                 params: req.params,
-                originalUrl: req.originalUrl
+                originalUrl: req.originalUrl,
+                apiCaller: req.apiCaller
             },
 
             entity = {

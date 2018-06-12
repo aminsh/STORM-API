@@ -10,7 +10,7 @@ export class ChequeEventListener {
     @inject("TreasuryRepository")
     /** @type {TreasuryRepository}*/ treasuryRepository = undefined;
 
-    @eventHandler("onChequeCreated")
+    @eventHandler("onChequeStatusChanged")
     onIssued(treasuryPayableChequeId) {
 
         let treasuryPayableCheque = this.treasuryRepository.findById(treasuryPayableChequeId);

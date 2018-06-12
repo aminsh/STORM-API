@@ -8,7 +8,7 @@ const async = require('asyncawait/async'),
 
 router.route('/inputs')
     .get(async((req, res) => {
-        let inventoryQuery = new InventoryQuery(req.branchId),
+        let inventoryQuery = new InventoryQuery(req.branchId, req.user.id),
             result = await(inventoryQuery.getAll(req.fiscalPeriodId, 'input', req.query));
 
         return res.json(result);
@@ -25,15 +25,13 @@ router.route('/inputs')
 
 router.route('/products')
     .get(async((req, res) => {
-        let inventoryQuery = new InventoryQuery(req.branchId),
+        let inventoryQuery = new InventoryQuery(req.branchId, req.user.id),
             result = await(inventoryQuery.getAllInventoryProducts(req.query));
-
         return res.json(result);
     }));
 
 router.route('/inputs/:id')
     .put(async((req, res) => {
-
         try {
             req.container.get("CommandBus").send("inventoryInputUpdate", [req.params.id, req.body]);
             res.json({isValid: true})
@@ -82,9 +80,25 @@ router.route('/inputs/max-number')
         res.json(result);
     }));
 
+router.route('/inputs/without-invoice')
+    .get(async((req, res) => {
+        let inventoryQuery = new InventoryQuery(req.branchId, req.user.id),
+            result = await(inventoryQuery.getAllWithoutInvoice('input', req.query));
+
+        return res.json(result);
+    }));
+
+router.route('/inputs/return-sale')
+    .get(async((req, res) => {
+        let inventoryQuery = new InventoryQuery(req.branchId, req.user.id),
+            result = await(inventoryQuery.getAllInputsWithIoType('inputBackFromSaleOrConsuming', req.query));
+
+        return res.json(result);
+    }));
+
 router.route('/outputs')
     .get(async((req, res) => {
-        let inventoryQuery = new InventoryQuery(req.branchId),
+        let inventoryQuery = new InventoryQuery(req.branchId, req.user.id),
             result = await(inventoryQuery.getAll(req.fiscalPeriodId, 'output', req.query));
 
         return res.json(result);
@@ -161,31 +175,15 @@ router.route('/outputs/max-number')
 
 router.route('/:id')
     .get(async((req, res) => {
-        let inventoryQuery = new InventoryQuery(req.branchId),
+        let inventoryQuery = new InventoryQuery(req.branchId, req.user.id),
             result = await(inventoryQuery.getById(req.params.id));
-
-        return res.json(result);
-    }));
-
-router.route('/inputs/without-invoice')
-    .get(async((req, res) => {
-        let inventoryQuery = new InventoryQuery(req.branchId),
-            result = await(inventoryQuery.getAllWithoutInvoice('input', req.query));
-
-        return res.json(result);
-    }));
-
-router.route('/inputs/return-sale')
-    .get(async((req, res) => {
-        let inventoryQuery = new InventoryQuery(req.branchId),
-            result = await(inventoryQuery.getAllInputsWithIoType('inputBackFromSaleOrConsuming', req.query));
 
         return res.json(result);
     }));
 
 router.route('/outputs/return-purchase')
     .get(async((req, res) => {
-        let inventoryQuery = new InventoryQuery(req.branchId),
+        let inventoryQuery = new InventoryQuery(req.branchId, req.user.id),
             result = await(inventoryQuery.getAllInputsWithIoType('outputReturnPurchase', req.query));
 
         return res.json(result);
@@ -193,7 +191,7 @@ router.route('/outputs/return-purchase')
 
 router.route('/:id/lines')
     .get(async((req, res) => {
-        let inventoryQuery = new InventoryQuery(req.branchId),
+        let inventoryQuery = new InventoryQuery(req.branchId, req.user.id),
             result = await(inventoryQuery.getDetailById(req.params.id, req.query));
 
         return res.json(result);
@@ -201,7 +199,7 @@ router.route('/:id/lines')
 
 router.route('/by-stock/:productId')
     .get(async((req, res) => {
-        let inventoryQuery = new InventoryQuery(req.branchId),
+        let inventoryQuery = new InventoryQuery(req.branchId, req.user.id),
             result = await(inventoryQuery.getInventoriesByStock(req.params.productId, req.fiscalPeriodId));
 
         return res.json(result);
@@ -209,10 +207,8 @@ router.route('/by-stock/:productId')
 
 router.route('/fix-quantity')
     .post(async(function (req, res) {
-
         try {
             req.container.get("CommandBus").send("inventoryFixQuantity", [req.body]);
-
             res.json({isValid: true})
         }
         catch (e) {
@@ -220,13 +216,10 @@ router.route('/fix-quantity')
         }
     }));
 
-
 router.route('/pricing')
     .post(async(function (req, res) {
-
         try {
             const result = req.container.get("CommandBus").send("inventoryPricing", [req.body]);
-
             if (result && result.idsHasNoPrice)
                 return res.json({
                     isValid: false,

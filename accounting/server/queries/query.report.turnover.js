@@ -9,8 +9,8 @@ const BaseQuery = require('./query.base'),
     await = require('asyncawait/await');
 
 class ReportQueryturnover extends BaseQuery {
-    constructor(branchId, currentFiscalPeriodId, mode, filter) {
-        super(branchId);
+    constructor(branchId, currentFiscalPeriodId, mode, filter, userId) {
+        super(branchId, userId);
 
         this.journalConfig = new JournalQueryConfig(branchId, currentFiscalPeriodId, mode, filter);
         this.currentFiscalPeriodId = currentFiscalPeriodId;
@@ -25,6 +25,11 @@ class ReportQueryturnover extends BaseQuery {
         let options = await(this.journalConfig.getOptions()),
             knex = this.knex,
             currentFiscalPeriodId = this.currentFiscalPeriodId;
+
+        options.branchId = this.branchId;
+        options.userId = this.userId;
+        options.canView = this.canView();
+        options.modify = this.modify;
 
         let journals = `"groupJournals"."sumDebtor" as "debtor",
             "groupJournals"."sumCreditor" as "creditor",
@@ -66,6 +71,11 @@ class ReportQueryturnover extends BaseQuery {
         let options = await(this.journalConfig.getOptions()),
             knex = this.knex,
             currentFiscalPeriodId = this.currentFiscalPeriodId;
+
+        options.branchId = this.branchId;
+        options.userId = this.userId;
+        options.canView = this.canView();
+        options.modify = this.modify;
 
         let journals = `"groupJournals"."periodId" as "journalPeriodId",
             "groupJournals"."number" as "number",

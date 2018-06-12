@@ -9,8 +9,8 @@ const BaseQuery = require('../queries/query.base'),
     await = require('asyncawait/await');
 
 class ProductReports extends BaseQuery {
-    constructor(branchId, currentFiscalPeriodId, mode, filter) {
-        super(branchId);
+    constructor(branchId, currentFiscalPeriodId, mode, filter, userId) {
+        super(branchId, userId);
 
         this.currentFiscalPeriodId = currentFiscalPeriodId;
 
@@ -23,6 +23,9 @@ class ProductReports extends BaseQuery {
     getProductsInventoriesByIds(productIds, fixedType, stockId) {
         let knex = this.knex,
             branchId = this.branchId,
+            userId = this.userId,
+            canView = this.canView(),
+            modify = this.modify,
 
             query = this.knex.select(
                 knex.raw(`products.title as product,
@@ -42,12 +45,12 @@ class ProductReports extends BaseQuery {
                 knex.raw('"inventoryIOTypes".title as "ioTypeText"')
             )
                 .from('products')
-                .where('products.branchId', branchId)
                 .innerJoin('inventoryLines', 'inventoryLines.productId', 'products.id')
                 .innerJoin('inventories', 'inventories.id', 'inventoryLines.inventoryId')
                 .innerJoin('inventoryIOTypes', 'inventoryIOTypes.id', 'inventories.ioType')
                 .leftJoin('scales', 'scales.id', 'products.scaleId')
                 .innerJoin('stocks', 'stocks.id', 'inventories.stockId')
+                .modify(modify, branchId, userId, canView, 'inventories')
                 .whereBetween('inventories.date',[this.options.fromMainDate, this.options.toDate])
                 .orderBy('inventories.createdAt');
 

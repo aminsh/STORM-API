@@ -5,10 +5,9 @@ const async = require('asyncawait/async'),
     router = require('express').Router(),
     DetailAccountQuery = require('../queries/query.detailAccount');
 
-
     router.route('/')
     .get(async((req, res) => {
-        let detailAccountQuery = new DetailAccountQuery(req.branchId),
+        let detailAccountQuery = new DetailAccountQuery(req.branchId, req.user.id),
             result = await(detailAccountQuery.getAll(req.query));
         res.json(result);
     }))
@@ -25,7 +24,7 @@ const async = require('asyncawait/async'),
 
 router.route('/:id')
     .get(async((req, res) => {
-        let detailAccountQuery = new DetailAccountQuery(req.branchId),
+        let detailAccountQuery = new DetailAccountQuery(req.branchId, req.user.id),
             result = await(detailAccountQuery.getById(req.params.id));
         res.json(result);
     }))
@@ -50,7 +49,7 @@ router.route('/:id')
 
 router.route('/by-subsidiary-ledger-account/:subsidiaryLedgerAccountId')
     .get(async((req, res) => {
-        let detailAccountQuery = new DetailAccountQuery(req.branchId),
+        let detailAccountQuery = new DetailAccountQuery(req.branchId, req.user.id),
             result = await(detailAccountQuery.getAllBySubsidiryLedgerAccount(
                 req.params.subsidiaryLedgerAccountId,
                 req.query));

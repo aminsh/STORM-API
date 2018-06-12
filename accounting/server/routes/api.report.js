@@ -20,7 +20,6 @@ const fs = require('fs'),
     BalanceSheet = require('../reportQueries/balanceSheet'),
     ProfitLossStatement = require('../reportQueries/profit.loss.statement'),
     CustomerReceipts = require('../reportQueries/customer.receipts'),
-    InvoiceTurnover = require('../queries/query.invoice'),
     SaleInvoice = require('../reportQueries/invoice.sale'),
     ChequeReportQueries = require('../reportQueries/treasury.Cheque'),
     DetailAccountQuery = require('../queries/query.detailAccount');
@@ -35,7 +34,6 @@ router.route('/')
             err => {
                 if (err)
                     return res.status(500).send({isValid: false, error: err});
-
                 res.json({isValid: true});
             }
         );
@@ -70,7 +68,8 @@ router.route('/general-balance')
             req.branchId,
             req.fiscalPeriodId,
             'create',
-            req.query),
+            req.query,
+            req.user.id),
             result = await(ins.getGeneralBalance());
         res.json(result);
     }));
@@ -80,7 +79,8 @@ router.route('/subsidiary-balance')
         let ins = new ReportQueryBalance(req.branchId,
             req.fiscalPeriodId,
             'create',
-            req.query),
+            req.query,
+            req.user.id),
             result = await(ins.getSubsidiaryBalance());
         res.json(result);
     }));
@@ -90,7 +90,8 @@ router.route('/subsidiary-detail-balance')
         let ins = new ReportQueryBalance(req.branchId,
             req.fiscalPeriodId,
             'create',
-            req.query),
+            req.query,
+            req.user.id),
             result = await(ins.getSubsidiaryDetailBalance());
         res.json(result);
     }));
@@ -100,7 +101,8 @@ router.route('/general-subsidiary-detail-balance')
         let ins = new ReportQueryBalance(req.branchId,
             req.fiscalPeriodId,
             'create',
-            req.query),
+            req.query,
+            req.user.id),
             result = await(ins.getSubsidiaryDetailBalance());
         res.json(result);
     }));
@@ -110,7 +112,8 @@ router.route('/journal-office')
         let ins = new ReportQueryFinancialOffices(req.branchId,
             req.fiscalPeriodId,
             'create',
-            req.query),
+            req.query,
+            req.user.id),
             result = await(ins.getJournalOffice());
         res.json(result);
     }));
@@ -120,7 +123,8 @@ router.route('/general-office')
         let ins = new ReportQueryFinancialOffices(req.branchId,
             req.fiscalPeriodId,
             'create',
-            req.query),
+            req.query,
+            req.user.id),
             result = await(ins.getGeneralOffice());
         res.json(result);
     }));
@@ -130,7 +134,8 @@ router.route('/subsidiary-office')
         let ins = new ReportQueryFinancialOffices(req.branchId,
             req.fiscalPeriodId,
             'create',
-            req.query),
+            req.query,
+            req.user.id),
             result = await(ins.getSubsidiaryOffice());
         res.json(result);
     }));
@@ -140,7 +145,8 @@ router.route('/total-general-subsidiary-turnover')
         let ins = new ReportQueryTurnover(req.branchId,
             req.fiscalPeriodId,
             'create',
-            req.query),
+            req.query,
+            req.user.id),
             result = await(ins.getTotalTurnover());
         res.json(result);
     }));
@@ -150,7 +156,8 @@ router.route('/total-subsidiary-detail-turnover')
         let ins = new ReportQueryTurnover(req.branchId,
             req.fiscalPeriodId,
             'create',
-            req.query),
+            req.query,
+            req.user.id),
             result = await(ins.getTotalTurnover());
         res.json(result);
     }));
@@ -160,7 +167,8 @@ router.route('/total-general-subsidiary-detail-turnover')
         let ins = new ReportQueryTurnover(req.branchId,
             req.fiscalPeriodId,
             'create',
-            req.query),
+            req.query,
+            req.user.id),
             result = await(ins.getTotalTurnover());
         res.json(result);
     }));
@@ -170,7 +178,8 @@ router.route('/detail-general-subsidiary-turnover')
         let ins = new ReportQueryTurnover(req.branchId,
             req.fiscalPeriodId,
             'create',
-            req.query),
+            req.query,
+            req.user.id),
             result = await(ins.getDetailTurnover());
         res.json(result);
     }));
@@ -180,7 +189,8 @@ router.route('/detail-subsidiary-detail-turnover')
         let ins = new ReportQueryTurnover(req.branchId,
             req.fiscalPeriodId,
             'create',
-            req.query),
+            req.query,
+            req.user.id),
             result = await(ins.getDetailTurnover());
         res.json(result);
     }));
@@ -190,7 +200,8 @@ router.route('/detail-general-subsidiary-detail-turnover')
         let ins = new ReportQueryTurnover(req.branchId,
             req.fiscalPeriodId,
             'create',
-            req.query),
+            req.query,
+            req.user.id),
             result = await(ins.getDetailTurnover());
         res.json(result);
     }));
@@ -200,7 +211,8 @@ router.route('/detail-journal')
         let ins = new ReportQueryJournal(req.branchId,
             req.fiscalPeriodId,
             'create',
-            req.query),
+            req.query,
+            req.user.id),
             result = await(ins.getDetailJournals());
         res.json(result);
     }));
@@ -210,7 +222,8 @@ router.route('/detail-general-journal')
         let ins = new ReportQueryJournal(req.branchId,
             req.fiscalPeriodId,
             'create',
-            req.query),
+            req.query,
+            req.user.id),
             result = await(ins.getDetailJournals());
         res.json(result);
     }));
@@ -220,7 +233,8 @@ router.route('/detail-general-subsidiary-journal')
         let ins = new ReportQueryJournal(req.branchId,
             req.fiscalPeriodId,
             'create',
-            req.query),
+            req.query,
+            req.user.id),
             result = await(ins.getDetailJournals());
         res.json(result);
     }));
@@ -230,35 +244,36 @@ router.route('/detail-subsidiary-detail-journal')
         let ins = new ReportQueryJournal(req.branchId,
             req.fiscalPeriodId,
             'create',
-            req.query),
+            req.query,
+            req.user.id),
             result = await(ins.getDetailJournals());
         res.json(result);
     }));
 
 router.route('/invoices')
     .get(async((req, res) => {
-        let ins = new ReportQueryInvoice(req.branchId),
+        let ins = new ReportQueryInvoice(req.branchId, req.user.id),
             result = await(ins.invoice(req.query.id));
         res.json(result);
     }));
 
 router.route('/un-invoices')
     .get(async((req, res) => {
-        let ins = new ReportQueryInvoice(req.branchId),
+        let ins = new ReportQueryInvoice(req.branchId, req.user.id),
             result = await(ins.invoice(req.query.id));
         res.json(result);
     }));
 
 router.route('/pre-invoices')
     .get(async((req, res) => {
-        let ins = new ReportQueryInvoice(req.branchId),
+        let ins = new ReportQueryInvoice(req.branchId, req.user.id),
             result = await(ins.invoice(req.query.id));
         res.json(result);
     }));
 
 router.route('/inventory-outputs')
     .get(async((req, res) => {
-        let ins = new InventoriesReport(req.branchId),
+        let ins = new InventoriesReport(req.branchId, req.user.id),
             result = await(ins.getInventories(req.query.ids));
 
         res.json(result);
@@ -266,7 +281,7 @@ router.route('/inventory-outputs')
 
 router.route('/inventory-input')
     .get(async((req, res) => {
-        let ins = new InventoriesReport(req.branchId),
+        let ins = new InventoriesReport(req.branchId, req.user.id),
             result = await(ins.getInventories(req.query.ids));
 
         res.json(result);
@@ -277,7 +292,8 @@ router.route('/inventory-turnover')
         let ins = new InventoriesTurnoverReport(req.branchId,
             req.fiscalPeriodId,
             'create',
-            req.query),
+            req.query,
+            req.user.id),
             result = await(ins.getInventoriesTurnover(req.query.ids));
         res.json(result);
     }));
@@ -287,7 +303,8 @@ router.route('/product-turnover')
         let ins = new ProductReports(req.branchId,
             req.fiscalPeriodId,
             'create',
-            req.query),
+            req.query,
+            req.user.id),
             result = await(ins.getProductTurnovers(req.query.ids, req.query.fixedType, req.query.stockId));
         res.json(result);
     }))
@@ -297,7 +314,8 @@ router.route('/product-turnover-total')
         let ins = new ProductReports(req.branchId,
             req.fiscalPeriodId,
             'create',
-            req.query),
+            req.query,
+            req.user.id),
             result = await(ins.getProductTurnovers(req.query.ids, req.query.fixedType, req.query.stockId));
         res.json(result);
     }));
@@ -307,7 +325,8 @@ router.route('/seasonal')
         let ins = new SeasonalReport(req.branchId,
             req.fiscalPeriodId,
             'create',
-            req.query.extra ? req.query.extra.filter : req.query),
+            req.query.extra ? req.query.extra.filter : req.query,
+            req.user.id),
             resultDetail = await(ins.getSeasonalWithFilter(req.query)),
             resultTotal = await(ins.getTotalSeasonal());
 
@@ -319,7 +338,8 @@ router.route('/balance-sheet')
         let ins = new BalanceSheet(req.branchId,
             req.fiscalPeriodId,
             'create',
-            req.query),
+            req.query,
+            req.user.id),
             result = await(ins.getBalanceSheet());
         res.json(result);
     }));
@@ -329,7 +349,8 @@ router.route('/profit-loss-statement')
         let ins = new ProfitLossStatement(req.branchId,
             req.fiscalPeriodId,
             'create',
-            req.query),
+            req.query,
+            req.user.id),
             result = await(ins.getProfitLossStatement());
         res.json(result);
     }));
@@ -339,14 +360,15 @@ router.route('/compare-profit-loss-statement')
         let ins = new ProfitLossStatement(req.branchId,
             req.fiscalPeriodId,
             'create',
-            req.query),
+            req.query,
+            req.user.id),
             result = await(ins.getCompareProfitLossStatement());
         res.json(result);
     }));
 
 router.route('/customer-receipts')
     .get(async((req, res) => {
-        let ins = new CustomerReceipts(req.branchId),
+        let ins = new CustomerReceipts(req.branchId, req.user.id),
             result = await(ins.getCustomerReceipt(req.query.id));
         res.json(result);
     }));
@@ -356,7 +378,8 @@ router.route('/sale-invoice-turnover')
         let ins = new SaleInvoice(req.branchId,
             req.fiscalPeriodId,
             'create',
-            req.query),
+            req.query,
+            req.user.id),
             result = await(ins.getAll());
         res.json(result);
     }));
@@ -366,8 +389,9 @@ router.route('/receive-cheque-due-date')
         let ins = new ChequeReportQueries(req.branchId,
             req.fiscalPeriodId,
             'create',
-            req.query),
-            result = await(ins.getChequesDueDate('receive',req.query));
+            req.query,
+            req.user.id),
+            result = await(ins.getChequesDueDate('receive', req.query));
         res.json(result);
     }));
 
@@ -376,8 +400,9 @@ router.route('/payment-cheque-due-date')
         let ins = new ChequeReportQueries(req.branchId,
             req.fiscalPeriodId,
             'create',
-            req.query),
-            result = await(ins.getChequesDueDate('payment',req.query));
+            req.query,
+            req.user.id),
+            result = await(ins.getChequesDueDate('payment', req.query));
         res.json(result);
     }));
 
@@ -386,7 +411,8 @@ router.route('/receive-cheque-passed')
         let ins = new ChequeReportQueries(req.branchId,
             req.fiscalPeriodId,
             'create',
-            req.query),
+            req.query,
+            req.user.id),
             result = await(ins.getPassedCheque('receive', req.query));
         res.json(result);
     }));
@@ -396,7 +422,8 @@ router.route('/payment-cheque-passed')
         let ins = new ChequeReportQueries(req.branchId,
             req.fiscalPeriodId,
             'create',
-            req.query),
+            req.query,
+            req.user.id),
             result = await(ins.getPassedCheque('payment', req.query));
         res.json(result);
     }));
@@ -406,7 +433,8 @@ router.route('/receive-cheques-with-status')
         let ins = new ChequeReportQueries(req.branchId,
             req.fiscalPeriodId,
             'create',
-            req.query),
+            req.query,
+            req.user.id),
             result = await(ins.getChequesWithStatus('receive', req.query));
         res.json(result);
     }));
@@ -416,27 +444,22 @@ router.route('/payment-cheques-with-status')
         let ins = new ChequeReportQueries(req.branchId,
             req.fiscalPeriodId,
             'create',
-            req.query),
+            req.query,
+            req.user.id),
             result = await(ins.getChequesWithStatus('payment', req.query));
         res.json(result);
     }));
 
 router.route('/bank-turnover')
     .get(async((req, res) => {
-        let ins = new DetailAccountQuery(req.branchId,
-            req.fiscalPeriodId,
-            'create',
-            req.query),
+        let ins = new DetailAccountQuery(req.branchId, req.user.id),
             result = await(ins.getBankAndFundTurnover(req.query.bankId, 'bank', req.fiscalPeriodId, req.query));
         res.json(result);
     }));
 
 router.route('/fund-turnover')
     .get(async((req, res) => {
-        let ins = new DetailAccountQuery(req.branchId,
-            req.fiscalPeriodId,
-            'create',
-            req.query),
+        let ins = new DetailAccountQuery(req.branchId, req.user.id),
             result = await(ins.getBankAndFundTurnover(req.query.fundId, 'fund', req.fiscalPeriodId, req.query));
         res.json(result);
     }));

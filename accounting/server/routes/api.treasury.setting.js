@@ -36,17 +36,13 @@ router.route('/')
         res.json(result);
     }))
     .put(async((req, res) => {
-        let treasurySettingRepository = new TreasurySettingRepository(req.branchId),
-            cmd = req.body;
-
-        let entity = {
-            subsidiaryLedgerAccounts: JSON.stringify(cmd.subsidiaryLedgerAccounts),
-            journalGenerateAutomatic: cmd.journalGenerateAutomatic
-        };
-
-        await(treasurySettingRepository.update(entity));
-
-        res.json({isValid: true});
+        try {
+            req.container.get("CommandBus").send("treasurySettingUpdate", [req.body]);
+            res.json({isValid: true})
+        }
+        catch (e) {
+            res.json({isValid: false, errors: e.errors});
+        }
     }));
 
 module.exports = router;

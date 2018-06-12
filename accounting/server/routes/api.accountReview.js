@@ -70,5 +70,6 @@ function getAccountReviewInstance(req) {
         req.fiscalPeriodId,
         req.mode,
         filter,
-        req.query);
+        req.query,
+        req.user.id);
 }

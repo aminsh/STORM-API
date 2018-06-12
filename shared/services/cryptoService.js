@@ -19,8 +19,8 @@ module.exports.decrypt = function (token) {
     return decryptedData;
 };
 
-module.exports.sign = data => {
-    return jwt.sign(data, superSecret);
+module.exports.sign = (data, options) => {
+    return jwt.sign(data, superSecret, options);
 };
 
 module.exports.verify = async.result(token => {

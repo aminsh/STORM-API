@@ -9,8 +9,8 @@ const async = require('asyncawait/async'),
     view = require('../viewModel.assemblers/view.product');
 
 class ProductQuery extends BaseQuery {
-    constructor(branchId) {
-        super(branchId);
+    constructor(branchId, userId) {
+        super(branchId, userId);
         this.getById = async(this.getById);
     }
 
@@ -114,6 +114,9 @@ class ProductQuery extends BaseQuery {
 
     getTotalPriceAndCountByMonth(id, fiscalPeriodId) {
         let branchId = this.branchId,
+            userId = this.userId,
+            canView = this.canView(),
+            modify = this.modify,
             knex = this.knex,
 
             fiscalPeriodQuery = new FiscalPeriodQuery(this.branchId),
@@ -132,7 +135,7 @@ class ProductQuery extends BaseQuery {
                     )
                         .from('invoices')
                         .leftJoin('invoiceLines', 'invoices.id', 'invoiceLines.invoiceId')
-                        .where('invoices.branchId', branchId)
+                        .modify(modify, branchId, userId, canView, 'invoices')
                         .andWhere('invoiceLines.productId', id)
                         .andWhere('invoices.invoiceType', 'sale')
                         .andWhereBetween('invoices.date', [fiscalPeriod.minDate, fiscalPeriod.maxDate])

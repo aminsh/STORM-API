@@ -9,11 +9,11 @@ export class JournalGenerationTemplateDomainService {
     /** @type {JournalGenerationTemplateRepository}*/
     @inject("JournalGenerationTemplateRepository") journalGenerationTemplateRepository = undefined;
 
-    generate(cmd, sourceType){
+    generate(cmd, sourceType) {
 
         let generationTemplate = this.journalGenerationTemplateRepository.findBySourceType(sourceType);
 
-        if(!generationTemplate)
+        if (!generationTemplate)
             throw new ValidationException(['الگوی ساخت سند حسابداری وجود ندارد']);
 
         generationTemplate = generationTemplate.data;
@@ -38,9 +38,22 @@ export class JournalGenerationTemplateDomainService {
         return journal;
     }
 
-
-
     _render(template, model) {
         return _.template(template)(model);
+    }
+
+    createJournalTemplate(sourceType, cmd) {
+        let entity = {
+                title: cmd.title,
+                data: cmd.data
+            },
+            isExits = this.journalGenerationTemplateRepository.findBySourceType(sourceType);
+
+        if (isExits)
+            this.journalGenerationTemplateRepository.update(sourceType, entity);
+        else
+            this.journalGenerationTemplateRepository.create(sourceType, entity);
+
+        return entity.id;
     }
 }

@@ -24,15 +24,11 @@ module.exports = function (knex, options) {
         'journalLines.debtor',
         'journalLines.creditor',
         'journalLines.row',
-/*        knex.raw(`"cheques"."id" as "chequeId"`),
-        knex.raw(`"cheques"."date" as "chequeDate"`),
-        knex.raw(`"cheques"."description" as "chequeDescription"`),*/
         knex.raw(`"users"."name" as "createdBy"`)
     ).from('journals')
         .leftJoin('journalLines', 'journals.id', 'journalLines.journalId')
-        //.leftJoin('cheques', 'journalLines.id', 'cheques.journalLineId')
         .leftJoin('users', 'journals.createdById', 'users.id')
-        .where('journals.branchId', options.branchId)
+        .modify(options.modify, options.branchId, options.userId, options.canView, 'journals')
         .orderBy('number', 'DESC')
         .as('baseJournals');
 };

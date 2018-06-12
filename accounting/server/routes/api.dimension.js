@@ -7,7 +7,7 @@ const async = require('asyncawait/async'),
 
 router.route('/category/:categoryId')
     .get(async((req, res) => {
-        let dimensionQuery = new DimensionQuery(req.branchId),
+        let dimensionQuery = new DimensionQuery(req.branchId, req.user.id),
             result = await(dimensionQuery.getAll(req.params.categoryId, req.query));
         res.json(result);
     }))
@@ -23,7 +23,7 @@ router.route('/category/:categoryId')
 
 router.route('/:id')
     .get(async((req, res) => {
-        let dimensionQuery = new DimensionQuery(req.branchId),
+        let dimensionQuery = new DimensionQuery(req.branchId, req.user.id),
             result = await(dimensionQuery.getById(req.params.id));
         res.json(result);
     }))
@@ -46,23 +46,26 @@ router.route('/:id')
         }
     }));
 
-router.route('/:id/activate').put(async((req, res) => {
-    try {
-        req.container.get("CommandBus").send('activeDimension', [req.params.id]);
-        res.json({isValid: true});
-    }
-    catch (e) {
-        res.json({isValid: false, errors: e.errors});
-    }
-}));
-router.route('/:id/deactivate').put(async((req, res) => {
-    try {
-        req.container.get("CommandBus").send('deActiveDimension', [req.params.id]);
-        res.json({isValid: true});
-    }
-    catch (e) {
-        res.json({isValid: false, errors: e.errors});
-    }
-}));
+router.route('/:id/activate')
+    .put(async((req, res) => {
+        try {
+            req.container.get("CommandBus").send('activeDimension', [req.params.id]);
+            res.json({isValid: true});
+        }
+        catch (e) {
+            res.json({isValid: false, errors: e.errors});
+        }
+    }));
+
+router.route('/:id/deactivate')
+    .put(async((req, res) => {
+        try {
+            req.container.get("CommandBus").send('deActiveDimension', [req.params.id]);
+            res.json({isValid: true});
+        }
+        catch (e) {
+            res.json({isValid: false, errors: e.errors});
+        }
+    }));
 
 module.exports = router;

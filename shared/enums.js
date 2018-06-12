@@ -391,4 +391,33 @@ enums.TreasuryType = function () {
     ])
 };
 
+enums.Features = function () {
+    return new Enum([
+        {key: 'sale', value: ['sales', 'return-sales', 'products', 'product-categories', 'scales']},
+        {key: 'purchase', value: ['purchases', 'return-purchase', 'products', 'product-categories', 'scales']},
+        {
+            key: 'inventory',
+            value: ['inventories', 'stocks', 'inventory-io-types', 'products', 'product-categories', 'scales']
+        },
+        {
+            key: 'journal',
+            value: [
+                'journals',
+                'account-review',
+                'detail-accounts',
+                'detail-account-categories',
+                'dimensions',
+                'dimension-categories',
+                'general-ledger-accounts',
+                'journal-templates',
+                'subsidiary-ledger-accounts',
+                'journal-generation-templates',
+                'tags'
+            ]
+        },
+        {key: 'treasury', value: ['treasury', 'banks-name', 'cheque-categories', 'funds', 'banks', 'bank-and-fund']},
+        {key: 'other', value: ['reports', 'people', 'settings', 'fiscal-periods', 'permissions']}
+    ]);
+};
+
 module.exports = enums;
