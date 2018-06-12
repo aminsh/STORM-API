@@ -30,7 +30,7 @@ router.route('/:invoiceId')
             branchId = req.query.branch_id,
             originalReturnUrl = req.query.return_url || '/',
             paymentGateway = req.query.payment_gateway,
-            invoiceQuery = new InvoiceQuery(req.query.branch_id, 'STORM-API-USER'),
+            invoiceQuery = new InvoiceQuery(req.query.branch_id),
 
             invoice = invoiceQuery.getById(invoiceId),
             paymentGatewayFactory = getContainer(req).get("Factory<PaymentGateway>"),
@@ -61,9 +61,9 @@ router.route('/:invoiceId/return')
                 return `${parse.url}?${qs}`;
             },
             paymentGateway = req.query.payment_gateway,
-            invoiceQuery = new InvoiceQuery(req.query.branch_id, 'STORM-API-USER'),
+            invoiceQuery = new InvoiceQuery(req.query.branch_id),
 
-            invoice = invoiceQuery.getById(invoiceId, 'STORM-API-USER'),
+            invoice = invoiceQuery.getById(invoiceId),
             paymentGatewayFactory = getContainer(req).get("Factory<PaymentGateway>"),
 
             result = paymentGatewayFactory(paymentGateway).verificate(Object.assign({}, req.query, {Amount: invoice.sumRemainder / 10}));
