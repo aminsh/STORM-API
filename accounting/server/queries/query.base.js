@@ -11,6 +11,8 @@ class BaseQuery {
         this.await = await;
 
         this.canView = function () {
+            if (!userId) return true;
+
             let isOwner = await(this.knex.select('isOwner')
                     .from('userInBranches')
                     .where('userId', userId)
@@ -29,6 +31,7 @@ class BaseQuery {
                     .where('userInRole.branchId', branchId)),
 
                 noPermission = userRoleId.length === 0;
+
 
             isAdmin = isAdmin.length > 0 ? isAdmin[0].isAdmin : false;
             isOwner = isOwner || false;
