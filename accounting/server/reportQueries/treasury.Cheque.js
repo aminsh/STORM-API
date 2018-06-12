@@ -55,7 +55,7 @@ class ChequeReportQueries extends BaseQuery {
                     .leftJoin(knex.raw(`(select "detailAccounts".title, "detailAccounts".id, "detailAccounts".code
                                      from "detailAccounts")as "destinationDetailAccounts"`),
                         'treasury.destinationDetailAccountId', '=', 'destinationDetailAccounts.id')
-                    //.modify(modify, branchId, userId, canView, 'treasury')
+                    .modify(modify, branchId, userId, canView, 'treasury')
                     .where('treasury.documentType', 'cheque')
                     .where('treasury.treasuryType', treasuryType)
                     .where('treasury.isCompleted', 'false')
