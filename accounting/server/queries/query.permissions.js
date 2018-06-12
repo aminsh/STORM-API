@@ -26,9 +26,10 @@ class PermissionsQuery extends BaseQuery {
             canView = this.canView(),
             adminId = this.getAdminId(),
 
-            roles = this.await(knex.select('title', 'id')
+            roles = this.await(knex.select('title', 'roles.id','permissions')
                 .from('roles')
-                .modify(this.modify, branchId, userId, canView)
+                .leftJoin('rolePermissions','roles.id','rolePermissions.roleId')
+                .modify(this.modify, branchId, userId, canView, 'roles')
                 .orWhere('isAdmin', true)
             );
         roles = !canView
@@ -41,18 +42,23 @@ class PermissionsQuery extends BaseQuery {
                 .innerJoin('userInRole', 'users.id', 'userInRole.userId')
                 .where('userInRole.branchId', branchId)
                 .whereIn('userInRole.roleId', roleIds)
-            ),
-            permissions = this.await(knex.select('permissions', 'roleId')
+            );
+           /* permissions = this.await(knex.select('permissions', 'roleId')
                 .from('rolePermissions')
                 .where('rolePermissions.branchId', branchId)
-                .whereIn('rolePermissions.roleId', roleIds));
+                .whereIn('rolePermissions.roleId', roleIds));*/
 
         roles = roles.asEnumerable().select(item =>
             Object.assign({}, item, {
-                users: users.asEnumerable().where(user => user.roleId === item.id).toArray(),
-                permissions: permissions.asEnumerable()
+                users: users.asEnumerable().where(user => user.roleId === item.id).toArray()
+                /*permissions: this.await(knex.select('permissions', 'roleId')
+                    .from('rolePermissions')
+                    .where('rolePermissions.branchId', branchId)
+                    .where('rolePermissions.roleId', item.id)
+                    .first())*/
+               /* permissions: permissions.asEnumerable()
                     .where(permission => permission.roleId === item.id)
-                    .select(item => item.permissions).toArray()
+                    .select(item => item.permissions).toArray()*/
             })).toArray();
 
         return roles;
@@ -179,7 +185,8 @@ class PermissionsQuery extends BaseQuery {
             })
             .leftJoin('roles', 'roles.id', 'userInRole.roleId')
             .modify(this.modify, branchId, userId, canView, 'userInBranches')
-            .where('users.id', id));
+            .where('users.id', id)
+            .first());
     }
 
 }
