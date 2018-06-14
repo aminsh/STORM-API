@@ -34,13 +34,14 @@ function get(where) {
 
     query.orderBy('order');
 
-    let result = await(query);
+    let result = await(query),
+        publicFeatures = ['گزارشات', 'سرفصل حسابها', 'پنل کنترل دسترسی ها'];
 
     result.forEach(item => {
 
         item.featuresDisplay = {
             api: item.features.api.map(f => Enums.Features().getDisplay(f)),
-            dashboard: item.features.dashboard.map(f => Enums.Features().getDisplay(f)),
+            dashboard: item.features.dashboard.map(f => Enums.Features().getDisplay(f)).concat(publicFeatures),
         };
     });
 
