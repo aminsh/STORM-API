@@ -13,7 +13,7 @@ export class VerificationDomainService {
     send(mobile, data) {
 
         if(this.verificationRepository.findByMobile(mobile))
-            throw new ValidationException(['شماره در لیست اعتبار سنجی وجود دارد']);
+            throw new ValidationException(['This number is in queue']);
 
         let code = this._getCode(),
             entity = {mobile, data, code};
@@ -22,7 +22,7 @@ export class VerificationDomainService {
 
         this.smsService.sendVerification(mobile, code);
 
-        setTimeout(async(()=> this.verificationRepository.remove(entity.id)), 60000);
+        setTimeout(async.result(()=> this.verificationRepository.remove(entity.id)), 60000);
     }
 
     verify(code) {
