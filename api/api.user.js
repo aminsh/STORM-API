@@ -142,18 +142,31 @@ router.route('/register')
                 };
 
                 if (user.email) {
-                    let isEmailDuplicated = await(knex.select('id').from('users').where('email', 'ILIKE', user.email).first());
+                    let isEmailDuplicated = await(knex.select('id').from('users')
+                        .where({state: 'active'})
+                        .where('email', 'ILIKE', user.email).first());
 
                     if (isEmailDuplicated)
-                        return res.status(400).send('The email is duplicated');
+                        return res.status(400).send('ایمیل تکراری میباشد');
                 }
 
                 await(knex('users').insert(user));
 
 
                 if (user.mobile) {
-                    req.container.get('VerificationDomainService').send(user.mobile, {userId: user.id});
-                    duration = 60000;
+
+
+                    try {
+                        req.container.get('VerificationDomainService').send(user.mobile, {userId: user.id});
+                        duration = 60000;
+                    }
+                    catch (e) {
+                        if (e instanceof ValidationException && e.errors[0] === 'This number is in queue')
+                            return res.status(400).send('پیامک ارسال شده ، لطفا یک دقیقه دیگر تلاش کنید');
+
+                        return res.sendStatus(500);
+                    }
+
                 }
 
             }
