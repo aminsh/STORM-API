@@ -74,6 +74,7 @@ export class StormOrderService {
             planId: plan.id,
             duration: duration,
             unitPrice: plan.price,
+            vat: 0,
             discount: discount ? (plan.price * duration * discount.rate) / 100 : 0
         };
 

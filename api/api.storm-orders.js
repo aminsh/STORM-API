@@ -27,18 +27,7 @@ router.route('/:id')
     .get(async(function (req, res) {
 
         let id = req.params.id,
-            order = await(
-                knex.select(
-                    'storm_orders.*',
-                    knex.raw('branches.name as "branchName"'),
-                    knex.raw('storm_plans.title as "planDisplay"'))
-                    .from('storm_orders')
-                    .leftJoin('branches', 'branches.id', 'storm_orders.branchId')
-                    .leftJoin('storm_plans', 'storm_orders.planId', 'storm_plans.id')
-                    .where('storm_orders.id', id).first()
-            );
-
-        order.issuedDate = Utility.PersianDate.getDate(order.issuedDate);
+            order = get(id);
 
         res.send(order);
 
@@ -80,6 +69,27 @@ router.route('/:id/payment/callback')
 
     }));
 
+function get(id) {
+
+    let stormBranchId = instanceOf('persistedConfig').get('STORM_BRANCH_ID').value,
+        order = await(
+            knex.select(
+                'storm_orders.*',
+                knex.raw('branches.name as "branchName"'),
+                knex.raw('storm_plans.title as "planDisplay"'))
+                .from('storm_orders')
+                .leftJoin('branches', 'branches.id', 'storm_orders.branchId')
+                .leftJoin('storm_plans', 'storm_orders.planId', 'storm_plans.id')
+                .where('storm_orders.id', id).first()
+        );
+
+    order.issuedDate = Utility.PersianDate.getDate(order.issuedDate);
+
+    if (order.invoiceId)
+        order.invoiceUrl = `${process.env.DASHBOARD_URL}/invoice/${order.invoiceId}?branchId=${stormBranchId}`;
+
+    return order;
+}
 
 module.exports = router;
 

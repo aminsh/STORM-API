@@ -393,14 +393,16 @@ enums.TreasuryType = function () {
 
 enums.Features = function () {
     return new Enum([
-        {key: 'sale', value: ['sales', 'return-sale', 'products', 'product-categories', 'scales']},
-        {key: 'purchase', value: ['purchases', 'return-purchase', 'products', 'product-categories', 'scales']},
+        {key: 'sale', value: ['sales', 'return-sales', 'products', 'product-categories', 'scales'], display: 'فروش'},
+        {key: 'purchase', value: ['purchases', 'return-purchase', 'products', 'product-categories', 'scales'], display: 'خرید'},
         {
             key: 'inventory',
+            display: 'انبار',
             value: ['inventories', 'stocks', 'inventory-io-types', 'products', 'product-categories', 'scales']
         },
         {
             key: 'journal',
+            display: 'دفترداری',
             value: [
                 'journals',
                 'account-review',
@@ -415,8 +417,8 @@ enums.Features = function () {
                 'tags'
             ]
         },
-        {key: 'treasury', value: ['treasury', 'banks-name', 'cheque-categories', 'funds', 'banks', 'bank-and-fund']},
-        {key: 'other', value: ['reports', 'people', 'settings', 'fiscal-periods', 'permissions']}
+        {key: 'treasury', value: ['treasury', 'banks-name', 'cheque-categories', 'funds', 'banks', 'bank-and-fund'], display: 'خزانه داری'},
+        {key: 'other', value: ['reports', 'people', 'settings', 'fiscal-periods', 'permissions', 'third-party']}
     ]);
 };
 
