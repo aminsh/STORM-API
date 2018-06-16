@@ -20,7 +20,7 @@ export class UserController {
         if (loginByGoogle) {
             let id = this.userService.registerByGoogle(req.body.googleToken, req.body.profile);
 
-            return this.userQuery.getOne({id});
+            return {user: this.userQuery.getOne({id})};
         }
 
         let result = this.userService.register(req.body);

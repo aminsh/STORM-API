@@ -99,8 +99,8 @@ export class UserService {
 
         let user = this.userRepository.findOne({id: profile.id});
 
-        if (user && !user.isActiveEmail) {
-            this.userRepository.update(user.id, {isActiveEmail: true});
+        if (user) {
+            !user.isActiveEmail && this.userRepository.update(user.id, {isActiveEmail: true});
             return user.id;
         }
 
