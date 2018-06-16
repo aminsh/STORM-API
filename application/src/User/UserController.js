@@ -13,7 +13,7 @@ export class UserController {
 
     @Post("/register")
     @async()
-    register(req, res) {
+    register(req) {
 
         let loginByGoogle = req.query.loginByGoogle;
 
@@ -23,34 +23,18 @@ export class UserController {
             return this.userQuery.getOne({id});
         }
 
-        try {
-            let result = this.userService.register(req.body);
+        let result = this.userService.register(req.body);
 
-            return {user: this.userQuery.getOne({id: result.id}), duration: result.duration};
-        }
-        catch (e) {
-            if (e instanceof ValidationException)
-                return res.status(400).send(e.errors[0]);
-
-            res.sendStatus(500);
-        }
+        return {user: this.userQuery.getOne({id: result.id}), duration: result.duration};
     }
 
     @Post("/login")
     @async()
-    login(req, res) {
+    login(req) {
 
-        try {
-            let id = this.userService.login(req.body);
+        let id = this.userService.login(req.body);
 
-            return this.userQuery.getOne({id});
-        }
-        catch (e) {
-            if (e instanceof ValidationException)
-                return res.status(400).send(e.errors[0]);
-
-            res.sendStatus(500);
-        }
+        return this.userQuery.getOne({id});
     }
 
     @Post("/logout", "ShouldAuthenticated")
@@ -62,35 +46,20 @@ export class UserController {
 
     @Post("/mobile-entry", "ShouldAuthenticated")
     @async()
-    mobileEntry(req, res) {
-        try {
-            let result = this.userService.mobileEntry(req.body.mobile);
+    mobileEntry(req) {
 
-            return Object.assign(result, {message: 'کد فعالسازی به موبایل شما ارسال خواهد شد'});
-        }
-        catch (e) {
-            if (e instanceof ValidationException)
-                return res.status(400).send(e.errors[0]);
+        let result = this.userService.mobileEntry(req.body.mobile);
 
-            res.sendStatus(500);
-        }
+        return Object.assign(result, {message: 'کد فعالسازی به موبایل شما ارسال خواهد شد'});
     }
 
     @Post("/verify-mobile/:code")
     @async()
-    verifyMobile(req, res) {
+    verifyMobile(req) {
 
-        try {
-            let id = this.userService.verifyMobile(req.params.code);
+        let id = this.userService.verifyMobile(req.params.code);
 
-            return this.userQuery.getOne({id});
-        }
-        catch (e) {
-            if (e instanceof ValidationException)
-                return res.status(400).send(e.errors[0]);
-
-            res.sendStatus(500);
-        }
+        return this.userQuery.getOne({id});
     }
 
     @Post("/change-password", "ShouldAuthenticated")
@@ -102,18 +71,9 @@ export class UserController {
 
     @Post("/reset-password/by-mobile")
     @async()
-    resetPasswordByMobile(req, res) {
+    resetPasswordByMobile(req) {
 
-        try {
-
-            this.userService.resetPasswordByMobile(req.body.mobile);
-        }
-        catch (e) {
-            if (e instanceof ValidationException)
-                return res.status(400).send(e.errors[0]);
-
-            res.sendStatus(500);
-        }
+        this.userService.resetPasswordByMobile(req.body.mobile);
     }
 
     @Get("/current", "ShouldAuthenticated")

@@ -6,6 +6,18 @@ class ValidationException {
     }
 }
 
+class ValidationSingleException {
+    constructor(message) {
+        this.message = message;
+    }
+}
+
+class NotFoundException {
+
+}
+
 module.exports = {
-    ValidationException
+    ValidationException,
+    ValidationSingleException,
+    NotFoundException
 };

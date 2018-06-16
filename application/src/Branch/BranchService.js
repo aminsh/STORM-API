@@ -14,7 +14,7 @@ export class BranchService {
     create(cmd, userId) {
 
         if (Utility.String.isNullOrEmpty(cmd.name))
-            throw new ValidationException(['نام کسب و کار نباید خالی باشد']);
+            throw new ValidationSingleException('نام کسب و کار نباید خالی باشد');
 
         let entity = {
             name: cmd.name,
@@ -48,7 +48,7 @@ export class BranchService {
         let member = this.branchRepository.findMember(id, this.context.user.id);
 
         if (!(member && member.isOwner))
-            throw new ValidationException(['دسترسی تغییر در اطلاعات کسب و کار وجود ندارد']);
+            throw new ValidationSingleException(['دسترسی تغییر در اطلاعات کسب و کار وجود ندارد']);
 
         let entity = {
             name: cmd.name,
@@ -76,16 +76,16 @@ export class BranchService {
             let createdByMember = this.branchRepository.findMember(branchId, this.context.user.id);
 
             if (!createdByMember)
-                throw new ValidationException(['شما عضو این کسب و کار نیستید']);
+                throw new ValidationSingleException('شما عضو این کسب و کار نیستید');
 
             if (!createdByMember.isOwner)
-                throw new ValidationException(['شما مجوز اضافه کردن کاربر در این کسب و کار را ندارید']);
+                throw new ValidationSingleException('شما مجوز اضافه کردن کاربر در این کسب و کار را ندارید');
         }
 
         let member = this.branchRepository.findMember(branchId, userId);
 
         if (member)
-            throw new ValidationException(['کاربر عضو این کسب و کار هست']);
+            throw new ValidationSingleException('کاربر عضو این کسب و کار هست');
 
         member = {
             userId,
@@ -103,15 +103,15 @@ export class BranchService {
         let createdByMember = this.branchRepository.findMember(branchId, this.context.user.id);
 
         if (!createdByMember)
-            throw new ValidationException(['شما عضو این کسب و کار نیستید']);
+            throw new ValidationSingleException('شما عضو این کسب و کار نیستید');
 
         if (!createdByMember.isOwner)
-            throw new ValidationException(['شما مجوز حذف کاربر در این کسب و کار را ندارید']);
+            throw new ValidationSingleException('شما مجوز حذف کاربر در این کسب و کار را ندارید');
 
         let member = this.branchRepository.findMember(branchId, userId);
 
         if (member.isOwner)
-            throw new ValidationException(['امکان حذف صاحب کسب و کار وجود ندارد']);
+            throw new ValidationSingleException('امکان حذف صاحب کسب و کار وجود ندارد');
 
         this.branchRepository.removeUser(branchId, userId);
 

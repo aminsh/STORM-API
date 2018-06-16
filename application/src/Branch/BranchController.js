@@ -9,7 +9,7 @@ class BranchController {
     /** BranchQuery */ branchQuery = undefined;
 
     @inject("BranchService")
-    /** BranchService */ branchService = undefined;
+    /** @type {BranchService} */ branchService = undefined;
 
     @Get("/", "ShouldAuthenticated")
     @async()
@@ -20,13 +20,13 @@ class BranchController {
 
     @Get("/by-token/:token")
     @async()
-    getByToken(req, res) {
+    getByToken(req) {
         
         let token = req.params.token,
             result = this.branchQuery.find({token}, true);
 
         if (!result)
-            res.sendStatus(404);
+            throw new NotFoundException();
 
         return result;
     }
@@ -42,22 +42,12 @@ class BranchController {
 
     @Put("/:id", "ShouldAuthenticated")
     @async()
-    update(req, res) {
+    update(req) {
 
-        try {
+        let id = req.params.id;
 
-            let id = req.params.id;
+        this.branchService.update(id, req.body);
 
-            this.branchService.update(id, req.body);
-
-            return this.branchQuery.find({id}, true);
-        }
-        catch (e) {
-            if (e instanceof ValidationException)
-                return res.status(400).send(e.errors[0]);
-
-            res.sendStatus(500);
-        }
     }
 
     @Get("/:id/users", "ShouldAuthenticated")
@@ -69,38 +59,20 @@ class BranchController {
 
     @Post("/:id/users", "ShouldAuthenticated")
     @async()
-    addUser(req, res) {
-        try {
+    addUser(req) {
 
-            let id = req.params.id;
+        let id = req.params.id;
 
-            this.branchService.addUser(id, req.body.userId);
-
-        }
-        catch (e) {
-            if (e instanceof ValidationException)
-                return res.status(400).send(e.errors[0]);
-
-            res.sendStatus(500);
-        }
+        this.branchService.addUser(id, req.body.userId);
     }
 
     @Delete("/:id/users/:userId", "ShouldAuthenticated")
     @async()
-    removeUser(req, res) {
-        try {
+    removeUser(req) {
 
-            let id = req.params.id;
+        let id = req.params.id;
 
-            this.branchService.removeUser(req.params.id, req.params.userId);
-
-        }
-        catch (e) {
-            if (e instanceof ValidationException)
-                return res.status(400).send(e.errors[0]);
-
-            res.sendStatus(500);
-        }
+        this.branchService.removeUser(req.params.id, req.params.userId);
     }
 
     @Put("/:id/users/:userId/regenerate-token", "ShouldAuthenticated")

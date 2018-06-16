@@ -82,10 +82,14 @@ export function register(app = express(), container) {
 
             router.route(action.url)[action.method](async(function (req, res, next) {
 
+                req.controller = ctrl.name;
+                req.action = action.key;
+
                 let result = req.container.get(ctrl.name)[action.key](...arguments);
 
                 Promise.resolve(result)
-                    .then(value => {
+                    .then(async(value => {
+
                         if (!res.headersSent) {
 
                             if (typeof value !== 'undefined')
@@ -93,7 +97,9 @@ export function register(app = express(), container) {
                             else
                                 res.sendStatus(200);
                         }
-                    })
+
+                        action.method !== 'get' && req.container.get("LoggerService").success(value);
+                    }))
                     .catch(error => next(error));
             }));
 

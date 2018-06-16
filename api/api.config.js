@@ -148,10 +148,28 @@ function registerRoutes() {
     app.use('/v1/return-purchase', require('../accounting/server/routes/api.returnPurchase'));
     app.use('/v1/permissions', require('../accounting/server/routes/api.permissions'));
 
-    app.use(function (err, req, res, next) {
-        console.error(err.stack);
-        res.status(500).send('Something broke!');
-    });
+    app.use(async(function (err, req, res, next) {
+
+        if (err instanceof ValidationException)
+            return invalidHandler(err.errors);
+
+        if (err instanceof ValidationSingleException)
+            return invalidHandler(err.message);
+
+        if(err instanceof NotFoundException)
+            res.sendStatus(404);
+
+        res.sendStatus(500);
+
+        req.container.get("LoggerService").error(err);
+
+        function invalidHandler(error) {
+
+            res.status(400).send(error);
+
+            req.container.get("LoggerService").invalid(error);
+        }
+    }));
 }
 
 module.exports = {app, registerRoutes};

@@ -21,10 +21,10 @@ export class UserService {
     login(dto) {
 
         if (!(dto.email || dto.mobile))
-            throw new ValidationException(['موبایل یا ایمیل وارد نشده']);
+            throw new ValidationSingleException('موبایل یا ایمیل وارد نشده');
 
         if (!dto.password)
-            throw new ValidationException(['کلمه عبور وارد نشده']);
+            throw new ValidationSingleException('کلمه عبور وارد نشده');
 
         let user;
 
@@ -35,7 +35,7 @@ export class UserService {
             user = this.userRepository.findOne({state: 'active', mobile: dto.mobile, password: md5(dto.password)});
 
         if (!user)
-            throw new ValidationException(['{0} یا کلمه عبور صحیح نیست'.format(dto.email ? 'ایمیل' : 'موبایل')]);
+            throw new ValidationSingleException('{0} یا کلمه عبور صحیح نیست'.format(dto.email ? 'ایمیل' : 'موبایل'));
 
         return user.id;
     }
@@ -43,23 +43,23 @@ export class UserService {
     register(dto) {
 
         if (!(dto.email || dto.mobile))
-            throw new ValidationException(['موبایل یا ایمیل وارد نشده']);
+            throw new ValidationSingleException('موبایل یا ایمیل وارد نشده');
 
         if (!dto.password)
-            throw new ValidationException(['کلمه عبور وارد نشده']);
+            throw new ValidationSingleException('کلمه عبور وارد نشده');
 
         if (dto.email) {
             let isDuplicatedEmail = this.userRepository.isDuplicatedEmail(dto.email);
 
             if (isDuplicatedEmail)
-                throw new ValidationException(['ایمیل تکراری است']);
+                throw new ValidationSingleException('ایمیل تکراری است');
         }
 
         if (dto.mobile) {
             let isDuplicatedMobile = this.userRepository.isDuplicatedMobile(dto.mobile);
 
             if (isDuplicatedMobile)
-                throw new ValidationException(['موبایل تکراری است']);
+                throw new ValidationSingleException('موبایل تکراری است');
         }
 
         let user = {
@@ -91,7 +91,7 @@ export class UserService {
         }
         catch (e) {
             if (e instanceof ValidationException && e.errors[0] === 'This number is in queue')
-                throw new ValidationException(['پیامک ارسال شده ، لطفا یک دقیقه دیگر تلاش کنید']);
+                throw new ValidationSingleException('پیامک ارسال شده ، لطفا یک دقیقه دیگر تلاش کنید');
         }
     }
 
@@ -132,7 +132,7 @@ export class UserService {
         user.mobile = mobile || user.mobile;
 
         if (!user.mobile)
-            throw new ValidationException(['موبایل وارد نشده']);
+            throw new ValidationSingleException('موبایل وارد نشده');
 
         return this.sendMobileVerification(user);
     }
@@ -157,7 +157,7 @@ export class UserService {
             user = this.userRepository.findOne({mobile});
 
         if (!user)
-            throw new ValidationException(['موبایل وجود ندارد']);
+            throw new ValidationSingleException('موبایل وجود ندارد');
 
         let customFields = user.custom_fields || {};
 
