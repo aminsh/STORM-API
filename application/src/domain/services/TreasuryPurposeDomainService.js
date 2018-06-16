@@ -24,11 +24,21 @@ export class TreasuryPurposeDomainService {
     /** @type {TreasuryReceiptDomainService}*/
     @inject("TreasuryReceiptDomainService") treasuryReceiptDomainService = undefined;
 
+    /** @type {DetailAccountRepository}*/
+    @inject("DetailAccountRepository") detailAccountRepository = undefined;
+
     /** @type {EventBus}*/
     @inject("EventBus") eventBus = undefined;
 
 
     mapToEntity(cmd) {
+        let payer = this.detailAccountRepository.findById(cmd.treasury.payerId);
+
+        if (!payer)
+            payer = this.detailAccountRepository.findByReferenceId(cmd.treasury.payerId);
+
+        cmd.treasury.payerId = payer.id;
+
         return {
             id: cmd.id,
             treasuryId: cmd.treasuryId || cmd.treasury.receiveId || null,
