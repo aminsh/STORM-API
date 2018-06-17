@@ -22,9 +22,11 @@ export class PlanQuery {
 
         result.forEach(item => {
 
+            let extraFeatures = item.name === 'Free' ? publicFeatures.filter(f => f !== 'پنل کنترل دسترسی ها') : publicFeatures;
+
             item.featuresDisplay = {
                 api: item.features.api.map(f => Enums.Features().getDisplay(f)),
-                dashboard: item.features.dashboard.map(f => Enums.Features().getDisplay(f)).concat(publicFeatures),
+                dashboard: item.features.dashboard.map(f => Enums.Features().getDisplay(f)).concat(extraFeatures),
             };
         });
 
