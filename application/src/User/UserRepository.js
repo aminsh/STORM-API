@@ -41,7 +41,7 @@ export class UserRepository {
     }
 
     findByEmailAndPassword(email, password) {
-        toResult(
+        return toResult(
             knex.select('id')
                 .from(this.tableName)
                 .where('state', 'active')
