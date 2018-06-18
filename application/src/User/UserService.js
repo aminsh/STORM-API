@@ -163,7 +163,7 @@ export class UserService {
 
         customFields.shouldChangePassword = true;
 
-        this.userRepository.update(user.id, {password: newPassword, custom_fields: customFields});
+        this.userRepository.update(user.id, {password: md5(newPassword), custom_fields: customFields});
 
         this.smsService.resetPassword(mobile, newPassword);
     }
