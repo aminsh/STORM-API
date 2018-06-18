@@ -14,19 +14,6 @@ const async = require('asyncawait/async'),
 
 EventEmitter.on('on-branch-created', async(function (branchId) {
 
-    let branch = await(knex.select('*').from('branches').where({id: branchId}).first()),
-
-        member = {
-        branchId,
-        userId: branch.ownerId,
-        app: 'accounting',
-        state: 'active',
-        isOwner: true,
-        token: TokenGenerator.generate256Bit()
-    };
-
-    await(knex('userInBranches').insert(member));
-
     await(knex('settings').insert({
         id: Utility.Guid.new(),
         subsidiaryLedgerAccounts: JSON.stringify([]),

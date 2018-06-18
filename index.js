@@ -18,8 +18,9 @@ require('./setup');
 require('./application/dist/bootstrap');
 
 let config = instanceOf("config"),
-    app = require('./api/api.config');
+    {app, registerRoutes} = require('./api/api.config');
 
+registerRoutes();
 
 app.listen(config.port, () => console.log(`Port ${config.port} is listening ...`));
 

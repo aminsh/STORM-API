@@ -307,6 +307,7 @@ router.route('/purposes/invoice')
     .post(async((req, res) => {
         try {
             req.body.treasury.treasuryType = 'receive';
+            req.body.reference = 'invoice';
             const id = req.container.get("CommandBus").send("receiveTreasuriesPurposeCreate", [req.body]);
             res.json({isValid: true, returnValue: {id}});
         }

@@ -2,6 +2,8 @@ declare global {
     const EventEmitter: IEventEmitter,
         Utility: IUtility,
         ValidationException: ValidationException,
+        ValidationSingleException: ValidationSingleException,
+        NotFoundException: NotFoundException,
         Enums: any
 }
 
@@ -15,6 +17,7 @@ declare interface IUtility {
     String: IString;
     Guid: IGuid;
     PersianDate: IPersianDate;
+    TokenGenerator: ITokenGenerator,
     delay(milliseconds: number): void;
 }
 
@@ -41,6 +44,15 @@ declare class ValidationException {
     constructor(errors: string[])
 }
 
+declare class ValidationSingleException {
+    constructor(message: string)
+}
+
+declare class NotFoundException {
+
+}
+
+
 declare interface IState {
     branchId: string;
     fiscalPeriodId: string;
@@ -56,4 +68,9 @@ declare interface IUser {
 
 declare interface Builder {
     toDirectResult(): any
+}
+
+declare interface ITokenGenerator {
+    generate128Bit(): string,
+    generate256Bit(): string
 }
