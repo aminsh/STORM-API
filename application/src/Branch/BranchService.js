@@ -38,6 +38,8 @@ export class BranchService {
 
         this.branchRepository.create(entity);
 
+        EventEmitter.emit('on-branch-created', entity.id);
+
         this.addUser(entity.id, entity.ownerId , true);
 
         return entity.id;
