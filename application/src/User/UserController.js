@@ -11,6 +11,18 @@ export class UserController {
     @inject("UserQuery")
     /** @type {UserQuery}*/ userQuery = undefined;
 
+    @Get("/")
+    @async()
+    getAll(req) {
+        return this.userQuery.getAll(req.query);
+    }
+
+    @Get("/current", "ShouldAuthenticated")
+    @async()
+    current(req) {
+        return this.userQuery.getOne({id: req.user.id});
+    }
+
     @Post("/register")
     @async()
     register(req) {
@@ -74,12 +86,6 @@ export class UserController {
     resetPasswordByMobile(req) {
 
         this.userService.resetPasswordByMobile(req.body.mobile);
-    }
-
-    @Get("/current", "ShouldAuthenticated")
-    @async()
-    current(req) {
-        return this.userQuery.getOne({id: req.user.id});
     }
 
     @Get("/is-unique-email/:email")
