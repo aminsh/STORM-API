@@ -29,7 +29,7 @@ class OrderController {
 
     @Post("/:id/confirm")
     @async()
-    confirm(req, res) {
+    confirm(req) {
 
         let result = this.orderService.confirm(req.params.id);
 
