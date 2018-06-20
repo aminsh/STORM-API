@@ -36,6 +36,8 @@ export class StormOrderService {
 
         if (plan.name === 'Trial') {
 
+            duration = plan.discount[0].duration;
+
             let isUsedTrial = this.orderRepository.isUsedTrialBefore(branch.ownerId);
 
             if (isUsedTrial)
