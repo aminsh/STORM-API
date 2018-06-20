@@ -47,15 +47,23 @@ class InvoiceTurnover extends BaseQuery {
                     'journalId',
                     knex.raw(`sum(discount) as discount`),
                     knex.raw(`"sum"("totalPrice") + ${sumChargesQuery} - sum(DISTINCT coalesce(discount,0)) as "sumTotalPrice" `),
-                    knex.raw('(select coalesce("sum"("amount"),0) from "payments" where "invoiceId" = "base"."id" limit 1) as "sumPaidAmount"'),
-                    knex.raw(`("sum"("totalPrice") + ${sumChargesQuery}) - sum(DISTINCT coalesce(discount,0)) -(select coalesce("sum"("amount"),0) from "payments" where "invoiceId" = "base"."id" limit 1) as "sumRemainder"`))
+                    knex.raw(`sum(amount) as "sumPaidAmount"`),
+                    knex.raw(`("sum"("totalPrice") + ${sumChargesQuery}) - sum(DISTINCT coalesce(discount,0)) -sum(amount) as "sumRemainder"`))
                     .from(function () {
                         this.select('invoices.*',
+                            'payment.amount',
                             knex.raw('"detailAccounts"."title" as "detailAccountDisplay"'),
                             knex.raw(`("invoiceLines"."unitPrice" * "invoiceLines".quantity - "invoiceLines".discount + "invoiceLines".vat) as "totalPrice"`))
                             .from('invoices')
                             .leftJoin('invoiceLines', 'invoices.id', 'invoiceLines.invoiceId')
                             .leftJoin('detailAccounts', 'invoices.detailAccountId', 'detailAccounts.id')
+                            .leftJoin(knex.raw(`(
+                                SELECT amount, "treasuryPurpose"."referenceId" as "invoiceId"                      																				
+                                FROM treasury
+                                LEFT JOIN "treasuryPurpose" ON treasury."id" = "treasuryPurpose"."treasuryId"
+                                WHERE treasury."branchId" = '${branchId}'
+                                ) as payment`),
+                                'payment.invoiceId', 'invoices.id')
                             .modify(modify, branchId, userId, canView, 'invoices')
                             .where('invoiceType','sale')
                             .whereBetween('invoices.date', [option.fromMainDate, option.toDate])
@@ -80,6 +88,75 @@ class InvoiceTurnover extends BaseQuery {
 
         return query;
     }
+
+    /*getInvoicesWithPaymentStatus(){
+        let knex = this.knex,
+            option = this.options,
+            minNumber = option.filter.minNumber || option.filter.maxNumber,
+            maxNumber = option.filter.maxNumber || option.filter.minNumber,
+            branchId = this.branchId,
+            userId = this.userId,
+            canView = this.canView(),
+            modify = this.modify,
+            baseQuery = `select coalesce(sum(value),0) from invoices as i left join json_to_recordset(i.charges) as x(key text, value int, "vatIncluded" boolean) on true where i.id = "base".id`,
+            sumChargesQuery = `(${baseQuery}) + ((${baseQuery} and "vatIncluded" = true) *  
+            coalesce((select (100 * line.vat) / ((line.quantity * line."unitPrice") - line.discount) from "invoiceLines" as line where "invoiceId" = "base".id and vat <> 0 limit 1), 0) /100)`,
+
+            query = knex.select().table(function () {
+                this.select(
+                    'id',
+                    'number',
+                    'date',
+                    'detailAccountId',
+                    'detailAccountDisplay',
+                    knex.raw(`CASE WHEN "invoiceStatus" = 'confirmed' THEN 'تایید شده' 
+                        WHEN "invoiceStatus" = 'fixed' THEN 'قطعی'
+                        WHEN "invoiceStatus" = 'draft' THEN 'پیش نویس' END as "invoiceStatusText"`),
+                    'description',
+                    'title',
+                    'journalId',
+                    knex.raw(`sum(discount) as discount`),
+                    knex.raw(`"sum"("totalPrice") + ${sumChargesQuery} - sum(DISTINCT coalesce(discount,0)) as "sumTotalPrice" `),
+                    knex.raw('(select coalesce("sum"("amount"),0) from "payments" where "invoiceId" = "base"."id" limit 1) as "sumPaidAmount"'),
+                    knex.raw(`("sum"("totalPrice") + ${sumChargesQuery}) - sum(DISTINCT coalesce(discount,0)) -(select coalesce("sum"("amount"),0) from "payments" where "invoiceId" = "base"."id" limit 1) as "sumRemainder"`))
+                    .from(function () {
+                        this.select('invoices.*',
+                            knex.raw('"detailAccounts"."title" as "detailAccountDisplay"'),
+                            knex.raw(`("invoiceLines"."unitPrice" * "invoiceLines".quantity - "invoiceLines".discount + "invoiceLines".vat) as "totalPrice"`))
+                            .from('invoices')
+                            .leftJoin('invoiceLines', 'invoices.id', 'invoiceLines.invoiceId')
+                            .leftJoin('detailAccounts', 'invoices.detailAccountId', 'detailAccounts.id')
+                            .leftJoin(knex.raw(`(
+                                SELECT amount, "treasuryPurpose"."referenceId" as "invoiceId"                      																				
+                                FROM treasury
+                                LEFT JOIN "treasuryPurpose" ON treasury."id" = "treasuryPurpose"."treasuryId"
+                                WHERE treasury."branchId" = '${branchId}'
+                                ) as payment`),
+                                'payment.invoiceId', 'invoices.id')
+                            .modify(modify, branchId, userId, canView, 'invoices')
+                            .where('invoiceType','sale')
+                            .whereBetween('invoices.date', [option.fromMainDate, option.toDate])
+                            .as('base');
+                    }).as("group")
+                    .groupBy(
+                        'id',
+                        'number',
+                        'date',
+                        'detailAccountId',
+                        'detailAccountDisplay',
+                        'invoiceStatus',
+                        'description',
+                        'title',
+                        'journalId')
+                    .orderBy('number', 'desc')
+
+            });
+
+        if (minNumber || maxNumber)
+            query.andWhereBetween('number', [minNumber, maxNumber]);
+
+        return query;
+    }*/
 
     peopleSaleInvoiceTurnover(){
         let knex = this.knex,
