@@ -12,6 +12,7 @@ function assign(obj, assignTo) {
 const TokenGenerator = require('../services/token.generator'),
     Utility = {
         String: require('../utilities/string'),
+        isUndefined: obj => typeof obj === 'undefined',
         PersianDate: require('../utilities/persianDate'),
         Guid: require('../utilities/guidService'),
         delay: milliseconds => toResult(new Promise(resolve => setTimeout(() => resolve(), milliseconds))),
