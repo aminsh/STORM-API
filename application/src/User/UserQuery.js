@@ -57,7 +57,7 @@ export class UserQuery {
 
     getOne(where) {
 
-        let query = this.baseQuery('small');
+        let query = this.baseQuery('large');
 
         if (where)
             query.where(where);

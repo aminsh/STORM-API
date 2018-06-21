@@ -20,6 +20,7 @@ export class UserController {
     @Get("/current", "ShouldAuthenticated")
     @async()
     current(req) {
+
         return this.userQuery.getOne({id: req.user.id});
     }
 
