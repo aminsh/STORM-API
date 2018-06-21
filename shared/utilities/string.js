@@ -2,6 +2,10 @@
 
 module.exports = {
     isNullOrEmpty: function (str) {
+
+        if(typeof str === 'undefined')
+            return true;
+
         if (!str) return true;
 
         if (str.toString().length === 0) return true;

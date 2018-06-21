@@ -50,7 +50,6 @@ class BranchController {
         let id = req.params.id;
 
         this.branchService.update(id, req.body);
-
     }
 
     @Get("/:id/users", "ShouldAuthenticated")

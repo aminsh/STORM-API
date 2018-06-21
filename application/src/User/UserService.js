@@ -18,6 +18,8 @@ export class UserService {
 
     @inject("Context") context = undefined;
 
+    changeSet = [];
+
     login(dto) {
 
         if (!(dto.email || dto.mobile))
@@ -81,6 +83,25 @@ export class UserService {
 
         return Object.assign({id: user.id}, result);
     }
+
+    update(dto) {
+
+        let id = this.context.user.id,
+            user = this.userRepository.findOne({id}),
+            entity = {};
+
+        Object.keys(dto)
+            .filter(key => Object.keys(user).includes(key))
+            .forEach(key => this._checkIsChange(key, dto, user));
+
+        if (this.changeSet.length === 0)
+            return;
+
+        this.changeSet.forEach(item => entity[item.fieldName] = item.newValue);
+
+        this.userRepository.update(id, entity);
+    }
+
 
     sendMobileVerification(user) {
 
@@ -166,6 +187,30 @@ export class UserService {
         this.userRepository.update(user.id, {password: md5(newPassword), custom_fields: customFields});
 
         this.smsService.resetPassword(mobile, newPassword);
+    }
+
+    _checkIsChange(fieldName, DTO, user) {
+
+        const isUndefined = Utility.isUndefined;
+
+        if (isUndefined(DTO[fieldName]))
+            return;
+
+        if (DTO[fieldName] === user[fieldName])
+            return;
+
+        let newValue = DTO[fieldName];
+
+        if (fieldName === 'password')
+            newValue = md5(newValue);
+
+        if(fieldName === 'email')
+            this.changeSet.push({fieldName: 'isActiveEmail', newValue: false});
+
+        if(fieldName === 'mobile')
+            this.changeSet.push({fieldName: 'isActiveMobile', newValue: false});
+
+        this.changeSet.push({fieldName, newValue});
     }
 
 }

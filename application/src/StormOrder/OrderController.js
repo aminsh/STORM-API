@@ -11,6 +11,9 @@ class OrderController {
     @inject("StormOrderService")
     /** @type {StormOrderService}*/ orderService = undefined;
 
+    @inject("PlanQuery")
+    /** @type {PlanQuery}*/ planQuery = undefined;
+
     @Post("/")
     @async()
     create(req) {
@@ -18,6 +21,18 @@ class OrderController {
         let result = this.orderService.create(req.body);
 
         return result;
+    }
+
+    @Post("/trial")
+    @async()
+    createTrial(req) {
+
+        let branchId = req.body.branchId,
+            plan = this.planQuery.find({name: 'Trial'}, true);
+
+        let result = this.orderService.create({branchId, planId: plan.id });
+
+        this.orderService.confirm(result.id);
     }
 
     @Get("/:id")

@@ -9,10 +9,15 @@ export class UserQuery {
 
     tableName = "users";
 
-    get baseQuery() {
+    baseQuery(fieldSize) {
+
+        let sizes = {
+            small: ['id', 'email', 'name', 'image'],
+            large: ['id', 'token', 'email', 'name', 'mobile', 'isActiveMobile', 'isActiveEmail', 'custom_fields', 'state', 'image']
+        };
 
         return knex.from(function () {
-            this.select('id', 'token', 'email', 'name', 'mobile', 'isActiveMobile', 'isActiveEmail', 'custom_fields', 'state')
+            this.select(...sizes[fieldSize])
                 .from('users')
                 .as('base');
         });
@@ -20,7 +25,7 @@ export class UserQuery {
 
     _view(user) {
 
-        if(!user)
+        if (!user)
             return user;
 
         let localUser = Object.assign({}, user);
@@ -28,16 +33,19 @@ export class UserQuery {
         delete localUser.custom_fields;
         delete localUser.state;
 
+        localUser.isRegistrationCompleted = !!(localUser.email && localUser.mobile);
+
         return Object.assign({}, localUser, user.custom_fields);
     }
 
     getAll(parameters) {
 
-        return toResult(kendoQueryResolve(this.baseQuery, parameters, this._view))
+        return toResult(kendoQueryResolve(this.baseQuery('small'), parameters, this._view))
     }
 
-    getByEmail(email){
-        let result = toResult(this.baseQuery
+    getByEmail(email) {
+
+        let result = toResult(this.baseQuery('large')
             .select('*')
             .where('email', 'ILIKE', email)
             .where('state', 'active')
@@ -48,7 +56,8 @@ export class UserQuery {
     }
 
     getOne(where) {
-        let query = this.baseQuery;
+
+        let query = this.baseQuery('large');
 
         if (where)
             query.where(where);
