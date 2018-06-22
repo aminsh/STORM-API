@@ -17,7 +17,7 @@ export class UserController {
         return this.userQuery.getAll(req.query);
     }
 
-    @Get("/current", "ShouldAuthenticated")
+    @Get("/current", "TokenIsValid")
     @async()
     current(req) {
 
@@ -41,7 +41,7 @@ export class UserController {
         return {user: this.userQuery.getOne({id: result.id}), duration: result.duration};
     }
 
-    @Put("/", "ShouldAuthenticated")
+    @Put("/", "TokenIsValid")
     @async()
     update(req) {
 
@@ -66,7 +66,7 @@ export class UserController {
         this.userService.regenerateToken();
     }
 
-    @Post("/mobile-entry", "ShouldAuthenticated")
+    @Post("/mobile-entry", "TokenIsValid")
     @async()
     mobileEntry(req) {
 

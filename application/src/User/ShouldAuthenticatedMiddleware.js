@@ -29,3 +29,30 @@ export class ShouldAuthenticatedMiddleware  {
         next();
     }
 }
+
+@injectable()
+export class TokenIsValid  {
+
+    @inject("UserRepository")
+    /** @type {UserRepository}*/ userRepository = undefined;
+
+    @async()
+    handler(req, res, next) {
+
+        let NoAuthorizedResponseAction = () => res.sendStatus(401),
+
+            userToken = req.headers["authorization"];
+
+        if (!userToken)
+            return NoAuthorizedResponseAction();
+
+        let user = this.userRepository.findOne({token: userToken});
+
+        if (!user)
+            return NoAuthorizedResponseAction();
+
+        req.user = user;
+
+        next();
+    }
+}
