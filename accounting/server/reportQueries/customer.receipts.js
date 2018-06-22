@@ -23,7 +23,6 @@ class CustomerReceipts extends BaseQuery{
         `))
                 .from('invoices')
                 .innerJoin('detailAccounts', 'detailAccounts.id', 'invoices.detailAccountId')
-                .leftJoin('payments', 'payments.invoiceId', 'invoices.id')
                 .innerJoin(knex.raw(`(
                 SELECT "documentType" AS "paymentType", 
                         "number", amount, "transferDate" as "date",

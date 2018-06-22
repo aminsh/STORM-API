@@ -380,7 +380,7 @@ router.route('/sale-invoice-turnover')
             'create',
             req.query,
             req.user.id),
-            result = await(ins.getAll());
+            result = await(ins.getAll(req.query.invoiceStatus));
         res.json(result);
     }));
 
