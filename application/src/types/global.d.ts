@@ -17,7 +17,8 @@ declare interface IUtility {
     String: IString;
     Guid: IGuid;
     PersianDate: IPersianDate;
-    TokenGenerator: ITokenGenerator,
+    TokenGenerator: ITokenGenerator;
+    isUndefined(obj: any): boolean;
     delay(milliseconds: number): void;
 }
 

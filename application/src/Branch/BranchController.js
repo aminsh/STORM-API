@@ -6,7 +6,7 @@ import {Controller, Delete, Get, Post, Put} from "../core/expressUtlis";
 class BranchController {
 
     @inject("BranchQuery")
-    /** BranchQuery */ branchQuery = undefined;
+    /** @type {BranchQuery} */ branchQuery = undefined;
 
     @inject("BranchService")
     /** @type {BranchService} */ branchService = undefined;
@@ -35,9 +35,12 @@ class BranchController {
     @async()
     create(req) {
 
-        let id = this.branchService.create(req.body, req.user.id);
+        let id = this.branchService.create(req.body, req.user.id),
+            branch = this.branchQuery.find({id}, true);
 
-        return this.branchQuery.find({id}, true);
+        branch.isUsedTrialBefore = this.branchQuery.isUsedTrailBeforeByUser(branch.ownerId);
+
+        return branch;
     }
 
     @Put("/:id", "ShouldAuthenticated")
@@ -47,7 +50,6 @@ class BranchController {
         let id = req.params.id;
 
         this.branchService.update(id, req.body);
-
     }
 
     @Get("/:id/users", "ShouldAuthenticated")
