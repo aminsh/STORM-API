@@ -100,6 +100,9 @@ export class UserService {
         this.changeSet.forEach(item => entity[item.fieldName] = item.newValue);
 
         this.userRepository.update(id, entity);
+
+        if (this.changeSet.includes('mobile'))
+            setTimeout(() => this.sendMobileVerification({id: user.id, mobile: entity.mobile}));
     }
 
 
@@ -204,11 +207,14 @@ export class UserService {
         if (fieldName === 'password')
             newValue = md5(newValue);
 
-        if(fieldName === 'email')
+        if (fieldName === 'email')
             this.changeSet.push({fieldName: 'isActiveEmail', newValue: false});
 
-        if(fieldName === 'mobile')
+        if (fieldName === 'mobile') {
+
             this.changeSet.push({fieldName: 'isActiveMobile', newValue: false});
+        }
+
 
         this.changeSet.push({fieldName, newValue});
     }
