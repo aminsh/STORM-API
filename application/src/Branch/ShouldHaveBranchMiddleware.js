@@ -36,7 +36,6 @@ export class ShouldHaveBranchMiddleware  {
         if(!result.canExecute)
             return ForbiddenResponseAction(result.message);
 
-
         req.user = this.userRepository.findOne({userId: member.userId});
         req.branchId = member.branchId;
 
