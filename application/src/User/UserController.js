@@ -1,6 +1,6 @@
 import {inject} from "inversify";
 import {async} from "../core/@decorators";
-import {Controller, Get, Post, Put} from "../core/expressUtlis";
+import {Controller, Get, Post, Put, NoLog} from "../core/expressUtlis";
 
 @Controller("/v1/users")
 export class UserController {
@@ -26,6 +26,7 @@ export class UserController {
 
     @Post("/register")
     @async()
+    @NoLog()
     register(req) {
 
         let loginByGoogle = req.query.loginByGoogle;
@@ -43,6 +44,7 @@ export class UserController {
 
     @Put("/", "TokenIsValid")
     @async()
+    @NoLog()
     update(req) {
 
         this.userService.update(req.body);
@@ -52,6 +54,7 @@ export class UserController {
 
     @Post("/login")
     @async()
+    @NoLog()
     login(req) {
 
         let id = this.userService.login(req.body);
@@ -61,6 +64,7 @@ export class UserController {
 
     @Post("/logout", "ShouldAuthenticated")
     @async()
+    @NoLog()
     logout() {
 
         this.userService.regenerateToken();
@@ -68,6 +72,7 @@ export class UserController {
 
     @Post("/mobile-entry", "TokenIsValid")
     @async()
+    @NoLog()
     mobileEntry(req) {
 
         let result = this.userService.mobileEntry(req.body.mobile);
@@ -77,6 +82,7 @@ export class UserController {
 
     @Post("/verify-mobile/:code")
     @async()
+    @NoLog()
     verifyMobile(req) {
 
         let id = this.userService.verifyMobile(req.params.code);
@@ -86,6 +92,7 @@ export class UserController {
 
     @Post("/change-password", "ShouldAuthenticated")
     @async()
+    @NoLog()
     changePassword(req) {
 
         this.userService.changePassword(req.body.password);
@@ -93,6 +100,7 @@ export class UserController {
 
     @Post("/reset-password/by-mobile")
     @async()
+    @NoLog()
     resetPasswordByMobile(req) {
 
         this.userService.resetPasswordByMobile(req.body.mobile);

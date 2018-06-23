@@ -3,7 +3,8 @@ import express from "express";
 import async from "asyncawait/async";
 
 let controllers = [],
-    methods = [];
+    methods = [],
+    noLogs = [];
 
 export function Controller(baseUrl, ...middleware) {
     return function (target) {
@@ -66,6 +67,12 @@ export function Delete(url, ...middleware) {
     }
 }
 
+export function NoLog() {
+    return function (target, key) {
+        noLogs.push({controller: target.constructor.name, key});
+    }
+}
+
 export function register(app = express(), container) {
 
     controllers.forEach(ctrl => {
@@ -84,6 +91,7 @@ export function register(app = express(), container) {
 
                 req.controller = ctrl.name;
                 req.action = action.key;
+                req.noLog = !!noLogs.filter(item => item.controller === ctrl.name && item.key === action.key)[0];
 
                 let result = req.container.get(ctrl.name)[action.key](...arguments);
 
@@ -98,7 +106,7 @@ export function register(app = express(), container) {
                                 res.sendStatus(200);
                         }
 
-                        action.method !== 'get' && req.container.get("LoggerService").success(value);
+                        _canLog(req) && req.container.get("LoggerService").success(value);
                     }))
                     .catch(error => next(error));
             }));
@@ -131,6 +139,17 @@ function _setMiddlewareForController(baseUrl, key, router) {
             })
             .catch(error => next(error));
     })
+}
+
+function _canLog(req) {
+
+    if (req.method === 'get')
+        return false;
+
+    if(req.noLog)
+        return false;
+
+    return true;
 }
 
 

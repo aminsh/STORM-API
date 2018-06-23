@@ -167,6 +167,8 @@ function registerRoutes() {
 
             res.status(400).send(error);
 
+            if(req.noLog) return;
+
             req.container.get("LoggerService").invalid(error);
         }
     }));
