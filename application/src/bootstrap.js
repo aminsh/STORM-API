@@ -5,6 +5,7 @@ import "./StormOrder";
 import "./Branch";
 import "./User";
 import "./Logger";
+import "./Constants";
 
 import {Context} from "./Context";
 import {app} from "../../api/api.config";
