@@ -8,4 +8,8 @@ export class Context {
     get user() {
         return this._httpContext.request.user;
     }
+
+    get branchId() {
+        return this._httpContext.request.branchId;
+    }
 }
