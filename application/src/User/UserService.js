@@ -16,7 +16,7 @@ export class UserService {
     @inject("SmsService")
     /** @type{SmsService}*/ smsService = undefined;
 
-    @inject("Context") context = undefined;
+    @inject("State") context = undefined;
 
     changeSet = [];
 
@@ -101,7 +101,7 @@ export class UserService {
 
         this.userRepository.update(id, entity);
 
-        if (this.changeSet.includes('mobile'))
+        if (this.changeSet.asEnumerable().any(item => item.fieldName === 'mobile'))
             setTimeout(() => this.sendMobileVerification({id: user.id, mobile: entity.mobile}));
     }
 
