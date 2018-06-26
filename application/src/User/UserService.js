@@ -1,5 +1,6 @@
 import {injectable, inject} from "inversify";
 import md5 from "md5";
+import async from "asyncawait/async";
 
 const Enums = instanceOf('Enums'),
     TokenGenerator = instanceOf('TokenGenerator');
@@ -16,7 +17,7 @@ export class UserService {
     @inject("SmsService")
     /** @type{SmsService}*/ smsService = undefined;
 
-    @inject("State") context = undefined;
+    @inject("Context") context = undefined;
 
     changeSet = [];
 
@@ -102,7 +103,12 @@ export class UserService {
         this.userRepository.update(id, entity);
 
         if (this.changeSet.asEnumerable().any(item => item.fieldName === 'mobile'))
-            setTimeout(() => this.sendMobileVerification({id: user.id, mobile: entity.mobile}));
+            try {
+                this.sendMobileVerification({id: user.id, mobile: entity.mobile});
+            }
+            catch (e){
+
+            }
     }
 
 
