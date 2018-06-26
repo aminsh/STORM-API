@@ -31,9 +31,9 @@ export class UserQuery {
         let localUser = Object.assign({}, user);
 
         delete localUser.custom_fields;
-        delete localUser.state;
+        //delete localUser.state;
 
-        localUser.isRegistrationCompleted = true;//!!(localUser.email && localUser.mobile);
+        localUser.isRegistrationCompleted = !!(localUser.email && localUser.mobile);
 
         return Object.assign({}, localUser, user.custom_fields);
     }
