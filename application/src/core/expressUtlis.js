@@ -83,6 +83,8 @@ export function register(app = express(), container) {
 
         container.bind(ctrl.name).to(ctrl.target);
 
+        ctrl.middleware.forEach(key => _setMiddlewareForController(key, router));
+
         actions.forEach(action => {
 
             action.middleware.forEach(key => _setMiddlewareForAction(router, action, key));
@@ -113,7 +115,6 @@ export function register(app = express(), container) {
 
         });
 
-        ctrl.middleware.forEach(key => app.use(ctrl.baseUrl, _setMiddlewareForController(ctrl.baseUrl, key, router)));
         app.use(ctrl.baseUrl, router);
 
     })
@@ -130,15 +131,15 @@ function _setMiddlewareForAction(router, action, key) {
     })
 }
 
-function _setMiddlewareForController(baseUrl, key, router) {
-    router.use(baseUrl, function (req, res, next) {
+function _setMiddlewareForController(key, router) {
+    router.use(function (req, res, next) {
 
         Promise.resolve(req.container.get(key).handler(...arguments))
             .then(() => {
 
             })
             .catch(error => next(error));
-    })
+    });
 }
 
 function _canLog(req) {
