@@ -20,7 +20,7 @@ require('./application/dist/bootstrap');
 let config = instanceOf("config"),
     {app, registerRoutes} = require('./api/api.config');
 
-registerRoutes();
+//registerRoutes();
 
 app.listen(config.port, () => console.log(`Port ${config.port} is listening ...`));
 

@@ -15,7 +15,7 @@ export * from "./JournalDomainService";
 export * from "./JournalGenerationTemplateDomainService";
 export * from "./PaymentDomainService";
 export * from "./PersonDomainService";
-export * from "./ProductDomainService";
+
 export * from "./ProductCategoryDomainService";
 export * from "./ScaleDomainService";
 export * from "./SettingsDomainService";
@@ -39,11 +39,11 @@ export * from "./TreasuryPurposeDomainService";
 export * from "./TreasuryDomainService";
 export * from "./InventoryAccountingDomainService";
 export * from "./InventoryDomainService";
-//export * from "../../ThirdParty/RegisteredThirdPartyService"
+
 export * from "./PurchaseDomainService";
 export * from "./DimensionDomainService";
 export * from "./PermissionDomainService";
 export * from "./UserPermissionsControlDomainService";
 export * from "./TreasurySettingDomainService";
-export * from "./SettingDomainService";
+
 export * from "./VerificationDomainService";

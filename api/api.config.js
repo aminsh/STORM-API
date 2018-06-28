@@ -23,7 +23,7 @@ app.use(bodyParser.urlencoded({limit: '50mb', extended: false}));
 app.use(bodyParser.json({limit: '50mb'}));
 app.use(cookieParser());
 
-app.use(function (req, res, next) {
+/*app.use(function (req, res, next) {
 
     req.apiCaller = req.headers['api-caller'] || 'External api';
 
@@ -44,7 +44,7 @@ app.use(function (req, res, next) {
 });
 
 app.use('/v1/send-invoice', require('../accounting/server/routes/api.sendInvoice'));
-app.use('/v1/payment-invoice', require('../accounting/server/routes/api.paymentInvoice'));
+app.use('/v1/payment-invoice', require('../accounting/server/routes/api.paymentInvoice'));*/
 
 function registerRoutes() {
 
@@ -95,7 +95,6 @@ function registerRoutes() {
         next();
     }));
 
-    //app.use('/v1/third-party', require('./api.thirdParty'));
     app.use('/v1/account-review', require('../accounting/server/routes/api.accountReview'));
     app.use('/v1/detail-accounts', require('../accounting/server/routes/api.detailAccount'));
     app.use('/v1/detail-account-categories', require('../accounting/server/routes/api.detailAccountCategory'));
@@ -113,11 +112,8 @@ function registerRoutes() {
     app.use('/v1/reports', require('../accounting/server/routes/api.report'));
     app.use('/v1/sales', require('../accounting/server/routes/api.sale'));
     app.use('/v1/purchases', require('../accounting/server/routes/api.purchase'));
-    app.use('/v1/products', require('../accounting/server/routes/api.product'));
-    app.use('/v1/product-categories', require('../accounting/server/routes/api.productCategory'));
     app.use('/v1/settings', require('../accounting/server/routes/api.setting'));
     app.use('/v1/bank-and-fund', require('../accounting/server/routes/api.bankAndFund'));
-    app.use('/v1/scales', require('../accounting/server/routes/api.scale'));
     app.use('/v1/stocks', require('../accounting/server/routes/api.stock'));
     app.use('/v1/inventories', require('../accounting/server/routes/api.inventory'));
     app.use('/v1/journal-generation-templates', require('../accounting/server/routes/api.journalGenerationTemplate'));

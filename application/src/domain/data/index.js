@@ -6,9 +6,7 @@ export * from "./repository.invoice";
 export * from "./repository.journal";
 export * from "./repository.journalGenerationTemplate";
 export * from "./repository.payment";
-export * from "./repository.product";
-export * from "./repository.productCategory";
-export * from "./repository.scale";
+
 export * from "./repository.setting";
 export * from "./repository.stock";
 export * from "./repository.subsidiaryLedgerAccount";
@@ -18,7 +16,7 @@ export * from "./repository.banksName";
 export * from "./repository.treasury.setting";
 export * from "./repository.chequeCategory";
 export * from "./repository.treasury.purpose";
-//export * from "../../ThirdParty/RegisteredThirdPartyRepository";
+
 export * from "./repository.dimension";
 export * from "./repository.dimensionCategory";
 export * from "./repository.permission";

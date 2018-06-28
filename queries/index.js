@@ -5,9 +5,9 @@ module.exports.GeneralLedgerAccountQuery = require('../accounting/server/queries
 module.exports.SubsidiaryLedgerAccountQuery = require('../accounting/server/queries/query.subsidiaryLedgerAccount');
 module.exports.JournalQuery = require('../accounting/server/queries/query.journal');
 
-module.exports.ProductQuery = require('../accounting/server/queries/query.product');
-module.exports.ProductCategoryQuery = require('../accounting/server/queries/query.productCategory');
-module.exports.ScaleQuery = require('../accounting/server/queries/query.scale');
+//module.exports.ProductQuery = require('../application/src/Product/ProductQuery');
+/*module.exports.ProductCategoryQuery = require('../application/src/Product/ProductCategoryQuery');
+module.exports.ScaleQuery = require('../application/src/Product/ScaleQuery');*/
 module.exports.StockQuery = require('../accounting/server/queries/query.stock');
 
 module.exports.InventoryQuery = require('../accounting/server/queries/query.inventory');
