@@ -1,7 +1,8 @@
 "use strict";
 
 const toResult = require('asyncawait/await'),
-    Promise = require('promise');
+    Promise = require('promise'),
+    kendoQueryResolve = require("../services/kendoQueryResolve");
 
 
 function assign(obj, assignTo) {
@@ -16,7 +17,8 @@ const TokenGenerator = require('../services/token.generator'),
         PersianDate: require('../utilities/persianDate'),
         Guid: require('../utilities/guidService'),
         delay: milliseconds => toResult(new Promise(resolve => setTimeout(() => resolve(), milliseconds))),
-        TokenGenerator: new TokenGenerator
+        TokenGenerator: new TokenGenerator,
+        kendoQueryResolve
     };
 
 

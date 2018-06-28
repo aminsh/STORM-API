@@ -20,6 +20,7 @@ declare interface IUtility {
     TokenGenerator: ITokenGenerator;
     isUndefined(obj: any): boolean;
     delay(milliseconds: number): void;
+    kendoQueryResolve(query: any, request: any, mapper: Function)
 }
 
 declare interface IString {
