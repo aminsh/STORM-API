@@ -1,7 +1,7 @@
 import {inject, injectable} from "inversify";
 
 @injectable()
-export class ProductDomainService {
+export class ProductService {
 
     /**@type {ProductRepository}*/
     @inject("ProductRepository") productRepository = undefined;

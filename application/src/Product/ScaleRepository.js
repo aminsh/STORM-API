@@ -1,32 +1,32 @@
 import toResult from "asyncawait/await";
-import {BaseRepository} from "./repository.base";
+import {BaseRepository} from "../core/BaseRepository";
 import {injectable} from "inversify";
 
 @injectable()
-export class ProductCategoryRepository extends BaseRepository {
+export class ScaleRepository extends BaseRepository {
 
     findById(id) {
-        return this.knex.table('productCategories')
+        return toResult(this.knex.table('scales')
             .modify(this.modify, this.branchId)
-            .where('id', id)
-            .first();
+            .where('id', id).first());
     }
 
     create(entity) {
         super.create(entity);
-        toResult(this.knex('productCategories')
+        toResult(this.knex('scales')
             .insert(entity));
     }
 
     update(id, entity) {
-        toResult(this.knex('productCategories')
+        toResult(this.knex('scales')
             .modify(this.modify, this.branchId)
             .where('id', id).update(entity));
     }
 
     remove(id) {
-        toResult(this.knex('productCategories')
+        toResult(this.knex('scales')
             .modify(this.modify, this.branchId)
             .where('id', id).del());
     }
+
 }

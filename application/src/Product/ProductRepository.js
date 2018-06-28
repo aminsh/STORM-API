@@ -1,8 +1,6 @@
 import toResult from "asyncawait/await";
-import {BaseRepository} from "./repository.base";
-import {injectable} from "inversify";
+import {BaseRepository} from "../core/BaseRepository";
 
-@injectable()
 export class ProductRepository extends BaseRepository {
 
     findById(id) {
