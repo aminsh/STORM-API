@@ -1,19 +1,20 @@
 import {injectable, inject} from "inversify";
-import {SettingsRepository} from "../data/repository.setting";
+import {SettingsRepository} from "../domain/data/repository.setting";
 
 
 @injectable()
-export class SettingDomainService{
+export class SettingService{
 
     /** @type {SettingsRepository}*/
     @inject("SettingsRepository") settingsRepository = undefined;
 
-    create(cmd){
+    create(){
         let entity = {
                 vat: 9,
             };
         this.settingsRepository.create(entity);
     }
+
     update(cmd){
         cmd.canCreateSaleOnNoEnoughInventory = cmd.canControlInventory
             ? cmd.canCreateSaleOnNoEnoughInventory
