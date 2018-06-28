@@ -29,7 +29,7 @@ import {register} from "./core/expressUtlis";
 container.bind("State").to(Context);
 //container.bind("Context").to(Context);
 
-app.use(function (req, res, next) {
+function setConfig(req, res, next) {
 
     req.container = container.createChild();
 
@@ -40,11 +40,9 @@ app.use(function (req, res, next) {
     req.container.bind('HttpContext').toConstantValue({request: req});
 
     next();
-});
+}
 
-register(app, container);
-
-app.use(async(function (err, req, res, next) {
+const setErrorConfig = async(function (err, req, res, next) {
 
     if (err instanceof ValidationException)
         return invalidHandler(err.errors);
@@ -52,7 +50,7 @@ app.use(async(function (err, req, res, next) {
     if (err instanceof ValidationSingleException)
         return invalidHandler(err.message);
 
-    if(err instanceof NotFoundException)
+    if (err instanceof NotFoundException)
         res.sendStatus(404);
 
     res.sendStatus(500);
@@ -63,11 +61,14 @@ app.use(async(function (err, req, res, next) {
 
         res.status(400).send(error);
 
-        if(req.noLog) return;
+        if (req.noLog) return;
 
         req.container.get("LoggerService").invalid(error);
     }
-}));
+});
+
+register(app, container, setConfig, setErrorConfig);
+
 
 
 

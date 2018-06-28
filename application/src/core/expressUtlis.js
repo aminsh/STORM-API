@@ -73,7 +73,10 @@ export function NoLog() {
     }
 }
 
-export function register(app = express(), container) {
+export function register(app = express(), container, setConfig, setErrorConfig) {
+
+    if (typeof setConfig === 'function')
+        app.use(setConfig);
 
     controllers.forEach(ctrl => {
 
@@ -118,6 +121,9 @@ export function register(app = express(), container) {
         app.use(ctrl.baseUrl, router);
 
     })
+
+    if (typeof setErrorConfig === 'function')
+        app.use(setErrorConfig);
 }
 
 function _setMiddlewareForAction(router, action, key) {
@@ -147,7 +153,7 @@ function _canLog(req) {
     if (req.method === 'GET')
         return false;
 
-    if(req.noLog)
+    if (req.noLog)
         return false;
 
     return true;
