@@ -39,7 +39,7 @@ export * from "./TreasuryPurposeDomainService";
 export * from "./TreasuryDomainService";
 export * from "./InventoryAccountingDomainService";
 export * from "./InventoryDomainService";
-export * from "./RegisteredThirdPartyDomainService"
+//export * from "../../ThirdParty/RegisteredThirdPartyService"
 export * from "./PurchaseDomainService";
 export * from "./DimensionDomainService";
 export * from "./PermissionDomainService";
