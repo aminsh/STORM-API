@@ -144,7 +144,7 @@ function _setMiddlewareForController(key, router) {
 
 function _canLog(req) {
 
-    if (req.method === 'get')
+    if (req.method === 'GET')
         return false;
 
     if(req.noLog)
