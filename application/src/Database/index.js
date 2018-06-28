@@ -1,6 +1,8 @@
-import {container} from "../di.config";
-
 import {DbContext} from "./DbContext";
 
-container.bind("DefaultKnex").toConstantValue(instanceOf("knex"));
-container.bind("DbContext").to(DbContext).inSingletonScope();
+export function register(container) {
+
+    container.bind("DefaultKnex").toConstantValue(instanceOf("knex"));
+    container.bind("DbContext").to(DbContext).inSingletonScope();
+}
+

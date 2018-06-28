@@ -1,5 +1,6 @@
-import {container} from "../di.config";
-
-container.bind("Enums").toConstantValue(instanceOf("Enums"));
-
 import "./ConstantsController";
+
+export function register(container) {
+
+    container.bind("Enums").toConstantValue(instanceOf("Enums"));
+}
