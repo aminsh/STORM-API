@@ -3,7 +3,8 @@ import express from "express";
 import async from "asyncawait/async";
 
 let controllers = [],
-    methods = [];
+    methods = [],
+    noLogs = [];
 
 export function Controller(baseUrl, ...middleware) {
     return function (target) {
@@ -66,6 +67,12 @@ export function Delete(url, ...middleware) {
     }
 }
 
+export function NoLog() {
+    return function (target, key) {
+        noLogs.push({controller: target.constructor.name, key});
+    }
+}
+
 export function register(app = express(), container) {
 
     controllers.forEach(ctrl => {
@@ -76,6 +83,8 @@ export function register(app = express(), container) {
 
         container.bind(ctrl.name).to(ctrl.target);
 
+        ctrl.middleware.forEach(key => _setMiddlewareForController(key, router));
+
         actions.forEach(action => {
 
             action.middleware.forEach(key => _setMiddlewareForAction(router, action, key));
@@ -84,6 +93,7 @@ export function register(app = express(), container) {
 
                 req.controller = ctrl.name;
                 req.action = action.key;
+                req.noLog = !!noLogs.filter(item => item.controller === ctrl.name && item.key === action.key)[0];
 
                 let result = req.container.get(ctrl.name)[action.key](...arguments);
 
@@ -98,14 +108,13 @@ export function register(app = express(), container) {
                                 res.sendStatus(200);
                         }
 
-                        action.method !== 'get' && req.container.get("LoggerService").success(value);
+                        _canLog(req) && req.container.get("LoggerService").success(value);
                     }))
                     .catch(error => next(error));
             }));
 
         });
 
-        ctrl.middleware.forEach(key => app.use(ctrl.baseUrl, _setMiddlewareForController(ctrl.baseUrl, key, router)));
         app.use(ctrl.baseUrl, router);
 
     })
@@ -122,15 +131,26 @@ function _setMiddlewareForAction(router, action, key) {
     })
 }
 
-function _setMiddlewareForController(baseUrl, key, router) {
-    router.use(baseUrl, function (req, res, next) {
+function _setMiddlewareForController(key, router) {
+    router.use(function (req, res, next) {
 
         Promise.resolve(req.container.get(key).handler(...arguments))
             .then(() => {
 
             })
             .catch(error => next(error));
-    })
+    });
+}
+
+function _canLog(req) {
+
+    if (req.method === 'GET')
+        return false;
+
+    if(req.noLog)
+        return false;
+
+    return true;
 }
 
 

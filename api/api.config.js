@@ -10,7 +10,6 @@ const async = require('asyncawait/async'),
     flash = require('connect-flash'),
     compression = require('compression'),
     config = instanceOf('config'),
-    enums = instanceOf('Enums'),
     app = express(),
 
     /**@type {BranchService}*/branchService = instanceOf('branchService'),
@@ -44,23 +43,8 @@ app.use(function (req, res, next) {
     next();
 });
 
-app.get('/v1/enums', function (req, res) {
-    let enumsJson = Object.keys(enums).asEnumerable()
-        .select(key => ({key, value: enums[key]().data}))
-        .toObject(item => item.key, item => item.value);
-
-    res.json(enumsJson);
-});
-
 app.use('/v1/send-invoice', require('../accounting/server/routes/api.sendInvoice'));
 app.use('/v1/payment-invoice', require('../accounting/server/routes/api.paymentInvoice'));
-//app.use('/v1/users', require('./api.user'));
-//app.use('/v1/login', require('./api.login'));
-//app.use('/v1/branches', require('./api.branch'));
-//app.use('/v1/storm-plans', require('./api.storm-plans'));
-//app.use('/v1/storm-orders', require('./api.storm-orders'));
-//app.use('/v1/storm-gifts', require('./api.storm-gifts'));
-
 
 function registerRoutes() {
 
@@ -111,7 +95,7 @@ function registerRoutes() {
         next();
     }));
 
-    app.use('/v1/third-party', require('./api.thirdParty'));
+    //app.use('/v1/third-party', require('./api.thirdParty'));
     app.use('/v1/account-review', require('../accounting/server/routes/api.accountReview'));
     app.use('/v1/detail-accounts', require('../accounting/server/routes/api.detailAccount'));
     app.use('/v1/detail-account-categories', require('../accounting/server/routes/api.detailAccountCategory'));
@@ -166,6 +150,8 @@ function registerRoutes() {
         function invalidHandler(error) {
 
             res.status(400).send(error);
+
+            if(req.noLog) return;
 
             req.container.get("LoggerService").invalid(error);
         }

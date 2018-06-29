@@ -1,10 +1,10 @@
 import {injectable, inject} from "inversify";
 
 @injectable()
-export class RegisteredThirdPartyDomainService {
+export class RegisteredThirdPartyService {
 
     @inject("RegisteredThirdPartyRepository")
-    /** @type {RegisteredThirdPartyRepository}*/ registeredThirdPartyDomainService = undefined;
+    /** @type {RegisteredThirdPartyRepository}*/ registeredThirdPartyRepository = undefined;
 
 
     @inject("Factory<ThirdParty>")
@@ -18,12 +18,10 @@ export class RegisteredThirdPartyDomainService {
 
         let entity = {key, data};
 
-        this.registeredThirdPartyDomainService.create(entity);
+        this.registeredThirdPartyRepository.create(entity);
     }
 
     remove(key) {
-        this.registeredThirdPartyDomainService.remove(key);
+        this.registeredThirdPartyRepository.remove(key);
     }
-
-
 }

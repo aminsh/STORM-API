@@ -28,7 +28,7 @@ import {
     TreasuryPurposeRepository,
     DimensionCategoryRepository,
     DimensionRepository,
-    RegisteredThirdPartyRepository,
+    //RegisteredThirdPartyRepository,
     VerificationRepository,
     PermissionRepository
 } from "./domain/data";
@@ -76,7 +76,7 @@ import {
     InventoryAccountingDomainService,
     InventoryDomainService,
     DimensionDomainService,
-    RegisteredThirdPartyDomainService,
+    //RegisteredThirdPartyDomainService,
     VerificationDomainService,
     PermissionDomainService,
     UserPermissionsControlDomainService,
@@ -156,7 +156,7 @@ container.bind("BanksNameRepository").to(BanksNameRepository).inRequestScope();
 container.bind("TreasurySettingRepository").to(TreasurySettingRepository).inRequestScope();
 container.bind("ChequeCategoryRepository").to(ChequeCategoryRepository).inRequestScope();
 container.bind("TreasuryPurposeRepository").to(TreasuryPurposeRepository).inRequestScope();
-container.bind("RegisteredThirdPartyRepository").to(RegisteredThirdPartyRepository).inRequestScope();
+//container.bind("RegisteredThirdPartyRepository").to(RegisteredThirdPartyRepository).inRequestScope();
 container.bind("DimensionCategoryRepository").to(DimensionCategoryRepository).inRequestScope();
 container.bind("DimensionRepository").to(DimensionRepository).inRequestScope();
 container.bind("VerificationRepository").to(VerificationRepository).inSingletonScope();
@@ -205,7 +205,7 @@ container.bind("TreasuryDomainService").to(TreasuryDomainService).inRequestScope
 container.bind("TreasurySettingDomainService").to(TreasurySettingDomainService).inRequestScope();
 container.bind("InventoryAccountingDomainService").to(InventoryAccountingDomainService).inRequestScope();
 container.bind("InventoryDomainService").to(InventoryDomainService).inRequestScope();
-container.bind("RegisteredThirdPartyDomainService").to(RegisteredThirdPartyDomainService).inRequestScope();
+//container.bind("RegisteredThirdPartyDomainService").to(RegisteredThirdPartyDomainService).inRequestScope();
 container.bind("DimensionDomainService").to(DimensionDomainService).inRequestScope();
 container.bind("VerificationDomainService").to(VerificationDomainService).inSingletonScope();
 container.bind("PermissionDomainService").to(PermissionDomainService).inRequestScope();
