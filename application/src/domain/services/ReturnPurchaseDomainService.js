@@ -88,14 +88,33 @@ export class ReturnPurchaseDomainService {
         return errors;
     }
 
+    getNumber(number, persistedInvoice) {
+
+        const _getNumber = () => persistedInvoice
+            ? persistedInvoice.number
+            : this.invoiceRepository.maxNumber('returnPurchase') + 1;
+
+        if (!number)
+            return _getNumber();
+
+        const isNumberDuplicated = this.invoiceRepository.isNumberDuplicated(number, 'returnPurchase', (persistedInvoice || {}).id);
+
+        if (isNumberDuplicated)
+            return _getNumber();
+
+        return number;
+    }
+
     mapToEntity(cmd) {
 
-        const detailAccount = this.detailAccountDomainService.findPersonByIdOrCreate(cmd.customer);
+        const detailAccount = this.detailAccountDomainService.findPersonByIdOrCreate(cmd.customer),
+            invoice = cmd.id ? this.invoiceRepository.findById(cmd.id) : undefined;
 
         return {
             id: cmd.id,
             date: cmd.date || PersianDate.current(),
             invoiceStatus: cmd.status || 'draft',
+            number: this.getNumber(cmd.number, invoice),
             description: cmd.description,
             ofInvoiceId: cmd.ofInvoiceId,
             title: cmd.title,
@@ -206,7 +225,6 @@ export class ReturnPurchaseDomainService {
         if (errors.length > 0)
             throw new ValidationException(errors);
 
-        entity.number = this.invoiceRepository.maxNumber('returnPurchase') + 1;
         entity.invoiceType = 'returnPurchase';
         entity.invoiceStatus = cmd.status !== 'draft' ? 'waitForPayment' : 'draft';
 
