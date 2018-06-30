@@ -40,6 +40,8 @@ app.use(function (req, res, next) {
 
     req.container = childContainer;
 
+    req.container.bind('HttpContext').toConstantValue({request: req});
+
     next();
 });
 

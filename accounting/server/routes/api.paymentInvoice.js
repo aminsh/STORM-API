@@ -21,6 +21,8 @@ function getContainer(req) {
         originalUrl: req.originalUrl
     });
 
+    childContainer.bind('HttpContext').toConstantValue({request: req});
+
     return childContainer;
 }
 
