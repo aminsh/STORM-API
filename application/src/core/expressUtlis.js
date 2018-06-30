@@ -1,6 +1,11 @@
 import {injectable, decorate} from "inversify";
 import express from "express";
 import async from "asyncawait/async";
+import bodyParser from "body-parser";
+import cookieParser from "cookie-parser";
+import cors from "cors";
+import flash from "connect-flash";
+import compression from "compression";
 
 let controllers = [],
     methods = [],
@@ -73,7 +78,13 @@ export function NoLog() {
     }
 }
 
-export function register(app = express(), container, setConfig, setErrorConfig) {
+export function register( container, setConfig, setErrorConfig, app = express()) {
+
+    app.use(compression());
+    app.use(cors());
+    app.use(bodyParser.urlencoded({limit: '50mb', extended: false}));
+    app.use(bodyParser.json({limit: '50mb'}));
+    app.use(cookieParser());
 
     if (typeof setConfig === 'function')
         app.use(setConfig);
@@ -124,6 +135,10 @@ export function register(app = express(), container, setConfig, setErrorConfig) 
 
     if (typeof setErrorConfig === 'function')
         app.use(setErrorConfig);
+
+    const port = process.env["PORT"];
+
+    app.listen(port, () => console.log(`Port ${port} is listening ...`));
 }
 
 function _setMiddlewareForAction(router, action, key) {
