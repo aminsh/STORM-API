@@ -17,11 +17,7 @@ const async = require('asyncawait/async'),
     container = require('../application/dist/di.config').container,
     knex = instanceOf('knex');
 
-app.use(compression());
-app.use(cors());
-app.use(bodyParser.urlencoded({limit: '50mb', extended: false}));
-app.use(bodyParser.json({limit: '50mb'}));
-app.use(cookieParser());
+
 
 /*app.use(function (req, res, next) {
 
@@ -103,7 +99,7 @@ function registerRoutes() {
     app.use('/v1/funds', require('../accounting/server/routes/api.fund'));
     app.use('/v1/dimensions', require('../accounting/server/routes/api.dimension'));
     app.use('/v1/dimension-categories', require('../accounting/server/routes/api.dimensionCategory'));
-    app.use('/v1/fiscal-periods', require('../accounting/server/routes/api.fiscalPeriod'));
+
     app.use('/v1/general-ledger-accounts', require('../accounting/server/routes/api.generalLedgerAccount'));
     app.use('/v1/journals', require('../accounting/server/routes/api.journal'));
     app.use('/v1/journal-templates', require('../accounting/server/routes/api.journalTemplate'));
@@ -128,30 +124,7 @@ function registerRoutes() {
     app.use('/v1/return-purchase', require('../accounting/server/routes/api.returnPurchase'));
     app.use('/v1/permissions', require('../accounting/server/routes/api.permissions'));
 
-    app.use(async(function (err, req, res, next) {
 
-        if (err instanceof ValidationException)
-            return invalidHandler(err.errors);
-
-        if (err instanceof ValidationSingleException)
-            return invalidHandler(err.message);
-
-        if(err instanceof NotFoundException)
-            res.sendStatus(404);
-
-        res.sendStatus(500);
-
-        req.container.get("LoggerService").error(err);
-
-        function invalidHandler(error) {
-
-            res.status(400).send(error);
-
-            if(req.noLog) return;
-
-            req.container.get("LoggerService").invalid(error);
-        }
-    }));
 }
 
 module.exports = {app, registerRoutes};

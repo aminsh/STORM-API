@@ -3,7 +3,7 @@
 const BaseQuery = require('./query.base'),
     async = require('asyncawait/async'),
     await = require('asyncawait/await'),
-    FiscalPeriodQuery = require('./query.fiscalPeriod'),
+    FiscalPeriodQuery = require('../../../application/src/FiscalPeriod/FiscalPeriodQuery'),
     kendoQueryResolve = require('../services/kendoQueryResolve'),
     view = require('../viewModel.assemblers/view.treasury'),
     cashView = require('../viewModel.assemblers/view.treasury.cash'),

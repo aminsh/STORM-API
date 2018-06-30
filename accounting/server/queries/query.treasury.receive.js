@@ -1,7 +1,7 @@
 "use strict";
 
 const BaseQuery = require('./query.base'),
-    FiscalPeriodQuery = require('./query.fiscalPeriod'),
+    FiscalPeriodQuery = require('../../../application/src/FiscalPeriod/FiscalPeriodQuery'),
     kendoQueryResolve = require('../services/kendoQueryResolve'),
     view = require('../viewModel.assemblers/view.treasury'),
     cashView = require('../viewModel.assemblers/view.treasury.cash'),

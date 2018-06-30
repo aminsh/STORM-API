@@ -1,5 +1,4 @@
 export * from "./repository.detailAccount";
-export * from "./repository.fiscalPeriod";
 export * from "./repository.generalLedgerAccount";
 export * from "./repository.inventory";
 export * from "./repository.invoice";
