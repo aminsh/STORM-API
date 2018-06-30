@@ -7,7 +7,6 @@ import {UnitOfWork} from "./core/UnitOfWork";
 
 import {
     DetailAccountRepository,
-    FiscalPeriodRepository,
     GeneralLedgerAccountRepository,
     InventoryRepository,
     InvoiceRepository,
@@ -25,14 +24,12 @@ import {
     TreasuryPurposeRepository,
     DimensionCategoryRepository,
     DimensionRepository,
-    //RegisteredThirdPartyRepository,
     VerificationRepository,
     PermissionRepository
 } from "./domain/data";
 import {
     BankDomainService,
     DetailAccountDomainService,
-    FiscalPeriodDomainService,
     FundDomainService,
     GeneralLedgerAccountDomainService,
     InputPurchaseDomainService,
@@ -131,7 +128,6 @@ container.bind("Factory<PaymentGateway>").toFactory(context => {
 });
 
 container.bind("DetailAccountRepository").to(DetailAccountRepository).inRequestScope();
-container.bind("FiscalPeriodRepository").to(FiscalPeriodRepository).inRequestScope();
 container.bind("GeneralLedgerAccountRepository").to(GeneralLedgerAccountRepository).inRequestScope();
 container.bind("InventoryRepository").to(InventoryRepository).inRequestScope();
 container.bind("InvoiceRepository").to(InvoiceRepository).inRequestScope();
@@ -154,7 +150,6 @@ container.bind("PermissionRepository").to(PermissionRepository).inRequestScope()
 
 container.bind("BankDomainService").to(BankDomainService).inRequestScope();
 container.bind("DetailAccountDomainService").to(DetailAccountDomainService).inRequestScope();
-container.bind("FiscalPeriodDomainService").to(FiscalPeriodDomainService).inRequestScope();
 container.bind("FundDomainService").to(FundDomainService).inRequestScope();
 container.bind("GeneralLedgerAccountDomainService").to(GeneralLedgerAccountDomainService).inRequestScope();
 container.bind("InputPurchaseDomainService").to(InputPurchaseDomainService).inRequestScope();

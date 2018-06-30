@@ -11,6 +11,7 @@ import * as Constants from "./Constants";
 import * as ThirdParty from "./ThirdParty";
 import * as Settings from "./Settings";
 import * as Product from "./Product";
+import * as FiscalPeriod from "./FiscalPeriod";
 
 Database.register(container);
 StormOrder.register(container);
@@ -21,9 +22,9 @@ Constants.register(container);
 ThirdParty.register(container);
 Settings.register(container);
 Product.register(container);
+FiscalPeriod.register(container);
 
 import {Context} from "./Context";
-import {app} from "../../api/api.config";
 import {register} from "./core/expressUtlis";
 
 container.bind("State").to(Context);
@@ -67,7 +68,7 @@ const setErrorConfig = async(function (err, req, res, next) {
     }
 });
 
-register(app, container, setConfig, setErrorConfig);
+register(container, setConfig, setErrorConfig);
 
 
 
