@@ -5,10 +5,11 @@ const async = require('asyncawait/async'),
     express = require('express'),
     bodyParser = require('body-parser'),
     cookieParser = require('cookie-parser'),
-    favicon = require('serve-favicon'),
+    //favicon = require('serve-favicon'),
     cors = require('cors'),
     flash = require('connect-flash'),
     compression = require('compression'),
+    ejs = require('ejs'),
     config = instanceOf('config'),
     app = express(),
 
@@ -16,6 +17,8 @@ const async = require('asyncawait/async'),
     parseFiscalPeriod = require('./parse.fiscalPeriod'),
     container = require('../application/dist/di.config').container,
     knex = instanceOf('knex');
+
+app.use('/swagger', express.static(__dirname + '/../swagger'));
 
 app.use(compression());
 app.use(cors());
@@ -47,6 +50,7 @@ app.use(function (req, res, next) {
 
 app.use('/v1/send-invoice', require('../accounting/server/routes/api.sendInvoice'));
 app.use('/v1/payment-invoice', require('../accounting/server/routes/api.paymentInvoice'));
+
 
 function registerRoutes() {
 
