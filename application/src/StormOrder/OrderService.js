@@ -61,7 +61,8 @@ export class StormOrderService {
             if (isUseGift)
                 throw new ValidationException(['شما قبلا از این کد تخفیف استفاده کرده اید']);
 
-            plan = this.planRepository.findById(gift.planId);
+            if(!gift.plans.includes(plan.id))
+                throw new ValidationException(['کد تخفیف برای طرح انتخاب شده نیست']);
 
             discount = {rate: gift.discountRate};
 
