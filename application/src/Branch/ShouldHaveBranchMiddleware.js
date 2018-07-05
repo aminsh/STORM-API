@@ -15,6 +15,9 @@ export class ShouldHaveBranchMiddleware  {
     @inject("BranchValidateService")
     /** @type {BranchValidateService}*/ branchValidateService = undefined;
 
+    @inject("FiscalPeriodMiddlewareSelector")
+    /** @type {FiscalPeriodMiddlewareSelector}*/ fiscalPeriodMiddlewareSelector = undefined;
+
     @async()
     handler(req, res, next) {
 
@@ -38,6 +41,8 @@ export class ShouldHaveBranchMiddleware  {
 
         req.user = this.userRepository.findOne({id: member.userId});
         req.branchId = member.branchId;
+
+        this.fiscalPeriodMiddlewareSelector.handle(req);
 
         next();
     }
