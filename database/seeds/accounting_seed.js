@@ -9,7 +9,7 @@ const async = require('asyncawait/async'),
 
 exports.seed = async(function (knex, Promise) {
 
-    /*let data = await(knex.select('*')
+    let data = await(knex.select('*')
         .from(function () {
             this.select('id', 'quantity', 'unitPrice', 'discount', 'vat', knex.raw('ROUND((100 * vat)/((quantity * "unitPrice")-discount)) as rate'))
                 .from('invoiceLines')
@@ -25,9 +25,9 @@ exports.seed = async(function (knex, Promise) {
         obj.vat = amount * 3 / 100;
 
         await(knex('invoiceLines').where({id: item.id}).update(obj));
-    });*/
+    });
 
-    /*let notHaveVat = await(knex.select('*')
+    let notHaveVat = await(knex.select('*')
         .from(function () {
             this.select('id', 'quantity', 'unitPrice', 'discount', 'vat', knex.raw('ROUND((100 * vat)/((quantity * "unitPrice")-discount)) as rate'))
                 .from('invoiceLines')
@@ -36,7 +36,7 @@ exports.seed = async(function (knex, Promise) {
         .where('rate', '!=', 9)
         .orWhereNull('rate'));
 
-    await(knex('invoiceLines').whereIn('id', notHaveVat.map(item => item.id)).update({tax: 0}));*/
+    await(knex('invoiceLines').whereIn('id', notHaveVat.map(item => item.id)).update({tax: 0}));
 
     let settingsIs9Vat = await(knex.from('settings').where({vat: 9}));
 
