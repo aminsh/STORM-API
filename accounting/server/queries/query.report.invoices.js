@@ -30,10 +30,10 @@ class InvoicesQuery extends BaseQuery {
                 "invoiceLines".quantity || ' ' || scales.title as "amount",
                 invoices."invoiceType" as "invoiceType",
                 "invoiceLines".quantity as quantity, "invoiceLines"."unitPrice" as "unitPrice",
-                "invoiceLines".vat as vat,
+                "invoiceLines".vat + "invoiceLines".tax as vat,
                 "invoiceLines".discount as discount,
                 (("invoiceLines"."unitPrice" * "invoiceLines".quantity)-"invoiceLines".discount) as "grossPrice",
-                (("invoiceLines"."unitPrice" * "invoiceLines".quantity)-"invoiceLines".discount) + "invoiceLines".vat as "netPrice",
+                (("invoiceLines"."unitPrice" * "invoiceLines".quantity)-"invoiceLines".discount) + "invoiceLines".vat + "invoiceLines".tax as "netPrice",
                 "invoiceLines".description as "invoiceLineDescription",
                 "invoiceLines".description as "productName",
                 "detailAccounts"."postalCode" as "postalCode",
@@ -54,7 +54,7 @@ class InvoicesQuery extends BaseQuery {
 
         let lineHaveVat = invoice.asEnumerable().firstOrDefault(e => e.vat !== 0),
             persistedVat = lineHaveVat
-                ? (100 * lineHaveVat.vat / (((lineHaveVat.quantity * lineHaveVat.unitPrice) - lineHaveVat.discount)))
+                ? (100 * (lineHaveVat.vat + lineHaveVat.tax) / (((lineHaveVat.quantity * lineHaveVat.unitPrice) - lineHaveVat.discount)))
                 : 0;
 
         invoice.forEach(item => {

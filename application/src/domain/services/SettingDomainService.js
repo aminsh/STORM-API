@@ -3,18 +3,20 @@ import {SettingsRepository} from "../data/repository.setting";
 
 
 @injectable()
-export class SettingDomainService{
+export class SettingDomainService {
 
     /** @type {SettingsRepository}*/
     @inject("SettingsRepository") settingsRepository = undefined;
 
-    create(cmd){
+    create(cmd) {
         let entity = {
-                vat: 9,
-            };
+            vat: 3,
+            tax: 6
+        };
         this.settingsRepository.create(entity);
     }
-    update(cmd){
+
+    update(cmd) {
         cmd.canCreateSaleOnNoEnoughInventory = cmd.canControlInventory
             ? cmd.canCreateSaleOnNoEnoughInventory
             : false;
@@ -25,6 +27,7 @@ export class SettingDomainService{
 
         let entity = {
             vat: cmd.vat,
+            tax: cmd.tax,
             bankId: cmd.bankId,
             canControlInventory: cmd.canControlInventory,
             canCreateSaleOnNoEnoughInventory: cmd.canCreateSaleOnNoEnoughInventory,

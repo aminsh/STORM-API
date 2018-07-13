@@ -7,6 +7,7 @@ module.exports = function (entity) {
         description: entity.description,
         quantity: entity.quantity,
         unitPrice: entity.unitPrice,
+        tax: entity.tax,
         vat: entity.vat,
         discount: entity.discount,
         scale: entity.scale,

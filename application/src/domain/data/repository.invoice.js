@@ -61,7 +61,8 @@ export class InvoiceRepository extends BaseRepository {
             quantity: line.quantity,
             discount: line.invoiceLineDiscount,
             stockId: line.stockId,
-            vat: line.vat
+            vat: line.vat,
+            tax: line.tax
         }))
             .toArray();
 

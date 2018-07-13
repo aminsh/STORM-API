@@ -9,40 +9,39 @@ const async = require('asyncawait/async'),
 
 exports.seed = async(function (knex, Promise) {
 
-    let number = 10000,
-        trial = await(knex.select('id').from('storm_plans').where('category', 'Trial').first());
+    /*let data = await(knex.select('*')
+        .from(function () {
+            this.select('id', 'quantity', 'unitPrice', 'discount', 'vat', knex.raw('ROUND((100 * vat)/((quantity * "unitPrice")-discount)) as rate'))
+                .from('invoiceLines')
+                .as('base');
+        })
+        .where('rate', 9));
 
-    if(!trial)
-        throw new Error('Trial is empty');
+    data.forEach(item => {
+        let obj = {vat: 0, tax: 0},
+            amount = (item.quantity * item.unitPrice) - item.discount;
 
-    let branches = await(knex.select('*').from('branches').where('isUnlimited', false).orWhereNull('isUnlimited')),
+        obj.tax = amount * 6 / 100;
+        obj.vat = amount * 3 / 100;
 
-        orders = branches.map(item => ({
-            id: idGenerate(),
-            number: ++number,
-            issuedDate: item.createdAt,
-            branchId: item.id,
-            planId: trial.id,
-            duration: 1,
-            unitPrice: 0,
-            discount: 0
-        })),
-        subscriptions = branches.map(item => ({
-            startDate: item.createdAt,
-            endDate: nextMonth(item.createdAt),
-            planId: trial.id,
-            branchId: item.id,
-            isActiveApi: nextMonth(item.createdAt, 2) <= new Date,
-        }));
+        await(knex('invoiceLines').where({id: item.id}).update(obj));
+    });*/
 
-    await(knex('storm_orders').insert(orders));
-    await(knex('branch_subscriptions').insert(subscriptions));
+    /*let notHaveVat = await(knex.select('*')
+        .from(function () {
+            this.select('id', 'quantity', 'unitPrice', 'discount', 'vat', knex.raw('ROUND((100 * vat)/((quantity * "unitPrice")-discount)) as rate'))
+                .from('invoiceLines')
+                .as('base');
+        })
+        .where('rate', '!=', 9)
+        .orWhereNull('rate'));
+
+    await(knex('invoiceLines').whereIn('id', notHaveVat.map(item => item.id)).update({tax: 0}));*/
+
+    let settingsIs9Vat = await(knex.from('settings').where({vat: 9}));
+
+    await(knex('settings').whereIn('id', settingsIs9Vat.map(item=> item.id)).update({vat: 3, tax: 6}));
+
+
 });
 
-function nextMonth(date, value = 1) {
-    let endDate = new Date(date.valueOf());
-
-    endDate.setMonth(endDate.getMonth() + value);
-
-    return endDate;
-}

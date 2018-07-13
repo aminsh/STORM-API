@@ -22,9 +22,14 @@
       "value": 10000
     },
     {
+      "key": "tax",
+      "display": "مالیات ارزش افزوده",
+      "value": 60
+    },
+    {
       "key": "vat",
-      "display": "ارزش افزوده",
-      "value": 90
+      "display": "عوارض ارزش افزوده",
+      "value": 30
     },
     {
       "key": "discount",

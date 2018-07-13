@@ -17,7 +17,8 @@ EventEmitter.on('on-branch-created', async(function (branchId) {
     await(knex('settings').insert({
         id: Utility.Guid.new(),
         subsidiaryLedgerAccounts: JSON.stringify([]),
-        branchId
+        branchId,
+        tax: 6, vat: 3
     }));
 
     await(knex('treasurySettings').insert({
