@@ -52,7 +52,8 @@ export class PurchaseDomainService extends BaseDomainService {
                             quantity: line.quantity,
                             discount: line.discount,
                             stockId: line.stockId,
-                            vat: line.vat
+                            vat: line.vat,
+                            tax: line.tax
                         }
                     })
                     .toArray()

@@ -135,7 +135,8 @@ export class ReturnPurchaseDomainService {
                         quantity: line.quantity,
                         unitPrice: line.unitPrice,
                         discount: line.discount || 0,
-                        vat: line.vat || 0
+                        vat: line.vat || 0,
+                        tax: line.tax || 0
                     }
                 })
                 .toArray()
