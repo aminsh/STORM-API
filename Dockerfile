@@ -1,7 +1,7 @@
 FROM node:7
 
 EXPOSE 8080
-CMD [ "pm2-docker", "." ]
+CMD [ "nodemon", "." ]
 
 # Create app directory
 RUN mkdir -p /usr/src/app
@@ -10,7 +10,7 @@ WORKDIR /usr/src/app
 # Install app dependencies
 COPY package.json /usr/src/app/
 
-RUN npm install -g gulp babel babel-cli pm2 && npm install
+RUN npm install -g gulp babel babel-cli nodemon && npm install
 
 # Bundle app source
 COPY . /tmp/app
