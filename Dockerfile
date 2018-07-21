@@ -10,7 +10,7 @@ WORKDIR /usr/src/app
 # Install app dependencies
 COPY package.json /usr/src/app/
 
-RUN npm install -g gulp babel babel-cli && npm install
+RUN npm install -g gulp babel babel-cli pm2 && npm install
 
 # Bundle app source
 COPY . /tmp/app
@@ -22,8 +22,3 @@ RUN mkdir /.config && \
 
 RUN npm run build-production
 
-RUN \
-  apt-get -y update && \
-  apt-get -y install postgresql-client-9.4 && \
-  apt-get clean && \
-  rm -rf /var/lib/apt/lists/*
