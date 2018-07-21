@@ -1,7 +1,7 @@
 FROM node:7
 
 EXPOSE 8080
-CMD [ "pm2-runtime", "." ]
+CMD [ "pm2-docker", "." ]
 
 # Create app directory
 RUN mkdir -p /usr/src/app
