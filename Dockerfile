@@ -1,7 +1,7 @@
 FROM node:7
 
 EXPOSE 8080
-CMD [ "nodemon", "." ]
+CMD [ "npm", "start" ]
 
 # Create app directory
 RUN mkdir -p /usr/src/app
