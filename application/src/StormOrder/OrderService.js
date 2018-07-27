@@ -127,7 +127,7 @@ export class StormOrderService {
                         quantity: order.duration,
                         unitPrice: order.unitPrice,
                         discount: order.discount,
-                        vat: 0
+                        vat: 0, tax: 0
                     }
                 ]
             },
@@ -136,7 +136,13 @@ export class StormOrderService {
         if ((order.unitPrice * order.duration - order.discount) === 0)
             return {noPrice: true};
 
-        let result = this.httpRequest.post(`${originalUrl}/v1/sales`)
+        /*let result = this.httpRequest.post(`${originalUrl}/v1/sales`)
+            .body(dto)
+            .setHeader('x-access-token', persistedConfig.get("STORM_BRANCH_TOKEN").value)
+            .execute();*/
+
+        let result = this.httpRequest.post(`${process.env.DELIVERY_URL}/api`)
+            .query({url: '/v1/sales', method: 'POST'})
             .body(dto)
             .setHeader('x-access-token', persistedConfig.get("STORM_BRANCH_TOKEN").value)
             .execute();
