@@ -30,6 +30,11 @@ export class BranchQuery {
                     'webSite',
                     'ownerName',
                     'city',
+                    'nationalCode',
+                    'postalCode',
+                    'fax',
+                    'registrationNumber',
+                    'province',
                     'branches.createdAt')
                     .from(tableName)
                     .leftJoin("userInBranches", "branches.id", "userInBranches.branchId")
@@ -67,6 +72,11 @@ export class BranchQuery {
             webSite: item.webSite,
             ownerName: item.ownerName,
             createdAt: item.createdAt,
+            nationalCode: item.nationalCode,
+            postalCode: item.postalCode,
+            fax: item.fax,
+            registrationNumber: item.registrationNumber,
+            province: item.province,
             createdAtToPersian: Utility.PersianDate.getDate(item.createdAt)
         };
     }

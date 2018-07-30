@@ -22,7 +22,9 @@ export class VerificationDomainService {
 
         this.smsService.sendVerification(mobile, code);
 
-        setTimeout(async.result(()=> this.verificationRepository.remove(entity.id)), 60000);
+        setTimeout(()=>
+            this.verificationRepository.remove(entity.id).then(()=> console.log(`verification code => ${code} removed after 60000 ms`)),
+            60000);
     }
 
     verify(code) {
@@ -32,6 +34,8 @@ export class VerificationDomainService {
             throw new ValidationException(['کد فعالسازی صحیح نیست']);
 
         this.verificationRepository.remove(item.id);
+
+        setTimeout(()=> this.verificationRepository.remove(item.id).then(()=> console.log(`verification code => ${code} removed after confirmed `)));
 
         return {mobile: item.mobile, data: item.data};
     }
