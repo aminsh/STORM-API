@@ -1,7 +1,6 @@
 import {inject, injectable, postConstruct} from "inversify";
 import {TreasurySettingRepository} from "../data/repository.treasury.setting";
 import {JournalRepository} from "../data/repository.journal";
-import {SubsidiaryLedgerAccountDomainService} from "./SubsidiaryLedgerAccountDomainService";
 import {TreasuryChequeDomainService} from "./TreasuryChequeDomainService";
 
 @injectable()

@@ -12,6 +12,7 @@ import * as ThirdParty from "./ThirdParty";
 import * as Settings from "./Settings";
 import * as Product from "./Product";
 import * as FiscalPeriod from "./FiscalPeriod";
+import * as Bookkeeping from "./Bookkeeping";
 
 Database.register(container);
 StormOrder.register(container);
@@ -23,12 +24,13 @@ ThirdParty.register(container);
 Settings.register(container);
 Product.register(container);
 FiscalPeriod.register(container);
+Bookkeeping.register(container);
 
 import {Context} from "./Context";
 import {register} from "./core/expressUtlis";
 
 container.bind("State").to(Context);
-//container.bind("Context").to(Context);
+container.bind("Context").to(Context);
 
 function setConfig(req, res, next) {
 
