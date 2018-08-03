@@ -1,5 +1,5 @@
 import toResult from "asyncawait/await";
-import {BaseRepository} from "./repository.base";
+import {BaseRepository} from "../../core/BaseRepository";
 import {injectable} from "inversify";
 
 @injectable()
@@ -30,6 +30,14 @@ export class GeneralLedgerAccountRepository extends BaseRepository {
             query.andWhere('id', '!=', notEqualId);
 
         return toResult(query.first());
+    }
+
+    findByCategory(groupingType){
+
+        return toResult(
+            this.knex.from('generalLedgerAccounts')
+                .where({groupingType})
+        );
     }
 
     create(entity) {

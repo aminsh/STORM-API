@@ -2,7 +2,6 @@ export * from "./BankDomainService";
 export * from "./DetailAccountDomainService";
 export * from "./FiscalPeriodDomainService";
 export * from "./FundDomainService";
-export * from "./GeneralLedgerAccountDomainService";
 export * from "./InputPurchaseDomainService";
 export * from "./InputReturnInvoiceDomainService";
 export * from "./InventoryControlDomainService";
@@ -20,7 +19,6 @@ export * from "./ProductCategoryDomainService";
 export * from "./ScaleDomainService";
 export * from "./SettingsDomainService";
 export * from "./StockDomainService";
-export * from "./SubsidiaryLedgerAccountDomainService";
 export * from "./InvoiceInventoryDomainService";
 export * from "./JournalInvoiceGenerationDomainService"
 export * from "./InventoryIOTypeDomainService";

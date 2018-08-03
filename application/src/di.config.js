@@ -6,8 +6,7 @@ import {HttpRequest} from "./core/HttpRequest";
 import {UnitOfWork} from "./core/UnitOfWork";
 
 import {
-    DetailAccountRepository,
-    GeneralLedgerAccountRepository,
+    //GeneralLedgerAccountRepository,
     InventoryRepository,
     InvoiceRepository,
     JournalGenerationTemplateRepository,
@@ -15,7 +14,7 @@ import {
     PaymentRepository,
     SettingsRepository,
     StockRepository,
-    SubsidiaryLedgerAccountRepository,
+    //SubsidiaryLedgerAccountRepository,
     InventoryIOTypeRepository,
     TreasuryRepository,
     BanksNameRepository,
@@ -29,9 +28,8 @@ import {
 } from "./domain/data";
 import {
     BankDomainService,
-    DetailAccountDomainService,
     FundDomainService,
-    GeneralLedgerAccountDomainService,
+    //GeneralLedgerAccountDomainService,
     InputPurchaseDomainService,
     InputReturnInvoiceDomainService,
     InventoryControlDomainService,
@@ -48,7 +46,7 @@ import {
     ScaleDomainService,
     SettingsDomainService,
     StockDomainService,
-    SubsidiaryLedgerAccountDomainService,
+    //SubsidiaryLedgerAccountDomainService,
     InvoiceInventoryDomainService,
     JournalInvoiceGenerationDomainService,
     ReturnPurchaseDomainService,
@@ -127,8 +125,7 @@ container.bind("Factory<PaymentGateway>").toFactory(context => {
     };
 });
 
-container.bind("DetailAccountRepository").to(DetailAccountRepository).inRequestScope();
-container.bind("GeneralLedgerAccountRepository").to(GeneralLedgerAccountRepository).inRequestScope();
+//container.bind("GeneralLedgerAccountRepository").to(GeneralLedgerAccountRepository).inRequestScope();
 container.bind("InventoryRepository").to(InventoryRepository).inRequestScope();
 container.bind("InvoiceRepository").to(InvoiceRepository).inRequestScope();
 container.bind("JournalRepository").to(JournalRepository).inRequestScope();
@@ -136,7 +133,6 @@ container.bind("JournalGenerationTemplateRepository").to(JournalGenerationTempla
 container.bind("PaymentRepository").to(PaymentRepository).inRequestScope();
 container.bind("SettingsRepository").to(SettingsRepository).inRequestScope();
 container.bind("StockRepository").to(StockRepository).inRequestScope();
-container.bind("SubsidiaryLedgerAccountRepository").to(SubsidiaryLedgerAccountRepository).inRequestScope();
 container.bind("InventoryIOTypeRepository").to(InventoryIOTypeRepository).inRequestScope();
 container.bind("TreasuryRepository").to(TreasuryRepository).inRequestScope();
 container.bind("BanksNameRepository").to(BanksNameRepository).inRequestScope();
@@ -149,9 +145,7 @@ container.bind("VerificationRepository").to(VerificationRepository).inSingletonS
 container.bind("PermissionRepository").to(PermissionRepository).inRequestScope();
 
 container.bind("BankDomainService").to(BankDomainService).inRequestScope();
-container.bind("DetailAccountDomainService").to(DetailAccountDomainService).inRequestScope();
 container.bind("FundDomainService").to(FundDomainService).inRequestScope();
-container.bind("GeneralLedgerAccountDomainService").to(GeneralLedgerAccountDomainService).inRequestScope();
 container.bind("InputPurchaseDomainService").to(InputPurchaseDomainService).inRequestScope();
 container.bind("InputReturnInvoiceDomainService").to(InputReturnInvoiceDomainService).inRequestScope();
 container.bind("InventoryControlDomainService").to(InventoryControlDomainService).inRequestScope();
@@ -168,7 +162,6 @@ container.bind("ProductCategoryDomainService").to(ProductCategoryDomainService).
 container.bind("ScaleDomainService").to(ScaleDomainService).inRequestScope();
 container.bind("SettingsDomainService").to(SettingsDomainService).inRequestScope();
 container.bind("StockDomainService").to(StockDomainService).inRequestScope();
-container.bind("SubsidiaryLedgerAccountDomainService").to(SubsidiaryLedgerAccountDomainService).inRequestScope();
 container.bind("InvoiceInventoryDomainService").to(InvoiceInventoryDomainService).inRequestScope();
 container.bind("JournalInvoiceGenerationDomainService").to(JournalInvoiceGenerationDomainService).inRequestScope();
 container.bind("ReturnPurchaseDomainService").to(ReturnPurchaseDomainService).inRequestScope();

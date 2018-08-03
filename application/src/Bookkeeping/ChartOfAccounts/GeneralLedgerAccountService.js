@@ -1,7 +1,7 @@
 import {inject, injectable} from "inversify";
 
 @injectable()
-export class GeneralLedgerAccountDomainService {
+export class GeneralLedgerAccountService {
 
     /** @type {GeneralLedgerAccountRepository}*/
     @inject("GeneralLedgerAccountRepository") generalLedgerAccountRepository = undefined;

@@ -1,8 +1,8 @@
 import {inject, injectable, postConstruct} from "inversify";
-import {TreasurySettingRepository} from "../data/repository.treasury.setting";
+import {TreasurySettingRepository} from "../../domain/data/repository.treasury.setting";
 
 @injectable()
-export class SubsidiaryLedgerAccountDomainService {
+export class SubsidiaryLedgerAccountService {
 
     /**@type {SettingsRepository}*/
     @inject("SettingsRepository") settingsRepository = undefined;

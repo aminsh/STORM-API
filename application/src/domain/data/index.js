@@ -1,5 +1,4 @@
-export * from "./repository.detailAccount";
-export * from "./repository.generalLedgerAccount";
+//export * from "../../Journal/ChartOfAccounts/GeneralLedgerAccountRepository";
 export * from "./repository.inventory";
 export * from "./repository.invoice";
 export * from "./repository.journal";
@@ -8,7 +7,6 @@ export * from "./repository.payment";
 
 export * from "./repository.setting";
 export * from "./repository.stock";
-export * from "./repository.subsidiaryLedgerAccount";
 export * from "./repository.inventoryIOType";
 export * from "./repository.treasury";
 export * from "./repository.banksName";

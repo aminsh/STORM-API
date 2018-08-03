@@ -92,7 +92,6 @@ function registerRoutes() {
     }));
 
     app.use('/v1/account-review', require('../accounting/server/routes/api.accountReview'));
-    app.use('/v1/detail-accounts', require('../accounting/server/routes/api.detailAccount'));
     app.use('/v1/detail-account-categories', require('../accounting/server/routes/api.detailAccountCategory'));
     app.use('/v1/banks', require('../accounting/server/routes/api.bank'));
     app.use('/v1/people', require('../accounting/server/routes/api.people'));
@@ -100,10 +99,8 @@ function registerRoutes() {
     app.use('/v1/dimensions', require('../accounting/server/routes/api.dimension'));
     app.use('/v1/dimension-categories', require('../accounting/server/routes/api.dimensionCategory'));
 
-    app.use('/v1/general-ledger-accounts', require('../accounting/server/routes/api.generalLedgerAccount'));
     app.use('/v1/journals', require('../accounting/server/routes/api.journal'));
     app.use('/v1/journal-templates', require('../accounting/server/routes/api.journalTemplate'));
-    app.use('/v1/subsidiary-ledger-accounts', require('../accounting/server/routes/api.subsidiaryLedgerAccount'));
     app.use('/v1/tags', require('../accounting/server/routes/api.tag'));
     app.use('/v1/reports', require('../accounting/server/routes/api.report'));
     app.use('/v1/sales', require('../accounting/server/routes/api.sale'));
