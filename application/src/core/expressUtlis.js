@@ -78,7 +78,7 @@ export function NoLog() {
     }
 }
 
-export function register( container, setConfig, setErrorConfig, app = express()) {
+export function register(container, setConfig, setErrorConfig, app = express()) {
 
     app.use(compression());
     app.use(cors());
@@ -117,7 +117,11 @@ export function register( container, setConfig, setErrorConfig, app = express())
                         if (!res.headersSent) {
 
                             if (typeof value !== 'undefined')
-                                res.send(value);
+
+                                if (typeof value === 'number')
+                                    res.json(value);
+                                else
+                                    res.send(value);
                             else
                                 res.sendStatus(200);
                         }
