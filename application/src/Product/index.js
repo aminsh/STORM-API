@@ -9,6 +9,9 @@ import {ProductCategoryRepository} from "./ProductCategoryRepository";
 import {ScaleQuery} from "./ScaleQuery";
 import {ScaleService} from "./ScaleService";
 import {ScaleRepository} from "./ScaleRepository";
+import {ProductInventoryTransactionalRepository} from "./ProductInventoryTransactionalRepository";
+import {ProductInventoryService} from "./ProductInventoryService";
+import {ProductInventoryEventListener} from "./ProductInventoryEventListener";
 
 import "./ProductController";
 import "./ProductCategoryController";
@@ -27,5 +30,9 @@ export function register(container) {
     container.bind("ScaleQuery").to(ScaleQuery);
     container.bind("ScaleService").to(ScaleService);
     container.bind("ScaleRepository").to(ScaleRepository);
+
+    container.bind("ProductInventoryService").to(ProductInventoryService).inTransientScope();
+    container.bind("ProductInventoryTransactionalRepository").to(ProductInventoryTransactionalRepository).inTransientScope();
+    container.bind("ProductInventoryEventListener").to(ProductInventoryEventListener);
 
 }
