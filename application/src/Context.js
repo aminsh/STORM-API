@@ -12,4 +12,8 @@ export class Context {
     get branchId() {
         return this._httpContext.request.branchId;
     }
+
+    get fiscalPeriodId() {
+        return this._httpContext.request.fiscalPeriodId;
+    }
 }
