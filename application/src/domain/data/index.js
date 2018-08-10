@@ -1,6 +1,5 @@
 //export * from "../../Journal/ChartOfAccounts/GeneralLedgerAccountRepository";
 export * from "./repository.inventory";
-export * from "./repository.invoice";
 export * from "./repository.journal";
 export * from "./repository.journalGenerationTemplate";
 export * from "./repository.payment";

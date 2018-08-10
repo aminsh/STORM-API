@@ -10,7 +10,7 @@ export class InventoryInputDomainService {
     @inject("InventoryOutputDomainService") inventoryOutputDomainService = undefined;
 
     /** @type {InventoryControlDomainService}*/
-    @inject("InventoryControlDomainService") inventoryControlDomainService = undefined;
+    /*@inject("InventoryControlDomainService") inventoryControlDomainService = undefined;*/
 
     /** @type {SettingsRepository}*/
     @inject("SettingsRepository") settingsRepository = undefined;

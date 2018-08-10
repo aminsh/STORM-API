@@ -6,7 +6,7 @@ const PersianDate = Utility.PersianDate;
 export class InventoryOutputDomainService {
 
     /** @type {InventoryControlDomainService}*/
-    @inject("InventoryControlDomainService") inventoryControlDomainService = undefined;
+    /*@inject("InventoryControlDomainService") inventoryControlDomainService = undefined;*/
 
     /** @type {ProductRepository}*/
     @inject("ProductRepository") productRepository = undefined;

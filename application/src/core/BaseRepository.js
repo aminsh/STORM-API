@@ -46,6 +46,8 @@ export class BaseRepository {
     }
 
     get transaction() {
+        const knex = this.knex;
+
         return toResult(new Promise(resolve => knex.transaction(trx => resolve(trx))));
     }
 

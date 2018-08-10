@@ -4,7 +4,6 @@ export * from "./FiscalPeriodDomainService";
 export * from "./FundDomainService";
 export * from "./InputPurchaseDomainService";
 export * from "./InputReturnInvoiceDomainService";
-export * from "./InventoryControlDomainService";
 export * from "./InventoryInputDomainService";
 export * from "./InventoryOutputDomainService";
 export * from "./InvoiceDomainService";
@@ -38,7 +37,6 @@ export * from "./TreasuryDomainService";
 export * from "./InventoryAccountingDomainService";
 export * from "./InventoryDomainService";
 
-export * from "./PurchaseDomainService";
 export * from "./DimensionDomainService";
 export * from "./PermissionDomainService";
 export * from "./UserPermissionsControlDomainService";

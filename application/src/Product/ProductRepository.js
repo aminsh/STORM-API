@@ -1,6 +1,8 @@
 import toResult from "asyncawait/await";
 import {BaseRepository} from "../core/BaseRepository";
+import {injectable} from "inversify"
 
+@injectable()
 export class ProductRepository extends BaseRepository {
 
     findById(id) {
@@ -40,12 +42,12 @@ export class ProductRepository extends BaseRepository {
             .first());
     }
 
-    findByReferenceId(referenceId , notEqualId) {
+    findByReferenceId(referenceId, notEqualId) {
         let query = this.knex.table('products')
             .modify(this.modify, this.branchId)
             .where('referenceId', referenceId);
 
-        if(notEqualId)
+        if (notEqualId)
             query.where('id', '!=', notEqualId);
 
         return toResult(query.first());
@@ -74,7 +76,7 @@ export class ProductRepository extends BaseRepository {
             .where('id', id).del());
     }
 
-    isExistsCategory(categoryId){
+    isExistsCategory(categoryId) {
         return toResult(this.knex.select('id')
             .from('products')
             .modify(this.modify, this.branchId)
@@ -82,7 +84,7 @@ export class ProductRepository extends BaseRepository {
             .first())
     }
 
-    isExistsScale(scaleId){
+    isExistsScale(scaleId) {
         return toResult(this.knex.select('id')
             .from('products')
             .modify(this.modify, this.branchId)
