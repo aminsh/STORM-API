@@ -103,8 +103,6 @@ function registerRoutes() {
     app.use('/v1/journal-templates', require('../accounting/server/routes/api.journalTemplate'));
     app.use('/v1/tags', require('../accounting/server/routes/api.tag'));
     app.use('/v1/reports', require('../accounting/server/routes/api.report'));
-    app.use('/v1/sales', require('../accounting/server/routes/api.sale'));
-    app.use('/v1/purchases', require('../accounting/server/routes/api.purchase'));
     app.use('/v1/settings', require('../accounting/server/routes/api.setting'));
     app.use('/v1/bank-and-fund', require('../accounting/server/routes/api.bankAndFund'));
     app.use('/v1/stocks', require('../accounting/server/routes/api.stock'));

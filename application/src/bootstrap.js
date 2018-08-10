@@ -11,8 +11,13 @@ import * as Constants from "./Constants";
 import * as ThirdParty from "./ThirdParty";
 import * as Settings from "./Settings";
 import * as Product from "./Product";
+import * as Person from "./Person";
 import * as FiscalPeriod from "./FiscalPeriod";
 import * as Bookkeeping from "./Bookkeeping";
+import * as Invoice from "./Invoice";
+import * as Sale from "./Sale";
+import * as Purchase from "./Purchase";
+import * as Inventory from "./Inventory";
 
 Database.register(container);
 StormOrder.register(container);
@@ -23,8 +28,13 @@ Constants.register(container);
 ThirdParty.register(container);
 Settings.register(container);
 Product.register(container);
+Person.register(container);
 FiscalPeriod.register(container);
 Bookkeeping.register(container);
+Invoice.register(container);
+Sale.register(container);
+Purchase.register(container);
+Inventory.register(container);
 
 import {Context} from "./Context";
 import {register} from "./core/expressUtlis";
