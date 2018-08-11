@@ -1,7 +1,7 @@
 import toResult from "asyncawait/await";
 import {BaseRepository} from "./repository.base";
 import {injectable, inject} from "inversify";
-import objectQueryMapper from "../services/queryObjectMapper";
+//import objectQueryMapper from "../services/queryObjectMapper";
 
 @injectable()
 export class InventoryRepository extends BaseRepository {
