@@ -9,6 +9,7 @@ export class SettingsQuery extends BaseQuery {
 
         return toResult(this.knex.select(
             'vat',
+            'tax',
             'bankId',
             'canControlInventory',
             'canCreateSaleOnNoEnoughInventory',

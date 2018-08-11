@@ -1,4 +1,6 @@
 import {StockRepository} from "./StockRepository";
+import {StockQuery} from "./StockQuery";
+import {StockService} from "./StockService";
 import {InventoryRepository} from "./InventoryRepository";
 import {InventoryControlTurnoverService} from "./InventoryControlTurnoverService";
 import {InputService} from "./InputService";
@@ -7,21 +9,32 @@ import {InventoryIOTypeRepository} from "./InventoryIOTypeRepository";
 import {InventoryService} from "./InventoryService";
 import {SaleCompareHistoryService} from "./SaleCompareHistoryService";
 import {PurchaseCompareHistoryService} from "./PurchaseCompareHistoryService";
+import {InventoryIOTypeService} from "./InventoryIOTypeService";
+import {InventoryIOTypeQuery} from "./InventoryIOTypeQuery";
 
 import {SaleEventListener} from "./SaleEventListener";
 import {PurchaseEventListener} from "./PurchaseEventListener";
 import {InputEventListener} from "./InputEventListener";
 import {OutputEventListener} from "./OutputEventListener";
 
+import "./InventoryIOTypeController";
+import "./StockController";
+
 export function register(container) {
 
     container.bind("StockRepository").to(StockRepository);
+    container.bind("StockQuery").to(StockQuery);
+    container.bind("StockService").to(StockService);
+
     container.bind("InventoryRepository").to(InventoryRepository);
     container.bind("InventoryControlTurnoverService").to(InventoryControlTurnoverService);
 
     container.bind("InputService").to(InputService);
     container.bind("OutputService").to(OutputService);
+
     container.bind("InventoryIOTypeRepository").to(InventoryIOTypeRepository);
+    container.bind("InventoryIOTypeService").to(InventoryIOTypeService);
+    container.bind("InventoryIOTypeQuery").to(InventoryIOTypeQuery);
 
     container.bind("InventoryService").to(InventoryService);
 

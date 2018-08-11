@@ -17,10 +17,10 @@ export * from "./PersonDomainService";
 export * from "./ProductCategoryDomainService";
 export * from "./ScaleDomainService";
 export * from "./SettingsDomainService";
-export * from "./StockDomainService";
+//export * from "../../Inventory/StockService";
 export * from "./InvoiceInventoryDomainService";
 export * from "./JournalInvoiceGenerationDomainService"
-export * from "./InventoryIOTypeDomainService";
+//export * from "../../Inventory/InventoryIOTypeService";
 export * from "./ReturnPurchaseDomainService";
 export * from "./OutputReturnPurchaseDomainService";
 export * from "./TreasuryCashDomainService";
