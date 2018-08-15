@@ -1,8 +1,7 @@
-
 import {inject, injectable} from "inversify";
 
 @injectable()
-export class DimensionDomainService {
+export class DimensionService {
     /** @type {DimensionRepository} */
     @inject("DimensionRepository") dimensionRepository = undefined;
 

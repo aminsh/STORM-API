@@ -1,5 +1,5 @@
 import toResult from "asyncawait/await";
-import {BaseRepository} from "./repository.base";
+import {BaseRepository} from "../../core/BaseRepository";
 import {injectable} from "inversify";
 
 @injectable()
