@@ -1,10 +1,10 @@
 import {inject, injectable} from "inversify";
 
 @injectable()
-export class BankDomainService {
+export class BankService {
 
-    /**@type {DetailAccountDomainService}*/
-    @inject("DetailAccountDomainService") detailAccountDomainService = undefined;
+    /**@type {DetailAccountService}*/
+    @inject("DetailAccountService") detailAccountService = undefined;
 
     /**@type {SettingsRepository}*/
     @inject("SettingsRepository") settingsRepository = undefined;
@@ -12,11 +12,11 @@ export class BankDomainService {
     create(cmd) {
         cmd.detailAccountType = 'bank';
 
-        return this.detailAccountDomainService.create(cmd);
+        return this.detailAccountService.create(cmd);
     }
 
     update(id, cmd) {
-        this.detailAccountDomainService.update(id, cmd);
+        this.detailAccountService.update(id, cmd);
     }
 
     remove(id) {
@@ -29,7 +29,7 @@ export class BankDomainService {
         if (errors.length > 0)
             throw new ValidationException(errors);
 
-        this.detailAccountDomainService.remove(id);
+        this.detailAccountService.remove(id);
     }
 }
 
