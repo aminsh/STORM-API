@@ -1,7 +1,7 @@
-export * from "./BankDomainService";
+export * from "../../BankAndFund/BankService";
 export * from "./DetailAccountDomainService";
 export * from "./FiscalPeriodDomainService";
-export * from "./FundDomainService";
+export * from "../../BankAndFund/FundService";
 export * from "./InputPurchaseDomainService";
 export * from "./InputReturnInvoiceDomainService";
 export * from "./InventoryInputDomainService";
@@ -27,7 +27,7 @@ export * from "./TreasuryCashDomainService";
 export * from "./TreasuryChequeDomainService";
 export * from "./TreasuryDemandNoteDomainService";
 export * from "./TreasuryReceiptDomainService";
-export * from "./BanksNameDomainService";
+export * from "../../Treasury/BanksNameService";
 export * from "./PayableChequeCategoryDomainService";
 export * from "./PayableChequeDomainService";
 export * from "./TreasuryJournalGenerationDomainService";
@@ -37,7 +37,7 @@ export * from "./TreasuryDomainService";
 export * from "./InventoryAccountingDomainService";
 export * from "./InventoryDomainService";
 
-export * from "./DimensionDomainService";
+//export * from "../../Bookkeeping/Dimension/DimensionDomainService";
 export * from "./PermissionDomainService";
 export * from "./UserPermissionsControlDomainService";
 export * from "./TreasurySettingDomainService";
