@@ -42,4 +42,4 @@ export * from "./PermissionDomainService";
 export * from "./UserPermissionsControlDomainService";
 export * from "./TreasurySettingDomainService";
 
-export * from "./VerificationDomainService";
+export * from "../../Verification/VerificationService";

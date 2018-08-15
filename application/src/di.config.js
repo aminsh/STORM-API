@@ -63,10 +63,6 @@ import {ReturnSaleEventListener} from "./domain/eventHandlers/ReturnSaleEventLis
 import {TreasuryEventListener} from "./domain/eventHandlers/TreasuryEventListener";
 import {ChequeEventListener} from "./domain/eventHandlers/ChequeEventListener";
 
-import {PaypingInterfacePaymentGateway} from "./integration/paymentGateway/payping/PaypingInterfacePaymentGateway";
-import {ZarinpalInterfacePaymentGateway} from "./integration/paymentGateway/zarinpal/ZarinpalInterfacePaymentGateway";
-import {KaveNegarSmsService} from "./integration/smsService/KaveNegar"
-
 const container = new Container({defaultScope: "Request"});
 
 container.bind("CommandBus").to(CommandBus).inRequestScope();
@@ -74,7 +70,6 @@ container.bind("EventBus").to(EventBus).inRequestScope();
 container.bind("UserEventHandler").to(UserEventHandler).inRequestScope();
 container.bind("UnitOfWork").to(UnitOfWork).inTransientScope();
 container.bind("HttpRequest").to(HttpRequest).inSingletonScope();
-container.bind("SmsService").to(KaveNegarSmsService).inSingletonScope();
 
 container.bind("Factory<Repository>").toFactory(context => {
     return (name) => context.container.get(name);
@@ -88,25 +83,6 @@ container.bind("Factory<EventHandler>").toFactory(context => {
     return (name) => context.container.get(name);
 });
 
-container.bind("Factory<ThirdParty>").toFactory(context => {
-    return key => {
-        if (key === 'payping')
-            return context.container.get("PaypingInterfacePaymentGateway");
-
-        if(key === 'zarinpal')
-            return context.container.get("ZarinpalInterfacePaymentGateway");
-    };
-});
-
-container.bind("Factory<PaymentGateway>").toFactory(context => {
-    return key => {
-        if (key === 'payping')
-            return context.container.get("PaypingInterfacePaymentGateway");
-
-        if(key === 'zarinpal')
-            return context.container.get("ZarinpalInterfacePaymentGateway");
-    };
-});
 
 container.bind("JournalRepository").to(JournalRepository).inRequestScope();
 container.bind("JournalGenerationTemplateRepository").to(JournalGenerationTemplateRepository).inRequestScope();
@@ -116,7 +92,6 @@ container.bind("BanksNameRepository").to(BanksNameRepository).inRequestScope();
 container.bind("TreasurySettingRepository").to(TreasurySettingRepository).inRequestScope();
 container.bind("ChequeCategoryRepository").to(ChequeCategoryRepository).inRequestScope();
 container.bind("TreasuryPurposeRepository").to(TreasuryPurposeRepository).inRequestScope();
-container.bind("VerificationRepository").to(VerificationRepository).inSingletonScope();
 container.bind("PermissionRepository").to(PermissionRepository).inRequestScope();
 
 container.bind("InputPurchaseDomainService").to(InputPurchaseDomainService).inRequestScope();
@@ -127,11 +102,6 @@ container.bind("InvoiceDomainService").to(InvoiceDomainService).inRequestScope()
 container.bind("InvoiceReturnDomainService").to(InvoiceReturnDomainService).inRequestScope();
 container.bind("JournalDomainService").to(JournalDomainService).inRequestScope();
 container.bind("JournalGenerationTemplateDomainService").to(JournalGenerationTemplateDomainService).inRequestScope();
-container.bind("PaymentDomainService").to(PaymentDomainService).inRequestScope();
-container.bind("PersonDomainService").to(PersonDomainService).inRequestScope();
-container.bind("ProductCategoryDomainService").to(ProductCategoryDomainService).inRequestScope();
-container.bind("ScaleDomainService").to(ScaleDomainService).inRequestScope();
-container.bind("SettingsDomainService").to(SettingsDomainService).inRequestScope();
 container.bind("InvoiceInventoryDomainService").to(InvoiceInventoryDomainService).inRequestScope();
 container.bind("JournalInvoiceGenerationDomainService").to(JournalInvoiceGenerationDomainService).inRequestScope();
 container.bind("ReturnPurchaseDomainService").to(ReturnPurchaseDomainService).inRequestScope();
@@ -140,7 +110,6 @@ container.bind("TreasuryChequeDomainService").to(TreasuryChequeDomainService).in
 container.bind("TreasuryCashDomainService").to(TreasuryCashDomainService).inRequestScope();
 container.bind("TreasuryReceiptDomainService").to(TreasuryReceiptDomainService).inRequestScope();
 container.bind("TreasuryDemandNoteDomainService").to(TreasuryDemandNoteDomainService).inRequestScope();
-container.bind("BanksNameDomainService").to(BanksNameDomainService).inRequestScope();
 container.bind("PayableChequeCategoryDomainService").to(PayableChequeCategoryDomainService).inRequestScope();
 container.bind("PayableChequeDomainService").to(PayableChequeDomainService).inRequestScope();
 container.bind("TreasuryJournalGenerationDomainService").to(TreasuryJournalGenerationDomainService).inRequestScope();
@@ -149,8 +118,6 @@ container.bind("TreasuryPurposeDomainService").to(TreasuryPurposeDomainService).
 container.bind("TreasuryDomainService").to(TreasuryDomainService).inRequestScope();
 container.bind("TreasurySettingDomainService").to(TreasurySettingDomainService).inRequestScope();
 container.bind("InventoryAccountingDomainService").to(InventoryAccountingDomainService).inRequestScope();
-container.bind("InventoryDomainService").to(InventoryDomainService).inRequestScope();
-container.bind("VerificationDomainService").to(VerificationDomainService).inSingletonScope();
 container.bind("PermissionDomainService").to(PermissionDomainService).inRequestScope();
 container.bind("UserPermissionsControlDomainService").to(UserPermissionsControlDomainService).inRequestScope();
 

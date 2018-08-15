@@ -16,4 +16,4 @@ export * from "./repository.treasury.purpose";
 export * from "../../Bookkeeping/Dimension/DimensionRepository";
 export * from "../../Bookkeeping/Dimension/DimensionCategoryRepository";
 export * from "./repository.permission";
-export * from "./VerificationRepository";
+export * from "../../Verification/VerificationRepository";
