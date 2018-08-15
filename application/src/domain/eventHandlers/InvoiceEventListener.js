@@ -53,9 +53,18 @@ export class InvoiceEventListener {
 
     }
 
-    @eventHandler("invoicePaymentChanged")
-    onPaymentChanged(invoiceId) {
+    @eventHandler("invoicesPaymentChanged")
+    onPaymentChanged(invoiceIds) {
 
+        if (Array.isArray(invoiceIds)){
+            invoiceIds.forEach(id => {
+                this.paymentChanged(id);
+            })
+        }
+        else this.paymentChanged(invoiceIds);
+
+    }
+    paymentChanged(invoiceId) {
         let invoice = this.invoiceRepository.findById(invoiceId);
 
         if (invoice.invoiceType === 'sale')
@@ -84,6 +93,5 @@ export class InvoiceEventListener {
 
         if(sumRemainder <= 0)
             this.invoiceRepository.update(invoiceId, {invoiceStatus: 'paid'});
-
     }
 }

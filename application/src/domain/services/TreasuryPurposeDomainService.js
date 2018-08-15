@@ -43,7 +43,7 @@ export class TreasuryPurposeDomainService {
             id: cmd.id,
             treasuryId: cmd.treasuryId || cmd.treasury.receiveId || null,
             reference: cmd.reference,
-            referenceId: cmd.referenceId,
+            referenceIds: cmd.referenceIds,
             treasury: cmd.treasury || null
         }
     }
@@ -51,24 +51,76 @@ export class TreasuryPurposeDomainService {
     _validate(entity) {
 
         let errors = [],
-            invoice = entity.reference === 'invoice' ? this.invoiceRepository.findById(entity.referenceId) : null;
+            referenceIdsNotHaveInvoices = entity.referenceIds
+                .map(refId => this.invoiceRepository.findById(refId))
+                .filter(invoice => invoice === null);
 
-        if (!invoice)
-            errors.push('فاکتور ثبت نشده است!');
+        if (referenceIdsNotHaveInvoices.length > 0)
+            errors.push('فاکتور(های) موردنظر وجود ندارند!');
 
         return errors;
+    }
+
+    sumReferencesAmount(referenceIds){
+        let totalPrice = [];
+        referenceIds.forEach(refId => {
+            let invoice = this.invoiceRepository.findById(refId),
+                sumCharges = (invoice.charges || []).asEnumerable()
+                    .sum(c => c.value),
+                sumChargesVatIncluded = (invoice.charges || []).asEnumerable()
+                    .where(e => e.vatIncluded)
+                    .sum(e => e.value),
+                invoiceDiscount = invoice.discount || 0,
+
+                lineHaveVat = invoice.invoiceLines.asEnumerable().firstOrDefault(e => e.vat !== 0),
+                persistedVat = lineHaveVat
+                    ? (100 * lineHaveVat.vat / (((lineHaveVat.quantity * lineHaveVat.unitPrice) - lineHaveVat.discount)))
+                    : 0,
+
+                totalPrice = invoice.invoiceLines.asEnumerable()
+                        .sum(line => line.quantity * line.unitPrice - line.discount + line.vat)
+                    - invoiceDiscount +
+                    sumCharges + (sumChargesVatIncluded * persistedVat / 100)
+
+            totalPrice.push(totalPrice);
+
+        });
+        return totalPrice.asEnumerable().sum(tPrice => tPrice)
     }
 
     create(cmd) {
 
         let entity = this.mapToEntity(cmd),
-            errors = this._validate(entity);
+            errors = this._validate(entity),
+            referenceIds = entity.referenceIds;
 
         if (errors.length > 0)
             throw new ValidationException(errors);
 
-        if (entity.treasuryId && entity.treasury.documentType !== 'spendCheque')
+        if (entity.treasuryId && entity.treasury.documentType !== 'spendCheque') {
+            let treasuryPurposes = this.treasuryPurposeRepository.findReferenceIdsByTreasuryId(entity.treasuryId)
+                .asEnumerable().select(item => item.referenceId).toArray();
+
+            let shouldDeletedPurpose = treasuryPurposes.asEnumerable()
+                    .where(tp => !entity.referenceIds.asEnumerable().any(refId => refId == tp))
+                    .toArray(),
+                shouldAddedPurpose = entity.referenceIds.asEnumerable()
+                    .where(refId => !treasuryPurposes.asEnumerable().any(tp => tp == refId))
+                    .toArray();
             this.treasuryDomainService.update(entity.treasuryId, entity.treasury);
+
+            if (shouldAddedPurpose.asEnumerable().any()) {
+                shouldAddedPurpose.forEach(refId => {
+                    entity.referenceId = refId;
+                    this.treasuryPurposeRepository.create(entity);
+                })
+            }
+            if (shouldDeletedPurpose.asEnumerable().any()) {
+                shouldDeletedPurpose.forEach(refId => {
+                    this.treasuryPurposeRepository.removeByReferenceId(refId);
+                });
+            }
+        }
 
         else {
             if (entity.treasury.documentType === 'cheque')
@@ -87,13 +139,17 @@ export class TreasuryPurposeDomainService {
 
                 entity.treasuryId = this.treasuryChequeDomainService.chequeSpend(entity.treasury);
             }
+            entity.referenceIds.forEach(refId => {
+                entity.referenceId = refId;
+                this.treasuryPurposeRepository.create(entity);
+            });
         }
 
         Utility.delay(500);
 
-        entity = this.treasuryPurposeRepository.create(entity);
+        //entity = this.treasuryPurposeRepository.create(entity);
 
-        this.eventBus.send("invoicePaymentChanged", entity.referenceId);
+        this.eventBus.send("invoicesPaymentChanged", referenceIds);
 
         return entity.id;
     }
