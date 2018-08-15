@@ -1,7 +1,8 @@
 import {BaseQuery} from "../core/BaseQuery";
 import toResult from "asyncawait/await";
-import {inject} from "inversify";
+import {inject, injectable} from "inversify";
 
+@injectable()
 export class ProductCategoryQuery extends BaseQuery {
 
     @inject("Enums") enums = undefined;

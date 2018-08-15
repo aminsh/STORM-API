@@ -18,6 +18,13 @@ class ProductController {
         return this.productQuery.getAll(req.query);
     }
 
+    @Get("/goods")
+    @async()
+    getAllGoods(req) {
+
+        return this.productQuery.getAllGoods(req.query);
+    }
+
     @Post("/")
     @async()
     create(req) {
