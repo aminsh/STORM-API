@@ -1,8 +1,7 @@
 import {inject, injectable} from "inversify";
-import {BanksNameRepository} from "../data/repository.banksName";
 
 @injectable()
-export class BanksNameDomainService {
+export class BanksNameService {
 
     /**@type {BanksNameRepository}*/
     @inject("BanksNameRepository") banksNameRepository = undefined;
