@@ -22,6 +22,8 @@ import * as Sale from "./Sale";
 import * as Purchase from "./Purchase";
 import * as Inventory from "./Inventory";
 import * as BankAndFund from "./BankAndFund";
+import * as Verification from "./Verification";
+import * as Integration from "./Integration";
 
 Database.register(container);
 StormOrder.register(container);
@@ -40,6 +42,8 @@ Sale.register(container);
 Purchase.register(container);
 Inventory.register(container);
 BankAndFund.register(container);
+Verification.register(container);
+Integration.register(container);
 
 import {Context} from "./Context";
 import {register} from "./core/expressUtlis";

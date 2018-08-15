@@ -1,6 +1,5 @@
 import {injectable, inject} from "inversify";
 import md5 from "md5";
-import async from "asyncawait/async";
 
 const Enums = instanceOf('Enums'),
     TokenGenerator = instanceOf('TokenGenerator');
@@ -11,8 +10,8 @@ export class UserService {
     @inject("UserRepository")
     /** @type {UserRepository}*/ userRepository = undefined;
 
-    @inject("VerificationDomainService")
-    /** @type{VerificationDomainService} */ verificationDomainService = undefined;
+    @inject("VerificationService")
+    /** @type{VerificationService} */ verificationService = undefined;
 
     @inject("SmsService")
     /** @type{SmsService}*/ smsService = undefined;
@@ -115,7 +114,7 @@ export class UserService {
     sendMobileVerification(user) {
 
         try {
-            this.verificationDomainService.send(user.mobile, {userId: user.id});
+            this.verificationService.send(user.mobile, {userId: user.id});
 
             return {duration: 60000};
         }
@@ -169,7 +168,7 @@ export class UserService {
 
     verifyMobile(code) {
 
-        let result = this.verificationDomainService.verify(code);
+        let result = this.verificationService.verify(code);
 
         this.userRepository.update(result.data.userId, {mobile: result.mobile, isActiveMobile: true, state: 'active'});
 

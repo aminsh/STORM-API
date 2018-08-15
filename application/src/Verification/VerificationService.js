@@ -2,7 +2,7 @@ import {inject, injectable} from "inversify";
 import async from "asyncawait/async";
 
 @injectable()
-export class VerificationDomainService {
+export class VerificationService {
 
     /** @type {VerificationRepository}*/
     @inject("VerificationRepository") verificationRepository = undefined;
