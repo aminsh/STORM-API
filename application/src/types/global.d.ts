@@ -59,7 +59,7 @@ declare interface IState {
     branchId: string;
     fiscalPeriodId: string;
     user: IUser;
-    transaction: any
+    request: Request
 }
 
 declare interface IUser {
