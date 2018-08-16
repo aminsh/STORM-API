@@ -54,6 +54,7 @@
     "crypto-js": "^3.1.8",
     "datatables.net": "^1.10.13",
     "dom-to-image": "^2.6.0",
+    "dotenv": "^6.0.0",
     "dropzone": "^4.3.0",
     "ejs": "^1.0.0",
     "excel": "^0.1.7",

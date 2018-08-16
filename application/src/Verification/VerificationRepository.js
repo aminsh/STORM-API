@@ -24,7 +24,7 @@ export class VerificationRepository extends BaseRepository {
 
 
     remove(id) {
-        return toResult(this.knex(this.tableName).where({id}).del());
+        return this.knex(this.tableName).where({id}).del();
     }
 
 }

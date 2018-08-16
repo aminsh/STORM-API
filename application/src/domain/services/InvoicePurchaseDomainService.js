@@ -70,13 +70,32 @@ export class InvoicePurchaseDomainService {
         return errors;
     }
 
+    getNumber(number, persistedInvoice) {
+
+        const _getNumber = () => persistedInvoice
+            ? persistedInvoice.number
+            : this.invoiceRepository.maxNumber('purchase') + 1;
+
+        if (!number)
+            return _getNumber();
+
+        const isNumberDuplicated = this.invoiceRepository.isNumberDuplicated(number, 'purchase', (persistedInvoice || {}).id);
+
+        if (isNumberDuplicated)
+            return _getNumber();
+
+        return number;
+    }
+
     mapToEntity(cmd) {
 
-        const detailAccount = this.detailAccountDomainService.findPersonByIdOrCreate(cmd.vendor);
+        const detailAccount = this.detailAccountDomainService.findPersonByIdOrCreate(cmd.vendor),
+            invoice = cmd.id ? this.invoiceRepository.findById(cmd.id) : undefined;
 
         return {
             id: cmd.id,
             date: cmd.date || PersianDate.current(),
+            number: this.getNumber(cmd.number, invoice),
             invoiceStatus: cmd.status || 'draft',
             description: cmd.description,
             title: cmd.title,
@@ -97,7 +116,8 @@ export class InvoicePurchaseDomainService {
                         quantity: line.quantity,
                         unitPrice: line.unitPrice,
                         discount: line.discount || 0,
-                        vat: line.vat || 0
+                        vat: line.vat || 0,
+                        tax: line.tax || 0
                     }
                 })
                 .toArray()
@@ -177,7 +197,7 @@ export class InvoicePurchaseDomainService {
         if (errors.length > 0)
             throw new ValidationException(errors);
 
-        entity.number = this.invoiceRepository.maxNumber('purchase') + 1;
+        //entity.number = this.invoiceRepository.maxNumber('purchase') + 1;
         entity.invoiceType = 'purchase';
         entity.invoiceStatus = cmd.status !== 'draft' ? 'waitForPayment' : 'draft';
 
@@ -186,7 +206,7 @@ export class InvoicePurchaseDomainService {
 
         entity.id = data.id;
 
-        if (entity.invoiceStatus !== 'draft'){
+        if (entity.invoiceStatus !== 'draft') {
             Utility.delay(500);
             this._setForInventoryPurchase(entity);
         }

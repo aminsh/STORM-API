@@ -10,11 +10,11 @@ export class SettingService{
 
     create(){
         let entity = {
-                vat: 9,
-            };
+            vat: 3,
+            tax: 6
+        };
         this.settingsRepository.create(entity);
     }
-
     update(cmd){
         cmd.canCreateSaleOnNoEnoughInventory = cmd.canControlInventory
             ? cmd.canCreateSaleOnNoEnoughInventory
@@ -26,6 +26,7 @@ export class SettingService{
 
         let entity = {
             vat: cmd.vat,
+            tax: cmd.tax,
             bankId: cmd.bankId,
             canControlInventory: cmd.canControlInventory,
             canCreateSaleOnNoEnoughInventory: cmd.canCreateSaleOnNoEnoughInventory,

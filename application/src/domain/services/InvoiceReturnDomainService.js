@@ -70,14 +70,33 @@ export class InvoiceReturnDomainService {
         return errors;
     }
 
+    getNumber(number, persistedInvoice) {
+
+        const _getNumber = () => persistedInvoice
+            ? persistedInvoice.number
+            : this.invoiceRepository.maxNumber('returnSale') + 1;
+
+        if (!number)
+            return _getNumber();
+
+        const isNumberDuplicated = this.invoiceRepository.isNumberDuplicated(number, 'returnSale', (persistedInvoice || {}).id);
+
+        if (isNumberDuplicated)
+            return _getNumber();
+
+        return number;
+    }
+
     mapToEntity(cmd) {
 
-        const detailAccount = this.detailAccountDomainService.findPersonByIdOrCreate(cmd.customer);
+        const detailAccount = this.detailAccountDomainService.findPersonByIdOrCreate(cmd.customer),
+            invoice = cmd.id ? this.invoiceRepository.findById(cmd.id) : undefined;
 
         return {
             id: cmd.id,
             date: cmd.date || PersianDate.current(),
             invoiceStatus: cmd.status || 'draft',
+            number: this.getNumber(cmd.number, invoice),
             description: cmd.description,
             ofInvoiceId: cmd.ofInvoiceId,
             title: cmd.title,
@@ -98,7 +117,8 @@ export class InvoiceReturnDomainService {
                         quantity: line.quantity,
                         unitPrice: line.unitPrice,
                         discount: line.discount || 0,
-                        vat: line.vat || 0
+                        vat: line.vat || 0,
+                        tax: line.tax || 0
                     }
                 })
                 .toArray()
@@ -164,6 +184,7 @@ export class InvoiceReturnDomainService {
 
     }
 
+
     create(cmd) {
 
         let entity = this.mapToEntity(cmd),
@@ -172,7 +193,6 @@ export class InvoiceReturnDomainService {
         if (errors.length > 0)
             throw new ValidationException(errors);
 
-        entity.number = this.invoiceRepository.maxNumber('returnSale') + 1;
         entity.invoiceType = 'returnSale';
         entity.invoiceStatus = cmd.status !== 'draft' ? 'waitForPayment' : 'draft';
 

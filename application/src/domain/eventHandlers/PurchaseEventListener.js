@@ -48,7 +48,8 @@ export class PurchaseEventListener {
         invoice.inventoryIds && invoice.inventoryIds
             .forEach(id => this.commandBus.send("inventoryInputRemove", [id]));
 
-        this.commandBus.send("journalRemove", [invoice.journalId]);
+        if (invoice.journalId)
+            this.commandBus.send("journalRemove", [invoice.journalId]);
     }
 
 }

@@ -39,7 +39,10 @@ export class JournalInvoiceGenerationDomainService {
                 }))
                 .toObject(item => `charge_${item.key}`, item => item.value);
 
-        let lineHaveVat = invoice.invoiceLines.asEnumerable().firstOrDefault(e => e.vat !== 0),
+        let lineHaveVat = invoice.invoiceLines.asEnumerable().firstOrDefault(e => e.vat !== 0 && e.tax !== 0),
+            persistedTax = lineHaveVat
+                ? (100 * lineHaveVat.tax) / ((lineHaveVat.quantity * lineHaveVat.unitPrice) - lineHaveVat.discount)
+                : 0,
             persistedVat = lineHaveVat
                 ? (100 * lineHaveVat.vat) / ((lineHaveVat.quantity * lineHaveVat.unitPrice) - lineHaveVat.discount)
                 : 0,
@@ -50,6 +53,16 @@ export class JournalInvoiceGenerationDomainService {
                 title: invoice.title,
                 amount: invoice.invoiceLines.asEnumerable().sum(line => line.unitPrice * line.quantity),
                 discount: invoice.invoiceLines.asEnumerable().sum(line => line.discount) + invoice.discount,
+
+                tax: invoice.invoiceLines.asEnumerable().sum(function (line) {
+                    return line.tax;
+                }) + invoice.charges.asEnumerable().sum(function (e) {
+                    if (e.vatIncluded)
+                        return e.value;
+                    else
+                        return 0;
+                }) * persistedTax / 100,
+
                 vat: invoice.invoiceLines.asEnumerable().sum(function (line) {
                     return line.vat;
                 }) + invoice.charges.asEnumerable().sum(function (e) {

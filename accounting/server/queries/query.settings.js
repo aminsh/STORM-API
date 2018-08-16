@@ -12,6 +12,7 @@ class SettingQuery extends BaseQuery {
     get() {
         return await(this.knex.select(
             'vat',
+            'tax',
             'bankId',
             'canControlInventory',
             'canCreateSaleOnNoEnoughInventory',

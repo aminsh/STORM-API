@@ -40,7 +40,7 @@ export class BranchService {
 
         EventEmitter.emit('on-branch-created', entity.id);
 
-        this.addUser(entity.id, entity.ownerId , true);
+        this.addUser(entity.id, entity.ownerId, true);
 
         return entity.id;
     }
@@ -107,7 +107,7 @@ export class BranchService {
         if (!createdByMember)
             throw new ValidationSingleException('شما عضو این کسب و کار نیستید');
 
-        if (!createdByMember.isOwner)
+        if (!(createdByMember.isOwner || userId === this.context.user.id))
             throw new ValidationSingleException('شما مجوز حذف کاربر در این کسب و کار را ندارید');
 
         let member = this.branchRepository.findMember(branchId, userId);

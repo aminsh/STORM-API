@@ -61,7 +61,7 @@ function setConfig(req, res, next) {
 
     req.requestId = Utility.TokenGenerator.generate128Bit();
 
-    req.container.bind('HttpContext').toConstantValue({request: req});
+    //req.container.bind('HttpContext').toConstantValue({request: req});
 
     next();
 }

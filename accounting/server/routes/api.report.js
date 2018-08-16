@@ -384,6 +384,17 @@ router.route('/sale-invoice-turnover')
         res.json(result);
     }));
 
+router.route('/sale-invoice-detail-turnover')
+    .get(async((req, res) => {
+        let ins = new SaleInvoice(req.branchId,
+            req.fiscalPeriodId,
+            'create',
+            req.query,
+            req.user.id),
+            result = await(ins.getDetail(req.query.invoiceStatus));
+        res.json(result);
+    }));
+
 router.route('/receive-cheque-due-date')
     .get(async((req, res) => {
         let ins = new ChequeReportQueries(req.branchId,
