@@ -13,11 +13,16 @@ import {DimensionRepository} from "./Dimension/DimensionRepository";
 import {DimensionService} from "./Dimension/DimensionService";
 import {DimensionCategoryQuery} from "./Dimension/DimensionCategoryQuery";
 import {DimensionQuery} from "./Dimension/DimensionQuery";
+import {JournalService} from "./Journal/JournalService";
+import {JournalRepository} from "./Journal/JournalRepository";
+import {JournalQuery} from "./Journal/JournalQuery";
+
 
 import "./DetailAccount/DetailAccountController";
 import "./ChartOfAccounts/ChartOfAccountController";
 import "./Dimension/DimensionCategoryController";
 import "./Dimension/DimensionController";
+import "./Journal/JournalController";
 
 export function register(container) {
 
@@ -39,5 +44,9 @@ export function register(container) {
     container.bind("ChartOfAccountQuery").to(ChartOfAccountQuery);
     container.bind("AccountCategoryRepository").to(AccountCategoryRepository);
     container.bind("AccountCategoryService").to(AccountCategoryService);
+
+    container.bind("JournalService").to(JournalService);
+    container.bind("JournalRepository").to(JournalRepository);
+    container.bind("JournalQuery").to(JournalQuery);
 
 }
