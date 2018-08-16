@@ -13,11 +13,7 @@ import {
     TreasuryRepository,
     BanksNameRepository,
     TreasurySettingRepository,
-    ChequeCategoryRepository,
     TreasuryPurposeRepository,
-    DimensionCategoryRepository,
-    DimensionRepository,
-    VerificationRepository,
     PermissionRepository
 } from "./domain/data";
 import {
@@ -29,18 +25,11 @@ import {
     InvoiceReturnDomainService,
     JournalDomainService,
     JournalGenerationTemplateDomainService,
-    PaymentDomainService,
-    PersonDomainService,
-    ProductCategoryDomainService,
-    ScaleDomainService,
-    SettingsDomainService,
     InvoiceInventoryDomainService,
     JournalInvoiceGenerationDomainService,
     ReturnPurchaseDomainService,
     OutputReturnPurchaseDomainService,
-    BanksNameDomainService,
-    PayableChequeCategoryDomainService,
-    PayableChequeDomainService,
+
     TreasuryChequeDomainService,
     TreasuryCashDomainService,
     TreasuryReceiptDomainService,
@@ -50,8 +39,6 @@ import {
     TreasuryPurposeDomainService,
     TreasuryDomainService,
     InventoryAccountingDomainService,
-    InventoryDomainService,
-    VerificationDomainService,
     PermissionDomainService,
     UserPermissionsControlDomainService,
     TreasurySettingDomainService
@@ -61,7 +48,6 @@ import {
 import {ReturnPurchaseEventListener} from "./domain/eventHandlers/ReturnPurchaseEventListener";
 import {ReturnSaleEventListener} from "./domain/eventHandlers/ReturnSaleEventListener";*/
 import {TreasuryEventListener} from "./domain/eventHandlers/TreasuryEventListener";
-import {ChequeEventListener} from "./domain/eventHandlers/ChequeEventListener";
 
 const container = new Container({defaultScope: "Request"});
 
@@ -84,13 +70,11 @@ container.bind("Factory<EventHandler>").toFactory(context => {
 });
 
 
-container.bind("JournalRepository").to(JournalRepository).inRequestScope();
 container.bind("JournalGenerationTemplateRepository").to(JournalGenerationTemplateRepository).inRequestScope();
 container.bind("PaymentRepository").to(PaymentRepository).inRequestScope();
 container.bind("TreasuryRepository").to(TreasuryRepository).inRequestScope();
 container.bind("BanksNameRepository").to(BanksNameRepository).inRequestScope();
 container.bind("TreasurySettingRepository").to(TreasurySettingRepository).inRequestScope();
-container.bind("ChequeCategoryRepository").to(ChequeCategoryRepository).inRequestScope();
 container.bind("TreasuryPurposeRepository").to(TreasuryPurposeRepository).inRequestScope();
 container.bind("PermissionRepository").to(PermissionRepository).inRequestScope();
 
@@ -110,8 +94,6 @@ container.bind("TreasuryChequeDomainService").to(TreasuryChequeDomainService).in
 container.bind("TreasuryCashDomainService").to(TreasuryCashDomainService).inRequestScope();
 container.bind("TreasuryReceiptDomainService").to(TreasuryReceiptDomainService).inRequestScope();
 container.bind("TreasuryDemandNoteDomainService").to(TreasuryDemandNoteDomainService).inRequestScope();
-container.bind("PayableChequeCategoryDomainService").to(PayableChequeCategoryDomainService).inRequestScope();
-container.bind("PayableChequeDomainService").to(PayableChequeDomainService).inRequestScope();
 container.bind("TreasuryJournalGenerationDomainService").to(TreasuryJournalGenerationDomainService).inRequestScope();
 container.bind("TreasuryTransferDomainService").to(TreasuryTransferDomainService).inRequestScope();
 container.bind("TreasuryPurposeDomainService").to(TreasuryPurposeDomainService).inRequestScope();
@@ -123,9 +105,5 @@ container.bind("UserPermissionsControlDomainService").to(UserPermissionsControlD
 
 
 container.bind("TreasuryEventListener").to(TreasuryEventListener);
-container.bind("ChequeEventListener").to(ChequeEventListener);
-
-container.bind("PaypingInterfacePaymentGateway").to(PaypingInterfacePaymentGateway).inSingletonScope();
-container.bind("ZarinpalInterfacePaymentGateway").to(ZarinpalInterfacePaymentGateway).inSingletonScope();
 
 export {container};

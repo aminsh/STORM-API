@@ -29,7 +29,7 @@ export * from "./TreasuryDemandNoteDomainService";
 export * from "./TreasuryReceiptDomainService";
 export * from "../../Treasury/BanksNameService";
 export * from "./PayableChequeCategoryDomainService";
-export * from "./PayableChequeDomainService";
+export * from "../../Treasury/PayableChequeService";
 export * from "./TreasuryJournalGenerationDomainService";
 export * from "./TreasuryTransferDomainService";
 export * from "./TreasuryPurposeDomainService";

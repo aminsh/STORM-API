@@ -8,9 +8,9 @@ const
     knex = instanceOf('knex');
 
 
-let defaultAccountCategories = require('../accounting/server/config/chartOfAccounts/accountCategories.json').groups,
-    defaultGeneralLedgerAccounts = require('../accounting/server/config/chartOfAccounts/generalLedgerAccounts.json'),
-    defaultSubsidiaryLedgerAccounts = require('../accounting/server/config/chartOfAccounts/subsidiatyLedgerAccounts.json');
+let defaultAccountCategories = require('../application/src/BranchSetup/json/accountCategories.json').groups,
+    defaultGeneralLedgerAccounts = require('../application/src/BranchSetup/json/generalLedgerAccounts.json'),
+    defaultSubsidiaryLedgerAccounts = require('../application/src/BranchSetup/json/subsidiatyLedgerAccounts.json');
 
 
 module.exports = async.result(function (branchId) {

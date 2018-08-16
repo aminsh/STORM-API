@@ -10,7 +10,7 @@ export * from "./repository.inventoryIOType";
 export * from "./repository.treasury";
 export * from "../../Treasury/BanksNameRepository";
 export * from "./repository.treasury.setting";
-export * from "./repository.chequeCategory";
+export * from "../../Treasury/PayableChequeCategoryRepository";
 export * from "./repository.treasury.purpose";
 
 export * from "../../Bookkeeping/Dimension/DimensionRepository";
