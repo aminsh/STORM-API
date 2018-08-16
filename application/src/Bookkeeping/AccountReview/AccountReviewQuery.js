@@ -449,7 +449,7 @@ export class AccountReviewQuery extends BaseQuery {
                     .leftJoin(knex.raw('"dimensions" as "dimension1s"'), 'dimension1s.id', 'groupJournals.dimension1Id')
                     .leftJoin(knex.raw('"dimensions" as "dimension2s"'), 'dimension2s.id', 'groupJournals.dimension2Id')
                     .leftJoin(knex.raw('"dimensions" as "dimension3s"'), 'dimension3s.id', 'groupJournals.dimension3Id')
-                    .orderBy('number')
+                    .orderBy('temporaryNumber','temporaryDate')
             }),
 
             query = withQuery.select().from(function () {

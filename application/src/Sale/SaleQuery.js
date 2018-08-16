@@ -59,19 +59,19 @@ export class SaleQuery extends BaseQuery {
 
         let lineHaveVat = invoiceLines.asEnumerable().firstOrDefault(e => e.vat !== 0),
             persistedVat = lineHaveVat
-                ? (100 * lineHaveVat.vat / (((lineHaveVat.quantity * lineHaveVat.unitPrice) - lineHaveVat.discount)))
+                ? (100 * (lineHaveVat.vat + lineHaveVat.tax) / (((lineHaveVat.quantity * lineHaveVat.unitPrice) - lineHaveVat.discount)))
                 : 0;
 
         if (invoice) {
             invoice.sumTotalPrice = invoiceLines.asEnumerable()
-                    .sum(line => line.quantity * line.unitPrice - line.discount + line.vat)
+                    .sum(line => line.quantity * line.unitPrice - line.discount + line.vat + line.tax)
                 - invoiceDiscount +
                 sumCharges + (sumChargesVatIncluded * persistedVat / 100);
 
             invoice.sumRemainder = invoice.sumTotalPrice - treasuriesTotalAmount;
 
             invoice.totalVat = invoiceLines.asEnumerable()
-                .sum(line => line.vat) + (sumChargesVatIncluded * persistedVat / 100);
+                .sum(line => line.vat + line.tax) + (sumChargesVatIncluded * persistedVat / 100);
 
             invoice.chargesVat = sumChargesVatIncluded * persistedVat / 100;
 
@@ -89,7 +89,7 @@ export class SaleQuery extends BaseQuery {
             modify = this.modify.bind(this),
             baseQuery = `select coalesce(sum(value),0) from invoices as i left join json_to_recordset(i.charges) as x(key text, value int, "vatIncluded" boolean) on true where i.id = "base".id`,
             sumChargesQuery = `(${baseQuery}) + ((${baseQuery} and "vatIncluded" = true) *  
-            coalesce((select (100 * line.vat) / ((line.quantity * line."unitPrice") - line.discount) from "invoiceLines" as line where "invoiceId" = "base".id and vat <> 0 limit 1), 0) /100)`,
+            coalesce((select (100 * (line.vat + line.tax)) / ((line.quantity * line."unitPrice") - line.discount) from "invoiceLines" as line where "invoiceId" = "base".id and vat <> 0 limit 1), 0) /100)`,
 
             query = knex.select().table(function () {
                 this.select(
@@ -112,7 +112,7 @@ export class SaleQuery extends BaseQuery {
                     .from(function () {
                         this.select('invoices.*',
                             knex.raw('"detailAccounts"."title" as "detailAccountDisplay"'),
-                            knex.raw(`("invoiceLines"."unitPrice" * "invoiceLines".quantity - "invoiceLines".discount + "invoiceLines".vat) as "totalPrice"`))
+                            knex.raw(`("invoiceLines"."unitPrice" * "invoiceLines".quantity - "invoiceLines".discount + "invoiceLines".vat + "invoiceLines".tax) as "totalPrice"`))
                             .from('invoices')
                             .leftJoin('invoiceLines', 'invoices.id', 'invoiceLines.invoiceId')
                             .leftJoin('detailAccounts', 'invoices.detailAccountId', 'detailAccounts.id')
