@@ -5,8 +5,6 @@
   "plugins": [
     "transform-decorators-legacy",
     "transform-class-properties",
-   /* "syntax-async-functions",
-    "transform-regenerator",*/
-    ["inline-json", {"matchPattern": "config"}]
+    ["inline-json-import", {}]
   ]
 }
