@@ -10,7 +10,7 @@ export class FiscalPeriodQuery extends BaseQuery {
             .where('id', id)
             .first());
 
-        return view(fiscalPeriod);
+        return this._view(fiscalPeriod);
     }
 
     getAll(parameters) {
@@ -25,7 +25,7 @@ export class FiscalPeriodQuery extends BaseQuery {
                 .as('baseFiscalPeriod');
         });
 
-        return toResult(Utility.kendoQueryResolve(query, parameters, this.view.bind(this)));
+        return toResult(Utility.kendoQueryResolve(query, parameters, this._view.bind(this)));
     }
 
     getMaxId() {
@@ -41,7 +41,7 @@ export class FiscalPeriodQuery extends BaseQuery {
         return result ? result.id : null;
     }
 
-    view(entity) {
+    _view(entity) {
         if (!entity)
             return null;
 
