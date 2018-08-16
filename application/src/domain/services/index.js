@@ -10,12 +10,11 @@ export * from "./InvoiceDomainService";
 export * from "./InvoicePurchaseDomainService";
 export * from "./InvoiceReturnDomainService";
 export * from "./JournalDomainService";
-export * from "./JournalGenerationTemplateDomainService";
+export * from "../../Bookkeeping/Journal/JournalGenerationTemplateService";
 export * from "./PaymentDomainService";
 export * from "./PersonDomainService";
 
 export * from "./ProductCategoryDomainService";
-export * from "./ScaleDomainService";
 export * from "./SettingsDomainService";
 //export * from "../../Inventory/StockService";
 export * from "./InvoiceInventoryDomainService";

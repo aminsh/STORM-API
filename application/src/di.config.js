@@ -7,8 +7,6 @@ import {UnitOfWork} from "./core/UnitOfWork";
 
 import {
 
-    JournalGenerationTemplateRepository,
-    JournalRepository,
     PaymentRepository,
     TreasuryRepository,
     BanksNameRepository,
@@ -24,7 +22,6 @@ import {
     InvoiceDomainService,
     InvoiceReturnDomainService,
     JournalDomainService,
-    JournalGenerationTemplateDomainService,
     InvoiceInventoryDomainService,
     JournalInvoiceGenerationDomainService,
     ReturnPurchaseDomainService,
@@ -70,7 +67,6 @@ container.bind("Factory<EventHandler>").toFactory(context => {
 });
 
 
-container.bind("JournalGenerationTemplateRepository").to(JournalGenerationTemplateRepository).inRequestScope();
 container.bind("PaymentRepository").to(PaymentRepository).inRequestScope();
 container.bind("TreasuryRepository").to(TreasuryRepository).inRequestScope();
 container.bind("BanksNameRepository").to(BanksNameRepository).inRequestScope();
@@ -85,7 +81,6 @@ container.bind("InventoryOutputDomainService").to(InventoryOutputDomainService).
 container.bind("InvoiceDomainService").to(InvoiceDomainService).inRequestScope();
 container.bind("InvoiceReturnDomainService").to(InvoiceReturnDomainService).inRequestScope();
 container.bind("JournalDomainService").to(JournalDomainService).inRequestScope();
-container.bind("JournalGenerationTemplateDomainService").to(JournalGenerationTemplateDomainService).inRequestScope();
 container.bind("InvoiceInventoryDomainService").to(InvoiceInventoryDomainService).inRequestScope();
 container.bind("JournalInvoiceGenerationDomainService").to(JournalInvoiceGenerationDomainService).inRequestScope();
 container.bind("ReturnPurchaseDomainService").to(ReturnPurchaseDomainService).inRequestScope();

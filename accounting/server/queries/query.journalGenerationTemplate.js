@@ -5,12 +5,12 @@ const async = require('asyncawait/async'),
     BaseQuery = require('./query.base'),
     kendoQueryResolve = require('../services/kendoQueryResolve');
 
-const templateSale = require('../config/defaultJournalGenerationTemplates/sale.json'),
-    templatePurchase = require('../config/defaultJournalGenerationTemplates/purchase.json'),
-    templateReturnSale = require('../config/defaultJournalGenerationTemplates/returnSale.json'),
-    templateInventoryOutputSale = require('../config/defaultJournalGenerationTemplates/inventoryOutputSale.json'),
-    templateInventoryInputReturnSale = require('../config/defaultJournalGenerationTemplates/inventoryInputReturnSale.json'),
-    templateReturnPurchase = require('../config/defaultJournalGenerationTemplates/returnPurchase'),
+const templateSale = require('../../../application/src/Bookkeeping/json/sale.json'),
+    templatePurchase = require('../../../application/src/Bookkeeping/json/purchase.json'),
+    templateReturnSale = require('../../../application/src/Bookkeeping/json/returnSale.json'),
+    templateInventoryOutputSale = require('../../../application/src/Bookkeeping/json/inventoryOutputSale.json'),
+    templateInventoryInputReturnSale = require('../../../application/src/Bookkeeping/json/inventoryInputReturnSale.json'),
+    templateReturnPurchase = require('../../../application/src/Bookkeeping/json/returnPurchase'),
 
     templates = {
         sale: templateSale,
