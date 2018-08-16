@@ -16,13 +16,18 @@ import {DimensionQuery} from "./Dimension/DimensionQuery";
 import {JournalService} from "./Journal/JournalService";
 import {JournalRepository} from "./Journal/JournalRepository";
 import {JournalQuery} from "./Journal/JournalQuery";
-
+import {JournalGenerationTemplateRepository} from "./Journal/JournalGenerationTemplateRepository";
+import {JournalGenerationTemplateService} from "./Journal/JournalGenerationTemplateService";
+import {JournalGenerationTemplateQuery} from "./Journal/JournalGenerationTemplateQuery";
+import {AccountReviewQuery} from "./AccountReview/AccountReviewQuery";
 
 import "./DetailAccount/DetailAccountController";
 import "./ChartOfAccounts/ChartOfAccountController";
 import "./Dimension/DimensionCategoryController";
 import "./Dimension/DimensionController";
 import "./Journal/JournalController";
+import "./Journal/JournalGenerationTemplateController";
+import "./AccountReview/AcccountReviewController";
 
 export function register(container) {
 
@@ -48,5 +53,10 @@ export function register(container) {
     container.bind("JournalService").to(JournalService);
     container.bind("JournalRepository").to(JournalRepository);
     container.bind("JournalQuery").to(JournalQuery);
+                    JournalGenerationTemplateRepository
+    container.bind("JournalGenerationTemplateRepository").to(JournalGenerationTemplateRepository);
+    container.bind("JournalGenerationTemplateService").to(JournalGenerationTemplateService);
+    container.bind("JournalGenerationTemplateQuery").to(JournalGenerationTemplateQuery);
 
+    container.bind("AccountReviewQuery").to(AccountReviewQuery);
 }

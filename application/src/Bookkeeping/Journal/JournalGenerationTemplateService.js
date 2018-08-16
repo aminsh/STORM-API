@@ -4,7 +4,7 @@ import {inject, injectable} from "inversify";
 _.templateSettings.interpolate = /#([\s\S]+?)#/g;
 
 @injectable()
-export class JournalGenerationTemplateDomainService {
+export class JournalGenerationTemplateService {
 
     /** @type {JournalGenerationTemplateRepository}*/
     @inject("JournalGenerationTemplateRepository") journalGenerationTemplateRepository = undefined;

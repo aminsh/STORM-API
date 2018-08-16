@@ -26,8 +26,8 @@ export class JournalService {
     /**@type {InventoryRepository}*/
     @inject("InventoryRepository") inventoryRepository = undefined;
 
-    /**@type {JournalGenerationTemplateDomainService}*/
-    @inject("JournalGenerationTemplateDomainService") journalGenerationTemplateDomainService = undefined;
+    /**@type {JournalGenerationTemplateService}*/
+    @inject("JournalGenerationTemplateService") journalGenerationTemplateService = undefined;
 
     /** @type {TreasuryRepository}*/
     @inject("TreasuryRepository") treasuryRepository = undefined;
@@ -333,7 +333,7 @@ export class JournalService {
                 bankReceiptNumber: invoice.bankReceiptNumber || ''
             }, cost, charge),
 
-            journal = this.journalGenerationTemplateDomainService.generate(model, 'sale');
+            journal = this.journalGenerationTemplateService.generate(model, 'sale');
 
         journal.journalLines = journal.journalLines.asEnumerable()
             .orderByDescending(line => line.debtor)
@@ -371,7 +371,7 @@ export class JournalService {
                 customerTitle: invoice.detailAccount.title,
             }, charge),
 
-            journal = this.journalGenerationTemplateDomainService.generate(model, 'returnSale');
+            journal = this.journalGenerationTemplateService.generate(model, 'returnSale');
 
 
         return this.create(journal);
@@ -406,7 +406,7 @@ export class JournalService {
                 vendorTitle: invoice.detailAccount.title,
             }, charge),
 
-            journal = this.journalGenerationTemplateDomainService.generate(model, 'purchase');
+            journal = this.journalGenerationTemplateService.generate(model, 'purchase');
 
         return invoice.journalId ? this.update(invoice.journalId, journal)
             : this.create(journal);
@@ -441,7 +441,7 @@ export class JournalService {
                 vendorTitle: invoice.detailAccount.title,
             }, charge),
 
-            journal = this.journalGenerationTemplateDomainService.generate(model, 'returnPurchase');
+            journal = this.journalGenerationTemplateService.generate(model, 'returnPurchase');
 
 
         return this.create(journal);
