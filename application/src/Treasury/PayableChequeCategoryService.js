@@ -1,13 +1,13 @@
 import {inject, injectable} from "inversify";
 
 @injectable()
-export class PayableChequeCategoryDomainService {
+export class PayableChequeCategoryService {
 
-    //@inject("ChequeCategoryRepository") chequeCategoryRepository = undefined;
+    @inject("PayableChequeCategoryRepository") payableChequeCategoryRepository = undefined;
 
     @inject("DetailAccountRepository") detailAccountRepository = undefined;
 
-    @inject("PayableChequeDomainService") payableChequeDomainService = undefined;
+    @inject("PayableChequeService") payableChequeService = undefined;
 
     create(cmd) {
 
@@ -43,7 +43,7 @@ export class PayableChequeCategoryDomainService {
 
         this._calculateLastPageNumber(cmd, entity);
 
-        this.chequeCategoryRepository.create(entity);
+        this.payableChequeCategoryRepository.create(entity);
     }
 
     update(id, cmd) {
@@ -62,7 +62,7 @@ export class PayableChequeCategoryDomainService {
                 return errors.push('بانک صحیح نیست');
         }
 
-        let category = this.chequeCategoryRepository.findById(id);
+        let category = this.payableChequeCategoryRepository.findById(id);
 
         if (!category)
             throw new ValidationException(['دسته چک وجود ندارد']);
@@ -82,13 +82,13 @@ export class PayableChequeCategoryDomainService {
         if (this._isNumbersChanged(cmd, category))
             this._calculateLastPageNumber(cmd, entity);
 
-        this.chequeCategoryRepository.update(id, entity);
+        this.payableChequeCategoryRepository.update(id, entity);
     }
 
 
     remove(id) {
 
-        let entity = this.chequeCategoryRepository.findById(id);
+        let entity = this.payableChequeCategoryRepository.findById(id);
 
         if (!entity)
             throw new ValidationException(['دسته چک وجود ندارد']);
@@ -96,7 +96,7 @@ export class PayableChequeCategoryDomainService {
         if (entity.cheques && entity.cheques.asEnumerable().any(e => e.isUsed))
             throw new ValidationException(['چک های دسته چک جاری استفاده شده ، امکان حذف وجود ندارد']);
 
-        this.chequeCategoryRepository.remove(id);
+        this.payableChequeCategoryRepository.remove(id);
     }
 
     _calculateLastPageNumber(cmd, entity) {
@@ -107,7 +107,7 @@ export class PayableChequeCategoryDomainService {
 
         Object.assign(entity, {firstPageNumber, lastPageNumber, totalPages});
 
-        this.payableChequeDomainService.generateFromCategory(entity);
+        this.payableChequeService.generateFromCategory(entity);
 
         entity.cheques = JSON.stringify(entity.cheques);
     }

@@ -1,9 +1,9 @@
 import toResult from "asyncawait/await";
-import {BaseRepository} from "./repository.base";
+import {BaseRepository} from "../core/BaseRepository";
 import {injectable} from "inversify";
 
 @injectable()
-export class ChequeCategoryRepository extends BaseRepository {
+export class PayableChequeCategoryRepository extends BaseRepository {
 
     tableName = 'chequeCategories';
 

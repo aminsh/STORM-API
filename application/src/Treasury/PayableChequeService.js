@@ -1,10 +1,10 @@
 import {inject, injectable} from "inversify";
 
 @injectable()
-export class PayableChequeDomainService {
+export class PayableChequeService {
 
-    @inject("ChequeCategoryRepository")
-    /** {ChequeCategoryRepository}*/chequeCategoryRepository = undefined;
+    @inject("PayableChequeCategoryRepository")
+    /** {PayableChequeCategoryRepository}*/payableChequeCategoryRepository = undefined;
 
     generateFromCategory(category) {
         let cheques = [],
@@ -21,7 +21,7 @@ export class PayableChequeDomainService {
 
     issue(chequeNumber, bankId, treasuryPayableChequeId) {
 
-        let firstOpenCategory = this.chequeCategoryRepository.findOne({bankId, isClosed: false});
+        let firstOpenCategory = this.payableChequeCategoryRepository.findOne({bankId, isClosed: false});
 
         if (!firstOpenCategory)
             return;
@@ -41,11 +41,11 @@ export class PayableChequeDomainService {
         if (firstOpenCategory.cheques.asEnumerable().all(item => item.isUsed))
             entity.isClosed = true;
 
-        this.chequeCategoryRepository.update(firstOpenCategory.id, entity);
+        this.payableChequeCategoryRepository.update(firstOpenCategory.id, entity);
     }
 
     getCheque(bankId) {
-        let firstOpenCategory = this.chequeCategoryRepository.findOne({bankId, isClosed: false}),
+        let firstOpenCategory = this.payableChequeCategoryRepository.findOne({bankId, isClosed: false}),
             cheque = firstOpenCategory.cheques.asEnumerable()
                 .orderBy(item => item.number)
                 .first(item => !item.isUsed);
