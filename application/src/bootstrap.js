@@ -24,6 +24,7 @@ import * as Inventory from "./Inventory";
 import * as BankAndFund from "./BankAndFund";
 import * as Verification from "./Verification";
 import * as Integration from "./Integration";
+import * as BranchSetup from "./BranchSetup";
 
 Database.register(container);
 StormOrder.register(container);
@@ -44,6 +45,7 @@ Inventory.register(container);
 BankAndFund.register(container);
 Verification.register(container);
 Integration.register(container);
+BranchSetup.register(container);
 
 import {Context} from "./Context";
 import {register} from "./core/expressUtlis";
@@ -73,7 +75,7 @@ const setErrorConfig = async(function (err, req, res, next) {
         return invalidHandler(err.message);
 
     if (err instanceof NotFoundException)
-        res.sendStatus(404);
+        return res.sendStatus(404);
 
     res.sendStatus(500);
 
