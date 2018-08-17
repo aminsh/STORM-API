@@ -181,8 +181,7 @@ class InvoiceTurnover extends BaseQuery {
                         'unitPrice',
                         'vat',
                         'tax',
-                        'lineDiscount',
-                        )
+                        'lineDiscount')
                     .orderBy('number', 'desc')
 
             });
