@@ -1,5 +1,4 @@
 import {inject, injectable, postConstruct} from "inversify";
-import {TreasurySettingRepository} from "../../domain/data/repository.treasury.setting";
 
 @injectable()
 export class SubsidiaryLedgerAccountService {
