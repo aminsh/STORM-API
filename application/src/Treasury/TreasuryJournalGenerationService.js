@@ -1,41 +1,31 @@
-import {inject, injectable, postConstruct} from "inversify";
-import {TreasurySettingRepository} from "../data/repository.treasury.setting";
-import {JournalRepository} from "../data/repository.journal";
-import {TreasuryChequeDomainService} from "./TreasuryChequeDomainService";
+import {inject, injectable} from "inversify";
 
 @injectable()
-export class TreasuryJournalGenerationDomainService {
+export class TreasuryJournalGenerationService {
 
-    /**@type {JournalDomainService}*/
-    @inject("JournalDomainService") journalDomainService = undefined;
+    /**@type {JournalService}*/
+    @inject("JournalService") journalService = undefined;
 
-    /**@type {TreasurySettingRepository}*/
-    @inject("TreasurySettingRepository") treasurySettingRepository = undefined;
-
-    /**@type {SubsidiaryLedgerAccountDomainService}*/
-    @inject("SubsidiaryLedgerAccountDomainService") subsidiaryLedgerAccountDomainService = undefined;
+    /**@type {SubsidiaryLedgerAccountService}*/
+    @inject("SubsidiaryLedgerAccountService") subsidiaryLedgerAccountService = undefined;
 
     /**@type {TreasuryRepository}*/
     @inject("TreasuryRepository") treasuryRepository = undefined;
 
-    /**@type {SubsidiaryLedgerAccountRepository}*/
-    @inject("SubsidiaryLedgerAccountRepository") subsidiaryLedgerAccountRepository = undefined;
-
     /**@type {DetailAccountRepository}*/
     @inject("DetailAccountRepository") detailAccountRepository = undefined;
 
-    /**@type {TreasuryChequeDomainService}*/
-    @inject("TreasuryChequeDomainService") treasuryChequeDomainService = undefined;
-
     /**@type {JournalRepository}*/
     @inject("JournalRepository") journalRepository = undefined;
+
+    @inject("Enums") enums = undefined;
 
 
     _validation(entity) {
         let errors = [];
 
         if (!entity)
-            errors.push('{0} ثبت نشده است!'.format(Enums.TreasuryPaymentDocumentTypes().getDisplay(entity.documentType)));
+            errors.push('{0} ثبت نشده است!'.format(this.enums.TreasuryPaymentDocumentTypes().getDisplay(entity.documentType)));
 
         return errors;
 
@@ -45,7 +35,7 @@ export class TreasuryJournalGenerationDomainService {
 
         let persistedTreasury = this.treasuryRepository.findById(treasuryId),
             errors = this._validation(persistedTreasury),
-            subLedger = this.subsidiaryLedgerAccountDomainService;
+            subLedger = this.subsidiaryLedgerAccountService;
 
         if (Object.keys(subLedger.treasuryAccounts).length === 0)
             errors.push('تنظیمات خزانه داری برای صدور سند انجام نشده است!');
@@ -84,8 +74,8 @@ export class TreasuryJournalGenerationDomainService {
         });
 
         return persistedTreasury.journalId
-            ? this.journalDomainService.update(persistedTreasury.journalId, {description, journalLines})
-            : this.journalDomainService.create({description, journalLines});
+            ? this.journalService.update(persistedTreasury.journalId, {description, journalLines})
+            : this.journalService.create({description, journalLines});
 
     }
 
@@ -93,7 +83,7 @@ export class TreasuryJournalGenerationDomainService {
 
         let persistedTreasury = this.treasuryRepository.findById(treasuryId),
             errors = this._validation(persistedTreasury),
-            subLedger = this.subsidiaryLedgerAccountDomainService;
+            subLedger = this.subsidiaryLedgerAccountService;
 
         if (Object.keys(subLedger.treasuryAccounts).length === 0)
             errors.push('تنظیمات خزانه داری برای صدور سند انجام نشده است!');
@@ -131,15 +121,15 @@ export class TreasuryJournalGenerationDomainService {
         });
 
         return persistedTreasury.journalId
-            ? this.journalDomainService.update(persistedTreasury.journalId, {description, journalLines})
-            : this.journalDomainService.create({description, journalLines});
+            ? this.journalService.update(persistedTreasury.journalId, {description, journalLines})
+            : this.journalService.create({description, journalLines});
     }
 
     generateForReceiveReceipt(treasuryId) {
 
         let persistedTreasury = this.treasuryRepository.findById(treasuryId),
             errors = this._validation(persistedTreasury),
-            subLedger = this.subsidiaryLedgerAccountDomainService;
+            subLedger = this.subsidiaryLedgerAccountService;
 
         if (Object.keys(subLedger.treasuryAccounts).length === 0)
             errors.push('تنظیمات خزانه داری برای صدور سند انجام نشده است!');
@@ -178,15 +168,15 @@ export class TreasuryJournalGenerationDomainService {
         });
 
         return persistedTreasury.journalId
-            ? this.journalDomainService.update(persistedTreasury.journalId, {description, journalLines})
-            : this.journalDomainService.create({description, journalLines});
+            ? this.journalService.update(persistedTreasury.journalId, {description, journalLines})
+            : this.journalService.create({description, journalLines});
     }
 
     generateForPaymentReceipt(treasuryId) {
 
         let persistedTreasury = this.treasuryRepository.findById(treasuryId),
             errors = this._validation(persistedTreasury),
-            subLedger = this.subsidiaryLedgerAccountDomainService;
+            subLedger = this.subsidiaryLedgerAccountService;
 
         if (Object.keys(subLedger.treasuryAccounts).length === 0)
             errors.push('تنظیمات خزانه داری برای صدور سند انجام نشده است!');
@@ -203,7 +193,10 @@ export class TreasuryJournalGenerationDomainService {
 
             journalLines = [],
             description = persistedTreasury
-                ? 'بابت فیش واریزی به {0} به شماره {1} در تاریخ {2}'.format(receiver.title, persistedTreasury.documentDetail.number, persistedTreasury.documentDetail.date)
+                ? 'بابت فیش واریزی به {0} به شماره {1} در تاریخ {2}'.format(
+                    receiver.title,
+                    persistedTreasury.documentDetail.number,
+                    persistedTreasury.documentDetail.date)
                 : '';
 
         journalLines.push({
@@ -225,15 +218,15 @@ export class TreasuryJournalGenerationDomainService {
         });
 
         return persistedTreasury.journalId
-            ? this.journalDomainService.update(persistedTreasury.journalId, {description, journalLines})
-            : this.journalDomainService.create({description, journalLines});
+            ? this.journalService.update(persistedTreasury.journalId, {description, journalLines})
+            : this.journalService.create({description, journalLines});
     }
 
     generateForReceiveDemandNote(treasuryId) {
 
         let persistedTreasury = this.treasuryRepository.findById(treasuryId),
             errors = this._validation(persistedTreasury),
-            subLedger = this.subsidiaryLedgerAccountDomainService;
+            subLedger = this.subsidiaryLedgerAccountService;
 
         if (Object.keys(subLedger.treasuryAccounts).length === 0)
             errors.push('تنظیمات خزانه داری برای صدور سند انجام نشده است!');
@@ -272,15 +265,15 @@ export class TreasuryJournalGenerationDomainService {
         });
 
         return persistedTreasury.journalId
-            ? this.journalDomainService.update(persistedTreasury.journalId, {description, journalLines})
-            : this.journalDomainService.create({description, journalLines});
+            ? this.journalService.update(persistedTreasury.journalId, {description, journalLines})
+            : this.journalService.create({description, journalLines});
     }
 
     generateForPaymentDemandNote(treasuryId) {
 
         let persistedTreasury = this.treasuryRepository.findById(treasuryId),
             errors = this._validation(persistedTreasury),
-            subLedger = this.subsidiaryLedgerAccountDomainService;
+            subLedger = this.subsidiaryLedgerAccountService;
 
         if (Object.keys(subLedger.treasuryAccounts).length === 0)
             errors.push('تنظیمات خزانه داری برای صدور سند انجام نشده است!');
@@ -318,8 +311,8 @@ export class TreasuryJournalGenerationDomainService {
         });
 
         return persistedTreasury.journalId
-            ? this.journalDomainService.update(persistedTreasury.journalId, {description, journalLines})
-            : this.journalDomainService.create({description, journalLines});
+            ? this.journalService.update(persistedTreasury.journalId, {description, journalLines})
+            : this.journalService.create({description, journalLines});
     }
 
     generateForCheque(treasuryId) {
@@ -345,8 +338,8 @@ export class TreasuryJournalGenerationDomainService {
         let description = persistedTreasury
             ? 'بابت چک {0} {1} به شماره {2}'
                 .format(
-                    Enums.TreasuryType().getDisplay(persistedTreasury.treasuryType),
-                    Enums.ReceiveChequeStatus().getDisplay(persistedTreasury.documentDetail.status),
+                    this.enums.TreasuryType().getDisplay(persistedTreasury.treasuryType),
+                    this.enums.ReceiveChequeStatus().getDisplay(persistedTreasury.documentDetail.status),
                     persistedTreasury.documentDetail.number)
             : '',
 
@@ -356,14 +349,14 @@ export class TreasuryJournalGenerationDomainService {
 
 
         return persistedJournal
-            ? this.journalDomainService.update(persistedTreasuryJournalId[0],
+            ? this.journalService.update(persistedTreasuryJournalId[0],
                 {description: persistedJournal.description, journalLines: persistedJournal.journalLines})
-            : this.journalDomainService.create({description, journalLines});
+            : this.journalService.create({description, journalLines});
 
     }
 
     setReceiveJournalLines(treasury) {
-        let subLedger = this.subsidiaryLedgerAccountDomainService,
+        let subLedger = this.subsidiaryLedgerAccountService,
             errors = [],
             receiver = this.detailAccountRepository.findById(treasury.destinationDetailAccountId),
             payer = this.detailAccountRepository.findById(treasury.sourceDetailAccountId),
@@ -567,7 +560,7 @@ export class TreasuryJournalGenerationDomainService {
     }
 
     setPaymentJournalLines(treasury) {
-        let subLedger = this.subsidiaryLedgerAccountDomainService,
+        let subLedger = this.subsidiaryLedgerAccountService,
             receiver = this.detailAccountRepository.findById(treasury.destinationDetailAccountId),
             persistedJournal = treasury.journalId ? this.journalRepository.findById(treasury.journalId) : null,
             creditorLine = persistedJournal ? persistedJournal.journalLines.asEnumerable().where(item => item.debtor === 0)
@@ -780,20 +773,20 @@ export class TreasuryJournalGenerationDomainService {
 
             let description = 'بابت چک {0} {1} به شماره {2}'
                     .format(
-                        Enums.TreasuryType().getDisplay(persistedTreasury.treasuryType),
-                        Enums.ReceiveChequeStatus().getDisplay(persistedTreasury.documentDetail.status),
+                        this.enums.TreasuryType().getDisplay(persistedTreasury.treasuryType),
+                        this.enums.ReceiveChequeStatus().getDisplay(persistedTreasury.documentDetail.status),
                         persistedTreasury.documentDetail.number),
 
                 journalLines = persistedTreasury.treasuryType === 'receive'
                     ? this.updateReceiveJournalLines(persistedTreasury)
                     : this.updatePaymentJournalLines(persistedTreasury);
 
-            this.journalDomainService.update(persistedTreasury.journalId, {description, journalLines});
+            this.journalService.update(persistedTreasury.journalId, {description, journalLines});
         });
     }
 
     updateReceiveJournalLines(treasury) {
-        let subLedger = this.subsidiaryLedgerAccountDomainService,
+        let subLedger = this.subsidiaryLedgerAccountService,
             receiver = this.detailAccountRepository.findById(treasury.destinationDetailAccountId),
             payer = this.detailAccountRepository.findById(treasury.sourceDetailAccountId),
             persistedJournal = treasury.journalId ? this.journalRepository.findById(treasury.journalId) : null,
@@ -1095,7 +1088,7 @@ export class TreasuryJournalGenerationDomainService {
     generateForTransfer(treasuryId) {
 
         let persistedTreasury = this.treasuryRepository.findById(treasuryId),
-            subLedger = this.subsidiaryLedgerAccountDomainService,
+            subLedger = this.subsidiaryLedgerAccountService,
             errors = this._validation(persistedTreasury);
 
         if (Object.keys(subLedger.treasuryAccounts).length === 0)
@@ -1143,8 +1136,8 @@ export class TreasuryJournalGenerationDomainService {
         });
 
         return persistedTreasury.journalId
-            ? this.journalDomainService.update(persistedTreasury.journalId, {description, journalLines})
-            : this.journalDomainService.create({description, journalLines});
+            ? this.journalService.update(persistedTreasury.journalId, {description, journalLines})
+            : this.journalService.create({description, journalLines});
     }
 
 }

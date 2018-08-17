@@ -22,23 +22,23 @@ export * from "./JournalInvoiceGenerationDomainService"
 //export * from "../../Inventory/InventoryIOTypeService";
 export * from "./ReturnPurchaseDomainService";
 export * from "./OutputReturnPurchaseDomainService";
-export * from "./TreasuryCashDomainService";
-export * from "./TreasuryChequeDomainService";
-export * from "./TreasuryDemandNoteDomainService";
-export * from "./TreasuryReceiptDomainService";
+export * from "../../Treasury/TreasuryCashService";
+export * from "../../Treasury/TreasuryChequeService";
+export * from "../../Treasury/TreasuryDemandNoteService";
+export * from "../../Treasury/TreasuryReceiptService";
 export * from "../../Treasury/BanksNameService";
 export * from "./PayableChequeCategoryDomainService";
 export * from "../../Treasury/PayableChequeService";
-export * from "./TreasuryJournalGenerationDomainService";
-export * from "./TreasuryTransferDomainService";
-export * from "./TreasuryPurposeDomainService";
-export * from "./TreasuryDomainService";
+export * from "../../Treasury/TreasuryJournalGenerationService";
+export * from "../../Treasury/TreasuryTransferService";
+export * from "../../Treasury/TreasuryPurposeService";
+export * from "../../Treasury/TreasuryService";
 export * from "./InventoryAccountingDomainService";
 export * from "./InventoryDomainService";
 
 //export * from "../../Bookkeeping/Dimension/DimensionDomainService";
 export * from "./PermissionDomainService";
 export * from "./UserPermissionsControlDomainService";
-export * from "./TreasurySettingDomainService";
+export * from "../../Treasury/TreasurySettingService";
 
 export * from "../../Verification/VerificationService";

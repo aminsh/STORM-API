@@ -4,7 +4,7 @@ const Guid = Utility.Guid,
     PersianDate = Utility.PersianDate;
 
 @injectable()
-export class TreasuryChequeDomainService {
+export class TreasuryChequeService {
     /** @type {DetailAccountRepository}*/
     @inject("DetailAccountRepository") detailAccountRepository = undefined;
 
@@ -14,11 +14,7 @@ export class TreasuryChequeDomainService {
     /** @type {EventBus}*/
     @inject("EventBus") eventBus = undefined;
 
-    /** @type {JournalDomainService}*/
-    @inject("JournalDomainService") journalDomainService = undefined;
-
-    /** @type {TreasuryPurposeRepository}*/
-    @inject("TreasuryPurposeRepository") treasuryPurposeRepository = undefined;
+    @inject("Enums") enums = undefined;
 
     mapToEntity(cmd) {
         return {
@@ -192,7 +188,7 @@ export class TreasuryChequeDomainService {
             errors.push('امکان تغییر چک خرج شده وجود ندارد!');
 
         if (!persistedTreasury)
-            errors.push('{0} وجود ندارد!'.format(Enums.TreasuryPaymentDocumentTypes().getDisplay(entity.documentType)));
+            errors.push('{0} وجود ندارد!'.format(this.enums.TreasuryPaymentDocumentTypes().getDisplay(entity.documentType)));
 
         if (persistedTreasury.documentDetail.status === 'passed')
             errors.push('چک وصول شده قابل ویرایش نمی باشد');

@@ -1,10 +1,9 @@
 import {inject, injectable} from "inversify";
 
-const Guid = Utility.Guid,
-    PersianDate = Utility.PersianDate;
+const PersianDate = Utility.PersianDate;
 
 @injectable()
-export class TreasuryTransferDomainService {
+export class TreasuryTransferService {
 
     /** @type {DetailAccountRepository}*/
     @inject("DetailAccountRepository") detailAccountRepository = undefined;
@@ -12,14 +11,8 @@ export class TreasuryTransferDomainService {
     /** @type {TreasuryRepository}*/
     @inject("TreasuryRepository") treasuryRepository = undefined;
 
-    /** @type {JournalDomainService}*/
-    @inject("JournalDomainService") journalDomainService = undefined;
-
     /** @type {EventBus}*/
     @inject("EventBus") eventBus = undefined;
-
-    /** @type {TreasuryJournalGenerationDomainService}*/
-    @inject("TreasuryJournalGenerationDomainService") treasuryJournalGenerationDomainService = undefined;
 
     mapToEntity(cmd) {
 

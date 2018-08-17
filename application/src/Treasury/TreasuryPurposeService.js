@@ -1,7 +1,7 @@
 import {inject, injectable} from "inversify";
 
 @injectable()
-export class TreasuryPurposeDomainService {
+export class TreasuryPurposeService {
 
     /** @type {TreasuryPurposeRepository}*/
     @inject("TreasuryPurposeRepository") treasuryPurposeRepository = undefined;
@@ -15,11 +15,11 @@ export class TreasuryPurposeDomainService {
     /** @type {TreasuryRepository}*/
     @inject("TreasuryRepository") treasuryRepository = undefined;
 
-    /** @type {TreasuryCashDomainService}*/
-    @inject("TreasuryCashDomainService") treasuryCashDomainService = undefined;
+    /** @type {TreasuryCashService}*/
+    @inject("TreasuryCashService") treasuryCashService = undefined;
 
-    /** @type {TreasuryChequeDomainService}*/
-    @inject("TreasuryChequeDomainService") treasuryChequeDomainService = undefined;
+    /** @type {TreasuryChequeService}*/
+    @inject("TreasuryChequeService") treasuryChequeService = undefined;
 
     /** @type {TreasuryReceiptDomainService}*/
     @inject("TreasuryReceiptDomainService") treasuryReceiptDomainService = undefined;
@@ -29,7 +29,6 @@ export class TreasuryPurposeDomainService {
 
     /** @type {EventBus}*/
     @inject("EventBus") eventBus = undefined;
-
 
     mapToEntity(cmd) {
         let payer = this.detailAccountRepository.findById(cmd.treasury.payerId);
@@ -124,10 +123,10 @@ export class TreasuryPurposeDomainService {
 
         else {
             if (entity.treasury.documentType === 'cheque')
-                entity.treasuryId = this.treasuryChequeDomainService.create(entity.treasury);
+                entity.treasuryId = this.treasuryChequeService.create(entity.treasury);
 
             if (entity.treasury.documentType === 'cash')
-                entity.treasuryId = this.treasuryCashDomainService.create(entity.treasury);
+                entity.treasuryId = this.treasuryCashService.create(entity.treasury);
 
             if (entity.treasury.documentType === 'receipt')
                 entity.treasuryId = this.treasuryReceiptDomainService.create(entity.treasury);
@@ -137,7 +136,7 @@ export class TreasuryPurposeDomainService {
                 if (!treasury)
                     throw new ValidationException(['چک با شماره {0} ثبت نشده است!'.format(entity.treasury.documentDetail.number)]);
 
-                entity.treasuryId = this.treasuryChequeDomainService.chequeSpend(entity.treasury);
+                entity.treasuryId = this.treasuryChequeService.chequeSpend(entity.treasury);
             }
             entity.referenceIds.forEach(refId => {
                 entity.referenceId = refId;

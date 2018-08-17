@@ -1,9 +1,9 @@
 import {injectable, inject} from "inversify";
-import {BaseDomainService, whenPropertyChanged} from "./BaseDomainService";
+import {BaseDomainService, whenPropertyChanged} from "../core/BaseDomainService";
 import flatten from "flat";
 
 @injectable()
-export class TreasuryDomainService extends BaseDomainService {
+export class TreasuryService extends BaseDomainService {
 
     /** @type {TreasuryRepository}*/
     @inject("TreasuryRepository") treasuryRepository = undefined;

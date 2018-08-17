@@ -4,21 +4,18 @@ const Guid = Utility.Guid,
     PersianDate = Utility.PersianDate;
 
 @injectable()
-export class TreasuryDemandNoteDomainService {
+export class TreasuryCashService {
+
     /** @type {DetailAccountRepository}*/
     @inject("DetailAccountRepository") detailAccountRepository = undefined;
 
     /** @type {TreasuryRepository}*/
     @inject("TreasuryRepository") treasuryRepository = undefined;
 
-    /** @type {JournalDomainService}*/
-    @inject("JournalDomainService") journalDomainService = undefined;
-
-    /** @type {TreasuryJournalGenerationDomainService}*/
-    @inject("TreasuryJournalGenerationDomainService") treasuryJournalGenerationDomainService = undefined;
-
     /** @type {EventBus}*/
     @inject("EventBus") eventBus = undefined;
+
+    @inject("Enums") enums = undefined;
 
     mapToEntity(cmd) {
         return {
@@ -31,7 +28,7 @@ export class TreasuryDemandNoteDomainService {
             description: cmd.description,
             treasuryType: cmd.treasuryType,
             documentType: cmd.documentType,
-            journalId: cmd.journalId,
+            journalId: cmd.journal ? cmd.journal[0].id : cmd.journalId,
             documentDetail: this._documentDetailMapToEntity(cmd.documentDetail)
         }
     }
@@ -44,35 +41,30 @@ export class TreasuryDemandNoteDomainService {
         return {
             id: documentDetail.id,
             transferTo: documentDetail.transferTo,
-            transferFrom: documentDetail.transferFrom,
-            number: documentDetail.number,
-            dueDate: documentDetail.dueDate,
-            issueDate: documentDetail.issueDate,
-            totalTreasuryNumber: documentDetail.totalTreasuryNumber,
-            paymentLocation: documentDetail.paymentLocation,
-            paymentPlace: documentDetail.paymentPlace,
-            demandNoteTo: documentDetail.demandNoteTo,
-            nationalCode: documentDetail.nationalCode,
-            residence: documentDetail.residence
+            transferFrom: documentDetail.transferFrom
         }
     }
 
     _receiveValidate(entity) {
 
         let errors = [],
-            sourceDetailAccount = this.detailAccountRepository.findById(entity.sourceDetailAccountId);
+            source = this.detailAccountRepository.findById(entity.sourceDetailAccountId),
+            destination = this.detailAccountRepository.findById(entity.destinationDetailAccountId);
 
-        if (!sourceDetailAccount)
+        if (!source)
             errors.push('پرداخت کننده دارای حساب تفصیل نیست');
 
+        if (!destination)
+            errors.push('صندوق دارای حساب تفصیل نیست');
+
         if (!entity.amount || entity.amount <= 0)
-            errors.push('مبلغ سفته خالی می باشد.');
+            errors.push('مبلغ دریافت شده نباید خالی باشد.');
 
         if (Utility.String.isNullOrEmpty(entity.sourceDetailAccountId))
-            errors.push('پرداخت کننده خالی می باشد.');
+            errors.push('پرداخت کننده نباید خالی باشد.');
 
         if (Utility.String.isNullOrEmpty(entity.transferDate))
-            errors.push('تاریخ تحویل خالی می باشد.');
+            errors.push('تاریخ تحویل نباید خالی باشد.');
 
         return errors;
 
@@ -81,19 +73,23 @@ export class TreasuryDemandNoteDomainService {
     _paymentValidate(entity) {
 
         let errors = [],
-            destinationDetailAccount = this.detailAccountRepository.findById(entity.destinationDetailAccountId);
+            source = this.detailAccountRepository.findById(entity.sourceDetailAccountId),
+            destination = this.detailAccountRepository.findById(entity.destinationDetailAccountId);
 
-        if (!destinationDetailAccount)
+        if (!source)
+            errors.push('محل پرداخت دارای حساب تفصیل نیست');
+
+        if (!destination)
             errors.push('دریافت کننده دارای حساب تفصیل نیست');
 
         if (!entity.amount || entity.amount <= 0)
-            errors.push('مبلغ سفته خالی می باشد.');
+            errors.push('مبلغ پرداخت شده نباید خالی باشد.');
 
         if (Utility.String.isNullOrEmpty(entity.sourceDetailAccountId))
-            errors.push('دریافت کننده خالی می باشد.');
+            errors.push('محل پرداخت نباید خالی باشد.');
 
         if (Utility.String.isNullOrEmpty(entity.transferDate))
-            errors.push('تاریخ تحویل خالی می باشد.');
+            errors.push('تاریخ تحویل نباید خالی باشد.');
 
         return errors;
 
@@ -108,11 +104,11 @@ export class TreasuryDemandNoteDomainService {
             throw new ValidationException(errors);
 
         entity.treasuryType = 'receive';
-        entity.documentType = 'demandNote';
+        entity.documentType = 'cash';
 
         entity = this.treasuryRepository.create(entity);
 
-        //this.eventBus.send('onReceiveDemandNoteCreated', entity.id);
+        this.eventBus.send('onReceiveCashCreated', entity.id);
 
         return entity.id;
     }
@@ -126,29 +122,39 @@ export class TreasuryDemandNoteDomainService {
             throw new ValidationException(errors);
 
         entity.treasuryType = 'payment';
-        entity.documentType = 'demandNote';
+        entity.documentType = 'cash';
 
         entity = this.treasuryRepository.create(entity);
 
-        //this.eventBus.send('onPaymentDemandNoteCreated', entity.id);
+        this.eventBus.send('onPaymentCashCreated', entity.id);
 
         return entity.id;
+    }
+
+    create(cmd){
+        if (cmd.treasuryType === 'receive')
+            return this.createReceive(cmd);
+
+        if (cmd.treasuryType === 'payment')
+            return this.createPayment(cmd);
     }
 
     update(id, cmd) {
         let entity = this.mapToEntity(cmd),
             persistedTreasury = this.treasuryRepository.findById(id),
-            errors = this._receiveValidate(entity),
-            journalId = entity.journalId;
+            errors = persistedTreasury.treasuryType === 'payment'
+                ? this._paymentValidate(entity) : this._receiveValidate(entity);
 
         if (persistedTreasury.journalId)
-            errors.push('برای سفته {0} سند صادر شده است و امکان ویرایش وجود ندارد!'
-                .format(Enums.TreasuryType().getDisplay(persistedTreasury.treasuryType)));
+            errors.push('برای {0} نقدی سند صادر شده است و امکان ویرایش وجود ندارد!'
+                .format(this.enums.TreasuryType().getDisplay(persistedTreasury.treasuryType)));
 
         if (errors.length > 0)
             throw new ValidationException(errors);
 
+
         this.treasuryRepository.update(id, entity);
+
     }
 
     remove(id) {
@@ -159,6 +165,7 @@ export class TreasuryDemandNoteDomainService {
         this.eventBus.send('onRemoveTreasuryJournal', persistedTreasury.journalId);
         this.eventBus.send('onTreasuryPurposeRemove', persistedTreasury.id);
     }
+
 
     setJournal(id, journalId) {
         let persistedTreasury = this.treasuryRepository.findById(id),

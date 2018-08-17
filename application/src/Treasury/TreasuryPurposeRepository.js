@@ -1,8 +1,6 @@
-"use strict";
-
 import toResult from "asyncawait/await";
 import {inject, injectable} from "inversify";
-import {BaseRepository} from "./repository.base";
+import {BaseRepository} from "../core/BaseRepository";
 
 @injectable()
 export class TreasuryPurposeRepository extends BaseRepository {

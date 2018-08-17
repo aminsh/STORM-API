@@ -1,29 +1,20 @@
-"use strict";
+import {BaseQuery} from "../core/BaseQuery";
+import toResult from "asyncawait/await";
+import {injectable, inject} from "inversify";
+import * as viewAssembler from "./TreasuryViewAssembler";
 
-const BaseQuery = require('./query.base'),
-    FiscalPeriodQuery = require('../../../application/src/FiscalPeriod/FiscalPeriodQuery'),
-    kendoQueryResolve = require('../services/kendoQueryResolve'),
-    view = require('../viewModel.assemblers/view.treasury'),
-    cashView = require('../viewModel.assemblers/view.treasury.cash'),
-    chequeView = require('../viewModel.assemblers/view.treasury.cheque'),
-    receiptView = require('../viewModel.assemblers/view.treasury.receipt'),
-    demandNote = require('../viewModel.assemblers/view.treasury.demandNote'),
-    enums = instanceOf('Enums');
+@injectable()
+export class TreasuryReceiveQuery extends BaseQuery {
 
-class TreasuryReceive
-    extends BaseQuery {
-    constructor(branchId, userId) {
-        super(branchId, userId);
-    }
+    @inject("Enums") enums = undefined;
 
-    getAll(fiscalPeriodId, parameters) {
+    getAll(parameters) {
+
         let knex = this.knex,
             branchId = this.branchId,
-            userId = this.userId,
-            canView = this.canView(),
-            modify = this.modify,
-            fiscalPeriodQuery = new FiscalPeriodQuery(this.branchId),
-            fiscalPeriod = this.await(fiscalPeriodQuery.getById(fiscalPeriodId)),
+            userId = this.state.user.id,
+            canView = this.canView.call(this),
+            modify = this.modify.bind(this),
 
             query = knex.from(function () {
                 this.select(
@@ -51,16 +42,16 @@ class TreasuryReceive
                     .as('base')
             });
 
-        return kendoQueryResolve(query, parameters, view)
+        return toResult(Utility.kendoQueryResolve(query, parameters, viewAssembler.view.bind(this)));
 
     }
 
     getAllCheques(parameters) {
         let knex = this.knex,
             branchId = this.branchId,
-            userId = this.userId,
-            canView = this.canView(),
-            modify = this.modify,
+            userId = this.state.user.id,
+            canView = this.canView.call(this),
+            modify = this.modify.bind(this),
 
             query = knex.from(function () {
                 this.select(
@@ -86,6 +77,8 @@ class TreasuryReceive
                     .as('base')
             }),
 
+            enums = this.enums,
+
             chequeView = (item) => ({
                 id: item.id,
                 transferDate: item.transferDate,
@@ -101,15 +94,15 @@ class TreasuryReceive
                 isCompleted: item.isCompleted
             });
 
-        return kendoQueryResolve(query, parameters, chequeView)
+        return toResult(Utility.kendoQueryResolve(query, parameters, chequeView));
     }
 
     getById(id, documentType) {
         let knex = this.knex,
             branchId = this.branchId,
-            userId = this.userId,
-            canView = this.canView(),
-            modify = this.modify,
+            userId = this.state.user.id,
+            canView = this.canView.call(this),
+            modify = this.modify.bind(this),
 
             treasury = this.await(knex.select(
                 'treasury.*',
@@ -160,22 +153,12 @@ class TreasuryReceive
             treasury.documentDetail = documentDetail;
             treasury.journals = journals;
 
-            if (treasury.documentType === 'cheque')
-                return chequeView(treasury);
+            if (treasury.documentType.toLowerCase().includes("cheque"))
+                return viewAssembler.chequeView.call(this, treasury);
 
-            if (treasury.documentType === 'cash')
-                return cashView(treasury);
-
-            if (treasury.documentType === 'receipt')
-                return receiptView(treasury);
-
-            if (treasury.documentType === 'demandNote')
-                return demandNote(treasury);
+            return viewAssembler[`${treasury.documentType}View`].call(this, treasury);
         }
 
-        return treasury ? view(treasury) : [];
+        return treasury ? viewAssembler.view.call(this, treasury) : [];
     }
-
 }
-
-module.exports = TreasuryReceive;

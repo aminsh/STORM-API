@@ -9,7 +9,7 @@ const BaseQuery = require('./query.base'),
     SettingsQuery = require('./query.settings'),
     kendoQueryResolve = require('../services/kendoQueryResolve'),
     enums = require('../../../shared/enums'),
-    TreasuryPurposeQuery = require('./query.treasury.purpose');
+    TreasuryPurposeQuery = require('../../../application/src/Treasury/TreasuryPurposeQuery');
 
 
 class InvoiceQuery extends BaseQuery {

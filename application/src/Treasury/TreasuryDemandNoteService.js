@@ -4,29 +4,19 @@ const Guid = Utility.Guid,
     PersianDate = Utility.PersianDate;
 
 @injectable()
-export class TreasuryReceiptDomainService {
+export class TreasuryDemandNoteService {
     /** @type {DetailAccountRepository}*/
     @inject("DetailAccountRepository") detailAccountRepository = undefined;
 
     /** @type {TreasuryRepository}*/
     @inject("TreasuryRepository") treasuryRepository = undefined;
 
-    /** @type {JournalDomainService}*/
-    @inject("JournalDomainService") journalDomainService = undefined;
-
     /** @type {EventBus}*/
     @inject("EventBus") eventBus = undefined;
 
-    /** @type {TreasuryJournalGenerationDomainService}*/
-    @inject("TreasuryJournalGenerationDomainService") treasuryJournalGenerationDomainService = undefined;
-
-    /** @type {TreasuryPurposeRepository}*/
-    @inject("TreasuryPurposeRepository") treasuryPurposeRepository = undefined;
+    @inject("Enums") enums = undefined;
 
     mapToEntity(cmd) {
-
-        let treasury = cmd.id ? this.treasuryRepository.findById(cmd.id) : null;
-
         return {
             id: cmd.id,
             transferDate: cmd.transferDate || PersianDate.current(),
@@ -39,13 +29,12 @@ export class TreasuryReceiptDomainService {
             documentType: cmd.documentType,
             journalId: cmd.journalId,
             documentDetail: this._documentDetailMapToEntity(cmd.documentDetail)
-
         }
     }
 
-    _documentDetailMapToEntity(documentDetail){
+    _documentDetailMapToEntity(documentDetail) {
 
-        if(!documentDetail)
+        if (!documentDetail)
             return null;
 
         return {
@@ -53,38 +42,33 @@ export class TreasuryReceiptDomainService {
             transferTo: documentDetail.transferTo,
             transferFrom: documentDetail.transferFrom,
             number: documentDetail.number,
-            date: documentDetail.date,
-            bank: documentDetail.bank,
-            bankBranch: documentDetail.bankBranch,
-            identity: documentDetail.identity,
-            trackingNumber: documentDetail.trackingNumber
+            dueDate: documentDetail.dueDate,
+            issueDate: documentDetail.issueDate,
+            totalTreasuryNumber: documentDetail.totalTreasuryNumber,
+            paymentLocation: documentDetail.paymentLocation,
+            paymentPlace: documentDetail.paymentPlace,
+            demandNoteTo: documentDetail.demandNoteTo,
+            nationalCode: documentDetail.nationalCode,
+            residence: documentDetail.residence
         }
     }
 
     _receiveValidate(entity) {
 
         let errors = [],
-            sourceDetailAccount = this.detailAccountRepository.findById(entity.sourceDetailAccountId),
-            destinationDetailAccount = this.detailAccountRepository.findById(entity.destinationDetailAccountId);
+            sourceDetailAccount = this.detailAccountRepository.findById(entity.sourceDetailAccountId);
 
         if (!sourceDetailAccount)
             errors.push('پرداخت کننده دارای حساب تفصیل نیست');
 
-        if (!destinationDetailAccount)
-            errors.push('بانک دریافت کننده دارای حساب تفصیل نیست');
-
         if (!entity.amount || entity.amount <= 0)
-            errors.push('مبلغ دریافت شده نباید خالی باشد.');
+            errors.push('مبلغ سفته خالی می باشد.');
 
         if (Utility.String.isNullOrEmpty(entity.sourceDetailAccountId))
-            errors.push('پرداخت کننده نباید خالی باشد.');
+            errors.push('پرداخت کننده خالی می باشد.');
 
         if (Utility.String.isNullOrEmpty(entity.transferDate))
-            errors.push('تاریخ تحویل نباید خالی باشد.');
-
-        if (Utility.String.isNullOrEmpty(entity.documentDetail.number))
-            errors.push('شماره فیش نباید خالی باشد');
-
+            errors.push('تاریخ تحویل خالی می باشد.');
 
         return errors;
 
@@ -93,26 +77,19 @@ export class TreasuryReceiptDomainService {
     _paymentValidate(entity) {
 
         let errors = [],
-            sourceDetailAccount = this.detailAccountRepository.findById(entity.sourceDetailAccountId),
             destinationDetailAccount = this.detailAccountRepository.findById(entity.destinationDetailAccountId);
 
         if (!destinationDetailAccount)
-            errors.push('شخص دریافت کننده دارای حساب تفصیل نیست');
-
-        if (!sourceDetailAccount)
-            errors.push('پرداخت کننده دارای حساب تفصیل نیست');
+            errors.push('دریافت کننده دارای حساب تفصیل نیست');
 
         if (!entity.amount || entity.amount <= 0)
-            errors.push('مبلغ پرداخت شده نباید خالی باشد.');
+            errors.push('مبلغ سفته خالی می باشد.');
 
-        if (Utility.String.isNullOrEmpty(entity.destinationDetailAccountId))
-            errors.push('دریافت کننده نباید خالی باشد.');
+        if (Utility.String.isNullOrEmpty(entity.sourceDetailAccountId))
+            errors.push('دریافت کننده خالی می باشد.');
 
         if (Utility.String.isNullOrEmpty(entity.transferDate))
-            errors.push('تاریخ تحویل نباید خالی باشد.');
-
-        if (Utility.String.isNullOrEmpty(entity.documentDetail.number))
-            errors.push('شماره فیش نباید خالی باشد');
+            errors.push('تاریخ تحویل خالی می باشد.');
 
         return errors;
 
@@ -127,11 +104,11 @@ export class TreasuryReceiptDomainService {
             throw new ValidationException(errors);
 
         entity.treasuryType = 'receive';
-        entity.documentType = 'receipt';
+        entity.documentType = 'demandNote';
 
         entity = this.treasuryRepository.create(entity);
 
-        this.eventBus.send('onReceiveReceiptCreated', entity.id);
+        //this.eventBus.send('onReceiveDemandNoteCreated', entity.id);
 
         return entity.id;
     }
@@ -145,36 +122,24 @@ export class TreasuryReceiptDomainService {
             throw new ValidationException(errors);
 
         entity.treasuryType = 'payment';
-        entity.documentType = 'receipt';
+        entity.documentType = 'demandNote';
 
         entity = this.treasuryRepository.create(entity);
 
-        this.eventBus.send('onPaymentReceiptCreated', entity.id);
+        //this.eventBus.send('onPaymentDemandNoteCreated', entity.id);
 
         return entity.id;
-    }
-
-    create(cmd){
-        if (cmd.treasuryType === 'receive')
-            return this.createReceive(cmd);
-
-        if (cmd.treasuryType === 'payment')
-            return this.createPayment(cmd);
     }
 
     update(id, cmd) {
         let entity = this.mapToEntity(cmd),
             persistedTreasury = this.treasuryRepository.findById(id),
-            errors = persistedTreasury.treasuryType === 'receive' ? this._receiveValidate(entity)
-                : this._paymentValidate(entity);
-
-
-        if (!persistedTreasury)
-            errors.push('{0} وجود ندارد!'.format(Enums.TreasuryPaymentDocumentTypes().getDisplay(entity.documentType)));
+            errors = this._receiveValidate(entity),
+            journalId = entity.journalId;
 
         if (persistedTreasury.journalId)
-            errors.push('برای واریزی {0} سند صادر شده است و امکان ویرایش وجود ندارد!'
-                .format(Enums.TreasuryType().getDisplay(persistedTreasury.treasuryType)));
+            errors.push('برای سفته {0} سند صادر شده است و امکان ویرایش وجود ندارد!'
+                .format(this.enums.TreasuryType().getDisplay(persistedTreasury.treasuryType)));
 
         if (errors.length > 0)
             throw new ValidationException(errors);
@@ -186,7 +151,6 @@ export class TreasuryReceiptDomainService {
         let persistedTreasury = this.treasuryRepository.findById(id);
 
         this.treasuryRepository.remove(id);
-        this.treasuryPurposeRepository.removeByTreasuryId(id);
 
         this.eventBus.send('onRemoveTreasuryJournal', persistedTreasury.journalId);
         this.eventBus.send('onTreasuryPurposeRemove', persistedTreasury.id);

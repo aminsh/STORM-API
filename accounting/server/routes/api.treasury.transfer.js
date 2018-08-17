@@ -3,7 +3,7 @@
 const async = require('asyncawait/async'),
     await = require('asyncawait/await'),
     router = require('express').Router(),
-    TransferQuery = require('../queries/query.treasury.transfer');
+    TransferQuery = require('../../../application/src/Treasury/TreasuryTransferQuery');
 
 router.route('/')
     .get(async((req, res) => {

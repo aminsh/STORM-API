@@ -1,14 +1,13 @@
 import toResult from "asyncawait/await";
-import {BaseRepository} from "./repository.base";
+import {BaseRepository} from "../core/BaseRepository";
 import {injectable} from "inversify";
 
 @injectable()
 export class TreasuryRepository extends BaseRepository {
 
     findById(id) {
-        let knex = this.knex,
 
-            treasury = toResult(this.knex.select('treasury.*')
+        let treasury = toResult(this.knex.select('treasury.*')
                 .from('treasury')
                 .modify(this.modify, this.branchId, 'treasury.branchId')
                 .where('id', id)

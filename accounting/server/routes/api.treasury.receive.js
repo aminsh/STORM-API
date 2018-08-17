@@ -3,8 +3,8 @@
 const async = require('asyncawait/async'),
     await = require('asyncawait/await'),
     router = require('express').Router(),
-    ReceiveQuery = require('../queries/query.treasury.receive'),
-    TreasuryPurposesQuery = require('../queries/query.treasury.purpose');
+    ReceiveQuery = require('../../../application/src/Treasury/TreasuryReceiveQuery'),
+    TreasuryPurposesQuery = require('../../../application/src/Treasury/TreasuryPurposeQuery');
 
 router.route('/')
     .get(async((req, res) => {

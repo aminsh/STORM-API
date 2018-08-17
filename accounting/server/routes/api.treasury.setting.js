@@ -4,8 +4,8 @@ const async = require('asyncawait/async'),
     await = require('asyncawait/await'),
     router = require('express').Router(),
     TreasurySettingRepository = require('../data/repository.treasury.setting'),
-    TreasurySettingQuery = require('../queries/query.treasury.settings'),
-    defaultTreasurySubsidiaryLedgerAccountTemplate = require('../config/settings/treasurySubsidiaryLedgerAccounts.json');
+    TreasurySettingQuery = require('../../../application/src/Treasury/TreasurySettingsQuery'),
+    defaultTreasurySubsidiaryLedgerAccountTemplate = require('../../../application/src/Treasury/json/treasurySubsidiaryLedgerAccounts.json');
 
 router.route('/')
     .get(async((req, res) => {

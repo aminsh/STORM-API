@@ -1,24 +1,19 @@
-"use strict";
+import {BaseQuery} from "../core/BaseQuery";
+import toResult from "asyncawait/await";
+import {injectable, inject} from "inversify";
+import * as viewAssembler from "./TreasuryViewAssembler";
 
-const BaseQuery = require('./query.base'),
-    async = require('asyncawait/async'),
-    await = require('asyncawait/await'),
-    kendoQueryResolve = require('../services/kendoQueryResolve'),
-    view = require('../viewModel.assemblers/view.treasury');
+@injectable()
+export class TreasuryPurposeQuery extends BaseQuery {
 
-class TreasuryPurposes extends BaseQuery {
-    constructor(branchId, userId) {
-        super(branchId, userId);
-    }
-
-    getAll(fiscalPeriodId, parameters) {
-    }
+    @inject("Enums") enums = undefined;
 
     getTreasuryAmountById(id) {
+
         let knex = this.knex,
             branchId = this.branchId;
 
-        return await(knex.select(
+        return toResult(knex.select(
             'treasury.id',
             'treasury.amount'
             )
@@ -26,22 +21,24 @@ class TreasuryPurposes extends BaseQuery {
                 .where('treasury.branchId', branchId)
                 .where('treasury.id', id)
                 .first()
-        )
+        );
     }
 
     getByInvoiceId(id, parameters) {
 
         let knex = this.knex,
             branchId = this.branchId,
-            userId = this.userId,
-            canView = this.canView(),
-            modify = this.modify,
+            userId = this.state.user.id,
+            canView = this.canView.call(this),
+            modify = this.modify.bind(this),
 
-            treasuryIds = await(knex.select(
-                'treasuryPurpose.treasuryId')
-                .from('treasuryPurpose')
-                .where('treasuryPurpose.branchId', branchId)
-                .where('treasuryPurpose.referenceId', id)),
+            treasuryIds = toResult(
+                knex.select(
+                    'treasuryPurpose.treasuryId')
+                    .from('treasuryPurpose')
+                    .where('treasuryPurpose.branchId', branchId)
+                    .where('treasuryPurpose.referenceId', id)
+            ),
 
 
             treasuries = knex.from(function () {
@@ -69,7 +66,7 @@ class TreasuryPurposes extends BaseQuery {
                     .as('base')
             });
 
-        return kendoQueryResolve(treasuries, parameters, view)
+        return toResult(Utility.kendoQueryResolve(treasuries, parameters, viewAssembler.view.bind(this)));
     }
 
     getTreasuriesTotalAmount(invoiceId) {
@@ -77,7 +74,7 @@ class TreasuryPurposes extends BaseQuery {
             branchId = this.branchId,
             treasuriesAmount = [],
 
-            treasuryIds = await(knex.select(
+            treasuryIds = toResult(knex.select(
                 'treasuryPurpose.treasuryId')
                 .from('treasuryPurpose')
                 .where('treasuryPurpose.branchId', branchId)
@@ -89,7 +86,4 @@ class TreasuryPurposes extends BaseQuery {
 
         return treasuriesAmount.length > 0 ? treasuriesAmount.asEnumerable().sum(item => item.amount) : 0;
     }
-
 }
-
-module.exports = TreasuryPurposes;

@@ -1,26 +1,17 @@
-"use strict";
+import {BaseQuery} from "../core/BaseQuery";
+import toResult from "asyncawait/await";
+import {injectable} from "inversify";
+import * as viewAssembler from "./TreasuryViewAssembler";
 
-const BaseQuery = require('./query.base'),
-    async = require('asyncawait/async'),
-    await = require('asyncawait/await'),
-    FiscalPeriodQuery = require('../../../application/src/FiscalPeriod/FiscalPeriodQuery'),
-    kendoQueryResolve = require('../services/kendoQueryResolve'),
-    view = require('../viewModel.assemblers/view.treasury.transfer');
+@injectable()
+export class TreasuryTransferQuery extends BaseQuery {
 
-class TreasuryTransfer
-    extends BaseQuery {
-    constructor(branchId, userId) {
-        super(branchId, userId);
-    }
-
-    getAll(fiscalPeriodId, parameters) {
+    getAll(parameters) {
         let knex = this.knex,
             branchId = this.branchId,
-            userId = this.userId,
-            canView = this.canView(),
-            modify = this.modify,
-            fiscalPeriodQuery = new FiscalPeriodQuery(this.branchId),
-            fiscalPeriod = await(fiscalPeriodQuery.getById(fiscalPeriodId)),
+            userId = this.state.user.id,
+            canView = this.canView.call(this),
+            modify = this.modify.bind(this),
 
             query = knex.from(function () {
                 this.select(
@@ -43,18 +34,18 @@ class TreasuryTransfer
                     .as('base')
             });
 
-        return kendoQueryResolve(query, parameters, view)
+        return toResult(Utility.kendoQueryResolve(query, parameters, viewAssembler.transferView.bind(this)));
 
     }
 
     getById(id) {
         let knex = this.knex,
             branchId = this.branchId,
-            userId = this.userId,
-            canView = this.canView(),
-            modify = this.modify,
+            userId = this.state.user.id,
+            canView = this.canView.call(this),
+            modify = this.modify.bind(this),
 
-            treasury = await(knex.select(
+            treasury = toResult(knex.select(
                 'treasury.id',
                 'treasury.imageUrl',
                 'treasury.transferDate',
@@ -79,7 +70,7 @@ class TreasuryTransfer
             );
 
         if (treasury) {
-            let journal = treasury.journalId ? await(knex.select(
+            let journal = treasury.journalId ? toResult(knex.select(
                 'journals.temporaryDate as date',
                 'journals.temporaryNumber as number',
                 'journals.id',
@@ -94,9 +85,8 @@ class TreasuryTransfer
 
             treasury.journal = journal;
         }
-        return treasury ? view(treasury) : [];
+
+        return treasury ? viewAssembler.transferView.call(this, treasury) : [];
     }
 
 }
-
-module.exports = TreasuryTransfer;

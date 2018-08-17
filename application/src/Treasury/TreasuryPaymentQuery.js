@@ -1,29 +1,19 @@
-"use strict";
+import {BaseQuery} from "../core/BaseQuery";
+import toResult from "asyncawait/await";
+import {injectable, inject} from "inversify";
+import * as viewAssembler from "./TreasuryViewAssembler";
 
-const BaseQuery = require('./query.base'),
-    async = require('asyncawait/async'),
-    await = require('asyncawait/await'),
-    FiscalPeriodQuery = require('../../../application/src/FiscalPeriod/FiscalPeriodQuery'),
-    kendoQueryResolve = require('../services/kendoQueryResolve'),
-    view = require('../viewModel.assemblers/view.treasury'),
-    cashView = require('../viewModel.assemblers/view.treasury.cash'),
-    chequeView = require('../viewModel.assemblers/view.treasury.cheque'),
-    receiptView = require('../viewModel.assemblers/view.treasury.receipt'),
-    demandNote = require('../viewModel.assemblers/view.treasury.demandNote');
+@injectable()
+export class TreasuryPaymentQuery extends BaseQuery {
 
-class TreasuryPayment extends BaseQuery {
-    constructor(branchId, userId) {
-        super(branchId, userId);
-    }
+    @inject("Enums") enums = undefined;
 
-    getAll(fiscalPeriodId, parameters) {
+    getAll(parameters) {
         let knex = this.knex,
             branchId = this.branchId,
-            userId = this.userId,
-            canView = this.canView(),
-            modify = this.modify,
-            fiscalPeriodQuery = new FiscalPeriodQuery(this.branchId),
-            fiscalPeriod = await(fiscalPeriodQuery.getById(fiscalPeriodId)),
+            userId = this.state.user.id,
+            canView = this.canView.call(this),
+            modify = this.modify.bind(this),
 
             query = knex.from(function () {
                 this.select(
@@ -51,18 +41,18 @@ class TreasuryPayment extends BaseQuery {
                     .as('base')
             });
 
-        return kendoQueryResolve(query, parameters, view)
+        return toResult(Utility.kendoQueryResolve(query, parameters, viewAssembler.view.bind(this)))
 
     }
 
     getById(id, documentType) {
         let knex = this.knex,
             branchId = this.branchId,
-            userId = this.userId,
-            canView = this.canView(),
-            modify = this.modify,
+            userId = this.state.user.id,
+            canView = this.canView.call(this),
+            modify = this.modify.bind(this),
 
-            treasury = await(knex.select(
+            treasury = toResult(knex.select(
                 'treasury.*',
                 knex.raw(`"sourceDetailAccounts".title as "sourceTitle"`),
                 knex.raw(`"destinationDetailAccounts".title as "destinationTitle"`)
@@ -81,7 +71,7 @@ class TreasuryPayment extends BaseQuery {
             );
 
         if (treasury) {
-            let documentDetail = await(knex.select('treasuryDocumentDetails.*')
+            let documentDetail = toResult(knex.select('treasuryDocumentDetails.*')
                     .from('treasuryDocumentDetails')
                     .where('id', treasury.documentDetailId)
                     .where('branchId', branchId)
@@ -96,7 +86,7 @@ class TreasuryPayment extends BaseQuery {
                     : treasury.journalId ? [treasury.journalId] : null;
 
             let journals = (journalIds || []).length > 0
-                ? await(knex.select(
+                ? toResult(knex.select(
                     'journals.temporaryDate as date',
                     'journals.temporaryNumber as number',
                     'journals.id',
@@ -112,25 +102,22 @@ class TreasuryPayment extends BaseQuery {
             treasury.documentDetail = documentDetail;
             treasury.journals = journals;
 
-            if (treasury.documentType === 'cheque')
-                return chequeView(treasury);
+            if (treasury.documentType.toLowerCase().includes("cheque"))
+                return viewAssembler.chequeView.call(this, treasury);
 
-            if (treasury.documentType === 'spendCheque')
-                return chequeView(treasury);
+            return viewAssembler[`${treasury.documentType}View`].call(this, treasury);
 
-            if (treasury.documentType === 'cash')
+           /* if (treasury.documentType === 'cash')
                 return cashView(treasury);
 
             if (treasury.documentType === 'receipt')
                 return receiptView(treasury);
 
             if (treasury.documentType === 'demandNote')
-                return demandNote(treasury);
+                return demandNote(treasury);*/
         }
 
-        return treasury ? view(treasury) : [];
+        return treasury ? viewAssembler.view.call(this, treasury) : [];
     }
-
 }
 
-module.exports = TreasuryPayment;
