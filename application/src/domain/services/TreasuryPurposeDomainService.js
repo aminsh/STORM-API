@@ -43,7 +43,7 @@ export class TreasuryPurposeDomainService {
             id: cmd.id,
             treasuryId: cmd.treasuryId || cmd.treasury.receiveId || null,
             reference: cmd.reference,
-            referenceIds: cmd.referenceIds,
+            referenceIds: cmd.referenceId,
             treasury: cmd.treasury || null
         }
     }
@@ -51,17 +51,22 @@ export class TreasuryPurposeDomainService {
     _validate(entity) {
 
         let errors = [],
-            referenceIdsNotHaveInvoices = entity.referenceIds
-                .map(refId => this.invoiceRepository.findById(refId))
-                .filter(invoice => invoice === null);
+            referenceIdsNotHaveInvoices = Array.isArray(entity.referenceIds)
+                ? entity.referenceIds
+                    .map(refId => this.invoiceRepository.findById(refId))
+                    .filter(invoice => invoice === null)
+                : this.invoiceRepository.findById(entity.referenceIds);
 
-        if (referenceIdsNotHaveInvoices.length > 0)
+        if (Array.isArray(referenceIdsNotHaveInvoices) && referenceIdsNotHaveInvoices.length > 0)
+            errors.push('فاکتور(های) موردنظر وجود ندارند!');
+
+        if (!referenceIdsNotHaveInvoices)
             errors.push('فاکتور(های) موردنظر وجود ندارند!');
 
         return errors;
     }
 
-    sumReferencesAmount(referenceIds){
+    sumReferencesAmount(referenceIds) {
         let totalPrice = [];
         referenceIds.forEach(refId => {
             let invoice = this.invoiceRepository.findById(refId),
@@ -139,10 +144,15 @@ export class TreasuryPurposeDomainService {
 
                 entity.treasuryId = this.treasuryChequeDomainService.chequeSpend(entity.treasury);
             }
-            entity.referenceIds.forEach(refId => {
-                entity.referenceId = refId;
-                this.treasuryPurposeRepository.create(entity);
-            });
+            if (Array.isArray(entity.referenceIds))
+                entity.referenceIds.forEach(refId => {
+                    entity.referenceId = refId;
+                    this.treasuryPurposeRepository.create(entity);
+                });
+            else {
+                entity.referenceId = entity.referenceIds;
+                this.treasuryPurposeRepository.create(entity)
+            }
         }
 
         Utility.delay(500);
