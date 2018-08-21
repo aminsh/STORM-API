@@ -25,6 +25,7 @@ import * as BankAndFund from "./BankAndFund";
 import * as Verification from "./Verification";
 import * as Integration from "./Integration";
 import * as BranchSetup from "./BranchSetup";
+import * as Report from "Report";
 
 Database.register(container);
 StormOrder.register(container);
@@ -46,6 +47,7 @@ BankAndFund.register(container);
 Verification.register(container);
 Integration.register(container);
 BranchSetup.register(container);
+Report.register(container);
 
 import {Context} from "./Context";
 import {register} from "./core/expressUtlis";
