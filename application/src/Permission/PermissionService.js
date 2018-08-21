@@ -1,11 +1,9 @@
 import {inject, injectable} from "inversify";
-import {PermissionRepository} from "../data/repository.permission";
-import permissions from "../../../../accounting/server/config/settings/permisions";
+import permissions from "./permisions";
 
 
 @injectable()
-
-export class PermissionDomainService {
+export class PermissionService {
 
     /**@type {PermissionRepository}*/
     @inject("PermissionRepository") permissionRepository = undefined;

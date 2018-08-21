@@ -3,7 +3,7 @@ import flatten from "flat";
 import renameKeys from "rename-keys";
 
 @injectable()
-export class UserPermissionsControlDomainService {
+export class UserPermissionsControlService {
 
     /** @type {PermissionRepository}*/
     @inject("PermissionRepository") permissionRepository = undefined;
