@@ -113,12 +113,13 @@ export class DetailAccountQuery extends BaseQuery {
 
         return result;
     }
-    getBankAndFundTurnover(id, type, fiscalPeriodId, parameters) {
+    getBankAndFundTurnover(id, type, parameters) {
         let knex = this.knex,
             branchId = this.branchId,
-            userId = this.userId,
-            canView = this.canView(),
-            modify = this.modify,
+            userId = this.state.user.id,
+            fiscalPeriodId= this.state.fiscalPeriodId,
+            canView = this.canView.call(this),
+            modify = this.modify.bind(this),
 
             subsidiaryLedgerAccounts = toResult(knex.from('settings').where('branchId', this.branchId).first())
                 .subsidiaryLedgerAccounts,
