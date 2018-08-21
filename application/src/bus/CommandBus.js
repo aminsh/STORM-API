@@ -1,7 +1,6 @@
 import {inject, injectable} from "inversify"
 import serviceConfig from "../config/config.services.json";
 import {ApplicationServiceLogger} from "../ApplicationLogger";
-import {UserPermissionsControlDomainService} from "../domain/services/UserPermissionsControlDomainService";
 
 @injectable()
 export class CommandBus {

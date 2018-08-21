@@ -37,8 +37,8 @@ export * from "./InventoryAccountingDomainService";
 export * from "./InventoryDomainService";
 
 //export * from "../../Bookkeeping/Dimension/DimensionDomainService";
-export * from "./PermissionDomainService";
-export * from "./UserPermissionsControlDomainService";
+export * from "../../Permission/PermissionService";
+export * from "../../Permission/UserPermissionsControlService";
 export * from "../../Treasury/TreasurySettingService";
 
 export * from "../../Verification/VerificationService";

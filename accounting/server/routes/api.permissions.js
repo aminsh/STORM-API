@@ -3,7 +3,7 @@
 const async = require('asyncawait/async'),
     await = require('asyncawait/await'),
     router = require('express').Router(),
-    PermissionQuery = require('../queries/query.permissions');
+    PermissionQuery = require('../../../application/src/Permission/PermissionQuery');
 
 router.route('/roles')
     .get(async((req, res) => {
