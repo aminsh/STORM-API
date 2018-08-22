@@ -1,8 +1,6 @@
 import {inject, injectable} from "inversify";
 import {async} from "../core/@decorators";
 
-const knex = instanceOf('knex');
-
 @injectable()
 export class ShouldHaveBranchMiddleware  {
 

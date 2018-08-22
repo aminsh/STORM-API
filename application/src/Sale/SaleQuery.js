@@ -19,7 +19,7 @@ export class SaleQuery extends BaseQuery {
     getById(id) {
         let knex = this.knex,
             branchId = this.branchId,
-            userId = this.userId,
+            userId = this.state.user.id,
             canView = this.canView(),
             modify = this.modify.bind(this),
             settings = this.settingsQuery.get(),

@@ -10,12 +10,14 @@ export class ThirdPartyQuery {
 
     @inject("Enums") Enums = undefined;
 
+    tableName = "branchThirdParty";
+
     getAll() {
         let knex = this.dbContext.instance,
             branchId = this.context.branchId;
 
         let allThirdParties = this.Enums.ThirdParty().data,
-            allSelectedThirdParties = toResult(knex.from('branchThirdParty')
+            allSelectedThirdParties = toResult(knex.from(this.tableName)
                 .where('branchId', branchId));
 
         return allThirdParties
@@ -35,5 +37,22 @@ export class ThirdPartyQuery {
                 })
             )
             .toArray();
+    }
+
+    get(keys) {
+
+        const knex = this.dbContext.instance;
+
+        let query = knex.from(this.tableName).where({branchId: this.context.branchId});
+
+        if (keys) {
+
+            if (Array.isArray(keys))
+                query.whereIn('key', keys);
+            else
+                query.where({key: keys});
+        }
+
+        return toResult(query);
     }
 }
