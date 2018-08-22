@@ -5,6 +5,8 @@ import {BranchSubscriptionRepository} from "./BranchSubscriptionRepository";
 import {BranchQuery} from "./BranchQuery";
 import {BranchService} from "./BranchService";
 import {ShouldHaveBranchMiddleware} from "./ShouldHaveBranchMiddleware";
+import {ShouldHaveBranchForGuestUserMiddleware} from "./ShouldHaveBranchForGuestUserMiddleware";
+import {SetValidUserForGuestUserMiddleware} from "./SetValidUserForGuestUserMiddleware";
 
 import "./BranchController";
 
@@ -17,4 +19,6 @@ export function register(container) {
     container.bind("BranchQuery").to(BranchQuery);
     container.bind("BranchService").to(BranchService);
     container.bind("ShouldHaveBranch").to(ShouldHaveBranchMiddleware);
+    container.bind("ShouldHaveBranchForGuestUser").to(ShouldHaveBranchForGuestUserMiddleware);
+    container.bind("SetValidUserForGuestUser").to(SetValidUserForGuestUserMiddleware);
 }
