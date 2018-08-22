@@ -135,7 +135,7 @@ export function register(container, setConfig, setErrorConfig, app = express()) 
 
         app.use(ctrl.baseUrl, router);
 
-    })
+    });
 
     if (typeof setErrorConfig === 'function')
         app.use(setErrorConfig);
