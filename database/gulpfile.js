@@ -1,7 +1,7 @@
 "use strict";
 
-require('../shared/utilities/string.prototypes');
-require('../shared/utilities/array.prototypes');
+require('../dist/Infrastructure/Utilities/string.prototypes');
+require('../dist/Infrastructure/Utilities/array.prototypes');
 
 const gulp = require('gulp'),
     path = require('path'),
@@ -13,9 +13,7 @@ const gulp = require('gulp'),
     },
     dbConfig = Object.assign({
         client: 'pg',
-        connection: require('../config/enviroment').db.connection
-            ? require('../config/enviroment').db.connection
-            : require('../eviroment.json').DATABASE_URL,
+        connection: process.env.DATABASE_URL,
         debug: true
     }, options),
     argv = require('yargs').argv,

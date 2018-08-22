@@ -11,8 +11,8 @@
     "start": "node .",
     "dev": "gulp && node . NODE_ENV=development --mode UNIT",
     "build-webpack": "webpack",
-    "build": "babel ./application/src --out-dir ./application/dist --source-maps",
-    "build-production": "babel ./application/src --out-dir ./application/dist"
+    "build": "babel ./src --out-dir ./dist --source-maps",
+    "build-production": "babel ./src --out-dir ./dist"
   },
   "engines": {
     "node": "6.10.x"

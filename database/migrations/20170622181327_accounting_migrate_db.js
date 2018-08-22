@@ -1,6 +1,6 @@
 "use strict";
 
-const enums = require('../../shared/enums');
+const enums = require('../../dist/Constants/enums');
 
 exports.up = function(knex, Promise) {
   return knex.schema
