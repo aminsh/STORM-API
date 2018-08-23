@@ -1,5 +1,5 @@
 import {Controller, Get} from "../Infrastructure/expressUtlis";
-import {async} from "../Infrastructure/@decorators";
+import {inject} from "inversify";
 
 @Controller("/v1/storm-gifts")
 class StormGiftController {
@@ -9,7 +9,6 @@ class StormGiftController {
 
     @inject("BranchQuery")
     /** @type {BranchQuery}*/ branchQuery = undefined;
-
 
     @Get("/:code/:branchId/isValid")
     verifyGift(req) {
