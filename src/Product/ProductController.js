@@ -68,7 +68,7 @@ class ProductController {
                 }))
             .toArray();
 
-        this.productService.addManyToInventoryInputFirst(firstInputList, body.stockId);
+        //this.productService.addManyToInventoryInputFirst(firstInputList, body.stockId);
 
         return ids;
     }

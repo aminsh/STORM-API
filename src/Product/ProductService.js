@@ -12,9 +12,6 @@ export class ProductService {
     /**@type {InvoiceRepository}*/
     @inject("InvoiceRepository") invoiceRepository = undefined;
 
-    /**@type {InventoryInputDomainService}*/
-    @inject("InventoryInputDomainService") inventoryInputDomainService = undefined;
-
     shouldTrackInventory(productId) {
         return this.productRepository.isGood(productId);
     }
@@ -156,7 +153,8 @@ export class ProductService {
         this.productRepository.remove(id);
     }
 
-    _addToInventoryInputFirst(DTO, inputFirst) {
+    /*TODO It should be moved to inventory */
+    /*_addToInventoryInputFirst(DTO, inputFirst) {
 
         if (!this.productRepository.isGood(DTO.productId))
             throw new ValidationException(['کالای جاری از نوع انباری نیست']);
@@ -164,8 +162,8 @@ export class ProductService {
         if (!(DTO.quantity && !isNaN(parseFloat(DTO.quantity)) && parseFloat(DTO.quantity) > 0 ))
             throw new ValidationException(['مقدار باید دارای مقدار بزرگتر از صفر باشد']);
 
-        /*if (String.isNullOrEmpty(DTO.stockId))
-            throw new ValidationException(['انبار تعیین نشده']);*/
+        /!*if (String.isNullOrEmpty(DTO.stockId))
+            throw new ValidationException(['انبار تعیین نشده']);*!/
 
         let lineMatchProduct = inputFirst.inventoryLines.asEnumerable().singleOrDefault(item => item.productId === DTO.productId);
 
@@ -198,10 +196,10 @@ export class ProductService {
                 }))
             .toArray();
 
-        /*TODO this control disabled temporarily
-            inventoryService.fixQuantity(inputFirst.id);*/
+        /!*TODO this control disabled temporarily
+            inventoryService.fixQuantity(inputFirst.id);*!/
         this.inventoryInputDomainService.setPrice(inputFirst.id, setPriceList);
-    }
+    }*/
 }
 
 
