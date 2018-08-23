@@ -4,7 +4,7 @@ import events from "events";
 
 import kendoQueryResolve from "./Utilities/kendoQueryResolve";
 import * as string from "./Utilities/string";
-import * as PersianDate from "./Utilities/persianDate";
+import PersianDate from "./Utilities/persianDate";
 import Guid from "./Utilities/guidService";
 import TokenGenerator from "./Utilities/token.generator";
 import * as exceptions from "./Utilities/exceptions";

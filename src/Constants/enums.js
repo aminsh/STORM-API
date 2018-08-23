@@ -3,6 +3,7 @@
 const enums = {};
 
 class Enum {
+
     constructor(enums) {
         this.data = enums;
     }

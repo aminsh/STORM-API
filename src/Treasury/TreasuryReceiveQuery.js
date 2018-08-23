@@ -104,7 +104,7 @@ export class TreasuryReceiveQuery extends BaseQuery {
             canView = this.canView.call(this),
             modify = this.modify.bind(this),
 
-            treasury = this.await(knex.select(
+            treasury = toResult(knex.select(
                 'treasury.*',
                 knex.raw(`"sourceDetailAccounts".title as "sourceTitle"`),
                 knex.raw(`"destinationDetailAccounts".title as "destinationTitle"`)
@@ -123,7 +123,7 @@ export class TreasuryReceiveQuery extends BaseQuery {
             );
 
         if (treasury) {
-            let documentDetail = this.await(knex.select('treasuryDocumentDetails.*')
+            let documentDetail = toResult(knex.select('treasuryDocumentDetails.*')
                     .from('treasuryDocumentDetails')
                     .where('id', treasury.documentDetailId)
                     .where('branchId', branchId)
@@ -138,7 +138,7 @@ export class TreasuryReceiveQuery extends BaseQuery {
                     : treasury.journalId ? [treasury.journalId] : null;
 
             let journals = (journalIds || []).length > 0
-                ? this.await(knex.select(
+                ? toResult(knex.select(
                     'journals.temporaryDate as date',
                     'journals.temporaryNumber as number',
                     'journals.id',

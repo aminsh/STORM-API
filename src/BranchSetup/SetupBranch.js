@@ -36,7 +36,7 @@ export class SetupBranch {
         }));
 
         toResult(knex('stocks').insert({
-            id: Utility.Guid.new(),
+            id: Utility.Guid.create(),
             title: 'انبار اصلی',
             branchId
         }));

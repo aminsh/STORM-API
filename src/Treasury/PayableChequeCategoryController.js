@@ -2,7 +2,7 @@ import {Controller, Delete, Get, Post, Put} from "../Infrastructure/expressUtlis
 import {async} from "../Infrastructure/@decorators";
 import {inject} from "inversify";
 
-@Controller("/cheque-categories", "ShouldHaveBranch")
+@Controller("/v1/cheque-categories", "ShouldHaveBranch")
 class PayableChequeCategoryController {
 
     @inject("PayableChequeCategoryQuery")

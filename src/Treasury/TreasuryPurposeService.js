@@ -6,8 +6,8 @@ export class TreasuryPurposeService {
     /** @type {TreasuryPurposeRepository}*/
     @inject("TreasuryPurposeRepository") treasuryPurposeRepository = undefined;
 
-    /** @type {TreasuryDomainService}*/
-    @inject("TreasuryDomainService") treasuryDomainService = undefined;
+    /** @type {TreasuryService}*/
+    @inject("TreasuryService") treasuryDomainService = undefined;
 
     /** @type {InvoiceRepository}*/
     @inject("InvoiceRepository") invoiceRepository = undefined;
@@ -21,8 +21,8 @@ export class TreasuryPurposeService {
     /** @type {TreasuryChequeService}*/
     @inject("TreasuryChequeService") treasuryChequeService = undefined;
 
-    /** @type {TreasuryReceiptDomainService}*/
-    @inject("TreasuryReceiptDomainService") treasuryReceiptDomainService = undefined;
+    /** @type {TreasuryReceiptService}*/
+    @inject("TreasuryReceiptService") treasuryReceiptDomainService = undefined;
 
     /** @type {DetailAccountRepository}*/
     @inject("DetailAccountRepository") detailAccountRepository = undefined;

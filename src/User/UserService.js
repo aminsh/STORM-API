@@ -13,7 +13,7 @@ export class UserService {
     @inject("SmsService")
     /** @type{SmsService}*/ smsService = undefined;
 
-    @inject("Context") context = undefined;
+    @inject("State") context = undefined;
 
     changeSet = [];
 

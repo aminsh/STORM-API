@@ -37,7 +37,7 @@ export class ReportConfig {
     }
 
     _getDateRange() {
-        const currentPeriod = this.fiscalPeriodQuery.getById(this.state.fiscalPeriodId);
+        const currentPeriod = this.fiscalPeriodQuery.getById(this.state.fiscalPeriodId),
             filter = this.filter;
 
         if (!eval(filter.isNotPeriodIncluded))

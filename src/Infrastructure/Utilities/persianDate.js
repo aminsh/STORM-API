@@ -1,7 +1,7 @@
 import moment from "moment-jalaali";
 import Number from "./number";
 
-export const persianDate = {
+const persianDate = {
     toDay() {
         return moment().format('jYYYY/jMM/jDD');
     },
@@ -41,4 +41,6 @@ export const persianDate = {
         return moment(dateToString).format('jYYYY/jMM/jDD');
     }
 };
+
+export default persianDate;
 

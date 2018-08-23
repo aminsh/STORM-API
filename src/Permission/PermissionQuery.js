@@ -1,16 +1,12 @@
 import {BaseQuery} from "../Infrastructure/BaseQuery";
 import toResult from "asyncawait/await";
-import {injectable, inject} from "inversify"
+import {injectable} from "inversify"
 import Permissions from "./permisions.json";
 import flatten from "flat";
 import renameKeys from "rename-keys";
 
-
 @injectable()
 export class PermissionQuery extends BaseQuery {
-    constructor(branchId, userId) {
-        super(branchId, userId);
-    }
 
     getAdminId() {
         let knex = this.knex;
@@ -26,12 +22,13 @@ export class PermissionQuery extends BaseQuery {
             branchId = this.branchId,
             userId = this.state.user.id,
             canView = this.canView.call(this),
+            modify = this.modify.bind(this),
             adminId = this.getAdminId(),
 
             roles = toResult(knex.select('title', 'roles.id', 'permissions')
                 .from('roles')
                 .leftJoin('rolePermissions', 'roles.id', 'rolePermissions.roleId')
-                .modify(this.modify, branchId, userId, canView, 'roles')
+                .modify(modify, branchId, userId, canView, 'roles')
                 .orWhere('isAdmin', true)
             );
         roles = !canView
@@ -108,7 +105,8 @@ export class PermissionQuery extends BaseQuery {
         let knex = this.knex,
             branchId = this.branchId,
             userId = this.state.user.id,
-            canView = this.canView.call(this);
+            canView = this.canView.call(this),
+            modify = this.modify.bind(this);
 
         return toResult(
             knex.select(
@@ -135,7 +133,7 @@ export class PermissionQuery extends BaseQuery {
                     })
                 })
                 .leftJoin('roles', 'roles.id', 'userInRole.roleId')
-                .modify(this.modify, branchId, userId, canView, 'userInBranches')
+                .modify(modify, branchId, userId, canView, 'userInBranches')
         );
     }
 
@@ -143,7 +141,8 @@ export class PermissionQuery extends BaseQuery {
         let knex = this.knex,
             branchId = this.branchId,
             userId = this.state.user.id,
-            canView = this.canView.call(this);
+            canView = this.canView.call(this),
+            modify = this.modify.bind(this);
 
         return toResult(
             knex.select(
@@ -170,7 +169,7 @@ export class PermissionQuery extends BaseQuery {
                     })
                 })
                 .leftJoin('roles', 'roles.id', 'userInRole.roleId')
-                .modify(this.modify, branchId, userId, canView, 'userInBranches')
+                .modify(modify, branchId, userId, canView, 'userInBranches')
                 .where('users.id', id)
                 .first()
         );

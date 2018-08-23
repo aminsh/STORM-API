@@ -6,6 +6,9 @@ export class BranchService {
     @inject("BranchRepository")
     /** @type {BranchRepository}*/ branchRepository = undefined;
 
+    @inject("EventBus")
+    /**@type{EventBus}*/ eventBus = undefined;
+
     @inject("State") context = undefined;
 
     create(cmd, userId) {
@@ -35,7 +38,7 @@ export class BranchService {
 
         this.branchRepository.create(entity);
 
-        EventEmitter.emit('on-branch-created', entity.id);
+        this.eventBus.send("BranchCreated", entity.id);
 
         this.addUser(entity.id, entity.ownerId, true);
 

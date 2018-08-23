@@ -41,6 +41,10 @@ export class PersonQuery extends BaseQuery {
     }
 
     _view(entity) {
+
+        if(!entity)
+            throw new NotFoundException();
+
         const enums = this.enums;
 
         return {

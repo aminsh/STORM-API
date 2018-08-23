@@ -8,6 +8,7 @@ export class EventBus {
 
     /**
      * @param {string} eventName
+     * @param args
      */
     send(eventName, ...args) {
         EventEmitter.emit(eventName, this.state, ...args);
