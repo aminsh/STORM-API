@@ -1,5 +1,5 @@
 import {injectable, inject} from "inversify";
-import {eventHandler} from "../Infrastructure/@decorators";
+import {EventHandler} from "../Infrastructure/@decorators";
 
 @injectable()
 export class ProductInventoryEventListener {
@@ -8,7 +8,7 @@ export class ProductInventoryEventListener {
     /**@type{ProductInventoryService}*/ productInventoryService = undefined;
 
 
-    @eventHandler("ProductInventoryChanged")
+    @EventHandler("ProductInventoryChanged")
     onSaleCreated(productId, stockId, quantity) {
 
         this.productInventoryService.start();

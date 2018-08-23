@@ -1,7 +1,7 @@
 import toAsync from "asyncawait/async";
 import container from "./DependencyInjection";
 
-export function eventHandler(eventName) {
+export function EventHandler(eventName) {
     return function (target, key) {
 
         EventEmitter.on(eventName, toAsync(function () {

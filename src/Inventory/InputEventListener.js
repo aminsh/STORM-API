@@ -1,5 +1,5 @@
 import {injectable, inject} from "inversify";
-import {eventHandler} from "../Infrastructure/@decorators";
+import {EventHandler} from "../Infrastructure/@decorators";
 
 @injectable()
 export class InputEventListener {
@@ -13,7 +13,7 @@ export class InputEventListener {
     @inject("InventoryRepository")
     /** @type{InventoryRepository}*/ inventoryRepository = undefined;
 
-    @eventHandler("InventoryInputCreated")
+    @EventHandler("InventoryInputCreated")
     onInputCreated(input) {
 
         const stockId = input.stockId;
@@ -26,7 +26,7 @@ export class InputEventListener {
         );
     }
 
-    @eventHandler("InventoryInputChanged")
+    @EventHandler("InventoryInputChanged")
     onInputChanged(oldInput, newInput) {
 
         if (oldInput.stockId === newInput.stockId) {
@@ -63,7 +63,7 @@ export class InputEventListener {
         }
     }
 
-    @eventHandler("InventoryInputRemoved")
+    @EventHandler("InventoryInputRemoved")
     onInputRemoved(input) {
 
         const stockId = input.stockId;

@@ -1,5 +1,5 @@
 import {inject, injectable} from "inversify";
-import {eventHandler} from "../../Infrastructure/@decorators";
+import {EventHandler} from "../../Infrastructure/@decorators";
 
 @injectable()
 export class TreasuryEventListener {
@@ -34,7 +34,7 @@ export class TreasuryEventListener {
     @inject("TreasuryPurposeService")
     /**@type{TreasuryPurposeService}*/ treasuryPurposeService = undefined;
 
-    @eventHandler("onReceiveCashCreated")
+    @EventHandler("onReceiveCashCreated")
     onReceiveCashCreated(treasuryId) {
         let treasurySetting = this.treasurySettingRepository.get();
 
@@ -45,7 +45,7 @@ export class TreasuryEventListener {
         this.treasuryCashService.setJournal(treasuryId, journalId);
     }
 
-    @eventHandler("onReceiveCashChanged")
+    @EventHandler("onReceiveCashChanged")
     onReceiveCashChanged(treasuryId) {
         let treasurySetting = this.treasurySettingRepository.get();
 
@@ -55,7 +55,7 @@ export class TreasuryEventListener {
         this.treasuryJournalGenerationService.generateForReceiveCash(treasuryId);
     }
 
-    @eventHandler("onPaymentCashCreated")
+    @EventHandler("onPaymentCashCreated")
     onPaymentCashCreated(treasuryId) {
         let treasurySetting = this.treasurySettingRepository.get();
 
@@ -66,7 +66,7 @@ export class TreasuryEventListener {
         this.treasuryCashService.setJournal(treasuryId, journalId);
     }
 
-    @eventHandler("onPaymentCashChanged")
+    @EventHandler("onPaymentCashChanged")
     onPaymentCashChanged(treasuryId) {
         let treasurySetting = this.treasurySettingRepository.get();
 
@@ -76,7 +76,7 @@ export class TreasuryEventListener {
         this.treasuryJournalGenerationService.generateForPaymentCash(treasuryId);
     }
 
-    @eventHandler("onReceiveReceiptCreated")
+    @EventHandler("onReceiveReceiptCreated")
     onReceiveReceiptCreated(treasuryId) {
         let treasurySetting = this.treasurySettingRepository.get();
 
@@ -87,7 +87,7 @@ export class TreasuryEventListener {
         this.treasuryReceiptService.setJournal(treasuryId, journalId);
     }
 
-    @eventHandler("onReceiveReceiptChanged")
+    @EventHandler("onReceiveReceiptChanged")
     onReceiveReceiptChanged(treasuryId) {
         let treasurySetting = this.treasurySettingRepository.get();
 
@@ -97,7 +97,7 @@ export class TreasuryEventListener {
         this.treasuryJournalGenerationService.generateForReceiveReceipt(treasuryId);
     }
 
-    @eventHandler("onPaymentReceiptCreated")
+    @EventHandler("onPaymentReceiptCreated")
     onPaymentReceiptCreated(treasuryId) {
         let treasurySetting = this.treasurySettingRepository.get();
 
@@ -108,7 +108,7 @@ export class TreasuryEventListener {
         this.treasuryReceiptService.setJournal(treasuryId, journalId);
     }
 
-    @eventHandler("onPaymentReceiptChanged")
+    @EventHandler("onPaymentReceiptChanged")
     onPaymentReceiptChanged(treasuryId) {
         let treasurySetting = this.treasurySettingRepository.get();
 
@@ -118,7 +118,7 @@ export class TreasuryEventListener {
         this.treasuryJournalGenerationService.generateForPaymentReceipt(treasuryId);
     }
 
-    @eventHandler("onReceiveDemandNoteCreated")
+    @EventHandler("onReceiveDemandNoteCreated")
     onReceiveDemandNoteCreated(treasuryId) {
         let treasurySetting = this.treasurySettingRepository.get();
 
@@ -129,7 +129,7 @@ export class TreasuryEventListener {
         this.treasuryDemandNoteService.setJournal(treasuryId, journalId);
     }
 
-    @eventHandler("onReceiveDemandNoteChanged")
+    @EventHandler("onReceiveDemandNoteChanged")
     onReceiveDemandNoteChanged(treasuryId) {
         let treasurySetting = this.treasurySettingRepository.get();
 
@@ -139,7 +139,7 @@ export class TreasuryEventListener {
         this.treasuryJournalGenerationService.generateForReceiveDemandNote(treasuryId);
     }
 
-    @eventHandler("onPaymentDemandNoteCreated")
+    @EventHandler("onPaymentDemandNoteCreated")
     onPaymentDemandNoteCreated(treasuryId) {
         let treasurySetting = this.treasurySettingRepository.get();
 
@@ -150,7 +150,7 @@ export class TreasuryEventListener {
         this.treasuryDemandNoteService.setJournal(treasuryId, journalId);
     }
 
-    @eventHandler("onPaymentDemandNoteChanged")
+    @EventHandler("onPaymentDemandNoteChanged")
     onPaymentDemandNoteChanged(treasuryId) {
         let treasurySetting = this.treasurySettingRepository.get();
 
@@ -160,7 +160,7 @@ export class TreasuryEventListener {
         this.treasuryJournalGenerationService.generateForPaymentDemandNote(treasuryId);
     }
 
-    @eventHandler("onChequeCreated")
+    @EventHandler("onChequeCreated")
     onChequeCreated(treasuryId) {
         let treasurySetting = this.treasurySettingRepository.get();
 
@@ -171,7 +171,7 @@ export class TreasuryEventListener {
         this.treasuryChequeService.setJournal(treasuryId, journalId);
     }
 
-    @eventHandler("onReceiveChequeChanged")
+    @EventHandler("onReceiveChequeChanged")
     onReceiveChequeChanged(treasuryId) {
         let treasurySetting = this.treasurySettingRepository.get();
 
@@ -181,7 +181,7 @@ export class TreasuryEventListener {
         this.treasuryJournalGenerationService.generateForCheque(treasuryId);
     }
 
-    @eventHandler("onPaymentChequeChanged")
+    @EventHandler("onPaymentChequeChanged")
     onPaymentChequeChanged(treasuryId) {
         let treasurySetting = this.treasurySettingRepository.get();
 
@@ -192,7 +192,7 @@ export class TreasuryEventListener {
         this.treasuryChequeService.setJournal(treasuryId, journalId);
     }
 
-    @eventHandler("onPaymentSpendChequeChanged")
+    @EventHandler("onPaymentSpendChequeChanged")
     onPaymentSpendChequeChanged(treasuryId) {
         let treasurySetting = this.treasurySettingRepository.get();
 
@@ -202,12 +202,12 @@ export class TreasuryEventListener {
         this.treasuryJournalGenerationService.generateForCheque(treasuryId);
     }
 
-    @eventHandler("onChequeStatusChanged")
+    @EventHandler("onChequeStatusChanged")
     onChequeStatusChanged(treasuryId) {
         this.onChequeCreated(treasuryId);
     }
 
-    @eventHandler("onTransferCreated")
+    @EventHandler("onTransferCreated")
     onTransferCreated(treasuryId) {
         let treasurySetting = this.treasurySettingRepository.get();
 
@@ -218,7 +218,7 @@ export class TreasuryEventListener {
         this.treasuryTransferService.setJournal(treasuryId, journalId);
     }
 
-    @eventHandler("onTransferTransferChanged")
+    @EventHandler("onTransferTransferChanged")
     onTransferTransferChanged(treasuryId) {
         let treasurySetting = this.treasurySettingRepository.get();
 
@@ -228,7 +228,7 @@ export class TreasuryEventListener {
         this.treasuryJournalGenerationService.generateForTransfer(treasuryId);
     }
 
-    @eventHandler("onRemoveTreasuryJournal")
+    @EventHandler("onRemoveTreasuryJournal")
     onRemoveTreasuryJournal(journalId) {
         let treasurySetting = this.treasurySettingRepository.get();
 
@@ -238,7 +238,7 @@ export class TreasuryEventListener {
         this.journalService.remove(journalId);
     }
 
-    @eventHandler("onTreasuryPurposeRemove")
+    @EventHandler("onTreasuryPurposeRemove")
     onTreasuryPurposeRemove(journalId) {
         let treasurySetting = this.treasurySettingRepository.get();
 
@@ -248,7 +248,7 @@ export class TreasuryEventListener {
         this.treasuryPurposeService.remove(journalId);
     }
 
-    @eventHandler("onRemoveReceiveSpendChequeJournal")
+    @EventHandler("onRemoveReceiveSpendChequeJournal")
     onRemoveReceiveSpendChequeJournal(journalId) {
         let treasurySetting = this.treasurySettingRepository.get();
 

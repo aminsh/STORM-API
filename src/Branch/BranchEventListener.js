@@ -1,5 +1,5 @@
 import {injectable, inject} from "inversify";
-import {eventHandler} from "../Infrastructure/@decorators";
+import {EventHandler} from "../Infrastructure/@decorators";
 
 @injectable()
 export class BranchEventListener {
@@ -13,7 +13,7 @@ export class BranchEventListener {
     @inject("StormOrderRepository")
     /** @type {StormOrderRepository} */ orderRepository = undefined;
 
-    @eventHandler("ActivateBranch")
+    @EventHandler("ActivateBranch")
     onActivatingBranch(orderId) {
 
         let order = this.orderRepository.findById(orderId),

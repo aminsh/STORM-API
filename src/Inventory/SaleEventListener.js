@@ -1,5 +1,5 @@
 import {injectable, inject} from "inversify";
-import {eventHandler} from "../Infrastructure/@decorators";
+import {EventHandler} from "../Infrastructure/@decorators";
 
 @injectable()
 export class SaleEventListener {
@@ -18,7 +18,7 @@ export class SaleEventListener {
 
     @inject("State") state = undefined;
 
-    @eventHandler("SaleCreated")
+    @EventHandler("SaleCreated")
     onSaleCreated(sale) {
 
         let lines = sale.invoiceLines,
@@ -38,14 +38,14 @@ export class SaleEventListener {
         ids.forEach(id => this.inventoryService.setInvoice(id, sale, 'outputSale'));
     }
 
-    @eventHandler("SaleChanged")
+    @EventHandler("SaleChanged")
     onSaleChanged(oldSale, newSale) {
 
         this.saleCompareHistoryService.execute(newSale);
 
     }
 
-    @eventHandler("SaleRemoved")
+    @EventHandler("SaleRemoved")
     onSaleRemoved(sale) {
 
         const inventories = this.inventoryRepository.findByInvoiceId(sale.id);

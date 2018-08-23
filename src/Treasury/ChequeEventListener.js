@@ -1,5 +1,5 @@
 import {inject, injectable} from "inversify";
-import {eventHandler} from "../Infrastructure/@decorators";
+import {EventHandler} from "../Infrastructure/@decorators";
 
 @injectable()
 export class ChequeEventListener {
@@ -10,7 +10,7 @@ export class ChequeEventListener {
     @inject("TreasuryRepository")
     /** @type {TreasuryRepository}*/ treasuryRepository = undefined;
 
-    @eventHandler("onChequeStatusChanged")
+    @EventHandler("onChequeStatusChanged")
     onIssued(treasuryPayableChequeId) {
 
         let treasuryPayableCheque = this.treasuryRepository.findById(treasuryPayableChequeId);

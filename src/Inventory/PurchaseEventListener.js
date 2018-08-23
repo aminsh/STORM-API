@@ -1,5 +1,5 @@
 import {injectable, inject} from "inversify";
-import {eventHandler} from "../Infrastructure/@decorators";
+import {EventHandler} from "../Infrastructure/@decorators";
 
 @injectable()
 export class PurchaseEventListener {
@@ -16,7 +16,7 @@ export class PurchaseEventListener {
     @inject("InventoryRepository")
     /**@type {InventoryRepository}*/ inventoryRepository = undefined;
 
-    @eventHandler("PurchaseCreated")
+    @EventHandler("PurchaseCreated")
     onPurchaseCreated(purchase) {
 
         const ids = purchase.invoiceLines.asEnumerable()
@@ -34,13 +34,13 @@ export class PurchaseEventListener {
         ids.forEach(id => this.inventoryService.setInvoice(id, purchase, 'inputPurchase'));
     }
 
-    @eventHandler("PurchaseChanged")
+    @EventHandler("PurchaseChanged")
     onPurchaseChanged(oldPurchase, newPurchase) {
 
         this.purchaseCompareHistoryService.execute(newPurchase);
     }
 
-    @eventHandler("PurchaseRemoved")
+    @EventHandler("PurchaseRemoved")
     onPurchaseRemoved(purchase) {
 
         const inventories = this.inventoryRepository.findByInvoiceId(purchase.id);

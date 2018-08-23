@@ -1,5 +1,5 @@
 import {injectable, inject} from "inversify";
-import {eventHandler} from "../Infrastructure/@decorators";
+import {EventHandler} from "../Infrastructure/@decorators";
 
 @injectable()
 export class BranchCreateListener {
@@ -7,7 +7,7 @@ export class BranchCreateListener {
     @inject("SetupBranch")
     /**@type{SetupBranch}*/ setup = undefined;
 
-    @eventHandler("BranchCreated")
+    @EventHandler("BranchCreated")
     onBranchCreated(branchId){
 
         this.setup.register(branchId);

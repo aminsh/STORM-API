@@ -1,5 +1,5 @@
 import {inject, injectable} from "inversify";
-import {eventHandler} from "../../Infrastructure/@decorators";
+import {EventHandler} from "../../Infrastructure/@decorators";
 
 @injectable()
 export class SaleEventListener {
@@ -13,7 +13,7 @@ export class SaleEventListener {
     /**@type {JournalInvoiceGenerationService}*/
     @inject("JournalInvoiceGenerationService") journalInvoiceGenerationService = undefined;
 
-    @eventHandler("onInvoiceCreated")
+    @EventHandler("onInvoiceCreated")
     onInvoiceCreated(invoiceId) {
 
         let invoice = this.invoiceRepository.findById(invoiceId),
@@ -28,18 +28,18 @@ export class SaleEventListener {
         this.journalInvoiceGenerationService.generate(invoiceId);
     }
 
-    @eventHandler("onInvoiceChanged")
+    @EventHandler("onInvoiceChanged")
     onInvoiceChanged(invoice) {
 
         this.onInvoiceCreated(invoice);
     }
 
-    @eventHandler("onInvoiceConfirmed")
+    @EventHandler("onInvoiceConfirmed")
     onInvoiceConfirmed(invoice) {
         this.onInvoiceCreated(invoice);
     }
 
-    @eventHandler("onInvoiceRemoved")
+    @EventHandler("onInvoiceRemoved")
     onInvoiceRemoved(invoice) {
     }
 
