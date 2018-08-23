@@ -1,12 +1,10 @@
 import {inject, injectable} from "inversify";
-import toResult from "asyncawait/await";
-import Promise from "promise";
 
 @injectable()
-export class JournalInvoiceGenerationDomainService {
+export class JournalInvoiceGenerationService {
 
-    /**@type {JournalDomainService}*/
-    @inject("JournalDomainService") journalDomainService = undefined;
+    /**@type {JournalService}*/
+    @inject("JournalService") journalService = undefined;
 
     /**@type {SettingsRepository}*/
     @inject("SettingsRepository") settingsRepository = undefined;
@@ -14,11 +12,11 @@ export class JournalInvoiceGenerationDomainService {
     /** @type {InvoiceRepository}*/
     @inject("InvoiceRepository") invoiceRepository = undefined;
 
-    /**@type {JournalGenerationTemplateDomainService}*/
-    @inject("JournalGenerationTemplateDomainService") journalGenerationTemplateDomainService = undefined;
-
+    /**@type {JournalGenerationTemplateService}*/
+    @inject("JournalGenerationTemplateService") journalGenerationTemplateService = undefined;
 
     generate(invoiceId) {
+
         const settings = this.settingsRepository.get(),
             invoice = this.invoiceRepository.findById(invoiceId);
 
@@ -77,18 +75,18 @@ export class JournalInvoiceGenerationDomainService {
                 bankReceiptNumber: invoice.bankReceiptNumber || ''
             }, cost, charge),
 
-            journal = this.journalGenerationTemplateDomainService.generate(model, 'sale');
+            journal = this.journalGenerationTemplateService.generate(model, 'sale');
 
         journal.journalLines = journal.journalLines.asEnumerable()
             .orderByDescending(line => line.debtor)
             .toArray();
 
         if (invoice.journalId)
-            this.journalDomainService.update(invoice.journalId, journal);
+            this.journalService.update(invoice.journalId, journal);
         else {
-            let journalId = this.journalDomainService.create(journal);
+            let journalId = this.journalService.create(journal);
 
-            toResult(new Promise(resolve => setTimeout(() => resolve(), 1000)));
+            Utility.delay(1000);
 
             this.invoiceRepository.update(invoiceId, {journalId});
         }

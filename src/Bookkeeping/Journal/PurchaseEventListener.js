@@ -10,8 +10,8 @@ export class PurchaseEventListener {
     /**@type {InvoiceRepository}*/
     @inject("InvoiceRepository") invoiceRepository = undefined;
 
-    /**@type {CommandBus}*/
-    @inject("CommandBus") commandBus = undefined;
+    /**@type {JournalService}*/
+    @inject("JournalService") journalService = undefined;
 
     @eventHandler("onPurchaseCreated")
     onPurchaseCreated(invoiceId) {
@@ -24,8 +24,8 @@ export class PurchaseEventListener {
         if (!settings.canSaleGenerateAutomaticJournal)
             return;
 
-        let journalId = this.commandBus.send("journalGenerateForInvoicePurchase", [invoice.id]);
-        this.commandBus.send("invoicePurchaseSetJournal", [invoice.id, journalId]);
+        const journalId = this.journalService.generateForPurchase(invoiceId);
+        this.invoiceRepository.update(invoiceId , {journalId});
     }
 
     @eventHandler("onPurchaseChanged")
@@ -45,11 +45,8 @@ export class PurchaseEventListener {
         if (!settings.canSaleGenerateAutomaticJournal)
             return;
 
-        invoice.inventoryIds && invoice.inventoryIds
-            .forEach(id => this.commandBus.send("inventoryInputRemove", [id]));
-
         if (invoice.journalId)
-            this.commandBus.send("journalRemove", [invoice.journalId]);
+            this.journalService.remove(invoice.journalId);
     }
 
 }
