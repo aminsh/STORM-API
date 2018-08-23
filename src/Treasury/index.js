@@ -10,7 +10,6 @@ import {ChequeEventListener} from "./ChequeEventListener";
 import {TreasuryCashService} from "./TreasuryCashService";
 import {TreasuryChequeService} from "./TreasuryChequeService";
 import {TreasuryDemandNoteService} from "./TreasuryDemandNoteService";
-import {TreasuryJournalGenerationService} from "./TreasuryJournalGenerationService";
 import {TreasuryPaymentQuery} from "./TreasuryPaymentQuery";
 import {TreasuryPurposeQuery} from "./TreasuryPurposeQuery";
 import {TreasuryPurposeRepository} from "./TreasuryPurposeRepository";
@@ -47,7 +46,6 @@ export function register(container) {
     container.bind("TreasuryCashService").to(TreasuryCashService);
     container.bind("TreasuryChequeService").to(TreasuryChequeService);
     container.bind("TreasuryDemandNoteService").to(TreasuryDemandNoteService);
-    container.bind("TreasuryJournalGenerationService").to(TreasuryJournalGenerationService);
     container.bind("TreasuryPaymentQuery").to(TreasuryPaymentQuery);
     container.bind("TreasuryPurposeQuery").to(TreasuryPurposeQuery);
     container.bind("TreasuryReceiveQuery").to(TreasuryReceiveQuery);

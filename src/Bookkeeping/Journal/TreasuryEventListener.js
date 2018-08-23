@@ -10,9 +10,29 @@ export class TreasuryEventListener {
     /**@type {TreasuryRepository}*/
     @inject("TreasuryRepository") treasuryRepository = undefined;
 
-    /**@type {CommandBus}*/
-    @inject("CommandBus") commandBus = undefined;
+    /**@type {JournalService}*/
+    @inject("JournalService") journalService = undefined;
 
+    /**@type {TreasuryJournalGenerationService}*/
+    @inject("TreasuryJournalGenerationService") treasuryJournalGenerationService = undefined;
+
+    @inject("TreasuryCashService")
+    /**@type{TreasuryCashService}*/ treasuryCashService = undefined;
+
+    @inject("TreasuryReceiptService")
+    /**@type{TreasuryReceiptService}*/ treasuryReceiptService = undefined;
+
+    @inject("TreasuryDemandNoteService")
+    /**@type{TreasuryDemandNoteService}*/ treasuryDemandNoteService = undefined;
+
+    @inject("TreasuryChequeService")
+    /**@type{TreasuryChequeService}*/ treasuryChequeService = undefined;
+
+    @inject("TreasuryTransferService")
+    /**@type{TreasuryTransferService}*/ treasuryTransferService = undefined;
+
+    @inject("TreasuryPurposeService")
+    /**@type{TreasuryPurposeService}*/ treasuryPurposeService = undefined;
 
     @eventHandler("onReceiveCashCreated")
     onReceiveCashCreated(treasuryId) {
@@ -21,8 +41,8 @@ export class TreasuryEventListener {
         if (!treasurySetting.journalGenerateAutomatic)
             return;
 
-        let journalId = this.commandBus.send("journalGenerateForReceiveCash", [treasuryId]);
-        this.commandBus.send("cashSetJournal", [treasuryId, journalId]);
+        const journalId = this.treasuryJournalGenerationService.generateForReceiveCash(treasuryId);
+        this.treasuryCashService.setJournal(treasuryId, journalId);
     }
 
     @eventHandler("onReceiveCashChanged")
@@ -32,7 +52,7 @@ export class TreasuryEventListener {
         if (!treasurySetting.journalGenerateAutomatic)
             return;
 
-        this.commandBus.send("treasuryReceiveCashJournalUpdate", [treasuryId]);
+        this.treasuryJournalGenerationService.generateForReceiveCash(treasuryId);
     }
 
     @eventHandler("onPaymentCashCreated")
@@ -42,8 +62,8 @@ export class TreasuryEventListener {
         if (!treasurySetting.journalGenerateAutomatic)
             return;
 
-        let journalId = this.commandBus.send("journalGenerateForPaymentCash", [treasuryId]);
-        this.commandBus.send("cashSetJournal", [treasuryId, journalId]);
+        const journalId = this.treasuryJournalGenerationService.generateForPaymentCash(treasuryId);
+        this.treasuryCashService.setJournal(treasuryId, journalId);
     }
 
     @eventHandler("onPaymentCashChanged")
@@ -53,7 +73,7 @@ export class TreasuryEventListener {
         if (!treasurySetting.journalGenerateAutomatic)
             return;
 
-        this.commandBus.send("treasuryPaymentCashJournalUpdate", [treasuryId]);
+        this.treasuryJournalGenerationService.generateForPaymentCash(treasuryId);
     }
 
     @eventHandler("onReceiveReceiptCreated")
@@ -63,8 +83,8 @@ export class TreasuryEventListener {
         if (!treasurySetting.journalGenerateAutomatic)
             return;
 
-        let journalId = this.commandBus.send("journalGenerateForReceiveReceipt", [treasuryId]);
-        this.commandBus.send("receiptSetJournal", [treasuryId, journalId]);
+        const journalId = this.treasuryJournalGenerationService.generateForReceiveReceipt(treasuryId);
+        this.treasuryReceiptService.setJournal(treasuryId, journalId);
     }
 
     @eventHandler("onReceiveReceiptChanged")
@@ -74,7 +94,7 @@ export class TreasuryEventListener {
         if (!treasurySetting.journalGenerateAutomatic)
             return;
 
-        this.commandBus.send("treasuryReceiveReceiptJournalUpdate", [treasuryId]);
+        this.treasuryJournalGenerationService.generateForReceiveReceipt(treasuryId);
     }
 
     @eventHandler("onPaymentReceiptCreated")
@@ -84,8 +104,8 @@ export class TreasuryEventListener {
         if (!treasurySetting.journalGenerateAutomatic)
             return;
 
-        let journalId = this.commandBus.send("journalGenerateForPaymentReceipt", [treasuryId]);
-        this.commandBus.send("receiptSetJournal", [treasuryId, journalId]);
+        const journalId = this.treasuryJournalGenerationService.generateForPaymentReceipt(treasuryId);
+        this.treasuryReceiptService.setJournal(treasuryId, journalId);
     }
 
     @eventHandler("onPaymentReceiptChanged")
@@ -95,7 +115,7 @@ export class TreasuryEventListener {
         if (!treasurySetting.journalGenerateAutomatic)
             return;
 
-        this.commandBus.send("treasuryPaymentReceiptJournalUpdate", [treasuryId]);
+        this.treasuryJournalGenerationService.generateForPaymentReceipt(treasuryId);
     }
 
     @eventHandler("onReceiveDemandNoteCreated")
@@ -105,8 +125,8 @@ export class TreasuryEventListener {
         if (!treasurySetting.journalGenerateAutomatic)
             return;
 
-        let journalId = this.commandBus.send("journalGenerateForReceiveDemandNote", [treasuryId]);
-        this.commandBus.send("demandNoteSetJournal", [treasuryId, journalId]);
+        const journalId = this.treasuryJournalGenerationService.generateForReceiveDemandNote(treasuryId);
+        this.treasuryDemandNoteService.setJournal(treasuryId, journalId);
     }
 
     @eventHandler("onReceiveDemandNoteChanged")
@@ -116,7 +136,7 @@ export class TreasuryEventListener {
         if (!treasurySetting.journalGenerateAutomatic)
             return;
 
-        this.commandBus.send("treasuryReceiveDemandNoteJournalUpdate", [treasuryId]);
+        this.treasuryJournalGenerationService.generateForReceiveDemandNote(treasuryId);
     }
 
     @eventHandler("onPaymentDemandNoteCreated")
@@ -126,8 +146,8 @@ export class TreasuryEventListener {
         if (!treasurySetting.journalGenerateAutomatic)
             return;
 
-        let journalId = this.commandBus.send("journalGenerateForPaymentDemandNote", [treasuryId]);
-        this.commandBus.send("demandNoteSetJournal", [treasuryId, journalId]);
+        const journalId = this.treasuryJournalGenerationService.generateForPaymentDemandNote(treasuryId);
+        this.treasuryDemandNoteService.setJournal(treasuryId, journalId);
     }
 
     @eventHandler("onPaymentDemandNoteChanged")
@@ -137,7 +157,7 @@ export class TreasuryEventListener {
         if (!treasurySetting.journalGenerateAutomatic)
             return;
 
-        this.commandBus.send("treasuryPaymentDemandNoteJournalUpdate", [treasuryId]);
+        this.treasuryJournalGenerationService.generateForPaymentDemandNote(treasuryId);
     }
 
     @eventHandler("onChequeCreated")
@@ -147,8 +167,8 @@ export class TreasuryEventListener {
         if (!treasurySetting.journalGenerateAutomatic)
             return;
 
-        let journalId = this.commandBus.send("journalGenerateForCheque", [treasuryId]);
-        this.commandBus.send("chequeSetJournal", [treasuryId, journalId]);
+        const journalId = this.treasuryJournalGenerationService.generateForCheque(treasuryId);
+        this.treasuryChequeService.setJournal(treasuryId, journalId);
     }
 
     @eventHandler("onReceiveChequeChanged")
@@ -158,7 +178,7 @@ export class TreasuryEventListener {
         if (!treasurySetting.journalGenerateAutomatic)
             return;
 
-        this.commandBus.send("treasuryReceiveChequeJournalUpdate", [treasuryId]);
+        this.treasuryJournalGenerationService.generateForCheque(treasuryId);
     }
 
     @eventHandler("onPaymentChequeChanged")
@@ -168,7 +188,8 @@ export class TreasuryEventListener {
         if (!treasurySetting.journalGenerateAutomatic)
             return;
 
-        this.commandBus.send("treasuryPaymentChequeJournalUpdate", [treasuryId]);
+        const journalId = this.treasuryJournalGenerationService.generateForCheque(treasuryId);
+        this.treasuryChequeService.setJournal(treasuryId, journalId);
     }
 
     @eventHandler("onPaymentSpendChequeChanged")
@@ -178,7 +199,7 @@ export class TreasuryEventListener {
         if (!treasurySetting.journalGenerateAutomatic)
             return;
 
-        this.commandBus.send("treasuryPaymentChequeJournalUpdate", [treasuryId]);
+        this.treasuryJournalGenerationService.generateForCheque(treasuryId);
     }
 
     @eventHandler("onChequeStatusChanged")
@@ -193,8 +214,8 @@ export class TreasuryEventListener {
         if (!treasurySetting.journalGenerateAutomatic)
             return;
 
-        let journalId = this.commandBus.send("journalGenerateForTransfer", [treasuryId]);
-        this.commandBus.send("transferSetJournal", [treasuryId, journalId]);
+        const journalId = this.treasuryJournalGenerationService.generateForTransfer(treasuryId);
+        this.treasuryTransferService.setJournal(treasuryId, journalId);
     }
 
     @eventHandler("onTransferTransferChanged")
@@ -204,36 +225,36 @@ export class TreasuryEventListener {
         if (!treasurySetting.journalGenerateAutomatic)
             return;
 
-        this.commandBus.send("treasuryTransferJournalUpdate", [treasuryId]);
+        this.treasuryJournalGenerationService.generateForTransfer(treasuryId);
     }
 
     @eventHandler("onRemoveTreasuryJournal")
-    onRemoveTreasuryJournal(journalId){
+    onRemoveTreasuryJournal(journalId) {
         let treasurySetting = this.treasurySettingRepository.get();
 
         if (!treasurySetting.journalGenerateAutomatic)
             return;
 
-        this.commandBus.send("treasuryJournalRemove", [journalId]);
+        this.journalService.remove(journalId);
     }
 
     @eventHandler("onTreasuryPurposeRemove")
-    onTreasuryPurposeRemove(journalId){
+    onTreasuryPurposeRemove(journalId) {
         let treasurySetting = this.treasurySettingRepository.get();
 
         if (!treasurySetting.journalGenerateAutomatic)
             return;
 
-        this.commandBus.send("treasuryPurposeRemove", [journalId]);
+        this.treasuryPurposeService.remove(journalId);
     }
 
     @eventHandler("onRemoveReceiveSpendChequeJournal")
-    onRemoveReceiveSpendChequeJournal(journalId){
+    onRemoveReceiveSpendChequeJournal(journalId) {
         let treasurySetting = this.treasurySettingRepository.get();
 
         if (!treasurySetting.journalGenerateAutomatic)
             return;
 
-        this.commandBus.send("receiveSpendChequeJournalRemove", [journalId]);
+        this.treasuryChequeService.removeReceiveSpendCheque(journalId);
     }
 }
