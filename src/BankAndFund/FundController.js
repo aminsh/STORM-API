@@ -1,5 +1,4 @@
 import {Controller, Delete, Get, Post, Put} from "../Infrastructure/expressUtlis";
-import {async} from "../Infrastructure/@decorators";
 import {inject} from "inversify";
 
 @Controller("/v1/funds", "ShouldHaveBranch")
@@ -13,21 +12,18 @@ export class FundController {
 
 
     @Get("/")
-    @async()
     getAll(req) {
 
         return this.bankAndFundQuery.getAllByType('fund', req.query);
     }
 
     @Get("/:id")
-    @async()
     getById(req) {
 
         return this.bankAndFundQuery.getById(req.params.id);
     }
 
     @Post("/")
-    @async()
     create(req) {
 
         const id = this.fundService.create(req.body);
@@ -36,7 +32,6 @@ export class FundController {
     }
 
     @Put("/:id")
-    @async()
     update(req) {
 
         const id = req.params.id;
@@ -47,7 +42,6 @@ export class FundController {
     }
 
     @Delete("/:id")
-    @async()
     remove(req) {
 
         this.fundService.remove(req.params.id);

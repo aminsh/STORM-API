@@ -1,5 +1,4 @@
 import {Controller, Get, Post, Put, Delete} from "../Infrastructure/expressUtlis";
-import {async} from "../Infrastructure/@decorators";
 import {inject} from "inversify";
 
 @Controller("/v1/treasury/transfers", "ShouldHaveBranch")
@@ -16,15 +15,13 @@ class TreasuryTransferController {
 
 
     @Get("/")
-    @async()
-    getAll(req){
+    getAll(req) {
 
         return this.treasuryTransferQuery.getAll(req.query);
     }
 
     @Post("/")
-    @async()
-    create(req){
+    create(req) {
 
         const id = this.treasuryTransferService.create(req.body);
 
@@ -32,15 +29,13 @@ class TreasuryTransferController {
     }
 
     @Get("/:id")
-    @async()
-    getById(req){
+    getById(req) {
 
         return this.treasuryTransferQuery.getById(req.params.id);
     }
 
     @Put("/:id")
-    @async()
-    update(req){
+    update(req) {
 
         const id = req.params.id;
 
@@ -50,15 +45,13 @@ class TreasuryTransferController {
     }
 
     @Delete("/:id")
-    @async()
-    remove(req){
+    remove(req) {
 
-       this.treasuryTransferService.remove(req.params.id);
+        this.treasuryTransferService.remove(req.params.id);
     }
 
     @Post("/:id/generate-journal")
-    @async()
-    generateJournal(req){
+    generateJournal(req) {
 
         const journalId = this.treasuryJournalGenerationService.generateForTransfer(req.params.id);
 

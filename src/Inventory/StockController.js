@@ -1,5 +1,4 @@
 import {Controller, Delete, Get, Post, Put} from "../Infrastructure/expressUtlis";
-import {async} from "../Infrastructure/@decorators";
 import {inject} from "inversify";
 
 @Controller("/v1/stocks", "ShouldHaveBranch")
@@ -12,21 +11,18 @@ class StockController {
     /**@type{StockQuery}*/ stockQuery = undefined;
 
     @Get("/")
-    @async()
     getAll(req) {
 
         return this.stockQuery.getAll(req.query);
     }
 
     @Get("/:id")
-    @async()
     getById(req) {
 
         return this.stockQuery.getById(req.params.id);
     }
 
     @Post("/")
-    @async()
     create(req) {
 
         const id = this.stockService.create(req.body);
@@ -35,7 +31,6 @@ class StockController {
     }
 
     @Put("/:id")
-    @async()
     update(req) {
 
         const id = req.params.id;
@@ -46,7 +41,6 @@ class StockController {
     }
 
     @Delete("/:id")
-    @async()
     remove(req) {
 
         this.stockService.remove(req.params.id);

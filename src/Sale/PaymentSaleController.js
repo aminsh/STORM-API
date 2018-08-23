@@ -1,5 +1,4 @@
 import {Controller, Get} from "../Infrastructure/expressUtlis";
-import {async} from "../Infrastructure/@decorators";
 import {inject} from "inversify";
 import queryString from "query-string";
 
@@ -18,7 +17,6 @@ class PaymentSaleController {
     /**@type{TreasuryPurposeService}*/ treasuryPurposeService = undefined;
 
     @Get("/:id")
-    @async()
     redirectToGateway(req, res) {
 
         const id = req.params.id,

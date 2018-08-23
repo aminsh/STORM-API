@@ -1,5 +1,4 @@
 import {inject} from "inversify";
-import {async} from "../Infrastructure/@decorators";
 import {Controller, Get, Post, Put, NoLog} from "../Infrastructure/expressUtlis";
 
 @Controller("/v1/users")
@@ -12,20 +11,17 @@ export class UserController {
     /** @type {UserQuery}*/ userQuery = undefined;
 
     @Get("/")
-    @async()
     getAll(req) {
         return this.userQuery.getAll(req.query);
     }
 
     @Get("/current", "TokenIsValid")
-    @async()
     current(req) {
 
         return this.userQuery.getOne({id: req.user.id});
     }
 
     @Post("/register")
-    @async()
     @NoLog()
     register(req) {
 
@@ -43,7 +39,6 @@ export class UserController {
     }
 
     @Put("/", "TokenIsValid")
-    @async()
     @NoLog()
     update(req) {
 
@@ -53,7 +48,6 @@ export class UserController {
     }
 
     @Post("/login")
-    @async()
     @NoLog()
     login(req) {
 
@@ -63,7 +57,6 @@ export class UserController {
     }
 
     @Post("/logout", "ShouldAuthenticated")
-    @async()
     @NoLog()
     logout() {
 
@@ -71,7 +64,6 @@ export class UserController {
     }
 
     @Post("/mobile-entry", "TokenIsValid")
-    @async()
     @NoLog()
     mobileEntry(req) {
 
@@ -81,7 +73,6 @@ export class UserController {
     }
 
     @Post("/verify-mobile/:code")
-    @async()
     @NoLog()
     verifyMobile(req) {
 
@@ -91,7 +82,6 @@ export class UserController {
     }
 
     @Post("/change-password", "ShouldAuthenticated")
-    @async()
     @NoLog()
     changePassword(req) {
 
@@ -99,7 +89,6 @@ export class UserController {
     }
 
     @Post("/reset-password/by-mobile")
-    @async()
     @NoLog()
     resetPasswordByMobile(req) {
 
@@ -107,13 +96,11 @@ export class UserController {
     }
 
     @Get("/is-unique-email/:email")
-    @async()
     isUniqueEmail(req) {
         return !this.userQuery.getByEmail(req.params.email);
     }
 
     @Get("/is-unique-mobile/:mobile")
-    @async()
     isUniqueMobile(req) {
         return !this.userQuery.getOne({mobile: req.params.mobile, state: 'active'})
     }

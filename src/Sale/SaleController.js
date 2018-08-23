@@ -1,5 +1,4 @@
 import {Controller, Delete, Get, Post, Put} from "../Infrastructure/expressUtlis";
-import {async} from "../Infrastructure/@decorators";
 import {inject} from "inversify";
 
 @Controller("/v1/sales", "ShouldHaveBranch")
@@ -12,28 +11,24 @@ class SaleController {
     /** @type{SaleQuery}*/ saleQuery = undefined;
 
     @Get("/")
-    @async()
     getAll(req) {
 
         return this.saleQuery.getAll(req.query);
     }
 
     @Get("/:id")
-    @async()
     getById(req) {
 
         return this.saleQuery.getById(req.params.id);
     }
 
     @Get("/:id/compare-changes-invoice")
-    @async()
     compareChangesLines(req) {
 
         return this.saleQuery.getCompareInvoiceOnChange(req.params.id, req.query.lines);
     }
 
     @Get("/max/number")
-    @async()
     maxNumber() {
 
         const result = this.saleQuery.maxNumber();
@@ -42,7 +37,6 @@ class SaleController {
     }
 
     @Post("/")
-    @async()
     create(req) {
 
         const id = this.saleService.create(req.body);
@@ -51,7 +45,6 @@ class SaleController {
     }
 
     @Post("/:id/confirm")
-    @async()
     confirm(req) {
 
         const id = req.params.id;
@@ -62,7 +55,6 @@ class SaleController {
     }
 
     @Put("/:id")
-    @async()
     update(req) {
 
         const id = req.params.id;
@@ -73,7 +65,6 @@ class SaleController {
     }
 
     @Delete("/:id")
-    @async()
     remove(req) {
 
         this.saleService.remove(req.params.id);

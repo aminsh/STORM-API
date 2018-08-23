@@ -1,5 +1,4 @@
 import {Controller, Get} from "../Infrastructure/expressUtlis";
-import {async} from "../Infrastructure/@decorators";
 import {inject} from "inversify";
 
 @Controller("/v1/send-invoice", "ShouldHaveBranchForGuestUser")
@@ -26,7 +25,6 @@ class SendSaleController {
     /**@type{IState}*/ state = undefined;
 
     @Get("/:id")
-    @async()
     get(req) {
 
         const id = req.params.id;

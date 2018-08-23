@@ -1,5 +1,4 @@
 import {Controller, Delete, Get, Post, Put} from "../../Infrastructure/expressUtlis";
-import {async} from "../../Infrastructure/@decorators";
 import {inject} from "inversify";
 
 @Controller("/v1/detail-accounts", "ShouldHaveBranch")
@@ -12,13 +11,11 @@ class DetailAccountController {
     /** @type {DetailAccountService}*/ detailAccountService = undefined;
 
     @Get("/")
-    @async()
     getAll(req) {
         return this.detailAccountQuery.getAll(req.query);
     }
 
     @Get("/:id")
-    @async()
     getById(req) {
         return this.detailAccountQuery.getById(req.params.id);
     }
@@ -30,7 +27,6 @@ class DetailAccountController {
     }
 
     @Post("/")
-    @async()
     create(req) {
 
         const id = this.detailAccountService.create(req.body);
@@ -39,14 +35,12 @@ class DetailAccountController {
     }
 
     @Put("/:id")
-    @async()
     update(req) {
 
         this.detailAccountService.update(req.params.id, req.body);
     }
 
     @Delete("/:id")
-    @async()
     remove(req) {
 
         this.detailAccountService.remove(req.params.id);

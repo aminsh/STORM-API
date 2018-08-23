@@ -1,5 +1,4 @@
-import {Controller, Get, Post, Put, Delete} from "../Infrastructure/expressUtlis";
-import {async} from "../Infrastructure/@decorators";
+import {Controller, Get, Put} from "../Infrastructure/expressUtlis";
 import {inject} from "inversify";
 
 @Controller("/v1/treasury/settings", "ShouldHaveBranch")
@@ -12,7 +11,6 @@ class TreasurySettingsController {
     /**@type{TreasurySettingsQuery}*/ treasurySettingsQuery = undefined;
 
     @Get("/")
-    @async()
     get() {
 
         const result = this.treasurySettingsQuery.get();
@@ -26,7 +24,6 @@ class TreasurySettingsController {
     }
 
     @Put("/")
-    @async()
     update() {
 
         this.treasurySettingService.update(req.body);

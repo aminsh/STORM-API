@@ -1,5 +1,4 @@
 import {Controller, Delete, Get, Post, Put} from "../../Infrastructure/expressUtlis";
-import {async} from "../../Infrastructure/@decorators";
 import {inject} from "inversify";
 
 @Controller("/v1/dimensions", "ShouldHaveBranch")
@@ -12,21 +11,18 @@ class DimensionController {
     /** @type {DimensionService}*/ dimensionService = undefined;
 
     @Get("/category/:categoryId")
-    @async()
     getAll(req) {
 
         return this.dimensionQuery.getAll(req.params.categoryId, req.query);
     }
 
     @Get("/:id")
-    @async()
     getById(req) {
 
         return this.dimensionQuery.getById(req.params.id);
     }
 
     @Post("/category/:categoryId")
-    @async()
     create(req) {
 
         const id = this.dimensionService.createDimension(req.params.categoryId,req.body);
@@ -35,7 +31,6 @@ class DimensionController {
     }
 
     @Put("/:id")
-    @async()
     update(req) {
         const id = req.params.id;
 
@@ -45,7 +40,6 @@ class DimensionController {
     }
 
     @Delete("/:id")
-    @async()
     remove(req) {
 
         this.dimensionService.removeDimension(req.params.id);

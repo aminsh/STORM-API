@@ -1,5 +1,4 @@
-import {Controller, Delete, Get, Post, Put} from "../../Infrastructure/expressUtlis";
-import {async} from "../../Infrastructure/@decorators";
+import {Controller, Get, Post} from "../../Infrastructure/expressUtlis";
 import {inject} from "inversify";
 
 @Controller("/v1/journal-generation-templates", "ShouldHaveBranch")
@@ -12,7 +11,6 @@ class JournalGenerationTemplateController {
     /**@type{JournalGenerationTemplateQuery}*/ journalGenerationTemplateQuery = undefined;
 
     @Get("/:sourceType")
-    @async()
     getBySourceType(req){
 
         return this.journalGenerationTemplateQuery.getBySourceType(req.params.sourceType);

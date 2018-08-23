@@ -1,5 +1,4 @@
 import {Controller, Delete, Get, Post, Put} from "../Infrastructure/expressUtlis";
-import {async} from "../Infrastructure/@decorators";
 import {inject} from "inversify";
 
 @Controller("/v1/people", "ShouldHaveBranch")
@@ -33,7 +32,6 @@ class PersonController {
     }
 
     @Put("/:id")
-    @async()
     update(req) {
         const id = req.params.id;
 
@@ -43,7 +41,6 @@ class PersonController {
     }
 
     @Delete("/:id")
-    @async()
     remove(req) {
 
         this.personService.remove(req.params.id);

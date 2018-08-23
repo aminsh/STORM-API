@@ -1,5 +1,4 @@
 import {Controller, Get} from "../Infrastructure/expressUtlis";
-import {inject} from "inversify";
 import {async} from "../Infrastructure/@decorators";
 
 @Controller("/v1/storm-gifts")
@@ -13,7 +12,6 @@ class StormGiftController {
 
 
     @Get("/:code/:branchId/isValid")
-    @async()
     verifyGift(req) {
         let branch = this.branchQuery.find({id: req.params.branchId}, true),
             userId = branch.ownerId,

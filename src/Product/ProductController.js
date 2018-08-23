@@ -1,5 +1,4 @@
 import {Controller, Delete, Get, Post, Put} from "../Infrastructure/expressUtlis";
-import {async} from "../Infrastructure/@decorators";
 import {inject} from "inversify";
 
 @Controller("/v1/products", "ShouldHaveBranch")
@@ -12,42 +11,36 @@ class ProductController {
     /**@type {ProductService}*/ productService = undefined;
 
     @Get("/")
-    @async()
     getAll(req) {
 
         return this.productQuery.getAll(req.query);
     }
 
     @Get("/goods")
-    @async()
     getAllGoods(req) {
 
         return this.productQuery.getAllGoods(req.query);
     }
 
     @Post("/")
-    @async()
     create(req) {
 
         this.productService.create(req.body);
     }
 
     @Get("/:id")
-    @async()
     getById(req) {
 
         return this.productQuery.getById(req.params.id);
     }
 
     @Put("/:id")
-    @async()
     update(req) {
 
         this.productService.update(req.params.id, req.body);
     }
 
     @Delete("/:id")
-    @async()
     remove(req) {
 
         this.productService.remove(req.params.id);
@@ -61,7 +54,6 @@ class ProductController {
     }
 
     @Post("/batch")
-    @async()
     batch(req) {
 
         const body = req.body;
@@ -89,7 +81,6 @@ class ProductController {
     }
 
     @Post("/batch")
-    @async()
     addToInputFirst(req) {
 
         let items = req.body.asEnumerable()

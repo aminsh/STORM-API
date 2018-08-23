@@ -1,5 +1,4 @@
 import {inject} from "inversify";
-import {async} from "../Infrastructure/@decorators";
 import {Controller, Delete, Get, Post, Put} from "../Infrastructure/expressUtlis";
 
 @Controller("/v1/branches")
@@ -12,14 +11,12 @@ class BranchController {
     /** @type {BranchService} */ branchService = undefined;
 
     @Get("/", "ShouldAuthenticated")
-    @async()
     getAll(req) {
 
         return this.branchQuery.find({userId: req.user.id});
     }
 
     @Get("/by-token/:token")
-    @async()
     getByToken(req) {
         
         let token = req.params.token,
@@ -32,7 +29,6 @@ class BranchController {
     }
 
     @Post("/", "ShouldAuthenticated")
-    @async()
     create(req) {
 
         let id = this.branchService.create(req.body, req.user.id),
@@ -44,7 +40,6 @@ class BranchController {
     }
 
     @Put("/:id", "ShouldAuthenticated")
-    @async()
     update(req) {
 
         let id = req.params.id;
@@ -53,14 +48,12 @@ class BranchController {
     }
 
     @Get("/:id/users", "ShouldAuthenticated")
-    @async()
     getMembers(req){
 
         return this.branchQuery.getMembers(req.params.id, req.query);
     }
 
     @Post("/:id/users", "ShouldAuthenticated")
-    @async()
     addUser(req) {
 
         let id = req.params.id;
@@ -69,7 +62,6 @@ class BranchController {
     }
 
     @Delete("/:id/users/:userId", "ShouldAuthenticated")
-    @async()
     removeUser(req) {
 
         let id = req.params.id;
@@ -78,7 +70,6 @@ class BranchController {
     }
 
     @Put("/:id/users/:userId/regenerate-token", "ShouldAuthenticated")
-    @async()
     regenerateToken(req) {
 
         this.branchService.regenerateMemberToken(req.params.id, req.params.userId);

@@ -1,5 +1,4 @@
 import {Controller, Delete, Get, Post, Put} from "../Infrastructure/expressUtlis";
-import {async} from "../Infrastructure/@decorators";
 import {inject} from "inversify";
 
 @Controller("/v1/inventory-io-types", "ShouldHaveBranch")
@@ -12,14 +11,12 @@ class InventoryIOTypeController {
     /**@type{InventoryIOTypeQuery}*/ inventoryIOTypeQuery = undefined;
 
     @Get("/:type")
-    @async()
     get(req) {
 
         return this.inventoryIOTypeQuery.getAll(req.params.type, req.query);
     }
 
     @Post("/:type")
-    @async()
     create(req) {
 
         let cmd = req.body;
@@ -29,14 +26,12 @@ class InventoryIOTypeController {
     }
 
     @Put("/:id")
-    @async()
     update(req) {
 
         this.inventoryIOTypeService.update(req.params.id, req.body);
     }
 
     @Delete("/:id")
-    @async()
     remove(req) {
 
         this.inventoryIOTypeService.remove(req.params.id);

@@ -1,6 +1,5 @@
 import {Controller, Get, Post} from "../Infrastructure/expressUtlis";
 import {inject} from "inversify";
-import {async} from "../Infrastructure/@decorators";
 
 @Controller("/v1/storm-orders")
 class OrderController {
@@ -15,7 +14,6 @@ class OrderController {
     /** @type {PlanQuery}*/ planQuery = undefined;
 
     @Post("/")
-    @async()
     create(req) {
 
         let result = this.orderService.create(req.body);
@@ -24,7 +22,6 @@ class OrderController {
     }
 
     @Post("/trial")
-    @async()
     createTrial(req) {
 
         let branchId = req.body.branchId,
@@ -36,14 +33,12 @@ class OrderController {
     }
 
     @Get("/:id")
-    @async()
     getById(req) {
 
         return this.orderQuery.find(req.params.id);
     }
 
     @Post("/:id/confirm")
-    @async()
     confirm(req) {
 
         let result = this.orderService.confirm(req.params.id);
@@ -52,7 +47,6 @@ class OrderController {
     }
 
     @Get("/:id/payment/callback")
-    @async()
     paymentCallback(req, res) {
 
         if (req.query.status !== 'fail')

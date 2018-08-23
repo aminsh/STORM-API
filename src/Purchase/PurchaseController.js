@@ -1,5 +1,4 @@
 import {Controller, Delete, Get, Post, Put} from "../Infrastructure/expressUtlis";
-import {async} from "../Infrastructure/@decorators";
 import {inject} from "inversify";
 
 @Controller("/v1/purchases", "ShouldHaveBranch")
@@ -12,21 +11,18 @@ class PurchaseController {
     /** @type{PurchaseQuery}*/ purchaseQuery = undefined;
 
     @Get("/")
-    @async()
     getAll(req) {
 
         return this.purchaseQuery.getAll(req.query);
     }
 
     @Get("/:id")
-    @async()
     getById(req) {
 
         return this.purchaseQuery.getById(req.params.id);
     }
 
     @Get("/max/number")
-    @async()
     maxNumber() {
 
         const result = this.purchaseQuery.maxNumber();
@@ -35,7 +31,6 @@ class PurchaseController {
     }
 
     @Post("/")
-    @async()
     create(req) {
 
         const id = this.purchaseService.create(req.body);
@@ -44,7 +39,6 @@ class PurchaseController {
     }
 
     @Post("/:id/confirm")
-    @async()
     confirm(req) {
 
         const id = req.params.id;
@@ -55,7 +49,6 @@ class PurchaseController {
     }
 
     @Put("/:id")
-    @async()
     update(req) {
 
         const id = req.params.id;
@@ -66,7 +59,6 @@ class PurchaseController {
     }
 
     @Delete("/:id")
-    @async()
     remove(req) {
 
         this.purchaseService.remove(req.params.id);
