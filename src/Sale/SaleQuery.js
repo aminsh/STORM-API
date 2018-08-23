@@ -154,13 +154,14 @@ export class SaleQuery extends BaseQuery {
         return toResult(kendoQueryResolve(query, parameters, this._lineView.bind(this)));
     }
 
-    getSummary(fiscalPeriodId, invoiceType) {
+    getSummary() {
         let knex = this.knex,
+            fiscalPeriodId = this.state.fiscalPeriodId,
             branchId = this.branchId,
-            userId = this.userId,
-            canView = this.canView(),
-            modify = this.modify,
-            fiscalPeriod = toResult(this.fiscalPeriodQuery.getById(fiscalPeriodId)),
+            userId = this.state.user.id,
+            canView = this.canView.call(this),
+            modify = this.modify.bind(this),
+            fiscalPeriod = this.fiscalPeriodQuery.getById(fiscalPeriodId),
 
             query = knex.select(
                 knex.raw('"count"(*) as "total"'),
@@ -180,7 +181,7 @@ export class SaleQuery extends BaseQuery {
                     .leftJoin('invoiceLines', 'invoices.id', 'invoiceLines.invoiceId')
                     .leftJoin('detailAccounts', 'invoices.detailAccountId', 'detailAccounts.id')
                     .modify(modify, branchId, userId, canView, 'invoices')
-                    .andWhere('invoiceType', invoiceType)
+                    .andWhere('invoiceType', 'sale')
                     .whereBetween('date', [fiscalPeriod.minDate, fiscalPeriod.maxDate])
                     .as('base');
             }).first();
@@ -188,13 +189,14 @@ export class SaleQuery extends BaseQuery {
         return toResult(query);
     }
 
-    getTotalByMonth(fiscalPeriodId, invoiceType) {
+    getTotalByMonth() {
         let branchId = this.branchId,
-            userId = this.userId,
-            canView = this.canView(),
-            modify = this.modify,
+            userId = this.state.user.id,
+            fiscalPeriodId = this.state.fiscalPeriodId,
+            canView = this.canView.call(this),
+            modify = this.modify.bind(this),
             knex = this.knex,
-            fiscalPeriod = toResult(this.fiscalPeriodQuery.getById(fiscalPeriodId)),
+            fiscalPeriod = this.fiscalPeriodQuery.getById(fiscalPeriodId),
 
             query = knex.select(
                 'month',
@@ -207,7 +209,7 @@ export class SaleQuery extends BaseQuery {
                         .from('invoices')
                         .leftJoin('invoiceLines', 'invoices.id', 'invoiceLines.invoiceId')
                         .modify(modify, branchId, userId, canView, 'invoices')
-                        .andWhere('invoiceType', invoiceType)
+                        .andWhere('invoiceType', 'sale')
                         .whereBetween('date', [fiscalPeriod.minDate, fiscalPeriod.maxDate])
                         .as('base');
                 })
@@ -224,13 +226,14 @@ export class SaleQuery extends BaseQuery {
         return toResult(query);
     }
 
-    getTotalByProduct(fiscalPeriodId, invoiceType) {
+    getTotalByProduct() {
         let branchId = this.branchId,
-            userId = this.userId,
-            canView = this.canView(),
-            modify = this.modify,
+            userId = this.state.user.id,
+            fiscalPeriodId= this.state.fiscalPeriodId,
+            canView = this.canView.call(this),
+            modify = this.modify.bind(this),
             knex = this.knex,
-            fiscalPeriod = toResult(this.fiscalPeriodQuery.getById(fiscalPeriodId)),
+            fiscalPeriod = this.fiscalPeriodQuery.getById(fiscalPeriodId),
 
             query = knex.select(
                 'productId', 'productTitle', knex.raw('"sum"("quantity") as "total"'))
@@ -243,7 +246,7 @@ export class SaleQuery extends BaseQuery {
                         .leftJoin('invoiceLines', 'invoices.id', 'invoiceLines.invoiceId')
                         .leftJoin('products', 'invoiceLines.productId', 'products.id')
                         .modify(modify, branchId, userId, canView, 'invoices')
-                        .andWhere('invoiceType', invoiceType)
+                        .andWhere('invoiceType', 'sale')
                         .whereBetween('date', [fiscalPeriod.minDate, fiscalPeriod.maxDate])
                         .as('base');
                 })

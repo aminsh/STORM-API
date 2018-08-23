@@ -69,4 +69,22 @@ class SaleController {
 
         this.saleService.remove(req.params.id);
     }
+
+    @Get("/summary")
+    summary(){
+
+        return this.saleQuery.getSummary();
+    }
+
+    @Get("/summary/by-month")
+    summaryByMonth(){
+
+        return this.saleQuery.getTotalByMonth();
+    }
+
+    @Get("/summary/by-product")
+    summaryByProduct(){
+
+        return this.saleQuery.getTotalByProduct();
+    }
 }
