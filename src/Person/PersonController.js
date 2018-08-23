@@ -11,19 +11,16 @@ class PersonController {
     /** @type {PersonService}*/ personService = undefined;
 
     @Get("/")
-    @async()
     getAll(req) {
         return this.personQuery.getAll(req.query);
     }
 
     @Get("/:id")
-    @async()
     getById(req) {
         return this.personQuery.getById(req.params.id);
     }
 
     @Post("/")
-    @async()
     create(req) {
 
         const id = this.personService.create(req.body);

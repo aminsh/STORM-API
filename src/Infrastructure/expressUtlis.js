@@ -78,7 +78,7 @@ export function NoLog() {
     }
 }
 
-export function register(container, config,  setFirstMiddleware, setErrorMiddleware, app = express()) {
+export function register(container, config, setFirstMiddleware, setErrorMiddleware, app = express()) {
 
     app.use(compression());
     app.use(cors());
@@ -86,7 +86,7 @@ export function register(container, config,  setFirstMiddleware, setErrorMiddlew
     app.use(bodyParser.json({limit: '50mb'}));
     app.use(cookieParser());
 
-    if(typeof config === 'function')
+    if (typeof config === 'function')
         config(app);
 
     if (typeof setFirstMiddleware === 'function')
@@ -112,26 +112,28 @@ export function register(container, config,  setFirstMiddleware, setErrorMiddlew
                 req.action = action.key;
                 req.noLog = !!noLogs.filter(item => item.controller === ctrl.name && item.key === action.key)[0];
 
-                let result = req.container.get(ctrl.name)[action.key](...arguments);
+                try {
 
-                Promise.resolve(result)
-                    .then(async(value => {
+                    let result = req.container.get(ctrl.name)[action.key](...arguments);
 
-                        if (!res.headersSent) {
+                    if (!res.headersSent) {
 
-                            if (typeof value !== 'undefined')
+                        if (typeof result !== 'undefined')
 
-                                if (typeof value === 'number')
-                                    res.json(value);
-                                else
-                                    res.send(value);
+                            if (typeof result === 'number')
+                                res.json(result);
                             else
-                                res.sendStatus(200);
-                        }
+                                res.send(result);
+                        else
+                            res.sendStatus(200);
 
-                        _canLog(req) && req.container.get("LoggerService").success(value);
-                    }))
-                    .catch(error => next(error));
+                        _canLog(req) && req.container.get("LoggerService").success(result);
+                    }
+                }
+                catch (e) {
+
+                    next(e);
+                }
             }));
 
         });
