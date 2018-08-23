@@ -46,13 +46,6 @@ class ProductController {
         this.productService.remove(req.params.id);
     }
 
-    @Get("/")
-    @async()
-    getAllGoods(req) {
-
-        return this.productQuery.getAllGoods(req.query);
-    }
-
     @Post("/batch")
     batch(req) {
 

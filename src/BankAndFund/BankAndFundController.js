@@ -7,8 +7,6 @@ export class BankAndFundController {
     @inject("BankAndFundQuery")
     /**@type {BankAndFundQuery}*/bankAndFundQuery = undefined;
 
-
-
     @Get("/")
     getAll(req) {
 
