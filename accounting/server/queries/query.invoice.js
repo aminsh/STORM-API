@@ -31,10 +31,12 @@ class InvoiceQuery extends BaseQuery {
             invoice = await(knex
                 .select(
                     'invoices.*',
-                    knex.raw('"detailAccounts"."title" as "detailAccountDisplay"')
+                    knex.raw('"person"."title" as "detailAccountDisplay"'),
+                    knex.raw('"marketer"."title" as "marketerDisplay"')
                 )
                 .from('invoices')
-                .leftJoin('detailAccounts', 'invoices.detailAccountId', 'detailAccounts.id')
+                .leftJoin('detailAccounts as person', 'invoices.detailAccountId', 'person.id')
+                .leftJoin('detailAccounts as marketer', 'invoices.marketerId', 'marketer.id')
                 .where('invoices.id', id)
                 .modify(modify, branchId, userId, canView, 'invoices')
                 .first()
@@ -105,6 +107,8 @@ class InvoiceQuery extends BaseQuery {
                     'description',
                     'title',
                     'journalId',
+                    'marketerId',
+                    'marketerDisplay',
                     knex.raw(`sum(discount) as discount`),
                     knex.raw(`"sum"("totalPrice") + ${sumChargesQuery} - sum(DISTINCT coalesce(discount,0)) as "sumTotalPrice" `),
                     knex.raw(`("sum"("totalPrice") + ${sumChargesQuery}) - sum(DISTINCT coalesce(discount,0)) -
@@ -114,11 +118,13 @@ class InvoiceQuery extends BaseQuery {
                                 where "base"."id" = tp."referenceId") as "sumRemainder"`))
                     .from(function () {
                         this.select('invoices.*',
-                            knex.raw('"detailAccounts"."title" as "detailAccountDisplay"'),
+                            knex.raw('"person"."title" as "detailAccountDisplay"'),
+                            knex.raw('"marketer"."title" as "marketerDisplay"'),
                             knex.raw(`("invoiceLines"."unitPrice" * "invoiceLines".quantity - "invoiceLines".discount + "invoiceLines".vat + "invoiceLines".tax) as "totalPrice"`))
                             .from('invoices')
                             .leftJoin('invoiceLines', 'invoices.id', 'invoiceLines.invoiceId')
-                            .leftJoin('detailAccounts', 'invoices.detailAccountId', 'detailAccounts.id')
+                            .leftJoin('detailAccounts as person', 'invoices.detailAccountId', 'person.id')
+                            .leftJoin('detailAccounts as marketer', 'invoices.marketerId', 'marketer.id')
                             .modify(modify, branchId, userId, canView, 'invoices')
                             .andWhere('invoiceType', invoiceType)
                             .as('base');
@@ -132,7 +138,9 @@ class InvoiceQuery extends BaseQuery {
                         'invoiceStatus',
                         'description',
                         'title',
-                        'journalId')
+                        'journalId',
+                        'marketerId',
+                        'marketerDisplay')
                     .orderBy('number', 'desc')
 
             });
