@@ -105,6 +105,10 @@ class DetailAccountQuery extends BaseQuery {
         return this.getAllByDetailAccountType(parameters, 'person');
     }
 
+    getAllPeopleWithRoleFilter(parameters, personRole) {
+        return this.getAllByDetailAccountTypeAndPersonRole(parameters, 'person', personRole);
+    }
+
     getAllBanks(parameters) {
         return this.getAllByDetailAccountType(parameters, 'bank');
     }
@@ -141,9 +145,27 @@ class DetailAccountQuery extends BaseQuery {
                 .as('baseDetailAccounts');
         }).as('baseDetailAccounts');
 
-
         return kendoQueryResolve(query, parameters, views[`${type}View`]);
     }
+
+    getAllByDetailAccountTypeAndPersonRole(parameters, type, personRole) {
+        let knex = this.knex,
+            branchId = this.branchId;
+
+        let query = await(knex.select().from(function () {
+            this.select(knex.raw(`*,coalesce("code", '') || ' ' || title as display`))
+                .from('detailAccounts').as('baseDetailAccounts')
+                .where('branchId', branchId)
+                .andWhere('detailAccountType', type)
+                .as('baseDetailAccounts');
+        }).as('baseDetailAccounts'));
+
+        return query.asEnumerable()
+            .where(p =>
+                p.personRoles ? p.personRoles.asEnumerable().any(item => item == personRole) : false)
+            .select(item => personView(item))
+            .toArray();
+        }
 
     getBankAndFundTurnover(id, type, fiscalPeriodId, parameters) {
         let knex = this.knex,
