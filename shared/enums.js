@@ -422,4 +422,15 @@ enums.Features = function () {
     ]);
 };
 
+enums.PersonRole = function () {
+    return new Enum([
+        {key: 'marketer', display: "بازاریاب"},
+        {key: 'buyer', display: "خریدار"},
+        {key: 'seller', display: "فروشنده"},
+        {key: 'employee', display: "پرسنل"},
+        {key: 'stackHolder', display: "سهامدار"},
+        {key: 'stockKeeper', display: "انباردار"}
+    ])
+};
+
 module.exports = enums;
