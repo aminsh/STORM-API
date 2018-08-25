@@ -28,12 +28,12 @@ function personAssembler(entity) {
             ? enums.PersonType().getDisplay(entity.personType)
             : '',
         contacts: entity.contacts,
-
         countOfSale: entity.countOfSale,
         lastSaleDate: entity.lastSaleDate,
         sumSaleAmount: entity.sumSaleAmount,
         sumDebtor: entity.sumDebtor,
-        sumCreditor: entity.sumCreditor
+        sumCreditor: entity.sumCreditor,
+        personRoles: entity.personRoles
 
     };
 

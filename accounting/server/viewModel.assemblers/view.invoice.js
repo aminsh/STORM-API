@@ -35,7 +35,9 @@ module.exports = function (entity, settings) {
         charges: mapCostsAndCharges(entity.charges, settings.saleCharges),
         discount: entity.discount || 0,
         totalVat: entity.totalVat || 0,
-        chargesVat: entity.chargesVat || 0
+        chargesVat: entity.chargesVat || 0,
+        marketerId: entity.marketerId,
+        marketerDisplay: entity.marketerDisplay
     }, entity.custom);
 
 

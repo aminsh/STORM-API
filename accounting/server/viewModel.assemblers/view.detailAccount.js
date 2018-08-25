@@ -26,6 +26,7 @@ function detailAccountAssembler(entity) {
         bankBranch: entity.bankBranch,
         email: entity.email,
         personType: entity.personType,
+        personRoles: entity.personRoles,
         personTypeDisplay: entity.personType ? enums.PersonType().getDisplay(entity.personType) : ''
     };
 
