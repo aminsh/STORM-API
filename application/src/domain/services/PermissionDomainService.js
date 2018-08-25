@@ -36,9 +36,9 @@ export class PermissionDomainService {
 
     createUserPermissions(userId, cmd) {
         let entity = {
-            userInRole: {},
-            userPermissions: {}
-        },
+                userInRole: {},
+                userPermissions: {}
+            },
             role = cmd.roleId ? this.permissionRepository.findRoleById(cmd.roleId) : null;
         entity.userInRole = this._userInRole(userId, cmd);
         entity.userPermissions = this._userPermissions(userId, cmd);
@@ -132,6 +132,9 @@ export class PermissionDomainService {
             usersInRole = this.permissionRepository.findUsersInRoleByRoleId(id),
             usersId = usersInRole.asEnumerable().select(item => item.userId).toArray();
 
+        if (role.isAdmin)
+            throw new ValidationException(['امکان ویرایش نقش مدیر سیستم وجود ندارد!']);
+
         entity.role.title = cmd.title || role.title;
         entity.rolePermissions = rolePermission;
         entity.rolePermissions.permissions = cmd.permissions || rolePermission.permissions;
@@ -182,9 +185,17 @@ export class PermissionDomainService {
     }
 
     removeRole(id) {
-        let users = this.permissionRepository.findUsersInRoleByRoleId(id);
+        let users = this.permissionRepository.findUsersInRoleByRoleId(id),
+            role = this.permissionRepository.findRoleById(id),
+            errors = [];
+
+        if (role.isAdmin)
+            errors.push('امکان حذف نقش مدیر سیستم وجود ندارد!');
         if (users.length > 0)
-            throw new ValidationException(['این نقش به کاربر داده شده و امکان حذف وجود ندارد!']);
+            errors.push('این نقش به کاربر داده شده و امکان حذف وجود ندارد!');
+
+        if (errors.length > 0)
+            throw new ValidationException(errors);
 
         return this.permissionRepository.removeRole(id);
     }
