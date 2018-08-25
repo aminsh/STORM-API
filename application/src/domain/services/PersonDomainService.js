@@ -18,7 +18,7 @@ export class PersonDomainService {
         return this.detailAccountDomainService.create(cmd);
     }
 
-        createBatch(peopleDTO) {
+    createBatch(peopleDTO) {
         peopleDTO.forEach(item => item.errors = this._validate(item));
 
         let peopleIds = peopleDTO.asEnumerable()
