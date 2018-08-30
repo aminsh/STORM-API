@@ -10,8 +10,8 @@ export class SaleQuery extends BaseQuery {
     @inject("SettingsQuery")
     /** @type {SettingsQuery}*/ settingsQuery = undefined;
 
-    /*@inject("TreasuryPurposeQuery")
-    /!** @type{TreasuryPurposeQuery}*!/ treasuryPurposeQuery = undefined;*/
+    @inject("TreasuryPurposeQuery")
+    /** @type{TreasuryPurposeQuery}*/ treasuryPurposeQuery = undefined;
 
     @inject("FiscalPeriodQuery")
     /** @type{FiscalPeriodQuery}*/ fiscalPeriodQuery = undefined;
@@ -20,10 +20,10 @@ export class SaleQuery extends BaseQuery {
         let knex = this.knex,
             branchId = this.branchId,
             userId = this.state.user.id,
-            canView = this.canView(),
+            canView = this.canView.call(this),
             modify = this.modify.bind(this),
             settings = this.settingsQuery.get(),
-            treasuriesTotalAmount = 0,//treasuryPurposeQuery.getTreasuriesTotalAmount(id),
+            treasuriesTotalAmount = this.treasuryPurposeQuery.getTreasuriesTotalAmount(id),
 
             invoice = toResult(knex
                 .select(
