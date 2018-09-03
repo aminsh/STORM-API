@@ -63,7 +63,7 @@ export class StormOrderRepository {
     create(entity) {
         const knex = this.dbContext.instance;
 
-        entity.id = TokenGenerator.generate128Bit();
+        entity.id = Utility.TokenGenerator.generate128Bit();
 
         toResult(knex(this.tableName).insert(entity));
     }

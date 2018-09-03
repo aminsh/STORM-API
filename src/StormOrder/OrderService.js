@@ -62,7 +62,7 @@ export class StormOrderService {
             if (isUseGift)
                 throw new ValidationException(['شما قبلا از این کد تخفیف استفاده کرده اید']);
 
-            if(!gift.plans.includes(plan.id))
+            if (!gift.plans.includes(plan.id))
                 throw new ValidationException(['کد تخفیف برای طرح انتخاب شده نیست']);
 
             discount = {rate: gift.discountRate};
@@ -131,34 +131,33 @@ export class StormOrderService {
                         vat: 0, tax: 0
                     }
                 ]
-            },
-            originalUrl = process.env.ORIGIN_URL;
+            };
 
         if ((order.unitPrice * order.duration - order.discount) === 0)
             return {noPrice: true};
 
-        /*let result = this.httpRequest.post(`${originalUrl}/v1/sales`)
-            .body(dto)
-            .setHeader('x-access-token', persistedConfig.get("STORM_BRANCH_TOKEN").value)
-            .execute();*/
+        try {
 
-        let result = this.httpRequest.post(`${process.env.DELIVERY_URL}/api`)
-            .query({url: '/v1/sales', method: 'POST'})
-            .body(dto)
-            .setHeader('x-access-token', this.persistedConfigService.get("STORM_BRANCH_TOKEN").value)
-            .execute();
+            const result = this.httpRequest.post(`${process.env.DELIVERY_URL}/api`)
+                .query({url: '/v1/sales', method: 'POST'})
+                .body(dto)
+                .setHeader('x-access-token', this.persistedConfigService.get("STORM_BRANCH_TOKEN").value)
+                .execute();
 
-        if (!result.isValid)
+            const invoiceId = result.id;
+
+            this.orderRepository.update(id, {invoiceId});
+
+            order.invoiceId = invoiceId;
+
+            return order;
+        }
+        catch (e) {
+
             throw new Error('Error on Storm branch ');
-
-        let invoiceId = result.returnValue.id;
-
-        this.orderRepository.update(id, {invoiceId});
-
-        order.invoiceId = invoiceId;
-
-        return order;
+        }
     }
+
 
     paymentUrl(order) {
         let id = order.id,
@@ -167,7 +166,7 @@ export class StormOrderService {
         let originalUrl = process.env.ORIGIN_URL;
 
         let returnUrl = `${originalUrl}/v1/storm-orders/${id}/payment/callback`,
-            url = `${originalUrl}/v1/payment-invoice/${invoiceId}/?branch_id=${this.persistedConfigService.get("STORM_BRANCH_ID").value}&payment_gateway=zarinpal&return_url=${returnUrl}`;
+            url = `${originalUrl}/v1/payment-invoice/${invoiceId}/?branchId=${this.persistedConfigService.get("STORM_BRANCH_ID").value}&payment_gateway=zarinpal&return_url=${returnUrl}`;
 
         return url;
     }

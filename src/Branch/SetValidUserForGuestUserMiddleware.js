@@ -21,7 +21,7 @@ export class SetValidUserForGuestUserMiddleware  {
 
         const userId = 'STORM-API-USER',
 
-            user = this.userRepository.findById(userId);
+            user = this.userRepository.findOne({id: userId});
 
         req.user = user;
 
