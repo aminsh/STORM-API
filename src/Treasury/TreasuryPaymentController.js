@@ -41,6 +41,7 @@ class TreasuryPaymentController {
     createCheque(req) {
 
         const id = this.treasuryChequeService.createPayment(req.body);
+        this.treasuryChequeService.chequeInProcess(id, req.body);
 
         return this.treasuryPaymentQuery.getById(id, 'cheque');
     }
@@ -263,6 +264,7 @@ class TreasuryPaymentController {
         const cmd = req.body;
 
         cmd.treasury.treasuryType = 'payment';
+        cmd.reference = 'invoice';
 
         const id = this.treasuryPurposeService.create(cmd);
 
