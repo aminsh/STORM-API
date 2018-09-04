@@ -56,6 +56,26 @@ export class ChartOfAccountQuery extends BaseQuery {
         return toResult(Utility.kendoQueryResolve(query, parameters, this._glaView.bind(this)));
     }
 
+    subsidiaryLedgerAccounts(parameters) {
+        let knex = this.knex,
+            branchId = this.branchId,
+
+            query = knex.select().from(function () {
+                this.select(
+                    knex.raw('"subsidiaryLedgerAccounts".*'),
+                    knex.raw('"subsidiaryLedgerAccounts".code || \' \' || "subsidiaryLedgerAccounts".title as "display"'),
+                    knex.raw('"generalLedgerAccounts".code || \' \' || "generalLedgerAccounts".title as "generalLedgerAccountDisplay"'),
+                    knex.raw('"subsidiaryLedgerAccounts".code || \' \' || "subsidiaryLedgerAccounts".title as "account"')
+                )
+                    .from('subsidiaryLedgerAccounts')
+                    .leftJoin('generalLedgerAccounts', 'generalLedgerAccounts.id', 'subsidiaryLedgerAccounts.generalLedgerAccountId')
+                    .where('subsidiaryLedgerAccounts.branchId', branchId)
+                    .as('baseSubsidiaryLedgerAccounts');
+            }).as('baseSubsidiaryLedgerAccounts');
+
+        return toResult(Utility.kendoQueryResolve(query, parameters, this._slaView.bind(this)));
+    }
+
     generalLedgerAccountGetById(id) {
         let generalLedgerAccount = toResult(
             this.knex.table('generalLedgerAccounts')
@@ -91,7 +111,7 @@ export class ChartOfAccountQuery extends BaseQuery {
         }
     }
 
-    _slaView(entity){
+    _slaView(entity) {
 
         return {
             id: entity.id,
@@ -111,5 +131,7 @@ export class ChartOfAccountQuery extends BaseQuery {
             description: entity.description,
             isLocked: entity.isLocked
         };
+
     }
+
 }
