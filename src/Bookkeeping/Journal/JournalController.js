@@ -10,6 +10,9 @@ class JournalController {
     @inject("JournalQuery")
     /**@type{JournalQuery}*/ journalQuery = undefined;
 
+    @inject("JournalGenerationPurposeQuery")
+    /**@type{JournalGenerationPurposeQuery}*/ journalGenerationPurposeQuery = undefined;
+
     @Get("/")
     getAll(req) {
 
@@ -26,6 +29,12 @@ class JournalController {
     getMaxNumber() {
 
         return this.journalQuery.getMaxNumber()
+    }
+
+    @Get("/generation-purposes")
+    getAllJournalGenerationPurposes(req){
+
+        return this.journalGenerationPurposeQuery.getAll(req.query)
     }
 
     @Get("/:id")
@@ -120,5 +129,10 @@ class JournalController {
     orderingNumberByDate() {
 
         this.journalService.orderingTemporaryNumberByTemporaryDate();
+    }
+
+    @Get("/generation-purposes/:id")
+    getByIdJournalGenerationPurposes(req){
+        return this.journalGenerationPurposeQuery.getById(req.params.id)
     }
 }
