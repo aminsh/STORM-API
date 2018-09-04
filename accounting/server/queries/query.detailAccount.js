@@ -150,22 +150,24 @@ class DetailAccountQuery extends BaseQuery {
 
     getAllByDetailAccountTypeAndPersonRole(parameters, type, personRole) {
         let knex = this.knex,
-            branchId = this.branchId;
+            branchId = this.branchId,
 
-        let query = await(knex.select().from(function () {
-            this.select(knex.raw(`*,coalesce("code", '') || ' ' || title as display`))
-                .from('detailAccounts').as('baseDetailAccounts')
-                .where('branchId', branchId)
-                .andWhere('detailAccountType', type)
-                .as('baseDetailAccounts');
-        }).as('baseDetailAccounts'));
+            query = knex.select().from(function () {
+                this.select(knex.raw(`*,coalesce("code", '') || ' ' || title as display`))
+                    .from('detailAccounts')
+                    .innerJoin(knex.raw(`(
+                            select id, "personRoles", TRIM(pr::TEXT,'""')
+                            FROM   "detailAccounts", json_array_elements("personRoles") as pr
+                            where "personRoles" is not null
+                                    AND TRIM(pr::TEXT,'""') = '${personRole}'
+                        )as "role"`),'role.id','detailAccounts.id')
+                    .where('branchId', branchId)
+                    .where('detailAccountType', type)
+                    .as('baseDetailAccounts');
+            }).as('baseDetailAccounts');
 
-        return query.asEnumerable()
-            .where(p =>
-                p.personRoles ? p.personRoles.asEnumerable().any(item => item == personRole) : false)
-            .select(item => personView(item))
-            .toArray();
-        }
+        return await(kendoQueryResolve(query, parameters, personView));
+    }
 
     getBankAndFundTurnover(id, type, fiscalPeriodId, parameters) {
         let knex = this.knex,

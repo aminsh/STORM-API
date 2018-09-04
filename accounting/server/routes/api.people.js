@@ -30,7 +30,7 @@ router.route('/')
 
     }));
 
-router.route('/:personRole')
+router.route('/role/:personRole')
     .get(async((req, res) => {
         let detailAccountQuery = new DetailAccountQuery(req.branchId),
             result = await(detailAccountQuery.getAllPeopleWithRoleFilter(req.query, req.params.personRole));
