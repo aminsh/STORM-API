@@ -99,7 +99,7 @@ class TreasuryPaymentController {
         this.treasuryChequeService.setJournal(req.params.id, journalId);
     }
 
-    @Post("/spend-cheque")
+    @Post("/spend-cheques")
     createSpendCheque(req) {
 
         const id = this.treasuryChequeService.chequeSpend(req.body);
