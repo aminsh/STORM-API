@@ -52,11 +52,20 @@ export class InvoiceDomainService {
     _validate(entity) {
         let errors = [];
 
-
         if (!(entity.invoiceLines && entity.invoiceLines.length !== 0))
             errors.push('ردیف های فاکتور وجود ندارد');
         else
             errors = entity.invoiceLines.asEnumerable().selectMany(this._validateLine.bind(this)).toArray();
+
+        if (entity.marketerId) {
+            let marketerDetailAccount = this.detailAccountDomainService.findPersonByIdOrCreate({id: entity.marketerId}),
+                personRole = marketerDetailAccount.personRoles
+                    ? marketerDetailAccount.personRoles.asEnumerable().any(role => role == 'Marketer')
+                    : null;
+
+            if (!personRole)
+                errors.push('نقش بازاریاب برای {0} تعریف نشده است!'.format(marketerDetailAccount.title));
+        }
 
         if (Utility.String.isNullOrEmpty(entity.detailAccountId))
             errors.push('مشتری نباید خالی باشد');
@@ -115,6 +124,7 @@ export class InvoiceDomainService {
     mapToEntity(cmd) {
 
         const detailAccount = this.detailAccountDomainService.findPersonByIdOrCreate(cmd.customer),
+            marketer = this.detailAccountDomainService.findPersonByIdOrCreate(cmd.marketer),
             invoice = cmd.id ? this.invoiceRepository.findById(cmd.id) : undefined;
 
         return {
@@ -124,6 +134,7 @@ export class InvoiceDomainService {
             description: cmd.description,
             title: cmd.title,
             detailAccountId: detailAccount ? detailAccount.id : null,
+            marketerId: marketer ? marketer.id : null,
             orderId: cmd.orderId,
             costs: this._mapCostAndCharge(cmd.costs),
             charges: this._mapCostAndCharge(cmd.charges),
@@ -168,7 +179,11 @@ export class InvoiceDomainService {
             return [];
 
         if (Array.isArray(data))
-            return data.asEnumerable().select(e => ({key: e.key, value: e.value || 0, vatIncluded: e.vatIncluded})).toArray();
+            return data.asEnumerable().select(e => ({
+                key: e.key,
+                value: e.value || 0,
+                vatIncluded: e.vatIncluded
+            })).toArray();
 
         return Object.keys(data).asEnumerable()
             .select(key => ({
