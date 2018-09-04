@@ -14,3 +14,11 @@ export class ValidationSingleException {
 export class NotFoundException {
 
 }
+
+export class ForbiddenException {
+    constructor(message) {
+        this.message = message;
+    }
+}
+
+

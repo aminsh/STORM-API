@@ -11,5 +11,5 @@ export function register(container) {
     container.bind("PermissionQuery").to(PermissionQuery);
     container.bind("PermissionService").to(PermissionService);
     container.bind("PermissionRepository").to(PermissionRepository);
-    container.bind("UserPermissionsControlService").to(UserPermissionsControlService);
+    container.bind("UserPermissionsControlService").to(UserPermissionsControlService).inSingletonScope();
 }

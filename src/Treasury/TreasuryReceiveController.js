@@ -37,6 +37,12 @@ class TreasuryReceiveController {
         return this.treasuryReceiveQuery.getAll(req.query);
     }
 
+    @Get("/cheques")
+    getAllCheques(req) {
+
+        return this.treasuryReceiveQuery.getAllCheques(req.query);
+    }
+
     @Post("/cheques")
     createCheque(req) {
 
@@ -120,7 +126,7 @@ class TreasuryReceiveController {
     }
 
     @Get("/cash/:id")
-    getChashById(req) {
+    getCashById(req) {
 
         return this.treasuryReceiveQuery.getById(req.params.id, 'cash');
     }
@@ -136,13 +142,13 @@ class TreasuryReceiveController {
     }
 
     @Delete("/cash/:id")
-    removeChash(req) {
+    removeCash(req) {
 
         this.treasuryCashService.remove(req.params.id);
     }
 
     @Post("/cash/:id/generate-journal")
-    generateJournalForChash(req) {
+    generateJournalForCash(req) {
 
         const journalId = this.treasuryJournalGenerationService.generateForReceiveCash(req.params.id);
 

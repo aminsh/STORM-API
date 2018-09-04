@@ -14,7 +14,7 @@ export class ReportCustomerReceiptsQuery extends BaseQuery {
 
             result = toResult(knex.select(knex.raw(`
             DISTINCT invoices."id" as "invoiceId",invoices."number", "detailAccounts".title as customer, 
-            CONCAT('${translate('For invoice with number')}',' ',invoices."number" ,', ','${'در تاریخ'}' ,' ',invoices."date") AS invoiceFor,
+            CONCAT('${'برای فاکتور شماره ی'}',' ',invoices."number" ,', ','${'در تاریخ'}' ,' ',invoices."date") AS invoiceFor,
 	        payment.amount, payment."paymentDescription", payment."paymentTypeText"
         `))
                 .from('invoices')

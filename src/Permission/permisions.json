@@ -1,9 +1,16 @@
 [
   {
-    "general-ledger-accounts": {
-      "create": false,
-      "update": false,
-      "remove": false
+    "chart-of-accounts": {
+      "general-ledger-accounts": {
+        "create": false,
+        "update": false,
+        "remove": false
+      },
+      "subsidiary-ledger-accounts": {
+        "create": false,
+        "update": false,
+        "remove": false
+      }
     }
   },
   {

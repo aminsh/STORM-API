@@ -184,7 +184,7 @@ export class SaleQuery extends BaseQuery {
                         where "invoices"."id" = "treasuryPurpose"."referenceId") as "paidAmount"`),
 
                     knex.raw('"detailAccounts"."title" as "detailAccountDisplay"'),
-                    knex.raw(`("invoiceLines"."unitPrice" * "invoiceLines".quantity - "invoiceLines".discount + "invoiceLines".vat) as "totalPrice"`))
+                    knex.raw(`("invoiceLines"."unitPrice" * "invoiceLines".quantity - "invoiceLines".discount + "invoiceLines".vat + "invoiceLines".tax) as "totalPrice"`))
                     .from('invoices')
                     .leftJoin('invoiceLines', 'invoices.id', 'invoiceLines.invoiceId')
                     .leftJoin('detailAccounts', 'invoices.detailAccountId', 'detailAccounts.id')
@@ -213,7 +213,7 @@ export class SaleQuery extends BaseQuery {
                 .from(function () {
                     this.select('invoices.*',
                         knex.raw('cast(substring("invoices"."date" from 6 for 2) as INTEGER) as "month"'),
-                        knex.raw(`("invoiceLines"."unitPrice" * "invoiceLines".quantity - "invoiceLines".discount + "invoiceLines".vat) as "totalPrice"`))
+                        knex.raw(`("invoiceLines"."unitPrice" * "invoiceLines".quantity - "invoiceLines".discount + "invoiceLines".vat + "invoiceLines".tax) as "totalPrice"`))
                         .from('invoices')
                         .leftJoin('invoiceLines', 'invoices.id', 'invoiceLines.invoiceId')
                         .modify(modify, branchId, userId, canView, 'invoices')

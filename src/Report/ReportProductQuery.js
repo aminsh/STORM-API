@@ -162,7 +162,7 @@ export class ReportProductQuery extends BaseQuery {
 
     getProductTurnovers(productIds, fixedType, stockId) {
         let productsInventories = this.getProductsInventoriesByIds(productIds, fixedType, stockId),
-            options = this.options,
+            options = this.reportConfig.options,
 
             query = productsInventories.asEnumerable()
                 .groupBy(

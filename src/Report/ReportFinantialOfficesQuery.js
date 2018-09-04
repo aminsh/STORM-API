@@ -39,7 +39,7 @@ export class ReportFinancialOfficesQuery extends BaseQuery {
 
         let query = knex.select(knex.raw(journals + ',' + generalLedgerAccounts + ',' + subsidiaryLedgerAccounts))
             .from(function () {
-                groupBy().call(this, knex,
+                groupBy.call(this, knex,
                     options,
                     currentFiscalPeriodId,
                     ['number', 'date', 'generalLedgerAccountId', 'subsidiaryLedgerAccountId', 'article']);
@@ -76,7 +76,7 @@ export class ReportFinancialOfficesQuery extends BaseQuery {
 
         let query = knex.select(knex.raw(journals + ',' + generalLedgerAccounts))
             .from(function () {
-                groupBy().call(this, knex,
+                groupBy.call(this, knex,
                     options,
                     currentFiscalPeriodId,
                     ['number', 'date', 'generalLedgerAccountId', 'article']);
@@ -119,7 +119,7 @@ export class ReportFinancialOfficesQuery extends BaseQuery {
 
         let query = knex.select(knex.raw(journals + ',' + generalLedgerAccounts + ',' + subsidiaryLedgerAccounts))
             .from(function () {
-                groupBy().call(this, knex,
+                groupBy.call(this, knex,
                     options,
                     currentFiscalPeriodId,
                     ['number', 'date', 'generalLedgerAccountId', 'subsidiaryLedgerAccountId', 'article']);

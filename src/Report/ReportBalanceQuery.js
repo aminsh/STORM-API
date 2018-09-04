@@ -48,7 +48,7 @@ export class ReportBalanceQuery extends BaseQuery {
             "generalLedgerAccounts".id as "generalId",
             CASE WHEN "generalLedgerAccounts".code ISNULL 
             THEN "generalLedgerAccounts".title 
-            ELSE "generalLedgerAccounts".title||' ${translate('Code')} ' || "generalLedgerAccounts".code END AS generalDisplay`;
+            ELSE "generalLedgerAccounts".title||' ${'کد'} ' || "generalLedgerAccounts".code END AS generalDisplay`;
 
         let query = toResult(knex.select(knex.raw(journals + ',' + generalLedgerAccounts))
             .from(function () {
@@ -111,14 +111,14 @@ export class ReportBalanceQuery extends BaseQuery {
             "generalLedgerAccounts".title as "generalTitle",
             CASE WHEN "generalLedgerAccounts".code ISNULL 
             THEN "generalLedgerAccounts".title 
-            ELSE "generalLedgerAccounts".title||' ${translate('Code')} ' || "generalLedgerAccounts".code END AS generalDisplay`;
+            ELSE "generalLedgerAccounts".title||' ${'کد'} ' || "generalLedgerAccounts".code END AS generalDisplay`;
 
         let subsidiaryLedgerAccounts = `"subsidiaryLedgerAccounts".code as subsidiaryCode,
             "subsidiaryLedgerAccounts".id as subsidiaryId,
             "subsidiaryLedgerAccounts".title as subsidiaryTitle,
             CASE WHEN "subsidiaryLedgerAccounts".code ISNULL 
             THEN "subsidiaryLedgerAccounts".title 
-            ELSE "subsidiaryLedgerAccounts".title||' ${translate('Code')} ' ||"subsidiaryLedgerAccounts".code END AS subsidiaryDisplay`;
+            ELSE "subsidiaryLedgerAccounts".title||' ${'کد'} ' ||"subsidiaryLedgerAccounts".code END AS subsidiaryDisplay`;
 
         let query = knex.select(knex.raw(journals + ',' + generalLedgerAccounts + ',' + subsidiaryLedgerAccounts))
             .from(function () {
@@ -161,7 +161,7 @@ export class ReportBalanceQuery extends BaseQuery {
             "generalLedgerAccounts".title as generalTitle,
             CASE WHEN "generalLedgerAccounts".code ISNULL 
             THEN "generalLedgerAccounts".title 
-            ELSE "generalLedgerAccounts".title||' ${translate('Code')} ' || "generalLedgerAccounts".code 
+            ELSE "generalLedgerAccounts".title||' ${'کد'} ' || "generalLedgerAccounts".code 
             END AS generalDisplay`;
 
         let subsidiaryLedgerAccounts = `"subsidiaryLedgerAccounts".code as subsidiaryCode,
@@ -169,7 +169,7 @@ export class ReportBalanceQuery extends BaseQuery {
             "subsidiaryLedgerAccounts".title as subsidiaryTitle,
             CASE WHEN "subsidiaryLedgerAccounts".code ISNULL 
             THEN "subsidiaryLedgerAccounts".title 
-            ELSE "subsidiaryLedgerAccounts".title||' ${translate('Code')} ' ||"subsidiaryLedgerAccounts".code 
+            ELSE "subsidiaryLedgerAccounts".title||' ${'کد'} ' ||"subsidiaryLedgerAccounts".code 
             END AS subsidiaryDisplay`;
 
         let detailAccounts = `"detailAccounts".code as detailCode,
@@ -177,7 +177,7 @@ export class ReportBalanceQuery extends BaseQuery {
             "detailAccounts".title as detailTitle,
             CASE WHEN "detailAccounts".code ISNULL 
             THEN "detailAccounts".title 
-            ELSE "detailAccounts".title||' ${translate('Code')} ' || "detailAccounts".code END AS detailDisplay`;
+            ELSE "detailAccounts".title||' ${'کد'} ' || "detailAccounts".code END AS detailDisplay`;
 
         let query = knex.select(knex.raw(journals + ',' + generalLedgerAccounts + ',' +
             subsidiaryLedgerAccounts + ',' + detailAccounts))
