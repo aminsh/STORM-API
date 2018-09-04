@@ -414,6 +414,7 @@ enums.Features = function () {
                 'general-ledger-accounts',
                 'journal-templates',
                 'subsidiary-ledger-accounts',
+                'chart-of-accounts',
                 'journal-generation-templates',
                 'tags'
             ]
