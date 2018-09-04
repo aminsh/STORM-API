@@ -40,6 +40,31 @@ export class PersonQuery extends BaseQuery {
         return this._view(entity);
     }
 
+    getAllPeopleWithRoleFilter(parameters, personRole) {
+        return this.getAllByDetailAccountTypeAndPersonRole(parameters, 'person', personRole);
+    }
+
+    getAllByDetailAccountTypeAndPersonRole(parameters, type, personRole) {
+        let knex = this.knex,
+            branchId = this.branchId,
+
+            query = knex.select().from(function () {
+                this.select(knex.raw(`*,coalesce("code", '') || ' ' || title as display`))
+                    .from('detailAccounts')
+                    .innerJoin(knex.raw(`(
+                            select id, "personRoles", TRIM(pr::TEXT,'""')
+                            FROM   "detailAccounts", json_array_elements("personRoles") as pr
+                            where "personRoles" is not null
+                                    AND TRIM(pr::TEXT,'""') = '${personRole}'
+                        )as "role"`),'role.id','detailAccounts.id')
+                    .where('branchId', branchId)
+                    .where('detailAccountType', type)
+                    .as('baseDetailAccounts');
+            }).as('baseDetailAccounts');
+
+        return toResult(Utility.kendoQueryResolve(query, parameters, this._view.bind(this)));
+    }
+
     _view(entity) {
 
         if(!entity)
@@ -75,8 +100,8 @@ export class PersonQuery extends BaseQuery {
             lastSaleDate: entity.lastSaleDate,
             sumSaleAmount: entity.sumSaleAmount,
             sumDebtor: entity.sumDebtor,
-            sumCreditor: entity.sumCreditor
-
+            sumCreditor: entity.sumCreditor,
+            personRoles: entity.personRoles
         }
     }
 }
