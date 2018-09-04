@@ -22,6 +22,9 @@ class ReportController {
     @inject("ReportInventoryTurnoverQuery")
     /**@type{ReportInventoryTurnoverQuery}*/ reportInventoryTurnoverQuery = undefined;
 
+    @inject("ReportInventoryInputsOutputsTurnoverQuery")
+    /**@type{ReportInventoryInputsOutputsTurnoverQuery}*/ reportInventoryInputsOutputsTurnoverQuery = undefined;
+
     @inject("ReportInvoiceQuery")
     /**@type{ReportInvoiceQuery}*/ reportInvoiceQuery = undefined;
 
@@ -72,24 +75,6 @@ class ReportController {
 
         return this.reportBalanceQuery.getGeneralBalance();
     }
-
-    /*@Get("/subsidiary-balance")
-    getSubsidiaryBalance() {
-
-        return this.reportBalanceQuery.getSubsidiaryBalance();
-    }
-
-    @Get("/subsidiary-detail-balance")
-    getSubsidiaryDetailBalance() {
-
-        return this.reportBalanceQuery.getSubsidiaryDetailBalance();
-    }
-
-    @Get("/general-subsidiary-detail-balance")
-    getSubsidiaryDetailBalance() {
-
-        return this.reportBalanceQuery.getSubsidiaryDetailBalance();
-    }*/
 
     @Get("/journal-office")
     getJournalOffice() {
@@ -175,31 +160,37 @@ class ReportController {
         return this.reportJournalQuery.getDetailJournals();
     }
 
-    @Get("/invoices")
+    @Get("/invoices/:id")
     invoice(req) {
 
-        return this.reportInvoiceQuery.invoice(req.query.id);
+        return this.reportInvoiceQuery.invoice(req.params.id);
     }
 
-    @Get("/un-invoices")
+    @Get("/un-invoices/:id")
     unInvoice(req) {
 
-        return this.reportInvoiceQuery.invoice(req.query.id);
+        return this.reportInvoiceQuery.invoice(req.params.id);
     }
 
-    @Get("/pre-invoices")
+    @Get("/pre-invoices/:id")
     preInvoice(req) {
 
-        return this.reportInvoiceQuery.invoice(req.query.id);
+        return this.reportInvoiceQuery.invoice(req.params.id);
     }
 
     @Get("/inventory-outputs")
     getOutputsTurnover(req) {
 
-        return this.reportInventoryTurnoverQuery.getInventoriesTurnover(req.query.ids);
+        return this.reportInventoryInputsOutputsTurnoverQuery.getInventories(req.query.ids,'output');
     }
 
-    @Get("/inventory-input")
+    @Get("/inventory-inputs")
+    getInputsTurnover(req) {
+
+        return this.reportInventoryInputsOutputsTurnoverQuery.getInventories(req.query.ids,'input');
+    }
+
+    @Get("/inventory-turnover")
     getInputsTurnover(req) {
 
         return this.reportInventoryTurnoverQuery.getInventoriesTurnover(req.query.ids);
@@ -238,10 +229,10 @@ class ReportController {
         return this.reportProfitLossStatementQuery.getCompareProfitLossStatement();
     }
 
-    @Get("/customer-receipts")
+    @Get("/customer-receipts/:id")
     getCustomerReceipt(req) {
 
-        return this.reportCustomerReceiptsQuery.getCustomerReceipt(req.query.id);
+        return this.reportCustomerReceiptsQuery.getCustomerReceipt(req.params.id);
     }
 
     @Get("/sale-invoice-detail-turnover")

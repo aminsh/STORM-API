@@ -41,18 +41,16 @@ export class ReportTurnoverQuery extends BaseQuery {
             THEN "detailAccounts".title 
             ELSE "detailAccounts".title||' ${'کد'} ' || "detailAccounts".code END AS detailDisplay`;
 
-        let query = knex.select(knex.raw(journals + ',' + generalLedgerAccounts + ',' +
+        return toResult(knex.select(knex.raw(journals + ',' + generalLedgerAccounts + ',' +
             subsidiaryLedgerAccounts + ',' + detailAccounts))
             .from(function () {
-                groupBy().call(this, knex, options, currentFiscalPeriodId,
+                groupBy.call(this, knex, options, currentFiscalPeriodId,
                     ['generalLedgerAccountId', 'subsidiaryLedgerAccountId', 'detailAccountId']);
             })
             .leftJoin('generalLedgerAccounts', 'groupJournals.generalLedgerAccountId', 'generalLedgerAccounts.id')
             .leftJoin('subsidiaryLedgerAccounts', 'groupJournals.subsidiaryLedgerAccountId', 'subsidiaryLedgerAccounts.id')
             .leftJoin('detailAccounts', 'groupJournals.detailAccountId', 'detailAccounts.id')
-            .as('totalJournals');
-
-        return toResult(query);
+            .as('totalJournals'));
 
     }
 

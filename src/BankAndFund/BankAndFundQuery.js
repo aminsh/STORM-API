@@ -51,6 +51,7 @@ export class BankAndFundQuery extends BaseQuery {
         let knex = this.knex,
             enums = this.enums,
             branchId = this.branchId,
+            userId = this.state.user.id,
             fiscalPeriodId = this.state.fiscalPeriodId,
             canView = this.canView.call(this),
             subsidiaryLedgerAccounts = this.settingsQuery.get().subsidiaryLedgerAccounts,
@@ -69,6 +70,7 @@ export class BankAndFundQuery extends BaseQuery {
                         INNER JOIN "journalLines" ON journals."id" = "journalLines"."journalId"
                         WHERE journals."periodId" = '${fiscalPeriodId}'
                             and journals."branchId" = '${branchId}'
+                            AND ('${canView}' or journals."createdById" = '${userId}')
 	                        and "journalLines"."subsidiaryLedgerAccountId" in ('${subledger.bank || 0}', '${subledger.fund || 0}'))
                          as "journalQuery"`)
                     , 'detailAccounts.id', 'journalQuery.detailAccountId')
@@ -98,8 +100,10 @@ export class BankAndFundQuery extends BaseQuery {
         let knex = this.knex,
             enums = this.enums,
             branchId = this.branchId,
+            userId = this.state.user.id,
             fiscalPeriodId= this.state.fiscalPeriodId,
             canView = this.canView.call(this),
+            modify = this.modify.bind(this),
             subsidiaryLedgerAccounts = this.settingsQuery.get().subsidiaryLedgerAccounts,
             subledger = subsidiaryLedgerAccounts.asEnumerable().toObject(item => item.key, item => item.id);
 
@@ -113,7 +117,7 @@ export class BankAndFundQuery extends BaseQuery {
                 .from('journalLines')
                 .leftJoin('journals', 'journalLines.journalId', 'journals.id')
                 .leftJoin('detailAccounts', 'journalLines.detailAccountId', 'detailAccounts.id')
-                .where('journalLines.branchId', branchId)
+                .modify(modify, branchId, userId, canView, 'journals')
                 .andWhere('journals.periodId', fiscalPeriodId)
                 .whereIn('journalLines.subsidiaryLedgerAccountId', [subledger.bank, subledger.fund])
                 .whereIn('detailAccounts.detailAccountType', ['bank', 'fund'])

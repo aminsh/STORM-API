@@ -17,7 +17,7 @@ export class ReportInventoryTurnoverQuery extends BaseQuery {
             modify = this.modify.bind(this),
             options = this.reportConfig.options;
 
-        return toResult(
+        let query = (
             knex.select(knex.raw(
                 `CASE WHEN products."referenceId" ISNULL THEN products.title 
                 ELSE products.title||' ${'کد'} ' ||products."referenceId" END AS product,
@@ -30,7 +30,6 @@ export class ReportInventoryTurnoverQuery extends BaseQuery {
                 knex.raw('"inventoryIOTypes".title as "ioType"')
             )
                 .from('stocks')
-                .whereIn('stocks.id', ids)
                 .innerJoin('inventories', 'inventories.stockId', 'stocks.id')
                 .modify(modify, branchId, userId, canView, 'inventories')
                 .innerJoin('inventoryIOTypes', 'inventoryIOTypes.id', 'inventories.ioType')
@@ -39,5 +38,10 @@ export class ReportInventoryTurnoverQuery extends BaseQuery {
                 .whereBetween('inventories.date', [options.fromMainDate, options.toDate])
                 .as('inventoriesTurnover')
         );
+
+        if (ids)
+            query.whereIn('stockId',ids);
+
+        return toResult(query);
     }
 }

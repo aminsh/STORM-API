@@ -2,6 +2,7 @@ import {BaseQuery} from "../Infrastructure/BaseQuery";
 import toResult from "asyncawait/await";
 import {injectable, inject} from "inversify"
 
+
 @injectable()
 export class ReportAccountsQuery extends BaseQuery {
 
@@ -58,7 +59,7 @@ export class ReportAccountsQuery extends BaseQuery {
             knex.select(knex.raw(`code, 
         title, 
         description,
-        CASE WHEN code ISNULL THEN title ELSE title||' ${translate('Code')} ' ||code END AS display`))
+        CASE WHEN code ISNULL THEN title ELSE title||' ${'کد'} ' ||code END AS display`))
                 .from('detailAccounts')
                 .where('branchId', this.branchId)
         );
