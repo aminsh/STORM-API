@@ -214,7 +214,7 @@ class ReportController {
         const resultDetail = this.reportSeasonalQuery.getSeasonalWithFilter(req.query),
             resultTotal = this.reportSeasonalQuery.getTotalSeasonal();
 
-        return Object.assign({}, resultDetail, resultTotal);
+        return Object.assign({}, resultDetail, {resultTotal});
     }
 
     @Get("/balance-sheet")
