@@ -47,7 +47,7 @@ class TreasuryReceiveController {
     createCheque(req) {
 
         const id = this.treasuryChequeService.createReceive(req.body);
-
+        this.treasuryChequeService.chequeInFund(id, req.body);
         return this.treasuryReceiveQuery.getById(id, 'cheque');
     }
 
@@ -237,6 +237,7 @@ class TreasuryReceiveController {
         const cmd = req.body;
 
         cmd.treasury.treasuryType = 'receive';
+        cmd.reference = 'invoice';
 
         const id = this.treasuryPurposeService.create(cmd);
 
