@@ -12,6 +12,8 @@ import templateReturnPurchase from '../json/returnPurchase.json';
 @injectable()
 export class JournalGenerationTemplateQuery extends BaseQuery {
 
+    tableName = "journalGenerationTemplates";
+
     templates = {
         sale: templateSale,
         purchase: templatePurchase,
