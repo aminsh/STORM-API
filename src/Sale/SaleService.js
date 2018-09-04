@@ -216,7 +216,7 @@ export class SaleService {
 
         try {
             result = linesAreGood.asEnumerable()
-                .select(item => this.productInventoryService.decreaseQuantity(item.product.id, item.stockId, item.quantity))
+                .select(item => this.productInventoryService.decreaseQuantity(item.productId, item.stockId, item.quantity))
                 .toArray();
         }
         catch (e) {

@@ -32,7 +32,7 @@ export class SaleQuery extends BaseQuery {
                     knex.raw('"marketer"."title" as "marketerDisplay"')
                 )
                 .from('invoices')
-                .leftJoin('detailAccounts', 'invoices.detailAccountId', 'detailAccounts.id')
+                .leftJoin('detailAccounts as person', 'invoices.detailAccountId', 'person.id')
                 .leftJoin('detailAccounts as marketer', 'invoices.marketerId', 'marketer.id')
                 .where('invoices.id', id)
                 .modify(modify, branchId, userId, canView, 'invoices')
