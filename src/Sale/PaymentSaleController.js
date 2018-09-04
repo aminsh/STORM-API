@@ -27,7 +27,7 @@ class PaymentSaleController {
             qs = {
                 payment_gateway: paymentGateway,
                 original_return_url: originalReturnUrl,
-                branch_id: this.state.branchId
+                branchId: this.state.branchId
             };
 
         const url = this.paymentGatewayFactory(paymentGateway).getPaymentUrl({
@@ -80,7 +80,7 @@ class PaymentSaleController {
 
         try {
 
-            this.treasuryPurposeService.create([cmd]);
+            this.treasuryPurposeService.create(cmd);
             res.redirect(getReturnUrl({status: 'success'}));
         }
         catch (e) {

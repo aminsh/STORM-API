@@ -13,8 +13,8 @@ import {InventoryIOTypeService} from "./InventoryIOTypeService";
 import {InventoryIOTypeQuery} from "./InventoryIOTypeQuery";
 import {InventoryQuery} from "./InventoryQuery";
 
-import {SaleEventListener} from "./SaleEventListener";
-import {PurchaseEventListener} from "./PurchaseEventListener";
+import {InventorySaleEventListener} from "./InventorySaleEventListener";
+import {InventoryPurchaseEventListener} from "./InventoryPurchaseEventListener";
 import {InputEventListener} from "./InputEventListener";
 import {OutputEventListener} from "./OutputEventListener";
 
@@ -45,8 +45,8 @@ export function register(container) {
 
     container.bind("InputEventListener").to(InputEventListener);
     container.bind("OutputEventListener").to(OutputEventListener);
-    container.bind("SaleEventListener").to(SaleEventListener);
-    container.bind("PurchaseEventListener").to(PurchaseEventListener);
+    container.bind("InventorySaleEventListener").to(InventorySaleEventListener);
+    container.bind("InventoryPurchaseEventListener").to(InventoryPurchaseEventListener);
 
     container.bind("SaleCompareHistoryService").to(SaleCompareHistoryService);
     container.bind("PurchaseCompareHistoryService").to(PurchaseCompareHistoryService);

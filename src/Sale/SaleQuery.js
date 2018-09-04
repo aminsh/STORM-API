@@ -10,8 +10,8 @@ export class SaleQuery extends BaseQuery {
     @inject("SettingsQuery")
     /** @type {SettingsQuery}*/ settingsQuery = undefined;
 
-    /*@inject("TreasuryPurposeQuery")
-    /!** @type{TreasuryPurposeQuery}*!/ treasuryPurposeQuery = undefined;*/
+    @inject("TreasuryPurposeQuery")
+    /** @type{TreasuryPurposeQuery}*/ treasuryPurposeQuery = undefined;
 
     @inject("FiscalPeriodQuery")
     /** @type{FiscalPeriodQuery}*/ fiscalPeriodQuery = undefined;
@@ -20,18 +20,20 @@ export class SaleQuery extends BaseQuery {
         let knex = this.knex,
             branchId = this.branchId,
             userId = this.state.user.id,
-            canView = this.canView(),
+            canView = this.canView.call(this),
             modify = this.modify.bind(this),
             settings = this.settingsQuery.get(),
-            treasuriesTotalAmount = 0,//treasuryPurposeQuery.getTreasuriesTotalAmount(id),
+            treasuriesTotalAmount = this.treasuryPurposeQuery.getTreasuriesTotalAmount(id),
 
             invoice = toResult(knex
                 .select(
                     'invoices.*',
-                    knex.raw('"detailAccounts"."title" as "detailAccountDisplay"')
+                    knex.raw('"person"."title" as "detailAccountDisplay"'),
+                    knex.raw('"marketer"."title" as "marketerDisplay"')
                 )
                 .from('invoices')
                 .leftJoin('detailAccounts', 'invoices.detailAccountId', 'detailAccounts.id')
+                .leftJoin('detailAccounts as marketer', 'invoices.marketerId', 'marketer.id')
                 .where('invoices.id', id)
                 .modify(modify, branchId, userId, canView, 'invoices')
                 .first()
@@ -102,6 +104,8 @@ export class SaleQuery extends BaseQuery {
                     'description',
                     'title',
                     'journalId',
+                    'marketerId',
+                    'marketerDisplay',
                     knex.raw(`sum(discount) as discount`),
                     knex.raw(`"sum"("totalPrice") + ${sumChargesQuery} - sum(DISTINCT coalesce(discount,0)) as "sumTotalPrice" `),
                     knex.raw(`("sum"("totalPrice") + ${sumChargesQuery}) - sum(DISTINCT coalesce(discount,0)) -
@@ -111,11 +115,13 @@ export class SaleQuery extends BaseQuery {
                                 where "base"."id" = tp."referenceId") as "sumRemainder"`))
                     .from(function () {
                         this.select('invoices.*',
-                            knex.raw('"detailAccounts"."title" as "detailAccountDisplay"'),
+                            knex.raw('"person"."title" as "detailAccountDisplay"'),
+                            knex.raw('"marketer"."title" as "marketerDisplay"'),
                             knex.raw(`("invoiceLines"."unitPrice" * "invoiceLines".quantity - "invoiceLines".discount + "invoiceLines".vat + "invoiceLines".tax) as "totalPrice"`))
                             .from('invoices')
                             .leftJoin('invoiceLines', 'invoices.id', 'invoiceLines.invoiceId')
-                            .leftJoin('detailAccounts', 'invoices.detailAccountId', 'detailAccounts.id')
+                            .leftJoin('detailAccounts as person', 'invoices.detailAccountId', 'person.id')
+                            .leftJoin('detailAccounts as marketer', 'invoices.marketerId', 'marketer.id')
                             .modify(modify, branchId, userId, canView, 'invoices')
                             .andWhere('invoiceType', 'sale')
                             .as('base');
@@ -129,7 +135,9 @@ export class SaleQuery extends BaseQuery {
                         'invoiceStatus',
                         'description',
                         'title',
-                        'journalId')
+                        'journalId',
+                        'marketerId',
+                        'marketerDisplay')
                     .orderBy('number', 'desc')
 
             });
@@ -394,7 +402,9 @@ export class SaleQuery extends BaseQuery {
             charges: mapCostsAndCharges(entity.charges, settings.saleCharges),
             discount: entity.discount || 0,
             totalVat: entity.totalVat || 0,
-            chargesVat: entity.chargesVat || 0
+            chargesVat: entity.chargesVat || 0,
+            marketerId: entity.marketerId,
+            marketerDisplay: entity.marketerDisplay
         }, entity.custom);
     }
 

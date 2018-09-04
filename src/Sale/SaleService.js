@@ -44,6 +44,16 @@ export class SaleService {
         else
             errors = entity.invoiceLines.asEnumerable().selectMany(this._validateLine.bind(this)).toArray();
 
+        if (entity.marketerId) {
+            let marketerDetailAccount = this.detailAccountService.findPersonByIdOrCreate({id: entity.marketerId}),
+                personRole = marketerDetailAccount.personRoles
+                    ? marketerDetailAccount.personRoles.asEnumerable().any(role => role == 'Marketer')
+                    : null;
+
+            if (!personRole)
+                errors.push('نقش بازاریاب برای {0} تعریف نشده است!'.format(marketerDetailAccount.title));
+        }
+
         if (Utility.String.isNullOrEmpty(entity.detailAccountId))
             errors.push('مشتری نباید خالی باشد');
 
@@ -96,6 +106,7 @@ export class SaleService {
     mapToEntity(cmd) {
 
         const detailAccount = this.detailAccountService.findPersonByIdOrCreate(cmd.customer),
+            marketer = this.detailAccountService.findPersonByIdOrCreate(cmd.marketer),
             invoice = cmd.id ? this.invoiceRepository.findById(cmd.id) : undefined;
 
         return {
@@ -105,6 +116,7 @@ export class SaleService {
             description: cmd.description,
             title: cmd.title,
             detailAccountId: detailAccount ? detailAccount.id : null,
+            marketerId: marketer ? marketer.id : null,
             orderId: cmd.orderId,
             costs: this._mapCostAndCharge(cmd.costs),
             charges: this._mapCostAndCharge(cmd.charges),

@@ -81,6 +81,7 @@ export class DetailAccountService {
             economicCode: cmd.economicCode,
             registrationNumber: cmd.registrationNumber,
             contacts: JSON.stringify(cmd.contacts),
+            personRoles: JSON.stringify(cmd.personRoles),
             detailAccountCategoryIds: cmd.detailAccountCategoryIds
                 ? cmd.detailAccountCategoryIds.join('|')
                 : null
@@ -128,6 +129,7 @@ export class DetailAccountService {
             economicCode: cmd.economicCode,
             registrationNumber: cmd.registrationNumber,
             contacts: JSON.stringify(cmd.contacts),
+            personRoles: JSON.stringify(cmd.personRoles),
             detailAccountCategoryIds: cmd.detailAccountCategoryIds
                 ? cmd.detailAccountCategoryIds.join('|')
                 : null

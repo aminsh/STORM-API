@@ -22,6 +22,12 @@ class ChartOfAccountController {
         return this.chartOfAccountQuery.chartOfAccount();
     }
 
+    @Get("/categories")
+    categories() {
+
+        return this.chartOfAccountQuery.accountCategory();
+    }
+
     @Post("/category")
     createCategory(req) {
 
@@ -52,6 +58,12 @@ class ChartOfAccountController {
         this.generalLedgerAccountService.create(req.body);
     }
 
+    @Get("/general-ledger-accounts/:id")
+    generalLedgerAccountGetById(req) {
+
+        return this.chartOfAccountQuery.generalLedgerAccountGetById(req.params.id);
+    }
+
     @Put("/general-ledger-accounts/:id")
     updateGeneralLedgerAccount(req) {
         this.generalLedgerAccountService.update(req.params.id, req.body);
@@ -74,6 +86,12 @@ class ChartOfAccountController {
     createSubsidiaryLedgerAccount(req) {
 
         this.subsidiaryLedgerAccountService.create(req.params.generalLedgerAccountId, req.body);
+    }
+
+    @Get("/subsidiary-ledger-accounts/:id")
+    subsidiaryLedgerAccountById(req) {
+
+        return this.chartOfAccountQuery.subsidiaryLedgerAccountById(req.params.id);
     }
 
     @Put("/subsidiary-ledger-accounts/:id")

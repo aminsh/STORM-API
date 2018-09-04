@@ -16,7 +16,7 @@ class SendSaleController {
     @inject("ReportInvoiceQuery")
     /**@type{ReportInvoiceQuery}*/ reportInvoiceQuery = undefined;
 
-    @inject("TreasuryPurposesQuery")
+    @inject("TreasuryPurposeQuery")
     /**@type{TreasuryPurposeQuery}*/ treasuryPurposeQuery = undefined;
 
     @inject("Enums") enums = undefined;

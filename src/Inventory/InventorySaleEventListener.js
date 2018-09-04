@@ -2,7 +2,7 @@ import {injectable, inject} from "inversify";
 import {EventHandler} from "../Infrastructure/@decorators";
 
 @injectable()
-export class SaleEventListener {
+export class InventorySaleEventListener {
 
     @inject("OutputService")
     /**@type{OutputService}*/ outputService = undefined;

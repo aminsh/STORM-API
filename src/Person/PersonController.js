@@ -20,6 +20,12 @@ class PersonController {
         return this.personQuery.getById(req.params.id);
     }
 
+    @Get("/role/:personRole")
+    getAllByRole(req){
+
+        return this.personQuery.getAllPeopleWithRoleFilter(req.query, req.params.personRole);
+    }
+
     @Post("/")
     create(req) {
 

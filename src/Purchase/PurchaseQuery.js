@@ -10,8 +10,8 @@ export class PurchaseQuery extends BaseQuery {
     @inject("SettingsQuery")
     /** @type {SettingsQuery}*/ settingsQuery = undefined;
 
-    /*@inject("TreasuryPurposeQuery")
-    /!** @type{TreasuryPurposeQuery}*!/ treasuryPurposeQuery = undefined;*/
+    @inject("TreasuryPurposeQuery")
+    /** @type{TreasuryPurposeQuery}*/ treasuryPurposeQuery = undefined;
 
     @inject("FiscalPeriodQuery")
     /** @type{FiscalPeriodQuery}*/ fiscalPeriodQuery = undefined;
@@ -20,10 +20,10 @@ export class PurchaseQuery extends BaseQuery {
         let knex = this.knex,
             branchId = this.branchId,
             userId = this.userId,
-            canView = this.canView(),
+            canView = this.canView.call(this),
             modify = this.modify.bind(this),
             settings = this.settingsQuery.get(),
-            treasuriesTotalAmount = 0,//treasuryPurposeQuery.getTreasuriesTotalAmount(id),
+            treasuriesTotalAmount = this.treasuryPurposeQuery.getTreasuriesTotalAmount(id),
 
             invoice = toResult(knex
                 .select(
@@ -85,7 +85,7 @@ export class PurchaseQuery extends BaseQuery {
         let knex = this.knex,
             branchId = this.branchId,
             userId = this.userId,
-            canView = this.canView(),
+            canView = this.canView.call(this),
             modify = this.modify.bind(this),
             baseQuery = `select coalesce(sum(value),0) from invoices as i left join json_to_recordset(i.charges) as x(key text, value int, "vatIncluded" boolean) on true where i.id = "base".id`,
             sumChargesQuery = `(${baseQuery}) + ((${baseQuery} and "vatIncluded" = true) *  
