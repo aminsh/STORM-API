@@ -39,9 +39,9 @@ export class ReportSeasonalQuery extends BaseQuery {
                 "detailAccounts".province,
                 COALESCE (("invoiceLines"."unitPrice" * "invoiceLines".quantity),0) AS "price",
                 COALESCE ("invoiceLines".discount,0) as discount,
-                ("invoiceLines".vat / 3) as vat,
-                ("invoiceLines".vat * 2/ 3) as tax,
-                ((("invoiceLines"."unitPrice" * "invoiceLines".quantity)-"invoiceLines".discount)+"invoiceLines".vat) as "totalPrice",
+                "invoiceLines".vat as vat,
+                "invoiceLines".tax as tax,
+                ((("invoiceLines"."unitPrice" * "invoiceLines".quantity)-"invoiceLines".discount)+"invoiceLines".vat + "invoiceLines".tax) as "totalPrice",
                 "returnInvoice"."ofInvoiceId",
                 COALESCE("returnInvoice"."returnPrice",0) as "returnPrice",
                 COALESCE("returnInvoice"."totalReturnPrice",0) as "totalReturnPrice",
@@ -73,7 +73,7 @@ export class ReportSeasonalQuery extends BaseQuery {
     }
 
     getSeasonalWithFilter(parameters) {
-        let options = this.options,
+        let options = this.reportConfig.options,
             result = toResult(Utility.kendoQueryResolve(this.getSeasonal(), parameters, item => item)),
             vat = parseInt(options.filter.haveVat) === 1 ? [0, 1] :
                 parseInt(options.filter.haveVat) === 2 ? [1] : [0],
@@ -117,7 +117,8 @@ export class ReportSeasonalQuery extends BaseQuery {
                 COALESCE (("invoiceLines"."unitPrice" * "invoiceLines".quantity),0) AS "price",
                 COALESCE ("invoiceLines".discount,0) as discount,
                 "invoiceLines".vat as vat,
-                ((("invoiceLines"."unitPrice" * "invoiceLines".quantity)-"invoiceLines".discount)+"invoiceLines".vat) as "totalPrice"
+                "invoiceLines".tax as tax,
+                ((("invoiceLines"."unitPrice" * "invoiceLines".quantity)-"invoiceLines".discount)+"invoiceLines".vat + "invoiceLines".tax) as "totalPrice"
                         `))
                 .from('invoiceLines')
                 .innerJoin('invoices', 'invoiceLines.invoiceId', 'invoices.id')
@@ -142,7 +143,7 @@ export class ReportSeasonalQuery extends BaseQuery {
                         key,
                         sumPrice: items.sum(e => e.price),
                         sumDiscount: items.sum(e => e.discount),
-                        sumVat: items.sum(e => e.vat),
+                        sumVat: items.sum(e => e.vat + e.tax),
                         totalPrice: items.sum(e => e.totalPrice)
                     }))
                 .toObject(item => item.key, item => Object.assign({}, item, {key: undefined}));
