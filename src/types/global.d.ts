@@ -50,6 +50,10 @@ declare class ValidationSingleException {
     constructor(message: string)
 }
 
+declare class ForbiddenException {
+    constructor(message: string)
+}
+
 declare class NotFoundException {
 
 }

@@ -113,6 +113,7 @@ export function register(container, config, setFirstMiddleware, setErrorMiddlewa
                 req.noLog = !!noLogs.filter(item => item.controller === ctrl.name && item.key === action.key)[0];
 
                 try {
+                    _controlUserPermission(req, res, action.method);
 
                     let result = req.container.get(ctrl.name)[action.key](...arguments);
 
@@ -181,6 +182,37 @@ function _canLog(req) {
         return false;
 
     return true;
+}
+
+function _controlUserPermission(req, res, method) {
+    if (method !== 'get') {
+        let request = _createUrlSubject(req),
+            havePermission = req.container.get("UserPermissionsControlService").controlPermission(request);
+        if (!havePermission)
+            throw new ForbiddenException('User do not have permission');
+    }
+}
+
+function _createUrlSubject(request) {
+    let url = request.originalUrl,
+        method = request.method,
+        fiscalPeriod = request.fiscalPeriodId && '?fiscalPeriodId=' + request.fiscalPeriodId;
+    url = url.replace(fiscalPeriod, '');
+    method = method === 'POST' ? 'create' : 'PUT' ? 'update' : 'DELETE' ? 'remove' : 'view';
+    url = url.substr(url.length - 1) === '/' ? url.substring(0, url.length - 1) : url;
+
+    let paramValue = Object.values(request.params),
+        paramValueInUrl = paramValue.asEnumerable().where(param => url.includes(param)).toArray(),
+        haveMethod = paramValueInUrl.length > 0 ? !url.includes(paramValueInUrl + '/') : true,
+        urlWithoutParam = paramValue.length > 0
+            && paramValue.asEnumerable().select(value => url = url.replace('/' + value, '')).first();
+
+    url = urlWithoutParam
+        ? urlWithoutParam.substring(4).replaceAll('/', '.')
+        : url.substring(4).replaceAll('/', '.');
+
+    method = haveMethod ? '.' + method : '';
+    return url + method;
 }
 
 

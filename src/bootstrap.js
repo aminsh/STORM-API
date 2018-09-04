@@ -95,6 +95,9 @@ const setErrorMiddleware = async(function (err, req, res, next) {
     if (err instanceof NotFoundException)
         return res.sendStatus(404);
 
+    if (err instanceof ForbiddenException)
+        return res.status(403).send(err.message);
+
     res.sendStatus(500);
 
     req.container.get("LoggerService").error(err);
