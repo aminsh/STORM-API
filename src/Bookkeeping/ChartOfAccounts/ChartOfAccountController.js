@@ -40,6 +40,7 @@ class ChartOfAccountController {
         this.accountCategoryService.remove(req.params.id);
     }
 
+
     @Get("/general-ledger-accounts")
     getAllGeneralLedgerAccounts(req) {
 
@@ -59,6 +60,14 @@ class ChartOfAccountController {
     @Delete("/general-ledger-accounts/:id")
     removeGeneralLedgerAccount(req) {
         this.generalLedgerAccountService.remove(req.params.id);
+    }
+
+
+
+    @Get("/subsidiary-ledger-accounts")
+    getAllSubsidiaryLedgerAccounts(req) {
+
+        return this.chartOfAccountQuery.subsidiaryLedgerAccounts(req.query);
     }
 
     @Post("/subsidiary-ledger-accounts/:generalLedgerAccountId")
