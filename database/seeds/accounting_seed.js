@@ -2,7 +2,7 @@
 
 const async = require('asyncawait/async'),
     await = require('asyncawait/await'),
-    enums = require('../../shared/enums'),
+    enums = require('../../dist/Constants/enums'),
     Uuid = require('uuid-token-generator'),
     uuid = new Uuid,
     idGenerate = () => uuid.generate();

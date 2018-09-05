@@ -1,0 +1,299 @@
+[
+  {
+    "chart-of-accounts": {
+      "general-ledger-accounts": {
+        "create": false,
+        "update": false,
+        "remove": false
+      },
+      "subsidiary-ledger-accounts": {
+        "create": false,
+        "update": false,
+        "remove": false
+      }
+    }
+  },
+  {
+    "subsidiary-ledger-accounts": {
+      "general-ledger-account": {
+        "create": false
+      },
+      "update": false,
+      "remove": false
+    }
+  },
+  {
+    "detail-accounts": {
+      "create": false,
+      "update": false,
+      "remove": false
+    }
+  },
+  {
+    "detail-account-categories": {
+      "create": false,
+      "update": false,
+      "remove": false
+    }
+  },
+  {
+    "dimensions": {
+      "category": {
+        "1": {
+          "create": false
+        },
+        "2": {
+          "create": false
+        },
+        "3": {
+          "create": false
+        }
+      },
+      "update": false,
+      "remove": false
+    }
+  },
+  {
+    "banks": {
+      "create": false,
+      "update": false,
+      "remove": false
+    }
+  },
+  {
+    "funds": {
+      "create": false,
+      "update": false,
+      "remove": false
+    }
+  },
+  {
+    "people": {
+      "create": false,
+      "update": false,
+      "remove": false,
+      "batch": {
+        "create": false
+      }
+    }
+  },
+  {
+    "products": {
+      "create": false,
+      "update": false,
+      "remove": false,
+      "batch": {
+        "create": false
+      },
+      "add-to-input-first": false
+    }
+  },
+  {
+    "stocks": {
+      "create": false,
+      "update": false,
+      "remove": false
+    }
+  },
+  {
+    "journals": {
+      "create": false,
+      "update": false,
+      "remove": false,
+      "ordering-number-by-date": {
+        "update": false
+      },
+      "confirm": false,
+      "change-date": false,
+      "attach-image": false
+    }
+  },
+  {
+    "inventories": {
+      "inputs": {
+        "create": false,
+        "update": false,
+        "remove": false,
+        "set-price": false,
+        "fix-quantity": false,
+        "generate-journal": false
+      },
+      "outputs": {
+        "create": false,
+        "update": false,
+        "remove": false,
+        "fix-quantity": false,
+        "generate-journal": false
+      }
+    }
+  },
+  {
+    "purchases": {
+      "create": false,
+      "update": false,
+      "remove": false,
+      "generate-journal": false
+    }
+  },
+  {
+    "return-purchase": {
+      "create": false,
+      "update": false,
+      "remove": false,
+      "generate-journal": false
+    }
+  },
+  {
+    "sales": {
+      "create": false,
+      "update": false,
+      "remove": false,
+      "confirm": false,
+      "generate-journal": false
+    }
+  },
+  {
+    "return-sales": {
+      "create": false,
+      "update": false,
+      "remove": false,
+      "generate-journal": false
+    }
+  },
+  {
+    "treasury": {
+      "receives": {
+        "cheques": {
+          "create": false,
+          "update": false,
+          "remove": false,
+          "in-fund": false,
+          "pass": false,
+          "in-process": false,
+          "return": false,
+          "revocation": false,
+          "missing": false,
+          "generate-journal": false
+        },
+        "cash": {
+          "create": false,
+          "update": false,
+          "remove": false,
+          "generate-journal": false
+        },
+        "receipts": {
+          "create": false,
+          "update": false,
+          "remove": false,
+          "generate-journal": false
+        },
+        "demand-notes": {
+          "create": false,
+          "update": false,
+          "remove": false,
+          "generate-journal": false
+        }
+      },
+      "payments": {
+        "cheques": {
+          "create": false,
+          "update": false,
+          "remove": false,
+          "pass": false,
+          "in-process": false,
+          "return": false,
+          "revocation": false,
+          "generate-journal": false
+        },
+        "spend-cheques": {
+          "create": false,
+          "update": false,
+          "remove": false,
+          "return": false,
+          "generate-journal": false
+        },
+        "cash": {
+          "create": false,
+          "update": false,
+          "remove": false,
+          "generate-journal": false
+        },
+        "receipts": {
+          "create": false,
+          "update": false,
+          "remove": false,
+          "generate-journal": false
+        },
+        "demand-notes": {
+          "create": false,
+          "update": false,
+          "remove": false,
+          "generate-journal": false
+        }
+      },
+      "transfers": {
+        "create": false,
+        "update": false,
+        "remove": false,
+        "generate-journal": false
+      },
+      "settings": {
+        "update": false
+      }
+    }
+  },
+  {
+    "cheque-categories": {
+      "create": false,
+      "update": false,
+      "remove": false
+    }
+  },
+  {
+    "journal-generation-templates": {
+      "sale": {
+        "create": false
+      },
+      "purchase": {
+        "create": false
+      },
+      "returnSale": {
+        "create": false
+      },
+      "inventoryOutputSale": {
+        "create": false
+      },
+      "inventoryInputReturnSale": {
+        "create": false
+      },
+      "returnPurchase": {
+        "create": false
+      }
+    }
+  },
+  {
+    "fiscal-periods": {
+      "create": false
+    }
+  },
+  {
+    "settings": {
+      "create": false,
+      "update": false
+    }
+  },
+  {
+    "permissions": {
+      "roles": {
+        "create": false,
+        "update": false,
+        "remove": false
+      },
+      "users": {
+        "add-role": false,
+        "edit-role": false,
+        "remove-role": false
+      }
+    }
+  }
+]

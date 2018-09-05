@@ -40,9 +40,7 @@ jspm_packages
 /.vscode
 /data
 /.sass-cache
-/public
-/dest
-/application/dist
+/dist
 
 # Others
 package-lock.json
