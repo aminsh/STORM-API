@@ -24,6 +24,9 @@ export class SaleService {
     /** @type {InvoiceRepository}*/
     @inject("InvoiceRepository") invoiceRepository = undefined;
 
+    @inject("InvoiceCompareService")
+    /**@type{InvoiceCompareService}*/ invoiceCompareService = undefined;
+
     /** @type {IState}*/
     @inject("State") state = undefined;
 
@@ -215,9 +218,7 @@ export class SaleService {
         this.productInventoryService.start();
 
         try {
-            result = linesAreGood.asEnumerable()
-                .select(item => this.productInventoryService.decreaseQuantity(item.productId, item.stockId, item.quantity))
-                .toArray();
+            result = linesAreGood.map(item => this.productInventoryService.change(item.productId, item.stockId, item.quantity * -1))
         }
         catch (e) {
 
@@ -237,62 +238,33 @@ export class SaleService {
     }
 
     _updateProductInventoryOnUpdate(oldSale, newSale) {
-        let result,
+        let result = [],
+            change = (productId, stockId, quantity) => result.push(this.productInventoryService.change(productId, stockId, quantity)),
             oldLines = oldSale.invoiceLines.filter(item => item.productId && this.productRepository.isGood(item.productId)),
             newLines = newSale.invoiceLines.filter(item => item.productId && this.productRepository.isGood(item.productId)),
 
-            removedLines = oldLines.asEnumerable()
-                .where(line => !newLines.asEnumerable().any(nl => nl.productId === line.productId))
-                .toArray(),
-
-            addedLines = newLines.asEnumerable()
-                .where(line => !oldLines.asEnumerable().any(ol => ol.productId === line.productId))
-                .toArray(),
-
-            changedLines = newLines.asEnumerable()
-                .join(
-                    oldLines,
-                    newLine => newLine.productId,
-                    oldLines => oldLines.productId,
-                    (newLine, oldLine) => ({
-                        productId: newLine.productId,
-                        oldStockId: oldLine.stockId,
-                        newStockId: newLine.stockId,
-                        oldQuantity: oldLine.quantity,
-                        newQuantity: newLine.quantity
-                    }))
-                .where(line => line.oldStockId !== line.newStockId || line.oldQuantity !== line.newQuantity)
-                .toArray();
+            compared = this.invoiceCompareService.compare('output', oldLines, newLines);
 
         this.productInventoryService.start();
 
         try {
 
-            removedLines.forEach(line => this.productInventoryService.increaseQuantity(line.productId, line.stockId, line.quantity));
+            compared.forEach(item => change(item.productId, item.stockId, item.quantity));
 
-            addedLines.forEach(line => this.productInventoryService.decreaseQuantity(line.productId, line.stockId, line.quantity));
-
-            changedLines.forEach(line => {
-
-                if (line.oldStockId === line.newStockId) {
-
-                    const changedQuantity = line.oldQuantity - line.newQuantity;
-
-                    this.productInventoryService[changedQuantity > 0 ? 'increaseQuantity' : 'decreaseQuantity'](line.productId, line.oldStockId, changedQuantity);
-
-                }
-                else {
-
-                    this.productInventoryService.increaseQuantity(line.productId, line.oldStockId, line.oldQuantity);
-
-                    this.productInventoryService.decreaseQuantity(line.productId, line.newStockId, line.newStockId);
-                }
-            })
         }
         catch (e) {
+
             this.productInventoryService.revertChanges(e);
 
             throw new Error(e);
+        }
+
+        if (result.asEnumerable().any(r => !r.success)) {
+            const messages = result.filter(r => !r.success).map(r => r.message);
+
+            this.productInventoryService.revertChanges(messages);
+
+            throw new ValidationException(messages);
         }
 
         this.productInventoryService.commitChanges();
@@ -315,7 +287,7 @@ export class SaleService {
         entity = this.invoiceRepository.create(this._mapToData(entity));
 
         if (entity.invoiceStatus !== 'draft')
-            this.eventBus.send("SaleCreated", entity);
+            this.eventBus.send("SaleCreated", entity.id);
 
         return entity.id;
     }
@@ -341,7 +313,7 @@ export class SaleService {
 
         this.invoiceRepository.update(entity.id, data);
 
-        this.eventBus.send("SaleCreated", entity);
+        this.eventBus.send("SaleCreated", entity.id);
     }
 
     update(id, cmd) {
@@ -359,14 +331,14 @@ export class SaleService {
 
         entity.invoiceStatus = cmd.status !== 'draft' ? 'confirmed' : 'draft';
 
-        if(entity.invoiceStatus === 'draft') {
+        if (entity.invoiceStatus === 'draft') {
             this.invoiceRepository.updateBatch(id, this._mapToData(entity));
             return;
         }
 
         const invoiceChangedToConfirm = invoice.invoiceStatus === 'draft' && entity.invoiceStatus === 'confirmed';
 
-        if(invoiceChangedToConfirm)
+        if (invoiceChangedToConfirm)
             this._updateInventoryOnCreate(entity);
         else
             this._updateProductInventoryOnUpdate(invoice, entity);
@@ -376,9 +348,9 @@ export class SaleService {
         Utility.delay(500);
 
         if (invoiceChangedToConfirm)
-            this.eventBus.send('SaleCreated', entity);
+            this.eventBus.send('SaleCreated', entity.id);
         else
-            this.eventBus.send('SaleChanged', invoice, entity);
+            this.eventBus.send('SaleChanged', invoice, entity.id);
     }
 
     remove(id) {
@@ -388,6 +360,9 @@ export class SaleService {
             throw new ValidationException(['فاکتور جاری قابل حذف نمیباشد']);
 
         this.invoiceRepository.remove(id);
+
+        this.eventBus.send("SaleRemoved", id);
+
         //this.treasuryPurposeRepository.removeByReferenceId(id);
     }
 }

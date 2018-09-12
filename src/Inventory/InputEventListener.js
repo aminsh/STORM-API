@@ -14,9 +14,10 @@ export class InputEventListener {
     /** @type{InventoryRepository}*/ inventoryRepository = undefined;
 
     @EventHandler("InventoryInputCreated")
-    onInputCreated(input) {
+    onInputCreated(id) {
 
-        const stockId = input.stockId;
+        const input = this.inventoryRepository.findById(id),
+            stockId = input.stockId;
 
         input.inventoryLines.forEach(line =>
             this.eventBus.send("ProductInventoryChanged",
@@ -27,7 +28,9 @@ export class InputEventListener {
     }
 
     @EventHandler("InventoryInputChanged")
-    onInputChanged(oldInput, newInput) {
+    onInputChanged(oldInput, id) {
+
+        const newInput = this.inventoryRepository.findById(id);
 
         if (oldInput.stockId === newInput.stockId) {
             const stockId = oldInput.stockId;
@@ -64,9 +67,10 @@ export class InputEventListener {
     }
 
     @EventHandler("InventoryInputRemoved")
-    onInputRemoved(input) {
+    onInputRemoved(id) {
 
-        const stockId = input.stockId;
+        const input = this.inventoryRepository.findById(id),
+            stockId = input.stockId;
 
         input.inventoryLines.forEach(line =>
             this.eventBus.send("ProductInventoryChanged",

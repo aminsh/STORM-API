@@ -69,7 +69,7 @@ export class PurchaseService {
             invoiceStatus: cmd.status || 'draft',
             description: cmd.description,
             title: cmd.title,
-            inventoryIds: cmd.inventoryIds,
+            //inventoryIds: cmd.inventoryIds,
             charges: this._mapCostAndCharge(cmd.charges),
             detailAccountId: detailAccount ? detailAccount.id : null,
             orderId: cmd.orderId,
@@ -158,7 +158,7 @@ export class PurchaseService {
 
         if (entity.invoiceStatus !== 'draft') {
             Utility.delay(500);
-            this.eventBus.send('PurchaseCreated', data);
+            this.eventBus.send('PurchaseCreated', entity.id, cmd.inventoryIds);
         }
 
         return entity.id;
@@ -206,9 +206,9 @@ export class PurchaseService {
         this.invoiceRepository.updateBatch(id, data);
 
         if (invoice.invoiceStatus === 'draft' && entity.invoiceStatus === 'confirmed')
-            this.eventBus.send('PurchaseCreated', data);
+            this.eventBus.send('PurchaseCreated', data, cmd.inventoryIds);
         else
-            this.eventBus.send("PurchaseChanged", invoice, data);
+            this.eventBus.send("PurchaseChanged", invoice, id, cmd.inventoryIds);
     }
 
     remove(id) {

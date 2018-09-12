@@ -77,7 +77,7 @@ export class InputService {
 
         this.inventoryRepository.create(entity);
 
-        this.eventBus.send("InventoryInputCreated", entity);
+        this.eventBus.send("InventoryInputCreated", entity.id);
 
         return entity.id;
     }
@@ -141,7 +141,7 @@ export class InputService {
 
         this.inventoryRepository.updateBatch(id, entity);
 
-        this.eventBus.send("InventoryInputChanged", input, entity);
+        this.eventBus.send("InventoryInputChanged", input, id);
     }
 
     remove(id) {
@@ -164,6 +164,15 @@ export class InputService {
 
         this.inventoryRepository.remove(id);
 
-        this.eventBus.send("InventoryInputRemoved", input);
+        this.eventBus.send("InventoryInputRemoved", id);
+    }
+
+    setInvoice(id, invoiceId) {
+
+        const input = this.inventoryRepository.findById(id);
+
+        this.inventoryRepository.update(id, {invoiceId});
+
+        this.eventBus.send("InventoryInputChanged", input, id);
     }
 }

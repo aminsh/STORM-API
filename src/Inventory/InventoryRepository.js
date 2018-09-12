@@ -244,6 +244,9 @@ export class InventoryRepository extends BaseRepository {
     createInventory(entity, knex) {
         super.create(entity);
 
+        entity.fixedAmount = false;
+        entity.fixedQuantity = false;
+
         toResult(knex('inventories').insert(entity));
 
         return entity;
@@ -262,7 +265,7 @@ export class InventoryRepository extends BaseRepository {
         lines.forEach(line => {
             super.create(line);
             line.inventoryId = id;
-
+            line.unitPrice = 0;
         });
 
         toResult(knex('inventoryLines').insert(lines));
