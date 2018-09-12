@@ -1,16 +1,15 @@
-import toResult from "asyncawait/await";
 import {injectable} from "inversify";
 import {BaseQuery} from "../Infrastructure/BaseQuery";
 
 @injectable()
-export class InvoiceInventoryCompareQuery extends BaseQuery {
+export class InvoiceCompareService extends BaseQuery {
 
-    inventoryEnums = {
+    /*inventoryEnums = {
         input: {input: 'inputPurchase', output: 'outputReturnPurchase'},
         output: {input: 'inputBackFromSaleOrConsuming', output: 'outputSale'}
-    };
+    };*/
 
-    get(type, invoice) {
+    /*get(type, invoice) {
 
         const enums = this.inventoryEnums[type],
             rate = type === 'input' ? 1 : -1;
@@ -73,5 +72,69 @@ export class InvoiceInventoryCompareQuery extends BaseQuery {
                     };
                 })
             .toArray();
+    }*/
+
+    compare(baseType, oldLines, newLines) {
+
+        const result = [],
+            removedLines = oldLines.asEnumerable()
+                .where(line => !newLines.asEnumerable().any(nl => nl.productId === line.productId))
+                .toArray(),
+
+            addedLines = newLines.asEnumerable()
+                .where(line => !oldLines.asEnumerable().any(ol => ol.productId === line.productId))
+                .toArray(),
+
+            changedLines = newLines.asEnumerable()
+                .join(
+                    oldLines,
+                    newLine => newLine.productId,
+                    oldLines => oldLines.productId,
+                    (newLine, oldLine) => ({
+                        productId: newLine.productId,
+                        oldStockId: oldLine.stockId,
+                        newStockId: newLine.stockId,
+                        oldQuantity: oldLine.quantity,
+                        newQuantity: newLine.quantity
+                    }))
+                .where(line => line.oldStockId !== line.newStockId || line.oldQuantity !== line.newQuantity)
+                .toArray();
+
+        removedLines.forEach(item => result.push({
+            stockId: item.stockId,
+            productId: item.productId,
+            quantity: item.quantity * (baseType === 'input' ? -1 : 1)
+        }));
+
+        addedLines.forEach(item => result.push({
+            stockId: item.stockId,
+            productId: item.productId,
+            quantity: item.quantity * (baseType === 'input' ? 1 : -1)
+        }));
+
+        changedLines.forEach(item => {
+
+            if (item.oldStockId === item.newStockId)
+                result.push({
+                    stockId: item.oldStockId,
+                    productId: item.productId,
+                    quantity: (item.oldQuantity - item.newQuantity) * (baseType === 'input' ? -1 : 1)
+                });
+            else {
+                result.push({
+                    stockId: item.oldStockId,
+                    productId: item.productId,
+                    quantity: item.oldQuantity * (baseType === 'input' ? -1 : 1)
+                });
+
+                result.push({
+                    stockId: item.newStockId,
+                    productId: item.productId,
+                    quantity: item.newQuantity * (baseType === 'input' ? 1 : -1)
+                });
+            }
+        });
+
+        return result;
     }
 }

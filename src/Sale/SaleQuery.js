@@ -16,6 +16,9 @@ export class SaleQuery extends BaseQuery {
     @inject("FiscalPeriodQuery")
     /** @type{FiscalPeriodQuery}*/ fiscalPeriodQuery = undefined;
 
+    @inject("InvoiceCompareService")
+    /**@type{InvoiceCompareService}*/ invoiceCompareService = undefined;
+
     getById(id) {
         let knex = this.knex,
             branchId = this.branchId,
@@ -237,7 +240,7 @@ export class SaleQuery extends BaseQuery {
     getTotalByProduct() {
         let branchId = this.branchId,
             userId = this.state.user.id,
-            fiscalPeriodId= this.state.fiscalPeriodId,
+            fiscalPeriodId = this.state.fiscalPeriodId,
             canView = this.canView.call(this),
             modify = this.modify.bind(this),
             knex = this.knex,
@@ -285,87 +288,54 @@ export class SaleQuery extends BaseQuery {
     }
 
     getCompareInvoiceOnChange(id, lines) {
-        let branchId = this.branchId,
-            userId = this.userId,
-            canView = this.canView(),
-            modify = this.modify.bind(this),
-            settings = this.settingsQuery.get(),
-            goodLines = lines.asEnumerable().where(e =>
-                e.productId &&
-                toResult(this.knex.select('productType').from('products').where('id', e.productId).first()).productType === 'good'
-            ).toArray();
 
-        if (goodLines.length === 0)
-            return;
+        const settings = this.settingsQuery.get(),
+            defaultStockId = settings.stockId,
+            oldLines = toResult(this.knex.select('*').from('invoiceLines').where({
+                branchId: this.branchId,
+                invoiceId: id
+            }));
 
-        if (settings.productOutputCreationMethod === 'defaultStock')
-            goodLines.forEach(e => e.stockId = settings.stockId);
-        else {
-            if (goodLines.asEnumerable().any(e => !e.stockId))
-                throw new ValidationException(['StockId is empty']);
+        if (lines.asEnumerable().any(l => !l.stockId)) {
+
+            if (!defaultStockId)
+                throw new ValidationException(['انبار مقدار ندارد']);
+
+            lines.forEach(item => item.stockId = item.stockId || defaultStockId);
         }
 
-        let inventoryLines = toResult(this.knex
-                .select('productId', 'quantity', 'stockId', 'inventoryType')
-                .from('inventories')
-                .innerJoin('inventoryLines', 'inventories.id', 'inventoryLines.inventoryId')
-                .modify(modify, branchId, userId, canView, 'inventories')
-                .where('invoiceId', id)
-            )
-                .asEnumerable()
-                .groupBy(
-                    item => item.productId,
-                    item => item,
-                    (productId, items) => ({
-                        productId,
-                        quantity: items.sum(e => e.inventoryType === 'output' ? e.quantity : e.quantity * -1),
-                        stockId: items.first().stockId
-                    }))
-                .toArray(),
+        const newLines = lines;
 
-            invoiceLines = goodLines,
+        const compared = this.invoiceCompareService.compare('output', oldLines, newLines);
 
-            newLines = invoiceLines.asEnumerable().where(e => !inventoryLines.asEnumerable().any(p => p.productId === e.productId)).toArray(),
-            compareEqualProduct = invoiceLines.asEnumerable()
-                .join(inventoryLines, item => item.productId, item => item.productId, (invoice, inventory) => ({
-                    productId: invoice.productId,
-                    stockId: invoice.stockId,
-                    quantity: invoice.quantity - inventory.quantity
-                }))
-                .toArray(),
-            removedLines = inventoryLines.asEnumerable().where(e => !invoiceLines.asEnumerable().any(p => p.productId === e.productId)).toArray(),
+        const products = toResult(this.knex.select('title', 'id').from('products')
+                .where('branchId', this.branchId)
+                .whereIn('id', compared.map(item => item.productId))
+            ),
+            stocks = toResult(this.knex.select('title', 'id').from('stocks')
+                .where('branchId', this.branchId)
+                .whereIn('id', compared.map(item => item.stockId))
+            );
+
+        let result = {input: [], output: []};
 
 
-            output = compareEqualProduct.asEnumerable().where(e => e.quantity > 0)
-                .concat(newLines)
-                .toArray(),
+        compared.map(item => ({
+            productId: item.productId,
+            productDisplay: products.asEnumerable().single(p => p.id === item.productId).title,
+            stockId: item.stockId,
+            stockDisplay: stocks.asEnumerable().single(s => s.id === item.stockId).title,
+            quantity: item.quantity
+        }))
+            .forEach(item => {
 
-            input = compareEqualProduct.asEnumerable()
-                .where(e => e.quantity < 0)
-                .select(e => Object.assign({}, e, {quantity: Math.abs(e.quantity)}))
-                .concat(removedLines)
-                .toArray();
-
-        let stocks = toResult(this.knex
-                .select('id', 'title')
-                .from('stocks')
-                .whereIn('id', output.asEnumerable().concat(input).select(e => e.stockId).distinct().toArray())),
-            products = toResult(this.knex
-                .select('id', 'title')
-                .from('products')
-                .whereIn('id', output.asEnumerable().concat(input).select(e => e.productId).distinct().toArray()));
-
-        function setDisplayForProductAndStock(items) {
-            items.forEach(item => {
-                item.stockDisplay = stocks.asEnumerable().singleOrDefault(p => p.id === item.stockId).title;
-                item.productDisplay = products.asEnumerable().singleOrDefault(p => p.id === item.productId).title;
+                if (item.quantity > 0)
+                    result.input.push(item);
+                else
+                    result.output.push(Object.assign({}, item, {quantity: Math.abs(item.quantity)}));
             });
-        }
 
-        setDisplayForProductAndStock(output);
-        setDisplayForProductAndStock(input);
-
-        return {input, output};
+        return result;
     }
 
 
