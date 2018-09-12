@@ -1,7 +1,8 @@
-import {Controller, Get} from "../Infrastructure/expressUtlis";
+import {Controller, Get, WithoutControlPermissions} from "../Infrastructure/expressUtlis";
 import {inject} from "inversify";
 
 @Controller("/v1/storm-gifts")
+@WithoutControlPermissions()
 class StormGiftController {
 
     @inject("GiftQuery")

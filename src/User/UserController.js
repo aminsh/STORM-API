@@ -1,7 +1,8 @@
 import {inject} from "inversify";
-import {Controller, Get, Post, Put, NoLog} from "../Infrastructure/expressUtlis";
+import {Controller, Get, Post, Put, NoLog, WithoutControlPermissions} from "../Infrastructure/expressUtlis";
 
 @Controller("/v1/users")
+@WithoutControlPermissions()
 export class UserController {
 
     @inject("UserService")
