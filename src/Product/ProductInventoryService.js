@@ -12,52 +12,65 @@ export class ProductInventoryService {
     @inject("StockRepository")
     /**@type {StockRepository}*/ stockRepository = undefined;
 
-    changedQuantity(productId, stockId, quantity) {
+    change(productId, stockId, quantity) {
 
-        let productInventory = this.productInventoryTransactionalRepository.findOneByProductAndStock(productId, stockId);
+        const item = this.productInventoryTransactionalRepository.findOneByProductAndStock(productId, stockId),
+            successResult = {success: true};
 
-        if (!productInventory)
+        if (!item)
+            return this._itemIsNotExist(...arguments);
+
+        let value = item.quantity + quantity;
+
+        if (value >= 0) {
+            this.productInventoryTransactionalRepository.update(item.id, {quantity: value});
+
+            return successResult;
+        }
+        else
+            return this._productIsExitOnStock(...arguments);
+    }
+
+    set(productId, stockId, quantity) {
+
+        const item = this.productInventoryTransactionalRepository.findOneByProductAndStock(productId, stockId);
+
+        if (!item)
             this.productInventoryTransactionalRepository.create({
                 productId,
                 stockId,
                 quantity
             });
-        else
-            this.productInventoryTransactionalRepository.update(productInventory.id, {quantity});
+
+        this.productInventoryTransactionalRepository.update(item.id, {quantity});
     }
 
-    increaseQuantity(productId, stockId, quantity) {
+    _itemIsNotExist(productId, stockId, quantity) {
 
-        let productInventory = this.productInventoryTransactionalRepository.findOneByProductAndStock(productId, stockId);
-
-        if (!productInventory)
+        if (quantity > 0) {
             this.productInventoryTransactionalRepository.create({
                 productId,
                 stockId,
                 quantity
             });
-        else
-            this.productInventoryTransactionalRepository.update(productInventory.id, {quantity: productInventory.quantity + quantity});
-    }
 
-    decreaseQuantity(productId, stockId, quantity) {
-
-        let productInventory = this.productInventoryTransactionalRepository.findOneByProductAndStock(productId, stockId);
-
-        if (quantity > productInventory.quantity) {
-
-            const product = this.productRepository.findById(productInventory.productId),
-                stock = this.stockRepository.findById(productInventory.stockId);
-
-            return {
-                success: false,
-                message: 'کالای "{0}" در انبار "{1}" به مقدار درخواست شده موجود نیست'.format(product.title, stock.title)
-            };
+            return {success: true};
         }
 
-        this.productInventoryTransactionalRepository.update(productInventory.id, {quantity: productInventory.quantity - quantity});
 
-        return {success: true};
+        return this._productIsExitOnStock(...arguments);
+
+    }
+
+    _productIsExitOnStock(productId, stockId) {
+
+        const product = this.productRepository.findById(productId),
+            stock = this.stockRepository.findById(stockId);
+
+        return {
+            success: false,
+            message: 'کالای "{0}" در انبار "{1}" به مقدار درخواست شده موجود نیست'.format(product.title, stock.title)
+        };
     }
 
     start() {

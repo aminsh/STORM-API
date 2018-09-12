@@ -14,7 +14,7 @@ export class ProductInventoryEventListener {
         this.productInventoryService.start();
 
         try {
-            this.productInventoryService.changedQuantity(...arguments);
+            this.productInventoryService.set(...arguments);
 
             this.productInventoryService.commitChanges();
         }
