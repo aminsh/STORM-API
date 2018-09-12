@@ -18,6 +18,8 @@ export class PlanQuery {
 
         let query = knex.select('*').from(this.tableName);
 
+        query.where('isActive', true);
+
         if (where)
             query.where(where);
 
