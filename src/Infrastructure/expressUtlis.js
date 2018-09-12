@@ -9,7 +9,8 @@ import compression from "compression";
 
 let controllers = [],
     methods = [],
-    noLogs = [];
+    noLogs = [],
+    noControlPermissions = [];
 
 export function Controller(baseUrl, ...middleware) {
     return function (target) {
@@ -17,6 +18,16 @@ export function Controller(baseUrl, ...middleware) {
         controllers.push({name: target.name, baseUrl, middleware, target});
 
         decorate(injectable(), target);
+    }
+}
+
+export function WithoutControlPermissions() {
+    return function (target, key) {
+        noControlPermissions.push({
+            controllerName: target.name || target.constructor.name,
+            key,
+            isClass: !key
+        });
     }
 }
 
@@ -111,6 +122,10 @@ export function register(container, config, setFirstMiddleware, setErrorMiddlewa
                 req.controller = ctrl.name;
                 req.action = action.key;
                 req.noLog = !!noLogs.filter(item => item.controller === ctrl.name && item.key === action.key)[0];
+                req.noControlPermissions = !!noControlPermissions.filter(item =>
+                    item.isClass
+                        ? item.controllerName === ctrl.name
+                        : item.controllerName === ctrl.name && item.key === action.key)[0];
 
                 try {
                     _controlUserPermission(req, res, action.method);
@@ -185,6 +200,8 @@ function _canLog(req) {
 }
 
 function _controlUserPermission(req, res, method) {
+    if (req.noControlPermissions)
+        return;
     if (method !== 'get') {
         let request = _createUrlSubject(req),
             havePermission = req.container.get("UserPermissionsControlService").controlPermission(request);

@@ -1,7 +1,8 @@
 import {inject} from "inversify";
-import {Controller, Delete, Get, Post, Put} from "../Infrastructure/expressUtlis";
+import {Controller, Delete, Get, Post, Put, WithoutControlPermissions} from "../Infrastructure/expressUtlis";
 
 @Controller("/v1/branches")
+@WithoutControlPermissions()
 class BranchController {
 
     @inject("BranchQuery")
@@ -18,7 +19,7 @@ class BranchController {
 
     @Get("/by-token/:token")
     getByToken(req) {
-        
+
         let token = req.params.token,
             result = this.branchQuery.find({token}, true);
 
@@ -48,7 +49,7 @@ class BranchController {
     }
 
     @Get("/:id/users", "ShouldAuthenticated")
-    getMembers(req){
+    getMembers(req) {
 
         return this.branchQuery.getMembers(req.params.id, req.query);
     }

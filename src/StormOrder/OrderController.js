@@ -1,7 +1,8 @@
-import {Controller, Get, Post} from "../Infrastructure/expressUtlis";
+import {Controller, Get, Post, WithoutControlPermissions} from "../Infrastructure/expressUtlis";
 import {inject} from "inversify";
 
 @Controller("/v1/storm-orders")
+@WithoutControlPermissions()
 class OrderController {
 
     @inject("OrderQuery")
@@ -27,7 +28,7 @@ class OrderController {
         let branchId = req.body.branchId,
             plan = this.planQuery.find({name: 'Trial'}, true);
 
-        let result = this.orderService.create({branchId, planId: plan.id });
+        let result = this.orderService.create({branchId, planId: plan.id});
 
         this.orderService.confirm(result.id);
     }
