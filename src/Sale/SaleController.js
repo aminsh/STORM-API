@@ -54,6 +54,16 @@ class SaleController {
         return this.saleQuery.getById(id);
     }
 
+    @Post("/:id/fix")
+    fix(req) {
+
+        const id = req.params.id;
+
+        this.saleService.fix(id);
+
+        return this.saleQuery.getById(id);
+    }
+
     @Put("/:id")
     update(req) {
 
