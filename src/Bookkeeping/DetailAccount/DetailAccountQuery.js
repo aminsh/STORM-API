@@ -59,7 +59,7 @@ export class DetailAccountQuery extends BaseQuery {
         let knex = this.knex,
             branchId = this.branchId,
 
-            categories = this.await(knex.select('id')
+            categories = toResult(knex.select('id')
                 .from('detailAccountCategories')
                 .where('subsidiaryLedgerAccountIds', 'like', `%${subsidiaryLedgerAccountId}%`));
 
