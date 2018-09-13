@@ -1,4 +1,4 @@
-import {Controller, Get} from "../Infrastructure/expressUtlis";
+import {Controller, Get, Post} from "../Infrastructure/expressUtlis";
 import {inject} from "inversify";
 
 @Controller("/v1/inventories", "ShouldHaveBranch")
@@ -7,6 +7,20 @@ class InventoryController {
     @inject("InventoryQuery")
     /**@type{InventoryQuery}*/ inventoryQuery = undefined;
 
+    @inject("InventoryService")
+    /**@type{InventoryService}*/ inventoryService = undefined;
+
+    @Get("/")
+    getAll(req) {
+
+        return this.inventoryQuery.getAll(null, req.query);
+    }
+
+    @Post("/transfer-between-stocks")
+    transferBetweenStocks(req){
+
+        this.inventoryService.transferBetweenStocks(req.body);
+    }
 
     @Get("/:id")
     getById(req) {

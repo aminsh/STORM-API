@@ -58,9 +58,11 @@ export class InventoryQuery extends BaseQuery {
                     .leftJoin('inventoryIOTypes', 'inventoryIOTypes.id', 'inventories.ioType')
                     .leftJoin('stocks', 'stocks.id', 'inventories.stockId')
                     .modify(modify, branchId, userId, canView, 'inventories')
-                    .where('inventoryType', inventoryType)
                     .where('fiscalPeriodId', fiscalPeriodId)
                     .as('base');
+
+                if(inventoryType)
+                    query.where('inventoryType', inventoryType);
 
                 if (parameters.extra)
                     addFilter(query, parameters.extra);
