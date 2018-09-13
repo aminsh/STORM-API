@@ -1,33 +1,19 @@
-import {inject, injectable} from "inversify";
-import Promise from "promise";
-import toResult from "asyncawait/await";
+import {inject, injectable, postConstruct} from "inversify";
 
 const Guid = Utility.Guid,
     PersianDate = Utility.PersianDate;
 
 @injectable()
-export class InvoiceReturnDomainService {
+export class ReturnSaleService {
 
-    /** @type {InventoryInputDomainService}*/
-    @inject("InventoryInputDomainService") inventoryInputDomainService = undefined;
+    /** @type {ProductService}*/
+    @inject("ProductService") productService = undefined;
 
-    /** @type {InputPurchaseDomainService}*/
-    @inject("InputPurchaseDomainService") inputPurchaseDomainService = undefined;
-
-    /** @type {ProductDomainService}*/
-    @inject("ProductDomainService") productDomainService = undefined;
-
-    /** @type {PaymentDomainService}*/
-    @inject("PaymentDomainService") paymentDomainService = undefined;
-
-    /** @type {DetailAccountDomainService}*/
-    @inject("DetailAccountDomainService") detailAccountDomainService = undefined;
+    /** @type {DetailAccountService}*/
+    @inject("DetailAccountService") detailAccountService = undefined;
 
     /** @type {SettingsRepository}*/
     @inject("SettingsRepository") settingsRepository = undefined;
-
-    /** @type {PaymentRepository}*/
-    @inject("PaymentRepository") paymentRepository = undefined;
 
     /** @type {InvoiceRepository}*/
     @inject("InvoiceRepository") invoiceRepository = undefined;
@@ -37,6 +23,12 @@ export class InvoiceReturnDomainService {
 
     /** @type {EventBus}*/
     @inject("EventBus") eventBus = undefined;
+
+    @postConstruct()
+    init() {
+
+        this.settings = this.settingsRepository.get();
+    }
 
     validation(entity) {
         let errors = [];
@@ -67,6 +59,9 @@ export class InvoiceReturnDomainService {
         if (!(line.unitPrice && line.unitPrice !== 0))
             errors.push('قیمت واحد نباید خالی یا صفر باشد');
 
+        if (this.settings.canControlInventory && !line.stockId)
+            errors.push('انبار نباید خالی باشد');
+
         return errors;
     }
 
@@ -89,7 +84,7 @@ export class InvoiceReturnDomainService {
 
     mapToEntity(cmd) {
 
-        const detailAccount = this.detailAccountDomainService.findPersonByIdOrCreate(cmd.customer),
+        const detailAccount = this.detailAccountService.findPersonByIdOrCreate(cmd.customer),
             invoice = cmd.id ? this.invoiceRepository.findById(cmd.id) : undefined;
 
         return {
@@ -108,12 +103,14 @@ export class InvoiceReturnDomainService {
             invoiceLines: cmd.invoiceLines.asEnumerable()
                 .select(line => {
 
-                    const product = this.productDomainService.findByIdOrCreate(line.product);
+                    const product = this.productService.findByIdOrCreate(line.product);
 
                     return {
                         productId: product ? product.id : null,
                         description: line.description || product.title,
-                        stockId: line.stockId,
+                        stockId: (this.settings.productOutputCreationMethod === 'defaultStock' && product && product.productType === 'good')
+                            ? this.settings.stockId
+                            : line.stockId,
                         quantity: line.quantity,
                         unitPrice: line.unitPrice,
                         discount: line.discount || 0,
@@ -123,40 +120,6 @@ export class InvoiceReturnDomainService {
                 })
                 .toArray()
         }
-    }
-
-    /**
-     * @private
-     */
-    _setForInventoryReturn(entity) {
-
-
-        let inventoryIds = entity.inventoryIds && entity.inventoryIds.length > 0
-            ? entity.inventoryIds
-            : this.inputPurchaseDomainService.create(entity);
-
-        if (!(inventoryIds && inventoryIds.length > 0))
-            return;
-
-        this.inventoryInputDomainService.setInvoice(inventoryIds, entity.id, 'inputBackFromSaleOrConsuming');
-
-        if (!(entity.inventoryIds && entity.inventoryIds.length > 0))
-            this.invoiceRepository.update(entity.id, {inventoryIds: JSON.stringify(inventoryIds)});
-    }
-
-    /**
-     * @private
-     */
-    _changeStatusIfPaidIsCompleted(id) {
-
-        let invoice = this.invoiceRepository.findById(id),
-            sumPayments = this.paymentRepository.getBySumAmountByInvoiceId(id).sum || 0,
-
-            totalPrice = invoice.invoiceLines.asEnumerable()
-                .sum(e => (e.unitPrice * e.quantity) - e.discount + e.vat);
-
-        if (sumPayments >= totalPrice)
-            this.invoiceRepository.update(id, {invoiceStatus: 'paid'});
     }
 
     _mapToData(entity) {
@@ -194,19 +157,17 @@ export class InvoiceReturnDomainService {
             throw new ValidationException(errors);
 
         entity.invoiceType = 'returnSale';
-        entity.invoiceStatus = cmd.status !== 'draft' ? 'waitForPayment' : 'draft';
+        entity.invoiceStatus = cmd.status !== 'draft' ? 'confirmed' : 'draft';
 
         let data = this._mapToData(entity);
         this.invoiceRepository.create(data);
 
-        toResult(new Promise(resolve => setTimeout(() => resolve(), 1000)));
+        Utility.delay(1000);
 
         entity.id = data.id;
 
-        if (entity.invoiceStatus !== 'draft')
-            this._setForInventoryReturn(entity);
-
-        this.eventBus.send('onReturnSaleCreated', entity.id);
+        if (entity.invoiceStatus === 'confirmed')
+            this.eventBus.send('ReturnSaleCreated', entity.id);
 
         return entity.id;
     }
@@ -222,13 +183,11 @@ export class InvoiceReturnDomainService {
         if (errors.length > 0)
             throw  new ValidationException(errors);
 
-        let data = {invoiceStatus: 'waitForPayment'};
+        let data = {invoiceStatus: 'confirmed'};
 
         this.invoiceRepository.update(id, data);
 
-        this._setForInventoryReturn(entity);
-
-        this.eventBus.send('onReturnSaleConfirmed', entity.id);
+        this.eventBus.send('ReturnSaleCreated', entity.id);
     }
 
     update(id, cmd) {
@@ -237,45 +196,40 @@ export class InvoiceReturnDomainService {
 
         const invoice = this.invoiceRepository.findById(id);
 
-        if (invoice.invoiceStatus !== 'draft')
-            throw new ValidationException(['فاکتور جاری قابل ویرایش نمیباشد']);
+        let entity = this.mapToEntity(cmd),
+            errors = this.validation(entity);
 
-        let entity = this.mapToEntity(cmd);
+        if (errors.length > 0)
+            throw new ValidationException(errors);
 
         if (entity.invoiceStatus !== 'draft')
-            entity.invoiceStatus = 'waitForPayment';
+            entity.invoiceStatus = 'confirmed';
 
         this.invoiceRepository.updateBatch(id, this._mapToData(entity));
 
-        if (entity.invoiceStatus !== 'draft')
-            this._setForInventoryReturn(entity);
+        if (entity.invoiceStatus === 'draft')
+            return;
 
-        this.eventBus.send('onReturnSaleChanged', entity.id);
+        if (invoice.invoiceStatus === 'draft' && entity.invoiceStatus === 'confirmed')
+            this.eventBus.send('ReturnSaleCreated', entity.id);
+        else
+            this.eventBus.send('ReturnSaleChanged', invoice, entity.id);
     }
 
     remove(id) {
         const invoice = this.invoiceRepository.findById(id);
 
-        if (invoice.invoiceStatus !== 'draft')
+        if (!invoice)
+            throw new NotFoundException();
+
+        if (invoice.invoiceStatus === 'fixed')
             throw new ValidationException(['فاکتور جاری قابل حذف نمیباشد']);
 
         this.invoiceRepository.remove(id);
+
+        if (entity.invoiceStatus === 'draft')
+            return;
+
+        this.eventBus.send('ReturnSaleRemoved', entity.id);
     }
-
-    pay(id, payments) {
-
-        const paymentIds = this.paymentDomainService.createMany(payments, 'pay');
-
-        this.paymentDomainService.setInvoiceForAll(paymentIds, id);
-
-        this._changeStatusIfPaidIsCompleted(id);
-
-        return paymentIds;
-    }
-
-    setJournal(id, journalId) {
-        return this.invoiceRepository.update(id, {journalId});
-    }
-
-
 }
