@@ -47,7 +47,7 @@ export class InventoryReturnSaleEventListener {
     onReturnSaleChanged(oldReturnSale, returnSaleId, inventoryIds) {
 
         if (inventoryIds && inventoryIds.length > 0)
-            return inventoryIds.forEach(id => this.inputService.setInvoice(id, purchaseId));
+            return inventoryIds.forEach(id => this.inputService.setInvoice(id, returnSaleId));
 
         const newPurchase = this.invoiceRepository.findById(returnSaleId),
             oldLines = oldReturnSale.invoiceLines.filter(item => this.productRepository.isGood(item.productId)),
