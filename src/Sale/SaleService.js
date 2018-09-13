@@ -209,6 +209,9 @@ export class SaleService {
 
     _updateInventoryOnCreate(entity) {
 
+        if(!this.settings.canControlInventory)
+            return;
+
         let linesAreGood = entity.invoiceLines.filter(item => item.productId && this.productRepository.isGood(item.productId)),
             result;
 
@@ -238,6 +241,10 @@ export class SaleService {
     }
 
     _updateProductInventoryOnUpdate(oldSale, newSale) {
+
+        if(!this.settings.canControlInventory)
+            return;
+
         let result = [],
             change = (productId, stockId, quantity) => result.push(this.productInventoryService.change(productId, stockId, quantity)),
             oldLines = oldSale.invoiceLines.filter(item => item.productId && this.productRepository.isGood(item.productId)),
