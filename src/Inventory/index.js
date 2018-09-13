@@ -14,6 +14,7 @@ import {InventoryQuery} from "./InventoryQuery";
 import {InventorySaleEventListener} from "./InventorySaleEventListener";
 import {InventoryPurchaseEventListener} from "./InventoryPurchaseEventListener";
 import {InventoryReturnSaleEventListener} from "./InventoryReturnSaleEventListener";
+import {InventoryReturnPurchaseEventListener} from "./InventoryReturnPurchaseEventListener";
 import {InputEventListener} from "./InputEventListener";
 import {OutputEventListener} from "./OutputEventListener";
 
@@ -47,5 +48,6 @@ export function register(container) {
     container.bind("InventorySaleEventListener").to(InventorySaleEventListener);
     container.bind("InventoryPurchaseEventListener").to(InventoryPurchaseEventListener);
     container.bind("InventoryReturnSaleEventListener").to(InventoryReturnSaleEventListener);
+    container.bind("InventoryReturnPurchaseEventListener").to(InventoryReturnPurchaseEventListener);
 
 }

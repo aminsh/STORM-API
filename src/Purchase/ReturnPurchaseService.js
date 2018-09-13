@@ -1,31 +1,19 @@
-import {inject, injectable} from "inversify";
+import {inject, injectable, postConstruct} from "inversify";
 
 const Guid = Utility.Guid,
     PersianDate = Utility.PersianDate;
 
 @injectable()
-export class ReturnPurchaseDomainService {
+export class ReturnPurchaseService {
 
-    /** @type {InventoryOutputDomainService}*/
-    @inject("InventoryOutputDomainService") inventoryOutputDomainService = undefined;
+    /** @type {ProductService}*/
+    @inject("ProductService") productService = undefined;
 
-    /** @type {OutputReturnPurchaseDomainService}*/
-    @inject("OutputReturnPurchaseDomainService") outputReturnPurchaseDomainService = undefined;
-
-    /** @type {ProductDomainService}*/
-    @inject("ProductDomainService") productDomainService = undefined;
-
-    /** @type {PaymentDomainService}*/
-    @inject("PaymentDomainService") paymentDomainService = undefined;
-
-    /** @type {DetailAccountDomainService}*/
-    @inject("DetailAccountDomainService") detailAccountDomainService = undefined;
+    /** @type {DetailAccountService}*/
+    @inject("DetailAccountService") detailAccountService = undefined;
 
     /** @type {SettingsRepository}*/
     @inject("SettingsRepository") settingsRepository = undefined;
-
-    /** @type {PaymentRepository}*/
-    @inject("PaymentRepository") paymentRepository = undefined;
 
     /** @type {InvoiceRepository}*/
     @inject("InvoiceRepository") invoiceRepository = undefined;
@@ -35,6 +23,12 @@ export class ReturnPurchaseDomainService {
 
     /** @type {EventBus}*/
     @inject("EventBus") eventBus = undefined;
+
+    @postConstruct()
+    init() {
+
+        this.settings = this.settingsRepository.get();
+    }
 
     validation(entity) {
         let errors = [],
@@ -69,6 +63,9 @@ export class ReturnPurchaseDomainService {
 
         if (entity.detailAccountId !== purchaseSupplier)
             errors.push("فروشنده در برگشت از خرید نمی تواند تغییر کند");
+
+        if (Utility.String.isNullOrEmpty(entity.ofInvoiceId))
+            errors.push("فاکتور خرید وجود ندارد");
 
         return errors;
     }
@@ -107,7 +104,7 @@ export class ReturnPurchaseDomainService {
 
     mapToEntity(cmd) {
 
-        const detailAccount = this.detailAccountDomainService.findPersonByIdOrCreate(cmd.customer),
+        const detailAccount = this.detailAccountService.findPersonByIdOrCreate(cmd.customer),
             invoice = cmd.id ? this.invoiceRepository.findById(cmd.id) : undefined;
 
         return {
@@ -126,12 +123,14 @@ export class ReturnPurchaseDomainService {
             invoiceLines: cmd.invoiceLines.asEnumerable()
                 .select(line => {
 
-                    const product = this.productDomainService.findByIdOrCreate(line.product);
+                    const product = this.productService.findByIdOrCreate(line.product);
 
                     return {
                         productId: product ? product.id : null,
                         description: line.description || product.title,
-                        stockId: line.stockId,
+                        stockId: (this.settings.productOutputCreationMethod === 'defaultStock' && product && product.productType === 'good')
+                            ? this.settings.stockId
+                            : line.stockId,
                         quantity: line.quantity,
                         unitPrice: line.unitPrice,
                         discount: line.discount || 0,
@@ -142,39 +141,6 @@ export class ReturnPurchaseDomainService {
                 .toArray()
         }
     }
-
-    /**
-     * @private
-     */
-    _setForInventoryReturn(entity) {
-
-
-        let inventoryIds = entity.inventoryIds && entity.inventoryIds.length > 0
-            ? entity.inventoryIds
-            : this.outputReturnPurchaseDomainService.create(entity);
-
-        if (!(inventoryIds && inventoryIds.length > 0))
-            return;
-
-        this.inventoryOutputDomainService.setInvoice(inventoryIds, entity.id, 'outputReturnPurchase');
-
-        this.invoiceRepository.update(entity.id, {inventoryIds: JSON.stringify(inventoryIds)});
-    }
-
-    /*    /!**
-         * @private
-         *!/
-        _changeStatusIfPaidIsCompleted(id) {
-
-            let invoice = this.invoiceRepository.findById(id),
-                sumPayments = this.paymentRepository.getBySumAmountByInvoiceId(id).sum || 0,
-
-                totalPrice = invoice.invoiceLines.asEnumerable()
-                    .sum(e => (e.unitPrice * e.quantity) - e.discount + e.vat);
-
-            if (sumPayments >= totalPrice)
-                this.invoiceRepository.update(id, {invoiceStatus: 'paid'});
-        }*/
 
     _mapToData(entity) {
 
@@ -201,22 +167,6 @@ export class ReturnPurchaseDomainService {
 
     }
 
-    /**
-     * @private
-     */
-    _changeStatusIfPaidIsCompleted(id) {
-
-        let invoice = this.invoiceRepository.findById(id),
-            sumPayments = this.paymentRepository.getBySumAmountByInvoiceId(id).sum || 0,
-
-            totalPrice = invoice.invoiceLines.asEnumerable()
-                    .sum(e => (e.unitPrice * e.quantity) - e.discount + e.vat)
-                - (!invoice.discount ? 0 : invoice.discount);
-
-        if (sumPayments >= totalPrice)
-            this.invoiceRepository.update(id, {invoiceStatus: 'paid'});
-    }
-
     create(cmd) {
 
         let entity = this.mapToEntity(cmd),
@@ -227,17 +177,15 @@ export class ReturnPurchaseDomainService {
             throw new ValidationException(errors);
 
         entity.invoiceType = 'returnPurchase';
-        entity.invoiceStatus = cmd.status !== 'draft' ? 'waitForPayment' : 'draft';
+        entity.invoiceStatus = cmd.status !== 'draft' ? 'confirmed' : 'draft';
 
         let data = this._mapToData(entity);
         this.invoiceRepository.create(data);
 
         entity.id = data.id;
 
-        if (entity.invoiceStatus !== 'draft')
-            this._setForInventoryReturn(entity);
-
-        this.eventBus.send('onReturnPurchaseCreated', entity.id);
+        if(entity.invoiceStatus === 'confirmed')
+            this.eventBus.send('ReturnPurchaseCreated', entity.id);
 
         return entity.id;
     }
@@ -247,67 +195,64 @@ export class ReturnPurchaseDomainService {
         let entity = this.invoiceRepository.findById(cmd.id),
             errors = this.validation(entity);
 
-        if (entity.invoiceStatus !== 'draft')
+        if (entity.invoiceStatus === 'confirmed')
             errors.push('این فاکتور قبلا تایید شده');
+
+        if (entity.invoiceStatus === 'fixed')
+            errors.push('این فاکتور قطعی شده');
 
         if (errors.length > 0)
             throw  new ValidationException(errors);
 
-
-        this._setForInventoryReturn(entity);
-
-        let data = {invoiceStatus: 'waitForPayment'};
+        let data = {invoiceStatus: 'confirmed'};
         this.invoiceRepository.update(cmd.id, data);
 
-        this.eventBus.send('onReturnPurchaseConfirmed', entity.id);
+        this.eventBus.send('ReturnPurchaseCreated', entity.id);
     }
 
     update(id, cmd) {
 
         const invoice = this.invoiceRepository.findById(id);
 
+        if (!invoice)
+            throw new NotFoundException();
+
         cmd.ofInvoiceId = invoice.ofInvoiceId;
         let errors = this.validation(cmd);
+
+        if (invoice.invoiceStatus === 'fixed')
+            throw new ValidationException(['این فاکتور قطعی شده']);
 
         if (errors.length > 0)
             throw  new ValidationException(errors);
 
-        if (invoice.invoiceStatus !== 'draft')
-            throw new ValidationException(['فاکتور جاری قابل ویرایش نمیباشد']);
-
         let entity = this.mapToEntity(cmd);
 
         if (entity.invoiceStatus !== 'draft')
-            entity.invoiceStatus = 'waitForPayment';
+            entity.invoiceStatus = 'confirmed';
 
         this.invoiceRepository.updateBatch(id, this._mapToData(entity));
 
-        this._setForInventoryReturn(entity);
-
-        this.eventBus.send('onReturnPurchaseChanged', entity.id);
+        if (invoice.invoiceStatus === 'draft' && entity.invoiceStatus === 'confirmed')
+            this.eventBus.send('ReturnPurchaseCreated', entity.id);
+        else
+            this.eventBus.send('ReturnPurchaseChanged', invoice, entity.id);
     }
 
     remove(id) {
         const invoice = this.invoiceRepository.findById(id);
 
-        if (invoice.invoiceStatus !== 'draft')
+        if (!invoice)
+            throw new NotFoundException();
+
+        if (invoice.invoiceStatus === 'fixed')
             throw new ValidationException(['فاکتور جاری قابل حذف نمیباشد']);
 
         this.invoiceRepository.remove(id);
-    }
 
-    pay(id, payments) {
+        if (entity.invoiceStatus === 'draft')
+            return;
 
-        const paymentIds = this.paymentDomainService.createMany(payments, 'receive');
-
-        this.paymentDomainService.setInvoiceForAll(paymentIds, id);
-
-        this._changeStatusIfPaidIsCompleted(id);
-
-        return paymentIds;
-    }
-
-    setJournal(id, journalId) {
-        return this.invoiceRepository.update(id, {journalId});
+        this.eventBus.send('ReturnPurchaseRemoved', entity.id);
     }
 }
