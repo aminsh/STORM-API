@@ -86,6 +86,9 @@ export class SaleService {
         if (!(line.unitPrice && line.unitPrice !== 0))
             errors.push('قیمت واحد نباید خالی یا صفر باشد');
 
+        if (this.settings.canControlInventory && !line.stockId)
+            errors.push('انبار نباید خالی باشد');
+
         return errors;
     }
 
@@ -354,6 +357,9 @@ export class SaleService {
 
         Utility.delay(500);
 
+        if (entity.invoiceStatus === 'draft')
+            return;
+
         if (invoiceChangedToConfirm)
             this.eventBus.send('SaleCreated', entity.id);
         else
@@ -363,14 +369,18 @@ export class SaleService {
     remove(id) {
         const invoice = this.invoiceRepository.findById(id);
 
-        if (invoice.invoiceStatus !== 'draft')
+        if (!invoice)
+            throw new NotFoundException();
+
+        if (invoice.invoiceStatus === 'fixed')
             throw new ValidationException(['فاکتور جاری قابل حذف نمیباشد']);
 
         this.invoiceRepository.remove(id);
 
-        this.eventBus.send("SaleRemoved", id);
+        if (entity.invoiceStatus === 'draft')
+            return;
 
-        //this.treasuryPurposeRepository.removeByReferenceId(id);
+        this.eventBus.send("SaleRemoved", id);
     }
 }
 
