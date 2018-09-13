@@ -12,6 +12,9 @@ export class ProductInventoryService {
     @inject("StockRepository")
     /**@type {StockRepository}*/ stockRepository = undefined;
 
+    @inject("SettingsRepository")
+    /**@type{SettingsRepository}*/ settingsRepository = undefined;
+
     change(productId, stockId, quantity) {
 
         const item = this.productInventoryTransactionalRepository.findOneByProductAndStock(productId, stockId),
@@ -63,6 +66,11 @@ export class ProductInventoryService {
     }
 
     _productIsExitOnStock(productId, stockId) {
+
+        const settings = this.settingsRepository.get();
+
+        if (settings.canCreateSaleOnNoEnoughInventory)
+            return {success: true};
 
         const product = this.productRepository.findById(productId),
             stock = this.stockRepository.findById(stockId);

@@ -25,17 +25,20 @@ export class ProductInventoryTransactionalRepository extends BaseRepository {
 
     findOneByProductAndStock(productId, stockId) {
 
+        const fiscalPeriodId = this.state.fiscalPeriodId;
+
         return toResult(
             this.knex(this.tableName).transacting(this.trx).forUpdate()
                 .select('*')
                 .where('branchId', this.branchId)
-                .where({productId, stockId})
+                .where({productId, stockId, fiscalPeriodId})
                 .first()
         );
     }
 
     create(entity) {
         entity.branchId = this.branchId;
+        entity.fiscalPeriodId = this.state.fiscalPeriodId;
 
         toResult(this.knex(this.tableName).insert(entity));
     }
