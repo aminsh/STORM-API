@@ -2,18 +2,19 @@
 
 exports.up = function(knex, Promise) {
 
-    return knex.schema.createTable('products_inventory', table => {
-        table.increments('id').primary();
-        table.timestamp('createdAt').defaultTo(knex.fn.now());
-        table.timestamp('updatedAt').defaultTo(knex.fn.now());
-
-        table.string('productId');
-        table.string('stockId');
-        table.string('branchId');
+    return knex.schema.table('products_inventory', table => {
         table.string('fiscalPeriodId');
+
+        table
+            .foreign('fiscalPeriodId')
+            .references('id')
+            .inTable('fiscalPeriods')
+            .onDelete('CASCADE');
     });
 };
 
 exports.down = function(knex, Promise) {
-    return knex.schema.dropTable('products_inventory');
+    return knex.schema.table('products_inventory', table => {
+        table.dropColumn('fiscalPeriodId');
+    });
 };
