@@ -10,7 +10,7 @@ class DimensionCategoryController {
     @inject("DimensionService")
     /** @type {DimensionService}*/ dimensionService = undefined;
 
-    @Get("/category/:categoryId")
+    @Get("/")
     getAll(req) {
 
         return this.dimensionCategoryQuery.getAll(req.query);
