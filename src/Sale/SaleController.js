@@ -81,20 +81,26 @@ class SaleController {
     }
 
     @Get("/summary")
-    summary(){
+    summary() {
 
         return this.saleQuery.getSummary();
     }
 
     @Get("/summary/by-month")
-    summaryByMonth(){
+    summaryByMonth() {
 
         return this.saleQuery.getTotalByMonth();
     }
 
     @Get("/summary/by-product")
-    summaryByProduct(){
+    summaryByProduct() {
 
         return this.saleQuery.getTotalByProduct();
+    }
+
+    @Post("/:id/generate-journal")
+    generateJournal(req) {
+
+        this.saleService.generateJournal(req.params.id);
     }
 }

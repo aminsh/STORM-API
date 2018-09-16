@@ -27,6 +27,9 @@ export class SaleService {
     @inject("InvoiceCompareService")
     /**@type{InvoiceCompareService}*/ invoiceCompareService = undefined;
 
+    /**@type {JournalInvoiceGenerationService}*/
+    @inject("JournalInvoiceGenerationService") journalInvoiceGenerationService = undefined;
+
     /** @type {IState}*/
     @inject("State") state = undefined;
 
@@ -397,6 +400,11 @@ export class SaleService {
             throw new ValidationException(['فاکتور قبلا قطعی شده']);
 
         this.invoiceRepository.update(id, {invoiceStatus: 'fixed'});
+    }
+
+    generateJournal(id){
+
+        this.journalInvoiceGenerationService.generate(id);
     }
 
 }
