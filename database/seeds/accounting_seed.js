@@ -51,6 +51,7 @@ exports.seed = async(function (knex, Promise) {
                     .from('inventories')
                     .leftJoin('inventoryLines', 'inventories.id', 'inventoryLines.inventoryId')
                     .innerJoin('products', 'products.id', 'inventoryLines.productId')
+                    .innerJoin('fiscalPeriods', 'fiscalPeriods.id', 'inventories.fiscalPeriodId')
                     .as('base')
 
             }).groupBy('branchId', 'productId', 'fiscalPeriodId', 'stockId')
