@@ -10,7 +10,7 @@ WORKDIR /usr/src/app
 # Install app dependencies
 COPY package.json /usr/src/app/
 
-RUN npm install -g gulp babel babel-cli nodemon && npm install
+RUN npm install -g gulp babel babel-cli npm install
 
 # Bundle app source
 COPY . /tmp/app
