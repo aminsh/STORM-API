@@ -250,9 +250,9 @@ export class ReturnPurchaseService {
 
         this.invoiceRepository.remove(id);
 
-        if (entity.invoiceStatus === 'draft')
+        if (invoice.invoiceStatus === 'draft')
             return;
 
-        this.eventBus.send('ReturnPurchaseRemoved', entity.id);
+        this.eventBus.send('ReturnPurchaseRemoved', id);
     }
 }

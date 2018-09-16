@@ -23,12 +23,12 @@ export class InventoryReturnSaleEventListener {
     /**@type{InvoiceCompareService}*/ invoiceCompareService = undefined;
 
     @EventHandler("ReturnSaleCreated")
-    onReturnSaleCreated(returnSaleId, inventoryIds) {
+    onReturnSaleCreated(returnSaleId) {
 
         const returnSale = this.invoiceRepository.findById(returnSaleId);
 
-        if (inventoryIds && inventoryIds.length > 0)
-            return inventoryIds.forEach(id => this.inputService.setInvoice(id, returnSaleId));
+        if (returnSale.inventoryIds && returnSale.inventoryIds.length > 0)
+            return returnSale.inventoryIds.forEach(id => this.inputService.setInvoice(id, returnSaleId));
 
         returnSale.invoiceLines.asEnumerable()
             .groupBy(
@@ -44,13 +44,14 @@ export class InventoryReturnSaleEventListener {
     }
 
     @EventHandler("ReturnSaleChanged")
-    onReturnSaleChanged(oldReturnSale, returnSaleId, inventoryIds) {
+    onReturnSaleChanged(oldReturnSale, returnSaleId) {
 
-        if (inventoryIds && inventoryIds.length > 0)
-            return inventoryIds.forEach(id => this.inputService.setInvoice(id, returnSaleId));
+        const newPurchase = this.invoiceRepository.findById(returnSaleId);
 
-        const newPurchase = this.invoiceRepository.findById(returnSaleId),
-            oldLines = oldReturnSale.invoiceLines.filter(item => this.productRepository.isGood(item.productId)),
+        if (newPurchase.inventoryIds && newPurchase.inventoryIds.length > 0)
+            return newPurchase.inventoryIds.forEach(id => this.inputService.setInvoice(id, returnSaleId));
+
+        const oldLines = oldReturnSale.invoiceLines.filter(item => this.productRepository.isGood(item.productId)),
             newLines = newPurchase.invoiceLines.filter(item => this.productRepository.isGood(item.productId)),
 
             result = this.invoiceCompareService.compare('input', oldLines, newLines),

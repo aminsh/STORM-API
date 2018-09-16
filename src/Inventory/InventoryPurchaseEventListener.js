@@ -23,12 +23,12 @@ export class InventoryPurchaseEventListener {
     /**@type{InvoiceCompareService}*/ invoiceCompareService = undefined;
 
     @EventHandler("PurchaseCreated")
-    onPurchaseCreated(purchaseId, inventoryIds) {
+    onPurchaseCreated(purchaseId) {
 
         const purchase = this.invoiceRepository.findById(purchaseId);
 
-        if (inventoryIds && inventoryIds.length > 0)
-            return inventoryIds.forEach(id => this.inputService.setInvoice(id, purchaseId));
+        if (purchase.inventoryIds && purchase.inventoryIds.length > 0)
+            return purchase.inventoryIds.forEach(id => this.inputService.setInvoice(id, purchaseId));
 
         purchase.invoiceLines.asEnumerable()
             .groupBy(
@@ -44,13 +44,14 @@ export class InventoryPurchaseEventListener {
     }
 
     @EventHandler("PurchaseChanged")
-    onPurchaseChanged(oldPurchase, purchaseId, inventoryIds) {
+    onPurchaseChanged(oldPurchase, purchaseId) {
 
-        if (inventoryIds && inventoryIds.length > 0)
-            return inventoryIds.forEach(id => this.inputService.setInvoice(id, purchaseId));
+        const newPurchase = this.invoiceRepository.findById(purchaseId);
 
-        const newPurchase = this.invoiceRepository.findById(purchaseId),
-            oldLines = oldPurchase.invoiceLines.filter(item => this.productRepository.isGood(item.productId)),
+        if (newPurchase.inventoryIds && newPurchase.inventoryIds.length > 0)
+            return newPurchase.inventoryIds.forEach(id => this.inputService.setInvoice(id, purchaseId));
+
+        const oldLines = oldPurchase.invoiceLines.filter(item => this.productRepository.isGood(item.productId)),
             newLines = newPurchase.invoiceLines.filter(item => this.productRepository.isGood(item.productId)),
 
             result = this.invoiceCompareService.compare('input', oldLines, newLines),
@@ -84,9 +85,9 @@ export class InventoryPurchaseEventListener {
     }
 
     @EventHandler("PurchaseRemoved")
-    onPurchaseRemoved(purchase) {
+    onPurchaseRemoved(purchaseId) {
 
-        const inventories = this.inventoryRepository.findByInvoiceId(purchase.id);
+        const inventories = this.inventoryRepository.findByInvoiceId(purchaseId);
 
         inventories.forEach(item => this.inventoryRepository.update(item.id, {invoiceId: null}));
     }

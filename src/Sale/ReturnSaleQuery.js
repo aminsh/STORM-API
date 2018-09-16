@@ -266,6 +266,7 @@ export class ReturnSaleQuery extends BaseQuery {
             quantity: entity.quantity,
             unitPrice: entity.unitPrice,
             vat: entity.vat,
+            tax: entity.tax,
             discount: entity.discount,
             scale: entity.scale,
             stockId: entity.stockId,
