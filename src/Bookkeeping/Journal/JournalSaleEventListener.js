@@ -13,7 +13,7 @@ export class JournalSaleEventListener {
     /**@type {JournalInvoiceGenerationService}*/
     @inject("JournalInvoiceGenerationService") journalInvoiceGenerationService = undefined;
 
-    @EventHandler("onInvoiceCreated")
+    @EventHandler("SaleCreated")
     onInvoiceCreated(invoiceId) {
 
         let invoice = this.invoiceRepository.findById(invoiceId),
@@ -28,19 +28,16 @@ export class JournalSaleEventListener {
         this.journalInvoiceGenerationService.generate(invoiceId);
     }
 
-    @EventHandler("onInvoiceChanged")
+    @EventHandler("SaleChanged")
     onInvoiceChanged(invoice) {
 
         this.onInvoiceCreated(invoice);
     }
 
-    @EventHandler("onInvoiceConfirmed")
-    onInvoiceConfirmed(invoice) {
-        this.onInvoiceCreated(invoice);
-    }
-
     @EventHandler("onInvoiceRemoved")
     onInvoiceRemoved(invoice) {
+
+
     }
 
 }
