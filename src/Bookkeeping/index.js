@@ -21,6 +21,10 @@ import {JournalGenerationTemplateService} from "./Journal/JournalGenerationTempl
 import {JournalGenerationTemplateQuery} from "./Journal/JournalGenerationTemplateQuery";
 import {AccountReviewQuery} from "./AccountReview/AccountReviewQuery";
 
+import {JournalTemplateQuery} from "./Journal/JournalTemplateQuery";
+import {JournalTemplateRepository} from "./Journal/JournalTemplateRepository";
+import {JournalTemplateService} from "./Journal/JournalTemplateService";
+
 import {JournalInvoiceGenerationService} from "./Journal/JournalInvoiceGenerationService";
 import {TreasuryJournalGenerationService} from "./Journal/TreasuryJournalGenerationService";
 import {JournalSaleEventListener} from "./Journal/JournalSaleEventListener";
@@ -35,6 +39,7 @@ import "./Dimension/DimensionController";
 import "./Journal/JournalController";
 import "./Journal/JournalGenerationTemplateController";
 import "./AccountReview/AcccountReviewController";
+import "./Journal/JournalTemplateController";
 
 export function register(container) {
 
@@ -61,6 +66,10 @@ export function register(container) {
     container.bind("JournalRepository").to(JournalRepository);
     container.bind("JournalQuery").to(JournalQuery);
     container.bind("JournalGenerationPurposeQuery").to(JournalGenerationPurposeQuery);
+
+    container.bind("JournalTemplateQuery").to(JournalTemplateQuery);
+    container.bind("JournalTemplateRepository").to(JournalTemplateRepository);
+    container.bind("JournalTemplateService").to(JournalTemplateService);
 
     container.bind("JournalGenerationTemplateRepository").to(JournalGenerationTemplateRepository);
     container.bind("JournalGenerationTemplateService").to(JournalGenerationTemplateService);
