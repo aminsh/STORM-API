@@ -7,6 +7,9 @@ export class BranchQuery {
     @inject("DbContext")
     /**@type{DbContext}*/ dbContext = undefined;
 
+    @inject("State")
+    /**@type{IState}*/ state = undefined;
+
     tableName = "branches";
 
     find(where, single) {
@@ -85,7 +88,11 @@ export class BranchQuery {
 
     getMembers(id, parameters) {
 
+        if(id !== this.state.branchId)
+            throw new ValidationSingleException('شما به این کسب و کار دسترسی ندارید');
+
         const knex = this.dbContext.instance;
+
 
         let query = knex.from(function () {
             this.select(

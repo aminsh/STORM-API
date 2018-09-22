@@ -48,7 +48,7 @@ class BranchController {
         this.branchService.update(id, req.body);
     }
 
-    @Get("/:id/users", "ShouldAuthenticated")
+    @Get("/:id/users", "ShouldHaveBranch")
     getMembers(req) {
 
         return this.branchQuery.getMembers(req.params.id, req.query);
