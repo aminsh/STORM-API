@@ -63,7 +63,7 @@ class PermissionController {
         return role;
     }
 
-    @Post("/users/:id/edit-role")
+    @Put("/users/:id/edit-role")
     updateUserPermission(req) {
 
         this.permissionService.updateUserPermission(req.params.id, req.body);

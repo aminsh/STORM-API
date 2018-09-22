@@ -25,7 +25,7 @@ export class PermissionQuery extends BaseQuery {
             modify = this.modify.bind(this),
             adminId = this.getAdminId(),
 
-            roles = toResult(knex.select('title', 'roles.id', 'permissions')
+            roles = toResult(knex.select('title', 'roles.id', 'permissions', 'isAdmin')
                 .from('roles')
                 .leftJoin('rolePermissions', 'roles.id', 'rolePermissions.roleId')
                 .modify(modify, branchId, userId, canView, 'roles')
@@ -57,7 +57,7 @@ export class PermissionQuery extends BaseQuery {
             branchId = this.branchId,
             canView = this.canView.call(this),
 
-            role = toResult(knex.select('title', 'id')
+            role = toResult(knex.select('title', 'id', 'isAdmin')
                 .from('roles')
                 .where(canView)
                 .where('id', id)

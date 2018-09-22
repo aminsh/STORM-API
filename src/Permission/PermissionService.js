@@ -11,7 +11,7 @@ export class PermissionService {
     createRole(cmd) {
         let role = {
                 title: cmd.title,
-                isAdmin: false
+                isAdmin: cmd.isAdmin || false
             },
             existentRole = role.title && this.permissionRepository.findRolesByTitle(role.title),
             errors = [];
@@ -73,7 +73,7 @@ export class PermissionService {
                 ? this.permissionRepository.findRolePermissionByRoleId(cmd.roleId)
                 : null,
 
-            admin = role ? role.isAdmin : false,
+            admin = role.id === 'admin',
             permission = cmd.permissions
                 ? cmd.permissions.length === 0
                     ? rolePermission ? rolePermission.permissions : null
@@ -130,10 +130,11 @@ export class PermissionService {
             usersInRole = this.permissionRepository.findUsersInRoleByRoleId(id),
             usersId = usersInRole.asEnumerable().select(item => item.userId).toArray();
 
-        if (role.isAdmin)
+        if (role.id === 'admin')
             throw new ValidationException(['امکان ویرایش نقش مدیر سیستم وجود ندارد!']);
 
         entity.role.title = cmd.title || role.title;
+        entity.role.isAdmin = cmd.isAdmin || role.isAdmin;
         entity.rolePermissions = rolePermission;
         entity.rolePermissions.permissions = cmd.permissions || rolePermission.permissions;
         entity.rolePermissions.permissions = JSON.stringify(entity.rolePermissions.permissions);
@@ -154,7 +155,7 @@ export class PermissionService {
         let userInRole = this.permissionRepository.findUserInRoleByUserId(id),
             userPermission = this.permissionRepository.findUserPermissionsByUserId(id),
             role = cmd.roleId ? this.permissionRepository.findRoleById(cmd.roleId) : null,
-            admin = role ? role.isAdmin : false;
+            admin = role ? role.id === 'admin' : false;
 
         if (!userInRole || !userPermission)
             throw new ValidationException(['برای کاربر دسترسی ایجاد نشده است!']);
@@ -187,7 +188,7 @@ export class PermissionService {
             role = this.permissionRepository.findRoleById(id),
             errors = [];
 
-        if (role.isAdmin)
+        if (role.id === 'admin')
             errors.push('امکان حذف نقش مدیر سیستم وجود ندارد!');
         if (users.length > 0)
             errors.push('این نقش به کاربر داده شده و امکان حذف وجود ندارد!');
