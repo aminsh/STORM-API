@@ -44,6 +44,7 @@ export class InventoryAccountingRepository extends BaseRepository {
                 knex.raw(`"${this.inventoryLineTableName}".id as "lineId"`),
                 `${this.tableName}.id`,
                 `${this.tableName}.ioType`,
+                `${this.tableName}.priceManuallyEntered`,
                 knex.raw(`${this.tableName}."inventoryType" as type`))
                 .from(this.inventoryLineTableName)
                 .leftJoin(this.tableName, `${this.inventoryLineTableName}.inventoryId`, `${this.tableName}.id`)

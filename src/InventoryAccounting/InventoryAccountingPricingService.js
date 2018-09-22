@@ -8,12 +8,12 @@ export class InventoryAccountingPricingService {
 
     calculate(dto) {
 
-        if(!dto.maxDate)
+        if (!dto.maxDate)
             throw new ValidationException(['تاریخ انتهای دوره وجود ندارد']);
 
         const zeroPriceInputs = this.inventoryAccountingRepository.getZeroPriceOnInputs(dto.maxDate);
 
-        if(zeroPriceInputs && zeroPriceInputs.length > 0)
+        if (zeroPriceInputs && zeroPriceInputs.length > 0)
             throw new ValidationException(['رسید با قیمت صفر وجود دارد']);
 
         const before = this.inventoryAccountingRepository.totalQuantityAndPriceOnFixedInputsByProduct(),
@@ -69,7 +69,43 @@ export class InventoryAccountingPricingService {
             .where(item => item.changed)
             .forEach(item => this.inventoryAccountingRepository.updateLine(item.lineId, {unitPrice: item.unitPrice}));
 
-        if(dto.shouldFixAmount)
+        if (dto.shouldFixAmount)
             flatten.forEach(item => this.inventoryAccountingRepository.update(item.id, {fixedAmount: true}));
+    }
+
+    _shouldCalculatePrice(item){
+         if(item.type === 'output')
+             return false;
+
+         if(['inputFirst', 'inputPurchase'].includes(item.ioType))
+             return true;
+
+         if(item.priceManuallyEntered)
+             return true;
+
+         return false;
+    }
+
+    inputEnterPrice(id, lines) {
+
+        const input = this.inventoryAccountingRepository.findById(id);
+
+        if (!input)
+            throw new NotFoundException();
+
+        if (input.inventoryType !== 'input')
+            throw  new NotFoundException();
+
+        let errors = [];
+
+        if (lines.asEnumerable().any(line => !line.id))
+            errors.push('شناسه ردیف ها صحیح نیست');
+
+        if (lines.asEnumerable().any(line => !(line.unitPrice && line.unitPrice > 0)))
+            errors.push('قیمت ردیف ها صحیح نیست');
+
+        lines.forEach(line => this.inventoryAccountingRepository.updateLine(line.id, {unitPrice: line.unitPrice}));
+
+        this.inventoryAccountingRepository.update(id, {priceManuallyEntered: true});
     }
 }
