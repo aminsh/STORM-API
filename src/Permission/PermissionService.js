@@ -11,7 +11,7 @@ export class PermissionService {
     createRole(cmd) {
         let role = {
                 title: cmd.title,
-                isAdmin: false
+                isAdmin: cmd.isAdmin || false
             },
             existentRole = role.title && this.permissionRepository.findRolesByTitle(role.title),
             errors = [];
@@ -73,7 +73,7 @@ export class PermissionService {
                 ? this.permissionRepository.findRolePermissionByRoleId(cmd.roleId)
                 : null,
 
-            admin = role ? role.isAdmin : false,
+            admin = role.id === 'admin',
             permission = cmd.permissions
                 ? cmd.permissions.length === 0
                     ? rolePermission ? rolePermission.permissions : null
@@ -130,7 +130,7 @@ export class PermissionService {
             usersInRole = this.permissionRepository.findUsersInRoleByRoleId(id),
             usersId = usersInRole.asEnumerable().select(item => item.userId).toArray();
 
-        if (role.isAdmin)
+        if (role.id === 'admin')
             throw new ValidationException(['امکان ویرایش نقش مدیر سیستم وجود ندارد!']);
 
         entity.role.title = cmd.title || role.title;

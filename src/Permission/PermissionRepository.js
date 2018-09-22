@@ -148,7 +148,7 @@ export class PermissionRepository extends BaseRepository {
                 .where('branchId', this.branchId)
                 .del());
 
-            toResult(trx('userPermissions')
+            userPermissions && toResult(trx('userPermissions')
                 .where('id', userPermissions.id)
                 .where('branchId', this.branchId)
                 .del());
