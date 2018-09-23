@@ -49,6 +49,8 @@ export class BranchRepository {
 
     addUser(id, member) {
 
+        const knex = this.dbContext.instance;
+
         member.branchId = id;
 
         toResult(knex('userInBranches').insert(member));
