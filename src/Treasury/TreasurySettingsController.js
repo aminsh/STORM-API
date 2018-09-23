@@ -24,7 +24,7 @@ class TreasurySettingsController {
     }
 
     @Put("/")
-    update() {
+    update(req) {
 
         this.treasurySettingService.update(req.body);
     }
