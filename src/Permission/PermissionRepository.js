@@ -167,7 +167,7 @@ export class PermissionRepository extends BaseRepository {
             if (entity.role.title)
                 toResult(trx('roles').where('id', id)
                     .modify(this.modify, this.branchId)
-                    .update({title: entity.role.title}));
+                    .update(entity.role));
 
             if (entity.rolePermissions)
                 toResult(this.updateRolePermission(trx, entity.rolePermissions.id,
