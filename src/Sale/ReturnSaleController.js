@@ -54,6 +54,16 @@ class ReturnSaleController {
         return this.returnSaleQuery.getById(id);
     }
 
+    @Post("/:id/fix")
+    fix(req) {
+
+        const id = req.params.id;
+
+        this.returnSaleService.fix(id);
+
+        return this.returnSaleQuery.getById(id);
+    }
+
     @Put("/:id")
     update(req) {
 

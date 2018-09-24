@@ -174,7 +174,18 @@ export class UserService {
 
     changePassword(password) {
 
+        if(!password)
+            throw new ValidationSingleException('کلمه عبور وجود ندارد');
+
         this.userRepository.update(this.context.user.id, {password: md5(password)});
+    }
+
+    changeImage(image) {
+
+        if(!image)
+            throw new ValidationSingleException('تصویر وجود ندارد');
+
+        this.userRepository.update(this.context.user.id, {image});
     }
 
     resetPasswordByMobile(mobile) {

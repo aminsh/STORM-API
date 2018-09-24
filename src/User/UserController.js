@@ -82,11 +82,18 @@ export class UserController {
         return this.userQuery.getOne({id});
     }
 
-    @Post("/change-password", "ShouldAuthenticated")
+    @Put("/change-password", "ShouldAuthenticated")
     @NoLog()
     changePassword(req) {
 
         this.userService.changePassword(req.body.password);
+    }
+
+    @Put("/change-image", "ShouldAuthenticated")
+    @NoLog()
+    changeImage(req) {
+
+        this.userService.changeImage(req.body.image);
     }
 
     @Post("/reset-password/by-mobile")

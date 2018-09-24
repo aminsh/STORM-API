@@ -75,6 +75,12 @@ class JournalController {
         return this.journalQuery.getById(id);
     }
 
+    @Put("/ordering-number-by-date")
+    orderingNumberByDate() {
+
+        this.journalService.orderingTemporaryNumberByTemporaryDate();
+    }
+
     @Put("/:id")
     update(req) {
 
@@ -123,12 +129,6 @@ class JournalController {
         this.journalService.changeDate(id, req.body.date);
 
         return this.journalQuery.getById(id);
-    }
-
-    @Put("/ordering-number-by-date")
-    orderingNumberByDate() {
-
-        this.journalService.orderingTemporaryNumberByTemporaryDate();
     }
 
     @Get("/generation-purposes/:id")
