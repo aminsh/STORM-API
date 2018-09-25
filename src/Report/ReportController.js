@@ -160,22 +160,22 @@ class ReportController {
         return this.reportJournalQuery.getDetailJournals();
     }
 
-    @Get("/invoices/:id")
+    @Get("/invoices")
     invoice(req) {
 
-        return this.reportInvoiceQuery.invoice(req.params.id);
+        return this.reportInvoiceQuery.invoice(req.query.id);
     }
 
-    @Get("/un-invoices/:id")
+    @Get("/un-invoices")
     unInvoice(req) {
 
-        return this.reportInvoiceQuery.invoice(req.params.id);
+        return this.reportInvoiceQuery.invoice(req.query.id);
     }
 
-    @Get("/pre-invoices/:id")
+    @Get("/pre-invoices")
     preInvoice(req) {
 
-        return this.reportInvoiceQuery.invoice(req.params.id);
+        return this.reportInvoiceQuery.invoice(req.query.id);
     }
 
     @Get("/inventory-outputs")
@@ -191,7 +191,7 @@ class ReportController {
     }
 
     @Get("/inventory-turnover")
-    getInputsTurnover(req) {
+    getInventoriesTurnover(req) {
 
         return this.reportInventoryTurnoverQuery.getInventoriesTurnover(req.query.ids);
     }
