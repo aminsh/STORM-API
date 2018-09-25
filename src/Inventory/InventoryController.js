@@ -22,6 +22,12 @@ class InventoryController {
         this.inventoryService.transferBetweenStocks(req.body);
     }
 
+    @Get("/products")
+    getAllInventoryProducts(req) {
+
+        return this.inventoryQuery.getAllInventoryProducts(req.query);
+    }
+
     @Get("/:id")
     getById(req) {
 
@@ -40,9 +46,5 @@ class InventoryController {
         return this.inventoryQuery.getInventoriesByStock(req.params.productId);
     }
 
-    @Get("/products")
-    getAllInventoryProducts(req) {
 
-        return this.inventoryQuery.getAllInventoryProducts(req.query);
-    }
 }

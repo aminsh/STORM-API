@@ -241,6 +241,12 @@ class ReportController {
         return this.reportSaleQuery.getDetail(req.query.invoiceStatus);
     }
 
+    @Get("/sale-invoice-turnover")
+    getSaleDetailTurnover(req) {
+
+        return this.reportSaleQuery.getDetail(req.query.invoiceStatus);
+    }
+
     @Get("/receive-cheque-due-date")
     getReceiveChequeDueDate(req) {
 
