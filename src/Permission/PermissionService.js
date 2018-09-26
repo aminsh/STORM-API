@@ -134,7 +134,7 @@ export class PermissionService {
             throw new ValidationException(['امکان ویرایش نقش مدیر سیستم وجود ندارد!']);
 
         entity.role.title = cmd.title || role.title;
-        entity.role.isAdmin = cmd.isAdmin || role.isAdmin;
+        entity.role.isAdmin = cmd.isAdmin;
         entity.rolePermissions = rolePermission;
         entity.rolePermissions.permissions = cmd.permissions || rolePermission.permissions;
         entity.rolePermissions.permissions = JSON.stringify(entity.rolePermissions.permissions);
