@@ -1,6 +1,6 @@
 "use strict";
 
-const enums = require('../../shared/enums'),
+const enums = require('../../dist/Constants/enums'),
     async = require('asyncawait/async'),
     await = require('asyncawait/await');
 

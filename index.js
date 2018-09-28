@@ -2,25 +2,6 @@
 
 require('babel-polyfill');
 
-/* 1- loading prototypes */
-require('./shared/utilities/string.prototypes');
-require('./shared/utilities/array.prototypes');
-require('./shared/utilities/function.prototypes');
+require('./dist/bootstrap');
 
-
-/* 2- loading ioc */
-require('./config/ioc');
-
-require('./shared/globals');
-
-require('./setup');
-
-require('./application/dist/bootstrap');
-
-let config = instanceOf("config"),
-    {app, registerRoutes} = require('./api/api.config');
-
-registerRoutes();
-
-app.listen(config.port, () => console.log(`Port ${config.port} is listening ...`));
 
