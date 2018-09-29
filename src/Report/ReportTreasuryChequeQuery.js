@@ -16,8 +16,9 @@ export class ReportTreasuryChequeQuery extends BaseQuery {
             userId = this.state.user.id,
             canView = this.canView.call(this),
             modify = this.modify.bind(this),
-            minDate = this.filter.minDate || this.options.fromMainDate,
-            maxDate = this.filter.maxDate || this.options.toDate,
+            options = this.reportConfig.options,
+            minDate = parameters.minDate || options.fromMainDate,
+            maxDate = parameters.maxDate || options.toDate,
             enums = this.enums,
 
             query = knex.from(function () {
@@ -83,8 +84,9 @@ export class ReportTreasuryChequeQuery extends BaseQuery {
             userId = this.state.user.id,
             canView = this.canView.call(this),
             modify = this.modify.bind(this),
-            minDate = this.filter.minDate || this.options.fromMainDate,
-            maxDate = this.filter.maxDate || this.options.toDate,
+            options = this.reportConfig.options,
+            minDate = parameters.minDate || options.fromMainDate,
+            maxDate = parameters.maxDate || options.toDate,
             enums = this.enums,
 
             query = knex.from(function () {
@@ -149,8 +151,9 @@ export class ReportTreasuryChequeQuery extends BaseQuery {
             userId = this.state.user.id,
             canView = this.canView.call(this),
             modify = this.modify.bind(this),
-            minDate = this.filter.minDate || this.options.fromMainDate,
-            maxDate = this.filter.maxDate || this.options.toDate,
+            options = this.reportConfig.options,
+            minDate = parameters.minDate || options.fromMainDate,
+            maxDate = parameters.maxDate || options.toDate,
             enums = this.enums,
 
             query = knex.from(function () {
