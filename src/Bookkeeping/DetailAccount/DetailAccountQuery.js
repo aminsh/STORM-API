@@ -55,7 +55,7 @@ export class DetailAccountQuery extends BaseQuery {
         return toResult(Utility.kendoQueryResolve(query, parameters, view));
     }
 
-    getAllBySubsidiryLedgerAccount(subsidiaryLedgerAccountId, parameters) {
+    getAllBySubsidiryLedgerAccount(subsidiaryLedgerAccountId, parameters, view = this._view.bind(this)) {
         let knex = this.knex,
             branchId = this.branchId,
 
