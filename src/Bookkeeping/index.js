@@ -1,6 +1,11 @@
 import {DetailAccountQuery} from "./DetailAccount/DetailAccountQuery";
 import {DetailAccountRepository} from "./DetailAccount/DetailAccountRepository";
 import {DetailAccountService} from "./DetailAccount/DetailAccountService";
+
+import {DetailAccountCategoryRepository} from "./DetailAccount/DetailAccountCategoryRepsitory";
+import {DetailAccountCategoryQuery} from "./DetailAccount/DetailAccountCategoryQuery";
+import {DetailAccountCategoryService} from "./DetailAccount/DetailAccountCategoryService";
+
 import {ChartOfAccountQuery} from "./ChartOfAccounts/ChartOfAccountQuery";
 import {AccountCategoryService} from "./ChartOfAccounts/AccountCategoryService";
 import {AccountCategoryRepository} from "./ChartOfAccounts/AccountCategoryRepository";
@@ -33,6 +38,7 @@ import {TreasuryEventListener} from "./Journal/TreasuryEventListener";
 import {JournalGenerationPurposeQuery} from "./Journal/JournalGenerationPurposeQuery";
 
 import "./DetailAccount/DetailAccountController";
+import "./DetailAccount/DetailAccountCategoryController";
 import "./ChartOfAccounts/ChartOfAccountController";
 import "./Dimension/DimensionCategoryController";
 import "./Dimension/DimensionController";
@@ -46,6 +52,10 @@ export function register(container) {
     container.bind("DetailAccountQuery").to(DetailAccountQuery);
     container.bind("DetailAccountRepository").to(DetailAccountRepository);
     container.bind("DetailAccountService").to(DetailAccountService);
+
+    container.bind("DetailAccountCategoryRepository").to(DetailAccountCategoryRepository);
+    container.bind("DetailAccountCategoryQuery").to(DetailAccountCategoryQuery);
+    container.bind("DetailAccountCategoryService").to(DetailAccountCategoryService);
 
     container.bind("DimensionCategoryRepository").to(DimensionCategoryRepository);
     container.bind("DimensionRepository").to(DimensionRepository);
