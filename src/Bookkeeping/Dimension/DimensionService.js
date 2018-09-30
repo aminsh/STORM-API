@@ -43,7 +43,7 @@ export class DimensionService {
             throw new ValidationException(errors);
 
         entity.dimensionCategoryId = categoryId;
-        entity = this.dimensionRepository.create(entity);
+        this.dimensionRepository.create(entity);
 
         return entity.id;
     }

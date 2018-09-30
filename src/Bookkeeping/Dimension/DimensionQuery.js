@@ -38,7 +38,8 @@ export class DimensionQuery extends BaseQuery {
     _view(entity) {
         return {
             id: entity.id,
-            title: entity.title
+            title: entity.title,
+            display: entity.display
         };
     }
 }
