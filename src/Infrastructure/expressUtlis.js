@@ -200,13 +200,11 @@ function _canLog(req) {
 }
 
 function _controlUserPermission(req, res, method) {
-    console.log(`First, check control permission in console: ${req.noControlPermissions} `);
     if (req.noControlPermissions)
         return;
     if (method !== 'get') {
         let request = _createUrlSubject(req),
             havePermission = req.container.get("UserPermissionsControlService").controlPermission(request);
-        console.log(`Second, check control permission in console: ${havePermission} `);
         if (!havePermission)
             throw new ForbiddenException('User do not have permission');
     }
