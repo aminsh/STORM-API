@@ -8,28 +8,19 @@ import renameKeys from "rename-keys";
 @injectable()
 export class PermissionQuery extends BaseQuery {
 
-    getAdminId() {
-        let knex = this.knex;
-        return toResult(knex.select('id')
-            .from('roles')
-            .where('isAdmin', true)
-            .first())
-            .id;
-    }
-
     getAllRoles() {
         let knex = this.knex,
             branchId = this.branchId,
             userId = this.state.user.id,
             canView = this.canView.call(this),
             modify = this.modify.bind(this),
-            adminId = this.getAdminId(),
+            adminId = 'admin',
 
             roles = toResult(knex.select('title', 'roles.id', 'permissions', 'isAdmin')
                 .from('roles')
                 .leftJoin('rolePermissions', 'roles.id', 'rolePermissions.roleId')
                 .modify(modify, branchId, userId, canView, 'roles')
-                .orWhere('isAdmin', true)
+                .orWhere('roles.id', 'admin')
             );
         roles = !canView
             ? roles.asEnumerable().where(role => role.id !== adminId).toArray()
