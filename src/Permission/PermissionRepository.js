@@ -165,7 +165,8 @@ export class PermissionRepository extends BaseRepository {
         let trx = this.transaction;
         try {
             if (entity.role.title)
-                toResult(trx('roles').where('id', id)
+                toResult(trx('roles')
+                    .where('id', id)
                     .modify(this.modify, this.branchId)
                     .update(entity.role));
 
