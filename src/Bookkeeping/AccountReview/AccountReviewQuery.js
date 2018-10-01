@@ -19,6 +19,10 @@ export class AccountReviewQuery extends BaseQuery {
 
         return (parameters.extra) ? parameters.extra.filter : {}
     }
+    
+    get parameters(){
+        return this.state.request.query;
+    }
 
     get options() {
 
@@ -124,7 +128,7 @@ export class AccountReviewQuery extends BaseQuery {
 
         let aggregatesQuery = query.clone();
 
-        let result = toResult(Utility.kendoQueryResolve(query, this.paramters, view));
+        let result = toResult(Utility.kendoQueryResolve(query, this.parameters, view));
 
         result.aggregates = this.aggregates(aggregatesQuery);
 
@@ -209,7 +213,7 @@ export class AccountReviewQuery extends BaseQuery {
 
         let aggregatesQuery = query.clone();
 
-        let result = toResult(Utility.kendoQueryResolve(query, this.paramters, view));
+        let result = toResult(Utility.kendoQueryResolve(query, this.parameters, view));
 
         result.aggregates = this.aggregates(aggregatesQuery);
 
@@ -255,7 +259,7 @@ export class AccountReviewQuery extends BaseQuery {
 
         let aggregatesQuery = query.clone();
 
-        let result = toResult(Utility.kendoQueryResolve(query, this.paramters, view));
+        let result = toResult(Utility.kendoQueryResolve(query, this.parameters, view));
 
         result.aggregates = this.aggregates(aggregatesQuery);
 
@@ -299,7 +303,7 @@ export class AccountReviewQuery extends BaseQuery {
 
         let aggregatesQuery = query.clone();
 
-        var result = toResult(Utility.kendoQueryResolve(query, this.paramters, view));
+        var result = toResult(Utility.kendoQueryResolve(query, this.parameters, view));
 
         result.aggregates = this.aggregates(aggregatesQuery);
 
@@ -344,7 +348,7 @@ export class AccountReviewQuery extends BaseQuery {
 
         let aggregatesQuery = query.clone();
 
-        let result = toResult(Utility.kendoQueryResolve(query, this.paramters, view));
+        let result = toResult(Utility.kendoQueryResolve(query, this.parameters, view));
 
         result.aggregates = this.aggregates(aggregatesQuery);
 
@@ -389,7 +393,7 @@ export class AccountReviewQuery extends BaseQuery {
 
         let aggregatesQuery = query.clone();
 
-        let result = toResult(Utility.kendoQueryResolve(query, this.paramters, view));
+        let result = toResult(Utility.kendoQueryResolve(query, this.parameters, view));
 
         result.aggregates = this.aggregates(aggregatesQuery);
 
@@ -505,7 +509,7 @@ export class AccountReviewQuery extends BaseQuery {
 
         let aggregatesQuery = query.clone();
 
-        let result = toResult(Utility.kendoQueryResolve(query, this.paramters, view));
+        let result = toResult(Utility.kendoQueryResolve(query, this.parameters, view));
 
         result.aggregates = this.aggregates(aggregatesQuery);
 
