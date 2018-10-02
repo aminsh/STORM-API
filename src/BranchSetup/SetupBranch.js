@@ -12,9 +12,14 @@ export class SetupBranch {
     @inject("DbContext")
     /** @type {DbContext}*/_dbContext = undefined;
 
-    register(branchId){
+    register(branchId) {
 
         const knex = this._dbContext.instance;
+
+        const branch = toResult(knex.from('branches').where({id: branchId}).first());
+
+        if(!branch)
+            throw new NotFoundException();
 
         toResult(knex('settings').insert({
             id: Utility.Guid.create(),
@@ -58,11 +63,22 @@ export class SetupBranch {
         this.chartOfAccounts(branchId);
     }
 
-    chartOfAccounts(branchId){
+    chartOfAccounts(branchId) {
 
         const knex = this._dbContext.instance;
 
-        defaultAccountCategories.groups.forEach(item => item.branchId = branchId);
+        const branch = toResult(knex.from('branches').where({id: branchId}).first());
+
+        if(!branch)
+            throw new NotFoundException();
+
+        toResult(knex('subsidiaryLedgerAccounts').where('branchId', branchId).del());
+        toResult(knex('generalLedgerAccounts').where('branchId', branchId).del());
+        toResult(knex('accountCategories').where('branchId', branchId).del());
+
+        const groups = defaultAccountCategories.groups;
+
+        groups.forEach(item => item.branchId = branchId);
 
         defaultGeneralLedgerAccounts.forEach(item => {
             item.branchId = branchId;
@@ -86,14 +102,10 @@ export class SetupBranch {
             .toArray();
 
 
-        defaultAccountCategories.forEach(item => delete item.category);
+        groups.forEach(item => delete item.category);
         subsidiaryLedgerAccounts.forEach(item => delete item.key);
 
-        toResult(knex('subsidiaryLedgerAccounts').where('branchId', branchId).del());
-        toResult(knex('generalLedgerAccounts').where('branchId', branchId).del());
-        toResult(knex('accountCategories').where('branchId', branchId).del());
-
-        toResult(knex('accountCategories').insert(defaultAccountCategories));
+        toResult(knex('accountCategories').insert(groups));
         toResult(knex('generalLedgerAccounts').insert(defaultGeneralLedgerAccounts));
 
         Utility.delay(1000);
