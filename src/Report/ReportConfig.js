@@ -15,7 +15,8 @@ export class ReportConfig {
 
         const parameters = this.state.request.query;
 
-        return (parameters.extra) ? parameters.extra.filter : {}
+        return Object.assign({}, parameters, parameters.extra);
+        //return (parameters.extra) ? parameters.extra.filter : {}
     }
 
     get options() {

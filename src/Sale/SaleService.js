@@ -380,7 +380,7 @@ export class SaleService {
 
         this.invoiceRepository.remove(id);
 
-        if (entity.invoiceStatus === 'draft')
+        if (invoice.invoiceStatus === 'draft')
             return;
 
         this.eventBus.send("SaleRemoved", id);
