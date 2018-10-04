@@ -22,6 +22,7 @@ export class BranchQuery {
             .from(function () {
                 this.select(
                     'branches.id',
+                    'is_archive',
                     'name',
                     'logo',
                     'ownerId',
@@ -46,8 +47,11 @@ export class BranchQuery {
                     .as("base")
             });
 
-        if (where)
+        if (where) {
+            where.is_archive = false;
             query.where(where);
+        }
+        else query.where({is_archive: false});
 
         if (single)
             query.first();

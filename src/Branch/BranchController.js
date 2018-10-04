@@ -48,6 +48,14 @@ class BranchController {
         this.branchService.update(id, req.body);
     }
 
+    @Delete("/:id", "ShouldAuthenticated")
+    archive(req) {
+
+        let id = req.params.id;
+
+        this.branchService.archive(id);
+    }
+
     @Get("/:id/users", "ShouldHaveBranch")
     getMembers(req) {
 
