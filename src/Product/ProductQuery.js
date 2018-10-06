@@ -11,9 +11,13 @@ export class ProductQuery extends BaseQuery {
             branchId = this.branchId,
             query = this.knex.select()
                 .from(function () {
-                    this.select('products.*', knex.raw('scales.title as "scaleDisplay"'))
+                    this.select('products.*',
+                        knex.raw('scales.title as "scaleDisplay"'),
+                        knex.raw('"productCategories".title as "categoryDisplay"')
+                    )
                         .from('products')
                         .leftJoin('scales', 'products.scaleId', 'scales.id')
+                        .leftJoin('productCategories', 'productCategories.id', 'products.categoryId')
                         .where('products.branchId', branchId)
                         .as('base');
                 });
@@ -26,9 +30,13 @@ export class ProductQuery extends BaseQuery {
             branchId = this.branchId,
             query = this.knex.select()
                 .from(function () {
-                    this.select('products.*', knex.raw('scales.title as "scaleDisplay"'))
+                    this.select('products.*',
+                        knex.raw('scales.title as "scaleDisplay"'),
+                        knex.raw('"productCategories".title as "categoryDisplay"')
+                    )
                         .from('products')
                         .leftJoin('scales', 'products.scaleId', 'scales.id')
+                        .leftJoin('productCategories', 'productCategories.id', 'products.categoryId')
                         .where('products.branchId', branchId)
                         .where('productType', 'good')
                         .as('base');
@@ -41,10 +49,12 @@ export class ProductQuery extends BaseQuery {
 
         let result = toResult(knex.select(
             'products.*',
-            knex.raw('scales.title as "scaleDisplay"')
+            knex.raw('scales.title as "scaleDisplay"'),
+            knex.raw('"productCategories".title as "categoryDisplay"')
         )
             .from('products')
             .leftJoin('scales', 'products.scaleId', 'scales.id')
+            .leftJoin('productCategories', 'productCategories.id', 'products.categoryId')
             .where('products.branchId', this.branchId)
             .andWhere('products.id', id)
             .first());
@@ -70,6 +80,7 @@ export class ProductQuery extends BaseQuery {
             reorderPoint: entity.reorderPoint,
             salePrice: entity.salePrice,
             categoryId: entity.categoryId,
+            categoryDisplay: entity.categoryDisplay,
             scaleId: entity.scaleId,
             scaleDisplay: entity.scaleDisplay,
             referenceId: entity.referenceId,
