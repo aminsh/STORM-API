@@ -97,6 +97,7 @@ export class ReturnSaleQuery extends BaseQuery {
 
             query = knex.select().table(function () {
                 this.select(
+                    'createdAt',
                     'id',
                     'number',
                     'date',
@@ -125,6 +126,7 @@ export class ReturnSaleQuery extends BaseQuery {
                             .as('base');
                     }).as("group")
                     .groupBy(
+                        'createdAt',
                         'id',
                         'number',
                         'date',
