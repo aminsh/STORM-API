@@ -148,6 +148,8 @@ export function register(container, config, setFirstMiddleware, setErrorMiddlewa
                 }
                 catch (e) {
 
+                    console.log(e);
+
                     next(e);
                 }
             }));
