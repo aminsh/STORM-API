@@ -132,7 +132,8 @@ export class DetailAccountService {
             personRoles: JSON.stringify(cmd.personRoles),
             detailAccountCategoryIds: cmd.detailAccountCategoryIds
                 ? cmd.detailAccountCategoryIds.join('|')
-                : null
+                : null,
+            description: cmd.description
         };
 
         this.detailAccountRepository.update(entity);
