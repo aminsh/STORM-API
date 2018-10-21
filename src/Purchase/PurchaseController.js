@@ -48,6 +48,16 @@ class PurchaseController {
         return this.purchaseQuery.getById(id);
     }
 
+    @Post("/:id/fix")
+    fix(req) {
+
+        const id = req.params.id;
+
+        this.purchaseService.fix(id);
+
+        return this.purchaseQuery.getById(id);
+    }
+
     @Put("/:id")
     update(req) {
 

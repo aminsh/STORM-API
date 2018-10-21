@@ -54,6 +54,16 @@ class ReturnPurchaseController {
         return this.returnPurchaseQuery.getById(id);
     }
 
+    @Post("/:id/fix")
+    fix(req) {
+
+        const id = req.params.id;
+
+        this.returnPurchaseService.fix(id);
+
+        return this.returnPurchaseQuery.getById(id);
+    }
+
     @Put("/:id")
     update(req) {
 
