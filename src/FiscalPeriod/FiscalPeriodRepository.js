@@ -12,7 +12,7 @@ export class FiscalPeriodRepository extends BaseRepository {
             .first());
     }
 
-    findFirstOpen(){
+    findFirstOpen() {
         return toResult(this.knex.select('*').from('fiscalPeriods')
             .modify(this.modify, this.branchId)
             .where({isClosed: false})
@@ -21,9 +21,35 @@ export class FiscalPeriodRepository extends BaseRepository {
         );
     }
 
+    isUsed(id) {
+
+        const isUsedOnJournal = toResult(this.knex.select('id').from('journals').where({
+                branchId: this.branchId,
+                periodId: id
+            }).first()),
+
+            isUsedOnInventory = toResult(this.knex.select('id').from('inventories').where({
+                branchId: this.branchId,
+                fiscalPeriodId: id
+            }).first());
+
+        return !!(isUsedOnJournal || isUsedOnInventory);
+    }
+
     create(entity) {
         super.create(entity);
+
         toResult(this.knex('fiscalPeriods').insert(entity));
+    }
+
+    update(id, entity) {
+
+        toResult(this.knex('fiscalPeriods').where({branchId: this.branchId, id}).update(entity));
+    }
+
+    remove(id) {
+
+        toResult(this.knex('fiscalPeriods').where({branchId: this.branchId, id}).del());
     }
 }
 
