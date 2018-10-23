@@ -20,6 +20,7 @@ export class BranchRepository {
         const knex = this.dbContext.instance;
 
         data.id = Utility.TokenGenerator.generate128Bit();
+        data.is_archive = false;
 
         toResult(knex(this.tableName).insert(data));
     }
