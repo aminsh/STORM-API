@@ -29,11 +29,17 @@ export class JournalService {
     /**@type {JournalGenerationTemplateService}*/
     @inject("JournalGenerationTemplateService") journalGenerationTemplateService = undefined;
 
+    /** @type {JournalPurposeRepository}*/
+    @inject("JournalPurposeRepository") journalPurposeRepository = undefined;
+
     /** @type {TreasuryRepository}*/
     @inject("TreasuryRepository") treasuryRepository = undefined;
 
     /** @type {IState}*/
     @inject("State") state = undefined;
+
+    /** @type {EventBus}*/
+    @inject("EventBus") eventBus = undefined;
 
     _validate(cmd) {
         let errors = [];
@@ -194,6 +200,7 @@ export class JournalService {
             description: cmd.description,
             attachmentFileName: cmd.attachmentFileName,
             tagId: cmd.tagId,
+            journalType: cmd.journalType,
             journalLines: cmd.journalLines.asEnumerable()
                 .select(item => {
 
@@ -287,7 +294,21 @@ export class JournalService {
         if (errors.length > 0)
             throw new ValidationException(errors);
 
+        //this.removeJournalPurpose(id);
         this.journalRepository.remove(id);
+    }
+
+    removeJournalPurpose(journalId) {
+        let persistedPurpose = this.journalPurposeRepository.findByJournalId(journalId);
+
+        if (!persistedPurpose)
+            return;
+
+        this.journalPurposeRepository.remove(persistedPurpose.id);
+        let referenceName = persistedPurpose.reference.charAt(0)
+                .toUpperCase() + persistedPurpose.reference.slice(1),
+            eventName = 'on' + referenceName + 'JournalRemoved';
+        this.eventBus.send(eventName, persistedPurpose.referenceId);
     }
 
     generateForInvoice(invoiceId) {
