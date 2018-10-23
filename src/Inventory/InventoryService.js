@@ -57,6 +57,7 @@ export class InventoryService {
         let output = {
             stockId: dto.sourceStockId,
             ioType: 'outputStockToStock',
+            date: dto.date,
             lines: dto.lines
         };
 
@@ -65,6 +66,7 @@ export class InventoryService {
         let input = {
             stockId: dto.destinationStockId,
             ioType: 'inputStockToStock',
+            date: dto.date,
             lines: dto.lines
         };
 

@@ -190,9 +190,9 @@ export class ReturnPurchaseService {
         return entity.id;
     }
 
-    confirm(cmd) {
+    confirm(id) {
 
-        let entity = this.invoiceRepository.findById(cmd.id),
+        let entity = this.invoiceRepository.findById(id),
             errors = this.validation(entity);
 
         if (entity.invoiceStatus === 'confirmed')
@@ -205,7 +205,7 @@ export class ReturnPurchaseService {
             throw  new ValidationException(errors);
 
         let data = {invoiceStatus: 'confirmed'};
-        this.invoiceRepository.update(cmd.id, data);
+        this.invoiceRepository.update(id, data);
 
         this.eventBus.send('ReturnPurchaseCreated', entity.id);
     }
@@ -254,5 +254,21 @@ export class ReturnPurchaseService {
             return;
 
         this.eventBus.send('ReturnPurchaseRemoved', id);
+    }
+
+    fix(id) {
+
+        const invoice = this.invoiceRepository.findById(id);
+
+        if (!invoice)
+            throw new NotFoundException();
+
+        if (invoice.invoiceStatus === 'draft')
+            throw new ValidationException(['فاکتور در وضعیت پیش نویس است ، ابتدا تایید کنید']);
+
+        if (invoice.invoiceStatus === 'fixed')
+            throw new ValidationException(['فاکتور قبلا قطعی شده']);
+
+        this.invoiceRepository.update(id, {invoiceStatus: 'fixed'});
     }
 }

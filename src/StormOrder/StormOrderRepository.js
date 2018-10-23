@@ -34,16 +34,33 @@ export class StormOrderRepository {
 
     isUsedTrialBefore(userId) {
 
-        const knex = this.dbContext.instance;
+        const knex = this.dbContext.instance,
 
-        return toResult(knex.select('storm_plans.id')
-            .from(this.tableName)
-            .leftJoin('storm_plans', this.tableName + '.planId', 'storm_plans.id')
-            .leftJoin('branches', this.tableName + '.branchId', 'branches.id')
-            .where('storm_plans.name', 'Trial')
-            .where('branches.ownerId', userId)
-            .first());
+            user = toResult(knex.select('*').from('users').where({id: userId}).first()),
 
+            query = knex.select('storm_plans.id')
+                .from(this.tableName)
+                .leftJoin('storm_plans', this.tableName + '.planId', 'storm_plans.id')
+                .leftJoin('branches', this.tableName + '.branchId', 'branches.id')
+                .leftJoin('users', `branches.ownerId`, 'users.id')
+                .where('storm_plans.name', 'Trial');
+
+        let where = '';
+
+        if(user.email)
+            where = `users.email ILIKE '${user.email}' `;
+
+        if(user.mobile)
+            where += `OR users.mobile = '${user.mobile}'`;
+
+        if(where.length === 0)
+            `users.id = '${user.id}'`;
+        else
+            where = `(${where})`;
+
+        query.whereRaw(where);
+
+        return !!toResult(query.first());
     }
 
 

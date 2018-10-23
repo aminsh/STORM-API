@@ -35,6 +35,9 @@ export class JournalService {
     /** @type {IState}*/
     @inject("State") state = undefined;
 
+    /** @type {EventBus}*/
+    @inject("EventBus") eventBus = undefined;
+
     _validate(cmd) {
         let errors = [];
 
@@ -194,6 +197,7 @@ export class JournalService {
             description: cmd.description,
             attachmentFileName: cmd.attachmentFileName,
             tagId: cmd.tagId,
+            journalType: cmd.journalType,
             journalLines: cmd.journalLines.asEnumerable()
                 .select(item => {
 

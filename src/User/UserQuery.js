@@ -14,8 +14,8 @@ export class UserQuery {
         const knex = this.dbContext.instance;
 
         let sizes = {
-            small: ['id', 'email', 'name', 'image'],
-            large: ['id', 'token', 'email', 'name', 'mobile', 'isActiveMobile', 'isActiveEmail', 'custom_fields', 'state', 'image']
+            small: ['id', 'email', 'name', 'image', 'createdAt'],
+            large: ['id', 'token', 'email', 'name', 'mobile', 'isActiveMobile', 'isActiveEmail', 'custom_fields', 'state', 'image','createdAt']
         };
 
         return knex.from(function () {

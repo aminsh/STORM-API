@@ -140,13 +140,19 @@ export function register(container, config, setFirstMiddleware, setErrorMiddlewa
                                 res.json(result);
                             else
                                 res.send(result);
-                        else
-                            res.sendStatus(200);
+                        else {
 
+                            if (action.method === 'get')
+                                res.send(result);
+                            else res.sendStatus(200);
+
+                        }
                         _canLog(req) && req.container.get("LoggerService").success(result);
                     }
                 }
                 catch (e) {
+
+                    console.log(e);
 
                     next(e);
                 }

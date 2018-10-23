@@ -9,7 +9,7 @@ export class BranchService {
     @inject("EventBus")
     /**@type{EventBus}*/ eventBus = undefined;
 
-    @inject("State") context = undefined;
+    @inject("State") /**@type{IState}*/ context = undefined;
 
     create(cmd, userId) {
 
@@ -70,6 +70,24 @@ export class BranchService {
             entity.logo = `/${cmd.logoFileName}`;
 
         this.branchRepository.update(id, entity);
+    }
+
+    archive(id){
+
+        const branch = this.branchRepository.findById(id);
+
+        if(!branch)
+            throw new NotFoundException();
+
+        const member = this.branchRepository.findMember(id, this.context.user.id);
+
+        if(!member)
+            throw new ValidationSingleException('شما عضو این کسب و کار نیستید');
+
+        if(!member.isOwner)
+            throw new ValidationSingleException('شما صاحب این کسب و کار نیستید');
+
+        this.branchRepository.update(id, {is_archive: true});
     }
 
     addUser(branchId, userId, asAOwner) {

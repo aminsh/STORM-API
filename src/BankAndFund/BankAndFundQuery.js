@@ -107,6 +107,17 @@ export class BankAndFundQuery extends BaseQuery {
             subsidiaryLedgerAccounts = this.settingsQuery.get().subsidiaryLedgerAccounts,
             subledger = subsidiaryLedgerAccounts.asEnumerable().toObject(item => item.key, item => item.id);
 
+        let subLedgerFilter = [];
+
+        if(subledger.bank)
+            subLedgerFilter.push(subledger.bank);
+
+        if(subledger.fund)
+            subLedgerFilter.push(subledger.fund);
+
+        if(subLedgerFilter.length === 0)
+            return [];
+
         return toResult(
             knex.select(
                 'journalLines.detailAccountId',

@@ -52,11 +52,16 @@ export class InventoryQuery extends BaseQuery {
                 let query = this.select(
                     'inventories.*',
                     knex.raw('stocks.title as "stockDisplay"'),
-                    knex.raw('"inventoryIOTypes".title as "ioTypeDisplay"')
+                    knex.raw('"inventoryIOTypes".title as "ioTypeDisplay"'),
+                    knex.raw('invoices.number as invoice_number'),
+                    knex.raw('invoices.date as invoice_date'),
+                    knex.raw('invoices."invoiceType" as invoice_type'),
+
                 )
                     .from('inventories')
                     .leftJoin('inventoryIOTypes', 'inventoryIOTypes.id', 'inventories.ioType')
                     .leftJoin('stocks', 'stocks.id', 'inventories.stockId')
+                    .leftJoin('invoices', 'invoices.id', 'inventories.invoiceId')
                     .modify(modify, branchId, userId, canView, 'inventories')
                     .where('fiscalPeriodId', fiscalPeriodId)
                     .as('base');
@@ -278,7 +283,10 @@ export class InventoryQuery extends BaseQuery {
             outputId: item.outputId,
             invoiceId: item.invoiceId,
             fixedQuantity: item.fixedQuantity,
-            fixedAmount: item.fixedAmount
+            fixedAmount: item.fixedAmount,
+            invoice: item.invoiceId
+                ? {number: item["invoice_number"], date: item["invoice_date"], type: item["invoice_type"]}
+                : undefined
         };
     }
 

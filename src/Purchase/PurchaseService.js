@@ -222,4 +222,20 @@ export class PurchaseService {
 
         this.eventBus.send('PurchaseRemoved', id);
     }
+
+    fix(id) {
+
+        const invoice = this.invoiceRepository.findById(id);
+
+        if (!invoice)
+            throw new NotFoundException();
+
+        if (invoice.invoiceStatus === 'draft')
+            throw new ValidationException(['فاکتور در وضعیت پیش نویس است ، ابتدا تایید کنید']);
+
+        if (invoice.invoiceStatus === 'fixed')
+            throw new ValidationException(['فاکتور قبلا قطعی شده']);
+
+        this.invoiceRepository.update(id, {invoiceStatus: 'fixed'});
+    }
 }
