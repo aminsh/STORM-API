@@ -9,6 +9,9 @@ export class BranchService {
     @inject("EventBus")
     /**@type{EventBus}*/ eventBus = undefined;
 
+    @inject("UserRepository")
+    /**@type {UserRepository}*/ userRepository = undefined;
+
     @inject("State") /**@type{IState}*/ context = undefined;
 
     create(cmd, userId) {
@@ -72,19 +75,19 @@ export class BranchService {
         this.branchRepository.update(id, entity);
     }
 
-    archive(id){
+    archive(id) {
 
         const branch = this.branchRepository.findById(id);
 
-        if(!branch)
+        if (!branch)
             throw new NotFoundException();
 
         const member = this.branchRepository.findMember(id, this.context.user.id);
 
-        if(!member)
+        if (!member)
             throw new ValidationSingleException('شما عضو این کسب و کار نیستید');
 
-        if(!member.isOwner)
+        if (!member.isOwner)
             throw new ValidationSingleException('شما صاحب این کسب و کار نیستید');
 
         this.branchRepository.update(id, {is_archive: true});
@@ -116,6 +119,30 @@ export class BranchService {
         };
 
         this.branchRepository.addUser(branchId, member)
+    }
+
+    addUserByEmailOrMoble(branchId, dto) {
+
+        const dic = {mobile: 'موبایل', email: 'ایمیل'};
+
+        let fieldName = Object.keys(dto).filter(key => ['mobile', 'email'].includes(key))[0];
+
+        if(fieldName.length === 0)
+            throw new ValidationException(['موبایل یا ایمیل وجود ندارد']);
+
+        let user;
+
+        if(fieldName === 'mobile')
+            user = this.userRepository.findOne({mobile: dto.mobile});
+
+        if(fieldName === 'email')
+            user = this.userRepository.findByEmail(dto.email);
+
+        if(!user)
+            throw new ValidationException(['کاربر با {0} وارد شده وجود ندارد'.format(dic[fieldName])]);
+
+        this.addUser(branchId, user.id);
+
     }
 
     removeUser(branchId, userId) {

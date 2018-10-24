@@ -67,7 +67,7 @@ class BranchController {
 
         let id = req.params.id;
 
-        this.branchService.addUser(id, req.body.userId);
+        this.branchService.addUserByEmailOrMoble(id, req.body);
     }
 
     @Delete("/:id/users/:userId", "ShouldAuthenticated")
