@@ -16,6 +16,12 @@ class FiscalPeriodController {
         return this.fiscalPeriodQuery.getAll(req.query);
     }
 
+    @Get("/:id")
+    getById(req){
+
+        return this.fiscalPeriodQuery.getById(req.params.id);
+    }
+
     @Post("/")
     create(req) {
 
