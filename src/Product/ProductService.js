@@ -37,13 +37,7 @@ export class ProductService {
         if (!cmd.title)
             return null;
 
-        entity = {
-            title: cmd.title,
-            productType: cmd.productType,
-            referenceId: cmd.referenceId
-        };
-
-        const id = this.create(entity);
+        const id = this.create(cmd);
 
         return this.productRepository.findById(id);
     }

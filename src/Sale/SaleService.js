@@ -53,7 +53,7 @@ export class SaleService {
         if (entity.marketerId) {
             let marketerDetailAccount = this.detailAccountService.findPersonByIdOrCreate({id: entity.marketerId}),
                 personRole = marketerDetailAccount.personRoles
-                    ? marketerDetailAccount.personRoles.asEnumerable().any(role => role == 'Marketer')
+                    ? marketerDetailAccount.personRoles.asEnumerable().any(role => role === 'Marketer')
                     : null;
 
             if (!personRole)
