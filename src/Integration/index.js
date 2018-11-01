@@ -2,6 +2,8 @@ import {PaypingInterfacePaymentGateway} from "./paymentGateway/payping/PaypingIn
 import {ZarinpalInterfacePaymentGateway} from "./paymentGateway/zarinpal/ZarinpalInterfacePaymentGateway";
 import {KaveNegarSmsService} from "./smsService/KaveNegar";
 
+import "./opencard/OpencardController";
+
 export function register(container) {
 
     container.bind("PaypingInterfacePaymentGateway").to(PaypingInterfacePaymentGateway);
