@@ -118,7 +118,9 @@ export class BranchService {
             token: Utility.TokenGenerator.generate256Bit()
         };
 
-        this.branchRepository.addUser(branchId, member)
+        this.branchRepository.addUser(branchId, member);
+
+        return member;
     }
 
     addUserByEmailOrMoble(branchId, dto) {
