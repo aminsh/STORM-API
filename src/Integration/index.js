@@ -1,13 +1,17 @@
 import {PaypingInterfacePaymentGateway} from "./paymentGateway/payping/PaypingInterfacePaymentGateway";
 import {ZarinpalInterfacePaymentGateway} from "./paymentGateway/zarinpal/ZarinpalInterfacePaymentGateway";
+import {Woocommerce} from "./shop/woocommerce/Woocommerce";
 import {KaveNegarSmsService} from "./smsService/KaveNegar";
 
 import "./opencard/OpencardController";
+import "./shop/woocommerce/WoocommerceController";
 
 export function register(container) {
 
     container.bind("PaypingInterfacePaymentGateway").to(PaypingInterfacePaymentGateway);
     container.bind("ZarinpalInterfacePaymentGateway").to(ZarinpalInterfacePaymentGateway);
+
+    container.bind("Woocommerce").to(Woocommerce);
 
     container.bind("Factory<ThirdParty>").toFactory(context => {
         return key => {
@@ -16,6 +20,9 @@ export function register(container) {
 
             if(key === 'zarinpal')
                 return context.container.get("ZarinpalInterfacePaymentGateway");
+
+            if(key === 'woocommerce')
+                return context.container.get("Woocommerce");
         };
     });
 
@@ -30,4 +37,6 @@ export function register(container) {
     });
 
     container.bind("SmsService").to(KaveNegarSmsService);
+
+
 }
