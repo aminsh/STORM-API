@@ -223,6 +223,12 @@ class ReportController {
         return this.reportBalanceSheetQuery.getBalanceSheet();
     }
 
+    @Get("/profit-loss-statement")
+    getProfitLossStatement() {
+
+        return this.reportProfitLossStatementQuery.getProfitLossStatement();
+    }
+
     @Get("/compare-profit-loss-statement")
     getCompareProfitLossStatement() {
 
@@ -242,7 +248,7 @@ class ReportController {
     }
 
     @Get("/sale-invoice-turnover")
-    getSaleDetailTurnover(req) {
+    getSaleTurnover(req) {
 
         return this.reportSaleQuery.getDetail(req.query.invoiceStatus);
     }
