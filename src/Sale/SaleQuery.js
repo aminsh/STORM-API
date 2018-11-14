@@ -101,6 +101,7 @@ export class SaleQuery extends BaseQuery {
                     'createdAt',
                     'id',
                     'number',
+                    'display',
                     'date',
                     'detailAccountId',
                     'detailAccountDisplay',
@@ -120,6 +121,7 @@ export class SaleQuery extends BaseQuery {
                     .from(function () {
                         this.select('invoices.*',
                             knex.raw('"person"."title" as "detailAccountDisplay"'),
+                            knex.raw(`number || ' - ' || date || ' - ' || "person".title as display`),
                             knex.raw('"marketer"."title" as "marketerDisplay"'),
                             knex.raw(`("invoiceLines"."unitPrice" * "invoiceLines".quantity - "invoiceLines".discount + "invoiceLines".vat + "invoiceLines".tax) as "totalPrice"`))
                             .from('invoices')
@@ -134,6 +136,7 @@ export class SaleQuery extends BaseQuery {
                         'createdAt',
                         'id',
                         'number',
+                        'display',
                         'date',
                         'detailAccountId',
                         'detailAccountDisplay',
@@ -355,6 +358,7 @@ export class SaleQuery extends BaseQuery {
             printUrl,
             number: entity.number,
             date: entity.date,
+            display: entity.display,
             description: entity.description,
             title: entity.title,
             journalId: entity.journalId,
