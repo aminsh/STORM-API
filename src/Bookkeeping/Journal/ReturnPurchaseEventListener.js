@@ -10,10 +10,10 @@ export class ReturnPurchaseEventListener {
     /**@type {InvoiceRepository}*/
     @inject("InvoiceRepository") invoiceRepository = undefined;
 
-    /**@type {CommandBus}*/
-    @inject("CommandBus") commandBus = undefined;
+    /**@type {JournalService}*/
+    @inject("JournalService") journalService = undefined;
 
-    @EventHandler("onReturnPurchaseCreated")
+    @EventHandler("ReturnPurchaseCreated")
     onReturnPurchaseCreated(invoiceId) {
         let invoice = this.invoiceRepository.findById(invoiceId),
             settings = this.settingsRepository.get();
@@ -21,24 +21,15 @@ export class ReturnPurchaseEventListener {
         if (invoice.invoiceStatus === 'draft')
             return;
 
-        if (!settings.canSaleGenerateAutomaticJournal)
+        if (!settings.canInventoryGenerateAutomaticJournal)
             return;
 
-        let journalId = this.commandBus.send("journalGenerateForReturnPurchase", [invoice.id]);
-        this.commandBus.send("returnPurchaseSetJournal", [invoice.id, journalId]);
+        const journalId = this.journalService.generateForReturnPurchase(invoiceId);
+        this.invoiceRepository.update(invoiceId, {journalId});
     }
 
     @EventHandler("onReturnPurchaseChanged")
     onReturnPurchaseChanged(invoice) {
         this.onReturnPurchaseCreated(invoice);
-    }
-
-    @EventHandler("onReturnPurchaseConfirmed")
-    onReturnPurchaseConfirmed(invoice) {
-        this.onReturnPurchaseCreated(invoice);
-    }
-
-    onReturnPurchaseRemoved(invoice) {
-
     }
 }
