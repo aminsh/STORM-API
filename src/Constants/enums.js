@@ -49,7 +49,10 @@ enums.DetailAccountType = function () {
     return new Enum([
         {key: 'person', display: 'شخص'},
         {key: 'bank', display: 'بانک'},
-        {key: 'fund', display: 'صندوق'}
+        {key: 'fund', display: 'صندوق'},
+        {key: 'product', display: 'کالا'},
+        {key: 'stock', display: 'انبار'},
+
     ]);
 };
 
@@ -269,7 +272,7 @@ enums.InventoryIOType = function () {
         {key: 'outputSale', display: 'فروش'},
         {key: 'outputWaste', display: 'ضایعات'},
         {key: 'outputStockToStock', display: 'انبار به انبار'},
-        {key: 'outputReturnPurchase', display: 'برگشت از خرید'}
+        {key: 'outputBackFromPurchase', display: 'برگشت از خرید'}
     ])
 };
 

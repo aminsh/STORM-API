@@ -24,7 +24,7 @@ export class StockQuery extends BaseQuery {
 
     getById(id) {
 
-        let entity = toResult(this.knex.select('id', 'title', 'address')
+        let entity = toResult(this.knex.select('id', 'title', 'address', 'accountId')
             .from(this.tableName)
             .where('branchId', this.branchId)
             .where('id', id)
@@ -37,7 +37,8 @@ export class StockQuery extends BaseQuery {
         return {
             id: item.id,
             title: item.title,
-            address: item.address
+            address: item.address,
+            accountId: item.accountId
         };
     }
 }

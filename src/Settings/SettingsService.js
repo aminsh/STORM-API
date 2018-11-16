@@ -30,13 +30,16 @@ export class SettingService{
             canCreateSaleOnNoEnoughInventory: cmd.canCreateSaleOnNoEnoughInventory,
             productOutputCreationMethod: cmd.productOutputCreationMethod,
             canSaleGenerateAutomaticJournal: cmd.canSaleGenerateAutomaticJournal,
+            canInventoryGenerateAutomaticJournal: cmd.canInventoryGenerateAutomaticJournal,
             stakeholders: JSON.stringify(cmd.stakeholders),
             subsidiaryLedgerAccounts: JSON.stringify(cmd.subsidiaryLedgerAccounts),
             stockId: cmd.stockId,
             saleCosts: JSON.stringify(cmd.saleCosts),
             saleCharges: JSON.stringify(cmd.saleCharges),
             webhooks: JSON.stringify(cmd.webhooks),
-            invoiceDescription: cmd.invoiceDescription
+            invoiceDescription: cmd.invoiceDescription,
+            productAccountLevel: cmd.productAccountLevel,
+            stockAccountLevel: cmd.stockAccountLevel
         };
 
         return this.settingsRepository.update(entity);
