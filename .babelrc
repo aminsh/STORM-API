@@ -1,10 +1,11 @@
 {
   "presets": [
-    "es2015"
+    "@babel/preset-env"
   ],
   "plugins": [
-    "transform-decorators-legacy",
-    "transform-class-properties",
-    ["inline-json-import", {}]
+    ["@babel/plugin-proposal-decorators",{ "legacy": true }],
+    ["transform-class-properties",{ "loose": true }],
+    ["inline-json-import", {}],
+    "@babel/plugin-proposal-object-rest-spread"
   ]
 }
