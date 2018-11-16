@@ -69,6 +69,18 @@ export class InvoiceRepository extends BaseRepository {
         return invoice;
     }
 
+    findByOrderId(orderId) {
+
+        const result = toResult(
+            this.knex.select('id').from('invoices').where({orderId}).first()
+        );
+
+        if(!result)
+            return;
+
+        return this.findById(result.id);
+    }
+
     findReturnInvoiceByInvoiceId(ofInvoiceId) {
 
         let knex = this.knex,
