@@ -42,7 +42,7 @@ export class OutputReturnPurchaseDomainService {
                 item => item,
                 (key, items) => ({
                     stockId: key,
-                    ioType: 'outputReturnPurchase',
+                    ioType: 'outputBackFromPurchase',
                     lines: items.toArray()
                 }))
             .select(item => this.inventoryOutputDomainService.create(item))

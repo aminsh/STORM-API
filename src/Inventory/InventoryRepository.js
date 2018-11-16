@@ -82,20 +82,21 @@ export class InventoryRepository extends BaseRepository {
             modify = this.modify,
 
             query = toResult(knex.from(function () {
-                this.select(knex.raw(`((case
+                const q = this.select(knex.raw(`((case
                      when "inventories"."inventoryType" = 'input' then 1
                      when "inventories"."inventoryType" = 'output' then -1
                      end) * "inventoryLines"."quantity") as "countOfProduct"`))
                     .from('inventories')
                     .leftJoin('inventoryLines', 'inventories.id', 'inventoryLines.inventoryId')
                     .modify(modify, branchId, 'inventories.branchId')
+                    .where('quantityStatus', '!=', 'draft')
+                    .where('fiscalPeriodId', fiscalPeriodId)
+                    .where('productId', productId);
 
-                    /* TODO this control is disabled temporarily .where('fixedQuantity', true)*/
+                if(stockId)
+                    q.where('stockId', stockId);
 
-                    .andWhere('fiscalPeriodId', fiscalPeriodId)
-                    .andWhere('productId', productId)
-                    .andWhere('stockId', stockId)
-                    .as('base');
+                q.as('base');
             })
                 .sum('countOfProduct')
                 .first());
@@ -111,6 +112,7 @@ export class InventoryRepository extends BaseRepository {
             .andWhere('fiscalPeriodId', fiscalPeriodId)
             .andWhere('productId', productId)
             .andWhere('stockId', stockId)
+            .andWhere('quantityStatus', '!=', 'draft')
             .orderBy('inventories.createdAt');
 
         if (expectInventoryLineId)
@@ -244,8 +246,8 @@ export class InventoryRepository extends BaseRepository {
     createInventory(entity, knex) {
         super.create(entity);
 
-        entity.fixedAmount = false;
-        entity.fixedQuantity = false;
+       /* entity.fixedAmount = false;
+        entity.fixedQuantity = false;*/
 
         toResult(knex('inventories').insert(entity));
 

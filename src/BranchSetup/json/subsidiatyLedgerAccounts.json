@@ -12,7 +12,7 @@
   {"parentCode": "102", "code": "10203", "key": "", "title": "سرمایه گذاری در اوراق مشارکت", "balanceType": "debit", "hasDetailAccount": true},
 
   {"parentCode": "103", "code": "10301", "key": "", "title": "اسناد دریافتنی تجاری در جریان وصول", "hasDetailAccount": true},
-  {"parentCode": "103", "code": "10302", "key": "", "title": "اسنادر دریافتنی تجاری نزد صندوق", "hasDetailAccount": true},
+  {"parentCode": "103", "code": "10302", "key": "", "title": "اسناد دریافتنی تجاری نزد صندوق", "hasDetailAccount": true},
   {"parentCode": "103", "code": "10303", "key": "", "title": "اسناد دریافتنی تجاری واخواستی", "hasDetailAccount": false},
   {"parentCode": "103", "code": "10304", "key": "", "title": "حساب های دریافتنی تجاری", "hasDetailAccount": true},
   {"parentCode": "103", "code": "10305", "key": "", "title": "اسناد دریافتنی ابطالی", "hasDetailAccount": true},

@@ -129,11 +129,13 @@ export class JournalService {
 
         let maxNumber = this.journalRepository.maxTemporaryNumber(currentFiscalPeriod.id).max || 0;
 
+        const date = cmd.date || cmd.temporaryDate;
+
         let trueDate =
-            cmd.temporaryDate &&
-            cmd.temporaryDate >= currentFiscalPeriod.minDate &&
-            cmd.temporaryDate <= currentFiscalPeriod.maxDate
-                ? cmd.temporaryDate
+            date &&
+            date >= currentFiscalPeriod.minDate &&
+            date <= currentFiscalPeriod.maxDate
+                ? date
                 : PersianDate.current();
 
         let journal = {
@@ -388,9 +390,6 @@ export class JournalService {
         if (!invoice)
             throw new ValidationException(['فاکتور وجود ندارد']);
 
-        /*if (!Utility.String.isNullOrEmpty(invoice.journalId))
-            throw new ValidationException(['برای فاکتور {0} قبلا سند حسابداری صادر شده'.format(invoice.number)]);*/
-
         const charge = (settings.saleCharges || []).asEnumerable()
             .select(e => ({
                 key: e.key,
@@ -405,6 +404,7 @@ export class JournalService {
                 amount: invoice.invoiceLines.asEnumerable().sum(line => line.unitPrice * line.quantity),
                 discount: invoice.invoiceLines.asEnumerable().sum(line => line.discount) + invoice.discount,
                 vat: invoice.invoiceLines.asEnumerable().sum(line => line.vat),
+                tax: invoice.invoiceLines.asEnumerable().sum(line => line.tax),
                 vendor: invoice.detailAccountId,
                 vendorCode: invoice.detailAccount.code,
                 vendorTitle: invoice.detailAccount.title,
@@ -412,7 +412,8 @@ export class JournalService {
 
             journal = this.journalGenerationTemplateService.generate(model, 'purchase');
 
-        return invoice.journalId ? this.update(invoice.journalId, journal)
+        return invoice.journalId
+            ? this.update(invoice.journalId, journal)
             : this.create(journal);
     }
 
@@ -422,9 +423,6 @@ export class JournalService {
 
         if (!invoice)
             throw new ValidationException(['فاکتور وجود ندارد']);
-
-        if (!Utility.String.isNullOrEmpty(invoice.journalId))
-            throw new ValidationException(['برای فاکتور {0} قبلا سند حسابداری صادر شده'.format(invoice.number)]);
 
         const charge = (settings.saleCharges || []).asEnumerable()
             .select(e => ({
@@ -447,7 +445,8 @@ export class JournalService {
 
             journal = this.journalGenerationTemplateService.generate(model, 'returnPurchase');
 
-
-        return this.create(journal);
+        return invoice.journalId
+            ? this.update(invoice.journalId, journal)
+            : this.create(journal);
     }
 }

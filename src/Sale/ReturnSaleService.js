@@ -147,7 +147,6 @@ export class ReturnSaleService {
 
     }
 
-
     create(cmd) {
 
         let entity = this.mapToEntity(cmd),
