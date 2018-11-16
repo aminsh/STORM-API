@@ -31,7 +31,7 @@ class OutputController {
     @Get("/outputs/return-purchase")
     getOutputsReturnSale(req) {
 
-        return this.inventoryQuery.getAllInputsWithIoType('outputReturnPurchase', req.query);
+        return this.inventoryQuery.getAllInputsWithIoType('outputBackFromPurchase', req.query);
     }
 
     @Post("/outputs")
@@ -48,6 +48,26 @@ class OutputController {
         const id = req.params.id;
 
         this.outputService.update(id, req.body);
+
+        return this.inventoryQuery.getById(id);
+    }
+
+    @Put("/outputs/:id/confirm")
+    confirmOutput(req) {
+
+        const id = req.params.id;
+
+        this.outputService.confirm(id);
+
+        return this.inventoryQuery.getById(id);
+    }
+
+    @Put("/outputs/:id/fix")
+    fixOutput(req) {
+
+        const id = req.params.id;
+
+        this.outputService.fix(id);
 
         return this.inventoryQuery.getById(id);
     }

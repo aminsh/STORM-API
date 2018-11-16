@@ -23,6 +23,7 @@ export class InputService {
             date: cmd.date || Utility.PersianDate.current(),
             description: cmd.description,
             inventoryType: 'input',
+            quantityStatus: 'draft',
             ioType: cmd.ioType,
             fiscalPeriodId: this.state.fiscalPeriodId,
             inventoryLines: (cmd.inventoryLines || cmd.lines).asEnumerable()
@@ -77,9 +78,31 @@ export class InputService {
 
         this.inventoryRepository.create(entity);
 
-        this.eventBus.send("InventoryInputCreated", entity.id);
-
         return entity.id;
+    }
+
+    confirm(id) {
+
+        const input = this.inventoryRepository.findById(id);
+
+        if (!input)
+            throw new NotFoundException();
+
+        this.inventoryRepository.update(id, {quantityStatus: 'confirmed'});
+
+        this.eventBus.send("InventoryInputCreated", id);
+    }
+
+    fix(id) {
+
+        const input = this.inventoryRepository.findById(id);
+
+        if (!input)
+            throw new NotFoundException();
+
+        this.inventoryRepository.update(id, {quantityStatus: 'fixed'});
+
+        this.eventBus.send("InventoryInputFixed", id);
     }
 
     update(id, cmd) {
@@ -91,6 +114,9 @@ export class InputService {
 
         if (errors.length > 0)
             throw new ValidationException(errors);
+
+        if(input.quantityStatus === 'fixed')
+            throw new ValidationException(['رسید ثبت قطعی شده ، امکان تغییر وجود ندارد']);
 
         let removedLines = input.inventoryLines.asEnumerable()
             .where(inputLine => !cmd.inventoryLines.asEnumerable().any(line => line.id === inputLine.id))
@@ -162,16 +188,19 @@ export class InputService {
         if (errors.length > 0)
             throw new ValidationException(errors);
 
+        if(input.quantityStatus === 'fixed')
+            throw new ValidationException(['حواله ثبت قطعی شده ، امکان حذف وجود ندارد']);
+
         this.inventoryRepository.remove(id);
 
-        this.eventBus.send("InventoryInputRemoved", id);
+        this.eventBus.send("InventoryInputRemoved", input);
     }
 
     setInvoice(id, invoiceId) {
 
         const input = this.inventoryRepository.findById(id);
 
-        this.inventoryRepository.update(id, {invoiceId});
+        this.inventoryRepository.update(id, {invoiceId, quantityStatus: true});
 
         this.eventBus.send("InventoryInputChanged", input, id);
     }
