@@ -6,95 +6,63 @@ export class InventoryAccountingPricingService {
     @inject("InventoryAccountingRepository")
     /**@type{InventoryAccountingRepository}*/ inventoryAccountingRepository = undefined;
 
-    calculate(dto) {
+    @inject("EventBus")
+    /**@type {EventBus}*/ eventBus = undefined;
 
-        if (!dto.maxDate)
-            throw new ValidationException(['تاریخ انتهای دوره وجود ندارد']);
+    calculatePrice() {
+        const inventories = this.inventoryAccountingRepository.findAll();
 
-        const zeroPriceInputs = this.inventoryAccountingRepository.getZeroPriceOnInputs(dto.maxDate);
+        inventories.asEnumerable()
+            .orderBy(item => item.row)
+            .forEach(item => {
 
-        if (zeroPriceInputs && zeroPriceInputs.length > 0)
-            throw new ValidationException(['رسید با قیمت صفر وجود دارد']);
+                if (item.type === 'output')
+                    item.price = this._calculateAvg(item, inventories);
 
-        const before = this.inventoryAccountingRepository.totalQuantityAndPriceOnFixedInputsByProduct(),
-            inventories = this.inventoryAccountingRepository.findAllNotFixed();
+                if (item.type === 'input' && !['firstInput', 'inputPurchase'].includes(item.ioType))
+                    item.price = this._calculateAvg(item, inventories);
 
-        let byProduct = inventories.asEnumerable()
-            .groupBy(
-                item => item.productId,
-                item => item,
-                (productId, items) => ({
-                    productId,
-                    items: items.toArray()
-                }))
-            .toArray();
-
-        byProduct.forEach(pro => {
-            pro.items.reduce((memory, current) => {
-
-                if (memory.type === 'output') {
-                    const item = before.asEnumerable().single(b => b.productId === memory.productId);
-                    memory.unitPrice = item.unitPrice;
-                    memory.changed = true;
-
-                    return item;
-                }
-
-                if (memory.type === 'input' && !['inputFirst', 'inputPurchase'].includes(memory.ioType)) {
-                    const item = before.asEnumerable().single(b => b.productId === memory.productId);
-                    memory.unitPrice = item.unitPrice;
-                    memory.changed = true;
-
-                    return item;
-                }
-
-                if (current.type === 'input' && ['inputFirst', 'inputPurchase'].includes(current.ioType))
-                    return {
-                        unitPrice: ((memory.quantity * memory.unitPrice) + (current.quantity * current.unitPrice)) / (memory.quantity + current.quantity),
-                        quantity: memory.quantity + current.quantity
-                    };
-
-                current.unitPrice = memory.unitPrice;
-                current.changed = true;
-
-                return memory;
+                if (item.type === 'input' && ['firstInput', 'inputPurchase'].includes(item.ioType))
+                    item.price = item.unitPrice;
 
             });
-        });
 
-        const flatten = byProduct.asEnumerable()
-            .selectMany(item => item.items);
+        const firstZero = inventories.asEnumerable().orderBy(item => item.row).firstOrDefault(item => item.row === 0);
 
-        flatten
-            .where(item => item.changed)
-            .forEach(item => this.inventoryAccountingRepository.updateLine(item.lineId, {unitPrice: item.unitPrice}));
-
-        if (dto.shouldFixAmount)
-            flatten.forEach(item => this.inventoryAccountingRepository.update(item.id, {fixedAmount: true}));
+        inventories.asEnumerable()
+            .where(item => (firstZero ? item.row < firstZero.row : true) && item.price !== item.unitPrice && item.priceStatus !== 'fixed')
+            .groupBy(
+                item => item.id,
+                item => item,
+                (id, items) => ({
+                    id,
+                    lines: items.select(i => ({id: i.lineId, unitPrice: i.price})).toArray()
+                })
+            )
+            .forEach(item => this.outputSetPrice(item.id, item.lines));
     }
 
-    _shouldCalculatePrice(item){
-         if(item.type === 'output')
-             return false;
+    _calculateAvg(item, inventories) {
 
-         if(['inputFirst', 'inputPurchase'].includes(item.ioType))
-             return true;
+        const baseQuery = inventories.asEnumerable().where(i => i.row < item.row && i.type === 'input' && i.productId === item.productId);
 
-         if(item.priceManuallyEntered)
-             return true;
-
-         return false;
+        return baseQuery.any(i => i.unitPrice === 0)
+            ? 0
+            : baseQuery.sum(i => i.quantity * i.unitPrice) / baseQuery.sum(i => i.quantity);
     }
 
-    inputEnterPrice(id, lines) {
+    inputEnterPrice(id, lines, priceManuallyEntered = false) {
 
-        const input = this.inventoryAccountingRepository.findById(id);
+        let input = this.inventoryAccountingRepository.findById(id);
 
         if (!input)
             throw new NotFoundException();
 
         if (input.inventoryType !== 'input')
-            throw  new NotFoundException();
+            throw new NotFoundException();
+
+        if (input.priceStatus === 'fixed')
+            throw new ValidationException(['رسید ثبت قطعی شده ، امکان تغییر وجود ندارد']);
 
         let errors = [];
 
@@ -106,6 +74,25 @@ export class InventoryAccountingPricingService {
 
         lines.forEach(line => this.inventoryAccountingRepository.updateLine(line.id, {unitPrice: line.unitPrice}));
 
-        this.inventoryAccountingRepository.update(id, {priceManuallyEntered: true});
+        input = this.inventoryAccountingRepository.findById(id);
+
+
+        let data = {priceManuallyEntered};
+
+        if (input.inventoryLines.asEnumerable().all(line => line.unitPrice > 0))
+            data.priceStatus = 'confirmed';
+
+        this.inventoryAccountingRepository.update(id, data);
+
+        this.eventBus.send("InventoryInputPriceChanged", id);
+    }
+
+    outputSetPrice(id, lines) {
+
+        lines.forEach(line => this.inventoryAccountingRepository.updateLine(line.id, {unitPrice: line.unitPrice}));
+
+        this.eventBus.send("InventoryOutputPriceChanged", id);
     }
 }
+
+
