@@ -1,6 +1,4 @@
 import {inject, injectable} from "inversify";
-import WooCommerceAPI from "woocommerce-api";
-import toResult from "asyncawait/await";
 import {EventHandler} from "../../../Infrastructure/@decorators";
 
 @injectable()
@@ -18,56 +16,64 @@ export class Woocommerce {
     @inject("SaleService")
     /**@type{SaleService}*/ saleService = undefined;
 
+    @inject("ReturnSaleService")
+    /**@type{ReturnSaleService}*/ returnSaleService = undefined;
+
     @inject("ProductRepository")
     /**@type{ProductRepository}*/ productRepository = undefined;
+
+    @inject("ProductService")
+    /**@type{ProductService}*/ productService = undefined;
 
     @inject("RegisteredThirdPartyRepository")
     /**@type{RegisteredThirdPartyRepository}*/ registeredThirdPartyRepository = undefined;
 
+    @inject("WoocommerceRepository")
+    /**@type{WoocommerceRepository}*/ woocommerceRepository = undefined;
+
+    @inject("InventoryRepository")
+    /**@type{InventoryRepository}*/ inventoryRepository = undefined;
+
     @inject("State") /**@type{IState}*/ state = undefined;
 
-    getWooCommerceAPI(data) {
-        return new WooCommerceAPI({
-            url: data.url,
-            consumerKey: data.consumerKey,
-            consumerSecret: data.consumerSecret,
-            wpAPI: true,
-            version: 'wc/v1'
-        });
-    }
-
     register(data) {
-
-        const WooCommerce = this.getWooCommerceAPI(data);
 
         let member = this.branchRepository.findMember(this.state.branchId, 'STORM-API-USER');
 
         if (!member)
             member = this.branchService.addUser(this.state.branchId, 'STORM-API-USER');
 
-        toResult(
-            WooCommerce.postAsync("webhooks", {
+        this.woocommerceRepository.initWoocommerce(data);
+
+        const baseUrl = `${process.env['ORIGIN_URL']}/v1/woocommerce`;
+
+        try {
+
+            this.woocommerceRepository.post('webhooks', {
                 name: 'Order created',
                 topic: 'order.created',
-                delivery_url: `${process.env['ORIGIN_URL']}/woocommerce/add-order?token=${member.token}`,
-            })
-        );
+                delivery_url: `${baseUrl}/add-order?token=${member.token}`,
+            });
 
-        toResult(
-            WooCommerce.postAsync("webhooks", {
+            this.woocommerceRepository.post('webhooks', {
                 name: 'Order updated',
                 topic: 'order.updated',
-                delivery_url: `${process.env['ORIGIN_URL']}/woocommerce/update-order?token=${member.token}`
-            })
-        );
+                delivery_url: `${baseUrl}/update-order?token=${member.token}`
+            });
 
-        toResult(
-            WooCommerce.postAsync("webhooks", {
+            this.woocommerceRepository.post('webhooks', {
                 name: 'Order deleted',
                 topic: 'order.deleted',
-                delivery_url: `${process.env['ORIGIN_URL']}/woocommerce/delete-order?token=${member.token}`
-            })
-        );
+                delivery_url: `${baseUrl}/delete-order?token=${member.token}`
+            });
+        }
+        catch (e) {
+
+            if(e.code === 'ENOTFOUND')
+                throw new ValidationException(['آدرس معتبر نیست']);
+
+            throw new ValidationSingleException(JSON.stringify(e));
+        }
     }
 
     addOrder(data) {
@@ -80,11 +86,9 @@ export class Woocommerce {
         if (!wooCommerceThirdParty)
             throw new ValidationException(['افزونه ووکامرسی وجود ندارد']);
 
-        const WooCommerce = this.getWooCommerceAPI(wooCommerceThirdParty.data),
+        const customerId = data['customer_id'];
 
-            customerId = data['customer_id'];
-
-        const result = toResult(WooCommerce.getAsync(`customers/${customerId}`)),
+        const result = this.woocommerceRepository.get(`customers/${customerId}`),
             customer = JSON.parse(result.body);
 
         const sale = {
@@ -138,24 +142,62 @@ export class Woocommerce {
 
     deleteOrder(data) {
 
+        if (data.hasOwnProperty('webhook_id'))
+            return;
+
+        const invoice = this.invoiceRepository.findByOrderId(data.id);
+
+        if (!invoice)
+            throw new ValidationException(['فاکتور به شماره سفارش ورودی وجود ندارد']);
+
+        if(invoice.invoiceStatus === 'draft')
+            return this.saleService.remove(invoice.id);
+
+        let cmd = {
+            ofInvoiceId: invoice.id,
+            customer: {id: invoice.detailAccountId},
+            title: 'بابت حذف سفارش شماره {0} '.format(data.id),
+            discount: invoice.discount,
+            invoiceLines: invoice.invoiceLines.map(line => ({
+                product: {id: line.productId},
+                stockId: line.stockId,
+                quantity: line.quantity,
+                unitPrice: line.unitPrice,
+                discount: line.discount,
+                vat: line.vat,
+                tax: line.tax
+            }))
+        };
+
+        this.returnSaleService.create(cmd);
+    }
+
+    syncProducts(){
+
+        const products = this.woocommerceRepository.get('products');
+
+        products.forEach(product =>
+            this.productService.findByIdOrCreate({
+                referenceId: product.id,
+                title: product.name,
+                salePrice: parseInt(product.price)
+            }));
     }
 
     @EventHandler("ProductInventoryChanged")
-    onProductInventoryChanged(productId, quantity) {
+    onProductInventoryChanged(productId) {
 
         const wooCommerceThirdParty = this.registeredThirdPartyRepository.get("woocommerce");
 
         if (!wooCommerceThirdParty)
             return;
 
-        const WooCommerce = this.getWooCommerceAPI(wooCommerceThirdParty.data),
+        const quantity = this.inventoryRepository.getInventoryByProduct(productId, this.state.fiscalPeriodId),
             product = this.productRepository.findById(productId);
 
-        toResult(
-            WooCommerce.putAsync(`products/${product.referenceId}`, {
-                manage_stock: true,
-                stock_quantity: quantity
-            })
-        );
+        this.woocommerceRepository.put(`products/${product.referenceId}`, {
+            manage_stock: true,
+            stock_quantity: quantity
+        });
     }
 }
