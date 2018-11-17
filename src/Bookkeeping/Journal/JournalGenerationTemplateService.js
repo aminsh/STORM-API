@@ -49,4 +49,66 @@ export class JournalGenerationTemplateService {
 
         return entity.id;
     }
+
+    createCustomTemplate(sourceType, cmd) {
+
+        cmd.name = sourceType;
+
+        const errors = this._validateCustomTemplate(cmd);
+
+        if (errors.length > 0)
+            throw new ValidationException(errors);
+
+        const entity = {
+            title: cmd.title,
+            data: cmd.data,
+            fields: cmd.fields
+        };
+
+        return this.journalGenerationTemplateRepository.create(sourceType, entity);
+    }
+
+    _validateCustomTemplate(cmd) {
+
+        let errors = [];
+
+        if (!cmd.name)
+            errors.push('نام قالب وارد نشده');
+
+        if (!cmd.title)
+            errors.push('عنوان قالب وارد نشده');
+
+        if (!cmd.fields)
+            errors.push('فیلدهای قالب وارد نشده');
+        else {
+
+            let err = this._validateCustomTemplateField(cmd.fields);
+
+            errors.concat(err);
+        }
+
+        return errors;
+    }
+
+    _validateCustomTemplateField(fields) {
+
+        let errors = [];
+
+        const complexType = ['Array', 'Object'];
+
+        fields.forEach(field => {
+
+            if(!field.type) {
+                errors.push('نوع فیلد مشخص نشده');
+                return;
+            }
+
+            if(complexType.includes(field.type))
+                errors.concat(this._validateCustomTemplateField(field.fields));
+            else {
+                if(!field.key)
+                    errors.push('کلید فیلد مشخص نشده');
+            }
+        });
+    }
 }
