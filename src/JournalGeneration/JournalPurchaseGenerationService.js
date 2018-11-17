@@ -1,7 +1,7 @@
 import {inject, injectable} from "inversify";
 
 @injectable()
-export class JournalInvoiceGenerationService {
+export class JournalPurchaseGenerationService {
 
     /**@type {JournalService}*/
     @inject("JournalService") journalService = undefined;
@@ -22,7 +22,7 @@ export class JournalInvoiceGenerationService {
         if (!invoice)
             throw new ValidationException(['فاکتور وجود ندارد']);
 
-        const journal = this.journalGenerationTemplateService.generate(invoice, 'sale');
+        const journal = this.journalGenerationTemplateService.generate(invoice, 'purchase');
 
         journal.journalLines = journal.journalLines.asEnumerable()
             .orderByDescending(line => line.debtor)
@@ -31,7 +31,7 @@ export class JournalInvoiceGenerationService {
         if (invoice.journalId)
             this.journalService.update(invoice.journalId, journal);
         else {
-            let journalId = this.journalService.create(journal);
+            const journalId = this.journalService.create(journal);
 
             Utility.delay(1000);
 

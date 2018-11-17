@@ -31,10 +31,7 @@ import {JournalTemplateQuery} from "./Journal/JournalTemplateQuery";
 import {JournalTemplateRepository} from "./Journal/JournalTemplateRepository";
 import {JournalTemplateService} from "./Journal/JournalTemplateService";
 
-import {JournalInvoiceGenerationService} from "./Journal/JournalInvoiceGenerationService";
 import {TreasuryJournalGenerationService} from "./Journal/TreasuryJournalGenerationService";
-import {JournalSaleEventListener} from "./Journal/JournalSaleEventListener";
-import {JournalPurchaseEventListener} from "./Journal/JournalPurchaseEventListener";
 import {TreasuryEventListener} from "./Journal/TreasuryEventListener";
 import {JournalGenerationPurposeQuery} from "./Journal/JournalGenerationPurposeQuery";
 
@@ -94,10 +91,7 @@ export function register(container) {
 
     container.bind("AccountReviewQuery").to(AccountReviewQuery);
 
-    container.bind("JournalInvoiceGenerationService").to(JournalInvoiceGenerationService);
     container.bind("TreasuryJournalGenerationService").to(TreasuryJournalGenerationService);
-    container.bind("JournalSaleEventListener").to(JournalSaleEventListener);
-    container.bind("JournalPurchaseEventListener").to(JournalPurchaseEventListener);
     container.bind("TreasuryEventListener").to(TreasuryEventListener);
 
     container.bind("SaleMapper").to(SaleMapper);

@@ -1,5 +1,5 @@
 import {inject, injectable} from "inversify";
-import {EventHandler} from "../../Infrastructure/@decorators";
+import {EventHandler} from "../Infrastructure/@decorators";
 
 @injectable()
 export class JournalSaleEventListener {
@@ -10,11 +10,11 @@ export class JournalSaleEventListener {
     /**@type {InvoiceRepository}*/
     @inject("InvoiceRepository") invoiceRepository = undefined;
 
-    /**@type {JournalInvoiceGenerationService}*/
-    @inject("JournalInvoiceGenerationService") journalInvoiceGenerationService = undefined;
+    /**@type {JournalSaleGenerationService}*/
+    @inject("JournalSaleGenerationService") journalSaleGenerationService = undefined;
 
     @EventHandler("SaleCreated")
-    onInvoiceCreated(invoiceId) {
+    onSaleCreated(invoiceId) {
 
         let invoice = this.invoiceRepository.findById(invoiceId),
             settings = this.settingsRepository.get();
@@ -25,18 +25,17 @@ export class JournalSaleEventListener {
         if (!settings.canSaleGenerateAutomaticJournal)
             return;
 
-        this.journalInvoiceGenerationService.generate(invoiceId);
+        this.journalSaleGenerationService.generate(invoiceId);
     }
 
     @EventHandler("SaleChanged")
-    onInvoiceChanged(invoice) {
+    onSaleChanged(invoiceId) {
 
-        this.onInvoiceCreated(invoice);
+        this.onSaleCreated(invoiceId);
     }
 
-    @EventHandler("onInvoiceRemoved")
+    @EventHandler("SaleRemoved")
     onInvoiceRemoved(invoice) {
-
 
     }
 

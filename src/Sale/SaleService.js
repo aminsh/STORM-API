@@ -27,8 +27,8 @@ export class SaleService {
     @inject("InvoiceCompareService")
     /**@type{InvoiceCompareService}*/ invoiceCompareService = undefined;
 
-    /**@type {JournalInvoiceGenerationService}*/
-    @inject("JournalInvoiceGenerationService") journalInvoiceGenerationService = undefined;
+    /**@type {JournalSaleGenerationService}*/
+    @inject("JournalSaleGenerationService") journalSaleGenerationService = undefined;
 
     /** @type {IState}*/
     @inject("State") state = undefined;
@@ -404,7 +404,7 @@ export class SaleService {
 
     generateJournal(id){
 
-        this.journalInvoiceGenerationService.generate(id);
+        this.journalSaleGenerationService.generate(id);
     }
 
 }
