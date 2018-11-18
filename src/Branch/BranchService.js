@@ -123,7 +123,7 @@ export class BranchService {
         return member;
     }
 
-    addUserByEmailOrMoble(branchId, dto) {
+    addUserByEmailOrMobile(branchId, dto) {
 
         const dic = {mobile: 'موبایل', email: 'ایمیل'};
 
