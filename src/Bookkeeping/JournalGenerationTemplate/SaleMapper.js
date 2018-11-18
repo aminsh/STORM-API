@@ -41,7 +41,7 @@ export class SaleMapper {
             discount: item.discount
         }));
 
-        return {
+        return Object.assign({}, {
             number: invoice.number,
             date: invoice.date,
             title: invoice.title,
@@ -70,8 +70,7 @@ export class SaleMapper {
             customerTitle: invoice.detailAccount.title,
             marketer: invoice.marketerId,
             bankReceiptNumber: invoice.bankReceiptNumber || '',
-            products: invoiceLines,
-            ...cost, ...charge
-        };
+            products: invoiceLines
+        }, cost, charge)
     }
 }

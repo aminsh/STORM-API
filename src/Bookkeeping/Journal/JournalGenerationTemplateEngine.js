@@ -25,7 +25,7 @@ export class JournalGenerationTemplateEngine {
 
         template.lines.forEach(item => temp += this.itemHandler(item));
 
-        let input = {...model, ...this.utils};
+        let input = Object.assign({}, model, this.utils);
 
         const generated = _.template(`{"description": "${template.description}", "date": "${template.date}","journalLines":[${temp}]}`)(input);
 
