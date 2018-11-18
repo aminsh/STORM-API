@@ -23,6 +23,7 @@ import {JournalRepository} from "./Journal/JournalRepository";
 import {JournalQuery} from "./Journal/JournalQuery";
 import {JournalGenerationTemplateRepository} from "./Journal/JournalGenerationTemplateRepository";
 import {JournalGenerationTemplateService} from "./Journal/JournalGenerationTemplateService";
+import {JournalGenerationTemplateEngine} from "./Journal/JournalGenerationTemplateEngine";
 import {JournalGenerationTemplateQuery} from "./Journal/JournalGenerationTemplateQuery";
 import {AccountReviewQuery} from "./AccountReview/AccountReviewQuery";
 
@@ -30,12 +31,14 @@ import {JournalTemplateQuery} from "./Journal/JournalTemplateQuery";
 import {JournalTemplateRepository} from "./Journal/JournalTemplateRepository";
 import {JournalTemplateService} from "./Journal/JournalTemplateService";
 
-import {JournalInvoiceGenerationService} from "./Journal/JournalInvoiceGenerationService";
 import {TreasuryJournalGenerationService} from "./Journal/TreasuryJournalGenerationService";
-import {JournalSaleEventListener} from "./Journal/JournalSaleEventListener";
-import {JournalPurchaseEventListener} from "./Journal/JournalPurchaseEventListener";
 import {TreasuryEventListener} from "./Journal/TreasuryEventListener";
 import {JournalGenerationPurposeQuery} from "./Journal/JournalGenerationPurposeQuery";
+
+import {SaleMapper} from "./JournalGenerationTemplate/SaleMapper";
+
+import {ProductEventListener} from "./ProductEventListener";
+import {StockEventListener} from "./StockEventListener";
 
 import "./DetailAccount/DetailAccountController";
 import "./DetailAccount/DetailAccountCategoryController";
@@ -83,13 +86,23 @@ export function register(container) {
 
     container.bind("JournalGenerationTemplateRepository").to(JournalGenerationTemplateRepository);
     container.bind("JournalGenerationTemplateService").to(JournalGenerationTemplateService);
+    container.bind("JournalGenerationTemplateEngine").to(JournalGenerationTemplateEngine);
     container.bind("JournalGenerationTemplateQuery").to(JournalGenerationTemplateQuery);
 
     container.bind("AccountReviewQuery").to(AccountReviewQuery);
 
-    container.bind("JournalInvoiceGenerationService").to(JournalInvoiceGenerationService);
     container.bind("TreasuryJournalGenerationService").to(TreasuryJournalGenerationService);
-    container.bind("JournalSaleEventListener").to(JournalSaleEventListener);
-    container.bind("JournalPurchaseEventListener").to(JournalPurchaseEventListener);
     container.bind("TreasuryEventListener").to(TreasuryEventListener);
+
+    container.bind("SaleMapper").to(SaleMapper);
+
+    container.bind("Factory<Mapper>").toFactory(context => {
+        return key => {
+            if (key === 'sale')
+                return context.container.get("SaleMapper");
+        };
+    });
+
+    container.bind("ProductEventListener").to(ProductEventListener);
+    container.bind("StockEventListener").to(StockEventListener);
 }

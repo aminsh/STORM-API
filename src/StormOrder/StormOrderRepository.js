@@ -43,7 +43,7 @@ export class StormOrderRepository {
                 .leftJoin('storm_plans', this.tableName + '.planId', 'storm_plans.id')
                 .leftJoin('branches', this.tableName + '.branchId', 'branches.id')
                 .leftJoin('users', `branches.ownerId`, 'users.id')
-                .where('storm_plans.name', 'Trial');
+                .where('storm_plans.category', 'Trial');
 
         let where = '';
 

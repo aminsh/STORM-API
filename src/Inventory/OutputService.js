@@ -47,6 +47,7 @@ export class OutputService {
             date: cmd.date || Utility.PersianDate.current(),
             stockId: cmd.stockId,
             inventoryType: 'output',
+            quantityStatus: 'draft',
             ioType: cmd.ioType,
             fiscalPeriodId: this.state.fiscalPeriodId
         };
@@ -61,12 +62,10 @@ export class OutputService {
                 quantity: line.quantity
             })).toArray();
 
-        if(!(output.inventoryLines &&  output.inventoryLines.length > 0))
+        if (!(output.inventoryLines && output.inventoryLines.length > 0))
             throw new ValidationException('ردیف های حواله وجود ندارد');
 
         this.inventoryRepository.create(output);
-
-        this.eventBus.send("InventoryOutputCreated", output);
 
         return output.id;
     }
@@ -74,6 +73,9 @@ export class OutputService {
     update(id, cmd) {
 
         let output = this.inventoryRepository.findById(id);
+
+        if(output.quantityStatus === 'fixed')
+            throw new ValidationException(['حواله ثبت قطعی شده ، امکان تغییر وجود ندارد']);
 
         if (!output)
             throw new NotFoundException();
@@ -137,7 +139,7 @@ export class OutputService {
             }))
             .toArray();
 
-        if(!(entity.inventoryLines &&  entity.inventoryLines.length > 0))
+        if (!(entity.inventoryLines && entity.inventoryLines.length > 0))
             throw new ValidationException('ردیف های حواله وجود ندارد');
 
         this.inventoryRepository.updateBatch(id, entity);
@@ -145,9 +147,36 @@ export class OutputService {
         this.eventBus.send("InventoryOutputChanged", output, entity);
     }
 
+    confirm(id) {
+
+        let output = this.inventoryRepository.findById(id);
+
+        if (!output)
+            throw new NotFoundException();
+
+        this.inventoryRepository.update(id, {quantityStatus: 'confirmed'});
+
+        this.eventBus.send("InventoryOutputCreated", output);
+    }
+
+    fix(id) {
+
+        let output = this.inventoryRepository.findById(id);
+
+        if (!output)
+            throw new NotFoundException();
+
+        this.inventoryRepository.update(id, {quantityStatus: 'fixed'});
+
+        this.eventBus.send("InventoryOutputFixed", output);
+    }
+
     remove(id) {
 
         let output = this.inventoryRepository.findById(id);
+
+        if(output.quantityStatus === 'fixed')
+            throw new ValidationException(['حواله ثبت قطعی شده ، امکان حذف وجود ندارد']);
 
         if (!output)
             throw new NotFoundException();
@@ -156,5 +185,17 @@ export class OutputService {
 
         this.eventBus.send("InventoryOutputRemoved", output);
 
+    }
+
+    shipped(id) {
+
+        let output = this.inventoryRepository.findById(id);
+
+        if (!output)
+            throw new NotFoundException();
+
+        this.inventoryRepository.update(id, {shipped: true});
+
+        this.eventBus.send("InventoryOutputShipped", output);
     }
 }

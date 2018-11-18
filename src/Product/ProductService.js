@@ -12,6 +12,9 @@ export class ProductService {
     /**@type {InvoiceRepository}*/
     @inject("InvoiceRepository") invoiceRepository = undefined;
 
+    @inject("EventBus")
+    /**@type{EventBus}*/ eventBus = undefined;
+
     shouldTrackInventory(productId) {
         return this.productRepository.isGood(productId);
     }
@@ -37,13 +40,7 @@ export class ProductService {
         if (!cmd.title)
             return null;
 
-        entity = {
-            title: cmd.title,
-            productType: cmd.productType,
-            referenceId: cmd.referenceId
-        };
-
-        const id = this.create(entity);
+        const id = this.create(cmd);
 
         return this.productRepository.findById(id);
     }
@@ -69,6 +66,8 @@ export class ProductService {
         };
 
         this.productRepository.create(entity);
+
+        this.eventBus.send("ProductCreated", entity.id);
 
         return entity.id;
     }
@@ -113,7 +112,8 @@ export class ProductService {
             categoryId: cmd.categoryId,
             scaleId: cmd.scaleId,
             referenceId: cmd.referenceId,
-            barcode: cmd.barcode
+            barcode: cmd.barcode,
+            accountId: cmd.accountId
         };
 
         return JSON.parse(JSON.stringify(entity));

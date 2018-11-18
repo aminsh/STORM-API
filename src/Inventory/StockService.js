@@ -12,6 +12,9 @@ export class StockService {
     /** @type {InventoryRepository}*/
     @inject("InventoryRepository") inventoryRepository = undefined;
 
+    @inject("EventBus")
+    /**@type{EventBus}*/ eventBus = undefined;
+
     create(cmd) {
 
         let errors = [];
@@ -26,10 +29,13 @@ export class StockService {
 
         let entity = {
             title: cmd.title,
-            address: cmd.address
+            address: cmd.address,
+            accountId: cmd.accountId
         };
 
         this.stockRepository.create(entity);
+
+        this.eventBus.send("StockCreated", entity.id);
 
         return entity.id;
     }
@@ -48,7 +54,8 @@ export class StockService {
 
         let entity = {
             title: cmd.title,
-            address: cmd.address
+            address: cmd.address,
+            accountId: cmd.accountId
         };
 
         this.stockRepository.update(id, entity);

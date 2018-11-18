@@ -79,6 +79,7 @@
     "tedious": "^1.14.0",
     "to-pascal-case": "^1.0.0",
     "uuid-token-generator": "^1.0.0",
+    "woocommerce-api": "^1.4.2",
     "yargs": "^7.0.2",
     "zarinpal-checkout": "^0.2.7"
   },

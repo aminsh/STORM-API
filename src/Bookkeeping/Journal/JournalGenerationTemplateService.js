@@ -9,6 +9,11 @@ export class JournalGenerationTemplateService {
     /** @type {JournalGenerationTemplateRepository}*/
     @inject("JournalGenerationTemplateRepository") journalGenerationTemplateRepository = undefined;
 
+    /**@type{JournalGenerationTemplateEngine}*/
+    @inject("JournalGenerationTemplateEngine") journalGenerationTemplateEngine = undefined;
+
+    @inject("Factory<Mapper>") mapperFactory = undefined;
+
     generate(cmd, sourceType) {
 
         let generationTemplate = this.journalGenerationTemplateRepository.findBySourceType(sourceType);
@@ -18,28 +23,16 @@ export class JournalGenerationTemplateService {
 
         generationTemplate = generationTemplate.data;
 
-        let journal = {
-            description: this._render(generationTemplate.description, cmd),
-            journalLines: generationTemplate.lines.asEnumerable()
-                .select(item => ({
-                    subsidiaryLedgerAccountId: item.subsidiaryLedgerAccountId,
-                    detailAccountId: this._render(item.detailAccountId, cmd) || null,
-                    article: this._render(item.article, cmd),
-                    debtor: parseInt(this._render(item.debtor, cmd)),
-                    creditor: parseInt(this._render(item.creditor, cmd))
-                }))
-                .where(item => (item.debtor + item.creditor) !== 0)
+        const mapper = this.mapperFactory(sourceType);
 
-                .orderByDescending(item => item.debtor)
+        const journal = this.journalGenerationTemplateEngine.handler(generationTemplate, mapper.map(cmd));
 
-                .toArray()
-        };
+        journal.journalLines = journal.journalLines.asEnumerable()
+            .where(item => (item.debtor + item.creditor) !== 0)
+            .orderByDescending(item => item.debtor)
+            .toArray();
 
         return journal;
-    }
-
-    _render(template, model) {
-        return _.template(template)(model);
     }
 
     createJournalTemplate(sourceType, cmd) {
@@ -55,5 +48,67 @@ export class JournalGenerationTemplateService {
             this.journalGenerationTemplateRepository.create(sourceType, entity);
 
         return entity.id;
+    }
+
+    createCustomTemplate(sourceType, cmd) {
+
+        cmd.name = sourceType;
+
+        const errors = this._validateCustomTemplate(cmd);
+
+        if (errors.length > 0)
+            throw new ValidationException(errors);
+
+        const entity = {
+            title: cmd.title,
+            data: cmd.data,
+            fields: cmd.fields
+        };
+
+        return this.journalGenerationTemplateRepository.create(sourceType, entity);
+    }
+
+    _validateCustomTemplate(cmd) {
+
+        let errors = [];
+
+        if (!cmd.name)
+            errors.push('نام قالب وارد نشده');
+
+        if (!cmd.title)
+            errors.push('عنوان قالب وارد نشده');
+
+        if (!cmd.fields)
+            errors.push('فیلدهای قالب وارد نشده');
+        else {
+
+            let err = this._validateCustomTemplateField(cmd.fields);
+
+            errors.concat(err);
+        }
+
+        return errors;
+    }
+
+    _validateCustomTemplateField(fields) {
+
+        let errors = [];
+
+        const complexType = ['Array', 'Object'];
+
+        fields.forEach(field => {
+
+            if(!field.type) {
+                errors.push('نوع فیلد مشخص نشده');
+                return;
+            }
+
+            if(complexType.includes(field.type))
+                errors.concat(this._validateCustomTemplateField(field.fields));
+            else {
+                if(!field.key)
+                    errors.push('کلید فیلد مشخص نشده');
+            }
+        });
     }
 }

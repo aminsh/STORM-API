@@ -52,6 +52,26 @@ class InputController {
         return this.inventoryQuery.getById(id);
     }
 
+    @Put("/inputs/:id/confirm")
+    confirmOutput(req) {
+
+        const id = req.params.id;
+
+        this.inputService.confirm(id);
+
+        return this.inventoryQuery.getById(id);
+    }
+
+    @Put("/inputs/:id/fix")
+    fixOutput(req) {
+
+        const id = req.params.id;
+
+        this.inputService.fix(id);
+
+        return this.inventoryQuery.getById(id);
+    }
+
     @Delete("/inputs/:id")
     removeInput(req) {
 

@@ -11,19 +11,37 @@ class InventoryAccountingController {
     /**@type{InventoryAccountingQuery}*/ inventoryAccountingQuery = undefined;
 
     @Post("/calculate")
-    calculate(req) {
+    calculate() {
 
-        this.inventoryAccountingPricingService.calculate(req.body);
+        this.inventoryAccountingPricingService.calculatePrice();
     }
 
     @Put("/inputs/:id/enter-price")
-    inputEnterPirce(req) {
-        this.inventoryAccountingPricingService.inputEnterPrice(req.params.id, req.body);
+    inputEnterPrice(req) {
+        this.inventoryAccountingPricingService.inputEnterPrice(req.params.id, req.body, true);
     }
 
     @Get("/tiny-turnover/by-product/:productId")
-    getTityTurnoverByProduct(req){
+    getTinyTurnoverByProduct(req) {
 
         return this.inventoryAccountingQuery.getTinyTurnoverByProduct(req.params.productId, req.query);
+    }
+
+    @Get('/inventories')
+    getAll(req) {
+
+        return this.inventoryAccountingQuery.getAll(req.query);
+    }
+
+    @Get("/inventories/:id")
+    getById(req) {
+
+        return this.inventoryAccountingQuery.getById(req.params.id);
+    }
+
+    @Get("/:id/lines")
+    getDetailById(req) {
+
+        return this.inventoryAccountingQuery.getDetailById(req.params.id, req.query);
     }
 }

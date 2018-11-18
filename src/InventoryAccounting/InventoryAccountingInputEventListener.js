@@ -10,17 +10,35 @@ export class InventoryAccountingInputEventListener {
     @inject("InvoiceRepository")
     /**@type{InvoiceRepository}*/ invoiceRepository = undefined;
 
+    @inject("InventoryAccountingPricingService")
+    /**@type{InventoryAccountingPricingService}*/ inventoryAccountingPricingService = undefined;
+
     @EventHandler("InventoryInputCreated")
     onInputCreated(id) {
+
+        this.inventoryAccountingRepository.update(id, {priceStatus: 'draft'});
+
         const input = this.inventoryAccountingRepository.findById(id);
 
-        if (!input.invoiceId)
-            return;
+        if (!['firstInput', 'inputPurchase'].includes(input.ioType)) {
 
-        if (input.ioType !== 'inputPurchase')
-            return;
+            const lines = output.inventoryLines
+                .map(line => ({
+                    id: line.id,
+                    unitPrice: line.unitPrice,
+                    price: this.inventoryAccountingRepository.getAveragePrice(line.id)
+                }))
+                .filter(line => line.unitPrice !== line.price);
 
-        this._updatePrice(input);
+            if (lines.length > 0)
+                this.inventoryAccountingPricingService.outputSetPrice(output.id, lines.map(item => ({
+                    id: item.id,
+                    unitPrice: item.price
+                })));
+        }
+
+        if (input.ioType === 'inputPurchase' && input.invoiceId)
+            this._updatePrice(input);
     }
 
     @EventHandler("InventoryInputChanged")
@@ -37,6 +55,40 @@ export class InventoryAccountingInputEventListener {
         this._updatePrice(input);
     }
 
+    @EventHandler("InventoryOutputCreated")
+    onInventoryOutputCreated(output) {
+
+        this.inventoryAccountingRepository.update(output.id, {priceStatus: 'draft'});
+
+        const lines = output.inventoryLines
+            .map(line => ({
+                id: line.id,
+                unitPrice: line.unitPrice,
+                price: this.inventoryAccountingRepository.getAveragePrice(line.id)
+            }))
+            .filter(line => line.unitPrice !== line.price);
+
+        if (lines.length > 0)
+            this.inventoryAccountingPricingService.outputSetPrice(output.id, lines.map(item => ({
+                id: item.id,
+                unitPrice: item.price
+            })));
+    }
+
+    @EventHandler("InventoryInputPriceChanged")
+    onInputPriceChanged() {
+
+        this.inventoryAccountingPricingService.calculatePrice();
+    }
+
+    @EventHandler("InventoryOutputPriceChanged")
+    onOutputPriceChanged(id) {
+        const output = this.inventoryAccountingRepository.findById(id);
+
+        if (output.inventoryLines.asEnumerable().all(item => item.unitPrice > 0))
+            this.inventoryAccountingRepository.update(id, {priceStatus: 'confirmed'});
+    }
+
     _updatePrice(input) {
 
         const purchase = this.invoiceRepository.findById(input.invoiceId),
@@ -45,7 +97,7 @@ export class InventoryAccountingInputEventListener {
                 ? purchase.charges.asEnumerable().sum(item => item.value)
                 : 0;
 
-        input.inventoryLines.forEach(item => {
+        const lines = input.inventoryLines.map(item => {
 
             const purchaseLine = purchase.invoiceLines.asEnumerable().first(pl => pl.productId === item.productId),
                 total = (purchaseLine.unitPrice * purchaseLine.quantity) - purchaseLine.discount,
@@ -53,7 +105,9 @@ export class InventoryAccountingInputEventListener {
                 chargeShare = (totalCharges * rate) / 100,
                 value = (total + chargeShare) / purchaseLine.quantity;
 
-            this.inventoryAccountingRepository.updateLine(item.id, {unitPrice: value});
+            return {id: item.id, unitPrice: value};
         });
+
+        this.inventoryAccountingPricingService.inputEnterPrice(input.id, lines);
     }
 }

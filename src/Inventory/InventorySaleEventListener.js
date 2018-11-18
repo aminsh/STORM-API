@@ -42,7 +42,13 @@ export class InventorySaleEventListener {
                 }))
                 .toArray();
 
-        linesByStock.forEach(item => this.outputService.create(item));
+        linesByStock.forEach(item => {
+            const id = this.outputService.create(item);
+
+            Utility.delay(1000);
+
+            this.outputService.confirm(id);
+        });
     }
 
     @EventHandler("SaleChanged")
@@ -55,7 +61,7 @@ export class InventorySaleEventListener {
             result = this.invoiceCompareService.compare('output', oldLines, newLines),
 
             inputs = result.filter(item => item.quantity > 0),
-            outputs = result.filter(item => item.quantity < 0).map(item => Object.assign({}, item , {quantity: Math.abs(item.quantity)}));
+            outputs = result.filter(item => item.quantity < 0).map(item => Object.assign({}, item, {quantity: Math.abs(item.quantity)}));
 
         inputs.asEnumerable()
             .groupBy(
@@ -67,7 +73,13 @@ export class InventorySaleEventListener {
                     ioType: 'inputBackFromSaleOrConsuming',
                     lines: items.toArray()
                 }))
-            .forEach(item => this.inputService.create(item));
+            .forEach(item => {
+                const id = this.inputService.create(item);
+
+                Utility.delay(1000);
+
+                this.inputService.confirm(id);
+            });
 
         outputs.asEnumerable()
             .groupBy(
@@ -79,7 +91,13 @@ export class InventorySaleEventListener {
                     ioType: 'outputSale',
                     lines: items.toArray()
                 }))
-            .forEach(item => this.outputService.create(item));
+            .forEach(item => {
+                const id = this.outputService.create(item);
+
+                Utility.delay(1000);
+
+                this.outputService.confirm(id);
+            });
 
     }
 

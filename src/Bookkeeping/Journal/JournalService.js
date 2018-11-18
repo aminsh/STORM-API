@@ -129,11 +129,13 @@ export class JournalService {
 
         let maxNumber = this.journalRepository.maxTemporaryNumber(currentFiscalPeriod.id).max || 0;
 
+        const date = cmd.date || cmd.temporaryDate;
+
         let trueDate =
-            cmd.temporaryDate &&
-            cmd.temporaryDate >= currentFiscalPeriod.minDate &&
-            cmd.temporaryDate <= currentFiscalPeriod.maxDate
-                ? cmd.temporaryDate
+            date &&
+            date >= currentFiscalPeriod.minDate &&
+            date <= currentFiscalPeriod.maxDate
+                ? date
                 : PersianDate.current();
 
         let journal = {
@@ -294,58 +296,6 @@ export class JournalService {
         this.journalRepository.remove(id);
     }
 
-    generateForInvoice(invoiceId) {
-
-        const settings = this.settingsRepository.get(),
-            invoice = this.invoiceRepository.findById(invoiceId);
-
-        if (!invoice)
-            throw new ValidationException(['فاکتور وجود ندارد']);
-
-        if (!Utility.String.isNullOrEmpty(invoice.journalId))
-            throw new ValidationException(['برای فاکتور {0} قبلا سند حسابداری صادر شده'.format(invoice.number)]);
-
-        const cost = (settings.saleCosts || []).asEnumerable()
-                .select(e => ({
-                    key: e.key,
-                    value: (invoice.costs.asEnumerable().firstOrDefault(p => p.key === e.key) || {value: 0}).value
-                }))
-                .toObject(item => `cost_${item.key}`, item => item.value),
-
-            charge = (settings.saleCharges || []).asEnumerable()
-                .select(e => ({
-                    key: e.key,
-                    value: (invoice.charges.asEnumerable().firstOrDefault(p => p.key === e.key) || {value: 0}).value
-                }))
-                .toObject(item => `charge_${item.key}`, item => item.value);
-
-        let lineHaveVat = invoice.invoiceLines.asEnumerable().firstOrDefault(e => e.vat !== 0),
-            persistedVat = lineHaveVat
-                ? (100 * lineHaveVat.vat) / ((lineHaveVat.quantity * lineHaveVat.unitPrice) - lineHaveVat.discount)
-                : 0,
-
-            model = Object.assign({
-                number: invoice.number,
-                date: invoice.date,
-                title: invoice.title,
-                amount: invoice.invoiceLines.asEnumerable().sum(line => line.unitPrice * line.quantity),
-                discount: invoice.invoiceLines.asEnumerable().sum(line => line.discount) + invoice.discount,
-                vat: invoice.invoiceLines.asEnumerable().sum(line => line.vat) + (invoice.charges.asEnumerable().sum(e => e.value) * persistedVat / 100),
-                customer: invoice.detailAccountId,
-                customerCode: invoice.detailAccount.code,
-                customerTitle: invoice.detailAccount.title,
-                bankReceiptNumber: invoice.bankReceiptNumber || ''
-            }, cost, charge),
-
-            journal = this.journalGenerationTemplateService.generate(model, 'sale');
-
-        journal.journalLines = journal.journalLines.asEnumerable()
-            .orderByDescending(line => line.debtor)
-            .toArray();
-
-        return this.create(journal);
-    }
-
     generateForReturnInvoice(invoiceId) {
         const settings = this.settingsRepository.get(),
             invoice = this.invoiceRepository.findById(invoiceId);
@@ -381,50 +331,12 @@ export class JournalService {
         return this.create(journal);
     }
 
-    generateForPurchase(invoiceId) {
-        const settings = this.settingsRepository.get(),
-            invoice = this.invoiceRepository.findById(invoiceId);
-
-        if (!invoice)
-            throw new ValidationException(['فاکتور وجود ندارد']);
-
-        /*if (!Utility.String.isNullOrEmpty(invoice.journalId))
-            throw new ValidationException(['برای فاکتور {0} قبلا سند حسابداری صادر شده'.format(invoice.number)]);*/
-
-        const charge = (settings.saleCharges || []).asEnumerable()
-            .select(e => ({
-                key: e.key,
-                value: (invoice.charges.asEnumerable().firstOrDefault(p => p.key === e.key) || {value: 0}).value
-            }))
-            .toObject(item => `charge_${item.key}`, item => item.value);
-
-        let model = Object.assign({
-                number: invoice.number,
-                date: invoice.date,
-                title: invoice.title,
-                amount: invoice.invoiceLines.asEnumerable().sum(line => line.unitPrice * line.quantity),
-                discount: invoice.invoiceLines.asEnumerable().sum(line => line.discount) + invoice.discount,
-                vat: invoice.invoiceLines.asEnumerable().sum(line => line.vat),
-                vendor: invoice.detailAccountId,
-                vendorCode: invoice.detailAccount.code,
-                vendorTitle: invoice.detailAccount.title,
-            }, charge),
-
-            journal = this.journalGenerationTemplateService.generate(model, 'purchase');
-
-        return invoice.journalId ? this.update(invoice.journalId, journal)
-            : this.create(journal);
-    }
-
     generateForReturnPurchase(invoiceId) {
         const settings = this.settingsRepository.get(),
             invoice = this.invoiceRepository.findById(invoiceId);
 
         if (!invoice)
             throw new ValidationException(['فاکتور وجود ندارد']);
-
-        if (!Utility.String.isNullOrEmpty(invoice.journalId))
-            throw new ValidationException(['برای فاکتور {0} قبلا سند حسابداری صادر شده'.format(invoice.number)]);
 
         const charge = (settings.saleCharges || []).asEnumerable()
             .select(e => ({
@@ -447,7 +359,8 @@ export class JournalService {
 
             journal = this.journalGenerationTemplateService.generate(model, 'returnPurchase');
 
-
-        return this.create(journal);
+        return invoice.journalId
+            ? this.update(invoice.journalId, journal)
+            : this.create(journal);
     }
 }

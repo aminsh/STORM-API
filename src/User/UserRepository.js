@@ -22,6 +22,19 @@ export class UserRepository {
         return toResult(query.first());
     }
 
+    findByEmail(email) {
+        const knex = this.dbContext.instance;
+
+        return toResult(
+            knex.select('*')
+                .from(this.tableName)
+                .where('state', 'active')
+                .where('email', 'ILIKE', email)
+                .first()
+        );
+    }
+
+
     isDuplicatedEmail(email) {
         const knex = this.dbContext.instance;
 

@@ -18,7 +18,6 @@ export class ReportProductQuery extends BaseQuery {
 
             query = this.knex.select(
                 knex.raw(`products.title as product,
-            inventories."fixedAmount",
             inventories."createdAt",
             products.id as "productId",
             inventories."inventoryType",
@@ -44,7 +43,7 @@ export class ReportProductQuery extends BaseQuery {
                 .orderBy('inventories.createdAt');
 
 
-        if (fixedType === 'fixedQuantity')
+        /*if (fixedType === 'fixedQuantity')
             query.where('fixedQuantity', true);
 
         if (fixedType === 'fixedAmount')
@@ -53,7 +52,7 @@ export class ReportProductQuery extends BaseQuery {
         if (fixedType === 'fixedAmountAndQuantity')
             query
                 .where('fixedQuantity', true)
-                .where('fixedAmount', true);
+                .where('fixedAmount', true);*/
 
         if (productIds)
             query.whereIn('products.id', productIds);

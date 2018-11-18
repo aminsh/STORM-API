@@ -73,4 +73,10 @@ class PurchaseController {
 
         this.purchaseService.remove(req.params.id);
     }
+
+    @Post("/:id/generate-journal")
+    generateJournal(req) {
+
+        this.purchaseService.generateJournal(req.params.id);
+    }
 }

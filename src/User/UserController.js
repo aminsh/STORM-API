@@ -11,10 +11,10 @@ export class UserController {
     @inject("UserQuery")
     /** @type {UserQuery}*/ userQuery = undefined;
 
-    @Get("/")
+    /*@Get("/")
     getAll(req) {
         return this.userQuery.getAll(req.query);
-    }
+    }*/
 
     @Get("/current", "TokenIsValid")
     current(req) {

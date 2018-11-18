@@ -56,4 +56,10 @@ class OrderController {
         res.redirect(`${process.env.DASHBOARD_URL}/branch/order/${req.params.id}/payment-result?payment_status=${req.query.status}`);
 
     }
+
+    @Get('/:id/invoice')
+    getInvoiceByOrder(req) {
+
+        return this.orderQuery.getInvoiceByOrder(req.params.id);
+    }
 }

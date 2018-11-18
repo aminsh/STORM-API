@@ -27,8 +27,8 @@ export class SaleService {
     @inject("InvoiceCompareService")
     /**@type{InvoiceCompareService}*/ invoiceCompareService = undefined;
 
-    /**@type {JournalInvoiceGenerationService}*/
-    @inject("JournalInvoiceGenerationService") journalInvoiceGenerationService = undefined;
+    /**@type {JournalSaleGenerationService}*/
+    @inject("JournalSaleGenerationService") journalSaleGenerationService = undefined;
 
     /** @type {IState}*/
     @inject("State") state = undefined;
@@ -53,7 +53,7 @@ export class SaleService {
         if (entity.marketerId) {
             let marketerDetailAccount = this.detailAccountService.findPersonByIdOrCreate({id: entity.marketerId}),
                 personRole = marketerDetailAccount.personRoles
-                    ? marketerDetailAccount.personRoles.asEnumerable().any(role => role == 'Marketer')
+                    ? marketerDetailAccount.personRoles.asEnumerable().any(role => role === 'Marketer')
                     : null;
 
             if (!personRole)
@@ -342,7 +342,7 @@ export class SaleService {
         if (errors.length > 0)
             throw new ValidationException(errors);
 
-        entity.invoiceStatus = cmd.status !== 'draft' ? 'confirmed' : 'draft';
+        entity.invoiceStatus = (cmd.status && cmd.status !== 'draft') ? 'confirmed' : 'draft';
 
         if (entity.invoiceStatus === 'draft') {
             this.invoiceRepository.updateBatch(id, this._mapToData(entity));
@@ -404,7 +404,7 @@ export class SaleService {
 
     generateJournal(id){
 
-        this.journalInvoiceGenerationService.generate(id);
+        this.journalSaleGenerationService.generate(id);
     }
 
 }

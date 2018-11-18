@@ -40,7 +40,13 @@ export class InventoryPurchaseEventListener {
                     ioType: 'inputPurchase',
                     lines: items.toArray()
                 }))
-            .forEach(item => this.inputService.create(item));
+            .forEach(item => {
+                const id = this.inputService.create(item);
+
+                Utility.delay(1000);
+
+                this.inputService.confirm(id);
+            });
     }
 
     @EventHandler("PurchaseChanged")
@@ -69,7 +75,13 @@ export class InventoryPurchaseEventListener {
                     ioType: 'inputPurchase',
                     lines: items.toArray()
                 }))
-            .forEach(item => this.inputService.create(item));
+            .forEach(item => {
+                const id = this.inputService.create(item);
+
+                Utility.delay(1000);
+
+                this.inputService.confirm(id);
+            });
 
         outputs.asEnumerable()
             .groupBy(
@@ -81,7 +93,13 @@ export class InventoryPurchaseEventListener {
                     ioType: 'outputBackFromPurchase',
                     lines: items.toArray()
                 }))
-            .forEach(item => this.outputService.create(item));
+            .forEach(item => {
+                const id = this.outputService.create(item);
+
+                Utility.delay(1000);
+
+                this.outputService.confirm(id);
+            });
     }
 
     @EventHandler("PurchaseRemoved")

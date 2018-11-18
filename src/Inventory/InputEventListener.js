@@ -67,10 +67,9 @@ export class InputEventListener {
     }
 
     @EventHandler("InventoryInputRemoved")
-    onInputRemoved(id) {
+    onInputRemoved(input) {
 
-        const input = this.inventoryRepository.findById(id),
-            stockId = input.stockId;
+        const stockId = input.stockId;
 
         input.inventoryLines.forEach(line =>
             this.eventBus.send("ProductInventoryChanged",

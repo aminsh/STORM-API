@@ -49,7 +49,10 @@ enums.DetailAccountType = function () {
     return new Enum([
         {key: 'person', display: 'شخص'},
         {key: 'bank', display: 'بانک'},
-        {key: 'fund', display: 'صندوق'}
+        {key: 'fund', display: 'صندوق'},
+        {key: 'product', display: 'کالا'},
+        {key: 'stock', display: 'انبار'},
+
     ]);
 };
 
@@ -250,6 +253,15 @@ enums.InventoryType = function () {
     ]);
 };
 
+enums.InventoryStatus = function () {
+    return new Enum([
+        {key: 'draft', display: 'پیش نویس'},
+        {key: 'confirmed', display: 'تایید'},
+        {key: 'fixed', display: 'قطعی'}
+    ]);
+};
+
+
 enums.InventoryIOType = function () {
     return new Enum([
         {key: 'inputFirst', display: 'اول دوره'},
@@ -260,7 +272,7 @@ enums.InventoryIOType = function () {
         {key: 'outputSale', display: 'فروش'},
         {key: 'outputWaste', display: 'ضایعات'},
         {key: 'outputStockToStock', display: 'انبار به انبار'},
-        {key: 'outputReturnPurchase', display: 'برگشت از خرید'}
+        {key: 'outputBackFromPurchase', display: 'برگشت از خرید'}
     ])
 };
 
@@ -300,6 +312,39 @@ enums.ThirdParty = function () {
                 logo: "zarinpal-logo.svg",
                 display: "درگاه پرداخت زرین‌پال",
                 description: "با استفاده از این افزونه، مشتریان شما می توانند صورت حساب شما را پرداخت کنند و اسناد مالی مربوطه به صورت اتوماتیک صادر می شود."
+            }
+        },
+        {
+            key: "woocommerce",
+            type: "shop",
+            data: {
+                website: 'http://woocommerce.ir',
+                title: "ووکامرس",
+                logo: "woocommerce.png",
+                display: "فروشگاه ساز رایگان تحت وردپرس",
+                description: "با استفاده از این افزونه، بصورت خودکار سفارشات شما در استورم صادر و عملیات مالی و کنترل موجودی انبار بصورت خودکار انجام میشود"
+            }
+        },
+        {
+            key: "opencart",
+            type: "shop",
+            data: {
+                website: 'https://www.opencartfarsi.ir',
+                title: "اوپن کارت",
+                logo: "opencart.jpg",
+                display: "بهترین سیستم فروشگاهی اپن سورس و رایگان",
+                description: "با استفاده از این افزونه، سفارشات شما در استورم و عملیات مالی بصورت خودکار انجام میشود"
+            }
+        },
+        {
+            key: "punchcard",
+            type: "enterprise",
+            data: {
+                website: 'https://www.punchcard.ir',
+                title: "پانج کارت",
+                logo: "punchcard.png",
+                display: "نرم افزار برخط کنترل تردد پرسنل بر بستر ابر",
+                description: "با استفاده از افزونه حقوق و دستمزد ، اسناد مالی کارکرد پرسنل شما بصورت خودکار صادر میشود"
             }
         }
     ]);
@@ -420,7 +465,7 @@ enums.Features = function () {
             ]
         },
         {key: 'treasury', value: ['treasury', 'banks-name', 'cheque-categories', 'funds', 'banks', 'bank-and-fund'], display: 'خزانه داری'},
-        {key: 'other', value: ['reports', 'people', 'settings', 'fiscal-periods', 'permissions', 'third-party', 'branches']}
+        {key: 'other', value: ['reports', 'people', 'settings', 'fiscal-periods', 'permissions', 'third-party', 'branches', 'open-card', 'woocommerce']}
     ]);
 };
 

@@ -11,14 +11,28 @@ class JournalGenerationTemplateController {
     /**@type{JournalGenerationTemplateQuery}*/ journalGenerationTemplateQuery = undefined;
 
     @Get("/:sourceType")
-    getBySourceType(req){
+    getBySourceType(req) {
 
         return this.journalGenerationTemplateQuery.getBySourceType(req.params.sourceType);
     }
 
     @Post("/:sourceType")
-    createOrUpdate(req){
+    createOrUpdate(req) {
 
-        this.journalGenerationTemplateService.createJournalTemplate(req.params.sourceType, req.body);
+        const sourceType = req.params.sourceType;
+
+        this.journalGenerationTemplateService.createJournalTemplate(sourceType, req.body);
+
+        return this.journalGenerationTemplateQuery.getBySourceType(sourceType);
+    }
+
+    @Post('/:sourceType/custom-template')
+    createCustomTemplate(req) {
+
+        const sourceType = req.params.sourceType;
+
+        this.journalGenerationTemplateService.createCustomTemplate(sourceType, req.body);
+
+        return this.journalGenerationTemplateQuery.getBySourceType(sourceType);
     }
 }

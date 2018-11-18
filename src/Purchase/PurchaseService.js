@@ -18,6 +18,9 @@ export class PurchaseService {
     /** @type {InvoiceRepository}*/
     @inject("InvoiceRepository") invoiceRepository = undefined;
 
+    @inject("JournalPurchaseGenerationService")
+    /**@type{JournalPurchaseGenerationService}*/ journalPurchaseGenerationService = undefined;
+
     /** @type {IState}*/
     @inject("State") state = undefined;
 
@@ -168,7 +171,7 @@ export class PurchaseService {
 
         const invoice = this.invoiceRepository.findById(id);
 
-        if(!invoice)
+        if (!invoice)
             throw new NotFoundException();
 
         let entity = this.invoiceRepository.findById(id),
@@ -193,7 +196,7 @@ export class PurchaseService {
 
         const invoice = this.invoiceRepository.findById(id);
 
-        if(!invoice)
+        if (!invoice)
             throw new NotFoundException();
 
         let entity = this.mapToEntity(cmd);
@@ -215,7 +218,7 @@ export class PurchaseService {
 
         const invoice = this.invoiceRepository.findById(id);
 
-        if(!invoice)
+        if (!invoice)
             throw new NotFoundException();
 
         this.invoiceRepository.remove(id);
@@ -237,5 +240,15 @@ export class PurchaseService {
             throw new ValidationException(['فاکتور قبلا قطعی شده']);
 
         this.invoiceRepository.update(id, {invoiceStatus: 'fixed'});
+    }
+
+    generateJournal(id) {
+
+        const invoice = this.invoiceRepository.findById(id);
+
+        if (!invoice)
+            throw new NotFoundException();
+
+        this.journalPurchaseGenerationService.generate(id);
     }
 }

@@ -1,5 +1,5 @@
 import {inject, injectable} from "inversify";
-import {EventHandler} from "../../Infrastructure/@decorators";
+import {EventHandler} from "../Infrastructure/@decorators";
 
 @injectable()
 export class JournalPurchaseEventListener {
@@ -13,7 +13,10 @@ export class JournalPurchaseEventListener {
     /**@type {JournalService}*/
     @inject("JournalService") journalService = undefined;
 
-    @EventHandler("onPurchaseCreated")
+    @inject("JournalPurchaseGenerationService")
+    /**@type{JournalPurchaseGenerationService}*/ journalPurchaseGenerationService = undefined;
+
+    @EventHandler("PurchaseCreated")
     onPurchaseCreated(invoiceId) {
         let invoice = this.invoiceRepository.findById(invoiceId),
             settings = this.settingsRepository.get();
@@ -21,20 +24,14 @@ export class JournalPurchaseEventListener {
         if (invoice.invoiceStatus === 'draft')
             return;
 
-        if (!settings.canSaleGenerateAutomaticJournal)
+        if (!settings.canInventoryGenerateAutomaticJournal)
             return;
 
-        const journalId = this.journalService.generateForPurchase(invoiceId);
-        this.invoiceRepository.update(invoiceId , {journalId});
+        this.journalPurchaseGenerationService.generate(invoiceId);
     }
 
-    @EventHandler("onPurchaseChanged")
+    @EventHandler("PurchaseChanged")
     onPurchaseChanged(invoice) {
-        this.onPurchaseCreated(invoice);
-    }
-
-    @EventHandler("onPurchaseConfirmed")
-    onPurchaseConfirmed(invoice) {
         this.onPurchaseCreated(invoice);
     }
 
@@ -42,7 +39,7 @@ export class JournalPurchaseEventListener {
     onPurchaseRemoved(invoice) {
         let settings = this.settingsRepository.get();
 
-        if (!settings.canSaleGenerateAutomaticJournal)
+        if (!settings.canInventoryGenerateAutomaticJournal)
             return;
 
         if (invoice.journalId)

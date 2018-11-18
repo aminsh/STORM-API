@@ -200,9 +200,9 @@ export class InventoryQuery extends BaseQuery {
                     .as('base');
             }),
 
-            result = toResult(Utility.kendoQueryResolve(query, parameters, this._viewLine)),
+            result = toResult(Utility.kendoQueryResolve(query, parameters, this._viewLine));
 
-            sumTotalPrice = toResult(knex
+            /*sumTotalPrice = toResult(knex
                 .select(knex.raw('SUM(CAST("unitPrice" * quantity as FLOAT)) as "sumTotalPrice"'))
                 .from('inventoryLines')
                 .modify(modify, branchId, userId, canView, 'inventoryLines')
@@ -211,7 +211,7 @@ export class InventoryQuery extends BaseQuery {
                 .sumTotalPrice,
             aggregates = {sumTotalPrice};
 
-        result.aggregates = aggregates;
+        result.aggregates = aggregates;*/
 
         return result;
 
@@ -282,8 +282,6 @@ export class InventoryQuery extends BaseQuery {
             inputId: item.inputId,
             outputId: item.outputId,
             invoiceId: item.invoiceId,
-            fixedQuantity: item.fixedQuantity,
-            fixedAmount: item.fixedAmount,
             invoice: item.invoiceId
                 ? {number: item["invoice_number"], date: item["invoice_date"], type: item["invoice_type"]}
                 : undefined

@@ -4,53 +4,75 @@
     {
       "key": "number",
       "display": "شماره فاکتور",
-      "value": 1
+      "value": 1,
+      "type": "String"
     },
     {
       "key": "date",
       "display": "تاریخ فاکتور",
-      "value": "1396/01/01"
+      "value": "1396/01/01",
+      "type": "String"
     },
     {
       "key": "title",
       "display": "عنوان فاکتور",
-      "value": "تست"
+      "value": "تست",
+      "type": "String"
     },
     {
       "key": "amount",
       "display": "مبلغ فاکتور (مقدار * مبلغ واحد)",
-      "value": 10000
+      "value": 10000,
+      "type": "Number"
+    },
+    {
+      "key": "tax",
+      "display": "مالیات ارزش افزوده",
+      "value": 60,
+      "type": "Number"
     },
     {
       "key": "vat",
-      "display": "ارزش افزوده",
-      "value": 90
+      "display": "عوارض ارزش افزوده",
+      "value": 30,
+      "type": "Number"
     },
     {
       "key": "discount",
       "display": "تخفیف",
-      "value": 30
+      "value": 30,
+      "type": "Number"
     },
     {
       "key": "vendor",
-      "display": "فروشنده (تفصیل)",
+      "display": "تفصیل فروشنده",
       "value": "6001 - فروشنده نمونه"
     },
     {
-      "key": "vendorTitle",
-      "display": "نام فروشنده (تفصیل)",
-      "value": "فروشنده نمونه"
+      "type": "Array",
+      "key": "products",
+      "display": "کالاها",
+      "fields": [
+        {"type": "String", "key": "id", "display": "تفصیل کالا"},
+        {"type": "Number", "key": "amount", "display": "مبلغ (مقدار * مبلغ واحد)"}
+      ]
     },
     {
-      "key": "vendorCode",
-      "display": "کد فروشنده (تفصیل)",
-      "value": "6001"
+      "type": "Array",
+      "key": "productGroupByStock",
+      "display": "کالاها به تفکیک انبار",
+      "fields": [
+        {"type": "String", "key": "id", "display": "تفصیل انبار"},
+        {"type": "Number", "key": "amount", "display": "مبلغ (مقدار * مبلغ واحد)"}
+      ]
     }
   ],
   "data": {
     "description": "بابت فاکتور خرید شماره # number # ",
+    "date": "# date #",
     "lines": [
       {
+        "type": "data",
         "subsidiaryLedgerAccountId": "",
         "detailAccountId": "# vendor #",
         "debtor": "0",
@@ -58,24 +80,26 @@
         "article": "بابت فاکتور شماره # number # "
       },
       {
+        "type": "data",
         "subsidiaryLedgerAccountId": "",
         "debtor": "# amount #",
         "creditor": "0",
-        "article": "بابت فاکتور شماره # number # "
+        "article": "بابت فاکتور خرید شماره # number # "
       },
       {
+        "type": "data",
         "subsidiaryLedgerAccountId": "",
         "debtor": "0",
         "creditor": "# discount #",
-        "article": "بابت فاکتور شماره # number # "
+        "article": "بابت فاکتور خرید شماره # number # "
       },
       {
+        "type": "data",
         "subsidiaryLedgerAccountId": "",
-        "debtor": "# vat #",
+        "debtor": "# vat + tax #",
         "creditor": "0",
-        "article": "بابت فاکتور شماره # number # "
+        "article": "بابت فاکتور خرید شماره # number # "
       }
-
     ]
   }
 }

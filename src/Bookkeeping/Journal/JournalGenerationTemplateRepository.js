@@ -20,8 +20,9 @@ export class JournalGenerationTemplateRepository extends BaseRepository {
 
         entity.sourceType = sourceType;
 
-        return toResult(this.knex(this.tableName)
-            .insert(entity));
+        toResult(this.knex(this.tableName).insert(entity));
+
+        return entity.id;
     }
 
     update(sourceType, entity) {

@@ -21,7 +21,9 @@ export class SettingsQuery extends BaseQuery {
             'saleCosts',
             'saleCharges',
             'webhooks',
-            'invoiceDescription')
+            'invoiceDescription',
+            'productAccountLevel',
+            'stockAccountLevel')
             .from('settings')
             .where('branchId', this.branchId)
             .first());

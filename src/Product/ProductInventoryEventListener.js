@@ -9,7 +9,7 @@ export class ProductInventoryEventListener {
 
 
     @EventHandler("ProductInventoryChanged")
-    onSaleCreated(productId, stockId, quantity) {
+    onProductInventoryChanged(productId, stockId, quantity) {
 
         this.productInventoryService.start();
 

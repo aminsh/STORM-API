@@ -248,7 +248,7 @@ class ReportController {
     }
 
     @Get("/sale-invoice-turnover")
-    getSaleDetailTurnover(req) {
+    getSaleTurnover(req) {
 
         return this.reportSaleQuery.getDetail(req.query.invoiceStatus);
     }

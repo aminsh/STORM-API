@@ -9,6 +9,6 @@ const async = require('asyncawait/async'),
 
 exports.seed = async(function (knex, Promise) {
 
-    await(knex('branches').update({is_archive: false}));
+    await(knex('inventories').update({quantityStatus: 'confirmed', priceStatus: 'draft'}));
 });
 

@@ -35,6 +35,7 @@ import * as BranchSetup from "./BranchSetup";
 import * as Report from "./Report";
 import * as Permission from "./Permission";
 import * as InventoryAccounting from "./InventoryAccounting";
+import * as JournalGeneration from "./JournalGeneration";
 
 Database.register(container);
 Config.register(container);
@@ -62,6 +63,7 @@ BranchSetup.register(container);
 Report.register(container);
 Permission.register(container);
 InventoryAccounting.register(container);
+JournalGeneration.register(container);
 
 import {Context} from "./Context";
 import {register} from "./Infrastructure/expressUtlis";

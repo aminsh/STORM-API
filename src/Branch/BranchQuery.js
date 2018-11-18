@@ -127,7 +127,7 @@ export class BranchQuery {
                 .leftJoin('storm_plans', 'storm_orders.planId', 'storm_plans.id')
                 .leftJoin(this.tableName, 'storm_orders.branchId', this.tableName + '.id')
                 .leftJoin('users', `${this.tableName}.ownerId`, 'users.id')
-                .where('storm_plans.name', 'Trial');
+                .where('storm_plans.category', 'Trial');
 
         let where = '';
 

@@ -4,57 +4,83 @@
     {
       "key": "number",
       "display": "شماره فاکتور",
-      "value": 1
+      "value": 1,
+      "type": "String"
     },
     {
       "key": "date",
       "display": "تاریخ فاکتور",
-      "value": "1396/01/01"
+      "value": "1396/01/01",
+      "type": "String"
     },
     {
       "key": "title",
       "display": "عنوان فاکتور",
-      "value": "تست"
+      "value": "تست",
+      "type": "String"
     },
     {
       "key": "amount",
       "display": "مبلغ فاکتور (مقدار * مبلغ واحد)",
-      "value": 10000
+      "value": 10000,
+      "type": "Number"
     },
     {
       "key": "tax",
       "display": "مالیات ارزش افزوده",
-      "value": 60
+      "value": 60,
+      "type": "Number"
     },
     {
       "key": "vat",
       "display": "عوارض ارزش افزوده",
-      "value": 30
+      "value": 30,
+      "type": "Number"
     },
     {
       "key": "discount",
       "display": "تخفیف",
-      "value": 30
+      "value": 30,
+      "type": "Number"
     },
     {
       "key": "customer",
       "display": "شناسه خریدار (تفصیل)",
-      "value": "6001 - مشتری نمونه"
+      "value": "6001 - مشتری نمونه",
+      "type": "String"
     },
     {
       "key": "customerTitle",
       "display": "نام خریدار (تفصیل)",
-      "value": "مشتری نمونه"
+      "value": "مشتری نمونه",
+      "type": "String"
     },
     {
       "key": "customerCode",
       "display": "کد خریدار (تفصیل)",
-      "value": "6001"
+      "value": "6001",
+      "type": "String"
+    },
+    {
+      "key": "marketer",
+      "display": "تفصیل بازار یاب",
+      "value": "بازار یاب نمونه",
+      "type": "String"
     },
     {
       "key": "bankReceiptNumber",
       "display": "شماره رسید بانکی",
-      "value": "12589"
+      "value": "12589",
+      "type": "String"
+    },
+    {
+      "type": "Array",
+      "key": "products",
+      "display": "کالاها",
+      "fields": [
+        {"type": "String", "key": "id", "display": "حساب کالا"},
+        {"type": "Number", "key": "amount", "display": "مبلغ (مقدار * مبلغ واحد)"}
+      ]
     }
   ],
   "data": {
@@ -65,25 +91,29 @@
         "detailAccountId": "# customer #",
         "debtor": "# amount - discount + vat #",
         "creditor": "0",
-        "article": "بابت فاکتور شماره # number # "
+        "article": "بابت فاکتور شماره # number # ",
+        "type": "data"
       },
       {
         "subsidiaryLedgerAccountId": "",
         "debtor": "0",
         "creditor": "# amount #",
-        "article": "بابت فاکتور شماره # number # "
+        "article": "بابت فاکتور شماره # number # ",
+        "type": "data"
       },
       {
         "subsidiaryLedgerAccountId": "",
         "debtor": "# discount #",
         "creditor": "0",
-        "article": "بابت فاکتور شماره # number # "
+        "article": "بابت فاکتور شماره # number # ",
+        "type": "data"
       },
       {
         "subsidiaryLedgerAccountId": "",
         "debtor": "0",
         "creditor": "# vat #",
-        "article": "بابت فاکتور شماره # number # "
+        "article": "بابت فاکتور شماره # number # ",
+        "type": "data"
       }
 
     ]

@@ -121,7 +121,7 @@ export class StormOrderService {
             dto = {
                 date: Utility.PersianDate.getDate(order.issuedDate),
                 customer: {referenceId: order.branchId, title: this.branchRepository.findById(order.branchId).name},
-                status: 'confirmed',
+                status: 'draft',
                 invoiceLines: [
                     {
                         product: {referenceId: plan.id, title: plan.title, productType: 'service'},
@@ -176,5 +176,22 @@ export class StormOrderService {
         this.orderRepository.update(id, {paidDate: new Date});
 
         this.eventBus.send("ActivateBranch", id);
+
+        const order = this.orderRepository.findById(id);
+
+        try {
+
+            const result = this.httpRequest.post(`${process.env.DELIVERY_URL}/api`)
+                .query({url: `/v1/sales/${order.invoiceId}/confirm`, method: 'POST'})
+                .setHeader('x-access-token', this.persistedConfigService.get("STORM_BRANCH_TOKEN").value)
+                .execute();
+
+            console.log(result);
+
+        } catch (e) {
+            console.log('Error on set status confirm');
+
+            console.log(e);
+        }
     }
 }
