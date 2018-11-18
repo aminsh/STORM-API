@@ -88,12 +88,11 @@ export class Woocommerce {
 
         const customerId = data['customer_id'];
 
-        const result = this.woocommerceRepository.get(`customers/${customerId}`),
-            customer = JSON.parse(result.body);
+        const customer = this.woocommerceRepository.get(`customers/${customerId}`);
 
         const sale = {
             orderId: data.id,
-            title: 'شناسه سفارش : {0}'.format(order.id),
+            title: 'شناسه سفارش : {0}'.format(data.id),
             customer: {
                 referenceId: customerId,
                 title: `${customer.first_name} ${customer.last_name}`,
@@ -127,6 +126,8 @@ export class Woocommerce {
         if (!invoice)
             throw new ValidationException(['فاکتور به شماره سفارش ورودی وجود ندارد']);
 
+        invoice.customer = {id: invoice.detailAccountId};
+
         invoice.invoiceLines = data.line_items.map(item => ({
             product: {
                 referenceId: item.product_id,
@@ -137,7 +138,7 @@ export class Woocommerce {
         }));
 
 
-        this.saleService.update(invoice);
+        this.saleService.update(invoice.id, invoice);
     }
 
     deleteOrder(data) {

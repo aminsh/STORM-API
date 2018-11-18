@@ -342,7 +342,7 @@ export class SaleService {
         if (errors.length > 0)
             throw new ValidationException(errors);
 
-        entity.invoiceStatus = cmd.status !== 'draft' ? 'confirmed' : 'draft';
+        entity.invoiceStatus = (cmd.status && cmd.status !== 'draft') ? 'confirmed' : 'draft';
 
         if (entity.invoiceStatus === 'draft') {
             this.invoiceRepository.updateBatch(id, this._mapToData(entity));
