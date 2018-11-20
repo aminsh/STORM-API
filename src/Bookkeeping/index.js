@@ -36,6 +36,7 @@ import {TreasuryEventListener} from "./Journal/TreasuryEventListener";
 import {JournalGenerationPurposeQuery} from "./Journal/JournalGenerationPurposeQuery";
 
 import {SaleMapper} from "./JournalGenerationTemplate/SaleMapper";
+import {PurchaseMapper} from "./JournalGenerationTemplate/PurchaseMapper";
 
 import {ProductEventListener} from "./ProductEventListener";
 import {StockEventListener} from "./StockEventListener";
@@ -95,11 +96,16 @@ export function register(container) {
     container.bind("TreasuryEventListener").to(TreasuryEventListener);
 
     container.bind("SaleMapper").to(SaleMapper);
+    container.bind("PurchaseMapper").to(PurchaseMapper);
 
     container.bind("Factory<Mapper>").toFactory(context => {
         return key => {
+
             if (key === 'sale')
                 return context.container.get("SaleMapper");
+
+            if(key === 'purchase')
+                return context.container.get("PurchaseMapper");
         };
     });
 
