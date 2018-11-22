@@ -147,12 +147,17 @@ export class DetailAccountQuery extends BaseQuery {
             }),
 
             query = withQuery.select().from(function () {
-                this.select('*',
+                let query = this.select('*',
                     knex.raw(`(select sum(debtor - creditor) 
                                from "journals-row" 
                                where "seq_row" <= base."seq_row" and "detailAccountId" = base."detailAccountId") as remainder`))
-                    .from('journals-row as base')
-                    .groupBy(
+                    .from('journals-row as base');
+
+
+                if(!Utility.String.isNullOrEmpty(parameters.minDate) && !Utility.String.isNullOrEmpty(parameters.maxDate))
+                    query.whereBetween('date', [parameters.minDate, parameters.maxDate]);
+
+                    query.groupBy(
                         'title',
                         'display',
                         'article',
