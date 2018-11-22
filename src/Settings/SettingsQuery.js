@@ -23,7 +23,8 @@ export class SettingsQuery extends BaseQuery {
             'webhooks',
             'invoiceDescription',
             'productAccountLevel',
-            'stockAccountLevel')
+            'stockAccountLevel',
+            'canInventoryGenerateAutomaticJournal')
             .from('settings')
             .where('branchId', this.branchId)
             .first());
