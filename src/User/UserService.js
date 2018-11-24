@@ -10,6 +10,9 @@ export class UserService {
     @inject("VerificationService")
     /** @type{VerificationService} */ verificationService = undefined;
 
+    @inject("UserOauthProfileRepository")
+    /**@type{UserOauthProfileRepository}*/ userOauthProfileRepository = undefined;
+
     @inject("SmsService")
     /** @type{SmsService}*/ smsService = undefined;
 
@@ -102,11 +105,10 @@ export class UserService {
             try {
                 this.sendMobileVerification({id: user.id, mobile: entity.mobile});
             }
-            catch (e){
+            catch (e) {
 
             }
     }
-
 
     sendMobileVerification(user) {
 
@@ -121,18 +123,24 @@ export class UserService {
         }
     }
 
-    registerByGoogle(googleToken, profile) {
+    registerByGoogle(token, profile) {
 
-        let user = this.userRepository.findOne({id: profile.id});
+        let userProfile = this.userOauthProfileRepository.getByProviderAndProfileId('google', profile.id);
+
+        let user = userProfile
+            ? this.userRepository.findOne({id: userProfile.userId})
+            : this.userRepository.findByEmailOrMobile({email: profile.emails[0].value});
 
         if (user) {
             !user.isActiveEmail && this.userRepository.update(user.id, {isActiveEmail: true});
+
+            this._createOrUpdateUserProfile('google', userProfile, token, profile, user.id);
+
             return user.id;
         }
 
         user = {
             id: profile.id,
-            googleToken,
             name: profile.displayName,
             email: profile.emails[0].value,
             image: profile.photos[0].value,
@@ -143,7 +151,78 @@ export class UserService {
 
         this.userRepository.create(user);
 
+        Utility.delay(500);
+
+        this._createOrUpdateUserProfile('google', userProfile, token, profile, user.id);
+
         return user.id;
+    }
+
+    registerByTinet(token, profile) {
+
+        let userProfile = this.userOauthProfileRepository.getByProviderAndProfileId('tinet', profile.user_id);
+
+        let user = userProfile
+            ? this.userRepository.findOne({id: userProfile.userId})
+            : this.userRepository.findByEmailOrMobile({email: profile.email, mobile: profile.phone_number});
+
+        if (user) {
+
+            if (!user.isActiveEmail && profile.email_verified)
+                user.isActiveEmail = true;
+
+            if (!user.isActiveMobile && profile.phone_number_verified)
+                user.isActiveMobile = true;
+
+            this.userRepository.update(user.id, user);
+
+            this._createOrUpdateUserProfile('tinet', userProfile, token, profile, user.id);
+
+            return user.id;
+        }
+
+        user = {
+            id: Utility.TokenGenerator.generate128Bit(),
+            name: profile.name,
+            email: profile.email,
+            mobile: profile.phone_number,
+            state: profile.phone_number_verified ? 'active' : 'pending',
+            isActiveEmail: !!profile.email_verified,
+            isActiveMobile: !!profile.phone_number_verified,
+            token: Utility.TokenGenerator.generate256Bit()
+        };
+
+        this.userRepository.create(user);
+
+        Utility.delay(500);
+
+        this._createOrUpdateUserProfile('tinet', userProfile, token, profile, user.id);
+
+        return user.id;
+    }
+
+    _createOrUpdateUserProfile(provider, userProfile, token, profile, userId) {
+
+        if (userProfile) {
+
+            userProfile.token = token;
+            userProfile.userId = userId;
+            userProfile.profile = profile;
+
+            this.userOauthProfileRepository.update(userProfile.id, userProfile);
+
+            return;
+        }
+
+        userProfile = {
+            provider,
+            provider_user_id: provider === 'google' ? profile.id : profile.user_id,
+            token,
+            profile,
+            userId
+        };
+
+        this.userOauthProfileRepository.create(userProfile);
     }
 
     regenerateToken() {
@@ -174,7 +253,7 @@ export class UserService {
 
     changePassword(password) {
 
-        if(!password)
+        if (!password)
             throw new ValidationSingleException('کلمه عبور وجود ندارد');
 
         this.userRepository.update(this.context.user.id, {password: md5(password)});
@@ -182,7 +261,7 @@ export class UserService {
 
     changeImage(image) {
 
-        if(!image)
+        if (!image)
             throw new ValidationSingleException('تصویر وجود ندارد');
 
         this.userRepository.update(this.context.user.id, {image});
