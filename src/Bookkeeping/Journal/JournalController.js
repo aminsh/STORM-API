@@ -112,6 +112,14 @@ class JournalController {
         return this.journalQuery.getById(id);
     }
 
+    @Post("/merge")
+    merge(req) {
+
+        const id = this.journalService.merge(req.body);
+
+        return this.journalQuery.getById(id);
+    }
+
     @Put("/:id/change-date")
     changeDate(req) {
 
@@ -123,7 +131,7 @@ class JournalController {
     }
 
     @Get("/generation-purposes/:id")
-    getByIdJournalGenerationPurposes(req){
+    getByIdJournalGenerationPurposes(req) {
         return this.journalGenerationPurposeQuery.getById(req.params.id)
     }
 }

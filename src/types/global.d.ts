@@ -1,9 +1,10 @@
 declare global {
+
     const EventEmitter: IEventEmitter,
         Utility: IUtility,
-        ValidationException: ValidationException,
-        ValidationSingleException: ValidationSingleException,
-        NotFoundException: NotFoundException,
+        ValidationException = ValidationException,
+        ValidationSingleException = ValidationSingleException,
+        NotFoundException = NotFoundException,
         Enums: any
 }
 

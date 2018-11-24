@@ -22,6 +22,25 @@ export class UserRepository {
         return toResult(query.first());
     }
 
+    findByEmailOrMobile(parameters) {
+
+        const knex = this.dbContext.instance,
+            tableName = this.tableName;
+
+        const query = knex.select('*').from(function () {
+
+            this.select('*').from(tableName).where('state', 'active').as('base');
+        });
+
+        if (parameters.email)
+            query.where('email', 'ILIKE', parameters.email);
+
+        if (parameters.mobile)
+            query.orWhere('mobile', parameters.mobile);
+
+        return toResult(query.first());
+    }
+
     findByEmail(email) {
         const knex = this.dbContext.instance;
 
@@ -83,5 +102,4 @@ export class UserRepository {
 
         toResult(knex(this.tableName).where({id}).update(user));
     }
-
 }

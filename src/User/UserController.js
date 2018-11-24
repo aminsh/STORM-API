@@ -26,10 +26,17 @@ export class UserController {
     @NoLog()
     register(req) {
 
-        let loginByGoogle = req.query.loginByGoogle;
+        let loginByGoogle = req.query.loginByGoogle,
+            loginByTinet = req.query.loginByTinet;
 
         if (loginByGoogle) {
             let id = this.userService.registerByGoogle(req.body.googleToken, req.body.profile);
+
+            return {user: this.userQuery.getOne({id})};
+        }
+
+        if (loginByTinet) {
+            let id = this.userService.registerByTinet(req.body.tinetToken, req.body.profile);
 
             return {user: this.userQuery.getOne({id})};
         }
