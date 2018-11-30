@@ -30,6 +30,15 @@ export class RegisteredThirdPartyRepository  {
         toResult(this.knex(this.tableName).insert(entity));
     }
 
+    update(key, data) {
+
+        toResult(
+            this.knex(this.tableName)
+                .where({branchId: this.context.branchId, key})
+                .update({data})
+        );
+    }
+
     remove(key) {
         toResult(
             this.knex(this.tableName)
