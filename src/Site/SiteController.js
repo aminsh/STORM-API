@@ -18,6 +18,7 @@ class SiteController {
                 subject: `Suggestion on site ${cmd.userName}`,
                 html: `<p>${cmd.userName}</p>
                        <p>${cmd.email}</p>
+                       <p>${cmd.title}</p>
                        <p>${cmd.phone}</p>
                        <p>${cmd.description}</p>`
             };

@@ -215,7 +215,7 @@ export class SaleService {
 
     _updateInventoryOnCreate(entity) {
 
-        if(!this.settings.canControlInventory)
+        if (!this.settings.canControlInventory)
             return;
 
         let linesAreGood = entity.invoiceLines.filter(item => item.productId && this.productRepository.isGood(item.productId)),
@@ -248,7 +248,7 @@ export class SaleService {
 
     _updateProductInventoryOnUpdate(oldSale, newSale) {
 
-        if(!this.settings.canControlInventory)
+        if (!this.settings.canControlInventory)
             return;
 
         let result = [],
@@ -393,16 +393,16 @@ export class SaleService {
         if (!invoice)
             throw new NotFoundException();
 
-        if(invoice.invoiceStatus === 'draft')
+        if (invoice.invoiceStatus === 'draft')
             throw new ValidationException(['فاکتور در وضعیت پیش نویس است ، ابتدا تایید کنید']);
 
-        if(invoice.invoiceStatus === 'fixed')
+        if (invoice.invoiceStatus === 'fixed')
             throw new ValidationException(['فاکتور قبلا قطعی شده']);
 
         this.invoiceRepository.update(id, {invoiceStatus: 'fixed'});
     }
 
-    generateJournal(id){
+    generateJournal(id) {
 
         this.journalSaleGenerationService.generate(id);
     }
