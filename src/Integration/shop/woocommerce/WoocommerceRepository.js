@@ -32,7 +32,7 @@ export class WoocommerceRepository {
             consumerKey: data.consumerKey,
             consumerSecret: data.consumerSecret,
             wpAPI: true,
-            version: 'wc/v1'
+            version: 'wc/v3'
         });
     }
 

@@ -86,6 +86,15 @@ export class SaleQuery extends BaseQuery {
         return invoice ? this._view(invoice, settings) : [];
     }
 
+    getByOrderId(orderId) {
+        const invoice = toResult(this.knex.select('id').from('invoices').where({orderId}).first());
+
+        if (!invoice)
+            return null;
+
+        return this.getById(invoice.id);
+    }
+
     getAll(parameters) {
         let knex = this.knex,
             branchId = this.branchId,
