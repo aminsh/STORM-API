@@ -13,6 +13,9 @@ export class JournalSaleEventListener {
     /**@type {JournalSaleGenerationService}*/
     @inject("JournalSaleGenerationService") journalSaleGenerationService = undefined;
 
+    /**@type {JournalService}*/
+    @inject("JournalService") journalService = undefined;
+
     @EventHandler("SaleCreated")
     onSaleCreated(invoiceId) {
 
@@ -37,6 +40,13 @@ export class JournalSaleEventListener {
     @EventHandler("SaleRemoved")
     onInvoiceRemoved(invoice) {
 
+        let settings = this.settingsRepository.get();
+
+        if (!settings.canRemoveJournalWhenSourceRemoved)
+            return;
+
+        if (invoice.journalId)
+            this.journalService.remove(invoice.journalId);
     }
 
 }

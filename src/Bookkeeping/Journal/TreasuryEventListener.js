@@ -7,6 +7,9 @@ export class TreasuryEventListener {
     /**@type {TreasurySettingRepository}*/
     @inject("TreasurySettingRepository") treasurySettingRepository = undefined;
 
+    /**@type {SettingsRepository}*/
+    @inject("SettingsRepository") settingsRepository = undefined;
+
     /**@type {TreasuryRepository}*/
     @inject("TreasuryRepository") treasuryRepository = undefined;
 
@@ -230,9 +233,9 @@ export class TreasuryEventListener {
 
     @EventHandler("onRemoveTreasuryJournal")
     onRemoveTreasuryJournal(journalId) {
-        let treasurySetting = this.treasurySettingRepository.get();
+        let settings = this.settingsRepository.get();
 
-        if (!treasurySetting.journalGenerateAutomatic)
+        if (!settings.canRemoveJournalWhenSourceRemoved)
             return;
 
         this.journalService.remove(journalId);
@@ -240,9 +243,10 @@ export class TreasuryEventListener {
 
     @EventHandler("onTreasuryPurposeRemove")
     onTreasuryPurposeRemove(journalId) {
-        let treasurySetting = this.treasurySettingRepository.get();
 
-        if (!treasurySetting.journalGenerateAutomatic)
+        let settings = this.settingsRepository.get();
+
+        if (!settings.canRemoveJournalWhenSourceRemoved)
             return;
 
         this.treasuryPurposeService.remove(journalId);
