@@ -31,6 +31,7 @@ export class SettingService{
             productOutputCreationMethod: cmd.productOutputCreationMethod,
             canSaleGenerateAutomaticJournal: cmd.canSaleGenerateAutomaticJournal,
             canInventoryGenerateAutomaticJournal: cmd.canInventoryGenerateAutomaticJournal,
+            canRemoveJournalWhenSourceRemoved: cmd.canRemoveJournalWhenSourceRemoved,
             stakeholders: JSON.stringify(cmd.stakeholders),
             subsidiaryLedgerAccounts: JSON.stringify(cmd.subsidiaryLedgerAccounts),
             stockId: cmd.stockId,

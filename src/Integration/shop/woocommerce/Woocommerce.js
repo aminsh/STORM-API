@@ -10,8 +10,8 @@ export class Woocommerce {
     @inject("BranchRepository")
     /** @type {BranchRepository}*/ branchRepository = undefined;
 
-    @inject("InvoiceRepository")
-    /**@type{InvoiceRepository}*/ invoiceRepository = undefined;
+    @inject("SaleQuery")
+    /**@type{SaleQuery}*/ saleQuery = undefined;
 
     @inject("SaleService")
     /**@type{SaleService}*/ saleService = undefined;
@@ -33,6 +33,9 @@ export class Woocommerce {
 
     @inject("InventoryRepository")
     /**@type{InventoryRepository}*/ inventoryRepository = undefined;
+
+    @inject("TreasuryPurposeService")
+    /**@type{TreasuryPurposeService}*/ treasuryPurposeService = undefined;
 
     @inject("State") /**@type{IState}*/ state = undefined;
 
@@ -69,11 +72,22 @@ export class Woocommerce {
         }
         catch (e) {
 
-            if(e.code === 'ENOTFOUND')
+            if (e.code === 'ENOTFOUND')
                 throw new ValidationException(['آدرس معتبر نیست']);
 
             throw new ValidationSingleException(JSON.stringify(e));
         }
+    }
+
+    updateSettings(data) {
+
+        const wooCommerceThirdParty = this.registeredThirdPartyRepository.get("woocommerce");
+
+        wooCommerceThirdParty.data.consumerKey = data.consumerKey;
+        wooCommerceThirdParty.data.consumerSecret = data.consumerSecret;
+        wooCommerceThirdParty.data.url = data.url;
+
+        this.registeredThirdPartyRepository.update('woocommerce', wooCommerceThirdParty.data);
     }
 
     addOrder(data) {
@@ -113,7 +127,13 @@ export class Woocommerce {
             }))
         };
 
-        this.saleService.create(sale);
+        const id = this.saleService.create(sale);
+
+        Utility.delay(500);
+
+        const invoice = this.saleQuery.getById(id);
+
+        this.recordPayment(data, invoice);
     }
 
     updateOrder(data) {
@@ -121,12 +141,10 @@ export class Woocommerce {
         if (data.hasOwnProperty('webhook_id'))
             return;
 
-        const invoice = this.invoiceRepository.findByOrderId(data.id);
+        const invoice = this.saleQuery.getByOrderId(data.id);
 
         if (!invoice)
             throw new ValidationException(['فاکتور به شماره سفارش ورودی وجود ندارد']);
-
-        invoice.customer = {id: invoice.detailAccountId};
 
         invoice.invoiceLines = data.line_items.map(item => ({
             product: {
@@ -139,6 +157,48 @@ export class Woocommerce {
 
 
         this.saleService.update(invoice.id, invoice);
+
+        Utility.delay(500);
+
+        this.recordPayment(data, this.saleQuery.getById(invoice.id));
+    }
+
+    recordPayment(data, invoice) {
+
+        if (!data.transaction_id)
+            return;
+
+        if (invoice.sumRemainder === 0)
+            return;
+
+        const wooCommerceThirdParty = this.registeredThirdPartyRepository.get("woocommerce");
+
+        const accountId = (wooCommerceThirdParty.data.paymentMethod && wooCommerceThirdParty.data.paymentMethod.length > 0
+            ? wooCommerceThirdParty.data.paymentMethod.asEnumerable().singleOrDefault(item => item.key === data.payment_method)
+            : null || {}).accountId;
+
+        if (!accountId)
+            return;
+
+        const cmd = {
+            reference: 'invoice',
+            referenceId: invoice.id,
+            treasury: {
+                treasuryType: 'receive',
+                amount: invoice.sumTotalPrice,
+                documentType: 'receipt',
+                payerId: invoice.customer.id,
+                receiverId: accountId,
+                transferDate: Utility.PersianDate.current(),
+                documentDetail: {
+                    date: Utility.PersianDate.current(),
+                    number: data.transaction_id
+                }
+
+            }
+        };
+
+        this.treasuryPurposeService.create(cmd);
     }
 
     deleteOrder(data) {
@@ -146,12 +206,12 @@ export class Woocommerce {
         if (data.hasOwnProperty('webhook_id'))
             return;
 
-        const invoice = this.invoiceRepository.findByOrderId(data.id);
+        const invoice = this.saleQuery.getByOrderId(data.id);
 
         if (!invoice)
             throw new ValidationException(['فاکتور به شماره سفارش ورودی وجود ندارد']);
 
-        if(invoice.invoiceStatus === 'draft')
+        if (invoice.invoiceStatus === 'draft')
             return this.saleService.remove(invoice.id);
 
         let cmd = {
@@ -173,7 +233,7 @@ export class Woocommerce {
         this.returnSaleService.create(cmd);
     }
 
-    syncProducts(){
+    syncProducts() {
 
         const products = this.woocommerceRepository.get('products');
 
@@ -183,6 +243,24 @@ export class Woocommerce {
                 title: product.name,
                 salePrice: parseInt(product.price)
             }));
+    }
+
+    /**
+     * @param {AssignPaymentGatewaysToAccount[]} command*/
+    assignPaymentGatewaysToAccount(command) {
+
+        const wooCommerceThirdParty = this.registeredThirdPartyRepository.get("woocommerce");
+
+        const paymentMethod = command
+            .filter(item => item.key && item.accountId)
+            .map(item => ({key: item.key, accountId: item.accountId}));
+
+        let data = wooCommerceThirdParty.data;
+
+        data.paymentMethod = paymentMethod;
+
+        this.registeredThirdPartyRepository.update(wooCommerceThirdParty.key, data);
+
     }
 
     @EventHandler("ProductInventoryChanged")

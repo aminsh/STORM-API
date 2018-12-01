@@ -39,7 +39,7 @@ export class JournalPurchaseEventListener {
     onPurchaseRemoved(invoice) {
         let settings = this.settingsRepository.get();
 
-        if (!settings.canInventoryGenerateAutomaticJournal)
+        if (!settings.canRemoveJournalWhenSourceRemoved)
             return;
 
         if (invoice.journalId)

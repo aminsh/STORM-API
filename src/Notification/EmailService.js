@@ -29,13 +29,15 @@ export class EmailService {
     };
 
     sendSync() {
-        
+
         return toResult(this._send(...arguments));
     }
 
     sendAsync() {
-        
-        return this._send(...arguments);
+
+        return this._send(...arguments)
+            .then(() => console.log("Email sent async success"))
+            .catch(() => console.log("Email sent async fail"));
     }
 
     _send(options) {

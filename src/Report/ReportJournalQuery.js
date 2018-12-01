@@ -2,6 +2,7 @@ import {BaseQuery} from "../Infrastructure/BaseQuery";
 import toResult from "asyncawait/await";
 import {injectable, inject} from "inversify";
 import groupBy from "../Bookkeeping/AccountReview/journalQueryGrouped";
+import filterJournals from "../Bookkeeping/AccountReview/journalQueryReportFilter";
 
 @injectable()
 export class ReportJournalQuery extends BaseQuery {
@@ -14,13 +15,13 @@ export class ReportJournalQuery extends BaseQuery {
             knex = this.knex,
             currentFiscalPeriodId = this.state.fiscalPeriodId;
 
-        let journals = `"groupJournals"."temporaryNumber" as "number", 
-            "groupJournals"."temporaryDate" as "date",
-            "groupJournals".month as "journalmonth",
-            "groupJournals".description as "journalsDescription",
-            "groupJournals"."sumDebtor" as "debtor",
-            "groupJournals"."sumCreditor" as "creditor",
-            CASE WHEN "groupJournals"."journalStatus"= 'BookKeeped' 
+        let journals = `"dateControlJournals"."temporaryNumber" as "number", 
+            "dateControlJournals"."temporaryDate" as "date",
+            "dateControlJournals".month as "journalmonth",
+            "dateControlJournals".description as "journalsDescription",
+            "dateControlJournals"."sumDebtor" as "debtor",
+            "dateControlJournals"."sumCreditor" as "creditor",
+            CASE WHEN "dateControlJournals"."journalStatus"= 'BookKeeped' 
                 THEN '${'ثبت دفترداری'}' 
                 ELSE '${'صدور سند'}' END AS "journalStatusText"`;
 
@@ -53,9 +54,9 @@ export class ReportJournalQuery extends BaseQuery {
                     ['temporaryNumber','temporaryDate','month','generalLedgerAccountId', 'subsidiaryLedgerAccountId', 'detailAccountId',
                         'journalStatus','description']);
             })
-            .leftJoin('generalLedgerAccounts', 'groupJournals.generalLedgerAccountId', 'generalLedgerAccounts.id')
-            .leftJoin('subsidiaryLedgerAccounts', 'groupJournals.subsidiaryLedgerAccountId', 'subsidiaryLedgerAccounts.id')
-            .leftJoin('detailAccounts', 'groupJournals.detailAccountId', 'detailAccounts.id')
+            .leftJoin('generalLedgerAccounts', 'dateControlJournals.generalLedgerAccountId', 'generalLedgerAccounts.id')
+            .leftJoin('subsidiaryLedgerAccounts', 'dateControlJournals.subsidiaryLedgerAccountId', 'subsidiaryLedgerAccounts.id')
+            .leftJoin('detailAccounts', 'dateControlJournals.detailAccountId', 'detailAccounts.id')
             .as('totalJournals');
 
         return toResult(query);
@@ -72,17 +73,17 @@ export class ReportJournalQuery extends BaseQuery {
         options.canView = this.canView.call(this);
         options.modify = this.modify.bind(this);
 
-        let journals = `"groupJournals".id as "journalId",
-            "groupJournals"."periodId" as "journalPeriodId",
-            "groupJournals"."temporaryDate" as "date",
-            "groupJournals"."temporaryNumber" as "number",
-            "groupJournals".month as "month",
-            "groupJournals".description as "journalsDescription",
-            "groupJournals"."sumDebtor" as "debtor",
-            "groupJournals"."sumCreditor" as "creditor",
-            "groupJournals".article as "article",
-            "groupJournals".row as "row",
-            CASE WHEN "groupJournals"."journalStatus"= 'BookKeeped' 
+        let journals = `"dateControlJournals".id as "journalId",
+            "dateControlJournals"."periodId" as "journalPeriodId",
+            "dateControlJournals"."temporaryDate" as "date",
+            "dateControlJournals"."temporaryNumber" as "number",
+            "dateControlJournals".month as "month",
+            "dateControlJournals".description as "journalsDescription",
+            "dateControlJournals".article as "article",
+            "dateControlJournals"."debtor" as "debtor",
+            "dateControlJournals"."creditor" as "creditor",
+            "dateControlJournals".row as "row",
+            CASE WHEN "dateControlJournals"."journalStatus"= 'BookKeeped' 
                 THEN '${'ثبت دفترداری'}' 
                 ELSE '${'صدور سند'}' END AS "journalStatusText"`;
 
@@ -107,13 +108,11 @@ export class ReportJournalQuery extends BaseQuery {
         let query = knex.select(knex.raw(journals + ',' + generalLedgerAccounts + ',' +
             subsidiaryLedgerAccounts + ',' + detailAccounts))
             .from(function () {
-                groupBy.call(this, knex, options, currentFiscalPeriodId,
-                    ['id','periodId','temporaryNumber','temporaryDate','month','generalLedgerAccountId', 'subsidiaryLedgerAccountId',
-                        'journalStatus','detailAccountId','description','row','article']);
+                filterJournals.call(this, knex, options, currentFiscalPeriodId);
             })
-            .leftJoin('generalLedgerAccounts', 'groupJournals.generalLedgerAccountId', 'generalLedgerAccounts.id')
-            .leftJoin('subsidiaryLedgerAccounts', 'groupJournals.subsidiaryLedgerAccountId', 'subsidiaryLedgerAccounts.id')
-            .leftJoin('detailAccounts', 'groupJournals.detailAccountId', 'detailAccounts.id')
+            .leftJoin('generalLedgerAccounts', 'dateControlJournals.generalLedgerAccountId', 'generalLedgerAccounts.id')
+            .leftJoin('subsidiaryLedgerAccounts', 'dateControlJournals.subsidiaryLedgerAccountId', 'subsidiaryLedgerAccounts.id')
+            .leftJoin('detailAccounts', 'dateControlJournals.detailAccountId', 'detailAccounts.id')
             .as('detailJournals');
 
         return toResult(query);
