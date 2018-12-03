@@ -82,7 +82,7 @@ export class ReportJournalQuery extends BaseQuery {
             "dateControlJournals".article as "article",
             "dateControlJournals"."debtor" as "debtor",
             "dateControlJournals"."creditor" as "creditor",
-            "dateControlJournals".row as "row",
+            "row_number"() OVER() as "row",
             CASE WHEN "dateControlJournals"."journalStatus"= 'BookKeeped' 
                 THEN '${'ثبت دفترداری'}' 
                 ELSE '${'صدور سند'}' END AS "journalStatusText"`;
