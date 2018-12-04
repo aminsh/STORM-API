@@ -27,6 +27,6 @@ export default function (knex, options) {
         .leftJoin('journalLines', 'journals.id', 'journalLines.journalId')
         .leftJoin('users', 'journals.createdById', 'users.id')
         .modify(options.modify, options.branchId, options.userId, options.canView, 'journals')
-        .orderBy('number', 'DESC')
+        //.orderBy('number', 'DESC')
         .as('baseJournals');
 }
