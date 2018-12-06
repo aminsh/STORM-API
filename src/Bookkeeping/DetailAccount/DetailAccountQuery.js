@@ -36,7 +36,8 @@ export class DetailAccountQuery extends BaseQuery {
             bankBranch: entity.bankBranch,
             email: entity.email,
             personType: entity.personType,
-            personTypeDisplay: entity.personType ? enums.PersonType().getDisplay(entity.personType) : ''
+            personTypeDisplay: entity.personType ? enums.PersonType().getDisplay(entity.personType) : '',
+            priceListId: entity.priceListId
         };
     }
 
