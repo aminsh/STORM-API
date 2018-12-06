@@ -25,7 +25,9 @@ class ProductController {
     @Post("/")
     create(req) {
 
-        this.productService.create(req.body);
+        const id = this.productService.create(req.body);
+
+        return this.productQuery.getById(id);
     }
 
     @Get("/:id")
