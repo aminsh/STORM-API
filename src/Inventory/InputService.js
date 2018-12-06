@@ -78,6 +78,10 @@ export class InputService {
 
         this.inventoryRepository.create(entity);
 
+        if (cmd.status === 'confirmed')
+            this.confirm(entity.id);
+
+
         return entity.id;
     }
 
@@ -115,7 +119,7 @@ export class InputService {
         if (errors.length > 0)
             throw new ValidationException(errors);
 
-        if(input.quantityStatus === 'fixed')
+        if (input.quantityStatus === 'fixed')
             throw new ValidationException(['رسید ثبت قطعی شده ، امکان تغییر وجود ندارد']);
 
         let removedLines = input.inventoryLines.asEnumerable()
@@ -162,12 +166,19 @@ export class InputService {
         entity.inventoryLines = cmd.inventoryLines.asEnumerable()
             .select(line => ({
                 productId: line.productId,
-                quantity: line.quantity
+                quantity: line.quantity,
+                unitPrice: line.unitPrice
             })).toArray();
 
         this.inventoryRepository.updateBatch(id, entity);
 
-        this.eventBus.send("InventoryInputChanged", input, id);
+        if (cmd.status === 'confirmed' && input.quantityStatus === 'draft') {
+
+            this.confirm(id);
+        }
+
+        if (input.quantityStatus === 'confirmed')
+            this.eventBus.send("InventoryInputChanged", input, id);
     }
 
     remove(id) {
@@ -188,7 +199,7 @@ export class InputService {
         if (errors.length > 0)
             throw new ValidationException(errors);
 
-        if(input.quantityStatus === 'fixed')
+        if (input.quantityStatus === 'fixed')
             throw new ValidationException(['حواله ثبت قطعی شده ، امکان حذف وجود ندارد']);
 
         this.inventoryRepository.remove(id);
