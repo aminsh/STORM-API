@@ -93,7 +93,15 @@ function resolveSort(query, sort) {
     if (!sort) return;
 
     sort.forEach(function (s) {
-        query.orderBy(s.field, s.dir);
+
+        if (s.hasOwnProperty('value')) {
+
+            const value = typeof s.value === 'string' ? `'${s.value}'` : s.value;
+
+            query.orderByRaw(`CASE WHEN "${s.field}" = ${value} THEN 1 ELSE 2 END ${s.dir}`);
+        }
+        else
+            query.orderBy(s.field, s.dir);
     });
 }
 
