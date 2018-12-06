@@ -82,7 +82,7 @@ export class ReportJournalQuery extends BaseQuery {
             "dateControlJournals".article as "article",
             "dateControlJournals"."debtor" as "debtor",
             "dateControlJournals"."creditor" as "creditor",
-            "row_number"() OVER() as "row",
+            row_number() OVER() as "row",
             CASE WHEN "dateControlJournals"."journalStatus"= 'BookKeeped' 
                 THEN '${'ثبت دفترداری'}' 
                 ELSE '${'صدور سند'}' END AS "journalStatusText"`;
@@ -105,15 +105,19 @@ export class ReportJournalQuery extends BaseQuery {
             THEN "detailAccounts".title 
             ELSE "detailAccounts".title||' ${'کد'} ' || "detailAccounts".code END AS detailDisplay`;
 
-        let query = knex.select(knex.raw(journals + ',' + generalLedgerAccounts + ',' +
-            subsidiaryLedgerAccounts + ',' + detailAccounts))
-            .from(function () {
-                filterJournals.call(this, knex, options, currentFiscalPeriodId);
-            })
-            .leftJoin('generalLedgerAccounts', 'dateControlJournals.generalLedgerAccountId', 'generalLedgerAccounts.id')
-            .leftJoin('subsidiaryLedgerAccounts', 'dateControlJournals.subsidiaryLedgerAccountId', 'subsidiaryLedgerAccounts.id')
-            .leftJoin('detailAccounts', 'dateControlJournals.detailAccountId', 'detailAccounts.id')
-            .as('detailJournals');
+        let query = knex.from(function () {
+            this.select(knex.raw(journals + ',' + generalLedgerAccounts + ',' +
+                subsidiaryLedgerAccounts + ',' + detailAccounts))
+                .from(function () {
+                    filterJournals.call(this, knex, options, currentFiscalPeriodId);
+                })
+                .leftJoin('generalLedgerAccounts', 'dateControlJournals.generalLedgerAccountId', 'generalLedgerAccounts.id')
+                .leftJoin('subsidiaryLedgerAccounts', 'dateControlJournals.subsidiaryLedgerAccountId', 'subsidiaryLedgerAccounts.id')
+                .leftJoin('detailAccounts', 'dateControlJournals.detailAccountId', 'detailAccounts.id')
+                .as('base')
+        })
+            .orderBy('number')
+            .orderBy('row');
 
         return toResult(query);
     };
