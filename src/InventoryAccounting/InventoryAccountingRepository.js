@@ -26,7 +26,7 @@ export class InventoryAccountingRepository extends BaseRepository {
 
         return knex.from(function () {
             this.select(
-                knex.raw(`ROW_NUMBER () OVER (ORDER BY ${self.tableName}."createdAt") as row`),
+                knex.raw(`ROW_NUMBER () OVER (ORDER BY CASE WHEN ${self.tableName}."ioType" = 'inputFirst' THEN 1 ELSE 2 END, ${self.tableName}."createdAt") as row`),
                 `${self.inventoryLineTableName}.productId`,
                 `${self.inventoryLineTableName}.quantity`,
                 `${self.inventoryLineTableName}.unitPrice`,

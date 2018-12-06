@@ -15,6 +15,12 @@ export class InventoryService {
     @inject("InventoryIOTypeRepository")
     /** @type{InventoryIOTypeRepository}*/ inventoryIOTypeRepository = undefined;
 
+    @inject("InventoryAccountingPricingService")
+    /**@type{InventoryAccountingPricingService}*/ inventoryAccountingPricingService = undefined;
+
+    @inject("State")
+    /**@type{IState}*/ state = undefined;
+
     setInvoice(id, invoice, ioTypeId) {
 
         let ioType = ioTypeId ? this.inventoryIOTypeRepository.findById(ioTypeId) : undefined,
@@ -85,4 +91,52 @@ export class InventoryService {
 
         return errors;
     }
+
+    addOneFirstInput(productId, DTO) {
+
+        let inputFirst = this.inventoryRepository.findFirst(DTO.stockId, this.state.fiscalPeriodId);
+
+        if (!inputFirst) {
+            const id = this.inputService.create({
+                stockId: DTO.stockId,
+                ioType: 'inputFirst',
+                inventoryLines: [{productId, quantity: DTO.quantity}]
+            });
+
+            Utility.delay(500);
+
+            this.inputService.confirm(id);
+
+            Utility.delay(500);
+
+            inputFirst = this.inventoryRepository.findById(id);
+        }
+        else {
+
+            const line = inputFirst.inventoryLines.asEnumerable().singleOrDefault(item => item.productId === productId);
+
+            if (line)
+                line.quantity = DTO.quantity;
+            else
+                inputFirst.inventoryLines.push({productId, quantity: DTO.quantity});
+
+            this.inputService.update(inputFirst.id, inputFirst);
+
+            inputFirst = this.inventoryRepository.findById(inputFirst.id);
+        }
+
+        this.inventoryAccountingPricingService.inputEnterPrice(
+            inputFirst.id,
+            inputFirst.inventoryLines
+                .filter(item => item.productId === productId)
+                .map(item => Object.assign({}, item, {unitPrice: DTO.unitPrice})),
+            true);
+    }
+
+    addToInputFirst(productId, data) {
+
+        data.forEach(item => this.addOneFirstInput(productId, item));
+    }
+
+
 }
