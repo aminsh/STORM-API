@@ -9,9 +9,12 @@ export class ProductQuery extends BaseQuery {
     getAll(parameters) {
         let knex = this.knex,
             branchId = this.branchId,
+            fiscalPeriodId = this.state.fiscalPeriodId,
+
             query = this.knex.select()
                 .from(function () {
                     this.select('products.*',
+                        knex.raw(`(select sum(quantity) from products_inventory where "branchId" = '${branchId}' and  "fiscalPeriodId" = '${fiscalPeriodId}' and "productId" = products.id) as "totalQuantity"`),
                         knex.raw('scales.title as "scaleDisplay"'),
                         knex.raw('"productCategories".title as "categoryDisplay"')
                     )
@@ -21,6 +24,7 @@ export class ProductQuery extends BaseQuery {
                         .where('products.branchId', branchId)
                         .as('base');
                 });
+
 
         return toResult(Utility.kendoQueryResolve(query, parameters, this.view.bind(this)));
     }
@@ -59,6 +63,15 @@ export class ProductQuery extends BaseQuery {
             .andWhere('products.id', id)
             .first());
 
+        result.inventory = toResult(
+            this.knex.select('quantity', 'stockId', knex.raw('stocks.title as "stockDisplay"'))
+                .from('products_inventory')
+                .leftJoin('stocks', 'products_inventory.stockId', 'stocks.id')
+                .where('products_inventory.branchId', this.branchId)
+                .where('products_inventory.fiscalPeriodId', this.state.fiscalPeriodId)
+                .where('products_inventory.productId', result.id)
+        );
+
         return this.view(result);
     }
 
@@ -68,7 +81,6 @@ export class ProductQuery extends BaseQuery {
             .select(this.view.bind(this))
             .toArray();
     }
-
 
     view(entity) {
 
@@ -89,7 +101,11 @@ export class ProductQuery extends BaseQuery {
             countOnSale: entity.countOnSale,
             sumQuantity: entity.sumQuantity,
             costOfGood: entity.costOfGood,
-            barcode: entity.barcode
+            barcode: entity.barcode,
+            totalQuantity: entity.inventory && Array.isArray(entity.inventory) && entity.inventory.length > 0
+                ? entity.inventory.asEnumerable().sum(item => item.quantity)
+                : entity.totalQuantity,
+            inventory: entity.inventory
         }
     }
 
