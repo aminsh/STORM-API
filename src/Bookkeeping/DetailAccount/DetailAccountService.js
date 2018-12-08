@@ -84,7 +84,8 @@ export class DetailAccountService {
             personRoles: JSON.stringify(cmd.personRoles),
             detailAccountCategoryIds: cmd.detailAccountCategoryIds
                 ? cmd.detailAccountCategoryIds.join('|')
-                : null
+                : null,
+            priceListId: cmd.priceListId
         };
 
         this.detailAccountRepository.create(entity);
@@ -133,7 +134,8 @@ export class DetailAccountService {
             detailAccountCategoryIds: cmd.detailAccountCategoryIds
                 ? cmd.detailAccountCategoryIds.join('|')
                 : null,
-            description: cmd.description
+            description: cmd.description,
+            priceListId: cmd.priceListId
         };
 
         this.detailAccountRepository.update(entity);

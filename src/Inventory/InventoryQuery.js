@@ -274,6 +274,8 @@ export class InventoryQuery extends BaseQuery {
             description: item.description,
             inventoryType: item.inventoryType,
             inventoryTypeDisplay: item.inventoryType ? enums.InventoryType().getDisplay(item.inventoryType) : null,
+            status: item.quantityStatus,
+            statusDisplay: item.quantityStatus ? enums.InventoryStatus().getDisplay(item.quantityStatus) : null,
             ioType: item.ioType,
             ioTypeDisplay: item.ioTypeDisplay,
             stockId: item.stockId,

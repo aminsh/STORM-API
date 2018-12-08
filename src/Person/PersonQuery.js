@@ -101,7 +101,8 @@ export class PersonQuery extends BaseQuery {
             sumSaleAmount: entity.sumSaleAmount,
             sumDebtor: entity.sumDebtor,
             sumCreditor: entity.sumCreditor,
-            personRoles: entity.personRoles
+            personRoles: entity.personRoles,
+            priceListId: entity.priceListId
         }
     }
 }

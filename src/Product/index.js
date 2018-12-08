@@ -13,9 +13,14 @@ import {ProductInventoryTransactionalRepository} from "./ProductInventoryTransac
 import {ProductInventoryService} from "./ProductInventoryService";
 import {ProductInventoryEventListener} from "./ProductInventoryEventListener";
 
+import {PriceListQuery} from "./PriceListQuery";
+import {PriceListRepository} from "./PriceListRepository";
+import {PriceListService} from "./PriceListService";
+
 import "./ProductController";
 import "./ProductCategoryController";
 import "./ScaleController";
+import "./PriceListController";
 
 export function register(container) {
 
@@ -34,5 +39,10 @@ export function register(container) {
     container.bind("ProductInventoryService").to(ProductInventoryService).inTransientScope();
     container.bind("ProductInventoryTransactionalRepository").to(ProductInventoryTransactionalRepository).inTransientScope();
     container.bind("ProductInventoryEventListener").to(ProductInventoryEventListener);
+
+    container.bind("PriceListQuery").to(PriceListQuery);
+    container.bind("PriceListRepository").to(PriceListRepository);
+    container.bind("PriceListService").to(PriceListService);
+
 
 }

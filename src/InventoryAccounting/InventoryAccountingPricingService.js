@@ -19,10 +19,10 @@ export class InventoryAccountingPricingService {
                 if (item.type === 'output')
                     item.price = this._calculateAvg(item, inventories);
 
-                if (item.type === 'input' && !['firstInput', 'inputPurchase'].includes(item.ioType))
+                if (item.type === 'input' && !['inputFirst', 'inputPurchase'].includes(item.ioType))
                     item.price = this._calculateAvg(item, inventories);
 
-                if (item.type === 'input' && ['firstInput', 'inputPurchase'].includes(item.ioType))
+                if (item.type === 'input' && ['inputFirst', 'inputPurchase'].includes(item.ioType))
                     item.price = item.unitPrice;
 
             });

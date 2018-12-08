@@ -67,6 +67,9 @@ export class OutputService {
 
         this.inventoryRepository.create(output);
 
+        if (cmd.status === 'confirmed')
+            this.confirm(entity.id);
+
         return output.id;
     }
 
@@ -144,7 +147,15 @@ export class OutputService {
 
         this.inventoryRepository.updateBatch(id, entity);
 
-        this.eventBus.send("InventoryOutputChanged", output, entity);
+        if (cmd.status === 'confirmed' && output.quantityStatus === 'draft') {
+
+            this.confirm(id);
+        }
+
+        if (input.quantityStatus === 'confirmed')
+            this.eventBus.send("InventoryOutputChanged", output, entity);
+
+
     }
 
     confirm(id) {

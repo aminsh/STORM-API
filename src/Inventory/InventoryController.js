@@ -17,7 +17,7 @@ class InventoryController {
     }
 
     @Post("/transfer-between-stocks")
-    transferBetweenStocks(req){
+    transferBetweenStocks(req) {
 
         this.inventoryService.transferBetweenStocks(req.body);
     }
@@ -44,6 +44,13 @@ class InventoryController {
     getInventoriesByStock(req) {
 
         return this.inventoryQuery.getInventoriesByStock(req.params.productId);
+    }
+
+    @Post("/add-product-to-first-input/:productId")
+    addProductToFirstInput(req) {
+
+        this.inventoryService.addToInputFirst(req.params.productId, req.body);
+
     }
 
 
