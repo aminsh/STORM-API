@@ -439,7 +439,11 @@ enums.TreasuryType = function () {
 
 enums.Features = function () {
     return new Enum([
-        {key: 'sale', value: ['sales', 'return-sales', 'products', 'product-categories', 'scales'], display: 'فروش'},
+        {
+            key: 'sale',
+            value: ['sales', 'return-sales', 'products', 'product-categories', 'scales', 'price-list'],
+            display: 'فروش'
+        },
         {key: 'purchase', value: ['purchases', 'return-purchases', 'products', 'product-categories', 'scales'], display: 'خرید'},
         {
             key: 'inventory',
