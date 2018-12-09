@@ -40,6 +40,7 @@ export class PriceListRepository extends BaseRepository {
     createProduct(id, entity) {
 
         entity.priceListId = id;
+        entity.createdById = (this.state.user || {}).id;
 
         toResult(this.knex(this.tableLineName).insert(entity));
     }
