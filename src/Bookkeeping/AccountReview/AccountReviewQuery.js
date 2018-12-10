@@ -414,6 +414,7 @@ export class AccountReviewQuery extends BaseQuery {
         let withQuery = knex.with('journals-row', (qb) => {
                 qb.select(
                     'groupJournals.id',
+                    'row',
                     'date',
                     'number',
                     'article',
@@ -442,7 +443,7 @@ export class AccountReviewQuery extends BaseQuery {
                     'dimension3Id',
                     knex.raw('"dimension3s"."code" as "dimension3Code"'),
                     knex.raw('"dimension3s"."title" as "dimension3Title"'),
-                    knex.raw(`ROW_NUMBER () OVER (ORDER BY "temporaryNumber") as "seq_row"`)
+                    knex.raw(`ROW_NUMBER () OVER (ORDER BY "temporaryNumber", "row") as "seq_row"`)
                 )
                     .from(function () {
                         groupBy.call(this, knex, options, fiscalPeriodId, 'tiny');
@@ -460,10 +461,14 @@ export class AccountReviewQuery extends BaseQuery {
                 this.select('*',
                     knex.raw(`(select sum("sumRemainder") 
                         from "journals-row" 
-                        where "seq_row" <= base."seq_row" and "detailAccountId" = base."detailAccountId") as remainder`))
+                        where "seq_row" <= base."seq_row"
+                        AND "generalLedgerAccountId" = base."generalLedgerAccountId" 
+		                AND "subsidiaryLedgerAccountId" = base."subsidiaryLedgerAccountId"
+		                AND (CASE WHEN base."detailAccountId" IS NULL THEN "detailAccountId" IS NULL ELSE "detailAccountId" = base."detailAccountId" END)) as remainder`))
                     .from('journals-row as base')
                     .groupBy(
                         'id',
+                        'row',
                         'date',
                         'number',
                         'article',
