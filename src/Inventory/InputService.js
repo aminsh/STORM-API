@@ -211,7 +211,7 @@ export class InputService {
 
         const input = this.inventoryRepository.findById(id);
 
-        this.inventoryRepository.update(id, {invoiceId, quantityStatus: true});
+        this.inventoryRepository.update(id, {invoiceId, quantityStatus: 'confirmed'});
 
         this.eventBus.send("InventoryInputChanged", input, id);
     }

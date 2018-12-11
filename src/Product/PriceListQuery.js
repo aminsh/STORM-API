@@ -34,8 +34,16 @@ export class PriceListQuery extends BaseQuery {
         if (id.toLowerCase() === 'default')
             id = (toResult(this.knex.select('id').from(this.tableName).where({isDefault: true}).first()) || {}).id;
 
-        const query = this.knex.from(this.tableLineName)
-            .where({branchId: this.branchId, id});
+        const self = this;
+
+        const query = this.knex.from(function () {
+            this.select(`${self.tableLineName}.*`, self.knex.raw('products.title as "productDisplay"'))
+                .from(self.tableLineName)
+                .leftJoin('products', `${self.tableLineName}.productId`, 'products.id')
+                .where(`${self.tableLineName}.branchId`, self.branchId)
+                .where('priceListId', id)
+                .as('base');
+        });
 
         return toResult(Utility.kendoQueryResolve(query, parameters, this.viewLine.bind(this)));
     }
@@ -68,6 +76,7 @@ export class PriceListQuery extends BaseQuery {
 
         return {
             productId: item.productId,
+            productDisplay: item.productDisplay,
             price: item.price
         }
     }
