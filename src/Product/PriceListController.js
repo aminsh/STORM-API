@@ -16,7 +16,7 @@ class PriceListController {
     @Get("/")
     getAll(req) {
 
-        return this.productCategoryQuery.getAll(req.query);
+        return this.priceListQuery.getAll(req.query);
     }
 
     @Get("/:id")

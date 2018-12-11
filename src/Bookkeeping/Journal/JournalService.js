@@ -156,6 +156,7 @@ export class JournalService {
                         .findById(item.subsidiaryLedgerAccountId);
 
                     return {
+                        row: item.row,
                         generalLedgerAccountId: subsidiaryLedgerAccount.generalLedgerAccountId,
                         subsidiaryLedgerAccountId: item.subsidiaryLedgerAccountId,
                         detailAccountId: subsidiaryLedgerAccount.hasDetailAccount ? item.detailAccountId : null,
@@ -208,6 +209,7 @@ export class JournalService {
 
                     return {
                         id: item.id,
+                        row: item.row,
                         generalLedgerAccountId: subsidiaryLedgerAccount.generalLedgerAccountId,
                         subsidiaryLedgerAccountId: item.subsidiaryLedgerAccountId,
                         detailAccountId: subsidiaryLedgerAccount.hasDetailAccount ? item.detailAccountId : null,

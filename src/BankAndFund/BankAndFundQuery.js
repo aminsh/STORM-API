@@ -8,6 +8,10 @@ export class BankAndFundQuery extends BaseQuery {
     @inject("SettingsQuery")
     /** @type {SettingsQuery}*/ settingsQuery = undefined;
 
+    /**@type{TreasurySettingsQuery}*/
+    @inject("TreasurySettingsQuery") treasurySettingsQuery = undefined;
+
+
     @inject("Enums") enums = undefined;
 
     getAllByType(type, parameters){
@@ -54,7 +58,7 @@ export class BankAndFundQuery extends BaseQuery {
             userId = this.state.user.id,
             fiscalPeriodId = this.state.fiscalPeriodId,
             canView = this.canView.call(this),
-            subsidiaryLedgerAccounts = this.settingsQuery.get().subsidiaryLedgerAccounts,
+            subsidiaryLedgerAccounts = this.treasurySettingsQuery.get().subsidiaryLedgerAccounts,
             subledger = subsidiaryLedgerAccounts.asEnumerable().toObject(item => item.key, item => item.id),
 
             query = knex.select(
@@ -104,7 +108,7 @@ export class BankAndFundQuery extends BaseQuery {
             fiscalPeriodId= this.state.fiscalPeriodId,
             canView = this.canView.call(this),
             modify = this.modify.bind(this),
-            subsidiaryLedgerAccounts = this.settingsQuery.get().subsidiaryLedgerAccounts,
+            subsidiaryLedgerAccounts = this.treasurySettingsQuery.get().subsidiaryLedgerAccounts,
             subledger = subsidiaryLedgerAccounts.asEnumerable().toObject(item => item.key, item => item.id);
 
         let subLedgerFilter = [];

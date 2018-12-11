@@ -12,12 +12,12 @@ export class PriceListRepository extends BaseRepository {
     findById(id) {
 
         return toResult(this.knex.select('*')
-            .form(this.tableName).where({branchId: this.branchId, id}).first());
+            .from(this.tableName).where({branchId: this.branchId, id}).first());
     }
 
     findProduct(id, productId) {
         return toResult(this.knex.select('*')
-            .form(this.tableLineName).where({branchId: this.branchId, priceListId: id, productId}).first());
+            .from(this.tableLineName).where({branchId: this.branchId, priceListId: id, productId}).first());
     }
 
     create(entity) {
@@ -40,6 +40,8 @@ export class PriceListRepository extends BaseRepository {
     createProduct(id, entity) {
 
         entity.priceListId = id;
+        entity.createdById = (this.state.user || {}).id;
+        entity.branchId = this.branchId;
 
         toResult(this.knex(this.tableLineName).insert(entity));
     }
