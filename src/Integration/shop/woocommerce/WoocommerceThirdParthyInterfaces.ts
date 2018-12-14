@@ -1,6 +1,8 @@
 interface AssignPaymentGatewaysToAccount {
 
-    key: string
+    key: string;
 
-    accountId: string
+    accountId: string;
+
+    accountType: string;
 }

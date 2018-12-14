@@ -173,30 +173,52 @@ export class Woocommerce {
 
         const wooCommerceThirdParty = this.registeredThirdPartyRepository.get("woocommerce");
 
-        const accountId = (wooCommerceThirdParty.data.paymentMethod && wooCommerceThirdParty.data.paymentMethod.length > 0
+        const paymentMethod = (wooCommerceThirdParty.data.paymentMethod && wooCommerceThirdParty.data.paymentMethod.length > 0
             ? wooCommerceThirdParty.data.paymentMethod.asEnumerable().singleOrDefault(item => item.key === data.payment_method)
-            : null || {}).accountId;
+            : null || {}),
+            accountId = paymentMethod.accountId;
 
         if (!accountId)
             return;
 
-        const cmd = {
-            reference: 'invoice',
-            referenceId: invoice.id,
-            treasury: {
-                treasuryType: 'receive',
-                amount: invoice.sumTotalPrice,
-                documentType: 'receipt',
-                payerId: invoice.customer.id,
-                receiverId: accountId,
-                transferDate: Utility.PersianDate.current(),
-                documentDetail: {
-                    date: Utility.PersianDate.current(),
-                    number: data.transaction_id
-                }
+        paymentMethod.accountType = paymentMethod.accountType || 'bank';
 
-            }
-        };
+        let cmd;
+
+        if (paymentMethod.accountType === 'fund')
+            cmd = {
+                reference: 'invoice',
+                referenceId: invoice.id,
+                treasury: {
+                    treasuryType: 'receive',
+                    amount: invoice.sumTotalPrice,
+                    documentType: 'cash',
+                    payerId: invoice.customer.id,
+                    receiverId: accountId,
+                    transferDate: Utility.PersianDate.current(),
+                    documentDetail: {}
+
+                }
+            };
+
+        if (paymentMethod.accountType === 'bank')
+            cmd = {
+                reference: 'invoice',
+                referenceId: invoice.id,
+                treasury: {
+                    treasuryType: 'receive',
+                    amount: invoice.sumTotalPrice,
+                    documentType: 'receipt',
+                    payerId: invoice.customer.id,
+                    receiverId: accountId,
+                    transferDate: Utility.PersianDate.current(),
+                    documentDetail: {
+                        date: Utility.PersianDate.current(),
+                        number: data.transaction_id
+                    }
+
+                }
+            };
 
         this.treasuryPurposeService.create(cmd);
     }
@@ -253,7 +275,7 @@ export class Woocommerce {
 
         const paymentMethod = command
             .filter(item => item.key && item.accountId)
-            .map(item => ({key: item.key, accountId: item.accountId}));
+            .map(item => ({key: item.key, accountId: item.accountId, accountType: item.accountType}));
 
         let data = wooCommerceThirdParty.data;
 
