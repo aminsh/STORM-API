@@ -86,7 +86,8 @@ class WoocommerceController {
             .map(item => ({
                 key: item.id,
                 display: item.title,
-                accountId: (persistedPaymentMethod.asEnumerable().singleOrDefault(p => p.key === item.id) || {}).accountId
+                accountId: (persistedPaymentMethod.asEnumerable().singleOrDefault(p => p.key === item.id) || {}).accountId,
+                accountType: (persistedPaymentMethod.asEnumerable().singleOrDefault(p => p.key === item.id) || {}).accountType,
             }));
     }
 
