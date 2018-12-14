@@ -82,6 +82,29 @@ export class ProductQuery extends BaseQuery {
             .toArray();
     }
 
+    getByBarcode(barcode) {
+        const self = this,
+            knex = this.knex,
+            result = toResult(
+                this.knex.select()
+                    .from(function () {
+                        this.select('products.*',
+                            knex.raw(`(select sum(quantity) from products_inventory where "branchId" = '${self.branchId}' and  "fiscalPeriodId" = '${self.fiscalPeriodId}' and "productId" = products.id) as "totalQuantity"`),
+                            knex.raw('scales.title as "scaleDisplay"'),
+                            knex.raw('"productCategories".title as "categoryDisplay"')
+                        )
+                            .from('products')
+                            .leftJoin('scales', 'products.scaleId', 'scales.id')
+                            .leftJoin('productCategories', 'productCategories.id', 'products.categoryId')
+                            .where('products.branchId', self.branchId)
+                            .where('barcode', barcode)
+                            .as('base');
+                    })
+            );
+
+        return result.map(item => this.view(item));
+    }
+
     view(entity) {
 
         return {

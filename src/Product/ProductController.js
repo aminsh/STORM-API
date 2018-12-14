@@ -22,6 +22,12 @@ class ProductController {
         return this.productQuery.getAllGoods(req.query);
     }
 
+    @Get("/by-barcode/:barcode")
+    getByBarcode(req) {
+
+        return this.productQuery.getByBarcode(req.params.barcode);
+    }
+
     @Post("/")
     create(req) {
 
