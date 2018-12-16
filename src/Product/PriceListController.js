@@ -64,11 +64,23 @@ class PriceListController {
     }
 
     @Post("/:id/product/:productId")
-    updatePrice(req) {
+    addToPriceList(req) {
 
         const cmd = {price: req.body.price, productId: req.params.productId};
 
-        this.priceListService.updateProduct(req.params.id, cmd);
+        this.priceListService.addToList(req.params.id, cmd);
     }
 
+    @Put("/:id/product/:productId")
+    updatePrice(req) {
+        const cmd = {price: req.body.price, productId: req.params.productId};
+
+        this.priceListService.updatePrice(req.params.id, cmd);
+    }
+
+    @Delete("/:id/product/:productId")
+    removeFromPriceList(req) {
+
+        this.priceListService.removeFromList(req.params.id, req.params.productId);
+    }
 }
