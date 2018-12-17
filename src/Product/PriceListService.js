@@ -59,7 +59,7 @@ export class PriceListService {
         if (priceList.isDefault)
             throw new ValidationException(['لیست قیمت پیش فرض نمیتواند حذف شود']);
 
-        this.priceListRepository.remove(id, entity);
+        this.priceListRepository.remove(id);
     }
 
     addToList(id, cmd) {
