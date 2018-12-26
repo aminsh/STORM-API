@@ -50,4 +50,9 @@ export class PriceListRepository extends BaseRepository {
 
         toResult(this.knex(this.tableLineName).where({branchId: this.branchId, id: lineId}).update(entity));
     }
+
+    removeProduct(lineId) {
+
+        toResult(this.knex(this.tableLineName).where({branchId: this.branchId, id: lineId}).del());
+    }
 }

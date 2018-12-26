@@ -59,10 +59,41 @@ export class PriceListService {
         if (priceList.isDefault)
             throw new ValidationException(['لیست قیمت پیش فرض نمیتواند حذف شود']);
 
-        this.priceListRepository.remove(id, entity);
+        this.priceListRepository.remove(id);
     }
 
-    updateProduct(id, cmd) {
+    addToList(id, cmd) {
+        let errors = [];
+
+        const priceList = this.priceListRepository.findById(id);
+
+        if (!priceList)
+            throw new NotFoundException();
+
+        if (!cmd.productId)
+            errors.push("کالا/خدمات نمیتواند خالی باشد");
+        else {
+            const product = this.productRepository.findById(cmd.productId);
+
+            if (!product)
+                errors.push("کالا/خدمات نمیتواند خالی باشد");
+        }
+
+        if (!cmd.price || isNaN(cmd.price))
+            errors.push("مبلغ نمیتواند خالی باشد");
+
+        if (errors.length > 0)
+            throw new ValidationException(errors);
+
+        const priceListLine = this.priceListRepository.findProduct(id, cmd.productId);
+
+        if (priceListLine)
+            throw new ValidationException(['کالا/خدمات جاری در این لیست قیمت قبلا وجود دارد']);
+
+        this.priceListRepository.createProduct(id, {productId: cmd.productId, price: cmd.price});
+    }
+
+    updatePrice(id, cmd) {
 
         const priceList = this.priceListRepository.findById(id);
 
@@ -90,11 +121,38 @@ export class PriceListService {
 
         const priceListLine = this.priceListRepository.findProduct(id, cmd.productId);
 
-        if (priceListLine)
-            this.priceListRepository.updateProduct(priceListLine.id, {price: cmd.price});
+        if (!priceListLine)
+            throw new ValidationException(['کالا/خدمات در این لیست قیمت وجود ندارد']);
+
+        this.priceListRepository.updateProduct(priceListLine.id, {price: cmd.price});
+    }
+
+    removeFromList(id, productId) {
+
+        const priceList = this.priceListRepository.findById(id);
+
+        if (!priceList)
+            throw new NotFoundException();
+
+        let errors = [];
+
+        if (!productId)
+            errors.push("کالا/خدمات نمیتواند خالی باشد");
         else {
-            this.priceListRepository.createProduct(id, {productId: cmd.productId, price: cmd.price});
+            const product = this.productRepository.findById(productId);
+
+            if (!product)
+                errors.push("کالا/خدمات نمیتواند خالی باشد");
         }
 
+        if (errors.length > 0)
+            throw new ValidationException(errors);
+
+        const priceListLine = this.priceListRepository.findProduct(id, productId);
+
+        if (!priceListLine)
+            throw new ValidationException(['کالا/خدمات در این لیست قیمت وجود ندارد']);
+
+        this.priceListRepository.removeProduct(priceListLine.id);
     }
 }

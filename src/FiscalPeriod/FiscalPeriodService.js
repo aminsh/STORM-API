@@ -67,7 +67,7 @@ export class FiscalPeriodService {
         if (!fiscalPeriod)
             throw new NotFoundException();
 
-        if(this.fiscalPeriodRepository.isUsed(id));
+        if (this.fiscalPeriodRepository.isUsed(id))
             throw new ValidationException(['دوره مالی جاری در اسناد استفاده شده ، امکان حذف وجود ندارد']);
 
         this.fiscalPeriodRepository.remove(id);

@@ -92,7 +92,10 @@ export class Woocommerce {
 
     addOrder(data) {
 
-        if (data.hasOwnProperty('webhook_id'))
+        if (!data)
+            return;
+
+        if (typeof data.webhook_id !== 'undefined')
             return;
 
         const wooCommerceThirdParty = this.registeredThirdPartyRepository.get("woocommerce");
@@ -102,7 +105,14 @@ export class Woocommerce {
 
         const customerId = data['customer_id'];
 
-        const customer = this.woocommerceRepository.get(`customers/${customerId}`);
+        let customer = null;
+
+        try {
+            customer = this.woocommerceRepository.get(`customers/${customerId}`);
+        }
+        catch (e) {
+            customer = {customerId: '0', first_name: 'مشتری وجود ندارد', last_name: ''};
+        }
 
         const sale = {
             orderId: data.id,
@@ -138,7 +148,10 @@ export class Woocommerce {
 
     updateOrder(data) {
 
-        if (data.hasOwnProperty('webhook_id'))
+        if (!data)
+            return;
+
+        if (typeof data.webhook_id !== 'undefined')
             return;
 
         const invoice = this.saleQuery.getByOrderId(data.id);
