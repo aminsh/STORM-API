@@ -171,7 +171,7 @@ export class BranchService {
 
         let member = this.branchRepository.findMember(branchId, userId);
 
-        let token = TokenGenerator.generate256Bit();
+        let token = Utility.TokenGenerator.generate256Bit();
 
         this.branchRepository.updateUser(branchId, userId, {token});
 
