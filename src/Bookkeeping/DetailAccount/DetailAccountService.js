@@ -9,6 +9,8 @@ export class DetailAccountService {
     /**@type {JournalRepository}*/
     @inject("JournalRepository") journalRepository = undefined;
 
+    @inject("Enums") enums = undefined;
+
     findPersonByIdOrCreate(cmd) {
         if (!cmd)
             return null;
@@ -48,6 +50,8 @@ export class DetailAccountService {
         if (!Utility.String.isNullOrEmpty(cmd.code) && this.detailAccountRepository.findByCode(cmd.code))
             errors.push('کد تکراری است');
 
+        if(!this.enums.PersonType().data.map(item => item.key).includes(cmd.personType))
+            errors.push('نوع شخص صحیح نیست');
 
         if (errors.length > 0)
             throw new ValidationException(errors);
@@ -103,6 +107,9 @@ export class DetailAccountService {
 
         if (!Utility.String.isNullOrEmpty(cmd.code) && this.detailAccountRepository.findByCode(cmd.code, id))
             errors.push('کد تکراری است');
+
+        if(!this.enums.PersonType().data.map(item => item.key).includes(cmd.personType))
+            errors.push('نوع شخص صحیح نیست');
 
         if (errors.length > 0)
             throw new ValidationException(errors);
