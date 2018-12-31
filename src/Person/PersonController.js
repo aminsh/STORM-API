@@ -21,7 +21,7 @@ class PersonController {
     }
 
     @Get("/role/:personRole")
-    getAllByRole(req){
+    getAllByRole(req) {
 
         return this.personQuery.getAllPeopleWithRoleFilter(req.query, req.params.personRole);
     }
@@ -32,6 +32,11 @@ class PersonController {
         const id = this.personService.create(req.body);
 
         return this.personQuery.getById(id);
+    }
+
+    @Post("/batch")
+    createBatch(req) {
+        this.personService.createBatch(req.body);
     }
 
     @Put("/:id")
