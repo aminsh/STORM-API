@@ -50,7 +50,7 @@ export class DetailAccountService {
         if (!Utility.String.isNullOrEmpty(cmd.code) && this.detailAccountRepository.findByCode(cmd.code))
             errors.push('کد تکراری است');
 
-        if(!this.enums.PersonType().data.map(item => item.key).includes(cmd.personType))
+        if(cmd.personType && !this.enums.PersonType().data.map(item => item.key).includes(cmd.personType))
             errors.push('نوع شخص صحیح نیست');
 
         if (errors.length > 0)
@@ -108,7 +108,7 @@ export class DetailAccountService {
         if (!Utility.String.isNullOrEmpty(cmd.code) && this.detailAccountRepository.findByCode(cmd.code, id))
             errors.push('کد تکراری است');
 
-        if(!this.enums.PersonType().data.map(item => item.key).includes(cmd.personType))
+        if(cmd.personType && !this.enums.PersonType().data.map(item => item.key).includes(cmd.personType))
             errors.push('نوع شخص صحیح نیست');
 
         if (errors.length > 0)
