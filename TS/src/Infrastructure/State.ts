@@ -2,7 +2,10 @@ declare interface State {
     branchId: string;
     fiscalPeriodId: string;
     user: User;
-    request: Request
+    request?: Request
+}
+
+declare interface IContext extends State {
 }
 
 declare interface User {
@@ -11,4 +14,6 @@ declare interface User {
     email: string;
     mobile: string
 }
+
+
 

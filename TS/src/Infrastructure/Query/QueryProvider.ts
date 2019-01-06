@@ -1,8 +1,8 @@
 import {FindConditions, FindManyOptions, getRepository, ObjectType} from "typeorm";
 import {ViewBase} from "../../Product/ProductView";
-import {Component} from "../Providers";
+import {Injectable} from "../DependencyInjection";
 
-@Component()
+@Injectable()
 export class QueryProvider<TView extends ViewBase> {
 
     async find<TView>(

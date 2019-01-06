@@ -1,9 +1,8 @@
 import {Inject, Injectable} from "../../Infrastructure/DependencyInjection";
-import {ITransactionalEntity, JournalRepository} from "../Domain/JournalRepository";
+import {JournalRepository} from "../Domain/JournalRepository";
 import {JournalCreateDTO, JournalMergeDTO, JournalUpdateDTO} from "./JournalDTO";
 import {Journal, JournalStatus} from "../Domain/Journal";
 import {JournalLine} from "../Domain/JournalLine";
-import {EntityState} from "../../Infrastructure/EntityState";
 import {Validate} from "../../Infrastructure/Validator/Validate";
 import {In} from "typeorm";
 import {JournalFactory} from "../Domain/JournalFactory";
@@ -13,7 +12,7 @@ export class JournalService {
 
     @Inject("JournalRepository") private journalRepository: JournalRepository;
     @Inject("State") private state: State;
-    @Inject("JournalFactory") journalFactory: JournalFactory;
+    @Inject("JournalFactory") private journalFactory: JournalFactory;
 
     @Validate(JournalCreateDTO)
     async create(dto: JournalCreateDTO): Promise<string> {
@@ -25,7 +24,7 @@ export class JournalService {
         if (errors.length > 0)
             throw new ValidationException(errors);
 
-        await this.journalRepository.save(entity, EntityState.CREATED);
+        await this.journalRepository.save(entity);
 
         return entity.id;
     }
@@ -54,7 +53,7 @@ export class JournalService {
         if (errors.length > 0)
             throw new ValidationException(errors);
 
-        await this.journalRepository.save(entity, EntityState.MODIFIED);
+        await this.journalRepository.save(entity);
     }
 
     async remove(id: string): Promise<void> {
@@ -82,7 +81,7 @@ export class JournalService {
 
         entity.date = date;
 
-        await this.journalRepository.save(entity, EntityState.MODIFIED);
+        await this.journalRepository.save(entity);
     }
 
     async clone(id: string): Promise<string> {
@@ -92,7 +91,7 @@ export class JournalService {
             throw new NotFoundException();
 
 
-        let entity: Journal = {id: undefined, ...source};
+        let entity = Object.assign({}, source, {id: undefined});
 
         entity.journalLines.forEach(e => e.id = undefined);
 
@@ -103,7 +102,7 @@ export class JournalService {
         if (errors.length > 0)
             throw new ValidationException(errors);
 
-        await this.journalRepository.save(entity, EntityState.CREATED);
+        await this.journalRepository.save(entity);
 
         return entity.id;
     }
@@ -136,10 +135,8 @@ export class JournalService {
 
         entity = await this.journalFactory.fromEntity(entity);
 
-        let entities: ITransactionalEntity[] = [{entity, state: EntityState.CREATED}]
-            .concat(journals.map(j => ({entity: j, state: EntityState.REMOVED})));
-
-        await this.journalRepository.transactionalSave(entities);
+        await this.journalRepository.save(entity);
+        journals.forEach(async journal => await this.journalRepository.remove(journal));
 
         return entity.id;
     }
@@ -155,7 +152,7 @@ export class JournalService {
 
         entity.status = JournalStatus.FIXED;
 
-        await this.journalRepository.save(entity, EntityState.MODIFIED);
+        await this.journalRepository.save(entity);
     }
 
     async attachImage(id: string, attachmentFileName: string): Promise<void> {
@@ -166,7 +163,7 @@ export class JournalService {
 
         entity.attachmentFileName = attachmentFileName;
 
-        await this.journalRepository.save(entity, EntityState.MODIFIED);
+        await this.journalRepository.save(entity);
     }
 
     private validate(entity: Journal): string[] {

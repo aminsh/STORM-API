@@ -1,14 +1,16 @@
-import {inject, injectable} from "inversify";
-import {EntityState} from "../EntityState";
 import {BranchSupportEntity} from "./BranchSupportEntity";
-import {FindConditions, getRepository, ObjectType, Repository} from "typeorm";
+import {DeepPartial, FindConditions, getRepository, ObjectType, Repository} from "typeorm";
+import {getCurrentContext} from "../ApplicationCycle";
+import {Injectable} from "../DependencyInjection";
 
-@injectable()
+@Injectable()
 export class RepositoryBase<TEntity extends BranchSupportEntity> {
 
-    @inject("State") state: State;
-
     protected repository: Repository<TEntity>;
+
+    protected get currentContext(): IContext {
+        return getCurrentContext();
+    }
 
     constructor(entity: ObjectType<TEntity>) {
         this.repository = getRepository(entity);
@@ -16,18 +18,28 @@ export class RepositoryBase<TEntity extends BranchSupportEntity> {
 
     async findById(id: string): Promise<TEntity> {
 
-        let options: any = {id, branchId: this.state.branchId};
+        let options: any = {id, branchId: this.currentContext.branchId};
 
         return this.repository.findOne(options);
     }
 
-    protected setCreation(entity: TEntity, state: EntityState) {
+    async find(conditions?: FindConditions<TEntity>): Promise<TEntity[]> {
+        let options: any = Object.assign({}, conditions, {branchId: this.currentContext.branchId});
 
-        if (state === EntityState.CREATED) {
-            entity.id = Utility.Guid.create();
-            entity.branchId = this.state.branchId;
-            entity.createdById = this.state.user.id;
-        }
+        return this.repository.find(options);
+    }
 
+    async findOne(conditions?: FindConditions<TEntity>): Promise<TEntity> {
+        let options: any = Object.assign({}, conditions, {branchId: this.currentContext.branchId});
+
+        return this.repository.findOne(options);
+    }
+
+    async save(entity: DeepPartial<TEntity>): Promise<void> {
+        await this.repository.save(entity)
+    }
+
+    async remove(entity: TEntity): Promise<void> {
+        await this.repository.remove(entity)
     }
 }

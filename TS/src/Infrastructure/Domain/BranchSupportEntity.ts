@@ -1,4 +1,5 @@
-import {Column, CreateDateColumn, PrimaryGeneratedColumn, UpdateDateColumn} from "typeorm";
+import {BeforeInsert, Column, CreateDateColumn, PrimaryGeneratedColumn, UpdateDateColumn} from "typeorm";
+import {getCurrentContext} from "../ApplicationCycle";
 
 export class BranchSupportEntity {
 
@@ -16,4 +17,12 @@ export class BranchSupportEntity {
 
     @UpdateDateColumn()
     updatedAt: Date;
+
+    @BeforeInsert()
+    protected beforeInsert() {
+        const context = getCurrentContext();
+        this.id = Utility.Guid.create();
+        this.branchId = context.branchId;
+        this.createdById = context.user.id;
+    }
 }
