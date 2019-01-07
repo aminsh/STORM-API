@@ -89,7 +89,7 @@ export function NoLog() {
     }
 }
 
-export function register(container, config, setFirstMiddleware, setErrorMiddleware, app = express()) {
+export function register(container, config, setFirstMiddleware, setErrorMiddleware, TSConfig, app = express()) {
 
     app.use(compression());
     app.use(cors());
@@ -163,6 +163,9 @@ export function register(container, config, setFirstMiddleware, setErrorMiddlewa
         app.use(ctrl.baseUrl, router);
 
     });
+
+    if (typeof  TSConfig === 'function')
+        TSConfig(app);
 
     if (typeof setErrorMiddleware === 'function')
         app.use(setErrorMiddleware);

@@ -118,7 +118,11 @@ const setErrorMiddleware = async(function (err, req, res, next) {
     }
 });
 
-register(container, config, setFirstMiddleware, setErrorMiddleware);
+function TSConfig(app) {
+    TS.register(container, app).then(()=> console.log('TS config set ...'));
+}
+
+register(container, config, setFirstMiddleware, setErrorMiddleware, TSConfig);
 
 
 
