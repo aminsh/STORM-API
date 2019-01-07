@@ -26,6 +26,7 @@ export class ProductEventListener {
             return;
 
         let entity = {
+            code: product.code,
             title: product.title,
             detailAccountType: 'product'
         };
