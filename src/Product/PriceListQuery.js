@@ -63,6 +63,17 @@ export class PriceListQuery extends BaseQuery {
         return toResult(query);
     }
 
+    getPrice(id, productId){
+        const  result = toResult(this.knex.select('price')
+            .where({priceListId: id, productId, branchId: this.state.branchId})
+            .first());
+
+        if(!result)
+            throw new NotFoundException();
+
+        return result.price;
+    }
+
     view(item) {
 
         return {
