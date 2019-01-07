@@ -33,9 +33,12 @@ class PriceListController {
 
     @Get("/by-product/:productId")
     getByProduct(req) {
-
         return this.priceListQuery.getByProduct(req.params.productId);
+    }
 
+    @Get("/:id/price/:productId")
+    getPrice(req){
+        return this.priceListQuery.getPrice(req.params.id, req.params.productId);
     }
 
     @Post("/")
