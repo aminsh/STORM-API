@@ -3,9 +3,9 @@ import {Column, Entity} from "typeorm";
 
 @Entity('accountCategories')
 export class AccountCategory extends BranchSupportEntity {
-    @Column()
-    key: number;
+    @Column({name: 'key'})
+    code: string;
 
-    @Column()
-    display: string;
+    @Column({name: 'display'})
+    title: string;
 }

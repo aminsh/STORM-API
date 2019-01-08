@@ -2,7 +2,6 @@ import {Inject, Injectable} from "../../Infrastructure/DependencyInjection";
 import {DetailAccountRepository} from "../Domain/DetailAccountRepository";
 import {DetailAccountCreateDTO, DetailAccountUpdateDTO} from "./DetailAccountDTOs";
 import {DetailAccount} from "../Domain/DetailAccount";
-import {EntityState} from "../../Infrastructure/EntityState";
 
 @Injectable()
 export class DetailAccountService {
@@ -11,8 +10,6 @@ export class DetailAccountService {
 
     /**@type {JournalRepository}*/
         //@Inject("JournalRepository") journalRepository = undefined;
-
-    @Inject("Enums") enums = undefined;
 
     async create(dto: DetailAccountCreateDTO): Promise<string> {
 
@@ -23,7 +20,7 @@ export class DetailAccountService {
         entity.description = dto.description;
         entity.reference = dto.referenceId;
 
-        await this.detailAccountRepository.save(entity, EntityState.CREATED);
+        await this.detailAccountRepository.save(entity);
 
         return entity.id;
     }
@@ -39,7 +36,7 @@ export class DetailAccountService {
         entity.description = dto.description;
         entity.reference = dto.referenceId;
 
-        await this.detailAccountRepository.save(entity, EntityState.MODIFIED);
+        await this.detailAccountRepository.save(entity);
     }
 
     async remove(id: string): Promise<void> {

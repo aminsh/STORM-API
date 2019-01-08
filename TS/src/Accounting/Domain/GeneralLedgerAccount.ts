@@ -13,7 +13,7 @@ export class GeneralLedgerAccount extends BranchSupportEntity {
     postingType: PostingType;
 
     @Column()
-    groupingType: number;
+    groupingType: string;
 }
 
 export enum PostingType {

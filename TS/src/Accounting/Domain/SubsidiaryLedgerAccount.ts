@@ -1,8 +1,8 @@
 import {BranchSupportEntity} from "../../Infrastructure/Domain/BranchSupportEntity";
 import {Column, Entity} from "typeorm";
 
-@Entity('generalLedgerAccounts')
-export class GeneralLedgerAccount extends BranchSupportEntity {
+@Entity('subsidiaryLedgerAccounts')
+export class SubsidiaryLedgerAccount extends BranchSupportEntity {
     @Column()
     code: string;
 
