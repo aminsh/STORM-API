@@ -118,7 +118,7 @@ export class Woocommerce {
             orderId: data.id,
             title: 'شناسه سفارش : {0}'.format(data.id),
             customer: {
-                referenceId: customerId,
+                referenceId: customer.customerId,
                 title: `${customer.first_name} ${customer.last_name}`,
                 email: customer.email,
                 phone: customer.billing ? customer.billing.phone : null,

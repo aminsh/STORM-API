@@ -1,5 +1,5 @@
 import {Controller, Post} from "../../Infrastructure/expressUtlis";
-import {inject} from "inversify";
+import {inject, postConstruct} from "inversify";
 
 @Controller("/v1/open-card", "ShouldHaveBranch")
 class OpencardController {
@@ -7,8 +7,18 @@ class OpencardController {
     @inject("SaleService")
     /** @type{SaleService}*/ saleService = undefined;
 
+    @inject("InvoiceRepository")
+    /** @type{InvoiceRepository}*/ invoiceRepository = undefined;
+
     /** @type {SettingsRepository}*/
     @inject("SettingsRepository") settingsRepository = undefined;
+
+    settings = undefined;
+
+    @postConstruct()
+    init() {
+        this.settings = this.settingsRepository.get();
+    }
 
     @Post("/add-order-history")
     addOrderHistory(req) {
@@ -17,9 +27,29 @@ class OpencardController {
             order_products = cmd.order_products,
             order_products_options = cmd.order_products_options,
             order_total = cmd.order_total,
-            order_vouchers = cmd.order_vouchers,
+            order_vouchers = cmd.order_vouchers;
 
-            settings = this.settingsRepository.get();
+        let sale = this.mapper(order,
+            order_products,
+            order_products_options,
+            order_total,
+            order_vouchers);
+
+        const persistedSale = this.invoiceRepository.findByOrderId(order.order_id);
+
+        if (persistedSale)
+            this.saleService.update(persistedSale.id, sale);
+        else
+            this.saleService.create(sale);
+    }
+
+    mapper(order,
+           order_products,
+           order_products_options,
+           order_total,
+           order_vouchers) {
+
+        const settings = this.settings;
 
         let sale = {
             orderId: order.order_id,
@@ -32,7 +62,8 @@ class OpencardController {
                 address: order.shipping_address_1,
                 province: order.shipping_zone,
                 city: order.shipping_city,
-                postalCode: order.shipping_postcode
+                postalCode: order.shipping_postcode,
+                personType: 'real'
             },
             invoiceLines: order_products.map(item => {
 
@@ -41,7 +72,10 @@ class OpencardController {
 
                     product_referenceId = `${item.product_id}${product_option_id.length ? '-' : ''}${product_option_id.map(op => op.product_option_id).join('-')}`,
 
-                    extra_title = [{key: 'مدل', value: item.model}, ...product_option_id.map(op => ({key: op.name, value: op.value}))]
+                    extra_title = [{key: 'مدل', value: item.model}, ...product_option_id.map(op => ({
+                        key: op.name,
+                        value: op.value
+                    }))]
                         .map(e => `${e.key}:${e.value}`)
                         .join(' ');
 
@@ -51,21 +85,31 @@ class OpencardController {
                         title: `${item.name} ${extra_title}`
                     },
                     quantity: parseFloat(item.quantity),
-                    unitPrice: parseFloat(item.price),
+                    unitPrice: this.toRial(order.currency_code, parseFloat(item.price)),
                 }
             }),
-            charges: cmd.order_total.asEnumerable()
+            charges: order_total.asEnumerable()
                 .join(settings.saleCharges,
-                    order => order.code,
+                    ot => ot.code,
                     setting => setting.key,
                     (order, settings) => ({
                         key: settings.key,
-                        value: Math.round(parseFloat(order.value))
+                        value: this.toRial(order.currency_code, Math.round(parseFloat(ot.value)))
                     })
                 )
                 .toObject(item => item.key, item => item.value)
         };
 
-        this.saleService.create(sale);
+        return sale;
+    }
+
+    toRial(currency_code, value) {
+        if (!currency_code)
+            return value;
+
+        if (currency_code !== 'TOM')
+            return value;
+
+        return value * 10;
     }
 }
