@@ -250,7 +250,7 @@ class ReportController {
     @Get("/sale-invoice-turnover")
     getSaleTurnover(req) {
 
-        return this.reportSaleQuery.getDetail(req.query.invoiceStatus);
+        return this.reportSaleQuery.saleInoviceTurnOver(req.query.invoiceStatus);
     }
 
     @Get("/receive-cheque-due-date")
