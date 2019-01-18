@@ -16,6 +16,7 @@ import {ReportTurnoverQuery} from "./ReportTurnoverQuery";
 import {ReportInventoryInputsOutputsTurnoverQuery} from "./ReportInventoryInputsOutputsTurnoverQuery";
 
 import "./ReportController";
+import {ReportInventory} from "./ReportInventory";
 
 export function register(container) {
 
@@ -35,4 +36,5 @@ export function register(container) {
     container.bind("ReportTreasuryChequeQuery").to(ReportTreasuryChequeQuery);
     container.bind("ReportTurnoverQuery").to(ReportTurnoverQuery);
     container.bind("ReportInventoryInputsOutputsTurnoverQuery").to(ReportInventoryInputsOutputsTurnoverQuery);
+    container.bind("ReportInventory").to(ReportInventory);
 }
