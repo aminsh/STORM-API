@@ -11,43 +11,43 @@ class PayableChequeCategoryController {
     /**@type{PayableChequeCategoryService}*/ payableChequeCategoryService = undefined;
 
     @Get("/")
-    getAll(req){
+    getAll(req) {
 
         return this.payableChequeCategoryQuery.getAll(req.query);
     }
 
     @Get("/:bankId/cheque-number")
-    getCheque(req){
+    getCheque(req) {
 
         return this.payableChequeCategoryQuery.getCheque(req.params.bankId);
     }
 
-    @Get("/")
-    getById(req){
+    @Get("/:id")
+    getById(req) {
 
         return this.payableChequeCategoryQuery.getById(req.params.id);
     }
 
     @Get("/:id/cheques")
-    getAllCheques(req){
+    getAllCheques(req) {
 
         return this.payableChequeCategoryQuery.getAllCheques(req.params.id);
     }
 
     @Post("/")
-    create(req){
+    create(req) {
 
         this.payableChequeCategoryService.create(req.body);
     }
 
     @Put("/:id")
-    update(req){
+    update(req) {
 
         this.payableChequeCategoryService.update(req.params.id, req.body);
     }
 
     @Delete("/:id")
-    remove(req){
+    remove(req) {
 
         this.payableChequeCategoryService.remove(req.params.id);
     }

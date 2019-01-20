@@ -8,6 +8,8 @@ export class ReportSaleQuery extends BaseQuery {
     @inject("ReportConfig")
     /**@type{ReportConfig}*/ reportConfig = undefined;
 
+    @inject('Enums') enums = undefined;
+
     getAll(invoiceStatus) {
         let knex = this.knex,
             option = this.reportConfig.options,
@@ -87,6 +89,108 @@ export class ReportSaleQuery extends BaseQuery {
             query.whereIn('detailAccountId', option.filter.detailAccounts);
 
         return toResult(query);
+    }
+
+    saleInoviceTurnOver(invoiceStatus){
+        let knex = this.knex,
+            filter = this.reportConfig.options.filter,
+            branchId = this.branchId,
+            userId = this.userId,
+            canView = this.canView(),
+            modify = this.modify.bind(this),
+            baseQuery = `select coalesce(sum(value),0) from invoices as i left join json_to_recordset(i.charges) as x(key text, value int, "vatIncluded" boolean) on true where i.id = "base".id`,
+            sumChargesQuery = `(${baseQuery}) + ((${baseQuery} and "vatIncluded" = true) *  
+            coalesce((select (100 * (line.vat + line.tax)) / ((line.quantity * line."unitPrice") - line.discount) from "invoiceLines" as line where "invoiceId" = "base".id and vat <> 0 limit 1), 0) /100)`,
+
+            query = knex.select('*').from(function () {
+                this.select(
+                    'createdAt',
+                    'id',
+                    'number',
+                    'display',
+                    'date',
+                    'detailAccountId',
+                    'detailAccountDisplay',
+                    'invoiceStatus',
+                    'description',
+                    'title',
+                    'journalId',
+                    'marketerId',
+                    'marketerDisplay',
+                    knex.raw(`sum(discount) as discount`),
+                    knex.raw(`"sum"("totalPrice") + ${sumChargesQuery} - sum(DISTINCT coalesce(discount,0)) as "sumTotalPrice" `),
+                    knex.raw(`("sum"("totalPrice") + ${sumChargesQuery}) - sum(DISTINCT coalesce(discount,0)) -
+                                (select coalesce(sum(treasury.amount),0) as "treasuryAmount"
+                                from treasury
+                                inner join "treasuryPurpose" as tp on treasury.id = tp."treasuryId"
+                                where "base"."id" = tp."referenceId") as "sumRemainder"`))
+                    .from(function () {
+                        this.select('invoices.*',
+                            knex.raw('"person"."title" as "detailAccountDisplay"'),
+                            knex.raw(`number || ' - ' || date || ' - ' || "person".title as display`),
+                            knex.raw('"marketer"."title" as "marketerDisplay"'),
+                            knex.raw(`("invoiceLines"."unitPrice" * "invoiceLines".quantity - "invoiceLines".discount + "invoiceLines".vat + "invoiceLines".tax) as "totalPrice"`))
+                            .from('invoices')
+                            .leftJoin('invoiceLines', 'invoices.id', 'invoiceLines.invoiceId')
+                            .leftJoin('detailAccounts as person', 'invoices.detailAccountId', 'person.id')
+                            .leftJoin('detailAccounts as marketer', 'invoices.marketerId', 'marketer.id')
+                            .modify(modify, branchId, userId, canView, 'invoices')
+                            .andWhere('invoiceType', 'sale')
+                            .as('base');
+                    }).as("group")
+                    .groupBy(
+                        'createdAt',
+                        'id',
+                        'number',
+                        'display',
+                        'date',
+                        'detailAccountId',
+                        'detailAccountDisplay',
+                        'invoiceStatus',
+                        'description',
+                        'title',
+                        'journalId',
+                        'marketerId',
+                        'marketerDisplay')
+                    .orderBy('number', 'desc')
+
+            });
+
+        if(filter.minDate)
+            query.where('date', '>=', filter.minDate);
+
+        if(filter.maxDate)
+            query.where('date', '<=', filter.maxDate);
+
+        if(filter.minNumber)
+            query.where('number', '>=', filter.minNumber);
+
+        if(filter.maxNumber)
+            query.where('number', '<=', filter.maxNumber);
+
+        if(Array.isArray(filter.detailAccounts))
+            query.whereIn('detailAccountId', filter.detailAccounts);
+
+        if (filter.invoiceStatus === 'paid')
+            query.andWhere('sumRemainder', 0);
+
+        if (filter.invoiceStatus === 'unpaid')
+            query.andWhere('sumRemainder', '>', 0);
+
+        let result = toResult(query);
+
+        return result.map(item => ({
+            id: item.id,
+            number: item.number,
+            date: item.date,
+            detailAccountId: item.detailAccountId,
+            detailAccountDisplay: item.detailAccountDisplay,
+            invoiceStatus: item.invoiceStatus,
+            invoiceStatusText: item.invoiceStatus ? this.enums.InvoiceStatus().getDisplay(item.invoiceStatus) : null,
+            sumTotalPrice: item.sumTotalPrice,
+            sumRemainder: item.sumRemainder,
+            sumPaidAmount: item.sumTotalPrice - item.sumRemainder
+        }));
     }
 
     getDetail(invoiceStatus) {
@@ -198,9 +302,9 @@ export class ReportSaleQuery extends BaseQuery {
             sumChargesQuery = `(${baseQuery}) + ((${baseQuery} and "vatIncluded" = true) *  
             coalesce((select (100 * line.vat) / ((line.quantity * line."unitPrice") - line.discount) from "invoiceLines" as line where "invoiceId" = "base"."invoiceId" and vat <> 0 limit 1), 0) /100)`;
 
-            return toResult(
-                knex.select().table(function () {
-                    this.select(knex.raw(`
+        return toResult(
+            knex.select().table(function () {
+                this.select(knex.raw(`
                          id, title, 
                          sum("invoiceCount") as "invoiceCount",
                          sum("sumQuantity") as "sumQuantity",
@@ -212,9 +316,9 @@ export class ReportSaleQuery extends BaseQuery {
                          sum("totalAmount" + ${sumChargesQuery}) as "totalAmount",
                          sum(remainder + ${sumChargesQuery}) as remainder
                     `))
-                        .from(function () {
+                    .from(function () {
 
-                            this.select(knex.raw(` invoices."id" as "invoiceId",
+                        this.select(knex.raw(` invoices."id" as "invoiceId",
                                 "detailAccounts"."id", "detailAccounts".title, 
                                  COUNT(DISTINCT invoices."id") as "invoiceCount",
                                  SUM("invoiceLines".quantity) as "sumQuantity", SUM("invoiceLines"."unitPrice") as "sumPrice",
@@ -227,19 +331,19 @@ export class ReportSaleQuery extends BaseQuery {
                                         - COALESCE(invoices.discount,0))
                                     - SUM(COALESCE(payments.amount,0)) as remainder
                             `))
-                                .from('invoices')
-                                .leftJoin('invoiceLines', 'invoices.id', 'invoiceLines.invoiceId')
-                                .leftJoin('detailAccounts', 'detailAccounts.id', 'invoices.detailAccountId')
-                                .leftJoin('payments', 'payments.invoiceId', 'invoices.id')
-                                .where('invoices.branchId', branchId)
-                                .where('invoices.invoiceType', 'sale')
-                                .as('base')
-                                .groupBy('detailAccounts.id', 'detailAccounts.title', 'invoices.id')
-                        })
-                        .as('result')
-                        .groupBy('id', 'title')
-                })
-            );
+                            .from('invoices')
+                            .leftJoin('invoiceLines', 'invoices.id', 'invoiceLines.invoiceId')
+                            .leftJoin('detailAccounts', 'detailAccounts.id', 'invoices.detailAccountId')
+                            .leftJoin('payments', 'payments.invoiceId', 'invoices.id')
+                            .where('invoices.branchId', branchId)
+                            .where('invoices.invoiceType', 'sale')
+                            .as('base')
+                            .groupBy('detailAccounts.id', 'detailAccounts.title', 'invoices.id')
+                    })
+                    .as('result')
+                    .groupBy('id', 'title')
+            })
+        );
     }
 
 }

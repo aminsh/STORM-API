@@ -52,6 +52,9 @@ class ReportController {
     @inject("DetailAccountQuery")
     /**@type{DetailAccountQuery}*/ detailAccountQuery = undefined;
 
+    @inject('ReportInventory')
+    /**@type{ReportInventory}*/ reportInventory = undefined;
+
     @Get("/general-ledger-accounts")
     getGeneralLedgerAccounts() {
 
@@ -181,13 +184,18 @@ class ReportController {
     @Get("/inventory-outputs")
     getOutputsTurnover(req) {
 
-        return this.reportInventoryInputsOutputsTurnoverQuery.getInventories(req.query.ids,'output');
+        return this.reportInventoryInputsOutputsTurnoverQuery.getInventories(req.query.ids, 'output');
+    }
+
+    @Get("/get-inventory-input-by-id")
+    getInventoryById(req) {
+        return this.reportInventory.get(req.query.id);
     }
 
     @Get("/inventory-input")
     getInputsTurnover(req) {
 
-        return this.reportInventoryInputsOutputsTurnoverQuery.getInventories(req.query.ids,'input');
+        return this.reportInventoryInputsOutputsTurnoverQuery.getInventories(req.query.ids, 'input');
     }
 
     @Get("/inventory-turnover")
@@ -250,7 +258,7 @@ class ReportController {
     @Get("/sale-invoice-turnover")
     getSaleTurnover(req) {
 
-        return this.reportSaleQuery.getDetail(req.query.invoiceStatus);
+        return this.reportSaleQuery.saleInoviceTurnOver(req.query.invoiceStatus);
     }
 
     @Get("/receive-cheque-due-date")

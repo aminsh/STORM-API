@@ -17,19 +17,21 @@ class StormGiftController {
             userId = branch.ownerId,
             gift = this.giftQuery.find({code: req.params.code}, true);
 
-        if (!gift)
+        if (!(gift && gift.isActive))
             return {isValid: false, message: 'کد تخفیف وارد شده وجود ندارد'};
 
         let now = Utility.PersianDate.current(),
-            isInRange = now >= gift.minDate && now <= gift.maxDate;
+            isInRange = now >= gift.minDate && now <= gift.maxDate && !gift.unlimited;
 
-        if (!isInRange)
+        if (!isInRange && !gift.unlimited)
             return {isValid: false, message: 'کد تخفیف جاری در این تاریخ قابل استفاده نمیباشد'};
 
-        let isUsedGift = this.giftQuery.isUsed(gift.id, userId);
+        if (!gift.usable) {
+            let isUsedGift = this.giftQuery.isUsed(gift.id, userId);
 
-        if (isUsedGift)
-            return {isValid: false, message: 'شما قبلا از این کد تخفیف استفاده کرده اید'};
+            if (isUsedGift)
+                return {isValid: false, message: 'شما قبلا از این کد تخفیف استفاده کرده اید'};
+        }
 
         return {isValid: true, gift};
 

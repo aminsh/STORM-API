@@ -48,19 +48,24 @@ export class StormOrderService {
         if (dto.giftId) {
             let gift = this.stormGiftRepository.findById(dto.giftId);
 
+            if(!gift.isActive)
+                throw new ValidationException(['کد تخفیف وارد شده وجود ندارد']);
+
             if (!gift)
                 throw new ValidationException(['کد تخفیف وارد وجود ندارد']);
 
             let now = Utility.PersianDate.current(),
                 isInRange = now >= gift.minDate && now <= gift.maxDate;
 
-            if (!isInRange)
+            if (!isInRange && !gift.unlimited)
                 throw new ValidationException(['کد تخفیف وارد در این تاریخ قابل استفاده نمیباشد']);
 
-            let isUseGift = this.orderRepository.isUsedGift(gift.id, branch.ownerId);
+            if (!gift.usable) {
+                let isUseGift = this.orderRepository.isUsedGift(gift.id, branch.ownerId);
 
-            if (isUseGift)
-                throw new ValidationException(['شما قبلا از این کد تخفیف استفاده کرده اید']);
+                if (isUseGift)
+                    throw new ValidationException(['شما قبلا از این کد تخفیف استفاده کرده اید']);
+            }
 
             if (!gift.plans.includes(plan.id))
                 throw new ValidationException(['کد تخفیف برای طرح انتخاب شده نیست']);

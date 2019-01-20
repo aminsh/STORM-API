@@ -1,4 +1,4 @@
-import {injectable, inject} from "inversify";
+import {inject, injectable} from "inversify";
 import toResult from "asyncawait/await";
 
 @injectable()
@@ -15,7 +15,7 @@ export class UserQuery {
 
         let sizes = {
             small: ['id', 'email', 'name', 'image', 'createdAt'],
-            large: ['id', 'token', 'email', 'name', 'mobile', 'isActiveMobile', 'isActiveEmail', 'custom_fields', 'state', 'image','createdAt']
+            large: ['id', 'token', 'email', 'name', 'mobile', 'isActiveMobile', 'isActiveEmail', 'custom_fields', 'state', 'image', 'createdAt']
         };
 
         return knex.from(function () {
@@ -65,6 +65,11 @@ export class UserQuery {
             query.where(where);
 
         let result = toResult(query.first());
+
+        const knex = this.dbContext.instance;
+
+        result.providers = (toResult(knex.from('users_oauth_profiles').where({userId: result.id})) || [])
+            .map(item => item.provider);
 
         return this._view(result);
     }
