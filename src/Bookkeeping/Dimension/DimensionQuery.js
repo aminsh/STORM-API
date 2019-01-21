@@ -13,7 +13,7 @@ export class DimensionQuery extends BaseQuery {
             tableName = this.tableName,
 
             query = knex.select().from(function () {
-                this.select(knex.raw("*,code || ' ' || title as display"))
+                this.select(knex.raw(`*,coalesce("code", '') || ' ' || title as display`))
                     .from(tableName).as('baseDimensions')
                     .where('branchId', branchId)
                     .andWhere('dimensionCategoryId', categoryId)
@@ -38,6 +38,7 @@ export class DimensionQuery extends BaseQuery {
     _view(entity) {
         return {
             id: entity.id,
+            code: entity.code,
             title: entity.title,
             display: entity.display
         };
