@@ -133,7 +133,7 @@ export class Woocommerce {
                     title: item.name
                 },
                 quantity: parseFloat(item.quantity),
-                unitPrice: parseFloat(item.price),
+                unitPrice: Woocommerce.toRial(data.currency, parseFloat(item.price)),
             }))
         };
 
@@ -165,7 +165,7 @@ export class Woocommerce {
                 title: item.name
             },
             quantity: parseFloat(item.quantity),
-            unitPrice: parseFloat(item.price),
+            unitPrice: Woocommerce.toRial(data.currency, parseFloat(item.price)),
         }));
 
 
@@ -238,7 +238,10 @@ export class Woocommerce {
 
     deleteOrder(data) {
 
-        if (data.hasOwnProperty('webhook_id'))
+        if (!data)
+            return;
+
+        if (typeof data.webhook_id !== 'undefined')
             return;
 
         const invoice = this.saleQuery.getByOrderId(data.id);
@@ -313,5 +316,12 @@ export class Woocommerce {
             manage_stock: true,
             stock_quantity: quantity
         });
+    }
+
+    static toRial(currency, value) {
+        if (currency === 'IRT')
+            return value * 10;
+        if (currency === 'IRR')
+            return value;
     }
 }
