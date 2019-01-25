@@ -39,6 +39,8 @@ export class Woocommerce {
 
     @inject("State") /**@type{IState}*/ state = undefined;
 
+    @inject('LoggerService') /**@type{LoggerService}*/loggerService;
+
     register(data) {
 
         let member = this.branchRepository.findMember(this.state.branchId, 'STORM-API-USER');
@@ -141,6 +143,13 @@ export class Woocommerce {
 
         Utility.delay(500);
 
+        try {
+            this.saleService.confirm(id);
+        }
+        catch (e) {
+            this.loggerService.invalid(e, 'woocommerce.confirm.invoice');
+        }
+
         const invoice = this.saleQuery.getById(id);
 
         this.recordPayment(data, invoice);
@@ -172,6 +181,14 @@ export class Woocommerce {
         this.saleService.update(invoice.id, invoice);
 
         Utility.delay(500);
+
+        try {
+            if(invoice.status === 'draft')
+                this.saleService.confirm(invoice.id);
+        }
+        catch (e) {
+            this.loggerService.invalid(e, 'woocommerce.confirm.invoice');
+        }
 
         this.recordPayment(data, this.saleQuery.getById(invoice.id));
     }
@@ -309,13 +326,24 @@ export class Woocommerce {
         if (!wooCommerceThirdParty)
             return;
 
+        /**@type{WoocommerceData}*/
+        const data = wooCommerceThirdParty.data;
+
         const quantity = this.inventoryRepository.getInventoryByProduct(productId, this.state.fiscalPeriodId),
             product = this.productRepository.findById(productId);
 
-        this.woocommerceRepository.put(`products/${product.referenceId}`, {
-            manage_stock: true,
-            stock_quantity: quantity
-        });
+        if(data.canChangeStock) {
+            this.woocommerceRepository.put(`products/${product.referenceId}`, {
+                manage_stock: true,
+                stock_quantity: quantity
+            });
+        }
+
+        if(data.canChangeStockStatusOnZeroQuantity && quantity <= 0) {
+            this.woocommerceRepository.put(`products/${product.referenceId}`, {
+                stock_status: 'outofstock'
+            });
+        }
     }
 
     static toRial(currency, value) {
