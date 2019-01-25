@@ -296,6 +296,7 @@ enums.ThirdParty = function () {
             key: "payping",
             type: "paymentGateway",
             data: {
+                redirectUrl: `${process.env.ORIGIN_URL}/v1/payping/setup`,
                 website: 'https://www.payping.ir',
                 title: "پی پینگ",
                 logo: "payping-logo.png",
@@ -469,7 +470,7 @@ enums.Features = function () {
             ]
         },
         {key: 'treasury', value: ['treasury', 'banks-name', 'cheque-categories', 'funds', 'banks', 'bank-and-fund'], display: 'خزانه داری'},
-        {key: 'other', value: ['reports', 'people', 'settings', 'fiscal-periods', 'permissions', 'third-party', 'branches', 'open-card', 'woocommerce']}
+        {key: 'other', value: ['reports', 'people', 'settings', 'fiscal-periods', 'permissions', 'third-party', 'branches', 'open-card', 'woocommerce', 'payping']}
     ]);
 };
 
