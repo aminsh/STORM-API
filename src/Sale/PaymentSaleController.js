@@ -16,13 +16,24 @@ class PaymentSaleController {
     @inject("TreasuryPurposeService")
     /**@type{TreasuryPurposeService}*/ treasuryPurposeService = undefined;
 
+    @inject('PaypingService')
+    /**@type{PaypingService}*/ paypingService = undefined;
+
     @Get("/:id")
     redirectToGateway(req, res) {
 
         const id = req.params.id,
             paymentGateway = req.query.payment_gateway,
-            originalReturnUrl = req.query.return_url || '/',
-            sale = this.saleQuery.getById(id),
+            originalReturnUrl = req.query.return_url || '/';
+
+        if (paymentGateway === 'payping') {
+            req.branchId = req.query.branchId;
+            let result = this.paypingService.invoicePay(req.params.id, originalReturnUrl);
+
+            return res.redirect(result.url);
+        }
+
+        const sale = this.saleQuery.getById(id),
 
             qs = {
                 payment_gateway: paymentGateway,
@@ -31,12 +42,12 @@ class PaymentSaleController {
             };
 
         const url = this.paymentGatewayFactory(paymentGateway).getPaymentUrl({
-                returnUrl: `${process.env.ORIGIN_URL}/v1/payment-invoice/${id}/return/?${Object.keys(qs).map(key => `${key}=${qs[key]}`).join('&')}`,
-                payerName: sale.customerDisplay,
-                description: 'بابت فاکتور شماره {0}  به تاریخ {1}'.format(sale.number, sale.date),
-                amount: sale.sumRemainder,
-                referenceId: sale.id
-            });
+            returnUrl: `${process.env.ORIGIN_URL}/v1/payment-invoice/${id}/return/?${Object.keys(qs).map(key => `${key}=${qs[key]}`).join('&')}`,
+            payerName: sale.customerDisplay,
+            description: 'بابت فاکتور شماره {0}  به تاریخ {1}'.format(sale.number, sale.date),
+            amount: sale.sumRemainder,
+            referenceId: sale.id
+        });
 
         res.redirect(url);
     }
@@ -82,8 +93,7 @@ class PaymentSaleController {
 
             this.treasuryPurposeService.create(cmd);
             res.redirect(getReturnUrl({status: 'success'}));
-        }
-        catch (e) {
+        } catch (e) {
             console.log(e);
             res.redirect(getReturnUrl({status: 'paidButNotRecorded'}));
         }

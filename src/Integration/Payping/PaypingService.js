@@ -1,4 +1,6 @@
-import {inject, injectable, postConstruct} from "inversify";
+import {inject, injectable} from "inversify";
+import qs from "qs";
+import queryString from "query-string";
 
 const paypingBaseUrl = 'https://api.payping.ir';
 
@@ -12,8 +14,11 @@ export class PaypingService {
     /**@type{SaleQuery}*/ saleQuery = undefined;
     @inject("SaleService")
     /**@type{SaleService}*/ saleService = undefined;
+    @inject('State') state = undefined;
+    @inject("TreasuryPurposeService")
+    /**@type{TreasuryPurposeService}*/ treasuryPurposeService = undefined;
 
-    sync() {
+    invoicesSync() {
         const paypingThirdParty = this.registeredThirdPartyRepository.get('payping');
 
         const invoices = this.httpRequest.get(`${paypingBaseUrl}/v1/invoice/List`)
@@ -30,11 +35,87 @@ export class PaypingService {
         });
     }
 
+    invoicePay(invoiceId, returnUrl) {
+        const paypingThirdParty = this.registeredThirdPartyRepository.get('payping'),
+            invoice = this.saleQuery.getById(invoiceId),
+            queryString = {
+                branchId: this.state.branchId,
+                returnUrl
+            };
+        let cmd = {
+            payerName: invoice.customerDisplay,
+            amount: invoice.sumRemainder / 10,
+            returnUrl: `${process.env['ORIGIN_URL']}/v1/payping/invoice/payment/callback/${invoiceId}?${qs.stringify(queryString)}`,
+            description: 'بابت فاکتور شماره {0}  به تاریخ {1}'.format(invoice.number, invoice.date),
+        };
+
+        const result = this.httpRequest.post(`${paypingBaseUrl}/v1/pay`)
+            .query({isArchived: false})
+            .setHeader('Authorization', paypingThirdParty.data.token)
+            .body(cmd)
+            .execute();
+
+        return {url: `${paypingBaseUrl}/v1/pay/gotoipg/${result.code}`};
+    }
+
+    confirmInvoicePay(invoiceId, refid ,returnUrl) {
+        const paypingThirdParty = this.registeredThirdPartyRepository.get('payping'),
+            invoice = this.saleQuery.getById(invoiceId);
+
+        try {
+            let result = this.httpRequest.post(`${paypingBaseUrl}/v1/pay/verify`)
+                .query({isArchived: false})
+                .setHeader('Authorization', paypingThirdParty.data.token)
+                .body({refid, amount: invoice.sumRemainder / 10})
+                .execute();
+        }
+        catch (e) {
+            debugger;
+        }
+
+        if(!paypingThirdParty.data.accountId)
+            return;
+
+        const cmd = {
+            reference: 'invoice',
+            referenceId: invoice.id,
+            treasury: {
+                treasuryType: 'receive',
+                amount: invoice.sumRemainder,
+                description: 'بابت پرداخت از پی پینگ - شماره پیگیری : {0}'.format(refid),
+                documentType: 'cash',
+                payerId: invoice.customer.id,
+                receiverId: paypingThirdParty.data.accountId,
+                transferDate: Utility.PersianDate.current(),
+                documentDetail: {
+                    date: Utility.PersianDate.current(),
+                    number: refid
+                }
+            }
+        };
+
+        const getReturnUrl = params => {
+            let parse = queryString.parseUrl(returnUrl),
+                qs = queryString.stringify(Object.assign({}, parse.query, params));
+
+            return `${parse.url}?${qs}`;
+        };
+
+        try {
+            this.treasuryPurposeService.create(cmd);
+            return getReturnUrl({status: 'success'});
+        } catch (e) {
+            console.log(e);
+            return getReturnUrl({status: 'paidButNotRecorded'});
+        }
+
+    }
+
     createInvoice(code) {
         const paypingThirdParty = this.registeredThirdPartyRepository.get('payping'),
             paypingInvoice = this.httpRequest.get(`${paypingBaseUrl}/v1/invoice/${code}`)
-            .setHeader('Authorization', paypingThirdParty.data.token)
-            .execute();
+                .setHeader('Authorization', paypingThirdParty.data.token)
+                .execute();
 
         const customer = paypingInvoice.billToes[0].addressBook;
 
