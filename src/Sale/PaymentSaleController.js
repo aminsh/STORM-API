@@ -19,6 +19,9 @@ class PaymentSaleController {
     @inject('PaypingService')
     /**@type{PaypingService}*/ paypingService = undefined;
 
+    @inject('LoggerService')
+    /**@type{LoggerService}*/ loggerService = undefined;
+
     @Get("/:id")
     redirectToGateway(req, res) {
 
@@ -29,6 +32,8 @@ class PaymentSaleController {
         if (paymentGateway === 'payping') {
             req.branchId = req.query.branchId;
             let result = this.paypingService.invoicePay(req.params.id, originalReturnUrl);
+
+            this.loggerService.success(result, 'Payping.redirectToGateway');
 
             return res.redirect(result.url);
         }
