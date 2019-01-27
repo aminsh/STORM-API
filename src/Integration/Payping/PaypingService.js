@@ -37,7 +37,7 @@ export class PaypingService {
         });
     }
 
-    invoicePay(invoiceId, returnUrl) {
+        invoicePay(invoiceId, returnUrl) {
         const paypingThirdParty = this.registeredThirdPartyRepository.get('payping'),
             invoice = this.saleQuery.getById(invoiceId),
             queryString = {
@@ -117,7 +117,6 @@ export class PaypingService {
             console.log(e);
             return getReturnUrl({status: 'paidButNotRecorded'});
         }
-
     }
 
     createInvoice(code) {
