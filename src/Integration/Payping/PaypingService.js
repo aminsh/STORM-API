@@ -20,6 +20,12 @@ export class PaypingService {
     @inject("TreasuryPurposeService")
     /**@type{TreasuryPurposeService}*/ treasuryPurposeService = undefined;
 
+    updateSettings(data) {
+        const paypingThirdParty = this.registeredThirdPartyRepository.get("payping");
+        paypingThirdParty.data.acountId = data.accountId;
+        this.registeredThirdPartyRepository.update('payping', paypingThirdParty.data);
+    }
+
     invoicesSync() {
         const paypingThirdParty = this.registeredThirdPartyRepository.get('payping');
 
@@ -37,7 +43,7 @@ export class PaypingService {
         });
     }
 
-        invoicePay(invoiceId, returnUrl) {
+    invoicePay(invoiceId, returnUrl) {
         const paypingThirdParty = this.registeredThirdPartyRepository.get('payping'),
             invoice = this.saleQuery.getById(invoiceId),
             queryString = {
@@ -59,9 +65,11 @@ export class PaypingService {
                 .setHeader('Authorization', paypingThirdParty.data.token)
                 .body(cmd)
                 .execute();
+
+            this.loggerService.success({invoiceId, cmd, result}, 'PaypingService.invoicePay');
         }
         catch (e) {
-            this.loggerService.invalid(e , 'PaypingService.pay')
+            this.loggerService.invalid(e, 'PaypingService.pay')
         }
 
         return {url: `${paypingBaseUrl}/v1/pay/gotoipg/${result.code}`};
