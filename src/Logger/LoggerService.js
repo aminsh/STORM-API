@@ -39,12 +39,13 @@ export class LoggerService {
         this.loggerRepository.create(entity);
     }
 
-    success(result) {
+    success(result, serviceName) {
 
         let data = Object.assign({}, this.data, {
             updatedAt: new Date,
             status: 'success',
-            result: JSON.stringify(result)
+            result: JSON.stringify(result),
+            service: serviceName || this.data.service
         });
 
         this.loggerRepository.create(data);
