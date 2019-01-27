@@ -15,11 +15,17 @@ export class ShouldHaveBranchForGuestUserMiddleware {
 
     @inject("FiscalPeriodMiddlewareSelector")
     /** @type {FiscalPeriodMiddlewareSelector}*/ fiscalPeriodMiddlewareSelector = undefined;
+    @inject('LoggerService')
+    /**@type{LoggerService}*/ loggerService = undefined;
 
     @async()
     handler(req, res, next) {
 
-        const ForbiddenResponseAction = () => res.sendStatus(403);
+        const ForbiddenResponseAction = () => {
+            res.sendStatus(403);
+            this.loggerService.invalid({}, 'Middleware.ShouldHaveBranchForGuestUser')
+                .then(()=> {});
+        };
 
         const branchId = req.query.branchId;
 
