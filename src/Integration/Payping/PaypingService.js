@@ -10,6 +10,8 @@ export class PaypingService {
     /**@type{RegisteredThirdPartyRepository}*/ registeredThirdPartyRepository = undefined;
     @inject("HttpRequest")
     /**@type{HttpRequest}*/ httpRequest = undefined;
+    @inject('LoggerService')
+    /**@type{LoggerService}*/ loggerService = undefined;
     @inject("SaleQuery")
     /**@type{SaleQuery}*/ saleQuery = undefined;
     @inject("SaleService")
@@ -49,31 +51,38 @@ export class PaypingService {
             description: 'بابت فاکتور شماره {0}  به تاریخ {1}'.format(invoice.number, invoice.date),
         };
 
-        const result = this.httpRequest.post(`${paypingBaseUrl}/v1/pay`)
-            .query({isArchived: false})
-            .setHeader('Authorization', paypingThirdParty.data.token)
-            .body(cmd)
-            .execute();
+        let result;
+
+        try {
+            result = this.httpRequest.post(`${paypingBaseUrl}/v1/pay`)
+                .query({isArchived: false})
+                .setHeader('Authorization', paypingThirdParty.data.token)
+                .body(cmd)
+                .execute();
+        }
+        catch (e) {
+            this.loggerService.invalid(e , 'PaypingService.pay')
+        }
 
         return {url: `${paypingBaseUrl}/v1/pay/gotoipg/${result.code}`};
     }
 
-    confirmInvoicePay(invoiceId, refid ,returnUrl) {
+    confirmInvoicePay(invoiceId, refid, returnUrl) {
         const paypingThirdParty = this.registeredThirdPartyRepository.get('payping'),
             invoice = this.saleQuery.getById(invoiceId);
 
         try {
-            let result = this.httpRequest.post(`${paypingBaseUrl}/v1/pay/verify`)
+            this.httpRequest.post(`${paypingBaseUrl}/v1/pay/verify`)
                 .query({isArchived: false})
                 .setHeader('Authorization', paypingThirdParty.data.token)
                 .body({refid, amount: invoice.sumRemainder / 10})
                 .execute();
         }
         catch (e) {
-            debugger;
+            this.loggerService.invalid(e, 'PaypingService.verify.payment')
         }
 
-        if(!paypingThirdParty.data.accountId)
+        if (!paypingThirdParty.data.accountId)
             return;
 
         const cmd = {
