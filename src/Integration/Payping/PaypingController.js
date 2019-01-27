@@ -21,7 +21,6 @@ class PaypingController {
         'ShouldHaveBranchForGuestUser')
     invoicePaymentCallback(req, res) {
         let url = this.paypingService.confirmInvoicePay(req.params.invoiceId, req.query.refid, req.query.returnUrl);
-
         res.redirect(url);
     }
 }
