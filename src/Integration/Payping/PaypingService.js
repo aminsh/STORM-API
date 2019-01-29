@@ -81,6 +81,13 @@ export class PaypingService {
         const invoice = this.saleQuery.getById(invoiceId);
         console.log('get invoice');
 
+        const getReturnUrl = params => {
+            let parse = queryString.parseUrl(returnUrl),
+                qs = queryString.stringify(Object.assign({}, parse.query, params));
+
+            return `${parse.url}?${qs}`;
+        };
+
         try {
             console.log('start request verify to payping');
             let result = this.httpRequest.post(`${paypingBaseUrl}/v1/pay/verify`)
@@ -101,7 +108,7 @@ export class PaypingService {
         }
 
             if (!paypingThirdParty.data.accountId)
-                return;
+                return getReturnUrl({status: 'paidButNotRecorded'});
 
         console.log('start payment treasury');
 
@@ -121,13 +128,6 @@ export class PaypingService {
                         number: refid
                     }
                 }
-            };
-
-            const getReturnUrl = params => {
-                let parse = queryString.parseUrl(returnUrl),
-                    qs = queryString.stringify(Object.assign({}, parse.query, params));
-
-                return `${parse.url}?${qs}`;
             };
 
             try {
