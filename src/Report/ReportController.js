@@ -212,8 +212,7 @@ class ReportController {
 
     @Get("/product-turnover-total")
     getProductTurnoversTotal(req) {
-
-        return this.reportProductQuery.getProductTurnovers(req.query.ids, req.query.fixedType, req.query.stockId);
+        return this.reportProductQuery.productInventoryTotal(req.query.ids);
     }
 
     @Get("/seasonal")

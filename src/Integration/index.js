@@ -3,9 +3,12 @@ import {ZarinpalInterfacePaymentGateway} from "./paymentGateway/zarinpal/Zarinpa
 import {Woocommerce} from "./shop/woocommerce/Woocommerce";
 import {WoocommerceRepository} from "./shop/woocommerce/WoocommerceRepository";
 import {KaveNegarSmsService} from "./smsService/KaveNegar";
+import {PaypingService} from "./Payping/PaypingService";
 
 import "./opencard/OpencardController";
 import "./shop/woocommerce/WoocommerceController";
+import "./Payping/PaypingRegisterController"
+import "./Payping/PaypingController";
 
 export function register(container) {
 
@@ -14,6 +17,7 @@ export function register(container) {
 
     container.bind("WoocommerceRepository").to(WoocommerceRepository);
     container.bind("Woocommerce").to(Woocommerce);
+    container.bind("PaypingService").to(PaypingService);
 
     container.bind("Factory<ThirdParty>").toFactory(context => {
         return key => {

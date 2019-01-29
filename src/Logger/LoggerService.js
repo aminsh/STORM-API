@@ -18,9 +18,11 @@ export class LoggerService {
                 query: req.query,
                 body: req.body,
                 params: req.params,
+                headers: req.headers,
                 method: req.method,
                 originalUrl: req.originalUrl,
-                apiCaller: req.apiCaller
+                apiCaller: req.apiCaller,
+                referrer: req.get('Referrer')
             };
 
         return {
@@ -37,12 +39,13 @@ export class LoggerService {
         this.loggerRepository.create(entity);
     }
 
-    success(result) {
+    success(result, serviceName) {
 
         let data = Object.assign({}, this.data, {
             updatedAt: new Date,
             status: 'success',
-            result: JSON.stringify(result)
+            result: JSON.stringify(result),
+            service: serviceName || this.data.service
         });
 
         this.loggerRepository.create(data);
@@ -59,12 +62,13 @@ export class LoggerService {
         this.loggerRepository.create(data);
     }
 
-    invalid(error) {
+    invalid(error, serviceName) {
 
         let data = Object.assign({}, this.data, {
             updatedAt: new Date,
             status: 'invalid',
-            result: JSON.stringify(error)
+            result: JSON.stringify(error),
+            service: serviceName || this.data.service
         });
 
         this.loggerRepository.create(data);

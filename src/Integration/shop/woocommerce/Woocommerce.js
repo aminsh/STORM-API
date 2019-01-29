@@ -39,6 +39,8 @@ export class Woocommerce {
 
     @inject("State") /**@type{IState}*/ state = undefined;
 
+    @inject('LoggerService') /**@type{LoggerService}*/loggerService;
+
     register(data) {
 
         let member = this.branchRepository.findMember(this.state.branchId, 'STORM-API-USER');
@@ -133,13 +135,20 @@ export class Woocommerce {
                     title: item.name
                 },
                 quantity: parseFloat(item.quantity),
-                unitPrice: parseFloat(item.price),
+                unitPrice: Woocommerce.toRial(data.currency, parseFloat(item.price)),
             }))
         };
 
         const id = this.saleService.create(sale);
 
         Utility.delay(500);
+
+        try {
+            this.saleService.confirm(id);
+        }
+        catch (e) {
+            this.loggerService.invalid(e, 'woocommerce.confirm.invoice');
+        }
 
         const invoice = this.saleQuery.getById(id);
 
@@ -165,13 +174,21 @@ export class Woocommerce {
                 title: item.name
             },
             quantity: parseFloat(item.quantity),
-            unitPrice: parseFloat(item.price),
+            unitPrice: Woocommerce.toRial(data.currency, parseFloat(item.price)),
         }));
 
 
         this.saleService.update(invoice.id, invoice);
 
         Utility.delay(500);
+
+        try {
+            if(invoice.status === 'draft')
+                this.saleService.confirm(invoice.id);
+        }
+        catch (e) {
+            this.loggerService.invalid(e, 'woocommerce.confirm.invoice');
+        }
 
         this.recordPayment(data, this.saleQuery.getById(invoice.id));
     }
@@ -238,7 +255,10 @@ export class Woocommerce {
 
     deleteOrder(data) {
 
-        if (data.hasOwnProperty('webhook_id'))
+        if (!data)
+            return;
+
+        if (typeof data.webhook_id !== 'undefined')
             return;
 
         const invoice = this.saleQuery.getByOrderId(data.id);
@@ -306,12 +326,30 @@ export class Woocommerce {
         if (!wooCommerceThirdParty)
             return;
 
+        /**@type{WoocommerceData}*/
+        const data = wooCommerceThirdParty.data;
+
         const quantity = this.inventoryRepository.getInventoryByProduct(productId, this.state.fiscalPeriodId),
             product = this.productRepository.findById(productId);
 
-        this.woocommerceRepository.put(`products/${product.referenceId}`, {
-            manage_stock: true,
-            stock_quantity: quantity
-        });
+        if(data.canChangeStock) {
+            this.woocommerceRepository.put(`products/${product.referenceId}`, {
+                manage_stock: true,
+                stock_quantity: quantity
+            });
+        }
+
+        if(data.canChangeStockStatusOnZeroQuantity && quantity <= 0) {
+            this.woocommerceRepository.put(`products/${product.referenceId}`, {
+                stock_status: 'outofstock'
+            });
+        }
+    }
+
+    static toRial(currency, value) {
+        if (currency === 'IRT')
+            return value * 10;
+        if (currency === 'IRR')
+            return value;
     }
 }

@@ -10,11 +10,13 @@ export class RegisteredThirdPartyService {
     @inject("Factory<ThirdParty>")
     thirdPartyFactory = undefined;
 
-    create(key, data) {
+    create(key, data, noRegister = false) {
 
-        let thirdPartyService = this.thirdPartyFactory(key);
+        if (!noRegister) {
+            let thirdPartyService = this.thirdPartyFactory(key);
 
-        thirdPartyService.register(data);
+            thirdPartyService.register(data);
+        }
 
         let entity = {key, data};
 

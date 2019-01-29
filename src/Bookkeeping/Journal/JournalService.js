@@ -277,9 +277,12 @@ export class JournalService {
             date: dto.date,
             journalLines: journals
                 .asEnumerable()
-                .selectMany(item => item.journalLines)
+                .selectMany(item => item.journalLines.asEnumerable().orderBy(l => l.row).toArray())
                 .toArray()
         };
+
+        let row = 0;
+        entity.journalLines.forEach(item => item.row = ++row);
 
         const id = this.create(entity);
 

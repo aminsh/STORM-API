@@ -57,6 +57,15 @@ export class HttpRequest {
     }
 
     /**
+     * @param {Object} data
+     * @return {HttpRequest}
+     * */
+    form(data) {
+        this.formParams = data;
+        return this;
+    }
+
+    /**
      * @param {string} url
      * @return {HttpRequest}
      * */
@@ -102,6 +111,8 @@ export class HttpRequest {
             method: this.methodName,
             qs: this.queryString,
             json: true,
+            body: this.bodyParams,
+            form: this.formParams,
             headers: this.headers
         };
 
