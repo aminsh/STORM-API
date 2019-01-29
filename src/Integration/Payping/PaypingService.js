@@ -100,8 +100,10 @@ export class PaypingService {
             throw new Error(e);
         }
 
-            /*if (!paypingThirdParty.data.accountId)
+            if (!paypingThirdParty.data.accountId)
                 return;
+
+        console.log('start payment treasury');
 
             const cmd = {
                 reference: 'invoice',
@@ -119,7 +121,7 @@ export class PaypingService {
                         number: refid
                     }
                 }
-            };*/
+            };
 
             const getReturnUrl = params => {
                 let parse = queryString.parseUrl(returnUrl),
@@ -132,10 +134,12 @@ export class PaypingService {
                 console.log('start redirect to dashboard');
                 const url = getReturnUrl({status: 'success'});
                 console.log(url);
-                //this.treasuryPurposeService.create(cmd);
+
+                this.treasuryPurposeService.create(cmd);
+                console.log('error request verify to payping');
                 return getReturnUrl({status: 'success'});
             } catch (e) {
-                console.log('error redirect to dashboard');
+                console.log('error payment treasury');
                 console.log(JSON.stringify(e));
                 console.log(e);
                 return getReturnUrl({status: 'paidButNotRecorded'});
