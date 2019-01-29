@@ -30,7 +30,7 @@ class PaypingController {
     @Get("/settings", "ShouldHaveBranch")
     getSettings() {
         const paypingThirdParty = this.registeredThirdPartyRepository.get("payping");
-        return paypingThirdParty.data;
+        return {accountId: paypingThirdParty.data.accountId};
     }
 
     @Put("/settings", "ShouldHaveBranch")

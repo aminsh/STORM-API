@@ -22,7 +22,7 @@ export class PaypingService {
 
     updateSettings(data) {
         const paypingThirdParty = this.registeredThirdPartyRepository.get("payping");
-        paypingThirdParty.data.acountId = data.accountId;
+        paypingThirdParty.data.accountId = data.accountId;
         this.registeredThirdPartyRepository.update('payping', paypingThirdParty.data);
     }
 
@@ -76,93 +76,110 @@ export class PaypingService {
     }
 
     confirmInvoicePay(invoiceId, refid, returnUrl) {
-        const paypingThirdParty = this.registeredThirdPartyRepository.get('payping'),
-            invoice = this.saleQuery.getById(invoiceId);
+        const paypingThirdParty = this.registeredThirdPartyRepository.get('payping');
+        console.log('get paypingThirdParty');
+        const invoice = this.saleQuery.getById(invoiceId);
+        console.log('get invoice');
 
         try {
-            this.httpRequest.post(`${paypingBaseUrl}/v1/pay/verify`)
+            console.log('start request verify to payping');
+            let result = this.httpRequest.post(`${paypingBaseUrl}/v1/pay/verify`)
                 .query({isArchived: false})
                 .setHeader('Authorization', paypingThirdParty.data.token)
                 .body({refid, amount: invoice.sumRemainder / 10})
                 .execute();
+
+            console.log('end request verify to payping');
+            console.log(JSON.stringify(result));
         }
         catch (e) {
-            this.loggerService.invalid(e, 'PaypingService.verify.payment')
+            console.log('error request verify to payping');
+            console.log(JSON.stringify(e));
+            this.loggerService.invalid(e, 'PaypingService.verify.payment');
+
+            throw new Error(e);
         }
 
-        if (!paypingThirdParty.data.accountId)
-            return;
+            /*if (!paypingThirdParty.data.accountId)
+                return;
 
-        const cmd = {
-            reference: 'invoice',
-            referenceId: invoice.id,
-            treasury: {
-                treasuryType: 'receive',
-                amount: invoice.sumRemainder,
-                description: 'بابت پرداخت از پی پینگ - شماره پیگیری : {0}'.format(refid),
-                documentType: 'cash',
-                payerId: invoice.customer.id,
-                receiverId: paypingThirdParty.data.accountId,
-                transferDate: Utility.PersianDate.current(),
-                documentDetail: {
-                    date: Utility.PersianDate.current(),
-                    number: refid
+            const cmd = {
+                reference: 'invoice',
+                referenceId: invoice.id,
+                treasury: {
+                    treasuryType: 'receive',
+                    amount: invoice.sumRemainder,
+                    description: 'بابت پرداخت از پی پینگ - شماره پیگیری : {0}'.format(refid),
+                    documentType: 'cash',
+                    payerId: invoice.customer.id,
+                    receiverId: paypingThirdParty.data.accountId,
+                    transferDate: Utility.PersianDate.current(),
+                    documentDetail: {
+                        date: Utility.PersianDate.current(),
+                        number: refid
+                    }
                 }
+            };*/
+
+            const getReturnUrl = params => {
+                let parse = queryString.parseUrl(returnUrl),
+                    qs = queryString.stringify(Object.assign({}, parse.query, params));
+
+                return `${parse.url}?${qs}`;
+            };
+
+            try {
+                console.log('start redirect to dashboard');
+                const url = getReturnUrl({status: 'success'});
+                console.log(url);
+                //this.treasuryPurposeService.create(cmd);
+                return getReturnUrl({status: 'success'});
+            } catch (e) {
+                console.log('error redirect to dashboard');
+                console.log(JSON.stringify(e));
+                console.log(e);
+                return getReturnUrl({status: 'paidButNotRecorded'});
             }
-        };
+        }
 
-        const getReturnUrl = params => {
-            let parse = queryString.parseUrl(returnUrl),
-                qs = queryString.stringify(Object.assign({}, parse.query, params));
+        createInvoice(code)
+        {
+            const paypingThirdParty = this.registeredThirdPartyRepository.get('payping'),
+                paypingInvoice = this.httpRequest.get(`${paypingBaseUrl}/v1/invoice/${code}`)
+                    .setHeader('Authorization', paypingThirdParty.data.token)
+                    .execute();
 
-            return `${parse.url}?${qs}`;
-        };
+            const customer = paypingInvoice.billToes[0].addressBook;
 
-        try {
-            this.treasuryPurposeService.create(cmd);
-            return getReturnUrl({status: 'success'});
-        } catch (e) {
-            console.log(e);
-            return getReturnUrl({status: 'paidButNotRecorded'});
+            const sale = {
+                orderId: code,
+                title: 'شناسه سفارش : {0} - پی پینگ'.format(code),
+                customer: {
+                    referenceId: customer.code,
+                    title: customer.fullName,
+                    email: customer.email,
+                    phone: customer.phone,
+                    address: customer.location,
+                    province: customer.state,
+                    city: customer.city,
+                    postalCode: customer.zipCode,
+                },
+                invoiceLines: paypingInvoice.invoiceItems.map(item => ({
+                    product: {
+                        referenceId: item.code,
+                        title: item.name
+                    },
+                    quantity: parseFloat(item.quantity),
+                    unitPrice: this.toRial(parseFloat(item.price)),
+                }))
+            };
+
+            this.saleService.create(sale);
+        }
+
+        toRial(value)
+        {
+
+            return value * 10;
         }
     }
-
-    createInvoice(code) {
-        const paypingThirdParty = this.registeredThirdPartyRepository.get('payping'),
-            paypingInvoice = this.httpRequest.get(`${paypingBaseUrl}/v1/invoice/${code}`)
-                .setHeader('Authorization', paypingThirdParty.data.token)
-                .execute();
-
-        const customer = paypingInvoice.billToes[0].addressBook;
-
-        const sale = {
-            orderId: code,
-            title: 'شناسه سفارش : {0} - پی پینگ'.format(code),
-            customer: {
-                referenceId: customer.code,
-                title: customer.fullName,
-                email: customer.email,
-                phone: customer.phone,
-                address: customer.location,
-                province: customer.state,
-                city: customer.city,
-                postalCode: customer.zipCode,
-            },
-            invoiceLines: paypingInvoice.invoiceItems.map(item => ({
-                product: {
-                    referenceId: item.code,
-                    title: item.name
-                },
-                quantity: parseFloat(item.quantity),
-                unitPrice: this.toRial(parseFloat(item.price)),
-            }))
-        };
-
-        this.saleService.create(sale);
-    }
-
-    toRial(value) {
-
-        return value * 10;
-    }
-}
