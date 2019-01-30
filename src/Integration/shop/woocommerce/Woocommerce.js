@@ -39,7 +39,7 @@ export class Woocommerce {
 
     @inject("State") /**@type{IState}*/ state = undefined;
 
-    @inject('LoggerService') /**@type{LoggerService}*/loggerService;
+    @inject('LoggerService') /**@type{LoggerService}*/loggerService = undefined;
 
     register(data) {
 
