@@ -47,6 +47,7 @@ export class InvoiceRepository extends BaseRepository {
             ofInvoiceId: first.ofInvoiceId,
             costs: first.costs,
             charges: first.charges,
+            marketerId: first.marketerId,
             bankReceiptNumber: (first.custom || {}).bankReceiptNumber,
             discount: first.invoiceDiscount,
             inventoryIds: first.inventoryIds

@@ -27,6 +27,9 @@ export class SaleService {
     @inject("InvoiceCompareService")
     /**@type{InvoiceCompareService}*/ invoiceCompareService = undefined;
 
+    @inject('DetailAccountRepository')
+    /**@type{DetailAccountRepository}*/ detailAccountRepository = undefined;
+
     /**@type {JournalSaleGenerationService}*/
     @inject("JournalSaleGenerationService") journalSaleGenerationService = undefined;
 
@@ -51,12 +54,9 @@ export class SaleService {
             errors = entity.invoiceLines.asEnumerable().selectMany(this._validateLine.bind(this)).toArray();
 
         if (entity.marketerId) {
-            let marketerDetailAccount = this.detailAccountService.findPersonByIdOrCreate({id: entity.marketerId}),
-                personRole = marketerDetailAccount.personRoles
-                    ? marketerDetailAccount.personRoles.asEnumerable().any(role => role === 'Marketer')
-                    : null;
+            let marketerDetailAccount = this.detailAccountRepository.findById(entity.marketerId);
 
-            if (!personRole)
+            if (!(marketerDetailAccount && marketerDetailAccount.isMarketer))
                 errors.push('نقش بازاریاب برای {0} تعریف نشده است!'.format(marketerDetailAccount.title));
         }
 
@@ -125,7 +125,7 @@ export class SaleService {
             description: cmd.description,
             title: cmd.title,
             detailAccountId: detailAccount ? detailAccount.id : null,
-            marketerId: marketer ? marketer.id : null,
+            marketerId: cmd.marketerId,
             orderId: cmd.orderId,
             costs: this._mapCostAndCharge(cmd.costs),
             charges: this._mapCostAndCharge(cmd.charges),

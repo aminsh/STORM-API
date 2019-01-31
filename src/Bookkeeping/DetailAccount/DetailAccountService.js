@@ -85,7 +85,8 @@ export class DetailAccountService {
             economicCode: cmd.economicCode,
             registrationNumber: cmd.registrationNumber,
             contacts: JSON.stringify(cmd.contacts),
-            personRoles: JSON.stringify(cmd.personRoles),
+            isMarketer: cmd.isMarketer,
+            marketerCommissionRate: cmd.marketerCommissionRate,
             detailAccountCategoryIds: cmd.detailAccountCategoryIds
                 ? cmd.detailAccountCategoryIds.join('|')
                 : null,
