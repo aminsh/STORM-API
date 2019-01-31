@@ -27,7 +27,7 @@ export class OrderService {
             branch = await this.branchRepository.findById(dto.branchId),
             gift = dto.giftId ? await this.giftRepository.findOne({ id: dto.giftId }) : undefined,
             discount = Enumerable.from(plan.discount).singleOrDefault(d => d.duration === dto.duraion),
-            duration = dto.duraion;
+            duration = dto.duration;
 
         if (plan.category === PlanCategory.TRIAL) {
             duration = plan.discount[ 0 ].duration;
@@ -46,7 +46,7 @@ export class OrderService {
                 isInRange = now >= gift.minDate && now <= gift.maxDate;
 
             if (!isInRange && !gift.unlimited)
-                throw new BadRequestException([ 'کد تخفیف وارد در این تاریخ قابل استفاده نمیباشد' ]);
+                throw new BadRequestException([ 'کد تخفیف وارد شده در این تاریخ قابل استفاده نمیباشد' ]);
 
             if (!gift.usable) {
                 const isUsedGift = await this.orderRepository.findOne({
@@ -91,7 +91,6 @@ export class OrderService {
             throw new NotFoundException();
 
         return this.complete(entity);
-
     }
 
     async setAsPaid(id: string): Promise<void> {
@@ -121,7 +120,6 @@ export class OrderService {
     }
 
     private async complete(entity: Order): Promise<any> {
-
         if (entity.payable === 0) {
             this.eventPublisher.publish(new OrderCompletedEvent(entity.id));
 
@@ -135,7 +133,6 @@ export class OrderService {
         await this.createInvoice(entity);
 
         return { invoiceId: entity.invoiceId, paymentUrl: this.getPaymentUrl(entity) };
-
     }
 
     private async createInvoice(entity: Order): Promise<void> {

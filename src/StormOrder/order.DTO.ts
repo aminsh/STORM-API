@@ -1,6 +1,6 @@
 export class OrderCreateDTO {
     planId: string;
     branchId: string;
-    duraion: number;
+    duration: number;
     giftId: string;
 }
