@@ -14,4 +14,6 @@ export class FiscalPeriod extends BranchSupportEntity {
 
     @Column()
     isClosed: string;
+
+    isDefault: boolean;
 }
