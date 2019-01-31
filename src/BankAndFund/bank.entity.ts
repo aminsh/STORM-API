@@ -1,5 +1,5 @@
-import {DetailAccount} from "../../../oldSource/TS/src/Accounting/Domain/DetailAccount";
 import {ChildEntity, Column} from "typeorm";
+import { DetailAccount } from "../Accounting/Domain/detailAccount.entity";
 
 @ChildEntity('bank')
 export class Bank extends DetailAccount {

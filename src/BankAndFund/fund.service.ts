@@ -1,13 +1,13 @@
-import {Inject, Injectable} from "../../../oldSource/TS/src/Infrastructure/DependencyInjection";
-import {FundCreateDTO, FundUpdateDTO} from "./FundDTO";
-import {Fund} from "./Fund";
-import {FundRepository} from "./FundRepository";
-import {EntityState} from "../../../oldSource/TS/src/Infrastructure/EntityState";
+import { FundCreateDTO, FundUpdateDTO } from "./fund.dto";
+import { Fund } from "./fund.entity";
+import { FundRepository } from "./fund.repository";
+import { Injectable } from "../Infrastructure/DependencyInjection";
+import { NotFoundException } from "../Infrastructure/Exceptions";
 
 @Injectable()
 export class FundService {
+    constructor(private readonly fundRepository: FundRepository) { }
 
-    @Inject("FundRepository") fundRepository: FundRepository;
 
     async create(dto: FundCreateDTO): Promise<string> {
 
@@ -15,7 +15,7 @@ export class FundService {
 
         entity.title = dto.title;
 
-        await this.fundRepository.save(entity, EntityState.CREATED);
+        await this.fundRepository.save(entity);
 
         return entity.id;
     }
@@ -26,7 +26,7 @@ export class FundService {
         if (!entity)
             throw new NotFoundException();
 
-        await this.fundRepository.save(entity, EntityState.MODIFIED);
+        await this.fundRepository.save(entity);
     }
 
     async remove(id): Promise<void> {

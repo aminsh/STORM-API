@@ -1,15 +1,12 @@
-import {Inject, Injectable} from "../../../oldSource/TS/src/Infrastructure/DependencyInjection";
-import {BankCreateDTO, BankUpdateDTO} from "./BankDTO";
-import {BankRepository} from "./BankRepository";
-import {Bank} from "./Bank";
-import {EntityState} from "../../../oldSource/TS/src/Infrastructure/EntityState";
+import { BankCreateDTO, BankUpdateDTO } from "./bank.dto";
+import { BankRepository } from "./bank.repository";
+import { Bank } from "./bank.entity";
+import { Injectable } from "../Infrastructure/DependencyInjection";
+import { NotFoundException } from "../Infrastructure/Exceptions";
 
 @Injectable()
 export class BankService {
-
-    @Inject("DetailAccountRepository") bankRepository: BankRepository;
-
-    @Inject("SettingsRepository") settingsRepository;
+    constructor(private readonly bankRepository: BankRepository) { }
 
     async create(dto: BankCreateDTO): Promise<string> {
 
@@ -22,7 +19,7 @@ export class BankService {
         entity.bankBranch = dto.bankBranch;
         entity.bankAccountNumber = dto.bankAccountNumber;
 
-        await this.bankRepository.save(entity, EntityState.CREATED);
+        await this.bankRepository.save(entity);
 
         return entity.id;
     }
@@ -31,6 +28,9 @@ export class BankService {
 
         let entity = await this.bankRepository.findById(dto.id);
 
+        if (!entity)
+            throw new NotFoundException();
+
         entity.title = dto.title;
         entity.accountCartNumber = dto.bankAccountCartNumber;
         entity.accountNumber = dto.accountNumber;
@@ -38,20 +38,23 @@ export class BankService {
         entity.bankBranch = dto.bankBranch;
         entity.bankAccountNumber = dto.bankAccountNumber;
 
-        await this.bankRepository.save(entity, EntityState.MODIFIED);
+        await this.bankRepository.save(entity);
     }
 
     async remove(id: string): Promise<void> {
-        let errors = [],
+        /*let errors = [],
             settings = this.settingsRepository.get();
 
         if (settings.bankId === id)
             errors.push('حساب بانکی جاری در تنظیمات استفاده شده ، امکان حذف وجود ندارد');
 
         if (errors.length > 0)
-            throw new ValidationException(errors);
+            throw new ValidationException(errors);*/
 
         let entity = await this.bankRepository.findById(id);
+
+        if (!entity)
+            throw new NotFoundException();
 
         await this.bankRepository.remove(entity);
     }

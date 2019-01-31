@@ -1,11 +1,14 @@
-import "./FundRepository";
-import "./BankRepository";
-import "./BankService";
-import "./FundService";
-import "./BankController";
-import "./FundController";
+import { Module } from "../Infrastructure/ModuleFramework";
+import { BankRepository } from "./bank.repository";
+import { BankService } from "./bank.service";
+import { FundRepository } from "./fund.repository";
+import { FundService } from "./fund.service";
+import { BankController } from "./bank.controller";
+import { FundController } from "./fund.controller";
 
-import {Bank} from "./Bank";
-import {Fund} from "./Fund";
-
-export const entities: any = [Bank, Fund];
+@Module({
+    providers: [ BankRepository, BankService, FundRepository, FundService ],
+    controllers: [ BankController, FundController ]
+})
+export class BankAndFundModule {
+}
