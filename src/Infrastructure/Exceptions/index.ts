@@ -14,7 +14,12 @@ export class ValidationSingleException {
 }
 
 export class ForbiddenException {
-    constructor(public message: string) {
+    constructor(public message?: string) {
+    }
+}
+
+export class UnauthorizedException {
+    constructor(public message?: string) {
     }
 }
 
