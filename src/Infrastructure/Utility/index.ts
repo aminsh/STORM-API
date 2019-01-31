@@ -15,4 +15,5 @@ export const Enumerable = LinqEnumerable;
 export * from "./PersianDate";
 export * from "./NumberUtils";
 export * from "./HttpRequest";
+export * from  "./TokenGenerator";
 
