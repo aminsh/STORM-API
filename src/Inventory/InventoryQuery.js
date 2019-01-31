@@ -39,6 +39,23 @@ export class InventoryQuery extends BaseQuery {
         return toResult(Utility.kendoQueryResolve(query, parameters, this._productView.bind(this)));
     }
 
+    getAllProductInventoryByStock(stockId) {
+        const self = this,
+            knex = this.knex;
+
+        function base() {
+            this.select('productId', 'stockId',
+                knex.raw(`sum(case when "inventoryStatus" = 'input' then quantity else quantity * -1 end) as "totalQuantity" `)
+            )
+                .from('inventories')
+                .leftJoin('inventoryLines', 'inventories.id', 'inventoryLines.inventoryId')
+                .where('inventories.branchId', self.branchId)
+                .where('fiscalPeriodId', self.state.fiscalPeriodId)
+                .where('quantityStatus', '!=', 'draft')
+                .groupBy('stockId', 'productId')
+        }
+    }
+
     getAll(inventoryType, parameters) {
         const branchId = this.branchId,
             userId = this.userId,
@@ -56,7 +73,6 @@ export class InventoryQuery extends BaseQuery {
                     knex.raw('invoices.number as invoice_number'),
                     knex.raw('invoices.date as invoice_date'),
                     knex.raw('invoices."invoiceType" as invoice_type'),
-
                 )
                     .from('inventories')
                     .leftJoin('inventoryIOTypes', 'inventoryIOTypes.id', 'inventories.ioType')
@@ -66,7 +82,7 @@ export class InventoryQuery extends BaseQuery {
                     .where('fiscalPeriodId', fiscalPeriodId)
                     .as('base');
 
-                if(inventoryType)
+                if (inventoryType)
                     query.where('inventoryType', inventoryType);
 
                 if (parameters.extra)
@@ -202,16 +218,16 @@ export class InventoryQuery extends BaseQuery {
 
             result = toResult(Utility.kendoQueryResolve(query, parameters, this._viewLine));
 
-            /*sumTotalPrice = toResult(knex
-                .select(knex.raw('SUM(CAST("unitPrice" * quantity as FLOAT)) as "sumTotalPrice"'))
-                .from('inventoryLines')
-                .modify(modify, branchId, userId, canView, 'inventoryLines')
-                .where('inventoryId', id)
-                .first())
-                .sumTotalPrice,
-            aggregates = {sumTotalPrice};
+        /*sumTotalPrice = toResult(knex
+            .select(knex.raw('SUM(CAST("unitPrice" * quantity as FLOAT)) as "sumTotalPrice"'))
+            .from('inventoryLines')
+            .modify(modify, branchId, userId, canView, 'inventoryLines')
+            .where('inventoryId', id)
+            .first())
+            .sumTotalPrice,
+        aggregates = {sumTotalPrice};
 
-        result.aggregates = aggregates;*/
+    result.aggregates = aggregates;*/
 
         return result;
 
