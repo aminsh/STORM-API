@@ -7,9 +7,9 @@ import {Request} from "../ExpressFramework/Types";
 
 export * from './EventPublisher';
 
-export function EventListener(EventListener) {
+export function EventHandler(EventListener) {
     return function (target, key) {
-        eventEmitter.on(target.constructor.name, async function (context: Context, e: any) {
+        eventEmitter.on(EventListener.name, async function (context: Context, e: any) {
            let childContainer = container.createChild();
 
             const sessionName = 'STORM-SESSION';
@@ -20,7 +20,7 @@ export function EventListener(EventListener) {
             session.run(async () => {
                 session.set('CURRENT-CONTEXT', new RequestContextImpl(request));
 
-                childContainer.get(EventListener)[key](e);
+                await Promise.resolve(childContainer.get(target)[key](e));
             });
         });
     }
