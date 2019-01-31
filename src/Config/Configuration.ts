@@ -1,6 +1,7 @@
 import { Injectable } from "../Infrastructure/DependencyInjection";
 import { PersistedConfigRepository } from "./persistedConfig.repository";
 import { Enumerable } from "../Infrastructure/Utility";
+import { Features } from "./Features";
 
 @Injectable()
 export class Configuration {
@@ -12,7 +13,6 @@ export class Configuration {
     EMAIL_PORT: string = process.env.EMAIL_PORT;
     EMAIL_AUTH_USER: string = process.env.EMAIL_AUTH_USER;
     EMAIL_AUTH_PASSWORD: string = process.env.EMAIL_AUTH_PASSWORD;
-    ORIGIN_URL: string = process.env.ORIGIN_URL;
     DATABASE_URL: string = process.env.DATABASE_URL;
     DELIVERY_URL: string = process.env.DELIVERY_URL;
     DASHBOARD_URL: string = process.env.DASHBOARD_URL;
@@ -23,11 +23,19 @@ export class Configuration {
     KAVENEGAR_API_KEY: string;
     KAVENEGAR_SENDER: string;
 
-    async constructor(private readonly persistedConfigRepository: PersistedConfigRepository) {
-        await this.refresh();
+    FEATURES: Features = new Features;
+
+    constructor(private readonly persistedConfigRepository: PersistedConfigRepository) { }
+
+    async ready(): Promise<void> {
+        await this.fetch();
     }
 
-    async refresh() {
+    async refresh(): Promise<void> {
+        await this.fetch();
+    }
+
+    async fetch() {
         const persistedConfigData = await this.persistedConfigRepository.find(),
             persistedConfig: any = Enumerable.from(persistedConfigData).toObject(item => item.key, item => item.value);
         persistedConfig.STORM_BRANCH_TOKEN = this.STORM_BRANCH_TOKEN;
