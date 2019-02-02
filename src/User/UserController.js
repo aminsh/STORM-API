@@ -27,7 +27,8 @@ export class UserController {
     register(req) {
 
         let loginByGoogle = req.query.loginByGoogle,
-            loginByTinet = req.query.loginByTinet;
+            loginByTinet = req.query.loginByTinet,
+            loginByPayping = req.query.loginByPayping;
 
         if (loginByGoogle) {
             let id = this.userService.registerByGoogle(req.body.googleToken, req.body.profile);
@@ -37,6 +38,12 @@ export class UserController {
 
         if (loginByTinet) {
             let id = this.userService.registerByTinet(req.body.tinetToken, req.body.profile);
+
+            return {user: this.userQuery.getOne({id})};
+        }
+
+        if (loginByPayping) {
+            let id = this.userService.registerByPayping(req.body.paypingToken, req.body.profile);
 
             return {user: this.userQuery.getOne({id})};
         }

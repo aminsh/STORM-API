@@ -201,6 +201,49 @@ export class UserService {
         return user.id;
     }
 
+    registerByPayping(token, profile) {
+
+        let userProfile = this.userOauthProfileRepository.getByProviderAndProfileId('payping', profile.username);
+
+        let user = userProfile
+            ? this.userRepository.findOne({id: userProfile.userId})
+            : this.userRepository.findByEmailOrMobile({email: profile.email, mobile: profile.phone});
+
+        if (user) {
+
+            if (!user.isActiveEmail && profile.email_verified)
+                user.isActiveEmail = true;
+
+            if (!user.isActiveMobile && profile.phone_verified)
+                user.isActiveMobile = true;
+
+            this.userRepository.update(user.id, user);
+
+            this._createOrUpdateUserProfile('payping', userProfile, token, profile, user.id);
+
+            return user.id;
+        }
+
+        user = {
+            id: Utility.TokenGenerator.generate128Bit(),
+            name: `${profile.firstname} ${profile.lastname}`,
+            email: profile.email,
+            mobile: profile.phone,
+            state: profile.phone_verified ? 'active' : 'pending',
+            isActiveEmail: !!profile.email_verified,
+            isActiveMobile: !!profile.phone_verified,
+            token: Utility.TokenGenerator.generate256Bit()
+        };
+
+        this.userRepository.create(user);
+
+        Utility.delay(500);
+
+        this._createOrUpdateUserProfile('payping', userProfile, token, profile, user.id);
+
+        return user.id;
+    }
+
     _createOrUpdateUserProfile(provider, userProfile, token, profile, userId) {
 
         if (userProfile) {
@@ -214,9 +257,15 @@ export class UserService {
             return;
         }
 
+        const userProfileIds = {
+            google: 'id',
+            tinet: 'user_id',
+            payping: 'username'
+        };
+
         userProfile = {
             provider,
-            provider_user_id: provider === 'google' ? profile.id : profile.user_id,
+            provider_user_id: profile[userProfileIds[provider]],
             token,
             profile,
             userId

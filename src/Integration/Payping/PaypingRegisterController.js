@@ -13,6 +13,7 @@ class PaypingRegisterController {
         const state = {
             branchId: this._state.branchId,
             userId: this._state.user.id,
+            userToken: this._state.user.token,
             returnUrl: `${process.env['ORIGIN_URL']}/v1/payping/callback`
         };
 
