@@ -13,7 +13,7 @@ export class DetailAccountService {
 
     findPersonByIdOrCreate(cmd) {
         if (!cmd)
-            return cmd = {referenceId: '0', title: 'مشتری عمومی'};
+            cmd = {referenceId: '0', title: 'مشتری عمومی'};
 
         let entity;
 
