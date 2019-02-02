@@ -16,6 +16,7 @@ import "./User";
 import "./Branch";
 import "./BankAndFund";
 import "./Product";
+import "./Person";
 import "./Accounting";
 import "./FiscalPeriod";
 import * as express from "express";
