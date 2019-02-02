@@ -1,12 +1,12 @@
-import {Product, PRODUCT_TYPE} from "./product.entity";
-import {ProductRepository} from "./product.repository";
-import {ProductCategoryRepository} from "./productCategory.repository";
-import {ScaleRepository} from "./scale.repository";
-import {Not} from "typeorm";
-import {ProductCreateDTO, ProductUpdateDTO} from "./dto/product.DTO";
-import {ObjectUtils, StringUtils} from "../Infrastructure/Utility";
-import {Injectable} from "../Infrastructure/DependencyInjection";
-import {BadRequestException, NotFoundException} from "@nestjs/common";
+import { Product, PRODUCT_TYPE } from "./product.entity";
+import { ProductRepository } from "./product.repository";
+import { ProductCategoryRepository } from "./productCategory.repository";
+import { ScaleRepository } from "./scale.repository";
+import { Not } from "typeorm";
+import { ProductCreateDTO, ProductUpdateDTO } from "./dto/product.DTO";
+import { ObjectUtils, StringUtils } from "../Infrastructure/Utility";
+import { Injectable } from "../Infrastructure/DependencyInjection";
+import { BadRequestException, NotFoundException } from "../Infrastructure/Exceptions";
 
 @Injectable()
 export class ProductService {
@@ -34,7 +34,7 @@ export class ProductService {
 
         if (!product)
             throw new NotFoundException();
-        
+
         product.code = ObjectUtils.ifUndefined(dto.code, product.code);
         product.title = ObjectUtils.ifUndefined(dto.title, product.title);
         product.productType = ObjectUtils.ifUndefined(dto.productType as PRODUCT_TYPE, product.productType);
@@ -77,7 +77,7 @@ export class ProductService {
         }
 
         if (dto.referenceId) {
-            entity = await this.productRepository.findOne({reference: dto.referenceId});
+            entity = await this.productRepository.findOne({ reference: dto.referenceId });
 
             if (entity) return entity;
         }
@@ -96,7 +96,10 @@ export class ProductService {
         const productsPromise = await dto.map(async item => await this.factory(item)),
             products = await Promise.all(productsPromise);
 
-        const productWithErrorsPromise = products.map(async item => ({product: item, errors: await this.validate(item)})),
+        const productWithErrorsPromise = products.map(async item => ({
+                product: item,
+                errors: await this.validate(item)
+            })),
             productWithErrors = await Promise.all(productWithErrorsPromise);
 
         productWithErrors
@@ -111,12 +114,12 @@ export class ProductService {
     private async validate(entity: Product): Promise<string[]> {
         let errors: string[] = [];
 
-        const idCondition = entity.id ? {id: Not(entity.id)} : {};
+        const idCondition = entity.id ? { id: Not(entity.id) } : {};
 
-        if (!StringUtils.isNullOrEmpty(entity.code) && await this.productRepository.findOne({code: entity.code, ...idCondition}))
+        if (!StringUtils.isNullOrEmpty(entity.code) && await this.productRepository.findOne({ code: entity.code, ...idCondition }))
             errors.push('کد تکراری است');
 
-        if (!StringUtils.isNullOrEmpty(entity.reference) && await this.productRepository.findOne({reference: entity.reference, ...idCondition}))
+        if (!StringUtils.isNullOrEmpty(entity.reference) && await this.productRepository.findOne({ reference: entity.reference, ...idCondition }))
             errors.push('کد مرجع تکراری است');
 
         return errors;

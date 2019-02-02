@@ -1,13 +1,12 @@
-import {ScaleRepository} from "./scale.repository";
-import {Scale} from "./scale.entity";
-import {ProductRepository} from "./product.repository";
-import {BadRequestException, NotFoundException} from "@nestjs/common";
-import {ScaleCreateDTO, ScaleUpdateDTO} from "./dto/scale.DTO";
-import {Injectable} from "../Infrastructure/DependencyInjection";
+import { ScaleRepository } from "./scale.repository";
+import { Scale } from "./scale.entity";
+import { ProductRepository } from "./product.repository";
+import { BadRequestException, NotFoundException } from "../Infrastructure/Exceptions";
+import { ScaleCreateDTO, ScaleUpdateDTO } from "./dto/scale.DTO";
+import { Injectable } from "../Infrastructure/DependencyInjection";
 
 @Injectable()
 export class ScaleService {
-
     constructor(
         private scaleRepository: ScaleRepository,
         private productRepository: ProductRepository) {
@@ -42,7 +41,7 @@ export class ScaleService {
         if (!entity)
             throw new NotFoundException();
 
-        const usedCurrentScale = await this.productRepository.findOne({scale: entity});
+        const usedCurrentScale = await this.productRepository.findOne({ scale: entity });
 
         if (usedCurrentScale)
             errors.push('واحد اندازه گیری جاری در کالا / خدمات استفاده شده ، امکان حذف وجود ندارد');
