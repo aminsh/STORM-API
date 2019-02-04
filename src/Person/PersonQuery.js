@@ -41,7 +41,7 @@ export class PersonQuery extends BaseQuery {
     }
 
     getAllPeopleWithRoleFilter(parameters, personRole) {
-        return this.getAllByDetailAccountTypeAndPersonRole(parameters, 'person', personRole);
+        return this.getAllByDetailAccountTypeAndPersonRole(parameters, personRole);
     }
 
     getAllByDetailAccountTypeAndPersonRole(parameters, personRole) {
