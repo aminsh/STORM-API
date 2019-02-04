@@ -88,6 +88,8 @@ export class Woocommerce {
         wooCommerceThirdParty.data.consumerKey = data.consumerKey;
         wooCommerceThirdParty.data.consumerSecret = data.consumerSecret;
         wooCommerceThirdParty.data.url = data.url;
+        wooCommerceThirdParty.data.canChangeStock = data.canChangeStock;
+        wooCommerceThirdParty.data.canChangeStockStatusOnZeroQuantity = data.canChangeStockStatusOnZeroQuantity;
 
         this.registeredThirdPartyRepository.update('woocommerce', wooCommerceThirdParty.data);
     }
