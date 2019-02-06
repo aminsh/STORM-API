@@ -93,7 +93,8 @@ export class PersonQuery extends BaseQuery {
                 ? enums.PersonType().getDisplay(entity.personType)
                 : '',
             contacts: entity.contacts,
-
+            isMarketer: entity.isMarketer,
+            marketerCommissionRate: entity.marketerCommissionRate,
             countOfSale: entity.countOfSale,
             lastSaleDate: entity.lastSaleDate,
             sumSaleAmount: entity.sumSaleAmount,
