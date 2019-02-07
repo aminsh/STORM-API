@@ -1,5 +1,6 @@
 import {inject, injectable} from "inversify";
 import {EventHandler} from "../../../Infrastructure/@decorators";
+import queryString from "query-string";
 
 @injectable()
 export class Woocommerce {
@@ -185,7 +186,7 @@ export class Woocommerce {
         Utility.delay(500);
 
         try {
-            if(invoice.status === 'draft')
+            if (invoice.status === 'draft')
                 this.saleService.confirm(invoice.id);
         }
         catch (e) {
@@ -291,15 +292,23 @@ export class Woocommerce {
     }
 
     syncProducts() {
+        let products = [],
+            params = {
+                per_page: 100,
+                page: 0
+            };
 
-        const products = this.woocommerceRepository.get('products');
-
-        products.forEach(product =>
-            this.productService.findByIdOrCreate({
-                referenceId: product.id,
-                title: product.name,
-                salePrice: parseInt(product.price)
-            }));
+        do {
+            ++params.page;
+            products = this.woocommerceRepository.get(`products?${queryString.stringify(params)}`);
+            products.forEach(product =>
+                this.productService.findByIdOrCreate({
+                    referenceId: product.id,
+                    title: product.name,
+                    salePrice: parseInt(product.price)
+                }));
+        }
+        while (products.length === 0);
     }
 
     /**
@@ -334,14 +343,14 @@ export class Woocommerce {
         const quantity = this.inventoryRepository.getInventoryByProduct(productId, this.state.fiscalPeriodId),
             product = this.productRepository.findById(productId);
 
-        if(data.canChangeStock) {
+        if (data.canChangeStock) {
             this.woocommerceRepository.put(`products/${product.referenceId}`, {
                 manage_stock: true,
                 stock_quantity: quantity
             });
         }
 
-        if(data.canChangeStockStatusOnZeroQuantity && quantity <= 0) {
+        if (data.canChangeStockStatusOnZeroQuantity && quantity <= 0) {
             this.woocommerceRepository.put(`products/${product.referenceId}`, {
                 stock_status: 'outofstock'
             });
