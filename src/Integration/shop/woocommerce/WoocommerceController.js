@@ -32,11 +32,10 @@ class WoocommerceController {
     }
 
     @Get("/products")
-    getProductById() {
+    getProductByPage(req) {
 
         try {
-            return this.WoocommerceRepository.get('products');
-
+            return this.WoocommerceRepository.get(`products?${req.query.page || 1}`);
         }
         catch (e) {
 
