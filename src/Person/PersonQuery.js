@@ -41,26 +41,24 @@ export class PersonQuery extends BaseQuery {
     }
 
     getAllPeopleWithRoleFilter(parameters, personRole) {
-        return this.getAllByDetailAccountTypeAndPersonRole(parameters, 'person', personRole);
+        return this.getAllByDetailAccountTypeAndPersonRole(parameters, personRole);
     }
 
-    getAllByDetailAccountTypeAndPersonRole(parameters, type, personRole) {
+    getAllByDetailAccountTypeAndPersonRole(parameters, personRole) {
         let knex = this.knex,
             branchId = this.branchId,
 
             query = knex.select().from(function () {
-                this.select(knex.raw(`*,coalesce("code", '') || ' ' || title as display`))
+                let q = this.select(knex.raw(`*,coalesce("code", '') || ' ' || title as display`))
                     .from('detailAccounts')
-                    .innerJoin(knex.raw(`(
-                            select id, "personRoles", TRIM(pr::TEXT,'""')
-                            FROM   "detailAccounts", json_array_elements("personRoles") as pr
-                            where "personRoles" is not null
-                                    AND TRIM(pr::TEXT,'""') = '${personRole}'
-                        )as "role"`),'role.id','detailAccounts.id')
                     .where('branchId', branchId)
-                    .where('detailAccountType', type)
-                    .as('baseDetailAccounts');
-            }).as('baseDetailAccounts');
+                    .where('detailAccountType', 'person');
+
+                if(personRole === 'marketer')
+                    q.where('isMarketer', true);
+
+                    q.as('base');
+            });
 
         return toResult(Utility.kendoQueryResolve(query, parameters, this._view.bind(this)));
     }
@@ -95,7 +93,8 @@ export class PersonQuery extends BaseQuery {
                 ? enums.PersonType().getDisplay(entity.personType)
                 : '',
             contacts: entity.contacts,
-
+            isMarketer: entity.isMarketer,
+            marketerCommissionRate: entity.marketerCommissionRate,
             countOfSale: entity.countOfSale,
             lastSaleDate: entity.lastSaleDate,
             sumSaleAmount: entity.sumSaleAmount,

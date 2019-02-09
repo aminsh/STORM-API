@@ -1,5 +1,4 @@
 import {inject, injectable} from "inversify";
-import async from "asyncawait/async";
 
 @injectable()
 export class VerificationService {

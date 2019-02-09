@@ -68,8 +68,13 @@ export class UserQuery {
 
         const knex = this.dbContext.instance;
 
-        result.providers = (toResult(knex.from('users_oauth_profiles').where({userId: result.id})) || [])
-            .map(item => item.provider);
+        const userProfiles = toResult(knex.from('users_oauth_profiles').where({userId: result.id}));
+        result.providers = (userProfiles || []).map(item => item.provider);
+        result.profiles = (userProfiles  || []).map(item => ({
+            provider: item.provider,
+            id: item.provider_user_id,
+            token: item.token
+        }));
 
         return this._view(result);
     }

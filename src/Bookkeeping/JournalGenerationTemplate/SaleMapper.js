@@ -9,6 +9,9 @@ export class SaleMapper {
     /**@type {ProductRepository}*/
     @inject("ProductRepository") productRepository = undefined;
 
+    @inject('DetailAccountRepository')
+    /**@type {DetailAccountRepository}*/ detailAccountRepository = undefined;
+
     map(invoice) {
 
         const settings = this.settingsRepository.get();
@@ -41,6 +44,8 @@ export class SaleMapper {
             discount: item.discount
         }));
 
+        const marketer = invoice.marketerId ? this.detailAccountRepository.findById(invoice.marketerId) : {marketerCommissionRate: 0};
+
         return Object.assign({}, {
             number: invoice.number,
             date: invoice.date,
@@ -68,7 +73,8 @@ export class SaleMapper {
             customer: invoice.detailAccountId,
             customerCode: invoice.detailAccount.code,
             customerTitle: invoice.detailAccount.title,
-            marketer: invoice.marketerId,
+            marketer: marketer.id,
+            marketerCommissionRate: marketer.marketerCommissionRate,
             bankReceiptNumber: invoice.bankReceiptNumber || '',
             products: invoiceLines
         }, cost, charge)

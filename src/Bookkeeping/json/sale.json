@@ -68,6 +68,12 @@
       "type": "String"
     },
     {
+      "key": "marketerCommissionRate",
+      "display": "نرخ پورسانت بازار یاب",
+      "value": 25,
+      "type": "Number"
+    },
+    {
       "key": "bankReceiptNumber",
       "display": "شماره رسید بانکی",
       "value": "12589",
