@@ -1,5 +1,6 @@
-import {Controller, Post, Get, Put} from "../../../Infrastructure/expressUtlis";
-import {inject} from "inversify";
+import { Controller, Post, Get, Put } from "../../../Infrastructure/expressUtlis";
+import { inject } from "inversify";
+import queryString from "query-string";
 
 @Controller("/v1/woocommerce", "ShouldHaveBranch")
 class WoocommerceController {
@@ -13,29 +14,71 @@ class WoocommerceController {
     @inject("RegisteredThirdPartyRepository")
     /**@type{RegisteredThirdPartyRepository}*/ registeredThirdPartyRepository = undefined;
 
+    @inject("SaleQuery")
+    /**@type{SaleQuery}*/ saleQuery = undefined;
+
     @Post('/add-order')
     addOrder(req) {
-
-        this.woocommerce.addOrder(req.body);
+        this.woocommerce.addOrUpdateOrder(req.body);
     }
 
     @Post('/update-order')
     updateOrder(req) {
-
-        this.woocommerce.updateOrder(req.body);
+        this.woocommerce.addOrUpdateOrder(req.body);
     }
 
     @Post("/delete-order")
     deleteOrder(req) {
-
         this.woocommerce.deleteOrder(req.body);
     }
 
     @Get("/products")
     getProductByPage(req) {
+        const params = {
+            per_page: req.query.take,
+            offset: req.query.skip
+        };
 
         try {
-            return this.WoocommerceRepository.get(`products?${req.query.page || 1}`);
+            const result = this.WoocommerceRepository.get(`products?${queryString.stringify(params)}`);
+
+            return { data: result, total: 2000 };
+        }
+        catch (e) {
+
+            if (e.data.status === 404)
+                throw new NotFoundException();
+
+            if (e.data.status === 401)
+                throw new ForbiddenException(e.message);
+
+            if (e.data.status === 400)
+                throw new ValidationSingleException(e.message);
+        }
+    }
+
+    @Get("/orders")
+    getOrdersByPage(req) {
+        const params = {
+            per_page: req.query.take,
+            offset: req.query.skip
+        };
+
+        try {
+            const orders = this.WoocommerceRepository.get(`orders?${queryString.stringify(params)}`);
+            const invoices = this.saleQuery.getByOrderIds(orders.map(item => item.id));
+
+            invoices.forEach(item => item.orderId = parseInt(item.orderId));
+
+            const result = orders.asEnumerable()
+                .groupJoin(
+                    invoices,
+                    order => order.id,
+                    invoice => invoice.orderId,
+                    (order, items) => Object.assign({}, order, { invoice: items.firstOrDefault() })
+                )
+                .toArray();
+            return { data: result, total: 2000 };
         }
         catch (e) {
 
@@ -82,12 +125,12 @@ class WoocommerceController {
 
         return allPaymentGateways
             .filter(item => item.enabled)
-            .map(item => ({
+            .map(item => ( {
                 key: item.id,
                 display: item.title,
-                accountId: (persistedPaymentMethod.asEnumerable().singleOrDefault(p => p.key === item.id) || {}).accountId,
-                accountType: (persistedPaymentMethod.asEnumerable().singleOrDefault(p => p.key === item.id) || {}).accountType,
-            }));
+                accountId: ( persistedPaymentMethod.asEnumerable().singleOrDefault(p => p.key === item.id) || {} ).accountId,
+                accountType: ( persistedPaymentMethod.asEnumerable().singleOrDefault(p => p.key === item.id) || {} ).accountType,
+            } ));
     }
 
     @Post("/payment-gateways/assign-to-account")
