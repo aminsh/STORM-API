@@ -354,7 +354,8 @@ enums.ThirdParty = function () {
 enums.ProductOutputCreationMethod = function () {
     return new Enum([
         {key: 'defaultStock', display: 'انبار پیش فرض'},
-        {key: 'stockOnRequest', display: 'انتخاب انبار در فاکتور فروش'}
+        {key: 'defaultStockOnProduct', display: 'انبار پیش فرض در کالا'},
+        {key: 'stockOnRequest', display: 'انتخاب انبار در فاکتور فروش'},
 
         /*
         * these are not implemented

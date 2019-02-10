@@ -76,7 +76,7 @@ export class InvoiceRepository extends BaseRepository {
             this.knex.select('id').from('invoices').where({orderId}).first()
         );
 
-        if(!result)
+        if (!result)
             return;
 
         return this.findById(result.id);
@@ -275,6 +275,23 @@ export class InvoiceRepository extends BaseRepository {
             Object.keys(entity).length && toResult(this.updateInvoice(id, entity, trx));
 
             invoiceLines && toResult(this.updateInvoiceLines(id, invoiceLines, trx));
+            trx.commit();
+        }
+        catch (e) {
+            trx.rollback(e);
+            throw new Error(e);
+        }
+    }
+
+    patchLines(id , lines) {
+        let trx = this.transaction;
+
+        try {
+            lines.forEach(line => {
+                trx.table('invoiceLines')
+                    .where({branchId: this.branchId, id: line.id, invoiceId: id})
+                    .update(line);
+            });
             trx.commit();
         }
         catch (e) {
