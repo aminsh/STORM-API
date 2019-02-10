@@ -25,6 +25,7 @@ export class SettingsQuery extends BaseQuery {
             'productAccountLevel',
             'stockAccountLevel',
             'canInventoryGenerateAutomaticJournal',
+            'canSaleGenerateAutomaticOutput',
             'canRemoveJournalWhenSourceRemoved')
             .from('settings')
             .where('branchId', this.branchId)

@@ -18,6 +18,9 @@ export class InventoryService {
     @inject("InventoryAccountingPricingService")
     /**@type{InventoryAccountingPricingService}*/ inventoryAccountingPricingService = undefined;
 
+    @inject("InvoiceRepository")
+    /**@type{InvoiceRepository}*/ invoiceRepository = undefined;
+
     @inject("State")
     /**@type{IState}*/ state = undefined;
 
@@ -138,5 +141,29 @@ export class InventoryService {
         data.forEach(item => this.addOneFirstInput(productId, item));
     }
 
+    createOutputFromSale(saleId) {
+        const sale = this.invoiceRepository.findById(saleId);
+
+        let lines = sale.invoiceLines,
+
+            linesByStock = lines.asEnumerable().groupBy(
+                line => line.stockId,
+                line => line,
+                (stockId, lines) => ({
+                    stockId,
+                    invoiceId: saleId,
+                    ioType: 'outputSale',
+                    lines: lines.toArray()
+                }))
+                .toArray();
+
+        linesByStock.forEach(item => {
+            const id = this.outputService.create(item);
+
+            Utility.delay(1000);
+
+            this.outputService.confirm(id);
+        });
+    }
 
 }

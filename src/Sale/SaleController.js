@@ -1,5 +1,5 @@
-import {Controller, Delete, Get, Post, Put} from "../Infrastructure/expressUtlis";
-import {inject} from "inversify";
+import { Controller, Delete, Get, Post, Put } from "../Infrastructure/expressUtlis";
+import { inject } from "inversify";
 
 @Controller("/v1/sales", "ShouldHaveBranch")
 class SaleController {
@@ -38,15 +38,18 @@ class SaleController {
 
     @Post("/")
     create(req) {
+        const cmd = req.body;
 
-        const id = this.saleService.create(req.body);
+        const id = this.saleService.create(cmd);
+
+        if (cmd.status !== 'draft')
+            this.saleService.confirm(id);
 
         return this.saleQuery.getById(id);
     }
 
     @Post("/:id/confirm")
     confirm(req) {
-
         const id = req.params.id;
 
         this.saleService.confirm(id);
@@ -67,9 +70,14 @@ class SaleController {
     @Put("/:id")
     update(req) {
 
-        const id = req.params.id;
+        const id = req.params.id,
+            cmd = req.body,
+            invoiceView = this.saleQuery.getById(id);
 
         this.saleService.update(id, req.body);
+
+        if (cmd.status === 'draft' && invoiceView.status !== 'draft')
+            this.saleService.confirm(id);
 
         return this.saleQuery.getById(id);
     }
@@ -100,7 +108,27 @@ class SaleController {
 
     @Post("/:id/generate-journal")
     generateJournal(req) {
-
         this.saleService.generateJournal(req.params.id);
+    }
+
+    @Delete('/:id/remove-journals')
+    removeJournal(req) {
+        this.saleService.removeJournal(req.params.id);
+    }
+
+    @Post("/:id/generate-outputs")
+    generateOutputs(req) {
+        const lines = req.body,
+            id = req.params.id;
+
+        if (lines && lines.length > 0)
+            this.saleService.setStockToInvoice(id, lines);
+
+        this.saleService.generateOutput(id);
+    }
+
+    @Delete('/:id/remove-outputs')
+    removeOutputs(req) {
+        this.saleService.removeOutputs(req.params.id);
     }
 }
