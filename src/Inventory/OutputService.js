@@ -46,6 +46,7 @@ export class OutputService {
             number: number + 1,
             date: cmd.date || Utility.PersianDate.current(),
             stockId: cmd.stockId,
+            invoiceId: cmd.invoiceId,
             inventoryType: 'output',
             quantityStatus: 'draft',
             ioType: cmd.ioType,
@@ -195,7 +196,6 @@ export class OutputService {
         this.inventoryRepository.remove(id);
 
         this.eventBus.send("InventoryOutputRemoved", output);
-
     }
 
     shipped(id) {

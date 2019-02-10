@@ -1,4 +1,4 @@
-import {inject, injectable} from "inversify";
+import { inject, injectable } from "inversify";
 
 const PersianDate = Utility.PersianDate;
 
@@ -230,7 +230,7 @@ export class JournalService {
     }
 
     changeDate(id, date) {
-        this.journalRepository.update({id, temporaryDate: date});
+        this.journalRepository.update({ id, temporaryDate: date });
     }
 
     orderingTemporaryNumberByTemporaryDate() {
@@ -241,7 +241,7 @@ export class JournalService {
         let sourceJournal = this.journalRepository.findById(id);
 
         if (!sourceJournal)
-            throw new ValidationException(['سند وجود ندارد']);
+            throw new ValidationException([ 'سند وجود ندارد' ]);
 
 
         delete sourceJournal.id;
@@ -255,7 +255,7 @@ export class JournalService {
 
         let errors = [];
 
-        if (!(dto.ids && dto.ids.length > 0))
+        if (!( dto.ids && dto.ids.length > 0 ))
             errors.push('اسناد وجود ندارد');
 
         if (errors.length > 0)
@@ -295,22 +295,22 @@ export class JournalService {
         let journal = this.journalRepository.findById(id);
 
         if (journal.journalStatus === 'Fixed')
-            throw new ValidationException(['سند قبلا قطعی شده']);
+            throw new ValidationException([ 'سند قبلا قطعی شده' ]);
 
-        this.journalRepository.update({id: journal.id, journalStatus: 'Fixed'});
+        this.journalRepository.update({ id: journal.id, journalStatus: 'Fixed' });
     }
 
     bookkeeping(id) {
         let journal = this.journalRepository.findById(id);
 
         if (journal.journalStatus === 'Fixed')
-            throw new ValidationException(['سند قبلا قطعی شده']);
+            throw new ValidationException([ 'سند قبلا قطعی شده' ]);
 
-        this.journalRepository.update({id: journal.id, journalStatus: 'BookKeeped'});
+        this.journalRepository.update({ id: journal.id, journalStatus: 'BookKeeped' });
     }
 
     attachImage(id, attachmentFileName) {
-        this.journalRepository.update({id, attachmentFileName});
+        this.journalRepository.update({ id, attachmentFileName });
     }
 
     _validateForRemove(journal) {
@@ -323,11 +323,11 @@ export class JournalService {
         if (this.fiscalPeriodRepository.findById(this.state.fiscalPeriodId).isClosed)
             errors.push('دوره مالی بسته شده ، امکان حذف وجود ندارد');
 
-        if (this.invoiceRepository.isExitsJournal(journal.id))
+        /*if (this.invoiceRepository.isExitsJournal(journal.id))
             errors.push('این سند برای فاکتور صادر شده ، امکان حذف وجود ندارد');
 
-        if (this.invoiceRepository.isExitsJournal(journal.id))
-            errors.push('این سند برای اسناد انباری صادر شده ، امکان حذف وجود ندارد');
+        if (this.inventoryRepository.isExitsJournal(journal.id))
+            errors.push('این سند برای اسناد انباری صادر شده ، امکان حذف وجود ندارد');*/
 
         if (this.treasuryRepository.isExitsJournal(journal.id))
             errors.push('این سند برای اسناد خزانه داری صادر شده ، امکان حذف وجود ندارد');
@@ -350,16 +350,16 @@ export class JournalService {
             invoice = this.invoiceRepository.findById(invoiceId);
 
         if (!invoice)
-            throw new ValidationException(['فاکتور وجود ندارد']);
+            throw new ValidationException([ 'فاکتور وجود ندارد' ]);
 
         if (!Utility.String.isNullOrEmpty(invoice.journalId))
-            throw new ValidationException(['برای فاکتور {0} قبلا سند حسابداری صادر شده'.format(invoice.number)]);
+            throw new ValidationException([ 'برای فاکتور {0} قبلا سند حسابداری صادر شده'.format(invoice.number) ]);
 
-        const charge = (settings.saleCharges || []).asEnumerable()
-            .select(e => ({
+        const charge = ( settings.saleCharges || [] ).asEnumerable()
+            .select(e => ( {
                 key: e.key,
-                value: (invoice.charges.asEnumerable().firstOrDefault(p => p.key === e.key) || {value: 0}).value
-            }))
+                value: ( invoice.charges.asEnumerable().firstOrDefault(p => p.key === e.key) || { value: 0 } ).value
+            } ))
             .toObject(item => `charge_${item.key}`, item => item.value);
 
         let model = Object.assign({
@@ -385,13 +385,13 @@ export class JournalService {
             invoice = this.invoiceRepository.findById(invoiceId);
 
         if (!invoice)
-            throw new ValidationException(['فاکتور وجود ندارد']);
+            throw new ValidationException([ 'فاکتور وجود ندارد' ]);
 
-        const charge = (settings.saleCharges || []).asEnumerable()
-            .select(e => ({
+        const charge = ( settings.saleCharges || [] ).asEnumerable()
+            .select(e => ( {
                 key: e.key,
-                value: (invoice.charges.asEnumerable().firstOrDefault(p => p.key === e.key) || {value: 0}).value
-            }))
+                value: ( invoice.charges.asEnumerable().firstOrDefault(p => p.key === e.key) || { value: 0 } ).value
+            } ))
             .toObject(item => `charge_${item.key}`, item => item.value);
 
         let model = Object.assign({
