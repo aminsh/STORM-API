@@ -1,6 +1,6 @@
 import toResult from "asyncawait/await";
-import {injectable, inject} from "inversify";
-import {BaseQuery} from "../Infrastructure/BaseQuery";
+import { injectable, inject } from "inversify";
+import { BaseQuery } from "../Infrastructure/BaseQuery";
 
 @injectable()
 export class InventoryQuery extends BaseQuery {
@@ -166,6 +166,16 @@ export class InventoryQuery extends BaseQuery {
             query.where('stockId', filter.stockId);
     }
 
+    getByInvoice(invoiceId) {
+        let result = toResult(
+            this.knex.select('id').from('inventories').where({ branchId: this.branchId, invoiceId })
+        );
+
+        return result && result.length > 0
+            ? this.getAllByIds(result.map(item => item.id))
+            : [];
+    }
+
     getById(id) {
         let knex = this.knex,
             branchId = this.branchId,
@@ -301,7 +311,7 @@ export class InventoryQuery extends BaseQuery {
             outputId: item.outputId,
             invoiceId: item.invoiceId,
             invoice: item.invoiceId
-                ? {number: item["invoice_number"], date: item["invoice_date"], type: item["invoice_type"]}
+                ? { number: item[ "invoice_number" ], date: item[ "invoice_date" ], type: item[ "invoice_type" ] }
                 : undefined
         };
     }
