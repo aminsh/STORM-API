@@ -1,5 +1,5 @@
-import {injectable, inject} from "inversify";
-import {EventHandler} from "../Infrastructure/@decorators";
+import { injectable, inject } from "inversify";
+import { EventHandler } from "../Infrastructure/@decorators";
 
 @injectable()
 export class InventorySaleEventListener {
@@ -22,24 +22,37 @@ export class InventorySaleEventListener {
     @inject("InvoiceCompareService")
     /**@type{InvoiceCompareService}*/ invoiceCompareService = undefined;
 
+    @inject("SettingsRepository")
+    /**@type {SettingsRepository}*/ settingsRepository = undefined;
+
     @inject("State") state = undefined;
 
     @EventHandler("SaleCreated")
     onSaleCreated(saleId) {
+        const settings = this.settingsRepository.get();
+
+        if (!settings.canSaleGenerateAutomaticOutput)
+            return;
 
         const sale = this.invoiceRepository.findById(saleId);
+
+        if(sale.invoiceLines.asEnumerable().any(item => !item.stockId))
+            return;
+
+        if(sale.invoiceLines.asEnumerable().all(item => !this.productRepository.isGood(item.productId)))
+            return;
 
         let lines = sale.invoiceLines,
 
             linesByStock = lines.asEnumerable().groupBy(
                 line => line.stockId,
                 line => line,
-                (stockId, lines) => ({
+                (stockId, lines) => ( {
                     stockId,
                     invoiceId: saleId,
                     ioType: 'outputSale',
                     lines: lines.toArray()
-                }))
+                } ))
                 .toArray();
 
         linesByStock.forEach(item => {
@@ -52,60 +65,13 @@ export class InventorySaleEventListener {
     }
 
     @EventHandler("SaleChanged")
-    onSaleChanged(oldSale, saleId) {
-
-        const newSale = this.invoiceRepository.findById(saleId),
-            oldLines = oldSale.invoiceLines.filter(item => this.productRepository.isGood(item.productId)),
-            newLines = newSale.invoiceLines.filter(item => this.productRepository.isGood(item.productId)),
-
-            result = this.invoiceCompareService.compare('output', oldLines, newLines),
-
-            inputs = result.filter(item => item.quantity > 0),
-            outputs = result.filter(item => item.quantity < 0).map(item => Object.assign({}, item, {quantity: Math.abs(item.quantity)}));
-
-        inputs.asEnumerable()
-            .groupBy(
-                item => item.stockId,
-                item => item,
-                (key, items) => ({
-                    stockId: key,
-                    invoiceId: saleId,
-                    ioType: 'inputBackFromSaleOrConsuming',
-                    lines: items.toArray()
-                }))
-            .forEach(item => {
-                const id = this.inputService.create(item);
-
-                Utility.delay(1000);
-
-                this.inputService.confirm(id);
-            });
-
-        outputs.asEnumerable()
-            .groupBy(
-                item => item.stockId,
-                item => item,
-                (key, items) => ({
-                    stockId: key,
-                    invoiceId: saleId,
-                    ioType: 'outputSale',
-                    lines: items.toArray()
-                }))
-            .forEach(item => {
-                const id = this.outputService.create(item);
-
-                Utility.delay(1000);
-
-                this.outputService.confirm(id);
-            });
-
+    onSaleChanged(saleId) {
+        this.onSaleCreated(saleId);
     }
 
     @EventHandler("SaleRemoved")
     onSaleRemoved(sale) {
-
         const inventories = this.inventoryRepository.findByInvoiceId(sale.id);
-
-        inventories.forEach(item => this.inventoryRepository.update(item.id, {invoiceId: null}));
+        inventories.forEach(item => this.inventoryRepository.remove(item.id));
     }
 }
