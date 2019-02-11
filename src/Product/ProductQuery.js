@@ -87,6 +87,17 @@ export class ProductQuery extends BaseQuery {
         return this.view(result);
     }
 
+    getManyByReferenceId(referenceIds) {
+        if(!(referenceIds && referenceIds.length > 0))
+            return;
+
+        return toResult(
+            this.knex.select('id', 'referenceId').from('products')
+                .where('branchId', this.branchId)
+                .whereIn('referenceId', referenceIds)
+        );
+    }
+
     getManyByIds(ids) {
         let products = toResult(this.knex.select('*').from('products').whereIn('id', ids));
         return products.asEnumerable()

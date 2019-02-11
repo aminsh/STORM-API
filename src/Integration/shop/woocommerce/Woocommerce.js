@@ -277,14 +277,17 @@ export class Woocommerce {
         do {
             ++params.page;
             products = this.woocommerceRepository.get(`products?${queryString.stringify(params)}`);
-            products.forEach(product =>
-                this.productService.findByIdOrCreate({
-                    referenceId: product.id,
-                    title: product.name,
-                    salePrice: parseInt(product.price)
-                }));
+            products.forEach(product => this.syncOneProduct(product));
         }
         while (products.length === 0);
+    }
+
+    syncOneProduct(product) {
+        this.productService.findByIdOrCreate({
+            referenceId: product.id,
+            title: product.name,
+            salePrice: parseInt(product.price)
+        })
     }
 
     /**

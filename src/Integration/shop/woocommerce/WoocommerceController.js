@@ -17,6 +17,9 @@ class WoocommerceController {
     @inject("SaleQuery")
     /**@type{SaleQuery}*/ saleQuery = undefined;
 
+    @inject("ProductQuery")
+    /**@type{ProductQuery}*/ productQuery = undefined;
+
     @Post('/add-order')
     addOrder(req) {
         this.woocommerce.addOrUpdateOrder(req.body);
@@ -40,7 +43,19 @@ class WoocommerceController {
         };
 
         try {
-            const result = this.WoocommerceRepository.get(`products?${queryString.stringify(params)}`);
+            const items = this.WoocommerceRepository.get(`products?${queryString.stringify(params)}`);
+            const products = this.productQuery.getManyByReferenceId(items.map(item => item.id));
+
+            products.forEach(item => item.referenceId = parseInt(item.referenceId));
+
+            const result = items.asEnumerable()
+                .groupJoin(
+                    products,
+                    item => item.id,
+                    product => product.referenceId,
+                    (item, products) => Object.assign({}, item, { registered: products.any() })
+                )
+                .toArray();
 
             return { data: result, total: 2000 };
         }
@@ -95,8 +110,12 @@ class WoocommerceController {
 
     @Post('/products/sync')
     syncProducts() {
-
         this.woocommerce.syncProducts();
+    }
+
+    @Post('/products/sync-one')
+    syncOneProduct(req) {
+        this.woocommerce.syncOneProduct(req.body);
     }
 
     @Get("/settings")
