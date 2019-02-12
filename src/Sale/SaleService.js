@@ -89,7 +89,7 @@ export class SaleService {
         if (!(line.unitPrice && line.unitPrice !== 0))
             errors.push('قیمت واحد نباید خالی یا صفر باشد');
 
-        if (this.settings.canControlInventory && !line.stockId)
+        if (this.settings.canControlInventory && (line.product && line.product.productType === 'good') && !line.stockId)
             errors.push('انبار نباید خالی باشد');
 
         return errors;
