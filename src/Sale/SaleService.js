@@ -115,7 +115,7 @@ export class SaleService {
     mapToEntity(cmd) {
 
         const detailAccount = this.detailAccountService.findPersonByIdOrCreate(cmd.customer),
-            marketer = this.detailAccountService.findPersonByIdOrCreate(cmd.marketer),
+           marketer = cmd.marketerId ? this.detailAccountRepository.findById(cmd.marketerId) : null,
             invoice = cmd.id ? this.invoiceRepository.findById(cmd.id) : undefined;
 
         return {
@@ -125,7 +125,7 @@ export class SaleService {
             description: cmd.description,
             title: cmd.title,
             detailAccountId: detailAccount ? detailAccount.id : null,
-            marketerId: cmd.marketerId,
+            marketerId: marketer ? marketer.id : null,
             orderId: cmd.orderId,
             costs: this._mapCostAndCharge(cmd.costs),
             charges: this._mapCostAndCharge(cmd.charges),
