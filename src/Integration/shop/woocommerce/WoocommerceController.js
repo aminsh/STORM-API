@@ -43,12 +43,12 @@ class WoocommerceController {
         };
 
         try {
-            const items = this.WoocommerceRepository.get(`products?${queryString.stringify(params)}`);
-            const products = this.productQuery.getManyByReferenceId(items.map(item => item.id));
+            const productsResult = this.WoocommerceRepository.get(`products?${queryString.stringify(params)}`, true);
+            const products = this.productQuery.getManyByReferenceId(productsResult.data.map(item => item.id));
 
             products.forEach(item => item.referenceId = parseInt(item.referenceId));
 
-            const result = items.asEnumerable()
+            const result = productsResult.data.asEnumerable()
                 .groupJoin(
                     products,
                     item => item.id,
@@ -57,7 +57,7 @@ class WoocommerceController {
                 )
                 .toArray();
 
-            return { data: result, total: 2000 };
+            return { data: result, total: productsResult.total };
         }
         catch (e) {
 
@@ -80,12 +80,12 @@ class WoocommerceController {
         };
 
         try {
-            const orders = this.WoocommerceRepository.get(`orders?${queryString.stringify(params)}`);
-            const invoices = this.saleQuery.getByOrderIds(orders.map(item => item.id));
+            const ordersResult = this.WoocommerceRepository.get(`orders?${queryString.stringify(params)}`, true);
+            const invoices = this.saleQuery.getByOrderIds(ordersResult.data.map(item => item.id));
 
             invoices.forEach(item => item.orderId = parseInt(item.orderId));
 
-            const result = orders.asEnumerable()
+            const result = ordersResult.data.asEnumerable()
                 .groupJoin(
                     invoices,
                     order => order.id,
@@ -93,7 +93,7 @@ class WoocommerceController {
                     (order, items) => Object.assign({}, order, { invoice: items.firstOrDefault() })
                 )
                 .toArray();
-            return { data: result, total: 2000 };
+            return { data: result, total: ordersResult.total };
         }
         catch (e) {
 
