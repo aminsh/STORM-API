@@ -1,6 +1,6 @@
 import toResult from "asyncawait/await";
-import {BaseRepository} from "../../Infrastructure/BaseRepository";
-import {injectable} from "inversify";
+import { BaseRepository } from "../../Infrastructure/BaseRepository";
+import { injectable } from "inversify";
 
 @injectable()
 export class JournalGenerationTemplateRepository extends BaseRepository {
@@ -12,6 +12,14 @@ export class JournalGenerationTemplateRepository extends BaseRepository {
             .from(this.tableName)
             .modify(this.modify, this.branchId)
             .where('id', id)
+            .first());
+    }
+
+    findByModel(model) {
+        return toResult(this.knex.select('*')
+            .from(this.tableName)
+            .modify(this.modify, this.branchId)
+            .where('model', model)
             .first());
     }
 

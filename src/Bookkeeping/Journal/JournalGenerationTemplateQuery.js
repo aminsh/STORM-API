@@ -3,7 +3,7 @@ import { injectable, inject } from "inversify";
 import { BaseQuery } from "../../Infrastructure/BaseQuery";
 
 import templateSale from '../json/Sale.json';
-import templatePurchase from '../json/purchase.json';
+import templatePurchase from '../json/Purchase.json';
 import templateReturnSale from '../json/returnSale.json';
 import templateInventoryOutputSale from '../json/inventoryOutputSale.json';
 import templateInventoryInputReturnSale from '../json/inventoryInputReturnSale.json';

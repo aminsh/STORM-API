@@ -43,6 +43,7 @@ export class InvoiceRepository extends BaseRepository {
             journalId: first.journalId,
             invoiceStatus: first.invoiceStatus,
             orderId: first.orderId,
+            typeId: first.typeId,
             invoiceType: first.invoiceType,
             ofInvoiceId: first.ofInvoiceId,
             costs: first.costs,

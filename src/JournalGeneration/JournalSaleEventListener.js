@@ -28,6 +28,9 @@ export class JournalSaleEventListener {
         if (!settings.canSaleGenerateAutomaticJournal)
             return;
 
+        if (invoice.journalId)
+            return;
+
         this.journalSaleGenerationService.generate(invoiceId);
     }
 
@@ -41,7 +44,7 @@ export class JournalSaleEventListener {
     onSaleFixed(invoiceId) {
         let invoice = this.invoiceRepository.findById(invoiceId);
 
-        if(!invoice.journalId) {
+        if (!invoice.journalId) {
             this.onSaleCreated(invoiceId);
             invoice = this.invoiceRepository.findById(invoiceId);
         }

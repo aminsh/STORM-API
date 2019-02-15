@@ -15,6 +15,12 @@ export class JournalPurchaseGenerationService {
     /**@type {JournalGenerationTemplateService}*/
     @inject("JournalGenerationTemplateService") journalGenerationTemplateService = undefined;
 
+    @inject("JournalGenerationTemplateRepository")
+    /**@type{JournalGenerationTemplateRepository}*/ journalGenerationTemplateRepository = undefined;
+
+    @inject("PurchaseMapper")
+    /**@type{PurchaseMapper}*/ purchaseMapper = undefined;
+
     generate(invoiceId) {
 
         const invoice = this.invoiceRepository.findById(invoiceId);
@@ -22,20 +28,22 @@ export class JournalPurchaseGenerationService {
         if (!invoice)
             throw new ValidationException(['فاکتور وجود ندارد']);
 
-        const journal = this.journalGenerationTemplateService.generate(invoice, 'purchase');
-
-        journal.journalLines = journal.journalLines.asEnumerable()
-            .orderByDescending(line => line.debtor)
-            .toArray();
-
         if (invoice.journalId)
-            this.journalService.update(invoice.journalId, journal);
-        else {
-            const journalId = this.journalService.create(journal);
+            throw new ValidationException([ 'برای فاکتور جاری قبلا سند صادر شده ، ابتدا سند را حذف کنید' ]);
 
-            Utility.delay(1000);
+        const journalGenerationTemplate = this.journalGenerationTemplateRepository.findByModel('Purchase');
 
-            this.invoiceRepository.update(invoiceId, {journalId});
-        }
+        if(!journalGenerationTemplate)
+            throw new ValidationException(['الگو ساخت سند اتوماتیک برای فاکتور خرید وجود ندارد ']);
+
+        const data = this.purchaseMapper.map(invoice);
+
+        const journal = this.journalGenerationTemplateService.generate(journalGenerationTemplate.id, data);
+
+        const journalId = this.journalService.create(journal);
+
+        Utility.delay(1000);
+
+        this.invoiceRepository.update(invoiceId, {journalId});
     }
 }

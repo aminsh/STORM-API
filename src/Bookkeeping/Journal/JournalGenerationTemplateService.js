@@ -1,5 +1,5 @@
 import _ from "lodash";
-import {inject, injectable} from "inversify";
+import { inject, injectable } from "inversify";
 
 _.templateSettings.interpolate = /#([\s\S]+?)#/g;
 
@@ -12,24 +12,19 @@ export class JournalGenerationTemplateService {
     /**@type{JournalGenerationTemplateEngine}*/
     @inject("JournalGenerationTemplateEngine") journalGenerationTemplateEngine = undefined;
 
-    @inject("Factory<Mapper>") mapperFactory = undefined;
+    generate(journalGenerationTemplateId, data) {
 
-    generate(cmd, sourceType) {
-
-        let generationTemplate = this.journalGenerationTemplateRepository.findBySourceType(sourceType);
+        let generationTemplate = this.journalGenerationTemplateRepository.findById(journalGenerationTemplateId);
 
         if (!generationTemplate)
-            throw new ValidationException(['الگوی ساخت سند حسابداری وجود ندارد']);
+            throw new ValidationException([ 'الگوی ساخت سند حسابداری وجود ندارد' ]);
 
         generationTemplate = generationTemplate.data;
 
-        const mapper = this.mapperFactory(sourceType);
-
-        const journal = this.journalGenerationTemplateEngine.handler(generationTemplate, mapper.map(cmd));
+        const journal = this.journalGenerationTemplateEngine.handler(generationTemplate, data);
 
         journal.journalLines = journal.journalLines.asEnumerable()
-            .where(item => (item.debtor + item.creditor) !== 0)
-            .orderByDescending(item => item.debtor)
+            .where(item => ( item.debtor + item.creditor ) !== 0)
             .toArray();
 
         return journal;
@@ -37,11 +32,11 @@ export class JournalGenerationTemplateService {
 
     create(cmd) {
         let entity = {
-                model: cmd.model,
-                title: cmd.title,
-                data: JSON.stringify(cmd.data),
-                //fields: cmd.fields
-            };
+            model: cmd.model,
+            title: cmd.title,
+            data: JSON.stringify(cmd.data),
+            //fields: cmd.fields
+        };
 
         this.journalGenerationTemplateRepository.create(entity);
 
@@ -51,7 +46,7 @@ export class JournalGenerationTemplateService {
     update(id, cmd) {
         let entity = this.journalGenerationTemplateRepository.findById(id);
 
-        if(!entity)
+        if (!entity)
             throw new NotFoundException();
 
         entity.model = cmd.model;
@@ -65,7 +60,7 @@ export class JournalGenerationTemplateService {
     remove(id) {
         let entity = this.journalGenerationTemplateRepository.findById(id);
 
-        if(!entity)
+        if (!entity)
             throw new NotFoundException();
 
         this.journalGenerationTemplateRepository.remove(id);
@@ -115,19 +110,19 @@ export class JournalGenerationTemplateService {
 
         let errors = [];
 
-        const complexType = ['Array', 'Object'];
+        const complexType = [ 'Array', 'Object' ];
 
         fields.forEach(field => {
 
-            if(!field.type) {
+            if (!field.type) {
                 errors.push('نوع فیلد مشخص نشده');
                 return;
             }
 
-            if(complexType.includes(field.type))
+            if (complexType.includes(field.type))
                 errors.concat(this._validateCustomTemplateField(field.fields));
             else {
-                if(!field.key)
+                if (!field.key)
                     errors.push('کلید فیلد مشخص نشده');
             }
         });

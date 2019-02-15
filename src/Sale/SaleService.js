@@ -9,6 +9,9 @@ export class SaleService {
     /** @type {ProductInventoryService}*/
     @inject("ProductInventoryService") productInventoryService = undefined;
 
+    @inject("InvoiceTypeRepository")
+    /**@type{InvoiceTypeRepository}*/ invoiceTypeRepository = undefined;
+
     /** @type {ProductService}*/
     @inject("ProductService") productService = undefined;
 
@@ -127,11 +130,15 @@ export class SaleService {
 
         const detailAccount = this.detailAccountService.findPersonByIdOrCreate(cmd.customer),
             marketer = cmd.marketerId ? this.detailAccountRepository.findById(cmd.marketerId) : null,
-            invoice = cmd.id ? this.invoiceRepository.findById(cmd.id) : undefined;
+            invoice = cmd.id ? this.invoiceRepository.findById(cmd.id) : undefined,
+            type = cmd.typeId
+                ? this.invoiceTypeRepository.findById(cmd.typeId)
+                : this.invoiceTypeRepository.findOneOrGetDefault(cmd.type);
 
         return {
             id: cmd.id,
             date: cmd.date || PersianDate.current(),
+            typeId: type ? type.id : null,
             number: this.getNumber(cmd.number, invoice),
             description: cmd.description,
             title: cmd.title,

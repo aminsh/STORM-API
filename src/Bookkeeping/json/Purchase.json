@@ -1,5 +1,6 @@
 {
   "title": "الگوی صدور سند اتوماتیک برای فاکتور خرید",
+  "model": "Purchase",
   "fields": [
     {
       "key": "number",
@@ -46,15 +47,24 @@
     {
       "key": "vendor",
       "display": "تفصیل فروشنده",
-      "value": "6001 - فروشنده نمونه"
+      "value": "6001 - فروشنده نمونه",
+      "type": "DetailAccount"
     },
     {
       "type": "Array",
       "key": "products",
       "display": "کالاها",
       "fields": [
-        {"type": "String", "key": "id", "display": "تفصیل کالا"},
-        {"type": "Number", "key": "amount", "display": "مبلغ (مقدار * مبلغ واحد)"}
+        {
+          "type": "String",
+          "key": "id",
+          "display": "تفصیل کالا"
+        },
+        {
+          "type": "Number",
+          "key": "amount",
+          "display": "مبلغ (مقدار * مبلغ واحد)"
+        }
       ]
     },
     {
@@ -62,8 +72,16 @@
       "key": "productGroupByStock",
       "display": "کالاها به تفکیک انبار",
       "fields": [
-        {"type": "String", "key": "id", "display": "تفصیل انبار"},
-        {"type": "Number", "key": "amount", "display": "مبلغ (مقدار * مبلغ واحد)"}
+        {
+          "type": "String",
+          "key": "id",
+          "display": "تفصیل انبار"
+        },
+        {
+          "type": "Number",
+          "key": "amount",
+          "display": "مبلغ (مقدار * مبلغ واحد)"
+        }
       ]
     }
   ],

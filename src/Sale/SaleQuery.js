@@ -37,11 +37,13 @@ export class SaleQuery extends BaseQuery {
                     'invoices.*',
                     knex.raw('"person"."title" as "detailAccountDisplay"'),
                     knex.raw('"marketer"."title" as "marketerDisplay"'),
-                    knex.raw(`(${outputStatusQuery('invoices')}) as delivered`)
+                    knex.raw(`(${outputStatusQuery('invoices')}) as delivered`),
+                    knex.raw('"invoice_types"."title" as "typeDisplay"'),
                 )
                 .from('invoices')
                 .leftJoin('detailAccounts as person', 'invoices.detailAccountId', 'person.id')
                 .leftJoin('detailAccounts as marketer', 'invoices.marketerId', 'marketer.id')
+                .leftJoin('invoice_types', 'invoices.typeId', 'invoice_types.id')
                 .where('invoices.id', id)
                 .modify(modify, branchId, userId, canView, 'invoices')
                 .first()
@@ -51,7 +53,8 @@ export class SaleQuery extends BaseQuery {
                 .select('invoiceLines.*',
                     knex.raw('CAST("invoiceLines"."unitPrice" AS FLOAT)'),
                     knex.raw('scales.title as scale'),
-                    knex.raw('stocks.title as "stockDisplay"'))
+                    knex.raw('stocks.title as "stockDisplay"')
+                )
                 .from('invoiceLines')
                 .leftJoin('products', 'invoiceLines.productId', 'products.id')
                 .leftJoin('scales', 'products.scaleId', 'scales.id')
@@ -136,6 +139,8 @@ export class SaleQuery extends BaseQuery {
                     'journalId',
                     'marketerId',
                     'marketerDisplay',
+                    'typeId',
+                    'typeDisplay',
                     knex.raw(`sum(discount) as discount`),
                     knex.raw(`"sum"("totalPrice") + ${sumChargesQuery} - sum(DISTINCT coalesce(discount,0)) as "sumTotalPrice" `),
                     knex.raw(`("sum"("totalPrice") + ${sumChargesQuery}) - sum(DISTINCT coalesce(discount,0)) -
@@ -149,13 +154,15 @@ export class SaleQuery extends BaseQuery {
                             knex.raw('"person"."title" as "detailAccountDisplay"'),
                             knex.raw(`number || ' - ' || date || ' - ' || "person".title as display`),
                             knex.raw('"marketer"."title" as "marketerDisplay"'),
+                            knex.raw('"invoice_types"."title" as "typeDisplay"'),
                             knex.raw(`("invoiceLines"."unitPrice" * "invoiceLines".quantity - "invoiceLines".discount + "invoiceLines".vat + "invoiceLines".tax) as "totalPrice"`))
                             .from('invoices')
                             .leftJoin('invoiceLines', 'invoices.id', 'invoiceLines.invoiceId')
                             .leftJoin('detailAccounts as person', 'invoices.detailAccountId', 'person.id')
                             .leftJoin('detailAccounts as marketer', 'invoices.marketerId', 'marketer.id')
+                            .leftJoin('invoice_types', 'invoices.typeId', 'invoice_types.id')
                             .modify(modify, branchId, userId, canView, 'invoices')
-                            .andWhere('invoiceType', 'sale')
+                            .andWhere('invoices.invoiceType', 'sale')
                             .as('base');
                     }).as("group")
                     .groupBy(
@@ -171,7 +178,9 @@ export class SaleQuery extends BaseQuery {
                         'title',
                         'journalId',
                         'marketerId',
-                        'marketerDisplay')
+                        'marketerDisplay',
+                        'typeId',
+                        'typeDisplay')
                     .orderBy('number', 'desc')
 
             });
@@ -396,6 +405,7 @@ export class SaleQuery extends BaseQuery {
             customerDisplay: entity.detailAccountDisplay,
             status: entity.invoiceStatus,
             statusDisplay: enums.InvoiceStatus().getDisplay(entity.invoiceStatus),
+            type: { id: entity.typeId, title: entity.typeDisplay },
             invoiceLines: entity.invoiceLines,
             sumTotalPrice: entity.sumTotalPrice,
             sumPaidAmount: entity.sumPaidAmount,

@@ -1,6 +1,6 @@
 import toResult from "asyncawait/await";
-import {BaseRepository} from "../Infrastructure/BaseRepository";
-import {injectable} from "inversify";
+import { BaseRepository } from "../Infrastructure/BaseRepository";
+import { injectable } from "inversify";
 
 @injectable()
 export class InventoryIOTypeRepository extends BaseRepository {
@@ -16,17 +16,17 @@ export class InventoryIOTypeRepository extends BaseRepository {
         return toResult(
             this.knex.select('id')
                 .from('inventories')
-                .where({ioType: id})
+                .where({ ioType: id })
                 .first()
         );
     }
 
-    isReadOnly(id){
+    isReadOnly(id) {
         return toResult(
             this.knex.select('id')
                 .from(this.tableName)
-                .where({id})
-                .whereNull('branchId')
+                .where({ id })
+                .whereNotNull('key')
                 .first()
         );
     }

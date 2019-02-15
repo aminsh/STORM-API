@@ -98,17 +98,6 @@ export function register(container) {
     container.bind("SaleMapper").to(SaleMapper);
     container.bind("PurchaseMapper").to(PurchaseMapper);
 
-    container.bind("Factory<Mapper>").toFactory(context => {
-        return key => {
-
-            if (key === 'sale')
-                return context.container.get("SaleMapper");
-
-            if(key === 'purchase')
-                return context.container.get("PurchaseMapper");
-        };
-    });
-
     container.bind("ProductEventListener").to(ProductEventListener);
     container.bind("StockEventListener").to(StockEventListener);
 }
