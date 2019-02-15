@@ -366,14 +366,14 @@ enums.ProductOutputCreationMethod = function () {
     ]);
 };
 
-enums.JournalGenerationTemplateSourceType = function () {
+enums.JournalGenerationTemplateModel = function () {
     return new Enum([
-        {key: 'sale', display: 'فاکتور فروش'},
-        {key: 'purchase', display: 'فاکتور خرید'},
-        {key: 'returnSale', display: 'فاکتور برگشت از فروش'},
-        {key: 'inventoryOutputSale', display: 'حواله فروش'},
-        {key: 'inventoryInputReturnSale', display: 'رسید برگشت از فروش'},
-        {key: 'returnPurchase', display: 'فاکتور برگشت از خرید'}
+        {key: 'Sale', display: 'فاکتور فروش'},
+        {key: 'Purchase', display: 'فاکتور خرید'},
+        {key: 'ReturnSale', display: 'فاکتور برگشت از فروش'},
+        {key: 'InventoryOutputSale', display: 'حواله فروش'},
+        {key: 'InventoryInputReturnSale', display: 'رسید برگشت از فروش'},
+        {key: 'ReturnPurchase', display: 'فاکتور برگشت از خرید'}
     ]);
 };
 

@@ -35,19 +35,40 @@ export class JournalGenerationTemplateService {
         return journal;
     }
 
-    createJournalTemplate(sourceType, cmd) {
+    create(cmd) {
         let entity = {
+                model: cmd.model,
                 title: cmd.title,
-                data: cmd.data
-            },
-            isExits = this.journalGenerationTemplateRepository.findBySourceType(sourceType);
+                data: JSON.stringify(cmd.data),
+                //fields: cmd.fields
+            };
 
-        if (isExits)
-            this.journalGenerationTemplateRepository.update(sourceType, entity);
-        else
-            this.journalGenerationTemplateRepository.create(sourceType, entity);
+        this.journalGenerationTemplateRepository.create(entity);
 
         return entity.id;
+    }
+
+    update(id, cmd) {
+        let entity = this.journalGenerationTemplateRepository.findById(id);
+
+        if(!entity)
+            throw new NotFoundException();
+
+        entity.model = cmd.model;
+        entity.fields = cmd.fields;
+        entity.title = cmd.title;
+        entity.data = cmd.data;
+
+        this.journalGenerationTemplateRepository.update(id, entity);
+    }
+
+    remove(id) {
+        let entity = this.journalGenerationTemplateRepository.findById(id);
+
+        if(!entity)
+            throw new NotFoundException();
+
+        this.journalGenerationTemplateRepository.remove(id);
     }
 
     createCustomTemplate(sourceType, cmd) {

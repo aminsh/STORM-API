@@ -7,30 +7,26 @@ export class JournalGenerationTemplateRepository extends BaseRepository {
 
     tableName = 'journalGenerationTemplates';
 
-    findBySourceType(sourceType) {
+    findById(id) {
         return toResult(this.knex.select('*')
             .from(this.tableName)
             .modify(this.modify, this.branchId)
-            .where('sourceType', sourceType)
+            .where('id', id)
             .first());
     }
 
-    create(sourceType, entity) {
+    create(entity) {
         super.create(entity);
-
-        entity.sourceType = sourceType;
 
         toResult(this.knex(this.tableName).insert(entity));
 
         return entity.id;
     }
 
-    update(sourceType, entity) {
-        entity.sourceType = sourceType;
-
+    update(id, entity) {
         toResult(this.knex(this.tableName)
             .modify(this.modify, this.branchId)
-            .where('sourceType', sourceType).update(entity));
+            .where('id', id).update(entity));
     }
 
     remove(id) {

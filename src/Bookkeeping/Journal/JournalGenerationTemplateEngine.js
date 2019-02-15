@@ -69,12 +69,10 @@ export class JournalGenerationTemplateEngine {
     }
 
     loopHandler(item){
-
         return `<% ${item.by}.forEach(function(${item.as}){%> ${this.itemHandler(item.statement)} <%}) %>`
     }
 
     ifHandler(item) {
-
         let temp = `<% if(${item.condition}) { %> ${this.itemHandler(item.then)}  `;
 
         if(item.else) {
