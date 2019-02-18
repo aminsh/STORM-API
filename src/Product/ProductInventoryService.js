@@ -16,7 +16,7 @@ export class ProductInventoryService {
     /**@type{SettingsRepository}*/ settingsRepository = undefined;
 
     change(productId, stockId, quantity) {
-        reutrn {success: true};
+        return {success: true};
         
         const item = this.productInventoryTransactionalRepository.findOneByProductAndStock(productId, stockId),
             successResult = {success: true};
