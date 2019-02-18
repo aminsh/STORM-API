@@ -16,7 +16,8 @@ export class ProductInventoryService {
     /**@type{SettingsRepository}*/ settingsRepository = undefined;
 
     change(productId, stockId, quantity) {
-
+        return {success: true};
+        
         const item = this.productInventoryTransactionalRepository.findOneByProductAndStock(productId, stockId),
             successResult = {success: true};
 
@@ -35,6 +36,8 @@ export class ProductInventoryService {
     }
 
     set(productId, stockId, quantity) {
+        
+        return;
 
         const item = this.productInventoryTransactionalRepository.findOneByProductAndStock(productId, stockId);
 
@@ -82,14 +85,14 @@ export class ProductInventoryService {
     }
 
     start() {
-        this.productInventoryTransactionalRepository.start();
+        //this.productInventoryTransactionalRepository.start();
     }
 
     commitChanges() {
-        this.productInventoryTransactionalRepository.commit();
+        //this.productInventoryTransactionalRepository.commit();
     }
 
     revertChanges(e) {
-        this.productInventoryTransactionalRepository.rollback(e);
+        //this.productInventoryTransactionalRepository.rollback(e);
     }
 }
