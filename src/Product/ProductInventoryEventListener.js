@@ -11,7 +11,7 @@ export class ProductInventoryEventListener {
     @EventHandler("ProductInventoryChanged")
     onProductInventoryChanged(productId, stockId, quantity) {
 
-        this.productInventoryService.start();
+        /*this.productInventoryService.start();
 
         try {
             this.productInventoryService.set(...arguments);
@@ -23,7 +23,7 @@ export class ProductInventoryEventListener {
             this.productInventoryService.revertChanges();
 
             throw new Error(e);
-        }
+        }*/
     }
 
 }
