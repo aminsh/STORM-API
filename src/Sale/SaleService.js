@@ -291,8 +291,8 @@ export class SaleService {
         if (errors.length > 0)
             throw new ValidationException(errors);
 
-        if (cmd.status && cmd.status !== 'draft')
-            this._updateInventoryOnCreate(entity);
+        /*if (cmd.status && cmd.status !== 'draft')
+            this._updateInventoryOnCreate(entity);*/
 
         entity.invoiceType = 'sale';
         entity.invoiceStatus = !cmd.status || cmd.status === 'draft' ? 'draft' : 'confirmed';
@@ -318,7 +318,7 @@ export class SaleService {
         if (errors.length > 0)
             throw new ValidationException(errors);
 
-        this._updateInventoryOnCreate(entity);
+        /*this._updateInventoryOnCreate(entity);*/
 
         let data = {
             invoiceStatus: 'confirmed'
@@ -351,10 +351,10 @@ export class SaleService {
 
         const invoiceChangedToConfirm = invoice.invoiceStatus === 'draft' && entity.invoiceStatus === 'confirmed';
 
-        if (invoiceChangedToConfirm)
+        /*if (invoiceChangedToConfirm)
             this._updateInventoryOnCreate(entity);
         else
-            this._updateProductInventoryOnUpdate(invoice, entity);
+            this._updateProductInventoryOnUpdate(invoice, entity);*/
 
         this.invoiceRepository.updateBatch(id, this._mapToData(entity));
 
