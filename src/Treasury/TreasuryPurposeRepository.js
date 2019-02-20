@@ -93,7 +93,7 @@ export class TreasuryPurposeRepository extends BaseRepository {
     removeByReferenceId(id) {
         let trx = this.transaction;
         try {
-            return toResult(trx('treasuryPurpose').where('referenceId', id).del());
+            toResult(trx('treasuryPurpose').where('referenceId', id).del());
 
             trx.commit();
         }
@@ -106,7 +106,7 @@ export class TreasuryPurposeRepository extends BaseRepository {
     removeByTreasuryId(id) {
         let trx = this.transaction;
         try {
-            return toResult(trx('treasuryPurpose').where('treasuryId', id).del());
+            toResult(trx('treasuryPurpose').where('treasuryId', id).del());
 
             trx.commit();
         }
