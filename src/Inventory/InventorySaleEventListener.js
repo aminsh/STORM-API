@@ -25,21 +25,25 @@ export class InventorySaleEventListener {
     @inject("SettingsRepository")
     /**@type {SettingsRepository}*/ settingsRepository = undefined;
 
+    @inject("InventoryIOTypeRepository")
+    /**@type{InventoryIOTypeRepository}*/ inventoryIOTypeRepository = undefined;
+
     @inject("State") state = undefined;
 
     @EventHandler("SaleCreated")
     onSaleCreated(saleId) {
-        const settings = this.settingsRepository.get();
+        const settings = this.settingsRepository.get(),
+            ioType = this.inventoryIOTypeRepository.findByKey('outputSale');
 
         if (!settings.canSaleGenerateAutomaticOutput)
             return;
 
         const sale = this.invoiceRepository.findById(saleId);
 
-        if(sale.invoiceLines.asEnumerable().any(item => !item.stockId))
+        if (sale.invoiceLines.asEnumerable().any(item => !item.stockId))
             return;
 
-        if(sale.invoiceLines.asEnumerable().all(item => !this.productRepository.isGood(item.productId)))
+        if (sale.invoiceLines.asEnumerable().all(item => !this.productRepository.isGood(item.productId)))
             return;
 
         let lines = sale.invoiceLines,
@@ -50,7 +54,7 @@ export class InventorySaleEventListener {
                 (stockId, lines) => ( {
                     stockId,
                     invoiceId: saleId,
-                    ioType: 'outputSale',
+                    ioType: ioType.id,
                     lines: lines.toArray()
                 } ))
                 .toArray();
