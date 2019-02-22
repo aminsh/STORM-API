@@ -16,7 +16,7 @@ export class InventoryAccountingInputEventListener {
     @EventHandler("InventoryInputCreated")
     onInputCreated(id) {
 
-        this.inventoryAccountingRepository.update(id, {priceStatus: 'draft'});
+       /* this.inventoryAccountingRepository.update(id, {priceStatus: 'draft'});
 
         const input = this.inventoryAccountingRepository.findById(id);
 
@@ -38,13 +38,13 @@ export class InventoryAccountingInputEventListener {
         }
 
         if (input.ioType === 'inputPurchase' && input.invoiceId)
-            this._updatePrice(input);
+            this._updatePrice(input);*/
     }
 
     @EventHandler("InventoryInputChanged")
     onInputChanged(oldInput, id) {
 
-        const input = this.inventoryAccountingRepository.findById(id);
+        /*const input = this.inventoryAccountingRepository.findById(id);
 
         if (!input.invoiceId)
             return;
@@ -52,13 +52,13 @@ export class InventoryAccountingInputEventListener {
         if (input.ioType !== 'inputPurchase')
             return;
 
-        this._updatePrice(input);
+        this._updatePrice(input);*/
     }
 
     @EventHandler("InventoryOutputCreated")
     onInventoryOutputCreated(output) {
 
-        this.inventoryAccountingRepository.update(output.id, {priceStatus: 'draft'});
+        /*this.inventoryAccountingRepository.update(output.id, {priceStatus: 'draft'});
 
         const lines = output.inventoryLines
             .map(line => ({
@@ -72,7 +72,7 @@ export class InventoryAccountingInputEventListener {
             this.inventoryAccountingPricingService.outputSetPrice(output.id, lines.map(item => ({
                 id: item.id,
                 unitPrice: item.price
-            })));
+            })));*/
     }
 
     @EventHandler("InventoryInputPriceChanged")
