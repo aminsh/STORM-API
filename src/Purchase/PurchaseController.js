@@ -1,5 +1,5 @@
-import {Controller, Delete, Get, Post, Put} from "../Infrastructure/expressUtlis";
-import {inject} from "inversify";
+import { Controller, Delete, Get, Post, Put } from "../Infrastructure/expressUtlis";
+import { inject } from "inversify";
 
 @Controller("/v1/purchases", "ShouldHaveBranch")
 class PurchaseController {
@@ -35,6 +35,9 @@ class PurchaseController {
 
         const id = this.purchaseService.create(req.body);
 
+        if (req.body.status === 'confirm')
+            this.purchaseService.confirm(id);
+
         return this.purchaseQuery.getById(id);
     }
 
@@ -60,10 +63,13 @@ class PurchaseController {
 
     @Put("/:id")
     update(req) {
-
-        const id = req.params.id;
+        const id = req.params.id,
+            before = this.purchaseQuery.getById(id);
 
         this.purchaseService.update(id, req.body);
+
+        if (req.body.status === 'confirmed' && before.status === 'draft')
+            this.purchaseService.confirm(id);
 
         return this.purchaseQuery.getById(id);
     }

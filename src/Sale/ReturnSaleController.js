@@ -18,7 +18,6 @@ class ReturnSaleController {
 
     @Get("/:id")
     getById(req) {
-
         return this.returnSaleQuery.getById(req.params.id);
     }
 
@@ -40,6 +39,9 @@ class ReturnSaleController {
     create(req) {
 
         const id = this.returnSaleService.create(req.body);
+
+        if(req.body.status === 'confirm')
+            this.returnSaleService.confirm(id);
 
         return this.returnSaleQuery.getById(id);
     }
@@ -66,17 +68,22 @@ class ReturnSaleController {
 
     @Put("/:id")
     update(req) {
+        const id = req.params.id,
+            before = this.returnSaleQuery.getById(id);
 
-        const id = req.params.id;
+        if(!before)
+            throw new NotFoundException();
 
         this.returnSaleService.update(id, req.body);
+
+        if(req.body.status === 'confirm' && before.status === 'draft')
+            this.returnSaleService.confirm(id);
 
         return this.returnSaleQuery.getById(id);
     }
 
     @Delete("/:id")
     remove(req) {
-
         this.returnSaleService.remove(req.params.id);
     }
 }
