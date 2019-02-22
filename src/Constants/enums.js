@@ -450,7 +450,7 @@ enums.Features = function () {
         {
             key: 'inventory',
             display: 'انبار',
-            value: ['inventories', 'stocks', 'inventory-io-types', 'products', 'product-categories', 'scales', 'inventory-accounting']
+            value: ['inventories', 'stocks', 'inventory-io-types', 'products', 'product-categories', 'scales', 'inventory-accounting', 'inventory-pricing']
         },
         {
             key: 'journal',

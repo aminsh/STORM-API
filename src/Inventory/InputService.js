@@ -18,7 +18,10 @@ export class InputService {
     _mapToEntity(cmd) {
         return {
             id: cmd.id,
+            time: cmd.id ? undefined : (cmd.time || new Date),
             stockId: cmd.stockId,
+            sourceStockId: cmd.sourceStockId,
+            delivererId: cmd.delivererId,
             invoiceId: cmd.invoiceId,
             date: cmd.date || Utility.PersianDate.current(),
             description: cmd.description,
@@ -30,8 +33,11 @@ export class InputService {
                 .select(line => ({
                     id: cmd.id,
                     productId: line.productId,
+                    baseInventoryId: line.baseInventoryId,
                     quantity: line.quantity,
-                    unitPrice: 0
+                    unitPrice: line.unitPrice || 0,
+                    vat: line.vat,
+                    tax: line.tax
                 }))
                 .toArray()
         }

@@ -1,6 +1,6 @@
 import toResult from "asyncawait/await";
-import {BaseRepository} from "../Infrastructure/BaseRepository";
-import {injectable} from "inversify";
+import { BaseRepository } from "../Infrastructure/BaseRepository";
+import { injectable } from "inversify";
 
 @injectable()
 export class InventoryRepository extends BaseRepository {
@@ -15,6 +15,15 @@ export class InventoryRepository extends BaseRepository {
         inventory.inventoryLines = inventoryLines;
 
         return inventory;
+    }
+
+    findOneLine(condition) {
+        condition = (condition || {});
+        condition.branchId = this.branchId;
+
+        return toResult(
+          this.knex.select('*').from('inventoryLines').where(condition).first()
+        );
     }
 
     findFirst(stockId, fiscalPeriodId, expectId) {
@@ -44,7 +53,7 @@ export class InventoryRepository extends BaseRepository {
                         .leftJoin('inventoryLines', 'inventories.id', 'inventoryLines.inventoryId')
                         .where('inventories.branchId', branchId)
                         .where('fiscalPeriodId', state.fiscalPeriodId)
-                        .whereBetween('date', [filter.minDate, filter.maxDate])
+                        .whereBetween('date', [ filter.minDate, filter.maxDate ])
                         .as('base');
                 })
                 .groupBy('productId');
@@ -57,6 +66,63 @@ export class InventoryRepository extends BaseRepository {
         return result.map(item => item.productId);
     }
 
+    findAllInventories(condition, stockIds, dateRange) {
+        condition = Object.assign({}, condition, {
+            branchId: this.branchId,
+            fiscalPeriodId: this.state.fiscalPeriodId
+        });
+
+        let query = this.knex.select('*').from('inventories').where(condition);
+
+        if (dateRange && dateRange.length > 0)
+            query.whereBetween('date', dateRange);
+
+        return toResult(query);
+    }
+
+    findInventoriesAndLinesFlatten(dateRange, exceptInventories) {
+        const self = {
+            tableName: 'inventories',
+            inventoryLineTableName: 'inventoryLines',
+            branchId: this.branchId,
+            fiscalPeriodId: this.state.fiscalPeriodId
+        },
+            knex = this.knex;
+
+        const query = this.knex.select('*').from(function () {
+            this.select(
+                `${self.inventoryLineTableName}.productId`,
+                `${self.inventoryLineTableName}.quantity`,
+                `${self.inventoryLineTableName}.unitPrice`,
+                `${self.inventoryLineTableName}.baseInventoryId`,
+                knex.raw(`"${self.inventoryLineTableName}".id as "lineId"`),
+                `${self.tableName}.id`,
+                `${self.tableName}.ioType`,
+                `${self.tableName}.stockId`,
+                knex.raw(`${self.tableName}."inventoryType" as type`)
+            )
+                .from(self.tableName)
+                .leftJoin(self.inventoryLineTableName, `${self.inventoryLineTableName}.inventoryId`, `${self.tableName}.id`)
+                .where(`${self.tableName}.branchId`, self.branchId)
+                .where(`${self.tableName}.fiscalPeriodId`, self.fiscalPeriodId)
+                .whereBetween(`${self.tableName}.date`, dateRange)
+                .whereNotIn(`${self.tableName}.id`, exceptInventories)
+                .orderByRaw(`${self.tableName}.date, (${self.tableName}.time AT time zone 'Iran')::time, CASE WHEN ${self.tableName}."inventoryType" = 'input' THEN 1 ELSE 2 END, ${self.tableName}.number`)
+                .as('base')
+        });
+
+        return toResult(query);
+    }
+
+
+    findAllLinesByInventoryIds(inventoryIds) {
+        return toResult(
+            this.knex.select('*').from('inventoryLines')
+                .where('branchId', this.branchId)
+                .whereIn('inventoryId', inventoryIds)
+        );
+    }
+
     findByInvoiceId(invoiceId, inventoryType) {
         let query = this.knex.select('id').from('inventories')
             .modify(this.modify, this.branchId)
@@ -67,7 +133,7 @@ export class InventoryRepository extends BaseRepository {
 
         let ids = toResult(query);
 
-        if (!(ids && ids.length > 0))
+        if (!( ids && ids.length > 0 ))
             return [];
 
         return ids.asEnumerable()
@@ -93,7 +159,7 @@ export class InventoryRepository extends BaseRepository {
                     .where('fiscalPeriodId', fiscalPeriodId)
                     .where('productId', productId);
 
-                if(stockId)
+                if (stockId)
                     q.where('stockId', stockId);
 
                 q.as('base');
@@ -223,6 +289,12 @@ export class InventoryRepository extends BaseRepository {
 
     }
 
+    updateLine(lineId, data) {
+        toResult(
+            this.knex('inventoryLines').where({id: lineId}).update(data)
+        );
+    }
+
     updateLines(lines) {
 
         const trx = this._createdByUnitOfWork ? this.knex : this.transaction;
@@ -246,8 +318,8 @@ export class InventoryRepository extends BaseRepository {
     createInventory(entity, knex) {
         super.create(entity);
 
-       /* entity.fixedAmount = false;
-        entity.fixedQuantity = false;*/
+        /* entity.fixedAmount = false;
+         entity.fixedQuantity = false;*/
 
         toResult(knex('inventories').insert(entity));
 
@@ -267,7 +339,6 @@ export class InventoryRepository extends BaseRepository {
         lines.forEach(line => {
             super.create(line);
             line.inventoryId = id;
-            line.unitPrice = 0;
         });
 
         toResult(knex('inventoryLines').insert(lines));
