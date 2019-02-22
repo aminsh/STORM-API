@@ -8,6 +8,6 @@ export function register(container) {
     container.bind("JournalSaleGenerationService").to(JournalSaleGenerationService);
     container.bind("JournalSaleEventListener").to(JournalSaleEventListener);
 
-    container.bind("JournalPurchaseGenerationService").to(JournalPurchaseGenerationService);
-    container.bind("JournalPurchaseEventListener").to(JournalPurchaseEventListener);
+    /*container.bind("JournalPurchaseGenerationService").to(JournalPurchaseGenerationService);
+    container.bind("JournalPurchaseEventListener").to(JournalPurchaseEventListener);*/
 }

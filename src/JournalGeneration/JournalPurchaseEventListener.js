@@ -13,9 +13,6 @@ export class JournalPurchaseEventListener {
     /**@type {JournalService}*/
     @inject("JournalService") journalService = undefined;
 
-    @inject("JournalPurchaseGenerationService")
-    /**@type{JournalPurchaseGenerationService}*/ journalPurchaseGenerationService = undefined;
-
     @EventHandler("PurchaseCreated")
     onPurchaseCreated(invoiceId) {
         let invoice = this.invoiceRepository.findById(invoiceId),
