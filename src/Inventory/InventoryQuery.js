@@ -73,11 +73,15 @@ export class InventoryQuery extends BaseQuery {
                     knex.raw('invoices.number as invoice_number'),
                     knex.raw('invoices.date as invoice_date'),
                     knex.raw('invoices."invoiceType" as invoice_type'),
+                    knex.raw('deliverer.title as deliverer_display'),
+                    knex.raw('receiver.title as receiver_display')
                 )
                     .from('inventories')
                     .leftJoin('inventoryIOTypes', 'inventoryIOTypes.id', 'inventories.ioType')
                     .leftJoin('stocks', 'stocks.id', 'inventories.stockId')
                     .leftJoin('invoices', 'invoices.id', 'inventories.invoiceId')
+                    .leftJoin('detailAccounts as deliverer', 'inventories.delivererId', 'deliverer.id')
+                    .leftJoin('detailAccounts as receiver', 'inventories.receiverId', 'receiver.id')
                     .modify(modify, branchId, userId, canView, 'inventories')
                     .where('fiscalPeriodId', fiscalPeriodId)
                     .as('base');
@@ -187,11 +191,15 @@ export class InventoryQuery extends BaseQuery {
                 .select(
                     'inventories.*',
                     knex.raw('stocks.title as "stockDisplay"'),
-                    knex.raw('"inventoryIOTypes".title as "ioTypeDisplay"')
+                    knex.raw('"inventoryIOTypes".title as "ioTypeDisplay"'),
+                    knex.raw('deliverer.title as deliverer_display'),
+                    knex.raw('receiver.title as receiver_display')
                 )
                 .from('inventories')
                 .leftJoin('stocks', 'inventories.stockId', 'stocks.id')
                 .leftJoin('inventoryIOTypes', 'inventoryIOTypes.id', 'inventories.ioType')
+                .leftJoin('detailAccounts as deliverer', 'inventories.delivererId', 'deliverer.id')
+                .leftJoin('detailAccounts as receiver', 'inventories.receiverId', 'receiver.id')
                 .modify(modify, branchId, userId, canView, 'inventories')
                 .where('inventories.id', id)
                 .first()),
@@ -293,6 +301,7 @@ export class InventoryQuery extends BaseQuery {
 
         return {
             createdAt: item.createdAt,
+            time: item.time,
             id: item.id,
             number: item.number,
             date: item.date,
@@ -310,6 +319,14 @@ export class InventoryQuery extends BaseQuery {
             inputId: item.inputId,
             outputId: item.outputId,
             invoiceId: item.invoiceId,
+            deliverer: {
+                id: item.delivererId,
+                title: item.deliverer_display
+            },
+            receiver: {
+                id: item.receiverId,
+                title: item.receiver_display
+            },
             invoice: item.invoiceId
                 ? { number: item[ "invoice_number" ], date: item[ "invoice_date" ], type: item[ "invoice_type" ] }
                 : undefined

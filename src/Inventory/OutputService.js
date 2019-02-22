@@ -43,9 +43,11 @@ export class OutputService {
         const number = this.inventoryRepository.outputMaxNumber(this.state.fiscalPeriodId, cmd.stockId, cmd.ioType).max || 0;
 
         let output = {
+            time: cmd.time || new Date,
             number: number + 1,
             date: cmd.date || Utility.PersianDate.current(),
             stockId: cmd.stockId,
+            destinationStockId: cmd.destinationStockId,
             invoiceId: cmd.invoiceId,
             inventoryType: 'output',
             quantityStatus: 'draft',

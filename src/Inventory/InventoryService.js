@@ -1,4 +1,4 @@
-import {inject, injectable} from "inversify";
+import { inject, injectable } from "inversify";
 
 @injectable()
 export class InventoryService {
@@ -52,7 +52,7 @@ export class InventoryService {
         if (dto.sourceStockId === dto.destinationStockId)
             errors.push('انبار مبدا و مقصد نباید یکی باشد');
 
-        if (!(dto.lines && dto.lines.length > 0))
+        if (!( dto.lines && dto.lines.length > 0 ))
             errors.push('ردیف های کالا وجود ندارد');
 
         if (errors.length > 0)
@@ -63,20 +63,25 @@ export class InventoryService {
         if (errors.length > 0)
             throw new ValidationException(errors);
 
+        let time = new Date;
         let output = {
             stockId: dto.sourceStockId,
-            ioType: 'outputStockToStock',
+            destinationStockId: dto.destinationStockId,
+            ioType: this.inventoryIOTypeRepository.findByKey('outputStockToStock').id,
             date: dto.date,
-            lines: dto.lines
+            lines: dto.lines,
+            time
         };
 
-        this.outputService.create(output);
+        const outputId = this.outputService.create(output);
 
         let input = {
             stockId: dto.destinationStockId,
-            ioType: 'inputStockToStock',
+            sourceStockId: dto.sourceStockId,
+            ioType: this.inventoryIOTypeRepository.findByKey('inputStockToStock').id,
             date: dto.date,
-            lines: dto.lines
+            lines: dto.lines.map(item => Object.assign({}, item, { baseInventoryId: outputId })),
+            time: new Date(time.getTime() + 60000)
         };
 
         this.inputService.create(input);
@@ -89,7 +94,7 @@ export class InventoryService {
         if (!line.productId)
             errors.push('کالا وجود ندارد');
 
-        if (!(line.quantity && line.quantity !== 0))
+        if (!( line.quantity && line.quantity !== 0 ))
             errors.push('مقدار کالا وجود ندارد');
 
         return errors;
@@ -103,7 +108,7 @@ export class InventoryService {
             const id = this.inputService.create({
                 stockId: DTO.stockId,
                 ioType: 'inputFirst',
-                inventoryLines: [{productId, quantity: DTO.quantity}]
+                inventoryLines: [ { productId, quantity: DTO.quantity } ]
             });
 
             Utility.delay(500);
@@ -121,7 +126,7 @@ export class InventoryService {
             if (line)
                 line.quantity = DTO.quantity;
             else
-                inputFirst.inventoryLines.push({productId, quantity: DTO.quantity});
+                inputFirst.inventoryLines.push({ productId, quantity: DTO.quantity });
 
             this.inputService.update(inputFirst.id, inputFirst);
 
@@ -132,7 +137,7 @@ export class InventoryService {
             inputFirst.id,
             inputFirst.inventoryLines
                 .filter(item => item.productId === productId)
-                .map(item => Object.assign({}, item, {unitPrice: DTO.unitPrice})),
+                .map(item => Object.assign({}, item, { unitPrice: DTO.unitPrice })),
             true);
     }
 
@@ -149,12 +154,12 @@ export class InventoryService {
             linesByStock = lines.asEnumerable().groupBy(
                 line => line.stockId,
                 line => line,
-                (stockId, lines) => ({
+                (stockId, lines) => ( {
                     stockId,
                     invoiceId: saleId,
                     ioType: 'outputSale',
                     lines: lines.toArray()
-                }))
+                } ))
                 .toArray();
 
         linesByStock.forEach(item => {
