@@ -12,6 +12,12 @@ export class InventoryIOTypeRepository extends BaseRepository {
             .where('id', id).first());
     }
 
+    findByKey(key) {
+        return toResult(
+            this.knex.select('*').from(this.tableName).where({ branchId: this.branchId, key }).first()
+        );
+    }
+
     isUsed(id) {
         return toResult(
             this.knex.select('id')
