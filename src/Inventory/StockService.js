@@ -30,7 +30,8 @@ export class StockService {
         let entity = {
             title: cmd.title,
             address: cmd.address,
-            accountId: cmd.accountId
+            accountId: cmd.accountId,
+            subsidiaryLedgerAccountId: cmd.subsidiaryLedgerAccountId
         };
 
         this.stockRepository.create(entity);
@@ -55,7 +56,8 @@ export class StockService {
         let entity = {
             title: cmd.title,
             address: cmd.address,
-            accountId: cmd.accountId
+            accountId: cmd.accountId,
+            subsidiaryLedgerAccountId: cmd.subsidiaryLedgerAccountId
         };
 
         this.stockRepository.update(id, entity);
