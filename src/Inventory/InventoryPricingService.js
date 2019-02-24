@@ -2,6 +2,8 @@ import { injectable, inject } from "inversify";
 
 @injectable()
 export class InventoryPricingService {
+    @inject("State") state = undefined;
+
     @inject("InventoryRepository")
     /**@type {InventoryRepository}*/ inventoryRepository = undefined;
 
@@ -10,6 +12,9 @@ export class InventoryPricingService {
 
     @inject("InventoryPricingRepository")
     /**@type {InventoryPricingRepository}*/ inventoryPricingRepository = undefined;
+
+    @inject("FiscalPeriodRepository")
+        /**@type{FiscalPeriodRepository}*/ fiscalPeriodRepository = undefined;
 
     items = [];
     lastProducts = [];
@@ -26,9 +31,34 @@ export class InventoryPricingService {
         this.lastProducts.push({ lastPrice: lastProduct.price, lastQuantity: lastProduct.quantity, productId });
     }
 
+    checkDateRange(dto) {
+        if(dto.toDate < dto.fromDate)
+            throw new ValidationException(['تاریخ انتهای دوره نمی تواند کوچکتر از تاریخ ابتدا باشد']);
+
+        const last = this.inventoryPricingRepository.findLast();
+        const fiscalPeriod = this.fiscalPeriodRepository.findById(this.state.fiscalPeriodId);
+        const isInFiscalPeriodDateRange = date => date >= fiscalPeriod.minDate && date <= fiscalPeriod.maxDate;
+
+        if(!(isInFiscalPeriodDateRange(dto.fromDate) && isInFiscalPeriodDateRange(dto.toDate)))
+                throw new ValidationException(['تاریخ های ابتدا و انتها باید در دوره مالی جاری باشد']);
+
+        if(last) {
+            if(dto.fromDate < last.fromDate)
+                throw new ValidationException(['از تاریخ نمیتواند کوچکتر از آخرین تاریخ قیمت گذاری باشد']);
+        }
+        else  {
+
+
+            if(dto.fromDate !== fiscalPeriod.minDate)
+                throw new ValidationException(['تاریخ ابتدا باید معادل تاریخ ابتدای دوره مالی باشد']);
+        }
+    }
+
     /**@param {{fromDate:string, toDate:string}} dto*/
     calculate(dto) {
-        let inventories = this.inventoryRepository.findAllInventories({}, dto.stockIds, [ dto.fromDate, dto.toDate ]);
+        this.checkDateRange(dto);
+
+        let inventories = this.inventoryRepository.findAllInventories({}, [ dto.fromDate, dto.toDate ]);
 
         const inventoryLines = this.inventoryRepository.findAllLinesByInventoryIds(inventories
                 .filter(item => item.inventoryType === 'input')
@@ -40,7 +70,7 @@ export class InventoryPricingService {
             throw new ValidationException([ 'رسید های بدون قیمت وجود دارد ، ابتدا قیمت گذاری نمایید' ]);
 
         const lastPricing = ( this.inventoryPricingRepository.findLast() || {} ),
-            lastInventories = (this.inventoryPricingRepository.findLastInventories() || []),
+            lastInventories = ( this.inventoryPricingRepository.findLastInventories() || [] ),
             parameters = [
                 [ dto.fromDate, dto.toDate ],
                 lastInventories.map(item => item.inventoryId)
@@ -49,8 +79,8 @@ export class InventoryPricingService {
 
         this.items = items;
 
-        if(items.length === 0)
-            throw new ValidationException(['سندی برای قیمت گذاری وجود ندارد ']);
+        if (items.length === 0)
+            throw new ValidationException([ 'سندی برای قیمت گذاری وجود ندارد ' ]);
 
         this.lastProducts = lastPricing.products || [];
 
@@ -147,5 +177,24 @@ export class InventoryPricingService {
         });
 
         this.addOrUpdateLastProduct(productId, last);
+    }
+
+    remove(id) {
+        const entity = this.inventoryPricingRepository.findById(id);
+
+        if (!entity)
+            throw new NotFoundException();
+
+        const last = this.inventoryPricingRepository.findLast();
+
+        if (last.id !== id)
+            throw new ValidationException([ 'فقط آخرین قیمت گذاری را میتوانید حذف کنید' ]);
+
+        const inventories = this.inventoryRepository.findByIds(entity.inventories.map(item => item.inventoryId));
+
+        if(inventories.asEnumerable().any(item => item.journalId && item.priceEnteredAutomatically))
+            throw new ValidationException(['برای رسید یا حواله های قیمت گذاری شده ، سند حسابداری صادر شده . ابتدا سند ها را حذف کنید ']);
+
+        this.inventoryPricingRepository.remove(id);
     }
 }
