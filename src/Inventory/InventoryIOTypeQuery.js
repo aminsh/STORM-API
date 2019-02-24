@@ -10,15 +10,18 @@ export class InventoryIOTypeQuery extends BaseQuery {
     getAll(type, parameters) {
         let branchId = this.branchId,
             tableName = this.tableName,
+            knex = this.knex,
 
             query = this.knex.select().from(function () {
-                this.select()
+                this.select(
+                    `${tableName}.*`,
+                    knex.raw('"journalGenerationTemplates".title as journal_generation_template_title'))
                     .from(tableName)
-                    .where('branchId', branchId)
-                    .orWhereNull('branchId')
+                    .leftJoin('journalGenerationTemplates', `${tableName}.journalGenerationTemplateId`, 'journalGenerationTemplates.id')
+                    .where(`${tableName}.branchId`, branchId)
+                    .where('type', type)
                     .as('base');
-            })
-                .where('type', type);
+            });
 
 
         return toResult(Utility.kendoQueryResolve(query, parameters, this.view.bind(this)));
@@ -29,7 +32,8 @@ export class InventoryIOTypeQuery extends BaseQuery {
             id: entity.id,
             title: entity.title,
             readOnly: !!entity.key,
-            journalGenerationTemplateId: entity.journalGenerationTemplateId
+            journalGenerationTemplateId: entity.journalGenerationTemplateId,
+            journalGenerationTemplateTitle: entity[ 'journal_generation_template_title' ]
         }
     }
 }

@@ -67,7 +67,7 @@ export class InventoryIOTypeService {
             throw new NotFoundException();
 
         if (this.ioTypeRepository.isReadOnly(id))
-            throw new ValidationException([ 'نوع جاری قابل ویرایش نمیباشد' ]);
+            throw new ValidationException([ 'نوع جاری قابل حذف نمیباشد' ]);
 
         if (this.ioTypeRepository.isUsed(id))
             throw new ValidationException([ 'نوع جاری در اسناد انباری استفاده شده ، امکان حذف وجود ندارد' ]);
