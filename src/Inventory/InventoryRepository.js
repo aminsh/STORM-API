@@ -17,6 +17,14 @@ export class InventoryRepository extends BaseRepository {
         return inventory;
     }
 
+    findByIds(ids) {
+        return toResult(
+            this.knex.select('*').from('inventories')
+                .where({branchId: this.branchId})
+                .whereIn('id', ids)
+        );
+    }
+
     findOneLine(condition) {
         condition = (condition || {});
         condition.branchId = this.branchId;
@@ -66,7 +74,7 @@ export class InventoryRepository extends BaseRepository {
         return result.map(item => item.productId);
     }
 
-    findAllInventories(condition, stockIds, dateRange) {
+    findAllInventories(condition, dateRange) {
         condition = Object.assign({}, condition, {
             branchId: this.branchId,
             fiscalPeriodId: this.state.fiscalPeriodId
@@ -113,7 +121,6 @@ export class InventoryRepository extends BaseRepository {
 
         return toResult(query);
     }
-
 
     findAllLinesByInventoryIds(inventoryIds) {
         return toResult(
