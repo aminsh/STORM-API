@@ -15,6 +15,9 @@ export class InputService {
     @inject("InventoryControlTurnoverService")
     /**@type{InventoryControlTurnoverService}*/ inventoryControlTurnoverService = undefined;
 
+    @inject("InventoryPricingRepository")
+    /**@type {InventoryPricingRepository}*/ inventoryPricingRepository = undefined;
+
     _mapToEntity(cmd) {
         return {
             id: cmd.id,
@@ -66,6 +69,22 @@ export class InputService {
             if (!(line.quantity && line.quantity > 0))
                 errors.push(`مقدار وجود ندارد - ردیف {0}`.format(row));
         });
+
+        const lastPrice = this.inventoryPricingRepository.findLast();
+
+        if(!cmd.id) {
+            if(lastPrice  && cmd.date < lastPrice.toDate)
+                throw new ValidationException(['صدور رسید در تاریخ قبل از قیمت گذاری امکان پذیر نیست']);
+        }
+        else {
+            const input = this.inventoryRepository.findById(cmd.id);
+
+            if(lastPrice && input.date < lastPrice.toDate)
+                throw new ValidationException(['تغییر رسید در تاریخ های قبل از قیمت گذاری امکان پذیر نیست']);
+
+            if(input.journalId)
+                throw new ValidationException(['برای رسید جاری سند صادر شده امکان ویرایش وجود ندارد']);
+        }
 
         return errors;
     }
@@ -207,6 +226,9 @@ export class InputService {
 
         if (input.quantityStatus === 'fixed')
             throw new ValidationException(['حواله ثبت قطعی شده ، امکان حذف وجود ندارد']);
+
+        if(this.inventoryPricingRepository.isInventoryExist(id))
+            throw new ValidationException(['رسید جاری در قیمت گذاری وجود دارد ، امکان حذف وجود ندارد']);
 
         this.inventoryRepository.remove(id);
 

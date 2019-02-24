@@ -21,7 +21,14 @@ export class OutputService {
     @inject("InventoryControlTurnoverService")
     /**@type{InventoryControlTurnoverService}*/ inventoryControlTurnoverService = undefined;
 
+    @inject("InventoryPricingRepository")
+    /**@type {InventoryPricingRepository}*/ inventoryPricingRepository = undefined;
+
     create(cmd) {
+        const lastPrice = this.inventoryPricingRepository.findLast();
+
+        if(lastPrice  && cmd.date < lastPrice.toDate)
+            throw new ValidationException(['صدور حواله در تاریخ قبل از قیمت گذاری امکان پذیر نیست']);
 
         let errors = (cmd.lines || cmd.inventoryLines).asEnumerable()
             .select(item => ({
@@ -77,6 +84,16 @@ export class OutputService {
     }
 
     update(id, cmd) {
+
+        const lastPrice = this.inventoryPricingRepository.findLast();
+
+        const input = this.inventoryRepository.findById(cmd.id);
+
+        if(lastPrice && input.date < lastPrice.toDate)
+            throw new ValidationException(['تغییر حواله در تاریخ های قبل از قیمت گذاری امکان پذیر نیست']);
+
+        if(input.journalId)
+            throw new ValidationException(['برای حواله جاری سند صادر شده امکان ویرایش وجود ندارد']);
 
         let output = this.inventoryRepository.findById(id);
 
@@ -194,6 +211,12 @@ export class OutputService {
 
         if (!output)
             throw new NotFoundException();
+
+        if(this.inventoryPricingRepository.isInventoryExist(id))
+            throw new ValidationException(['حواله جاری در قیمت گذاری شده است ، امکان حذف وجود ندارد']);
+
+        if(output.journalId)
+            throw new ValidationException(['برای حواله جاری سند حسابداری صادر شده ، امکان حذف وجود ندارد']);
 
         this.inventoryRepository.remove(id);
 

@@ -50,6 +50,14 @@ export class InventoryPricingRepository extends BaseRepository {
         );
     }
 
+    isInventoryExist(inventoryId) {
+        return !!toResult(
+            this.knex.select('id').from(this.inventoriesTableName)
+                .where({ branchId: this.branchId, inventoryId })
+                .first()
+        );
+    }
+
     create(data, products, stocks, inventories) {
         const branchId = this.branchId;
 
