@@ -43,14 +43,14 @@ export class InventoryPricingQuery extends BaseQuery {
         let query = this.knex.from(function () {
             this.select(
                 `${self.productsTableName}.*`,
-                self.knex('products.title as product_title')
+                self.knex.raw('products.title as product_title')
             )
                 .from(self.tableName)
                 .leftJoin(self.productsTableName, `${self.tableName}.id`, `${self.productsTableName}.inventoryPricingId`)
                 .leftJoin('products', `${self.productsTableName}.productId`, `products.id`)
                 .where(`${self.tableName}.branchId`, self.branchId)
                 .where(`${self.tableName}.fiscalPeriodId`, self.state.fiscalPeriodId)
-                .where({ inventoryPricingId: id })
+                .where('inventoryPricingId', id)
                 .as('base')
         });
 
@@ -65,8 +65,8 @@ export class InventoryPricingQuery extends BaseQuery {
         let query = this.knex.from(function () {
             this.select(
                 'inventories.*',
-                self.knex('stocks.title as stock_title'),
-                self.knex('inventoryIOTypes.title as iotype_title')
+                self.knex.raw('stocks.title as stock_title'),
+                self.knex.raw('"inventoryIOTypes".title as iotype_title')
             )
                 .from(self.tableName)
                 .leftJoin(self.inventoriesTableName, `${self.tableName}.id`, `${self.inventoriesTableName}.inventoryPricingId`)
