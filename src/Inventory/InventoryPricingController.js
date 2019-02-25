@@ -37,6 +37,6 @@ class InventoryPricingController {
 
     @Delete("/:id")
     remove(req) {
-
+        this.inventoryPricingService.remove(req.params.id);
     }
 }
