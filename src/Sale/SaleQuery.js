@@ -39,11 +39,15 @@ export class SaleQuery extends BaseQuery {
                     knex.raw('"marketer"."title" as "marketerDisplay"'),
                     knex.raw(`(${outputStatusQuery('invoices')}) as delivered`),
                     knex.raw('"invoice_types"."title" as "typeDisplay"'),
+                    knex.raw('journals."temporaryNumber" as journal_number'),
+                    knex.raw('journals."temporaryDate" as journal_date'),
+                    knex.raw('journals.description as journal_description')
                 )
                 .from('invoices')
                 .leftJoin('detailAccounts as person', 'invoices.detailAccountId', 'person.id')
                 .leftJoin('detailAccounts as marketer', 'invoices.marketerId', 'marketer.id')
                 .leftJoin('invoice_types', 'invoices.typeId', 'invoice_types.id')
+                .leftJoin('journals', 'journals.id', 'invoices.journalId')
                 .where('invoices.id', id)
                 .modify(modify, branchId, userId, canView, 'invoices')
                 .first()
@@ -93,6 +97,8 @@ export class SaleQuery extends BaseQuery {
 
             invoice.outputs = this.inventoryQuery.getByInvoice(invoice.id);
         }
+
+        invoice.referenceId = invoice.orderId;
         return invoice ? this._view(invoice, settings) : [];
     }
 
@@ -128,6 +134,7 @@ export class SaleQuery extends BaseQuery {
                 this.select(
                     'createdAt',
                     'id',
+                    knex.raw('"orderId" as "referenceId"'),
                     'number',
                     'display',
                     'date',
@@ -168,6 +175,7 @@ export class SaleQuery extends BaseQuery {
                     .groupBy(
                         'createdAt',
                         'id',
+                        'orderId',
                         'number',
                         'display',
                         'date',
@@ -390,6 +398,7 @@ export class SaleQuery extends BaseQuery {
         return Object.assign({}, {
             branchId: entity.branchId,
             id: entity.id,
+            referenceId: entity.referenceId,
             printUrl,
             number: entity.number,
             date: entity.date,
@@ -397,6 +406,14 @@ export class SaleQuery extends BaseQuery {
             description: entity.description,
             title: entity.title,
             journalId: entity.journalId,
+            journal: entity.journalId
+                ? {
+                    id: entity.journalId,
+                    number: entity.journal_number,
+                    date: entity.journal_date,
+                    description: entity.journal_description
+                }
+                : null,
             inventoryIds: entity.inventoryIds,
             detailAccountId: entity.detailAccountId,
             detailAccountDisplay: entity.detailAccountDisplay,
