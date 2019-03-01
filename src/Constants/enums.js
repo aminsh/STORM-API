@@ -32,261 +32,261 @@ class Enum {
 
 enums.AccountPostingType = function () {
     return new Enum([
-        {key: 'balanceSheet', display: 'تراز نامه ای (دائمی)'},
-        {key: 'benefitAndLoss', display: 'سود و زیانی (موقت)'},
-        {key: 'entezami', display: 'انتظامی'}
+        { key: 'balanceSheet', display: 'تراز نامه ای (دائمی)' },
+        { key: 'benefitAndLoss', display: 'سود و زیانی (موقت)' },
+        { key: 'entezami', display: 'انتظامی' }
     ]);
 };
 
 enums.AccountBalanceType = function () {
     return new Enum([
-        {key: 'debit', display: 'بدهکار'},
-        {key: 'credit', display: 'بستانکار'}
+        { key: 'debit', display: 'بدهکار' },
+        { key: 'credit', display: 'بستانکار' }
     ]);
 };
 
 enums.DetailAccountType = function () {
     return new Enum([
-        {key: 'person', display: 'شخص'},
-        {key: 'bank', display: 'بانک'},
-        {key: 'fund', display: 'صندوق'},
-        {key: 'product', display: 'کالا'},
-        {key: 'stock', display: 'انبار'},
+        { key: 'person', display: 'شخص' },
+        { key: 'bank', display: 'بانک' },
+        { key: 'fund', display: 'صندوق' },
+        { key: 'product', display: 'کالا' },
+        { key: 'stock', display: 'انبار' },
 
     ]);
 };
 
 enums.PersonType = function () {
     return new Enum([
-        {key: 'legal', display: 'حقوقی'},
-        {key: 'real', display: 'حقیقی'},
+        { key: 'legal', display: 'حقوقی' },
+        { key: 'real', display: 'حقیقی' },
     ]);
 };
 
 enums.AssignmentStatus = function () {
     return new Enum([
-        {key: 'Required', display: 'اجباری است'},
-        {key: 'NotRequired', display: 'انتخابی است'},
-        {key: 'DoesNotHave', display: 'ندارد'}
+        { key: 'Required', display: 'اجباری است' },
+        { key: 'NotRequired', display: 'انتخابی است' },
+        { key: 'DoesNotHave', display: 'ندارد' }
     ]);
 };
 
 enums.ErrorCode = function () {
     return new Enum([
-        {key: 'SaveDataError', display: '-1'},
-        {key: 'NoRecordFound', display: '-2'},
-        {key: 'RecordIsUsed', display: '-3'},
-        {key: 'DeleteError', display: '-4'},
-        {key: 'InputDataNotFound', display: '-5'},
-        {key: 'EditError', display: '-6'},
-        {key: 'DataNotFound', display: '-7'},
+        { key: 'SaveDataError', display: '-1' },
+        { key: 'NoRecordFound', display: '-2' },
+        { key: 'RecordIsUsed', display: '-3' },
+        { key: 'DeleteError', display: '-4' },
+        { key: 'InputDataNotFound', display: '-5' },
+        { key: 'EditError', display: '-6' },
+        { key: 'DataNotFound', display: '-7' },
     ]);
 };
 
 enums.AccountGroupingType = function () {
     return new Enum([
-        {key: '1', display: 'دارایی ها'},
-        {key: '2', display: 'بدهی ها'},
-        {key: '3', display: 'حقوق صاحبان سهام'},
-        {key: '5', display: 'خرید'},
-        {key: '6', display: 'فروش'},
-        {key: '7', display: 'درآمدها'},
-        {key: '8', display: 'هزینه ها'},
-        {key: '9', display: 'سایر حساب ها'}
+        { key: '1', display: 'دارایی ها' },
+        { key: '2', display: 'بدهی ها' },
+        { key: '3', display: 'حقوق صاحبان سهام' },
+        { key: '5', display: 'خرید' },
+        { key: '6', display: 'فروش' },
+        { key: '7', display: 'درآمدها' },
+        { key: '8', display: 'هزینه ها' },
+        { key: '9', display: 'سایر حساب ها' }
     ]);
 };
 
 enums.InvoiceType = function () {
     return new Enum([
-        {key: 'purchase', display: 'خرید'},
-        {key: 'sale', display: 'فروش'},
-        {key: 'returnSale', display: 'برگشت از فروش'},
-        {key: 'returnPurchase', display: 'برگشت از خرید'},
+        { key: 'purchase', display: 'خرید' },
+        { key: 'sale', display: 'فروش' },
+        { key: 'returnSale', display: 'برگشت از فروش' },
+        { key: 'returnPurchase', display: 'برگشت از خرید' },
     ]);
 };
 
 enums.InvoiceStatus = function () {
     return new Enum([
-        {key: 'draft', display: 'پیش نویس'},
+        { key: 'draft', display: 'پیش نویس' },
 
         //TODO they should be removed after purchase and returnInvoice code changed
-        {key: 'waitForPayment', display: 'منتظر برای پرداخت'},
-        {key: 'paid', display: 'پرداخت شده'},
+        { key: 'waitForPayment', display: 'منتظر برای پرداخت' },
+        { key: 'paid', display: 'پرداخت شده' },
         //*************************************************************************
 
-        {key: 'confirmed', display: 'تایید'},
-        {key: 'fixed', display: 'قطعی'},
+        { key: 'confirmed', display: 'تایید' },
+        { key: 'fixed', display: 'قطعی' },
     ]);
 };
 
 enums.paymentType = function () {
     return new Enum([
-        {key: 'cheque', display: 'چک'},
-        {key: 'receipt', display: 'رسید بانکی'},
-        {key: 'cash', display: 'نقدی'},
-        {key: 'person', display: 'شخص'}
+        { key: 'cheque', display: 'چک' },
+        { key: 'receipt', display: 'رسید بانکی' },
+        { key: 'cash', display: 'نقدی' },
+        { key: 'person', display: 'شخص' }
     ]);
 };
 
 enums.OrderStatus = function () {
     return new Enum([
-        {key: 'waitForPayment', display: 'منتظر برای پرداخت'},
-        {key: 'paid', display: 'پرداخت شده'}
+        { key: 'waitForPayment', display: 'منتظر برای پرداخت' },
+        { key: 'paid', display: 'پرداخت شده' }
     ]);
 };
 
 enums.JournalType = function () {
     return new Enum([
-        {key: 'Opening', display: 'افتتاحیه'},
-        {key: 'Closing', display: 'اختتامیه'},
-        {key: 'FixedAsset', display: 'اموال'},
-        {key: 'Payroll', display: 'حقوق'},
-        {key: 'Special', display: 'ویژه'}
+        { key: 'Opening', display: 'افتتاحیه' },
+        { key: 'Closing', display: 'اختتامیه' },
+        { key: 'FixedAsset', display: 'اموال' },
+        { key: 'Payroll', display: 'حقوق' },
+        { key: 'Special', display: 'ویژه' }
     ]);
 };
 
 enums.JournalStatus = function () {
     return new Enum([
-        {key: 'Temporary', display: 'موقت'},
-        {key: 'BookKeeped', display: 'ثبت دفترداری'},
-        {key: 'Fixed', display: 'ثبت قطعی'}
+        { key: 'Temporary', display: 'موقت' },
+        { key: 'BookKeeped', display: 'ثبت دفترداری' },
+        { key: 'Fixed', display: 'ثبت قطعی' }
     ]);
 };
 
 enums.ChequeStatus = function () {
     return new Enum([
-        {key: 'White', display: 'سفید'},
-        {key: 'Used', display: 'استفاده شده'},
-        {key: 'Cancel', display: 'باطل'},
-        {key: 'Passed', display: 'پاس شده'}
+        { key: 'White', display: 'سفید' },
+        { key: 'Used', display: 'استفاده شده' },
+        { key: 'Cancel', display: 'باطل' },
+        { key: 'Passed', display: 'پاس شده' }
     ]);
 };
 
 enums.ChequeCategoryStatus = function () {
     return new Enum([
-        {key: 'Open', display: 'باز'},
-        {key: 'Closed', display: 'بسته'}
+        { key: 'Open', display: 'باز' },
+        { key: 'Closed', display: 'بسته' }
     ]);
 };
 
 enums.AccMode = () => {
     return new Enum([
-        {key: 'create', display: 'تنظیم اسناد'},
-        {key: 'audit', display: 'رسیدگی اسناد'}
+        { key: 'create', display: 'تنظیم اسناد' },
+        { key: 'audit', display: 'رسیدگی اسناد' }
     ]);
 };
 
 enums.getMonth = function () {
     return new Enum([
-        {key: 1, display: "فروردین"},
-        {key: 2, display: "اردیبهشت"},
-        {key: 3, display: "خرداد"},
-        {key: 4, display: "تیر"},
-        {key: 5, display: "مرداد"},
-        {key: 6, display: "شهریور"},
-        {key: 7, display: "مهر"},
-        {key: 8, display: "آبان"},
-        {key: 9, display: "آذر"},
-        {key: 10, display: "دی"},
-        {key: 11, display: "بهمن"},
-        {key: 12, display: "اسفند"}
+        { key: 1, display: "فروردین" },
+        { key: 2, display: "اردیبهشت" },
+        { key: 3, display: "خرداد" },
+        { key: 4, display: "تیر" },
+        { key: 5, display: "مرداد" },
+        { key: 6, display: "شهریور" },
+        { key: 7, display: "مهر" },
+        { key: 8, display: "آبان" },
+        { key: 9, display: "آذر" },
+        { key: 10, display: "دی" },
+        { key: 11, display: "بهمن" },
+        { key: 12, display: "اسفند" }
     ]);
 };
 
 enums.getSeason = function () {
     return new Enum([
-        {key: 1, display: "بهار"},
-        {key: 2, display: "تابستان"},
-        {key: 3, display: "پاییز"},
-        {key: 4, display: "زمستان"}
+        { key: 1, display: "بهار" },
+        { key: 2, display: "تابستان" },
+        { key: 3, display: "پاییز" },
+        { key: 4, display: "زمستان" }
     ]);
 };
 
 enums.getVatIncluded = function () {
     return new Enum([
-        {key: 1, display: "همه ی فاکتورها"},
-        {key: 2, display: "شامل فاکتورهای با مالیات"},
-        {key: 3, display: "شامل فاکتورهای بدون مالیات"}
+        { key: 1, display: "همه ی فاکتورها" },
+        { key: 2, display: "شامل فاکتورهای با مالیات" },
+        { key: 3, display: "شامل فاکتورهای بدون مالیات" }
     ]);
 };
 
 enums.getNationalCodeIncluded = function () {
     return new Enum([
-        {key: 1, display: "همه ی اشخاص"},
-        {key: 2, display: "شامل اشخاص دارای کد ملی/ شناسه"},
-        {key: 3, display: "شامل اشخاص بدون کد ملی/ شناسه"}
+        { key: 1, display: "همه ی اشخاص" },
+        { key: 2, display: "شامل اشخاص دارای کد ملی/ شناسه" },
+        { key: 3, display: "شامل اشخاص بدون کد ملی/ شناسه" }
     ]);
 };
 
 enums.Active = () => {
     return new Enum([
-        {key: 'true', name: 'showActiveItems', display: 'نمایش فعال ها'},
-        {key: 'false', name: 'showInactiveItems', display: 'نمایش غیر فعال ها'}
+        { key: 'true', name: 'showActiveItems', display: 'نمایش فعال ها' },
+        { key: 'false', name: 'showInactiveItems', display: 'نمایش غیر فعال ها' }
     ]);
 };
 enums.ReceivableType = function () {
     return new Enum([
-        {key: 'cheque', display: 'چک'},
-        {key: 'receipt', display: 'فیش واریزی'},
-        {key: 'cash', display: 'نقدی'}
+        { key: 'cheque', display: 'چک' },
+        { key: 'receipt', display: 'فیش واریزی' },
+        { key: 'cash', display: 'نقدی' }
     ])
 };
 
 enums.ProductType = function () {
     return new Enum([
-        {key: 'good', display: 'کالا'},
-        {key: 'service', display: 'خدمات'}
+        { key: 'good', display: 'کالا' },
+        { key: 'service', display: 'خدمات' }
     ]);
 };
 
 enums.BranchStatus = function () {
     return new Enum([
-        {key: 'pending', display: 'انتظار'},
-        {key: 'active', display: 'فعال'}
+        { key: 'pending', display: 'انتظار' },
+        { key: 'active', display: 'فعال' }
     ]);
 };
 
 enums.InventoryType = function () {
     return new Enum([
-        {key: 'input', display: 'رسید'},
-        {key: 'output', display: 'حواله'}
+        { key: 'input', display: 'رسید' },
+        { key: 'output', display: 'حواله' }
     ]);
 };
 
 enums.InventoryStatus = function () {
     return new Enum([
-        {key: 'draft', display: 'پیش نویس'},
-        {key: 'confirmed', display: 'تایید'},
-        {key: 'fixed', display: 'قطعی'}
+        { key: 'draft', display: 'پیش نویس' },
+        { key: 'confirmed', display: 'تایید' },
+        { key: 'fixed', display: 'قطعی' }
     ]);
 };
 
 
 enums.InventoryIOType = function () {
     return new Enum([
-        {key: 'inputFirst', display: 'اول دوره'},
-        {key: 'inputPurchase', display: 'خرید'},
-        {key: 'inputStockToStock', display: 'انبار به انبار'},
-        {key: 'inputBackFromSaleOrConsuming', display: 'برگشت از مصرف / فروش'},
+        { key: 'inputFirst', display: 'اول دوره' },
+        { key: 'inputPurchase', display: 'خرید' },
+        { key: 'inputStockToStock', display: 'انبار به انبار' },
+        { key: 'inputBackFromSaleOrConsuming', display: 'برگشت از مصرف / فروش' },
 
-        {key: 'outputSale', display: 'فروش'},
-        {key: 'outputWaste', display: 'ضایعات'},
-        {key: 'outputStockToStock', display: 'انبار به انبار'},
-        {key: 'outputBackFromPurchase', display: 'برگشت از خرید'}
+        { key: 'outputSale', display: 'فروش' },
+        { key: 'outputWaste', display: 'ضایعات' },
+        { key: 'outputStockToStock', display: 'انبار به انبار' },
+        { key: 'outputBackFromPurchase', display: 'برگشت از خرید' }
     ])
 };
 
 enums.ReceiveOrPay = function () {
     return new Enum([
-        {key: 'receive', display: 'دریافت'},
-        {key: 'pay', display: 'پرداخت'},
+        { key: 'receive', display: 'دریافت' },
+        { key: 'pay', display: 'پرداخت' },
     ]);
 };
 
 enums.UserRole = function () {
     return new Enum([
-        {key: 'admin'},
-        {key: 'customer'}
+        { key: 'admin' },
+        { key: 'customer' }
     ]);
 };
 
@@ -353,9 +353,9 @@ enums.ThirdParty = function () {
 
 enums.ProductOutputCreationMethod = function () {
     return new Enum([
-        {key: 'defaultStock', display: 'انبار پیش فرض'},
-        {key: 'defaultStockOnProduct', display: 'انبار پیش فرض در کالا'},
-        {key: 'stockOnRequest', display: 'انتخاب انبار در فاکتور فروش'},
+        { key: 'defaultStock', display: 'انبار پیش فرض' },
+        { key: 'defaultStockOnProduct', display: 'انبار پیش فرض در کالا' },
+        { key: 'stockOnRequest', display: 'انتخاب انبار در فاکتور فروش' },
 
         /*
         * these are not implemented
@@ -368,12 +368,12 @@ enums.ProductOutputCreationMethod = function () {
 
 enums.JournalGenerationTemplateModel = function () {
     return new Enum([
-        {key: 'Sale', display: 'فاکتور فروش'},
-        {key: 'Purchase', display: 'فاکتور خرید'},
-        {key: 'ReturnSale', display: 'فاکتور برگشت از فروش'},
-        {key: 'InventoryOutputSale', display: 'حواله فروش'},
-        {key: 'InventoryInputReturnSale', display: 'رسید برگشت از فروش'},
-        {key: 'ReturnPurchase', display: 'فاکتور برگشت از خرید'}
+        { key: 'Sale', display: 'فاکتور فروش' },
+        { key: 'InputPurchase', display: 'رسید خرید' },
+        { key: 'Input', display: 'رسید' },
+        { key: 'InputTransferBetweenStocks', display: 'رسید ورود انتقال بین انبار ها' },
+        { key: 'Output', display: 'حواله' },
+        { key: 'OutputTransferBetweenStocks', display: 'حواله خروج انتقال بین انبار ها' },
     ]);
 };
 
@@ -383,8 +383,8 @@ enums.NotificationEvent = function () {
             key: 'onInventoryInputChanged',
             display: 'تغییر در ورودی های کالا',
             fields: [
-                {key: 'productId', display: 'کالا #'},
-                {key: 'quantity', display: 'مقدار موجودی'}
+                { key: 'productId', display: 'کالا #' },
+                { key: 'quantity', display: 'مقدار موجودی' }
             ]
         }
     ]);
@@ -392,50 +392,50 @@ enums.NotificationEvent = function () {
 
 enums.getInventoryFixedStatus = function () {
     return new Enum([
-        {key: 'all', display: "همه ی گردش ها"},
-        {key: 'fixedQuantity', display: "گردش های ثبت مقداری شده"},
-        {key: 'fixedAmount', display: "گردش های ثبت ریالی شده"},
-        {key: 'fixedAmountAndQuantity', display: "گردش های ثبت مقداری و ریالی شده"}
+        { key: 'all', display: "همه ی گردش ها" },
+        { key: 'fixedQuantity', display: "گردش های ثبت مقداری شده" },
+        { key: 'fixedAmount', display: "گردش های ثبت ریالی شده" },
+        { key: 'fixedAmountAndQuantity', display: "گردش های ثبت مقداری و ریالی شده" }
     ]);
 };
 
 enums.ReceiveChequeStatus = function () {
     return new Enum([
-        {key: 'inProcessOnPassing', display: 'در جریان وصول'},
-        {key: 'passed', display: 'وصول'},
-        {key: 'inFund', display: 'نزد صندوق'},
-        {key: 'revocation', display: 'ابطال'},
-        {key: 'missing', display: 'مفقود/ سرقت'},
-        {key: 'spend', display: 'انتقال/ خرج'},
-        {key: 'return', display: 'برگشت'}
+        { key: 'inProcessOnPassing', display: 'در جریان وصول' },
+        { key: 'passed', display: 'وصول' },
+        { key: 'inFund', display: 'نزد صندوق' },
+        { key: 'revocation', display: 'ابطال' },
+        { key: 'missing', display: 'مفقود/ سرقت' },
+        { key: 'spend', display: 'انتقال/ خرج' },
+        { key: 'return', display: 'برگشت' }
 
     ]);
 };
 
 enums.TreasuryReceiveDocumentTypes = function () {
     return new Enum([
-        {key: 'cheque', display: "چک"},
-        {key: 'cash', display: "نقدی"},
-        {key: 'receipt', display: "واریزی"},
-        {key: 'demandNote', display: "سفته"}
+        { key: 'cheque', display: "چک" },
+        { key: 'cash', display: "نقدی" },
+        { key: 'receipt', display: "واریزی" },
+        { key: 'demandNote', display: "سفته" }
     ])
 };
 
 enums.TreasuryPaymentDocumentTypes = function () {
     return new Enum([
-        {key: 'cheque', display: "چک"},
-        {key: 'cash', display: "نقدی"},
-        {key: 'receipt', display: "فیش واریزی"},
-        {key: 'demandNote', display: "سفته"},
-        {key: 'spendCheque', display: "واگذاری چک"}
+        { key: 'cheque', display: "چک" },
+        { key: 'cash', display: "نقدی" },
+        { key: 'receipt', display: "فیش واریزی" },
+        { key: 'demandNote', display: "سفته" },
+        { key: 'spendCheque', display: "واگذاری چک" }
     ])
 };
 
 enums.TreasuryType = function () {
     return new Enum([
-        {key: 'receive', display: "دریافتی"},
-        {key: 'payment', display: "پرداختی"},
-        {key: 'transfer', display: "انتقالی"},
+        { key: 'receive', display: "دریافتی" },
+        { key: 'payment', display: "پرداختی" },
+        { key: 'transfer', display: "انتقالی" },
     ])
 };
 
@@ -443,14 +443,18 @@ enums.Features = function () {
     return new Enum([
         {
             key: 'sale',
-            value: ['sales', 'return-sales', 'products', 'product-categories', 'scales', 'price-list'],
+            value: [ 'sales', 'return-sales', 'products', 'product-categories', 'scales', 'price-list' , 'sale-types'],
             display: 'فروش'
         },
-        {key: 'purchase', value: ['purchases', 'return-purchases', 'products', 'product-categories', 'scales'], display: 'خرید'},
+        {
+            key: 'purchase',
+            value: [ 'purchases', 'return-purchases', 'products', 'product-categories', 'scales' ],
+            display: 'خرید'
+        },
         {
             key: 'inventory',
             display: 'انبار',
-            value: ['inventories', 'stocks', 'inventory-io-types', 'products', 'product-categories', 'scales', 'inventory-accounting', 'inventory-pricing']
+            value: [ 'inventories', 'stocks', 'inventory-io-types', 'products', 'product-categories', 'scales', 'inventory-accounting', 'inventory-pricing' ]
         },
         {
             key: 'journal',
@@ -470,19 +474,35 @@ enums.Features = function () {
                 'tags'
             ]
         },
-        {key: 'treasury', value: ['treasury', 'banks-name', 'cheque-categories', 'funds', 'banks', 'bank-and-fund'], display: 'خزانه داری'},
-        {key: 'other', value: ['reports', 'people', 'settings', 'fiscal-periods', 'permissions', 'third-party', 'branches', 'open-card', 'woocommerce', 'payping']}
+        {
+            key: 'treasury',
+            value: [ 'treasury', 'banks-name', 'cheque-categories', 'funds', 'banks', 'bank-and-fund' ],
+            display: 'خزانه داری'
+        },
+        {
+            key: 'other',
+            value: [ 'reports', 'people', 'settings', 'fiscal-periods', 'permissions', 'third-party', 'branches', 'open-card', 'woocommerce', 'payping' ]
+        }
     ]);
 };
 
 enums.PersonRole = function () {
     return new Enum([
-        {key: 'marketer', display: "بازاریاب"},
-        {key: 'buyer', display: "خریدار"},
-        {key: 'seller', display: "فروشنده"},
-        {key: 'employee', display: "پرسنل"},
-        {key: 'stackHolder', display: "سهامدار"},
-        {key: 'stockKeeper', display: "انباردار"}
+        { key: 'marketer', display: "بازاریاب" },
+        { key: 'buyer', display: "خریدار" },
+        { key: 'seller', display: "فروشنده" },
+        { key: 'employee', display: "پرسنل" },
+        { key: 'stackHolder', display: "سهامدار" },
+        { key: 'stockKeeper', display: "انباردار" }
+    ])
+};
+
+    enums.JournalIssuer = function () {
+    return new Enum([
+        {key: 'Sale', display: 'فروش'},
+        {key: 'Purchase', display: 'خرید'},
+        {key: 'Inventory', display: 'انبار'},
+        {key: 'Treasury', display: 'خزانه داری'}
     ])
 };
 

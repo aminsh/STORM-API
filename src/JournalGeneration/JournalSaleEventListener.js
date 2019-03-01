@@ -10,11 +10,11 @@ export class JournalSaleEventListener {
     /**@type {InvoiceRepository}*/
     @inject("InvoiceRepository") invoiceRepository = undefined;
 
-    /**@type {JournalSaleGenerationService}*/
-    @inject("JournalSaleGenerationService") journalSaleGenerationService = undefined;
-
     /**@type {JournalService}*/
     @inject("JournalService") journalService = undefined;
+
+    /**@type {SaleService}*/
+    @inject("SaleService") saleService = undefined;
 
     @EventHandler("SaleCreated")
     onSaleCreated(invoiceId) {
@@ -31,7 +31,7 @@ export class JournalSaleEventListener {
         if (invoice.journalId)
             return;
 
-        this.journalSaleGenerationService.generate(invoiceId);
+        this.saleService.generateJournal(invoiceId);
     }
 
     @EventHandler("SaleChanged")

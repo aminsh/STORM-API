@@ -21,7 +21,7 @@ export class JournalSaleGenerationService {
     @inject("SaleMapper")
     /**@type{SaleMapper}*/ saleMapper = undefined;
 
-    generate(invoiceId) {
+    generate( invoiceId ) {
 
         const invoice = this.invoiceRepository.findById(invoiceId);
 
