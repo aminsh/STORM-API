@@ -144,6 +144,8 @@ export class SaleQuery extends BaseQuery {
                     'description',
                     'title',
                     'journalId',
+                    'journal_number',
+                    'journal_date',
                     'marketerId',
                     'marketerDisplay',
                     'typeId',
@@ -159,15 +161,19 @@ export class SaleQuery extends BaseQuery {
                     .from(function () {
                         this.select('invoices.*',
                             knex.raw('"person"."title" as "detailAccountDisplay"'),
-                            knex.raw(`number || ' - ' || date || ' - ' || "person".title as display`),
+                            knex.raw(`invoices.number || ' - ' || invoices.date || ' - ' || "person".title as display`),
                             knex.raw('"marketer"."title" as "marketerDisplay"'),
                             knex.raw('"invoice_types"."title" as "typeDisplay"'),
-                            knex.raw(`("invoiceLines"."unitPrice" * "invoiceLines".quantity - "invoiceLines".discount + "invoiceLines".vat + "invoiceLines".tax) as "totalPrice"`))
+                            knex.raw(`("invoiceLines"."unitPrice" * "invoiceLines".quantity - "invoiceLines".discount + "invoiceLines".vat + "invoiceLines".tax) as "totalPrice"`),
+                            knex.raw('journals."temporaryNumber" as journal_number'),
+                            knex.raw('journals."temporaryDate" as journal_date')
+                        )
                             .from('invoices')
                             .leftJoin('invoiceLines', 'invoices.id', 'invoiceLines.invoiceId')
                             .leftJoin('detailAccounts as person', 'invoices.detailAccountId', 'person.id')
                             .leftJoin('detailAccounts as marketer', 'invoices.marketerId', 'marketer.id')
                             .leftJoin('invoice_types', 'invoices.typeId', 'invoice_types.id')
+                            .leftJoin('journals', 'journals.id', 'invoices.journalId')
                             .modify(modify, branchId, userId, canView, 'invoices')
                             .andWhere('invoices.invoiceType', 'sale')
                             .as('base');
@@ -185,6 +191,8 @@ export class SaleQuery extends BaseQuery {
                         'description',
                         'title',
                         'journalId',
+                        'journal_number',
+                        'journal_date',
                         'marketerId',
                         'marketerDisplay',
                         'typeId',
