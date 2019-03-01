@@ -288,6 +288,11 @@ export class UserService {
         if (!user.mobile)
             throw new ValidationSingleException('موبایل وارد نشده');
 
+        let isDuplicatedMobile = this.userRepository.isDuplicatedMobile(user.mobile);
+
+        if (isDuplicatedMobile)
+            throw new ValidationSingleException('موبایل تکراری است');
+
         return this.sendMobileVerification(user);
     }
 
