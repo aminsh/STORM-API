@@ -6,5 +6,6 @@ export const WoocommerceStatus = {
     CANCELED: 'cancelled',
     REFUNDED: 'refunded',
     FAILED: 'failed',
-    TRASH: 'trash'
+    TRASH: 'trash',
+    SENT: 'sent'
 };

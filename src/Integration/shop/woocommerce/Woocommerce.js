@@ -139,7 +139,7 @@ export class Woocommerce {
                 this.recordPayment(order, invoice);
         }
 
-        if (order.status === WoocommerceStatus.COMPLETED) {
+        if (order.status === WoocommerceStatus.COMPLETED || order.status === WoocommerceStatus.SENT) {
             if (!invoice)
                 invoice = this.create(order);
             else {
@@ -352,7 +352,7 @@ export class Woocommerce {
                 ? Utility.PersianDate.getDate(new Date(order[ 'date_created' ]))
                 : Utility.PersianDate.current(),
             orderId: order.id,
-            title: 'شناسه سفارش : {0}'.format(order.id),
+            title: '',
             customer: {
                 referenceId: customer.customerId,
                 title: `${customer.first_name} ${customer.last_name}`,
