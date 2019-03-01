@@ -42,8 +42,8 @@ export class SaleService {
     @inject('DetailAccountRepository')
     /**@type{DetailAccountRepository}*/ detailAccountRepository = undefined;
 
-    /**@type {JournalSaleGenerationService}*/
-    @inject("JournalSaleGenerationService") journalSaleGenerationService = undefined;
+    @inject("JournalGenerationTemplateService")
+    /**@type{JournalGenerationTemplateService}*/ journalGenerationTemplateService = undefined;
 
     @inject("JournalService")
     /**@type{JournalService}*/ journalService = undefined;
@@ -431,7 +431,30 @@ export class SaleService {
     }
 
     generateJournal(id) {
-        this.journalSaleGenerationService.generate(id);
+        let invoice = this.invoiceRepository.findById(id);
+
+
+        if (!invoice)
+            throw new ValidationException([ 'فاکتور وجود ندارد' ]);
+
+        if (invoice.journalId)
+            throw new ValidationException([ 'برای فاکتور جاری قبلا سند صادر شده ، ابتدا سند را حذف کنید' ]);
+
+        const type = invoice.typeId
+            ? this.invoiceTypeRepository.findById(invoice.typeId)
+            : null;
+
+        if (!type)
+            throw new ValidationException([ 'نوع فروش وجود ندارد' ]);
+
+        if (!type.journalGenerationTemplateId)
+            throw new ValidationException([ 'نوع فروش الگوی ساخت سند ندارد' ]);
+
+        const journalId = this.journalGenerationTemplateService.generate(type.journalGenerationTemplateId, id, 'Sale');
+
+        Utility.delay(1000);
+
+        this.invoiceRepository.update(id, { journalId });
     }
 
     removeJournal(id) {

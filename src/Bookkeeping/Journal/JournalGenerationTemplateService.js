@@ -12,22 +12,39 @@ export class JournalGenerationTemplateService {
     /**@type{JournalGenerationTemplateEngine}*/
     @inject("JournalGenerationTemplateEngine") journalGenerationTemplateEngine = undefined;
 
-    generate(journalGenerationTemplateId, data) {
+    /**@type {JournalService}*/
+    @inject("JournalService") journalService = undefined;
 
-        let generationTemplate = this.journalGenerationTemplateRepository.findById(journalGenerationTemplateId);
+    @inject("MapperFactory")
+    /**@type {MapperFactory}*/ mapperFactory = undefined;
 
-        if (!generationTemplate)
+    @inject("Enums") enums = undefined;
+
+
+    generate(journalGenerationTemplateId, id, issuer) {
+
+        if(!(issuer && this.enums.JournalIssuer().getKeys().includes(issuer)))
+            throw new Error('Issuer is not valid');
+
+
+        let entity = this.journalGenerationTemplateRepository.findById(journalGenerationTemplateId);
+
+        if (!entity)
             throw new ValidationException([ 'الگوی ساخت سند حسابداری وجود ندارد' ]);
 
-        generationTemplate = generationTemplate.data;
+        let template = entity.data;
 
-        const journal = this.journalGenerationTemplateEngine.handler(generationTemplate, data);
+        const mapper = this.mapperFactory.get(entity.model);
+
+        const journal = this.journalGenerationTemplateEngine.handler(template, mapper.map(id));
 
         journal.journalLines = journal.journalLines.asEnumerable()
             .where(item => ( item.debtor + item.creditor ) !== 0)
             .toArray();
 
-        return journal;
+        journal.issuer = issuer;
+
+        return this.journalService.create(journal);
     }
 
     create(cmd) {

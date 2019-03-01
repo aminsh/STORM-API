@@ -12,9 +12,14 @@ export class SaleMapper {
     @inject('DetailAccountRepository')
     /**@type {DetailAccountRepository}*/ detailAccountRepository = undefined;
 
-    map(invoice) {
+    @inject("InvoiceRepository")
+    /**@type {InvoiceRepository}*/ invoiceRepository = undefined;
 
-        const settings = this.settingsRepository.get();
+    map(id) {
+
+        const invoice = this.invoiceRepository.findById(id),
+
+            settings = this.settingsRepository.get();
 
         const cost = (settings.saleCosts || []).asEnumerable()
                 .select(e => ({

@@ -2,12 +2,12 @@ import toResult from "asyncawait/await";
 import { injectable, inject } from "inversify";
 import { BaseQuery } from "../../Infrastructure/BaseQuery";
 
-import templateSale from '../json/Sale.json';
-import templatePurchase from '../json/Purchase.json';
-import templateReturnSale from '../json/returnSale.json';
-import templateInventoryOutputSale from '../json/inventoryOutputSale.json';
-import templateInventoryInputReturnSale from '../json/inventoryInputReturnSale.json';
-import templateReturnPurchase from '../json/returnPurchase.json';
+import Sale from '../json/Sale.json';
+import Input from '../json/Input.json';
+import InputPurchase from '../json/InputPurchase.json';
+import Output from '../json/Output.json';
+import OutputTransferBetweenStocks from '../json/OutputTransferBetweenStocks';
+import InputTransferBetweenStocks from '../json/InputTransferBetweenStocks';
 import enums from "../../Constants/enums";
 
 @injectable()
@@ -18,12 +18,7 @@ export class JournalGenerationTemplateQuery extends BaseQuery {
     @inject('Enums') enums = undefined;
 
     templates = {
-        Sale: templateSale,
-        purchase: templatePurchase,
-        returnSale: templateReturnSale,
-        inventoryOutputSale: templateInventoryOutputSale,
-        inventoryInputReturnSale: templateInventoryInputReturnSale,
-        returnPurchase: templateReturnPurchase
+        Sale, InputPurchase, Input, InputTransferBetweenStocks, OutputTransferBetweenStocks, Output
     };
 
     getAll(parameters) {
@@ -49,8 +44,7 @@ export class JournalGenerationTemplateQuery extends BaseQuery {
     }
 
     getByModel(model) {
-        const template = this.templates[ model ];
-        return template;
+        return this.templates[ model ];
     }
 
     getById(id) {
