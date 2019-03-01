@@ -2,7 +2,7 @@ import { SaleQuery } from "./SaleQuery";
 import { SaleService } from "./SaleService";
 import { ReturnSaleQuery } from "./ReturnSaleQuery";
 import { ReturnSaleService } from "./ReturnSaleService";
-import { JournalEventListener } from "./JournalEventListener";
+import { SaleJournalEventListener } from "./SaleJournalEventListener";
 
 import "./SaleController";
 import "./ReturnSaleController";
@@ -19,5 +19,5 @@ export function register(container) {
     container.bind("ReturnSaleQuery").to(ReturnSaleQuery);
     container.bind("ReturnSaleService").to(ReturnSaleService);
 
-    container.bind("JournalEventListener").to(JournalEventListener);
+    container.bind("SaleJournalEventListener").to(SaleJournalEventListener);
 }

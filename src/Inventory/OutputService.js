@@ -239,7 +239,7 @@ export class OutputService {
         if (output.journalId)
             throw new ValidationException([ 'سند حسابداری قبلا صادر شده' ]);
 
-        const hasZeroPrice = output.inventoryLines.asEnumerable().any(item => !(item.unitPrice && item.unitPrice === 0));
+        const hasZeroPrice = output.inventoryLines.asEnumerable().any(item => !(item.unitPrice && item.unitPrice > 0));
 
         if (hasZeroPrice)
             throw new ValidationException([ 'حواله جاری قیمت گذاری نشده ، امکان صدور سند حسابداری وجود ندارد' ]);
