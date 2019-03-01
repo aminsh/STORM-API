@@ -10,15 +10,18 @@ export class InvoiceTypeQuery extends BaseQuery {
     getAll(invoiceType, parameters) {
         let branchId = this.branchId,
             tableName = this.tableName,
+            knex = this.knex,
 
             query = this.knex.select().from(function () {
-                this.select()
+                this.select(`${tableName}.*`,
+                    knex.raw('"journalGenerationTemplates".title as journal_generation_template_title')
+                )
                     .from(tableName)
-                    .where('branchId', branchId)
+                    .leftJoin('journalGenerationTemplates', `${tableName}.journalGenerationTemplateId`, 'journalGenerationTemplates.id')
+                    .where(`${tableName}.branchId`, branchId)
                     .where('invoiceType', invoiceType)
                     .as('base');
-            })
-                .where('type', type);
+            });
 
 
         return toResult(Utility.kendoQueryResolve(query, parameters, this.view.bind(this)));
@@ -39,6 +42,7 @@ export class InvoiceTypeQuery extends BaseQuery {
             title: entity.title,
             referenceId: entity.referenceId,
             journalGenerationTemplateId: entity.journalGenerationTemplateId,
+            journalGenerationTemplateTitle: entity[ 'journal_generation_template_title' ],
             isDefault: entity.isDefault
         }
     }
