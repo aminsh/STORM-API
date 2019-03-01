@@ -15,6 +15,18 @@ class InventoryPricingController {
         return this.inventoryPricingQuery.getAll(req.query);
     }
 
+    @Get('/free-inventories')
+    getAllFreeInventories(req) {
+        return this.inventoryPricingQuery.getFreeInventories(
+            { fromDate: req.query.fromDate, toDate: req.query.toDate },
+            req.query);
+    }
+
+    @Get('/last')
+    getLast() {
+        return this.inventoryPricingQuery.getLast();
+    }
+
     @Get('/:id')
     getById(req) {
         return this.inventoryPricingQuery.getById(req.params.id);
@@ -38,5 +50,10 @@ class InventoryPricingController {
     @Delete("/:id")
     remove(req) {
         this.inventoryPricingService.remove(req.params.id);
+    }
+
+    @Post("/:id/generate-journal")
+    generateJournal(req) {
+        this.inventoryPricingService.generateJournalForAll(req.params.id);
     }
 }

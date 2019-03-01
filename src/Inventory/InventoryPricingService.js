@@ -14,7 +14,13 @@ export class InventoryPricingService {
     /**@type {InventoryPricingRepository}*/ inventoryPricingRepository = undefined;
 
     @inject("FiscalPeriodRepository")
-        /**@type{FiscalPeriodRepository}*/ fiscalPeriodRepository = undefined;
+    /**@type{FiscalPeriodRepository}*/ fiscalPeriodRepository = undefined;
+
+    @inject("InputService")
+    /**@type{InputService}*/ inputService = undefined;
+
+    @inject("OutputService")
+    /**@type{OutputService}*/ outputService = undefined;
 
     items = [];
     lastProducts = [];
@@ -32,25 +38,25 @@ export class InventoryPricingService {
     }
 
     checkDateRange(dto) {
-        if(dto.toDate < dto.fromDate)
-            throw new ValidationException(['تاریخ انتهای دوره نمی تواند کوچکتر از تاریخ ابتدا باشد']);
+        if (dto.toDate < dto.fromDate)
+            throw new ValidationException([ 'تاریخ انتهای دوره نمی تواند کوچکتر از تاریخ ابتدا باشد' ]);
 
         const last = this.inventoryPricingRepository.findLast();
         const fiscalPeriod = this.fiscalPeriodRepository.findById(this.state.fiscalPeriodId);
         const isInFiscalPeriodDateRange = date => date >= fiscalPeriod.minDate && date <= fiscalPeriod.maxDate;
 
-        if(!(isInFiscalPeriodDateRange(dto.fromDate) && isInFiscalPeriodDateRange(dto.toDate)))
-                throw new ValidationException(['تاریخ های ابتدا و انتها باید در دوره مالی جاری باشد']);
+        if (!( isInFiscalPeriodDateRange(dto.fromDate) && isInFiscalPeriodDateRange(dto.toDate) ))
+            throw new ValidationException([ 'تاریخ های ابتدا و انتها باید در دوره مالی جاری باشد' ]);
 
-        if(last) {
-            if(dto.fromDate < last.fromDate)
-                throw new ValidationException(['از تاریخ نمیتواند کوچکتر از آخرین تاریخ قیمت گذاری باشد']);
+        if (last) {
+            if (dto.fromDate < last.fromDate)
+                throw new ValidationException([ 'از تاریخ نمیتواند کوچکتر از آخرین تاریخ قیمت گذاری باشد' ]);
         }
-        else  {
+        else {
 
 
-            if(dto.fromDate !== fiscalPeriod.minDate)
-                throw new ValidationException(['تاریخ ابتدا باید معادل تاریخ ابتدای دوره مالی باشد']);
+            if (dto.fromDate !== fiscalPeriod.minDate)
+                throw new ValidationException([ 'تاریخ ابتدا باید معادل تاریخ ابتدای دوره مالی باشد' ]);
         }
     }
 
@@ -102,7 +108,8 @@ export class InventoryPricingService {
 
         let inventoryPricing = {
                 fromDate: dto.fromDate,
-                toDate: dto.toDate
+                toDate: dto.toDate,
+                description: dto.description
             },
             stocks = items.asEnumerable().select(item => item.stockId).distinct().select(stockId => ( { stockId } )).toArray(),
             products = this.lastProducts.map(p => ( {
@@ -192,9 +199,35 @@ export class InventoryPricingService {
 
         const inventories = this.inventoryRepository.findByIds(entity.inventories.map(item => item.inventoryId));
 
-        if(inventories.asEnumerable().any(item => item.journalId && item.priceEnteredAutomatically))
-            throw new ValidationException(['برای رسید یا حواله های قیمت گذاری شده ، سند حسابداری صادر شده . ابتدا سند ها را حذف کنید ']);
+        if (inventories.asEnumerable().any(item => item.journalId && item.priceEnteredAutomatically))
+            throw new ValidationException([ 'برای رسید یا حواله های قیمت گذاری شده ، سند حسابداری صادر شده . ابتدا سند ها را حذف کنید ' ]);
 
         this.inventoryPricingRepository.remove(id);
+
+        const inventoriesShouldRemovedPrice = inventories.filter(item => item.priceEnteredAutomatically);
+
+        inventoriesShouldRemovedPrice.forEach(item => {
+            this.inventoryRepository.updateLinesById(item.id, { unitPrice: 0 });
+        });
+
+    }
+
+    generateJournalForAll(id) {
+        const serviceFactory = (type) => {
+            if (type === 'input')
+                return this.inputService;
+            if (type === 'output')
+                return this.outputService;
+        };
+
+        let pricing = this.inventoryPricingRepository.findById(id),
+            inventories = this.inventoryRepository.findByIds(pricing.inventories.map(item => item.id));
+
+        inventories
+            .filter(item => !item.journalId)
+            .forEach(item => {
+                const journalId = serviceFactory(item.inventoryType).generateJournal(item.id);
+                this.inventoryRepository.update(item.id, { journalId });
+            });
     }
 }

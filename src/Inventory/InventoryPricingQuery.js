@@ -37,6 +37,22 @@ export class InventoryPricingQuery extends BaseQuery {
         return this.view(entity);
     }
 
+    getLast() {
+        const entity = toResult(
+            this.knex.select('*')
+                .from(this.tableName)
+                .where('branchId', this.branchId)
+                .where('fiscalPeriodId', this.state.fiscalPeriodId)
+                .orderBy('createdAt', 'desc')
+                .first()
+        );
+
+        if (!entity)
+            return null;
+
+        return this.view(entity);
+    }
+
     getProducts(id, parameters) {
         const self = this;
 
@@ -84,11 +100,42 @@ export class InventoryPricingQuery extends BaseQuery {
         )
     }
 
+    getFreeInventories(dateRange, parameters) {
+        const self = this;
+        const subquery = this.knex.select('inventoryId')
+            .from(self.tableName)
+            .leftJoin(self.inventoriesTableName, `${self.tableName}.id`, `${self.inventoriesTableName}.inventoryPricingId`)
+            .where(`${self.tableName}.branchId`, self.branchId)
+            .where(`${self.tableName}.fiscalPeriodId`, self.state.fiscalPeriodId);
+
+        let query = this.knex.from(function () {
+            this.select(
+                'inventories.*',
+                self.knex.raw('stocks.title as stock_title'),
+                self.knex.raw('"inventoryIOTypes".title as iotype_title')
+            )
+                .from('inventories')
+                .leftJoin('stocks', 'stocks.id', 'inventories.stockId')
+                .leftJoin('inventoryIOTypes', 'inventories.ioType', 'inventoryIOTypes.id')
+                .where('inventories.branchId', self.branchId)
+                .where('inventories.fiscalPeriodId', self.state.fiscalPeriodId)
+                .whereNotIn('inventories.id', subquery)
+                .whereBetween('inventories.date', [dateRange.fromDate, dateRange.toDate])
+                .orderByRaw(`inventories.date DESC, (inventories.time AT time zone 'Iran')::time DESC, CASE WHEN inventories."inventoryType" = 'input' THEN 1 ELSE 2 END DESC, inventories.number DESC`)
+                .as('base')
+        });
+
+        return toResult(
+            Utility.kendoQueryResolve(query, parameters, this.viewInventory.bind(this))
+        );
+    }
+
     view(entity) {
         return {
             id: entity.id,
             fromDate: entity.fromDate,
-            toDate: entity.toDate
+            toDate: entity.toDate,
+            description: entity.description
         };
     }
 
