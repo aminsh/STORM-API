@@ -17,6 +17,11 @@ import { InventoryReturnSaleEventListener } from "./InventoryReturnSaleEventList
 import { InventoryReturnPurchaseEventListener } from "./InventoryReturnPurchaseEventListener";
 import { InputEventListener } from "./InputEventListener";
 import { OutputEventListener } from "./OutputEventListener";
+import { JournalEventListener } from "./JournalEventListener";
+
+import { InventoryPricingRepository } from "./InventoryPricingRepository";
+import { InventoryPricingService } from "./InventoryPricingService";
+import { InventoryPricingQuery } from "./InventoryPricingQuery";
 
 import "./InventoryIOTypeController";
 import "./StockController";
@@ -24,9 +29,6 @@ import "./InputController";
 import "./OutputController";
 import "./InventoryController";
 import "./InventoryPricingController";
-import { InventoryPricingRepository } from "./InventoryPricingRepository";
-import { InventoryPricingService } from "./InventoryPricingService";
-import { InventoryPricingQuery } from "./InventoryPricingQuery";
 
 export function register(container) {
 
@@ -57,5 +59,7 @@ export function register(container) {
     container.bind("InventoryPricingRepository").to(InventoryPricingRepository);
     container.bind("InventoryPricingQuery").to(InventoryPricingQuery);
     container.bind("InventoryPricingService").to(InventoryPricingService).inTransientScope();
+
+    container.bind("JournalEventListener").to(JournalEventListener);
 
 }

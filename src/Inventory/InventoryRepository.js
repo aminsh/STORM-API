@@ -20,17 +20,17 @@ export class InventoryRepository extends BaseRepository {
     findByIds(ids) {
         return toResult(
             this.knex.select('*').from('inventories')
-                .where({branchId: this.branchId})
+                .where({ branchId: this.branchId })
                 .whereIn('id', ids)
         );
     }
 
     findOneLine(condition) {
-        condition = (condition || {});
+        condition = ( condition || {} );
         condition.branchId = this.branchId;
 
         return toResult(
-          this.knex.select('*').from('inventoryLines').where(condition).first()
+            this.knex.select('*').from('inventoryLines').where(condition).first()
         );
     }
 
@@ -90,11 +90,11 @@ export class InventoryRepository extends BaseRepository {
 
     findInventoriesAndLinesFlatten(dateRange, exceptInventories) {
         const self = {
-            tableName: 'inventories',
-            inventoryLineTableName: 'inventoryLines',
-            branchId: this.branchId,
-            fiscalPeriodId: this.state.fiscalPeriodId
-        },
+                tableName: 'inventories',
+                inventoryLineTableName: 'inventoryLines',
+                branchId: this.branchId,
+                fiscalPeriodId: this.state.fiscalPeriodId
+            },
             knex = this.knex;
 
         const query = this.knex.select('*').from(function () {
@@ -298,7 +298,7 @@ export class InventoryRepository extends BaseRepository {
 
     updateLine(lineId, data) {
         toResult(
-            this.knex('inventoryLines').where({id: lineId}).update(data)
+            this.knex('inventoryLines').where({ id: lineId }).update(data)
         );
     }
 
@@ -316,6 +316,12 @@ export class InventoryRepository extends BaseRepository {
 
             throw new Error(e);
         }
+    }
+
+    updateLinesById(id, data) {
+        toResult(
+            this.knex('inventoryLines').where({ branchId: this.branchId, inventoryId: id }).update(data)
+        );
     }
 
     remove(id) {
@@ -402,5 +408,12 @@ export class InventoryRepository extends BaseRepository {
             .modify(this.modify, this.branchId)
             .where('stockId', stockId)
             .first());
+    }
+
+    findByJournal(journalId) {
+        return toResult(
+            this.knex.select('id', 'journalId').from('inventories')
+                .where({ branchId: this.branchId, journalId })
+        );
     }
 }

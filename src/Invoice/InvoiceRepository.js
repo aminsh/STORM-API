@@ -1,6 +1,6 @@
 import toResult from "asyncawait/await";
-import {BaseRepository} from "../Infrastructure/BaseRepository";
-import {injectable} from "inversify";
+import { BaseRepository } from "../Infrastructure/BaseRepository";
+import { injectable } from "inversify";
 
 @injectable()
 export class InvoiceRepository extends BaseRepository {
@@ -24,7 +24,7 @@ export class InvoiceRepository extends BaseRepository {
                 .modify(this.modify, this.branchId, 'invoices.branchId')
                 .andWhere('invoices.id', id));
 
-        let first = data[0];
+        let first = data[ 0 ];
 
         if (!first) return null;
 
@@ -49,12 +49,12 @@ export class InvoiceRepository extends BaseRepository {
             costs: first.costs,
             charges: first.charges,
             marketerId: first.marketerId,
-            bankReceiptNumber: (first.custom || {}).bankReceiptNumber,
+            bankReceiptNumber: ( first.custom || {} ).bankReceiptNumber,
             discount: first.invoiceDiscount,
             inventoryIds: first.inventoryIds
         };
 
-        invoice.invoiceLines = data.asEnumerable().select(line => ({
+        invoice.invoiceLines = data.asEnumerable().select(line => ( {
             id: line.invoiceLineId,
             invoiceId: line.invoiceId,
             productId: line.productId,
@@ -65,7 +65,7 @@ export class InvoiceRepository extends BaseRepository {
             stockId: line.stockId,
             vat: line.vat,
             tax: line.tax
-        }))
+        } ))
             .toArray();
 
         return invoice;
@@ -74,7 +74,7 @@ export class InvoiceRepository extends BaseRepository {
     findByOrderId(orderId) {
 
         const result = toResult(
-            this.knex.select('id').from('invoices').where({orderId}).first()
+            this.knex.select('id').from('invoices').where({ orderId }).first()
         );
 
         if (!result)
@@ -284,13 +284,13 @@ export class InvoiceRepository extends BaseRepository {
         }
     }
 
-    patchLines(id , lines) {
+    patchLines(id, lines) {
         let trx = this.transaction;
 
         try {
             lines.forEach(line => {
                 trx.table('invoiceLines')
-                    .where({branchId: this.branchId, id: line.id, invoiceId: id})
+                    .where({ branchId: this.branchId, id: line.id, invoiceId: id })
                     .update(line);
             });
             trx.commit();
@@ -331,5 +331,21 @@ export class InvoiceRepository extends BaseRepository {
             .modify(this.modify, this.branchId)
             .where('stockId', stockId)
             .first());
+    }
+
+    findByJournal(journalId, invoiceType) {
+        const query = this.knex.select('id', 'journalId').where({ branchId: this.branchId, journalId });
+
+        if (invoiceType) {
+            if(Array.isArray(invoiceType)) {
+                query.whereIn('invoiceType', invoiceType);
+            }
+            else {
+                query.where({ invoiceType });
+            }
+        }
+
+
+        return toResult(query);
     }
 }
