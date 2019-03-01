@@ -1,4 +1,4 @@
-import {inject, injectable} from "inversify";
+import { inject, injectable } from "inversify";
 
 @injectable()
 export class TreasuryJournalGenerationService {
@@ -74,8 +74,8 @@ export class TreasuryJournalGenerationService {
         });
 
         return persistedTreasury.journalId
-            ? this.journalService.update(persistedTreasury.journalId, {description, journalLines})
-            : this.journalService.create({description, journalLines});
+            ? this.journalService.update(persistedTreasury.journalId, { description, journalLines })
+            : this.journalService.create({ description, journalLines, issuer: 'Treasury' });
 
     }
 
@@ -121,8 +121,8 @@ export class TreasuryJournalGenerationService {
         });
 
         return persistedTreasury.journalId
-            ? this.journalService.update(persistedTreasury.journalId, {description, journalLines})
-            : this.journalService.create({description, journalLines});
+            ? this.journalService.update(persistedTreasury.journalId, { description, journalLines })
+            : this.journalService.create({ description, journalLines, issuer: 'Treasury' });
     }
 
     generateForReceiveReceipt(treasuryId) {
@@ -168,8 +168,8 @@ export class TreasuryJournalGenerationService {
         });
 
         return persistedTreasury.journalId
-            ? this.journalService.update(persistedTreasury.journalId, {description, journalLines})
-            : this.journalService.create({description, journalLines});
+            ? this.journalService.update(persistedTreasury.journalId, { description, journalLines })
+            : this.journalService.create({ description, journalLines, issuer: 'Treasury' });
     }
 
     generateForPaymentReceipt(treasuryId) {
@@ -218,8 +218,8 @@ export class TreasuryJournalGenerationService {
         });
 
         return persistedTreasury.journalId
-            ? this.journalService.update(persistedTreasury.journalId, {description, journalLines})
-            : this.journalService.create({description, journalLines});
+            ? this.journalService.update(persistedTreasury.journalId, { description, journalLines })
+            : this.journalService.create({ description, journalLines, issuer: 'Treasury' });
     }
 
     generateForReceiveDemandNote(treasuryId) {
@@ -265,8 +265,8 @@ export class TreasuryJournalGenerationService {
         });
 
         return persistedTreasury.journalId
-            ? this.journalService.update(persistedTreasury.journalId, {description, journalLines})
-            : this.journalService.create({description, journalLines});
+            ? this.journalService.update(persistedTreasury.journalId, { description, journalLines })
+            : this.journalService.create({ description, journalLines , issuer: 'Treasury'});
     }
 
     generateForPaymentDemandNote(treasuryId) {
@@ -311,8 +311,8 @@ export class TreasuryJournalGenerationService {
         });
 
         return persistedTreasury.journalId
-            ? this.journalService.update(persistedTreasury.journalId, {description, journalLines})
-            : this.journalService.create({description, journalLines});
+            ? this.journalService.update(persistedTreasury.journalId, { description, journalLines })
+            : this.journalService.create({ description, journalLines , issuer: 'Treasury'});
     }
 
     generateForCheque(treasuryId) {
@@ -326,7 +326,7 @@ export class TreasuryJournalGenerationService {
                 .select(item => item.journalId)
                 .toArray(),
             persistedJournal = persistedTreasuryJournalId.length > 0
-                ? this.journalRepository.findById(persistedTreasuryJournalId[0])
+                ? this.journalRepository.findById(persistedTreasuryJournalId[ 0 ])
                 : null;
 
         if (persistedTreasury.treasuryType === 'receive' && persistedTreasury.documentDetail.status === 'spend')
@@ -349,9 +349,9 @@ export class TreasuryJournalGenerationService {
 
 
         return persistedJournal
-            ? this.journalService.update(persistedTreasuryJournalId[0],
-                {description: persistedJournal.description, journalLines: persistedJournal.journalLines})
-            : this.journalService.create({description, journalLines});
+            ? this.journalService.update(persistedTreasuryJournalId[ 0 ],
+                { description: persistedJournal.description, journalLines: persistedJournal.journalLines })
+            : this.journalService.create({ description, journalLines ,issuer: 'Treasury'});
 
     }
 
@@ -362,11 +362,11 @@ export class TreasuryJournalGenerationService {
             payer = this.detailAccountRepository.findById(treasury.sourceDetailAccountId),
             persistedJournal = treasury.journalId ? this.journalRepository.findById(treasury.journalId) : null,
             debtorLine = persistedJournal ? persistedJournal.journalLines.asEnumerable().where(item => item.creditor === 0)
-                    .select(item => ({
+                    .select(item => ( {
                         generalLedgerAccountId: item.generalLedgerAccountId,
                         subsidiaryLedgerAccountId: item.subsidiaryLedgerAccountId,
                         detailAccountId: item.detailAccountId
-                    })).first()
+                    } )).first()
                 : null,
 
             journalLines = [];
@@ -564,10 +564,10 @@ export class TreasuryJournalGenerationService {
             receiver = this.detailAccountRepository.findById(treasury.destinationDetailAccountId),
             persistedJournal = treasury.journalId ? this.journalRepository.findById(treasury.journalId) : null,
             creditorLine = persistedJournal ? persistedJournal.journalLines.asEnumerable().where(item => item.debtor === 0)
-                    .select(item => ({
+                    .select(item => ( {
                         generalLedgerAccountId: item.generalLedgerAccountId,
                         subsidiaryLedgerAccountId: item.subsidiaryLedgerAccountId
-                    })).first()
+                    } )).first()
                 : null,
             errors = [],
             journalLines = [];
@@ -710,20 +710,20 @@ export class TreasuryJournalGenerationService {
             let receiveCheque = treasury.receiveId ? this.treasuryRepository.findById(treasury.receiveId) : null,
                 receiveJournal = receiveCheque ? this.journalRepository.findById(receiveCheque.journalId) : null,
                 receiveDebtorLine = receiveJournal ? receiveJournal.journalLines.asEnumerable().where(item => item.creditor === 0)
-                        .select(item => ({
+                        .select(item => ( {
                             generalLedgerAccountId: item.generalLedgerAccountId,
                             subsidiaryLedgerAccountId: item.subsidiaryLedgerAccountId,
                             detailAccountId: item.detailAccountId
-                        })).first()
+                        } )).first()
                     : null,
                 receiveDebtorLinePayer = this.detailAccountRepository.findById(receiveDebtorLine.detailAccountId),
 
                 creditorLine = persistedJournal ? persistedJournal.journalLines.asEnumerable().where(item => item.debtor === 0)
-                        .select(item => ({
+                        .select(item => ( {
                             generalLedgerAccountId: item.generalLedgerAccountId,
                             subsidiaryLedgerAccountId: item.subsidiaryLedgerAccountId,
                             detailAccountId: item.detailAccountId
-                        })).first()
+                        } )).first()
                     : null,
                 creditorLinePayer = creditorLine && this.detailAccountRepository.findById(creditorLine.detailAccountId);
 
@@ -756,7 +756,7 @@ export class TreasuryJournalGenerationService {
         let persistedTreasury = this.treasuryRepository.findById(treasuryId),
             errors = this._validation(persistedTreasury),
             chequeHistory = persistedTreasury.documentDetail.chequeStatusHistory.asEnumerable()
-                .select(item => ({journalId: item.journalId, status: item.status})).toArray();
+                .select(item => ( { journalId: item.journalId, status: item.status } )).toArray();
 
         if (!persistedTreasury || !persistedTreasury.journalId)
             errors.push('سند برای چک قبلا صادر نشده است!');
@@ -781,7 +781,7 @@ export class TreasuryJournalGenerationService {
                     ? this.updateReceiveJournalLines(persistedTreasury)
                     : this.updatePaymentJournalLines(persistedTreasury);
 
-            this.journalService.update(persistedTreasury.journalId, {description, journalLines});
+            this.journalService.update(persistedTreasury.journalId, { description, journalLines });
         });
     }
 
@@ -791,19 +791,19 @@ export class TreasuryJournalGenerationService {
             payer = this.detailAccountRepository.findById(treasury.sourceDetailAccountId),
             persistedJournal = treasury.journalId ? this.journalRepository.findById(treasury.journalId) : null,
             debtorLine = persistedJournal ? persistedJournal.journalLines.asEnumerable().where(item => item.creditor === 0)
-                    .select(item => ({
+                    .select(item => ( {
                         generalLedgerAccountId: item.generalLedgerAccountId,
                         subsidiaryLedgerAccountId: item.subsidiaryLedgerAccountId,
                         detailAccountId: item.detailAccountId
-                    })).first()
+                    } )).first()
                 : null,
 
             creditorLine = persistedJournal ? persistedJournal.journalLines.asEnumerable().where(item => item.debtor === 0)
-                    .select(item => ({
+                    .select(item => ( {
                         generalLedgerAccountId: item.generalLedgerAccountId,
                         subsidiaryLedgerAccountId: item.subsidiaryLedgerAccountId,
                         detailAccountId: item.detailAccountId
-                    })).first()
+                    } )).first()
                 : null,
 
             errors = [],
@@ -954,19 +954,19 @@ export class TreasuryJournalGenerationService {
         let receiver = this.detailAccountRepository.findById(treasury.destinationDetailAccountId),
             persistedJournal = treasury.journalId ? this.journalRepository.findById(treasury.journalId) : null,
             debtorLine = persistedJournal ? persistedJournal.journalLines.asEnumerable().where(item => item.creditor === 0)
-                    .select(item => ({
+                    .select(item => ( {
                         generalLedgerAccountId: item.generalLedgerAccountId,
                         subsidiaryLedgerAccountId: item.subsidiaryLedgerAccountId,
                         detailAccountId: item.detailAccountId
-                    })).first()
+                    } )).first()
                 : null,
 
             creditorLine = persistedJournal ? persistedJournal.journalLines.asEnumerable().where(item => item.debtor === 0)
-                    .select(item => ({
+                    .select(item => ( {
                         generalLedgerAccountId: item.generalLedgerAccountId,
                         subsidiaryLedgerAccountId: item.subsidiaryLedgerAccountId,
                         detailAccountId: item.detailAccountId
-                    })).first()
+                    } )).first()
                 : null,
 
             journalLines = [];
@@ -1136,8 +1136,8 @@ export class TreasuryJournalGenerationService {
         });
 
         return persistedTreasury.journalId
-            ? this.journalService.update(persistedTreasury.journalId, {description, journalLines})
-            : this.journalService.create({description, journalLines});
+            ? this.journalService.update(persistedTreasury.journalId, { description, journalLines })
+            : this.journalService.create({ description, journalLines, issuer: 'Treasury' });
     }
 
 }

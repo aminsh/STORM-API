@@ -72,5 +72,46 @@ exports.seed = async(function (knex, Promise) {
         await(knex('invoice_types').insert(type));
     });
 
+    let salesHasJournals = await(
+        knex.select('journalId').from('invoices')
+            .whereIn('invoiceType', [ 'sale', 'returnSale' ])
+            .whereNotNull('journalId')
+    );
+
+    await(knex('journals')
+        .whereIn('id', salesHasJournals.map(item => item.journalId))
+        .update({ issuer: 'Sale' })
+    );
+
+    let purchaseHasJournals = await(
+        knex.select('journalId').from('invoices')
+            .whereIn('invoiceType', [ 'purchase', 'returnPurchase' ])
+            .whereNotNull('journalId')
+    );
+
+    await(knex('journals')
+        .whereIn('id', purchaseHasJournals.map(item => item.journalId))
+        .update({ issuer: 'Purchase' })
+    );
+
+
+    let InventoriesHasJournals = await(
+        knex.select('journalId').from('inventories').whereNotNull('journalId')
+    );
+
+    await(knex('journals')
+        .whereIn('id', InventoriesHasJournals.map(item => item.journalId))
+        .update({ issuer: 'Inventory' })
+    );
+
+    let treasuryHasJournal = await(
+        knex.select('journalId').from('treasury').whereNotNull('journalId')
+    );
+
+    await(knex('journals')
+        .whereIn('id', treasuryHasJournal.map(item => item.journalId))
+        .update({ issuer: 'Treasury' })
+    );
+
 });
 
