@@ -77,4 +77,9 @@ class OutputController {
 
         this.outputService.remove(req.params.id);
     }
+
+    @Post("/outputs/:id/generate-journal")
+    generateJournal(req) {
+        this.outputService.generateJournal(req.params.id);
+    }
 }
