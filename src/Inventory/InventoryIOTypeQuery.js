@@ -32,6 +32,7 @@ export class InventoryIOTypeQuery extends BaseQuery {
             id: entity.id,
             title: entity.title,
             readOnly: !!entity.key,
+            key: entity.key,
             journalGenerationTemplateId: entity.journalGenerationTemplateId,
             journalGenerationTemplateTitle: entity[ 'journal_generation_template_title' ]
         }
