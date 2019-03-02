@@ -36,7 +36,6 @@ import { TreasuryEventListener } from "./Journal/TreasuryEventListener";
 import { JournalGenerationPurposeQuery } from "./Journal/JournalGenerationPurposeQuery";
 
 import { SaleMapper } from "./JournalGenerationTemplate/SaleMapper";
-import { PurchaseMapper } from "./JournalGenerationTemplate/PurchaseMapper";
 
 import { ProductEventListener } from "./ProductEventListener";
 import { StockEventListener } from "./StockEventListener";
