@@ -430,6 +430,7 @@ export class SaleQuery extends BaseQuery {
             customerDisplay: entity.detailAccountDisplay,
             status: entity.invoiceStatus,
             statusDisplay: enums.InvoiceStatus().getDisplay(entity.invoiceStatus),
+            typeId: entity.typeId,
             type: { id: entity.typeId, title: entity.typeDisplay },
             invoiceLines: entity.invoiceLines,
             sumTotalPrice: entity.sumTotalPrice,

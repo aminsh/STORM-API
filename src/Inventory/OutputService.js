@@ -181,8 +181,6 @@ export class OutputService {
 
         if (input.quantityStatus === 'confirmed')
             this.eventBus.send("InventoryOutputChanged", output, entity);
-
-
     }
 
     confirm(id) {

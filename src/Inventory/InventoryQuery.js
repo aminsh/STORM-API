@@ -329,22 +329,28 @@ export class InventoryQuery extends BaseQuery {
             inputId: item.inputId,
             outputId: item.outputId,
             invoiceId: item.invoiceId,
-            deliverer: {
-                id: item.delivererId,
-                title: item.deliverer_display
-            },
-            receiver: {
-                id: item.receiverId,
-                title: item.receiver_display
-            },
+            delivererId: item.delivererId,
+            deliverer: item.delivererId
+                ? {
+                    id: item.delivererId,
+                    title: item.deliverer_display
+                }
+                : null,
+            receiverId: item.receiverId,
+            receiver: item.receiverId
+                ? {
+                    id: item.receiverId,
+                    title: item.receiver_display
+                }
+                : null,
             invoice: item.invoiceId
                 ? { number: item[ "invoice_number" ], date: item[ "invoice_date" ], type: item[ "invoice_type" ] }
                 : undefined,
             journal: item.journalId
                 ? {
                     id: item.journalId,
-                    number: item['journal_number'],
-                    date: item['journal_date']
+                    number: item[ 'journal_number' ],
+                    date: item[ 'journal_date' ]
                 }
                 : null
         };

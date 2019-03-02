@@ -34,7 +34,7 @@ import * as Integration from "./Integration";
 import * as BranchSetup from "./BranchSetup";
 import * as Report from "./Report";
 import * as Permission from "./Permission";
-import * as InventoryAccounting from "./InventoryAccounting";
+//import * as InventoryAccounting from "./InventoryAccounting";
 import * as JournalGeneration from "./JournalGeneration";
 import * as Site from "./Site";
 
@@ -63,7 +63,7 @@ Integration.register(container);
 BranchSetup.register(container);
 Report.register(container);
 Permission.register(container);
-InventoryAccounting.register(container);
+//InventoryAccounting.register(container);
 JournalGeneration.register(container);
 Site.register(container);
 

@@ -15,9 +15,6 @@ export class InventoryService {
     @inject("InventoryIOTypeRepository")
     /** @type{InventoryIOTypeRepository}*/ inventoryIOTypeRepository = undefined;
 
-    @inject("InventoryAccountingPricingService")
-    /**@type{InventoryAccountingPricingService}*/ inventoryAccountingPricingService = undefined;
-
     @inject("InvoiceRepository")
     /**@type{InvoiceRepository}*/ invoiceRepository = undefined;
 
@@ -109,7 +106,7 @@ export class InventoryService {
             const id = this.inputService.create({
                 stockId: DTO.stockId,
                 ioType: ioType.id,
-                inventoryLines: [ { productId, quantity: DTO.quantity } ]
+                inventoryLines: [ { productId, quantity: DTO.quantity, unitPrice: DTO.unitPrice } ]
             });
 
             Utility.delay(500);
@@ -127,19 +124,12 @@ export class InventoryService {
             if (line)
                 line.quantity = DTO.quantity;
             else
-                inputFirst.inventoryLines.push({ productId, quantity: DTO.quantity });
+                inputFirst.inventoryLines.push({ productId, quantity: DTO.quantity, unitPrice: DTO.unitPrice });
 
             this.inputService.update(inputFirst.id, inputFirst);
 
             inputFirst = this.inventoryRepository.findById(inputFirst.id);
         }
-
-        this.inventoryAccountingPricingService.inputEnterPrice(
-            inputFirst.id,
-            inputFirst.inventoryLines
-                .filter(item => item.productId === productId)
-                .map(item => Object.assign({}, item, { unitPrice: DTO.unitPrice })),
-            true);
     }
 
     addToInputFirst(productId, data) {
