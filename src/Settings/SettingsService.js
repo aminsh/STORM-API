@@ -30,6 +30,7 @@ export class SettingService{
             canCreateSaleOnNoEnoughInventory: cmd.canCreateSaleOnNoEnoughInventory,
             productOutputCreationMethod: cmd.productOutputCreationMethod,
             canSaleGenerateAutomaticJournal: cmd.canSaleGenerateAutomaticJournal,
+            canSaleGenerateAutomaticOutput: cmd.canSaleGenerateAutomaticOutput,
             canInventoryGenerateAutomaticJournal: cmd.canInventoryGenerateAutomaticJournal,
             canRemoveJournalWhenSourceRemoved: cmd.canRemoveJournalWhenSourceRemoved,
             stakeholders: JSON.stringify(cmd.stakeholders),

@@ -1,6 +1,7 @@
-import {BaseQuery} from "../Infrastructure/BaseQuery";
+import { BaseQuery } from "../Infrastructure/BaseQuery";
 import toResult from "asyncawait/await";
-import {injectable, inject} from "inversify"
+import { injectable, inject } from "inversify";
+import { outputStatusQuery } from "./SalePartialQuery";
 
 @injectable()
 export class SaleQuery extends BaseQuery {
@@ -19,6 +20,9 @@ export class SaleQuery extends BaseQuery {
     @inject("InvoiceCompareService")
     /**@type{InvoiceCompareService}*/ invoiceCompareService = undefined;
 
+    @inject("InventoryQuery")
+    /**@type{InventoryQuery}*/ inventoryQuery = undefined;
+
     getById(id) {
         let knex = this.knex,
             branchId = this.branchId,
@@ -32,11 +36,18 @@ export class SaleQuery extends BaseQuery {
                 .select(
                     'invoices.*',
                     knex.raw('"person"."title" as "detailAccountDisplay"'),
-                    knex.raw('"marketer"."title" as "marketerDisplay"')
+                    knex.raw('"marketer"."title" as "marketerDisplay"'),
+                    knex.raw(`(${outputStatusQuery('invoices')}) as delivered`),
+                    knex.raw('"invoice_types"."title" as "typeDisplay"'),
+                    knex.raw('journals."temporaryNumber" as journal_number'),
+                    knex.raw('journals."temporaryDate" as journal_date'),
+                    knex.raw('journals.description as journal_description')
                 )
                 .from('invoices')
                 .leftJoin('detailAccounts as person', 'invoices.detailAccountId', 'person.id')
                 .leftJoin('detailAccounts as marketer', 'invoices.marketerId', 'marketer.id')
+                .leftJoin('invoice_types', 'invoices.typeId', 'invoice_types.id')
+                .leftJoin('journals', 'journals.id', 'invoices.journalId')
                 .where('invoices.id', id)
                 .modify(modify, branchId, userId, canView, 'invoices')
                 .first()
@@ -46,7 +57,8 @@ export class SaleQuery extends BaseQuery {
                 .select('invoiceLines.*',
                     knex.raw('CAST("invoiceLines"."unitPrice" AS FLOAT)'),
                     knex.raw('scales.title as scale'),
-                    knex.raw('stocks.title as "stockDisplay"'))
+                    knex.raw('stocks.title as "stockDisplay"')
+                )
                 .from('invoiceLines')
                 .leftJoin('products', 'invoiceLines.productId', 'products.id')
                 .leftJoin('scales', 'products.scaleId', 'scales.id')
@@ -55,44 +67,57 @@ export class SaleQuery extends BaseQuery {
                 .where('invoiceId', id)
             ),
             sumCharges = invoice
-                ? (invoice.charges || []).asEnumerable().sum(c => c.value)
+                ? ( invoice.charges || [] ).asEnumerable().sum(c => c.value)
                 : 0,
             sumChargesVatIncluded = invoice
-                ? (invoice.charges || []).asEnumerable().where(e => e.vatIncluded).sum(e => e.value)
+                ? ( invoice.charges || [] ).asEnumerable().where(e => e.vatIncluded).sum(e => e.value)
                 : 0,
             invoiceDiscount = invoice ? invoice.discount || 0 : 0;
 
         let lineHaveVat = invoiceLines.asEnumerable().firstOrDefault(e => e.vat !== 0),
             persistedVat = lineHaveVat
-                ? (100 * (lineHaveVat.vat + lineHaveVat.tax) / (((lineHaveVat.quantity * lineHaveVat.unitPrice) - lineHaveVat.discount)))
+                ? ( 100 * ( lineHaveVat.vat + lineHaveVat.tax ) / ( ( ( lineHaveVat.quantity * lineHaveVat.unitPrice ) - lineHaveVat.discount ) ) )
                 : 0;
 
         if (invoice) {
             invoice.sumTotalPrice = invoiceLines.asEnumerable()
                     .sum(line => line.quantity * line.unitPrice - line.discount + line.vat + line.tax)
                 - invoiceDiscount +
-                sumCharges + (sumChargesVatIncluded * persistedVat / 100);
+                sumCharges + ( sumChargesVatIncluded * persistedVat / 100 );
 
             invoice.sumRemainder = invoice.sumTotalPrice - treasuriesTotalAmount;
 
             invoice.totalVat = invoiceLines.asEnumerable()
-                .sum(line => line.vat + line.tax) + (sumChargesVatIncluded * persistedVat / 100);
+                .sum(line => line.vat + line.tax) + ( sumChargesVatIncluded * persistedVat / 100 );
 
             invoice.chargesVat = sumChargesVatIncluded * persistedVat / 100;
 
             invoice.invoiceLines = invoiceLines.asEnumerable().select(this._lineView).toArray();
             invoice.branchId = branchId;
+
+            invoice.outputs = this.inventoryQuery.getByInvoice(invoice.id);
         }
+
+        invoice.referenceId = invoice.orderId;
         return invoice ? this._view(invoice, settings) : [];
     }
 
     getByOrderId(orderId) {
-        const invoice = toResult(this.knex.select('id').from('invoices').where({orderId}).first());
+        const invoice = toResult(this.knex.select('id').from('invoices').where({ orderId }).first());
 
         if (!invoice)
             return null;
 
         return this.getById(invoice.id);
+    }
+
+    getByOrderIds(orderIds) {
+        if (!( orderIds && orderIds.length > 0 ))
+            return [];
+
+        return toResult(this.knex.select('id', 'orderId', 'number').from('invoices')
+            .where('branchId', this.branchId)
+            .whereIn('orderId', orderIds));
     }
 
     getAll(parameters) {
@@ -109,6 +134,7 @@ export class SaleQuery extends BaseQuery {
                 this.select(
                     'createdAt',
                     'id',
+                    knex.raw('"orderId" as "referenceId"'),
                     'number',
                     'display',
                     'date',
@@ -118,32 +144,44 @@ export class SaleQuery extends BaseQuery {
                     'description',
                     'title',
                     'journalId',
+                    'journal_number',
+                    'journal_date',
                     'marketerId',
                     'marketerDisplay',
+                    'typeId',
+                    'typeDisplay',
                     knex.raw(`sum(discount) as discount`),
                     knex.raw(`"sum"("totalPrice") + ${sumChargesQuery} - sum(DISTINCT coalesce(discount,0)) as "sumTotalPrice" `),
                     knex.raw(`("sum"("totalPrice") + ${sumChargesQuery}) - sum(DISTINCT coalesce(discount,0)) -
                                 (select coalesce(sum(treasury.amount),0) as "treasuryAmount"
                                 from treasury
                                 inner join "treasuryPurpose" as tp on treasury.id = tp."treasuryId"
-                                where "base"."id" = tp."referenceId") as "sumRemainder"`))
+                                where "base"."id" = tp."referenceId") as "sumRemainder"`),
+                    knex.raw(`(${outputStatusQuery('base')}) as delivered`))
                     .from(function () {
                         this.select('invoices.*',
                             knex.raw('"person"."title" as "detailAccountDisplay"'),
-                            knex.raw(`number || ' - ' || date || ' - ' || "person".title as display`),
+                            knex.raw(`invoices.number || ' - ' || invoices.date || ' - ' || "person".title as display`),
                             knex.raw('"marketer"."title" as "marketerDisplay"'),
-                            knex.raw(`("invoiceLines"."unitPrice" * "invoiceLines".quantity - "invoiceLines".discount + "invoiceLines".vat + "invoiceLines".tax) as "totalPrice"`))
+                            knex.raw('"invoice_types"."title" as "typeDisplay"'),
+                            knex.raw(`("invoiceLines"."unitPrice" * "invoiceLines".quantity - "invoiceLines".discount + "invoiceLines".vat + "invoiceLines".tax) as "totalPrice"`),
+                            knex.raw('journals."temporaryNumber" as journal_number'),
+                            knex.raw('journals."temporaryDate" as journal_date')
+                        )
                             .from('invoices')
                             .leftJoin('invoiceLines', 'invoices.id', 'invoiceLines.invoiceId')
                             .leftJoin('detailAccounts as person', 'invoices.detailAccountId', 'person.id')
                             .leftJoin('detailAccounts as marketer', 'invoices.marketerId', 'marketer.id')
+                            .leftJoin('invoice_types', 'invoices.typeId', 'invoice_types.id')
+                            .leftJoin('journals', 'journals.id', 'invoices.journalId')
                             .modify(modify, branchId, userId, canView, 'invoices')
-                            .andWhere('invoiceType', 'sale')
+                            .andWhere('invoices.invoiceType', 'sale')
                             .as('base');
                     }).as("group")
                     .groupBy(
                         'createdAt',
                         'id',
+                        'orderId',
                         'number',
                         'display',
                         'date',
@@ -153,8 +191,12 @@ export class SaleQuery extends BaseQuery {
                         'description',
                         'title',
                         'journalId',
+                        'journal_number',
+                        'journal_date',
                         'marketerId',
-                        'marketerDisplay')
+                        'marketerDisplay',
+                        'typeId',
+                        'typeDisplay')
                     .orderBy('number', 'desc')
 
             });
@@ -207,7 +249,7 @@ export class SaleQuery extends BaseQuery {
                     .leftJoin('detailAccounts', 'invoices.detailAccountId', 'detailAccounts.id')
                     .modify(modify, branchId, userId, canView, 'invoices')
                     .andWhere('invoiceType', 'sale')
-                    .whereBetween('date', [fiscalPeriod.minDate, fiscalPeriod.maxDate])
+                    .whereBetween('date', [ fiscalPeriod.minDate, fiscalPeriod.maxDate ])
                     .as('base');
             }).first();
 
@@ -235,17 +277,17 @@ export class SaleQuery extends BaseQuery {
                         .leftJoin('invoiceLines', 'invoices.id', 'invoiceLines.invoiceId')
                         .modify(modify, branchId, userId, canView, 'invoices')
                         .andWhere('invoiceType', 'sale')
-                        .whereBetween('date', [fiscalPeriod.minDate, fiscalPeriod.maxDate])
+                        .whereBetween('date', [ fiscalPeriod.minDate, fiscalPeriod.maxDate ])
                         .as('base');
                 })
                 .groupBy('month')
                 .orderBy('month')
-                .map(item => ({
+                .map(item => ( {
                     total: item.total,
                     totalPrice: item.sumTotalPrice,
                     month: item.month,
                     monthName: this.enums.getMonth().getDisplay(item.month),
-                }));
+                } ));
 
 
         return toResult(query);
@@ -272,17 +314,17 @@ export class SaleQuery extends BaseQuery {
                         .leftJoin('products', 'invoiceLines.productId', 'products.id')
                         .modify(modify, branchId, userId, canView, 'invoices')
                         .andWhere('invoiceType', 'sale')
-                        .whereBetween('date', [fiscalPeriod.minDate, fiscalPeriod.maxDate])
+                        .whereBetween('date', [ fiscalPeriod.minDate, fiscalPeriod.maxDate ])
                         .as('base');
                 })
                 .groupBy('productId', 'productTitle')
                 .orderByRaw('"count"(*) desc')
                 .limit(5)
-                .map(item => ({
+                .map(item => ( {
                     productId: item.productId,
                     productTitle: item.productTitle,
                     total: item.total
-                }));
+                } ));
 
         return toResult(query);
     }
@@ -298,7 +340,7 @@ export class SaleQuery extends BaseQuery {
     }
 
     check(invoiceId) {
-        return !!(toResult(this.knex('invoices').where("id", invoiceId).first()))
+        return !!( toResult(this.knex('invoices').where("id", invoiceId).first()) )
     }
 
     getCompareInvoiceOnChange(id, lines) {
@@ -313,7 +355,7 @@ export class SaleQuery extends BaseQuery {
         if (lines.asEnumerable().any(l => !l.stockId)) {
 
             if (!defaultStockId)
-                throw new ValidationException(['انبار مقدار ندارد']);
+                throw new ValidationException([ 'انبار مقدار ندارد' ]);
 
             lines.forEach(item => item.stockId = item.stockId || defaultStockId);
         }
@@ -331,22 +373,22 @@ export class SaleQuery extends BaseQuery {
                 .whereIn('id', compared.map(item => item.stockId))
             );
 
-        let result = {input: [], output: []};
+        let result = { input: [], output: [] };
 
 
-        compared.map(item => ({
+        compared.map(item => ( {
             productId: item.productId,
             productDisplay: products.asEnumerable().single(p => p.id === item.productId).title,
             stockId: item.stockId,
             stockDisplay: stocks.asEnumerable().single(s => s.id === item.stockId).title,
             quantity: item.quantity
-        }))
+        } ))
             .forEach(item => {
 
                 if (item.quantity > 0)
                     result.input.push(item);
                 else
-                    result.output.push(Object.assign({}, item, {quantity: Math.abs(item.quantity)}));
+                    result.output.push(Object.assign({}, item, { quantity: Math.abs(item.quantity) }));
             });
 
         return result;
@@ -364,6 +406,7 @@ export class SaleQuery extends BaseQuery {
         return Object.assign({}, {
             branchId: entity.branchId,
             id: entity.id,
+            referenceId: entity.referenceId,
             printUrl,
             number: entity.number,
             date: entity.date,
@@ -371,14 +414,24 @@ export class SaleQuery extends BaseQuery {
             description: entity.description,
             title: entity.title,
             journalId: entity.journalId,
+            journal: entity.journalId
+                ? {
+                    id: entity.journalId,
+                    number: entity.journal_number,
+                    date: entity.journal_date,
+                    description: entity.journal_description
+                }
+                : null,
             inventoryIds: entity.inventoryIds,
             detailAccountId: entity.detailAccountId,
             detailAccountDisplay: entity.detailAccountDisplay,
-            customer: {id: entity.detailAccountId},
+            customer: { id: entity.detailAccountId },
             customerId: entity.detailAccountId,
             customerDisplay: entity.detailAccountDisplay,
             status: entity.invoiceStatus,
             statusDisplay: enums.InvoiceStatus().getDisplay(entity.invoiceStatus),
+            typeId: entity.typeId,
+            type: { id: entity.typeId, title: entity.typeDisplay },
             invoiceLines: entity.invoiceLines,
             sumTotalPrice: entity.sumTotalPrice,
             sumPaidAmount: entity.sumPaidAmount,
@@ -389,7 +442,9 @@ export class SaleQuery extends BaseQuery {
             totalVat: entity.totalVat || 0,
             chargesVat: entity.chargesVat || 0,
             marketerId: entity.marketerId,
-            marketerDisplay: entity.marketerDisplay
+            marketerDisplay: entity.marketerDisplay,
+            delivered: entity.delivered,
+            outputs: entity.outputs
         }, entity.custom);
     }
 
@@ -411,16 +466,16 @@ export class SaleQuery extends BaseQuery {
 
     _mapCostsAndCharges(items, itemsInSettings) {
 
-        if (!(items && items.length > 0))
+        if (!( items && items.length > 0 ))
             return undefined;
 
-        return (items || []).asEnumerable()
-            .select(e => ({
+        return ( items || [] ).asEnumerable()
+            .select(e => ( {
                 key: e.key,
                 value: e.value,
                 vatIncluded: e.vatIncluded,
-                display: (itemsInSettings.asEnumerable().singleOrDefault(c => c.key === e.key) || {}).display
-            }))
+                display: ( itemsInSettings.asEnumerable().singleOrDefault(c => c.key === e.key) || {} ).display
+            } ))
             .toArray();
     }
 }

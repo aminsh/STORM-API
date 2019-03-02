@@ -18,11 +18,20 @@ export class ReturnSaleService {
     /** @type {InvoiceRepository}*/
     @inject("InvoiceRepository") invoiceRepository = undefined;
 
+    /**@type {InventoryRepository}*/
+    @inject("InventoryRepository") inventoryRepository = undefined;
+
     /** @type {IState}*/
     @inject("State") state = undefined;
 
     /** @type {EventBus}*/
     @inject("EventBus") eventBus = undefined;
+
+    @inject("InvoiceTypeRepository")
+    /**@type{InvoiceTypeRepository}*/ invoiceTypeRepository = undefined;
+
+    @inject("JournalGenerationTemplateService")
+    /**@type{JournalGenerationTemplateService}*/ journalGenerationTemplateService = undefined;
 
     @postConstruct()
     init() {
@@ -85,12 +94,15 @@ export class ReturnSaleService {
     mapToEntity(cmd) {
 
         const detailAccount = this.detailAccountService.findPersonByIdOrCreate(cmd.customer),
-            invoice = cmd.id ? this.invoiceRepository.findById(cmd.id) : undefined;
+            invoice = cmd.id ? this.invoiceRepository.findById(cmd.id) : undefined,
+            type = cmd.typeId
+                ? this.invoiceTypeRepository.findById(cmd.typeId)
+                : this.invoiceTypeRepository.findOneOrGetDefault(cmd.type);
 
         return {
             id: cmd.id,
             date: cmd.date || PersianDate.current(),
-            invoiceStatus: cmd.status || 'draft',
+            typeId: type ? type.id : null,
             number: this.getNumber(cmd.number, invoice),
             description: cmd.description,
             ofInvoiceId: cmd.ofInvoiceId,
@@ -156,17 +168,10 @@ export class ReturnSaleService {
             throw new ValidationException(errors);
 
         entity.invoiceType = 'returnSale';
-        entity.invoiceStatus = cmd.status !== 'draft' ? 'confirmed' : 'draft';
+        entity.invoiceStatus = 'draft';
 
         let data = this._mapToData(entity);
-        this.invoiceRepository.create(data);
-
-        Utility.delay(1000);
-
-        entity.id = data.id;
-
-        if (entity.invoiceStatus === 'confirmed')
-            this.eventBus.send('ReturnSaleCreated', entity.id);
+        entity = this.invoiceRepository.create(data);
 
         return entity.id;
     }
@@ -176,8 +181,11 @@ export class ReturnSaleService {
         let entity = this.invoiceRepository.findById(id),
             errors = this.validation(entity);
 
-        if (entity.invoiceStatus !== 'draft')
+        if (entity.invoiceStatus === 'confirmed')
             errors.push('این فاکتور قبلا تایید شده');
+
+        if (entity.invoiceStatus === 'fixed')
+        errors.push('فاکتور ثبت قطعی شده');
 
         if (errors.length > 0)
             throw  new ValidationException(errors);
@@ -201,18 +209,17 @@ export class ReturnSaleService {
         if (errors.length > 0)
             throw new ValidationException(errors);
 
-        if (entity.invoiceStatus !== 'draft')
-            entity.invoiceStatus = 'confirmed';
+        const relatedOutputs = this.inventoryRepository.findByInvoiceId(id);
+
+        if (relatedOutputs && relatedOutputs.length > 0 && this._invoiceLinesChanged(invoice.invoiceLines, entity.invoiceLines))
+            errors.push('برای فاکتور جاری ، حواله خروج از انبار صادر شده ، ابتدا حواله (ها) ی خروجی حذف نمایید');
 
         this.invoiceRepository.updateBatch(id, this._mapToData(entity));
 
         if (entity.invoiceStatus === 'draft')
             return;
 
-        if (invoice.invoiceStatus === 'draft' && entity.invoiceStatus === 'confirmed')
-            this.eventBus.send('ReturnSaleCreated', entity.id);
-        else
-            this.eventBus.send('ReturnSaleChanged', invoice, entity.id);
+        this.eventBus.send('ReturnSaleChanged', entity.id);
     }
 
     fix(id) {
@@ -242,9 +249,62 @@ export class ReturnSaleService {
 
         this.invoiceRepository.remove(id);
 
-        if (entity.invoiceStatus === 'draft')
+        if (invoice.invoiceStatus === 'draft')
             return;
 
-        this.eventBus.send('ReturnSaleRemoved', entity.id);
+        this.eventBus.send('ReturnSaleRemoved', invoice.id);
+    }
+
+    generateJournal(id) {
+        let invoice = this.invoiceRepository.findById(id);
+
+
+        if (!invoice)
+            throw new ValidationException([ 'فاکتور وجود ندارد' ]);
+
+        if (invoice.journalId)
+            throw new ValidationException([ 'برای فاکتور جاری قبلا سند صادر شده ، ابتدا سند را حذف کنید' ]);
+
+        const type = invoice.typeId
+            ? this.invoiceTypeRepository.findById(invoice.typeId)
+            : null;
+
+        if (!type)
+            throw new ValidationException([ 'نوع فروش وجود ندارد' ]);
+
+        if (!type.returnJournalGenerationTemplateId)
+            throw new ValidationException([ 'نوع فروش الگوی ساخت سند برگشتی را ندارد' ]);
+
+        const journalId = this.journalGenerationTemplateService.generate(type.returnJournalGenerationTemplateId, id, 'Sale');
+
+        Utility.delay(1000);
+
+        this.invoiceRepository.update(id, { journalId });
+    }
+
+    _invoiceLinesChanged(oldLines, newLines) {
+        let removedLines = oldLines.filter(item => !newLines.asEnumerable().any(nl => nl.productId === item.productId));
+
+        if (removedLines.length > 0)
+            return true;
+
+        let addedLines = newLines.filter(item => !oldLines.asEnumerable().any(nl => nl.productId === item.productId));
+
+        if (addedLines.length > 0)
+            return true;
+
+        let changedLines = oldLines.asEnumerable()
+            .join(newLines,
+                oldLine => oldLine.productId,
+                newLine => newLine.productId,
+                (oldLine, newLine) => ( {
+                    productId: oldLine.productId,
+                    oldQuantity: oldLine.quantity,
+                    newQuantity: newLine.quantity
+                } ))
+            .where(item => item.oldQuantity !== item.newQuantity)
+            .toArray();
+
+        return changedLines.length > 0;
     }
 }

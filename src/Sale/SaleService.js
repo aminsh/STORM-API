@@ -1,4 +1,4 @@
-import {inject, injectable, postConstruct} from "inversify";
+import { inject, injectable, postConstruct } from "inversify";
 
 const PersianDate = Utility.PersianDate,
     Guid = Utility.Guid;
@@ -9,8 +9,20 @@ export class SaleService {
     /** @type {ProductInventoryService}*/
     @inject("ProductInventoryService") productInventoryService = undefined;
 
+    @inject("InvoiceTypeRepository")
+    /**@type{InvoiceTypeRepository}*/ invoiceTypeRepository = undefined;
+
     /** @type {ProductService}*/
     @inject("ProductService") productService = undefined;
+
+    /**@type {InventoryRepository}*/
+    @inject("InventoryRepository") inventoryRepository = undefined;
+
+    /**@type{InventoryService}*/
+    @inject("InventoryService") inventoryService = undefined;
+
+    /**@type{OutputService}*/
+    @inject("OutputService") outputService = undefined;
 
     /** @type {ProductRepository}*/
     @inject("ProductRepository") productRepository = undefined;
@@ -30,8 +42,11 @@ export class SaleService {
     @inject('DetailAccountRepository')
     /**@type{DetailAccountRepository}*/ detailAccountRepository = undefined;
 
-    /**@type {JournalSaleGenerationService}*/
-    @inject("JournalSaleGenerationService") journalSaleGenerationService = undefined;
+    @inject("JournalGenerationTemplateService")
+    /**@type{JournalGenerationTemplateService}*/ journalGenerationTemplateService = undefined;
+
+    @inject("JournalService")
+    /**@type{JournalService}*/ journalService = undefined;
 
     /** @type {IState}*/
     @inject("State") state = undefined;
@@ -47,8 +62,7 @@ export class SaleService {
     _validate(entity) {
         let errors = [];
 
-
-        if (!(entity.invoiceLines && entity.invoiceLines.length !== 0))
+        if (!( entity.invoiceLines && entity.invoiceLines.length !== 0 ))
             errors.push('ردیف های فاکتور وجود ندارد');
         else
             errors = entity.invoiceLines.asEnumerable().selectMany(this._validateLine.bind(this)).toArray();
@@ -56,7 +70,7 @@ export class SaleService {
         if (entity.marketerId) {
             let marketerDetailAccount = this.detailAccountRepository.findById(entity.marketerId);
 
-            if (!(marketerDetailAccount && marketerDetailAccount.isMarketer))
+            if (!( marketerDetailAccount && marketerDetailAccount.isMarketer ))
                 errors.push('نقش بازاریاب برای {0} تعریف نشده است!'.format(marketerDetailAccount.title));
         }
 
@@ -83,15 +97,11 @@ export class SaleService {
         if (Guid.isEmpty(line.productId) && Utility.String.isNullOrEmpty(line.description))
             errors.push('کالا یا شرح کالا نباید خالی باشد');
 
-        if (!(line.quantity && line.quantity !== 0))
+        if (!( line.quantity && line.quantity !== 0 ))
             errors.push('مقدار نباید خالی یا صفر باشد');
 
-        if (!(line.unitPrice && line.unitPrice !== 0))
+        if (!( line.unitPrice && line.unitPrice !== 0 ))
             errors.push('قیمت واحد نباید خالی یا صفر باشد');
-
-        if (this.settings.canControlInventory && (line.product && line.product.productType === 'good') && !line.stockId)
-            errors.push('انبار نباید خالی باشد');
-
         return errors;
     }
 
@@ -104,7 +114,7 @@ export class SaleService {
         if (!number)
             return _getNumber();
 
-        const isNumberDuplicated = this.invoiceRepository.isNumberDuplicated(number, 'sale', (persistedInvoice || {}).id);
+        const isNumberDuplicated = this.invoiceRepository.isNumberDuplicated(number, 'sale', ( persistedInvoice || {} ).id);
 
         if (isNumberDuplicated)
             return _getNumber();
@@ -115,12 +125,15 @@ export class SaleService {
     mapToEntity(cmd) {
 
         const detailAccount = this.detailAccountService.findPersonByIdOrCreate(cmd.customer),
-           marketer = cmd.marketerId ? this.detailAccountRepository.findById(cmd.marketerId) : null,
-            invoice = cmd.id ? this.invoiceRepository.findById(cmd.id) : undefined;
-
+              marketer = cmd.marketerId ? this.detailAccountRepository.findById(cmd.marketerId) : null,
+              invoice = cmd.id ? this.invoiceRepository.findById(cmd.id) : undefined,
+              type = cmd.typeId
+                ? this.invoiceTypeRepository.findById(cmd.typeId)
+                : this.invoiceTypeRepository.findOneOrGetDefault(cmd.type);
         return {
             id: cmd.id,
             date: cmd.date || PersianDate.current(),
+            typeId: type ? type.id : null,
             number: this.getNumber(cmd.number, invoice),
             description: cmd.description,
             title: cmd.title,
@@ -136,15 +149,13 @@ export class SaleService {
 
                     let product = this.productService.findByIdOrCreate(line.product);
 
-                    product = product ? product : {id: undefined, title: undefined};
+                    product = product ? product : { id: undefined, title: undefined };
 
                     return {
                         id: line.id,
                         productId: product ? product.id : null,
                         description: line.description || product.title,
-                        stockId: (this.settings.productOutputCreationMethod === 'defaultStock' && product && product.productType === 'good')
-                            ? this.settings.stockId
-                            : line.stockId,
+                        stockId: this.selectStock(product, line),
                         quantity: line.quantity,
                         unitPrice: line.unitPrice,
                         discount: line.discount || 0,
@@ -156,12 +167,31 @@ export class SaleService {
         }
     }
 
+    selectStock(product, line) {
+        if (!product)
+            return null;
+
+        if (product.productType !== 'good')
+            return null;
+
+        if (this.settings.productOutputCreationMethod === 'defaultStock')
+            return this.settings.stockId;
+
+        if (this.settings.productOutputCreationMethod === 'stockOnRequest')
+            return line.stockId;
+
+        if (this.settings.productOutputCreationMethod === 'defaultStockOnProduct')
+            return product.stocks && product.stocks.length > 0
+                ? ( product.stocks.asEnumerable().firstOrDefault(item => item.isDefault) || {} ).stockId
+                : null
+    }
+
     _mapLines(lines) {
         if (!lines)
             return [];
 
         if (!Array.isArray(lines))
-            return [lines];
+            return [ lines ];
 
         return lines;
     }
@@ -172,18 +202,18 @@ export class SaleService {
             return [];
 
         if (Array.isArray(data))
-            return data.asEnumerable().select(e => ({
+            return data.asEnumerable().select(e => ( {
                 key: e.key,
                 value: e.value || 0,
                 vatIncluded: e.vatIncluded
-            })).toArray();
+            } )).toArray();
 
         return Object.keys(data).asEnumerable()
-            .select(key => ({
+            .select(key => ( {
                 key,
                 vatIncluded: false,
-                value: data[key]
-            }))
+                value: data[ key ]
+            } ))
             .toArray();
 
     }
@@ -192,9 +222,9 @@ export class SaleService {
         let data = Object.assign({}, entity, {
             costs: JSON.stringify(entity.costs),
             charges: JSON.stringify(entity.charges),
-            custom: {bankReceiptNumber: entity.bankReceiptNumber},
+            custom: { bankReceiptNumber: entity.bankReceiptNumber },
             invoiceLines: entity.invoiceLines.asEnumerable()
-                .select(line => ({
+                .select(line => ( {
                     id: line.id,
                     productId: line.productId,
                     description: line.description,
@@ -204,7 +234,7 @@ export class SaleService {
                     discount: line.discount,
                     vat: line.vat,
                     tax: line.tax
-                }))
+                } ))
                 .toArray()
         });
 
@@ -246,7 +276,7 @@ export class SaleService {
         this.productInventoryService.commitChanges();
     }
 
-    _updateProductInventoryOnUpdate(oldSale, newSale) {
+    /*_updateProductInventoryOnUpdate(oldSale, newSale) {
 
         if (!this.settings.canControlInventory)
             return;
@@ -281,26 +311,19 @@ export class SaleService {
         }
 
         this.productInventoryService.commitChanges();
-    }
+    }*/
 
     create(cmd) {
-
         let entity = this.mapToEntity(cmd),
             errors = this._validate(entity);
 
         if (errors.length > 0)
             throw new ValidationException(errors);
-
-        /*if (cmd.status && cmd.status !== 'draft')
-            this._updateInventoryOnCreate(entity);*/
-
+      
         entity.invoiceType = 'sale';
-        entity.invoiceStatus = !cmd.status || cmd.status === 'draft' ? 'draft' : 'confirmed';
+        entity.invoiceStatus = 'draft';
 
         entity = this.invoiceRepository.create(this._mapToData(entity));
-
-        if (entity.invoiceStatus !== 'draft')
-            this.eventBus.send("SaleCreated", entity.id);
 
         return entity.id;
     }
@@ -318,8 +341,6 @@ export class SaleService {
         if (errors.length > 0)
             throw new ValidationException(errors);
 
-        /*this._updateInventoryOnCreate(entity);*/
-
         let data = {
             invoiceStatus: 'confirmed'
         };
@@ -330,31 +351,34 @@ export class SaleService {
     }
 
     update(id, cmd) {
-
         const invoice = this.invoiceRepository.findById(id);
 
         if (invoice.invoiceStatus === 'fixed')
-            throw new ValidationException(['فاکتور جاری قابل ویرایش نمیباشد']);
+            throw new ValidationException([ 'فاکتور جاری قابل ویرایش نمیباشد' ]);
 
-        let entity = this.mapToEntity(cmd),
-            errors = this._validate(entity);
+        let errors = [];
+        let entity = this.mapToEntity(cmd);
+
+        if (invoice.journalId)
+            errors.push('برای فاکتور جاری سند حسابداری صادر شده ، ابتدا سند حسابداری را حذف نمایید');
+
+        const relatedOutputs = this.inventoryRepository.findByInvoiceId(id);
+
+        if (relatedOutputs && relatedOutputs.length > 0 && this._invoiceLinesChanged(invoice.invoiceLines, entity.invoiceLines))
+            errors.push('برای فاکتور جاری ، حواله خروج از انبار صادر شده ، ابتدا حواله (ها) ی خروجی حذف نمایید');
 
         if (errors.length > 0)
             throw new ValidationException(errors);
 
-        entity.invoiceStatus = (cmd.status && cmd.status !== 'draft') ? 'confirmed' : 'draft';
+        errors = this._validate(entity);
+
+        if (errors.length > 0)
+            throw new ValidationException(errors);
 
         if (entity.invoiceStatus === 'draft') {
             this.invoiceRepository.updateBatch(id, this._mapToData(entity));
             return;
         }
-
-        const invoiceChangedToConfirm = invoice.invoiceStatus === 'draft' && entity.invoiceStatus === 'confirmed';
-
-        /*if (invoiceChangedToConfirm)
-            this._updateInventoryOnCreate(entity);
-        else
-            this._updateProductInventoryOnUpdate(invoice, entity);*/
 
         this.invoiceRepository.updateBatch(id, this._mapToData(entity));
 
@@ -363,10 +387,7 @@ export class SaleService {
         if (entity.invoiceStatus === 'draft')
             return;
 
-        if (invoiceChangedToConfirm)
-            this.eventBus.send('SaleCreated', entity.id);
-        else
-            this.eventBus.send('SaleChanged', invoice, entity.id);
+        this.eventBus.send('SaleChanged', invoice.id);
     }
 
     remove(id) {
@@ -376,7 +397,7 @@ export class SaleService {
             throw new NotFoundException();
 
         if (invoice.invoiceStatus === 'fixed')
-            throw new ValidationException(['فاکتور جاری قابل حذف نمیباشد']);
+            throw new ValidationException([ 'فاکتور جاری قابل حذف نمیباشد' ]);
 
         this.invoiceRepository.remove(id);
 
@@ -394,18 +415,118 @@ export class SaleService {
             throw new NotFoundException();
 
         if (invoice.invoiceStatus === 'draft')
-            throw new ValidationException(['فاکتور در وضعیت پیش نویس است ، ابتدا تایید کنید']);
+            throw new ValidationException([ 'فاکتور در وضعیت پیش نویس است ، ابتدا تایید کنید' ]);
 
         if (invoice.invoiceStatus === 'fixed')
-            throw new ValidationException(['فاکتور قبلا قطعی شده']);
+            throw new ValidationException([ 'فاکتور قبلا قطعی شده' ]);
 
-        this.invoiceRepository.update(id, {invoiceStatus: 'fixed'});
+        this.invoiceRepository.update(id, { invoiceStatus: 'fixed' });
+
+        this.eventBus.send("SaleFixed", id);
     }
 
     generateJournal(id) {
+        let invoice = this.invoiceRepository.findById(id);
 
-        this.journalSaleGenerationService.generate(id);
+
+        if (!invoice)
+            throw new ValidationException([ 'فاکتور وجود ندارد' ]);
+
+        if (invoice.journalId)
+            throw new ValidationException([ 'برای فاکتور جاری قبلا سند صادر شده ، ابتدا سند را حذف کنید' ]);
+
+        const type = invoice.typeId
+            ? this.invoiceTypeRepository.findById(invoice.typeId)
+            : null;
+
+        if (!type)
+            throw new ValidationException([ 'نوع فروش وجود ندارد' ]);
+
+        if (!type.journalGenerationTemplateId)
+            throw new ValidationException([ 'نوع فروش الگوی ساخت سند ندارد' ]);
+
+        const journalId = this.journalGenerationTemplateService.generate(type.journalGenerationTemplateId, id, 'Sale');
+
+        Utility.delay(1000);
+
+        this.invoiceRepository.update(id, { journalId });
     }
 
+    removeJournal(id) {
+        const invoice = this.invoiceRepository.findById(id);
+
+        if (!invoice)
+            throw new NotFoundException();
+
+        if (!invoice.journalId)
+            throw new ValidationException([ 'برای فاکتور جاری سند حسابداری صادر نشده' ]);
+
+        this.journalService.remove(invoice.journalId);
+
+        this.invoiceRepository.update(id, { journalId: null });
+    }
+
+    setStockToInvoice(id, lines) {
+        const invoice = this.invoiceRepository.findById(id);
+
+        if (!invoice)
+            throw new NotFoundException();
+
+        this.invoiceRepository.patchLines(id, lines);
+    }
+
+    generateOutput(id) {
+        const invoice = this.invoiceRepository.findById(id);
+
+        if (!invoice)
+            throw new NotFoundException();
+
+        const relatedOutputs = this.inventoryRepository.findByInvoiceId(id);
+
+        if (relatedOutputs && relatedOutputs.length > 0)
+            throw new ValidationException([ 'قبلا برای فاکتور جاری حواله (ها) ی خروجی از انبار صادر شده' ]);
+
+        this.inventoryService.createOutputFromSale(id);
+    }
+
+    removeOutputs(id) {
+        const invoice = this.invoiceRepository.findById(id);
+
+        if (!invoice)
+            throw new NotFoundException();
+
+        const relatedOutputs = this.inventoryRepository.findByInvoiceId(id);
+
+        if (!( relatedOutputs && relatedOutputs.length > 0 ))
+            throw new ValidationException([ 'برای فاکتور جاری حواله ای صادر نشده است ' ]);
+
+        relatedOutputs.forEach(item => this.outputService.remove(item.id));
+    }
+
+    _invoiceLinesChanged(oldLines, newLines) {
+        let removedLines = oldLines.filter(item => !newLines.asEnumerable().any(nl => nl.product.id === item.productId));
+
+        if (removedLines.length > 0)
+            return true;
+
+        let addedLines = newLines.filter(item => !oldLines.asEnumerable().any(nl => nl.productId === item.product.id));
+
+        if (addedLines.length > 0)
+            return true;
+
+        let changedLines = oldLines.asEnumerable()
+            .join(newLines,
+                oldLine => oldLine.productId,
+                newLine => newLine.product.id,
+                (oldLine, newLine) => ( {
+                    productId: oldLine.productId,
+                    oldQuantity: oldLine.quantity,
+                    newQuantity: newLine.quantity
+                } ))
+            .where(item => item.oldQuantity !== item.newQuantity)
+            .toArray();
+
+        return changedLines.length > 0;
+    }
 }
 

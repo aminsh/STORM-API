@@ -1,36 +1,40 @@
 import toResult from "asyncawait/await";
-import {BaseRepository} from "../../Infrastructure/BaseRepository";
-import {injectable} from "inversify";
+import { BaseRepository } from "../../Infrastructure/BaseRepository";
+import { injectable } from "inversify";
 
 @injectable()
 export class JournalGenerationTemplateRepository extends BaseRepository {
 
     tableName = 'journalGenerationTemplates';
 
-    findBySourceType(sourceType) {
+    findById(id) {
         return toResult(this.knex.select('*')
             .from(this.tableName)
             .modify(this.modify, this.branchId)
-            .where('sourceType', sourceType)
+            .where('id', id)
             .first());
     }
 
-    create(sourceType, entity) {
-        super.create(entity);
+    findByModel(model) {
+        return toResult(this.knex.select('*')
+            .from(this.tableName)
+            .modify(this.modify, this.branchId)
+            .where('model', model)
+            .first());
+    }
 
-        entity.sourceType = sourceType;
+    create(entity) {
+        super.create(entity);
 
         toResult(this.knex(this.tableName).insert(entity));
 
         return entity.id;
     }
 
-    update(sourceType, entity) {
-        entity.sourceType = sourceType;
-
+    update(id, entity) {
         toResult(this.knex(this.tableName)
             .modify(this.modify, this.branchId)
-            .where('sourceType', sourceType).update(entity));
+            .where('id', id).update(entity));
     }
 
     remove(id) {

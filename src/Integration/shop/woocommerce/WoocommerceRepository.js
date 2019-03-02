@@ -36,7 +36,7 @@ export class WoocommerceRepository {
         });
     }
 
-    get(endpoint) {
+    get(endpoint, pagable = false) {
         return toResult(
             new Promise((resolve, reject) => {
                 this.Woocommerce.get(endpoint, (err, data, res) => {
@@ -49,7 +49,7 @@ export class WoocommerceRepository {
                     if(result.data && [400, 404, 401, 500].includes(result.data.status))
                         return reject(result);
 
-                    resolve(result);
+                    resolve(pagable ? {data: result, total: parseInt(data.headers['x-wp-total'])} : result);
                 })
             })
         );

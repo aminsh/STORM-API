@@ -1,6 +1,6 @@
 import toResult from "asyncawait/await";
-import {injectable, inject} from "inversify";
-import {BaseQuery} from "../Infrastructure/BaseQuery";
+import { injectable, inject } from "inversify";
+import { BaseQuery } from "../Infrastructure/BaseQuery";
 
 @injectable()
 export class InventoryQuery extends BaseQuery {
@@ -73,11 +73,18 @@ export class InventoryQuery extends BaseQuery {
                     knex.raw('invoices.number as invoice_number'),
                     knex.raw('invoices.date as invoice_date'),
                     knex.raw('invoices."invoiceType" as invoice_type'),
+                    knex.raw('deliverer.title as deliverer_display'),
+                    knex.raw('receiver.title as receiver_display'),
+                    knex.raw('journals."temporaryNumber" as journal_number'),
+                    knex.raw('journals."temporaryDate" as journal_date')
                 )
                     .from('inventories')
                     .leftJoin('inventoryIOTypes', 'inventoryIOTypes.id', 'inventories.ioType')
                     .leftJoin('stocks', 'stocks.id', 'inventories.stockId')
                     .leftJoin('invoices', 'invoices.id', 'inventories.invoiceId')
+                    .leftJoin('detailAccounts as deliverer', 'inventories.delivererId', 'deliverer.id')
+                    .leftJoin('detailAccounts as receiver', 'inventories.receiverId', 'receiver.id')
+                    .leftJoin('journals', 'journals.id', 'inventories.journalId')
                     .modify(modify, branchId, userId, canView, 'inventories')
                     .where('fiscalPeriodId', fiscalPeriodId)
                     .as('base');
@@ -166,6 +173,16 @@ export class InventoryQuery extends BaseQuery {
             query.where('stockId', filter.stockId);
     }
 
+    getByInvoice(invoiceId) {
+        let result = toResult(
+            this.knex.select('id').from('inventories').where({ branchId: this.branchId, invoiceId })
+        );
+
+        return result && result.length > 0
+            ? this.getAllByIds(result.map(item => item.id))
+            : [];
+    }
+
     getById(id) {
         let knex = this.knex,
             branchId = this.branchId,
@@ -177,11 +194,22 @@ export class InventoryQuery extends BaseQuery {
                 .select(
                     'inventories.*',
                     knex.raw('stocks.title as "stockDisplay"'),
-                    knex.raw('"inventoryIOTypes".title as "ioTypeDisplay"')
+                    knex.raw('"inventoryIOTypes".title as "ioTypeDisplay"'),
+                    knex.raw('deliverer.title as deliverer_display'),
+                    knex.raw('receiver.title as receiver_display'),
+                    knex.raw('invoices.number as invoice_number'),
+                    knex.raw('invoices.date as invoice_date'),
+                    knex.raw('invoices."invoiceType" as invoice_type'),
+                    knex.raw('journals."temporaryNumber" as journal_number'),
+                    knex.raw('journals."temporaryDate" as journal_date')
                 )
                 .from('inventories')
                 .leftJoin('stocks', 'inventories.stockId', 'stocks.id')
                 .leftJoin('inventoryIOTypes', 'inventoryIOTypes.id', 'inventories.ioType')
+                .leftJoin('invoices', 'invoices.id', 'inventories.invoiceId')
+                .leftJoin('detailAccounts as deliverer', 'inventories.delivererId', 'deliverer.id')
+                .leftJoin('detailAccounts as receiver', 'inventories.receiverId', 'receiver.id')
+                .leftJoin('journals', 'journals.id', 'inventories.journalId')
                 .modify(modify, branchId, userId, canView, 'inventories')
                 .where('inventories.id', id)
                 .first()),
@@ -283,6 +311,7 @@ export class InventoryQuery extends BaseQuery {
 
         return {
             createdAt: item.createdAt,
+            time: item.time,
             id: item.id,
             number: item.number,
             date: item.date,
@@ -300,9 +329,30 @@ export class InventoryQuery extends BaseQuery {
             inputId: item.inputId,
             outputId: item.outputId,
             invoiceId: item.invoiceId,
+            delivererId: item.delivererId,
+            deliverer: item.delivererId
+                ? {
+                    id: item.delivererId,
+                    title: item.deliverer_display
+                }
+                : null,
+            receiverId: item.receiverId,
+            receiver: item.receiverId
+                ? {
+                    id: item.receiverId,
+                    title: item.receiver_display
+                }
+                : null,
             invoice: item.invoiceId
-                ? {number: item["invoice_number"], date: item["invoice_date"], type: item["invoice_type"]}
-                : undefined
+                ? { number: item[ "invoice_number" ], date: item[ "invoice_date" ], type: item[ "invoice_type" ] }
+                : undefined,
+            journal: item.journalId
+                ? {
+                    id: item.journalId,
+                    number: item[ 'journal_number' ],
+                    date: item[ 'journal_date' ]
+                }
+                : null
         };
     }
 

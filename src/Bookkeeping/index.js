@@ -1,45 +1,44 @@
-import {DetailAccountQuery} from "./DetailAccount/DetailAccountQuery";
-import {DetailAccountRepository} from "./DetailAccount/DetailAccountRepository";
-import {DetailAccountService} from "./DetailAccount/DetailAccountService";
+import { DetailAccountQuery } from "./DetailAccount/DetailAccountQuery";
+import { DetailAccountRepository } from "./DetailAccount/DetailAccountRepository";
+import { DetailAccountService } from "./DetailAccount/DetailAccountService";
 
-import {DetailAccountCategoryRepository} from "./DetailAccount/DetailAccountCategoryRepsitory";
-import {DetailAccountCategoryQuery} from "./DetailAccount/DetailAccountCategoryQuery";
-import {DetailAccountCategoryService} from "./DetailAccount/DetailAccountCategoryService";
+import { DetailAccountCategoryRepository } from "./DetailAccount/DetailAccountCategoryRepsitory";
+import { DetailAccountCategoryQuery } from "./DetailAccount/DetailAccountCategoryQuery";
+import { DetailAccountCategoryService } from "./DetailAccount/DetailAccountCategoryService";
 
-import {ChartOfAccountQuery} from "./ChartOfAccounts/ChartOfAccountQuery";
-import {AccountCategoryService} from "./ChartOfAccounts/AccountCategoryService";
-import {AccountCategoryRepository} from "./ChartOfAccounts/AccountCategoryRepository";
-import {GeneralLedgerAccountRepository} from "./ChartOfAccounts/GeneralLedgerAccountRepository";
-import {GeneralLedgerAccountService} from "./ChartOfAccounts/GeneralLedgerAccountService";
-import {SubsidiaryLedgerAccountRepository} from "./ChartOfAccounts/SubsidiaryLedgerAccountRepository";
-import {SubsidiaryLedgerAccountService} from "./ChartOfAccounts/SubsidiaryLedgerAccountService";
-import {DimensionCategoryRepository} from "./Dimension/DimensionCategoryRepository";
-import {DimensionRepository} from "./Dimension/DimensionRepository";
-import {DimensionService} from "./Dimension/DimensionService";
-import {DimensionCategoryQuery} from "./Dimension/DimensionCategoryQuery";
-import {DimensionQuery} from "./Dimension/DimensionQuery";
-import {JournalService} from "./Journal/JournalService";
-import {JournalRepository} from "./Journal/JournalRepository";
-import {JournalQuery} from "./Journal/JournalQuery";
-import {JournalGenerationTemplateRepository} from "./Journal/JournalGenerationTemplateRepository";
-import {JournalGenerationTemplateService} from "./Journal/JournalGenerationTemplateService";
-import {JournalGenerationTemplateEngine} from "./Journal/JournalGenerationTemplateEngine";
-import {JournalGenerationTemplateQuery} from "./Journal/JournalGenerationTemplateQuery";
-import {AccountReviewQuery} from "./AccountReview/AccountReviewQuery";
+import { ChartOfAccountQuery } from "./ChartOfAccounts/ChartOfAccountQuery";
+import { AccountCategoryService } from "./ChartOfAccounts/AccountCategoryService";
+import { AccountCategoryRepository } from "./ChartOfAccounts/AccountCategoryRepository";
+import { GeneralLedgerAccountRepository } from "./ChartOfAccounts/GeneralLedgerAccountRepository";
+import { GeneralLedgerAccountService } from "./ChartOfAccounts/GeneralLedgerAccountService";
+import { SubsidiaryLedgerAccountRepository } from "./ChartOfAccounts/SubsidiaryLedgerAccountRepository";
+import { SubsidiaryLedgerAccountService } from "./ChartOfAccounts/SubsidiaryLedgerAccountService";
+import { DimensionCategoryRepository } from "./Dimension/DimensionCategoryRepository";
+import { DimensionRepository } from "./Dimension/DimensionRepository";
+import { DimensionService } from "./Dimension/DimensionService";
+import { DimensionCategoryQuery } from "./Dimension/DimensionCategoryQuery";
+import { DimensionQuery } from "./Dimension/DimensionQuery";
+import { JournalService } from "./Journal/JournalService";
+import { JournalRepository } from "./Journal/JournalRepository";
+import { JournalQuery } from "./Journal/JournalQuery";
+import { JournalGenerationTemplateRepository } from "./Journal/JournalGenerationTemplateRepository";
+import { JournalGenerationTemplateService } from "./Journal/JournalGenerationTemplateService";
+import { JournalGenerationTemplateEngine } from "./Journal/JournalGenerationTemplateEngine";
+import { JournalGenerationTemplateQuery } from "./Journal/JournalGenerationTemplateQuery";
+import { AccountReviewQuery } from "./AccountReview/AccountReviewQuery";
 
-import {JournalTemplateQuery} from "./Journal/JournalTemplateQuery";
-import {JournalTemplateRepository} from "./Journal/JournalTemplateRepository";
-import {JournalTemplateService} from "./Journal/JournalTemplateService";
+import { JournalTemplateQuery } from "./Journal/JournalTemplateQuery";
+import { JournalTemplateRepository } from "./Journal/JournalTemplateRepository";
+import { JournalTemplateService } from "./Journal/JournalTemplateService";
 
-import {TreasuryJournalGenerationService} from "./Journal/TreasuryJournalGenerationService";
-import {TreasuryEventListener} from "./Journal/TreasuryEventListener";
-import {JournalGenerationPurposeQuery} from "./Journal/JournalGenerationPurposeQuery";
+import { TreasuryJournalGenerationService } from "./Journal/TreasuryJournalGenerationService";
+import { TreasuryEventListener } from "./Journal/TreasuryEventListener";
+import { JournalGenerationPurposeQuery } from "./Journal/JournalGenerationPurposeQuery";
 
-import {SaleMapper} from "./JournalGenerationTemplate/SaleMapper";
-import {PurchaseMapper} from "./JournalGenerationTemplate/PurchaseMapper";
+import { SaleMapper } from "./JournalGenerationTemplate/SaleMapper";
 
-import {ProductEventListener} from "./ProductEventListener";
-import {StockEventListener} from "./StockEventListener";
+import { ProductEventListener } from "./ProductEventListener";
+import { StockEventListener } from "./StockEventListener";
 
 import "./DetailAccount/DetailAccountController";
 import "./DetailAccount/DetailAccountCategoryController";
@@ -50,6 +49,12 @@ import "./Journal/JournalController";
 import "./Journal/JournalGenerationTemplateController";
 import "./AccountReview/AcccountReviewController";
 import "./Journal/JournalTemplateController";
+import { InputMapper } from "./JournalGenerationTemplate/InputMapper";
+import { InputPurchaseMapper } from "./JournalGenerationTemplate/InputPurchaseMapper";
+import { InputTransferBetweenStocksMapper } from "./JournalGenerationTemplate/InputTransferBetweenStocksMapper";
+import { OutputMapper } from "./JournalGenerationTemplate/OutputMapper";
+import { OutputTransferBetweenStocksMapper } from "./JournalGenerationTemplate/OutputTransferBetweenStocksMapper";
+import { MapperFactory } from "./JournalGenerationTemplate/MapperFactory";
 
 export function register(container) {
 
@@ -96,18 +101,12 @@ export function register(container) {
     container.bind("TreasuryEventListener").to(TreasuryEventListener);
 
     container.bind("SaleMapper").to(SaleMapper);
-    container.bind("PurchaseMapper").to(PurchaseMapper);
-
-    container.bind("Factory<Mapper>").toFactory(context => {
-        return key => {
-
-            if (key === 'sale')
-                return context.container.get("SaleMapper");
-
-            if(key === 'purchase')
-                return context.container.get("PurchaseMapper");
-        };
-    });
+    container.bind("InputMapper").to(InputMapper);
+    container.bind("InputPurchaseMapper").to(InputPurchaseMapper);
+    container.bind("InputTransferBetweenStocksMapper").to(InputTransferBetweenStocksMapper);
+    container.bind("OutputMapper").to(OutputMapper);
+    container.bind("OutputTransferBetweenStocksMapper").to(OutputTransferBetweenStocksMapper);
+    container.bind("MapperFactory").to(MapperFactory);
 
     container.bind("ProductEventListener").to(ProductEventListener);
     container.bind("StockEventListener").to(StockEventListener);

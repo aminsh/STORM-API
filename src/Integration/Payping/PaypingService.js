@@ -1,4 +1,4 @@
-import {inject, injectable} from "inversify";
+import { inject, injectable } from "inversify";
 import qs from "qs";
 import queryString from "query-string";
 
@@ -30,7 +30,7 @@ export class PaypingService {
         const paypingThirdParty = this.registeredThirdPartyRepository.get('payping');
 
         const invoices = this.httpRequest.get(`${paypingBaseUrl}/v1/invoice/List`)
-            .query({isArchived: false})
+            .query({ isArchived: false })
             .setHeader('Authorization', paypingThirdParty.data.token)
             .execute();
 
@@ -53,7 +53,7 @@ export class PaypingService {
         let cmd = {
             payerName: invoice.customerDisplay,
             amount: invoice.sumRemainder / 10,
-            returnUrl: `${process.env['ORIGIN_URL']}/v1/payping/invoice/payment/callback/${invoiceId}?${qs.stringify(queryString)}`,
+            returnUrl: `${process.env[ 'ORIGIN_URL' ]}/v1/payping/invoice/payment/callback/${invoiceId}?${qs.stringify(queryString)}`,
             description: 'بابت فاکتور شماره {0}  به تاریخ {1}'.format(invoice.number, invoice.date),
         };
 
@@ -61,18 +61,18 @@ export class PaypingService {
 
         try {
             result = this.httpRequest.post(`${paypingBaseUrl}/v1/pay`)
-                .query({isArchived: false})
+                .query({ isArchived: false })
                 .setHeader('Authorization', paypingThirdParty.data.token)
                 .body(cmd)
                 .execute();
 
-            this.loggerService.success({invoiceId, cmd, result}, 'PaypingService.invoicePay');
+            this.loggerService.success({ invoiceId, cmd, result }, 'PaypingService.invoicePay');
         }
         catch (e) {
             this.loggerService.invalid(e, 'PaypingService.pay')
         }
 
-        return {url: `${paypingBaseUrl}/v1/pay/gotoipg/${result.code}`};
+        return { url: `${paypingBaseUrl}/v1/pay/gotoipg/${result.code}` };
     }
 
     confirmInvoicePay(invoiceId, refid, returnUrl) {
@@ -88,18 +88,18 @@ export class PaypingService {
 
         try {
             this.httpRequest.post(`${paypingBaseUrl}/v1/pay/verify`)
-                .query({isArchived: false})
+                .query({ isArchived: false })
                 .setHeader('Authorization', paypingThirdParty.data.token)
-                .body({refid, amount: invoice.sumRemainder / 10})
+                .body({ refid, amount: invoice.sumRemainder / 10 })
                 .execute();
         }
         catch (e) {
             this.loggerService.invalid(e, 'PaypingService.verify.payment');
-            return getReturnUrl({status: 'paidButNotRecorded'});
+            return getReturnUrl({ status: 'paidButNotRecorded' });
         }
 
         if (!paypingThirdParty.data.accountId)
-            return getReturnUrl({status: 'paidButNotRecorded'});
+            return getReturnUrl({ status: 'paidButNotRecorded' });
 
         const cmd = {
             reference: 'invoice',
@@ -121,9 +121,9 @@ export class PaypingService {
 
         try {
             this.treasuryPurposeService.create(cmd);
-            return getReturnUrl({status: 'success'});
+            return getReturnUrl({ status: 'success' });
         } catch (e) {
-            return getReturnUrl({status: 'paidButNotRecorded'});
+            return getReturnUrl({ status: 'paidButNotRecorded' });
         }
     }
 
@@ -133,7 +133,7 @@ export class PaypingService {
                 .setHeader('Authorization', paypingThirdParty.data.token)
                 .execute();
 
-        const customer = paypingInvoice.billToes[0].addressBook;
+        const customer = paypingInvoice.billToes[ 0 ].addressBook;
 
         const sale = {
             orderId: code,
@@ -148,21 +148,21 @@ export class PaypingService {
                 city: customer.city,
                 postalCode: customer.zipCode,
             },
-            invoiceLines: paypingInvoice.invoiceItems.map(item => ({
+            discount: this.toRial(paypingInvoice.totalDiscountAmount || 0),
+            invoiceLines: paypingInvoice.invoiceItems.map(item => ( {
                 product: {
                     referenceId: item.code,
                     title: item.name
                 },
                 quantity: parseFloat(item.quantity),
                 unitPrice: this.toRial(parseFloat(item.price)),
-            }))
+            } ))
         };
 
         this.saleService.create(sale);
     }
 
     toRial(value) {
-
         return value * 10;
     }
 }

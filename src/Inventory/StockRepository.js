@@ -13,6 +13,13 @@ export class StockRepository extends BaseRepository {
             .first());
     }
 
+    findByIds(ids) {
+        return toResult(this.knex
+            .from('stocks')
+            .modify(this.modify, this.branchId)
+            .whereIn('id', ids));
+    }
+
     isUsedOnInventory(id) {
         return toResult(this.knex.select('id')
             .from('inventories')

@@ -13,7 +13,7 @@ class InventoryAccountingController {
     @Post("/calculate")
     calculate() {
 
-        this.inventoryAccountingPricingService.calculatePrice();
+        //this.inventoryAccountingPricingService.calculatePrice();
     }
 
     @Put("/inputs/:id/enter-price")

@@ -1,4 +1,4 @@
-import {inject, injectable} from "inversify";
+import { inject, injectable } from "inversify";
 
 @injectable()
 export class ProductService {
@@ -57,12 +57,15 @@ export class ProductService {
             title: cmd.title,
             productType: cmd.productType || 'good',
             reorderPoint: cmd.reorderPoint,
-            salePrice: cmd.salePrice,
+            salePrice: isNaN(parseInt(cmd.salePrice)) ? 0 : parseInt(cmd.salePrice),
             categoryId: cmd.categoryId,
             scaleId: cmd.scaleId,
             referenceId: cmd.referenceId,
-            barcode: cmd.barcode
-
+            barcode: cmd.barcode,
+            stocks: ( cmd.stocks || [] ).map(s => ( {
+                stockId: s.stockId,
+                isDefault: s.isDefault
+            } ))
         };
 
         this.productRepository.create(entity);
@@ -98,6 +101,11 @@ export class ProductService {
         if (!Utility.String.isNullOrEmpty(cmd.referenceId) && this.productRepository.findByReferenceId(cmd.referenceId, id))
             errors.push('کد مرجع تکراری است');
 
+        if(cmd.stocks && cmd.stocks.length > 0) {
+            if(!cmd.stocks.asEnumerable().all(s => s.stockId))
+                errors.push('مقدار انبار ها صحیح نیست');
+        }
+
         return errors;
     }
 
@@ -108,12 +116,13 @@ export class ProductService {
             title: cmd.title,
             productType: cmd.productType,
             reorderPoint: cmd.reorderPoint,
-            salePrice: cmd.salePrice,
+            salePrice: isNaN(parseInt(cmd.salePrice)) ? 0 : parseInt(cmd.salePrice),
             categoryId: cmd.categoryId,
             scaleId: cmd.scaleId,
             referenceId: cmd.referenceId,
             barcode: cmd.barcode,
-            accountId: cmd.accountId
+            accountId: cmd.accountId,
+            stocks: cmd.stocks
         };
 
         return JSON.parse(JSON.stringify(entity));
@@ -122,12 +131,12 @@ export class ProductService {
     update(id, cmd) {
 
         if (Utility.String.isNullOrEmpty(id))
-            throw new ValidationException(['کد کالا / خدمات مقدار ندارد']);
+            throw new ValidationException([ 'کد کالا / خدمات مقدار ندارد' ]);
 
         const persistedProduct = this.productRepository.findById(id);
 
         if (!persistedProduct)
-            throw new ValidationException(['کالا / خدمات وجود ندارد']);
+            throw new ValidationException([ 'کالا / خدمات وجود ندارد' ]);
 
         let product = Object.assign({}, persistedProduct, this._mapToEntity(cmd)),
             errors = this._validate(product, id);

@@ -1,5 +1,5 @@
-import {inject, injectable} from "inversify";
-import {EventHandler} from "../Infrastructure/@decorators";
+import { inject, injectable } from "inversify";
+import { EventHandler } from "../Infrastructure/@decorators";
 
 @injectable()
 export class JournalSaleEventListener {
@@ -10,11 +10,11 @@ export class JournalSaleEventListener {
     /**@type {InvoiceRepository}*/
     @inject("InvoiceRepository") invoiceRepository = undefined;
 
-    /**@type {JournalSaleGenerationService}*/
-    @inject("JournalSaleGenerationService") journalSaleGenerationService = undefined;
-
     /**@type {JournalService}*/
     @inject("JournalService") journalService = undefined;
+
+    /**@type {SaleService}*/
+    @inject("SaleService") saleService = undefined;
 
     @EventHandler("SaleCreated")
     onSaleCreated(invoiceId) {
@@ -28,7 +28,10 @@ export class JournalSaleEventListener {
         if (!settings.canSaleGenerateAutomaticJournal)
             return;
 
-        this.journalSaleGenerationService.generate(invoiceId);
+        if (invoice.journalId)
+            return;
+
+        this.saleService.generateJournal(invoiceId);
     }
 
     @EventHandler("SaleChanged")
@@ -37,9 +40,21 @@ export class JournalSaleEventListener {
         this.onSaleCreated(invoiceId);
     }
 
-    @EventHandler("SaleRemoved")
-    onInvoiceRemoved(invoice) {
+    @EventHandler("SaleFixed")
+    onSaleFixed(invoiceId) {
+        let invoice = this.invoiceRepository.findById(invoiceId);
 
+        if (!invoice.journalId) {
+            this.onSaleCreated(invoiceId);
+            invoice = this.invoiceRepository.findById(invoiceId);
+        }
+
+        this.journalService.fix(invoice.journalId);
+    }
+
+    @EventHandler("SaleRemoved")
+    onInvoiceRemoved(invoiceId) {
+        let invoice = this.invoiceRepository.findById(invoiceId);
         let settings = this.settingsRepository.get();
 
         if (!settings.canRemoveJournalWhenSourceRemoved)

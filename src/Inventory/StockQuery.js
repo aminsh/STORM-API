@@ -1,6 +1,6 @@
 import toResult from "asyncawait/await";
-import {injectable} from "inversify";
-import {BaseQuery} from "../Infrastructure/BaseQuery";
+import { injectable } from "inversify";
+import { BaseQuery } from "../Infrastructure/BaseQuery";
 
 @injectable()
 export class StockQuery extends BaseQuery {
@@ -24,7 +24,7 @@ export class StockQuery extends BaseQuery {
 
     getById(id) {
 
-        let entity = toResult(this.knex.select('id', 'title', 'address', 'accountId')
+        let entity = toResult(this.knex.select('*')
             .from(this.tableName)
             .where('branchId', this.branchId)
             .where('id', id)
@@ -38,7 +38,8 @@ export class StockQuery extends BaseQuery {
             id: item.id,
             title: item.title,
             address: item.address,
-            accountId: item.accountId
+            accountId: item.accountId,
+            subsidiaryLedgerAccountId: item.subsidiaryLedgerAccountId
         };
     }
 }

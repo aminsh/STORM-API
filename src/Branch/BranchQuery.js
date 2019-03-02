@@ -135,7 +135,7 @@ export class BranchQuery {
             where = `users.email ILIKE '${user.email}' `;
 
         if(user.mobile)
-            where += `OR users.mobile = '${user.mobile}'`;
+            where += `${where ? 'OR' : ''} users.mobile = '${user.mobile}'`;
 
         if(where.length === 0)
             `users.id = '${user.id}'`;

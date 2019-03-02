@@ -1,5 +1,6 @@
 {
-  "title": "الگوی صدور سند اتوماتیک برای فاکتور فروش",
+  "title": "فاکتور فروش",
+  "model": "Sale",
   "fields": [
     {
       "key": "number",
@@ -11,7 +12,7 @@
       "key": "date",
       "display": "تاریخ فاکتور",
       "value": "1396/01/01",
-      "type": "String"
+      "type": "Date"
     },
     {
       "key": "title",
@@ -47,7 +48,7 @@
       "key": "customer",
       "display": "شناسه خریدار (تفصیل)",
       "value": "6001 - مشتری نمونه",
-      "type": "String"
+      "type": "DetailAccount"
     },
     {
       "key": "customerTitle",
@@ -65,7 +66,7 @@
       "key": "marketer",
       "display": "تفصیل بازار یاب",
       "value": "بازار یاب نمونه",
-      "type": "String"
+      "type": "DetailAccount"
     },
     {
       "key": "marketerCommissionRate",

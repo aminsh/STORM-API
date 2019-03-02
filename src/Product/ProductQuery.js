@@ -1,6 +1,6 @@
-import {BaseQuery} from "../Infrastructure/BaseQuery";
+import { BaseQuery } from "../Infrastructure/BaseQuery";
 import toResult from "asyncawait/await";
-import {inject} from "inversify";
+import { inject } from "inversify";
 
 export class ProductQuery extends BaseQuery {
 
@@ -24,7 +24,6 @@ export class ProductQuery extends BaseQuery {
                         .where('products.branchId', branchId)
                         .as('base');
                 });
-
 
         return toResult(Utility.kendoQueryResolve(query, parameters, this.view.bind(this)));
     }
@@ -72,7 +71,31 @@ export class ProductQuery extends BaseQuery {
                 .where('products_inventory.productId', result.id)
         );
 
+        const stocks = toResult(this.knex
+            .select('stockId', 'isDefault', knex.raw('stocks.title as "stockTitle"'))
+            .from('products_stocks')
+            .leftJoin('stocks', 'stocks.id', 'products_stocks.stockId')
+            .where('products_stocks.branchId', this.branchId)
+            .where('products_stocks.productId', id));
+
+        result.stocks = stocks.map(s => ( {
+            stock: { id: s.stockId, title: s.stockTitle },
+            stockId: s.stockId,
+            isDefault: s.isDefault
+        } ));
+
         return this.view(result);
+    }
+
+    getManyByReferenceId(referenceIds) {
+        if(!(referenceIds && referenceIds.length > 0))
+            return;
+
+        return toResult(
+            this.knex.select('id', 'referenceId').from('products')
+                .where('branchId', this.branchId)
+                .whereIn('referenceId', referenceIds)
+        );
     }
 
     getManyByIds(ids) {
@@ -128,7 +151,8 @@ export class ProductQuery extends BaseQuery {
             totalQuantity: entity.inventory && Array.isArray(entity.inventory) && entity.inventory.length > 0
                 ? entity.inventory.asEnumerable().sum(item => item.quantity)
                 : entity.totalQuantity,
-            inventory: entity.inventory
+            inventory: entity.inventory,
+            stocks: entity.stocks
         }
     }
 

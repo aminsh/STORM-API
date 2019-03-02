@@ -78,5 +78,8 @@ class InputController {
         this.inputService.remove(req.params.id);
     }
 
-
+    @Post("/inputs/:id/generate-journal")
+    generateJournal(req) {
+        this.inputService.generateJournal(req.params.id);
+    }
 }

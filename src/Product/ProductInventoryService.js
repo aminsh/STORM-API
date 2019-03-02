@@ -83,7 +83,7 @@ export class ProductInventoryService {
     }
 
     start() {
-       // this.productInventoryTransactionalRepository.start();
+        //this.productInventoryTransactionalRepository.start();
     }
 
     commitChanges() {

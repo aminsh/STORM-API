@@ -1,0 +1,108 @@
+{
+  "title": "رسید خرید",
+  "model": "InputPurchase",
+  "fields": [
+    {
+      "key": "number",
+      "display": "شماره",
+      "value": 1,
+      "type": "String"
+    },
+    {
+      "key": "date",
+      "display": "تاریخ",
+      "value": "1396/01/01",
+      "type": "Date"
+    },
+    {
+      "key": "description",
+      "display": "شرح",
+      "value": "تست",
+      "type": "String"
+    },
+    {
+      "key": "amount",
+      "display": "مبلغ فاکتور (مقدار * مبلغ واحد)",
+      "value": 10000,
+      "type": "Number"
+    },
+    {
+      "key": "tax",
+      "display": "مالیات ارزش افزوده",
+      "value": 60,
+      "type": "Number"
+    },
+    {
+      "key": "vat",
+      "display": "عوارض ارزش افزوده",
+      "value": 30,
+      "type": "Number"
+    },
+    {
+      "key": "deliverer",
+      "display": "تحویل دهنده (تفصیل)",
+      "value": "6001 - تامین کننده نمونه",
+      "type": "DetailAccount"
+    },
+    {
+      "key": "delivererTitle",
+      "display": "نام تحویل دهنده (تفصیل)",
+      "value": "مشتری نمونه",
+      "type": "String"
+    },
+    {
+      "key": "delivererCode",
+      "display": "کد تحویل دهنده (تفصیل)",
+      "value": "6001",
+      "type": "String"
+    },
+    {
+      "key": "stock",
+      "display": "تفصیل انبار",
+      "value": "انبار نمونه",
+      "type": "DetailAccount"
+    },
+    {
+      "key": "stockTitle",
+      "display": "عنوان انبار",
+      "value": "انبار نمونه",
+      "type": "String"
+    },
+    {
+      "type": "Array",
+      "key": "products",
+      "display": "کالاها",
+      "fields": [
+        {"type": "String", "key": "id", "display": "حساب کالا"},
+        {"type": "Number", "key": "amount", "display": "مبلغ (مقدار * مبلغ واحد)"}
+      ]
+    }
+  ],
+  "data": {
+    "description": "بابت رسید خرید شماره # number # انبار # stockTitle #",
+    "lines": [
+      {
+        "subsidiaryLedgerAccountId": "",
+        "debtor": "# amount #",
+        "creditor": "0",
+        "article": "بابت رسید خرید شماره # number # ",
+        "type": "data"
+      },
+      {
+        "subsidiaryLedgerAccountId": "",
+        "detailAccountId": "# deliverer #",
+        "debtor": "0",
+        "creditor": "# amount + vat + tax #",
+        "article": "بابت رسید خرید شماره # number # ",
+        "type": "data"
+      },
+      {
+        "subsidiaryLedgerAccountId": "",
+        "debtor": "# vat + tax #",
+        "creditor": "0",
+        "article": "بابت رسید خرید شماره # number # ",
+        "type": "data"
+      }
+    ]
+  }
+}

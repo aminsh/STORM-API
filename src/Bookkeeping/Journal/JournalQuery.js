@@ -70,6 +70,7 @@ export class JournalQuery extends BaseQuery {
                 'date',
                 'description',
                 'journalStatus',
+                'issuer',
                 knex.raw('sum("debtor") as "sumDebtor"'),
                 knex.raw('sum("creditor") as "sumCreditor"')
             )
@@ -90,7 +91,8 @@ export class JournalQuery extends BaseQuery {
                     'number',
                     'date',
                     'description',
-                    'journalStatus')
+                    'journalStatus',
+                    'issuer')
                 .as('base');
 
         });
@@ -349,6 +351,8 @@ export class JournalQuery extends BaseQuery {
             tagIds: entity.tagIds,
             attachmentFileName: entity.attachmentFileName,
             createdBy: entity.createdBy,
+            issuer: entity.issuer,
+            issuerDisplay: entity.issuer ? enums.JournalIssuer().getDisplay(entity.issuer) : null,
             sumDebtor: entity.sumDebtor,
             sumCreditor: entity.sumCreditor,
             journalLines: entity.journalLines

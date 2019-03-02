@@ -1,4 +1,4 @@
-import {injectable, inject} from "inversify";
+import { injectable, inject } from "inversify";
 import toResult from "asyncawait/await";
 import moment from "moment-jalaali";
 
@@ -12,13 +12,15 @@ export class SetupBranch {
     @inject("DbContext")
     /** @type {DbContext}*/_dbContext = undefined;
 
+    @inject("Enums") enums = undefined;
+
     register(branchId) {
 
         const knex = this._dbContext.instance;
 
-        const branch = toResult(knex.from('branches').where({id: branchId}).first());
+        const branch = toResult(knex.from('branches').where({ id: branchId }).first());
 
-        if(!branch)
+        if (!branch)
             throw new NotFoundException();
 
         toResult(knex('settings').insert({
@@ -46,6 +48,22 @@ export class SetupBranch {
             branchId
         }));
 
+        toResult(knex('invoice_types').insert({
+            id: Utility.Guid.create(),
+            title: 'فروش نقدی',
+            branchId
+        }));
+
+        toResult(
+            knex('inventoryIOTypes').insert(this.enums.JournalGenerationTemplateModel().data.map(e => ( {
+                id: Utility.Guid.create(),
+                title: e.display,
+                type: e.key.startsWith('input') ? 'input' : 'output',
+                key: e.key,
+                branchId
+            } )))
+        );
+
         const date = moment(),
             year = date.jYear(),
             isLeap = moment.jIsLeapYear(year),
@@ -67,9 +85,9 @@ export class SetupBranch {
 
         const knex = this._dbContext.instance;
 
-        const branch = toResult(knex.from('branches').where({id: branchId}).first());
+        const branch = toResult(knex.from('branches').where({ id: branchId }).first());
 
-        if(!branch)
+        if (!branch)
             throw new NotFoundException();
 
         toResult(knex('subsidiaryLedgerAccounts').where('branchId', branchId).del());
@@ -89,7 +107,7 @@ export class SetupBranch {
             defaultGeneralLedgerAccounts,
             sla => sla.parentCode,
             gla => gla.code,
-            (sla, gla) => ({
+            (sla, gla) => ( {
                 id: Utility.Guid.create(),
                 branchId,
                 generalLedgerAccountId: gla.id,
@@ -98,7 +116,7 @@ export class SetupBranch {
                 key: sla.key,
                 balanceType: sla.balanceType,
                 hasDetailAccount: sla.hasDetailAccount
-            }))
+            } ))
             .toArray();
 
 

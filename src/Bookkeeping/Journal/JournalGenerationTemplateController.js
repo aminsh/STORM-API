@@ -1,5 +1,5 @@
-import {Controller, Get, Post} from "../../Infrastructure/expressUtlis";
-import {inject} from "inversify";
+import { Controller, Get, Post, Put, Delete } from "../../Infrastructure/expressUtlis";
+import { inject } from "inversify";
 
 @Controller("/v1/journal-generation-templates", "ShouldHaveBranch")
 class JournalGenerationTemplateController {
@@ -10,20 +10,41 @@ class JournalGenerationTemplateController {
     @inject("JournalGenerationTemplateQuery")
     /**@type{JournalGenerationTemplateQuery}*/ journalGenerationTemplateQuery = undefined;
 
-    @Get("/:sourceType")
-    getBySourceType(req) {
-
-        return this.journalGenerationTemplateQuery.getBySourceType(req.params.sourceType);
+    @Get("/")
+    getAll(req) {
+        return this.journalGenerationTemplateQuery.getAll(req.query);
     }
 
-    @Post("/:sourceType")
-    createOrUpdate(req) {
+    @Get("/:id")
+    getById(req) {
+        return this.journalGenerationTemplateQuery.getById(req.params.id);
+    }
 
-        const sourceType = req.params.sourceType;
+    @Get('/model/:model')
+    getModel(req) {
+        return this.journalGenerationTemplateQuery.getByModel(req.params.model);
+    }
 
-        this.journalGenerationTemplateService.createJournalTemplate(sourceType, req.body);
+    @Post("/")
+    create(req) {
+        const id = this.journalGenerationTemplateService.create(req.body);
 
-        return this.journalGenerationTemplateQuery.getBySourceType(sourceType);
+        return this.journalGenerationTemplateQuery.getById(id);
+    }
+
+    @Put("/:id")
+    update(req) {
+        const id = req.params.id;
+
+        this.journalGenerationTemplateService.update(id, req.body);
+
+        return this.journalGenerationTemplateQuery.getById(id);
+    }
+
+    @Delete("/:id")
+    remove(req) {
+        const id = req.params.id;
+        this.journalGenerationTemplateService.remove(id);
     }
 
     @Post('/:sourceType/custom-template')

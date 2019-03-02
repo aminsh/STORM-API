@@ -1,6 +1,6 @@
 import toResult from "asyncawait/await";
-import {injectable} from "inversify";
-import {BaseQuery} from "../Infrastructure/BaseQuery";
+import { injectable } from "inversify";
+import { BaseQuery } from "../Infrastructure/BaseQuery";
 
 @injectable()
 export class InventoryIOTypeQuery extends BaseQuery {
@@ -10,18 +10,31 @@ export class InventoryIOTypeQuery extends BaseQuery {
     getAll(type, parameters) {
         let branchId = this.branchId,
             tableName = this.tableName,
+            knex = this.knex,
 
             query = this.knex.select().from(function () {
-                this.select()
+                this.select(
+                    `${tableName}.*`,
+                    knex.raw('"journalGenerationTemplates".title as journal_generation_template_title'))
                     .from(tableName)
-                    .where('branchId', branchId)
-                    .orWhereNull('branchId')
+                    .leftJoin('journalGenerationTemplates', `${tableName}.journalGenerationTemplateId`, 'journalGenerationTemplates.id')
+                    .where(`${tableName}.branchId`, branchId)
+                    .where('type', type)
                     .as('base');
-            })
-                .where('type', type);
+            });
 
 
-        return toResult(Utility.kendoQueryResolve(query, parameters,
-            item => ({id: item.id, title: item.title, readOnly: !item.branchId})));
+        return toResult(Utility.kendoQueryResolve(query, parameters, this.view.bind(this)));
+    }
+
+    view(entity) {
+        return {
+            id: entity.id,
+            title: entity.title,
+            readOnly: !!entity.key,
+            key: entity.key,
+            journalGenerationTemplateId: entity.journalGenerationTemplateId,
+            journalGenerationTemplateTitle: entity[ 'journal_generation_template_title' ]
+        }
     }
 }

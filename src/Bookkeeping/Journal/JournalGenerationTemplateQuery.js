@@ -1,55 +1,70 @@
 import toResult from "asyncawait/await";
-import {injectable} from "inversify";
-import {BaseQuery} from "../../Infrastructure/BaseQuery";
+import { injectable, inject } from "inversify";
+import { BaseQuery } from "../../Infrastructure/BaseQuery";
 
-import templateSale from '../json/sale.json';
-import templatePurchase from '../json/purchase.json';
-import templateReturnSale from '../json/returnSale.json';
-import templateInventoryOutputSale from '../json/inventoryOutputSale.json';
-import templateInventoryInputReturnSale from '../json/inventoryInputReturnSale.json';
-import templateReturnPurchase from '../json/returnPurchase.json';
+import Sale from '../json/Sale.json';
+import Input from '../json/Input.json';
+import InputPurchase from '../json/InputPurchase.json';
+import Output from '../json/Output.json';
+import OutputTransferBetweenStocks from '../json/OutputTransferBetweenStocks';
+import InputTransferBetweenStocks from '../json/InputTransferBetweenStocks';
+import enums from "../../Constants/enums";
 
 @injectable()
 export class JournalGenerationTemplateQuery extends BaseQuery {
 
     tableName = "journalGenerationTemplates";
 
+    @inject('Enums') enums = undefined;
+
     templates = {
-        sale: templateSale,
-        purchase: templatePurchase,
-        returnSale: templateReturnSale,
-        inventoryOutputSale: templateInventoryOutputSale,
-        inventoryInputReturnSale: templateInventoryInputReturnSale,
-        returnPurchase: templateReturnPurchase
+        Sale, InputPurchase, Input, InputTransferBetweenStocks, OutputTransferBetweenStocks, Output
     };
 
     getAll(parameters) {
-        const query = this.knex.select('id', 'title')
-            .from(this.tableName)
-            .where('branchId', this.branchId);
+        const self = this,
+            query = this.knex
+                .from(function () {
+                    this.select('*')
+                        .from(self.tableName)
+                        .where('branchId', self.branchId)
+                        .as('base');
+                }),
+            JournalGenerationTemplateModel = enums.JournalGenerationTemplateModel();
 
-        return toResult(Utility.kendoQueryResolve(query, parameters, item => ({id: item.id, title: item.title})));
+        return toResult(Utility.kendoQueryResolve(query, parameters,
+            item => ( {
+                id: item.id,
+                title: item.title,
+                model: item.model,
+                modelDisplay: item.model
+                    ? JournalGenerationTemplateModel.getDisplay(item.model)
+                    : null
+            } )));
     }
 
-    getBySourceType(sourceType) {
-        const template = this.templates[sourceType],
-            branchId = this.branchId,
+    getByModel(model) {
+        return this.templates[ model ];
+    }
 
-            entity = toResult(this.knex.select('id', 'title', 'sourceType', 'data')
+    getById(id) {
+        const branchId = this.branchId,
+
+            entity = toResult(this.knex.select('id', 'title', 'data', 'fields', 'model')
                 .from(this.tableName)
                 .where('branchId', branchId)
-                .where('sourceType', sourceType)
+                .where('id', id)
                 .first());
 
+        const template = this.templates[ entity.model ];
 
-        return entity
-            ? {
-                id: entity.id,
-                title: entity.title,
-                fields: template.fields,
-                data: entity.data
-            }
-            : template;
+        return {
+            id: entity.id,
+            title: entity.title,
+            fields: template.fields,
+            data: entity.data,
+            model: entity.model
+        };
     }
 
 }

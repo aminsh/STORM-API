@@ -1,5 +1,5 @@
 import _ from "lodash";
-import {inject, injectable} from "inversify";
+import { inject, injectable } from "inversify";
 
 _.templateSettings.interpolate = /#([\s\S]+?)#/g;
 
@@ -12,42 +12,75 @@ export class JournalGenerationTemplateService {
     /**@type{JournalGenerationTemplateEngine}*/
     @inject("JournalGenerationTemplateEngine") journalGenerationTemplateEngine = undefined;
 
-    @inject("Factory<Mapper>") mapperFactory = undefined;
+    /**@type {JournalService}*/
+    @inject("JournalService") journalService = undefined;
 
-    generate(cmd, sourceType) {
+    @inject("MapperFactory")
+    /**@type {MapperFactory}*/ mapperFactory = undefined;
 
-        let generationTemplate = this.journalGenerationTemplateRepository.findBySourceType(sourceType);
+    @inject("Enums") enums = undefined;
 
-        if (!generationTemplate)
-            throw new ValidationException(['الگوی ساخت سند حسابداری وجود ندارد']);
 
-        generationTemplate = generationTemplate.data;
+    generate(journalGenerationTemplateId, id, issuer) {
 
-        const mapper = this.mapperFactory(sourceType);
+        if(!(issuer && this.enums.JournalIssuer().getKeys().includes(issuer)))
+            throw new Error('Issuer is not valid');
 
-        const journal = this.journalGenerationTemplateEngine.handler(generationTemplate, mapper.map(cmd));
+
+        let entity = this.journalGenerationTemplateRepository.findById(journalGenerationTemplateId);
+
+        if (!entity)
+            throw new ValidationException([ 'الگوی ساخت سند حسابداری وجود ندارد' ]);
+
+        let template = entity.data;
+
+        const mapper = this.mapperFactory.get(entity.model);
+
+        const journal = this.journalGenerationTemplateEngine.handler(template, mapper.map(id));
 
         journal.journalLines = journal.journalLines.asEnumerable()
-            .where(item => (item.debtor + item.creditor) !== 0)
-            .orderByDescending(item => item.debtor)
+            .where(item => ( item.debtor + item.creditor ) !== 0)
             .toArray();
 
-        return journal;
+        journal.issuer = issuer;
+
+        return this.journalService.create(journal);
     }
 
-    createJournalTemplate(sourceType, cmd) {
+    create(cmd) {
         let entity = {
-                title: cmd.title,
-                data: cmd.data
-            },
-            isExits = this.journalGenerationTemplateRepository.findBySourceType(sourceType);
+            model: cmd.model,
+            title: cmd.title,
+            data: JSON.stringify(cmd.data),
+            //fields: cmd.fields
+        };
 
-        if (isExits)
-            this.journalGenerationTemplateRepository.update(sourceType, entity);
-        else
-            this.journalGenerationTemplateRepository.create(sourceType, entity);
+        this.journalGenerationTemplateRepository.create(entity);
 
         return entity.id;
+    }
+
+    update(id, cmd) {
+        let entity = this.journalGenerationTemplateRepository.findById(id);
+
+        if (!entity)
+            throw new NotFoundException();
+
+        entity.model = cmd.model;
+        entity.fields = cmd.fields;
+        entity.title = cmd.title;
+        entity.data = cmd.data;
+
+        this.journalGenerationTemplateRepository.update(id, entity);
+    }
+
+    remove(id) {
+        let entity = this.journalGenerationTemplateRepository.findById(id);
+
+        if (!entity)
+            throw new NotFoundException();
+
+        this.journalGenerationTemplateRepository.remove(id);
     }
 
     createCustomTemplate(sourceType, cmd) {
@@ -94,19 +127,19 @@ export class JournalGenerationTemplateService {
 
         let errors = [];
 
-        const complexType = ['Array', 'Object'];
+        const complexType = [ 'Array', 'Object' ];
 
         fields.forEach(field => {
 
-            if(!field.type) {
+            if (!field.type) {
                 errors.push('نوع فیلد مشخص نشده');
                 return;
             }
 
-            if(complexType.includes(field.type))
+            if (complexType.includes(field.type))
                 errors.concat(this._validateCustomTemplateField(field.fields));
             else {
-                if(!field.key)
+                if (!field.key)
                     errors.push('کلید فیلد مشخص نشده');
             }
         });

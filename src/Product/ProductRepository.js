@@ -1,15 +1,37 @@
 import toResult from "asyncawait/await";
-import {BaseRepository} from "../Infrastructure/BaseRepository";
-import {injectable} from "inversify"
+import { BaseRepository } from "../Infrastructure/BaseRepository";
+import { injectable } from "inversify"
 
 @injectable()
 export class ProductRepository extends BaseRepository {
 
+    get query() {
+        return this.knex.select('*').from('products');
+    }
+
+    findOne(query) {
+        query.where('branchId', this.branchId);
+        query.first();
+
+        let product = toResult(query);
+
+        if (!product)
+            return null;
+
+        product.stocks = toResult(this.knex
+            .select('stockId', 'isDefault')
+            .from('products_stocks')
+            .where({ branchId: this.branchId, productId: product.id }));
+
+        return product;
+    }
+
     findById(id) {
-        return toResult(this.knex.table('products')
-            .modify(this.modify, this.branchId)
-            .where('id', id)
-            .first());
+        const query = this.query;
+
+        query.where('id', id);
+
+        return this.findOne(query);
     }
 
     /*
@@ -24,22 +46,22 @@ export class ProductRepository extends BaseRepository {
     }
 
     findByCode(code, notEqualId) {
-        let query = this.knex.table('products')
-            .modify(this.modify, this.branchId)
-            .where('code', code);
+        let query = this.query;
+
+        query.where('code', code);
 
         if (notEqualId)
             query.andWhere('id', '!=', notEqualId);
 
-        return toResult(query.first());
+        return this.findOne(query);
     }
 
     isGood(id) {
-        return toResult(this.knex.table('products')
-            .modify(this.modify, this.branchId)
-            .where('id', id)
-            .andWhere('productType', 'good')
-            .first());
+        let query = this.query;
+        query.where('id', id);
+        query.where('productType', 'good');
+
+        return !!this.findOne(query);
     }
 
     findByReferenceId(referenceId, notEqualId) {
@@ -54,20 +76,81 @@ export class ProductRepository extends BaseRepository {
     }
 
     create(entity) {
+        const trx = this.transaction,
+            branchId = this.branchId;
 
-        if (Array.isArray(entity))
-            entity.forEach(item => super.create(item));
-        else
-            super.create(entity);
+        try {
+            let products_stocks = [];
 
-        return toResult(this.knex('products')
-            .insert(entity));
+            if (Array.isArray(entity))
+                entity.forEach(item => {
+                    super.create(item);
+                    if (item.stocks) {
+                        let stocks = item.stocks;
+                        delete  item.stocks;
+
+                        stocks.forEach(s => {
+                            s.branchId = branchId;
+                            s.productId = item.id;
+                        });
+
+                        products_stocks = products_stocks.concat(stocks);
+                    }
+                });
+            else {
+                super.create(entity);
+                if (entity.stocks) {
+                    entity.stocks.forEach(s => {
+                        s.branchId = branchId;
+                        s.productId = entity.id;
+                    });
+
+                    products_stocks = products_stocks.concat(entity.stocks);
+                    delete entity.stocks;
+                }
+            }
+            toResult(trx('products').insert(entity));
+            toResult(trx('products_stocks').insert(products_stocks));
+            trx.commit();
+
+            return entity;
+        }
+        catch (e) {
+            trx.rollback(e);
+            throw new Error(e);
+        }
     }
 
     update(id, entity) {
-        return toResult(this.knex('products')
-            .modify(this.modify, this.branchId)
-            .where('id', id).update(entity));
+        const trx = this.transaction,
+            branchId = this.branchId;
+
+        try {
+            let products_stocks = [];
+
+            toResult(trx('products_stocks').where({ branchId, productId: id }).del());
+
+            if (entity.stocks) {
+                entity.stocks.forEach(s => {
+                    s.branchId = branchId;
+                    s.productId = id;
+                });
+
+                products_stocks = entity.stocks;
+                delete entity.stocks;
+            }
+
+            toResult(trx('products_stocks').insert(products_stocks));
+            toResult(this.knex('products')
+                .modify(this.modify, this.branchId)
+                .where('id', id).update(entity));
+
+            trx.commit();
+        }
+        catch (e) {
+            trx.rollback(e);
+            throw new Error(e);
+        }
     }
 
     remove(id) {
