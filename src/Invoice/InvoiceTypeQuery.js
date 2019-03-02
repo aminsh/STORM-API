@@ -14,10 +14,12 @@ export class InvoiceTypeQuery extends BaseQuery {
 
             query = this.knex.select().from(function () {
                 this.select(`${tableName}.*`,
-                    knex.raw('"journalGenerationTemplates".title as journal_generation_template_title')
+                    knex.raw('template.title as journal_generation_template_title'),
+                    knex.raw('return_template.title as return_journal_generation_template_title')
                 )
                     .from(tableName)
-                    .leftJoin('journalGenerationTemplates', `${tableName}.journalGenerationTemplateId`, 'journalGenerationTemplates.id')
+                    .leftJoin('journalGenerationTemplates as template', `${tableName}.journalGenerationTemplateId`, 'template.id')
+                    .leftJoin('journalGenerationTemplates as return_template', `${tableName}.returnJournalGenerationTemplateId`, 'return_template.id')
                     .where(`${tableName}.branchId`, branchId)
                     .where('invoiceType', invoiceType)
                     .as('base');
@@ -43,6 +45,8 @@ export class InvoiceTypeQuery extends BaseQuery {
             referenceId: entity.referenceId,
             journalGenerationTemplateId: entity.journalGenerationTemplateId,
             journalGenerationTemplateTitle: entity[ 'journal_generation_template_title' ],
+            returnJournalGenerationTemplateId: entity.returnJournalGenerationTemplateId,
+            returnJournalGenerationTemplateTitle: entity[ 'return_journal_generation_template_title' ],
             isDefault: entity.isDefault
         }
     }

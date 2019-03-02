@@ -25,7 +25,8 @@ export class InvoiceTypeService {
             title: DTO.title,
             invoiceType,
             referenceId: DTO.referenceId,
-            journalGenerationTemplateId: DTO.journalGenerationTemplateId
+            journalGenerationTemplateId: DTO.journalGenerationTemplateId,
+            returnJournalGenerationTemplateId: DTO.returnJournalGenerationTemplateId
         };
 
         this.invoiceTypeRepository.create(entity);
@@ -49,6 +50,7 @@ export class InvoiceTypeService {
         entity.title = DTO.title;
         entity.referenceId = DTO.referenceId;
         entity.journalGenerationTemplateId = DTO.journalGenerationTemplateId;
+        entity.returnJournalGenerationTemplateId = DTO.returnJournalGenerationTemplateId;
 
         this.invoiceTypeRepository.update(id, entity);
     }
