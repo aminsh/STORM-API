@@ -36,9 +36,7 @@ export class ProductInventoryService {
     }
 
     set(productId, stockId, quantity) {
-        
         return;
-
         const item = this.productInventoryTransactionalRepository.findOneByProductAndStock(productId, stockId);
 
         if (!item)
