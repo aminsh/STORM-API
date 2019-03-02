@@ -101,13 +101,14 @@ export class InventoryService {
     }
 
     addOneFirstInput(productId, DTO) {
+        const ioType = this.inventoryIOTypeRepository.findByKey('inputFirst');
 
         let inputFirst = this.inventoryRepository.findFirst(DTO.stockId, this.state.fiscalPeriodId);
 
         if (!inputFirst) {
             const id = this.inputService.create({
                 stockId: DTO.stockId,
-                ioType: 'inputFirst',
+                ioType: ioType.id,
                 inventoryLines: [ { productId, quantity: DTO.quantity } ]
             });
 
