@@ -86,4 +86,9 @@ class ReturnSaleController {
     remove(req) {
         this.returnSaleService.remove(req.params.id);
     }
+
+    @Post("/:id/generate-journal")
+    generateJournal(req) {
+        this.returnSaleService.generateJournal(req.params.id);
+    }
 }

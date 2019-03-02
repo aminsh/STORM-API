@@ -27,6 +27,12 @@ export class ReturnSaleService {
     /** @type {EventBus}*/
     @inject("EventBus") eventBus = undefined;
 
+    @inject("InvoiceTypeRepository")
+    /**@type{InvoiceTypeRepository}*/ invoiceTypeRepository = undefined;
+
+    @inject("JournalGenerationTemplateService")
+    /**@type{JournalGenerationTemplateService}*/ journalGenerationTemplateService = undefined;
+
     @postConstruct()
     init() {
 
@@ -88,12 +94,15 @@ export class ReturnSaleService {
     mapToEntity(cmd) {
 
         const detailAccount = this.detailAccountService.findPersonByIdOrCreate(cmd.customer),
-            invoice = cmd.id ? this.invoiceRepository.findById(cmd.id) : undefined;
+            invoice = cmd.id ? this.invoiceRepository.findById(cmd.id) : undefined,
+            type = cmd.typeId
+                ? this.invoiceTypeRepository.findById(cmd.typeId)
+                : this.invoiceTypeRepository.findOneOrGetDefault(cmd.type);
 
         return {
             id: cmd.id,
             date: cmd.date || PersianDate.current(),
-            invoiceStatus: cmd.status || 'draft',
+            typeId: type ? type.id : null,
             number: this.getNumber(cmd.number, invoice),
             description: cmd.description,
             ofInvoiceId: cmd.ofInvoiceId,
@@ -244,6 +253,33 @@ export class ReturnSaleService {
             return;
 
         this.eventBus.send('ReturnSaleRemoved', invoice.id);
+    }
+
+    generateJournal(id) {
+        let invoice = this.invoiceRepository.findById(id);
+
+
+        if (!invoice)
+            throw new ValidationException([ 'فاکتور وجود ندارد' ]);
+
+        if (invoice.journalId)
+            throw new ValidationException([ 'برای فاکتور جاری قبلا سند صادر شده ، ابتدا سند را حذف کنید' ]);
+
+        const type = invoice.typeId
+            ? this.invoiceTypeRepository.findById(invoice.typeId)
+            : null;
+
+        if (!type)
+            throw new ValidationException([ 'نوع فروش وجود ندارد' ]);
+
+        if (!type.returnJournalGenerationTemplateId)
+            throw new ValidationException([ 'نوع فروش الگوی ساخت سند برگشتی را ندارد' ]);
+
+        const journalId = this.journalGenerationTemplateService.generate(type.returnJournalGenerationTemplateId, id, 'Sale');
+
+        Utility.delay(1000);
+
+        this.invoiceRepository.update(id, { journalId });
     }
 
     _invoiceLinesChanged(oldLines, newLines) {
