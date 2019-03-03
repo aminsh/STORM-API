@@ -102,10 +102,6 @@ export class SaleService {
 
         if (!( line.unitPrice && line.unitPrice !== 0 ))
             errors.push('قیمت واحد نباید خالی یا صفر باشد');
-
-        /*if (this.settings.canControlInventory && (line.product && line.product.productType === 'good') && !line.stockId )
-            errors.push('انبار نباید خالی باشد');*/
-
         return errors;
     }
 
@@ -129,12 +125,11 @@ export class SaleService {
     mapToEntity(cmd) {
 
         const detailAccount = this.detailAccountService.findPersonByIdOrCreate(cmd.customer),
-            marketer = cmd.marketerId ? this.detailAccountRepository.findById(cmd.marketerId) : null,
-            invoice = cmd.id ? this.invoiceRepository.findById(cmd.id) : undefined,
-            type = cmd.typeId
+              marketer = cmd.marketerId ? this.detailAccountRepository.findById(cmd.marketerId) : null,
+              invoice = cmd.id ? this.invoiceRepository.findById(cmd.id) : undefined,
+              type = cmd.typeId
                 ? this.invoiceTypeRepository.findById(cmd.typeId)
                 : this.invoiceTypeRepository.findOneOrGetDefault(cmd.type);
-
         return {
             id: cmd.id,
             date: cmd.date || PersianDate.current(),
@@ -324,7 +319,7 @@ export class SaleService {
 
         if (errors.length > 0)
             throw new ValidationException(errors);
-
+      
         entity.invoiceType = 'sale';
         entity.invoiceStatus = 'draft';
 
