@@ -69,7 +69,6 @@ export class PurchaseService {
         return {
             id: cmd.id,
             date: cmd.date || PersianDate.current(),
-            invoiceStatus: cmd.status || 'draft',
             description: cmd.description,
             title: cmd.title,
             charges: this._mapCostAndCharge(cmd.charges),
