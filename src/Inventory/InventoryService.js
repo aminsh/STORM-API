@@ -162,4 +162,22 @@ export class InventoryService {
         });
     }
 
+    changeDate(id, date) {
+        const entity = this.inventoryRepository.findById(id);
+
+        if (!entity)
+            throw new NotFoundException();
+
+        this.inventoryRepository.update(id, { date });
+    }
+
+    changeTime(id, time) {
+        const entity = this.inventoryRepository.findById(id);
+
+        if (!entity)
+            throw new NotFoundException();
+
+        this.inventoryRepository.update(id, { time });
+    }
+
 }
