@@ -16,6 +16,9 @@ export class PurchaseQuery extends BaseQuery {
     @inject("FiscalPeriodQuery")
     /** @type{FiscalPeriodQuery}*/ fiscalPeriodQuery = undefined;
 
+    @inject("InventoryQuery")
+    /**@type{InventoryQuery}*/ inventoryQuery = undefined;
+
     getById(id) {
         let knex = this.knex,
             branchId = this.branchId,
@@ -77,6 +80,8 @@ export class PurchaseQuery extends BaseQuery {
 
             invoice.invoiceLines = invoiceLines.asEnumerable().select(this._lineView).toArray();
             invoice.branchId = branchId;
+
+            invoice.inputs = this.inventoryQuery.getByInvoice(invoice.id);
         }
         return invoice ? this._view(invoice, settings) : [];
     }
@@ -393,7 +398,8 @@ export class PurchaseQuery extends BaseQuery {
             charges: mapCostsAndCharges(entity.charges, settings.saleCharges),
             discount: entity.discount || 0,
             totalVat: entity.totalVat || 0,
-            chargesVat: entity.chargesVat || 0
+            chargesVat: entity.chargesVat || 0,
+            inputs: entity.inputs
         }, entity.custom);
     }
 

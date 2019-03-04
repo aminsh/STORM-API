@@ -29,6 +29,7 @@ export class InvoiceRepository extends BaseRepository {
         if (!first) return null;
 
         let invoice = {
+            createAt: first.createdAt,
             id: first.invoiceId,
             number: first.number,
             date: first.date,

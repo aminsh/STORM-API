@@ -1,4 +1,4 @@
-import { Controller, Get, Post } from "../Infrastructure/expressUtlis";
+import { Controller, Get, Post, Put } from "../Infrastructure/expressUtlis";
 import { inject } from "inversify";
 
 @Controller("/v1/inventories", "ShouldHaveBranch")
@@ -49,5 +49,15 @@ class InventoryController {
     @Post("/add-product-to-first-input/:productId")
     addProductToFirstInput(req) {
         this.inventoryService.addToInputFirst(req.params.productId, req.body);
+    }
+
+    @Put('/:id/change-date')
+    changeDate(req) {
+        this.inventoryService.changeDate(req.params.id, req.body.date);
+    }
+
+    @Put('/:id/change-time')
+    changeTime(req) {
+        this.inventoryService.changeTime(req.params.id, req.body.time);
     }
 }
