@@ -31,6 +31,8 @@ export class InventoryPurchaseEventListener {
                 item => item.stockId,
                 item => item,
                 (key, items) => ( {
+                    date: purchase.date,
+                    time: purchase.createdAt,
                     stockId: key,
                     delivererId: purchase.detailAccountId,
                     invoiceId: purchaseId,
