@@ -125,9 +125,9 @@ export class SaleService {
     mapToEntity(cmd) {
 
         const detailAccount = this.detailAccountService.findPersonByIdOrCreate(cmd.customer),
-              marketer = cmd.marketerId ? this.detailAccountRepository.findById(cmd.marketerId) : null,
-              invoice = cmd.id ? this.invoiceRepository.findById(cmd.id) : undefined,
-              type = cmd.typeId
+            marketer = cmd.marketerId ? this.detailAccountRepository.findById(cmd.marketerId) : null,
+            invoice = cmd.id ? this.invoiceRepository.findById(cmd.id) : undefined,
+            type = cmd.typeId
                 ? this.invoiceTypeRepository.findById(cmd.typeId)
                 : this.invoiceTypeRepository.findOneOrGetDefault(cmd.type);
         return {
@@ -202,19 +202,20 @@ export class SaleService {
             return [];
 
         if (Array.isArray(data))
-            return data.asEnumerable().select(e => ( {
+            return data.map(e => ( {
                 key: e.key,
                 value: e.value || 0,
                 vatIncluded: e.vatIncluded
-            } )).toArray();
+            } ))
+                .filter(e => e.value !== 0);
 
-        return Object.keys(data).asEnumerable()
-            .select(key => ( {
+        return Object.keys(data)
+            .map(key => ( {
                 key,
                 vatIncluded: false,
                 value: data[ key ]
             } ))
-            .toArray();
+            .filter(e => e.value !== 0);
 
     }
 
@@ -319,7 +320,7 @@ export class SaleService {
 
         if (errors.length > 0)
             throw new ValidationException(errors);
-      
+
         entity.invoiceType = 'sale';
         entity.invoiceStatus = 'draft';
 
