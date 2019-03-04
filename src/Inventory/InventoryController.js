@@ -58,6 +58,6 @@ class InventoryController {
 
     @Put('/:id/change-time')
     changeTime(req) {
-        this.inventoryService.changeTime(req.params.id, req.body.date);
+        this.inventoryService.changeTime(req.params.id, req.body.time);
     }
 }
