@@ -43,6 +43,9 @@ export class Woocommerce {
 
     @inject('LoggerService') /**@type{LoggerService}*/loggerService = undefined;
 
+    @inject('PersonQuery')
+    /**@type{PersonQuery}*/ personQuery = undefined;
+
     register(data) {
 
         let member = this.branchRepository.findMember(this.state.branchId, 'STORM-API-USER');
@@ -92,6 +95,7 @@ export class Woocommerce {
         wooCommerceThirdParty.data.url = data.url;
         wooCommerceThirdParty.data.canChangeStock = data.canChangeStock;
         wooCommerceThirdParty.data.canChangeStockStatusOnZeroQuantity = data.canChangeStockStatusOnZeroQuantity;
+        wooCommerceThirdParty.data.replaceCustomerId = data.replaceCustomerId;
 
         this.registeredThirdPartyRepository.update('woocommerce', wooCommerceThirdParty.data);
     }
@@ -336,9 +340,19 @@ export class Woocommerce {
         }
     }
 
-    map(order) {
-        const customerId = order[ 'customer_id' ];
-        let customer = null;
+    getCustomer(customerId) {
+
+        const wooCommerceThirdParty = this.registeredThirdPartyRepository.get("woocommerce"),
+            replaceCustomerId = wooCommerceThirdParty.data.replaceCustomerId;
+
+        let customer;
+
+        if (replaceCustomerId) {
+            customer = this.personQuery.getById(replaceCustomerId);
+
+            if (customer)
+                return customer;
+        }
 
         try {
             customer = this.woocommerceRepository.get(`customers/${customerId}`);
@@ -348,21 +362,28 @@ export class Woocommerce {
         }
 
         return {
+            referenceId: customer.customerId,
+            title: `${customer.first_name} ${customer.last_name}`,
+            email: customer.email,
+            phone: customer.billing ? customer.billing.phone : null,
+            address: customer.billing ? customer.billing.address_1 : null,
+            province: customer.billing ? customer.billing.state : null,
+            city: customer.billing ? customer.billing.city : null,
+            postalCode: customer.billing ? customer.billing.postcode : null,
+        };
+    }
+
+    map(order) {
+        const customerId = order[ 'customer_id' ];
+        let customer = this.getCustomer(customerId);
+
+        return {
             date: order[ 'date_created' ]
                 ? Utility.PersianDate.getDate(new Date(order[ 'date_created' ]))
                 : Utility.PersianDate.current(),
             orderId: order.id,
             title: '',
-            customer: {
-                referenceId: customer.customerId,
-                title: `${customer.first_name} ${customer.last_name}`,
-                email: customer.email,
-                phone: customer.billing ? customer.billing.phone : null,
-                address: customer.billing ? customer.billing.address_1 : null,
-                province: customer.billing ? customer.billing.state : null,
-                city: customer.billing ? customer.billing.city : null,
-                postalCode: customer.billing ? customer.billing.postcode : null,
-            },
+            customer,
             invoiceLines: order[ 'line_items' ].map(item => ( {
                 product: {
                     referenceId: item[ 'product_id' ],
@@ -399,7 +420,7 @@ export class Woocommerce {
     }
 
     update(invoice, order) {
-        if(invoice.status !== 'draft' && invoice.journalId)
+        if (invoice.status !== 'draft' && invoice.journalId)
             this.saleService.removeJournal(invoice.id);
 
         const updatedInvoice = this.map(order);
