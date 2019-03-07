@@ -385,7 +385,7 @@ export class Woocommerce {
             return;
 
         if (invoice.status === 'draft')
-            return this.saleService.remove(id);
+            return this.saleService.remove(invoice.id);
 
         this.refund(invoice);
     }
