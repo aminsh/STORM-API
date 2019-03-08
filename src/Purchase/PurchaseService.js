@@ -9,6 +9,9 @@ export class PurchaseService {
     /** @type {ProductService}*/
     @inject("ProductService") productDomainService = undefined;
 
+    /**@type{InputService}*/
+    @inject('InputService') inputService = undefined;
+
     @inject("InventoryRepository")
     /**@type{InventoryRepository}*/ inventoryRepository = undefined;
 
@@ -20,6 +23,9 @@ export class PurchaseService {
 
     /** @type {InvoiceRepository}*/
     @inject("InvoiceRepository") invoiceRepository = undefined;
+
+    /**@type{InventoryGeneratorService}*/
+    @inject("InventoryGeneratorService") inventoryGeneratorService = undefined;
 
     /** @type {IState}*/
     @inject("State") state = undefined;
@@ -214,7 +220,7 @@ export class PurchaseService {
 
         const relatedInputs = this.inventoryRepository.findByInvoiceId(id);
 
-        if (relatedInputs && relatedInputs.length > 0 && this._invoiceLinesChanged(invoice.invoiceLines, entity.invoiceLines))
+        if (relatedInputs && relatedInputs.length > 0)
             errors.push('برای فاکتور جاری ، رسید ورود به انبار صادر شده ، ابتدا رسید (ها) ی ورودی حذف نمایید');
 
         if (errors.length > 0)
@@ -232,6 +238,7 @@ export class PurchaseService {
     }
 
     remove(id) {
+        let errors = [];
 
         const invoice = this.invoiceRepository.findById(id);
 
@@ -240,8 +247,11 @@ export class PurchaseService {
 
         const relatedInputs = this.inventoryRepository.findByInvoiceId(id);
 
-        if (relatedInputs && relatedInputs.length > 0 )
+        if (relatedInputs && relatedInputs.length > 0)
             errors.push('برای فاکتور جاری ، رسید ورود به انبار صادر شده ، ابتدا رسید (ها) ی ورودی حذف نمایید');
+
+        if (errors.length > 0)
+            throw  new ValidationException(errors);
 
         this.invoiceRepository.remove(id);
 
@@ -264,29 +274,32 @@ export class PurchaseService {
         this.invoiceRepository.update(id, { invoiceStatus: 'fixed' });
     }
 
-    _invoiceLinesChanged(oldLines, newLines) {
-        let removedLines = oldLines.filter(item => !newLines.asEnumerable().any(nl => nl.product.id === item.productId));
+    generateInputs(id) {
+        const invoice = this.invoiceRepository.findById(id);
 
-        if (removedLines.length > 0)
-            return true;
+        if (!invoice)
+            throw new NotFoundException();
 
-        let addedLines = newLines.filter(item => !oldLines.asEnumerable().any(nl => nl.productId === item.product.id));
+        const relatedInputs = this.inventoryRepository.findByInvoiceId(id);
 
-        if (addedLines.length > 0)
-            return true;
+        if (relatedInputs && relatedInputs.length > 0)
+            throw new ValidationException([ 'قبلا برای فاکتور جاری رسید (ها) ی ورود به انبار صادر شده' ]);
 
-        let changedLines = oldLines.asEnumerable()
-            .join(newLines,
-                oldLine => oldLine.productId,
-                newLine => newLine.product.id,
-                (oldLine, newLine) => ( {
-                    productId: oldLine.productId,
-                    oldQuantity: oldLine.quantity,
-                    newQuantity: newLine.quantity
-                } ))
-            .where(item => item.oldQuantity !== item.newQuantity)
-            .toArray();
 
-        return changedLines.length > 0;
+        this.inventoryGeneratorService.createInputFromPurchase(id);
+    }
+
+    removeInputs(id) {
+        const invoice = this.invoiceRepository.findById(id);
+
+        if (!invoice)
+            throw new NotFoundException();
+
+        const relatedInputs = this.inventoryRepository.findByInvoiceId(id);
+
+        if (!( relatedInputs && relatedInputs.length > 0 ))
+            throw new ValidationException([ 'برای فاکتور جاری رسیدی صادر نشده است ' ]);
+
+        relatedInputs.forEach(item => this.inputService.remove(item.id));
     }
 }

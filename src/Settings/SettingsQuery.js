@@ -26,7 +26,9 @@ export class SettingsQuery extends BaseQuery {
             'stockAccountLevel',
             'canInventoryGenerateAutomaticJournal',
             'canSaleGenerateAutomaticOutput',
-            'canRemoveJournalWhenSourceRemoved')
+            'canPurchaseGenerateAutomaticInput',
+            'canRemoveJournalWhenSourceRemoved',
+            'canEnterAmountBiggerThanInvoiceAmountOnPayment')
             .from('settings')
             .where('branchId', this.branchId)
             .first());

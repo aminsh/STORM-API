@@ -39,6 +39,8 @@ class InputController {
 
         const id = this.inputService.create(req.body);
 
+        Utility.delay(500);
+
         return this.inventoryQuery.getById(id);
     }
 

@@ -39,6 +39,8 @@ class OutputController {
 
         const id = this.outputService.create(req.body);
 
+        Utility.delay(500);
+
         return this.inventoryQuery.getById(id);
     }
 

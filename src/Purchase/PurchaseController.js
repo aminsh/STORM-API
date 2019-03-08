@@ -35,6 +35,8 @@ class PurchaseController {
 
         const id = this.purchaseService.create(req.body);
 
+        Utility.delay(500);
+
         if (req.body.status === 'confirm')
             this.purchaseService.confirm(id);
 
@@ -78,6 +80,20 @@ class PurchaseController {
     remove(req) {
 
         this.purchaseService.remove(req.params.id);
+    }
+
+    @Post("/:id/generate-inputs")
+    generateInputs(req) {
+        const id = req.params.id;
+
+        this.purchaseService.generateInputs(id);
+    }
+
+    @Delete("/:id/remove-inputs")
+    removeInputs(req) {
+        const id = req.params.id;
+
+        this.purchaseService.removeInputs(id);
     }
 
 }

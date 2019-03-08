@@ -31,6 +31,7 @@ export class SettingService{
             productOutputCreationMethod: cmd.productOutputCreationMethod,
             canSaleGenerateAutomaticJournal: cmd.canSaleGenerateAutomaticJournal,
             canSaleGenerateAutomaticOutput: cmd.canSaleGenerateAutomaticOutput,
+            canPurchaseGenerateAutomaticInput: cmd.canPurchaseGenerateAutomaticInput,
             canInventoryGenerateAutomaticJournal: cmd.canInventoryGenerateAutomaticJournal,
             canRemoveJournalWhenSourceRemoved: cmd.canRemoveJournalWhenSourceRemoved,
             stakeholders: JSON.stringify(cmd.stakeholders),
@@ -41,7 +42,8 @@ export class SettingService{
             webhooks: JSON.stringify(cmd.webhooks),
             invoiceDescription: cmd.invoiceDescription,
             productAccountLevel: cmd.productAccountLevel,
-            stockAccountLevel: cmd.stockAccountLevel
+            stockAccountLevel: cmd.stockAccountLevel,
+            canEnterAmountBiggerThanInvoiceAmountOnPayment: cmd.canEnterAmountBiggerThanInvoiceAmountOnPayment
         };
 
         return this.settingsRepository.update(entity);

@@ -162,7 +162,7 @@ export class InventoryRepository extends BaseRepository {
                     .from('inventories')
                     .leftJoin('inventoryLines', 'inventories.id', 'inventoryLines.inventoryId')
                     .modify(modify, branchId, 'inventories.branchId')
-                    .where('quantityStatus', '!=', 'draft')
+                    //.where('quantityStatus', '!=', 'draft')
                     .where('fiscalPeriodId', fiscalPeriodId)
                     .where('productId', productId);
 
