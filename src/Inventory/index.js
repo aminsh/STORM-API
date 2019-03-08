@@ -23,12 +23,15 @@ import { InventoryPricingRepository } from "./InventoryPricingRepository";
 import { InventoryPricingService } from "./InventoryPricingService";
 import { InventoryPricingQuery } from "./InventoryPricingQuery";
 
+import { InventoryGeneratorService } from "./InventoryGeneratorService";
+
 import "./InventoryIOTypeController";
 import "./StockController";
 import "./InputController";
 import "./OutputController";
 import "./InventoryController";
 import "./InventoryPricingController";
+
 
 export function register(container) {
 
@@ -61,5 +64,6 @@ export function register(container) {
     container.bind("InventoryPricingService").to(InventoryPricingService).inTransientScope();
 
     container.bind("InventoryJournalEventListener").to(InventoryJournalEventListener);
+    container.bind('InventoryGeneratorService').to(InventoryGeneratorService);
 
 }

@@ -18,8 +18,8 @@ export class SaleService {
     /**@type {InventoryRepository}*/
     @inject("InventoryRepository") inventoryRepository = undefined;
 
-    /**@type{InventoryService}*/
-    @inject("InventoryService") inventoryService = undefined;
+    /**@type{InventoryGeneratorService}*/
+    @inject("InventoryGeneratorService") inventoryGeneratorService = undefined;
 
     /**@type{OutputService}*/
     @inject("OutputService") outputService = undefined;
@@ -392,13 +392,25 @@ export class SaleService {
     }
 
     remove(id) {
+        let errors = [];
         const invoice = this.invoiceRepository.findById(id);
 
         if (!invoice)
             throw new NotFoundException();
 
         if (invoice.invoiceStatus === 'fixed')
-            throw new ValidationException([ 'فاکتور جاری قابل حذف نمیباشد' ]);
+            throw new ValidationException([ 'فاکتو ثبت قطعی شده ، امکان حذف وجود ندارد' ]);
+
+        if (invoice.journalId)
+            errors.push('برای فاکتور جاری سند حسابداری صادر شده ، ابتدا سند را حذف کنید');
+
+        const relatedOutputs = this.inventoryRepository.findByInvoiceId(id);
+
+        if (relatedOutputs && relatedOutputs.length > 0)
+            errors.push('برای فاکتور جاری حواله خروج از انبار صادر شده ، ابتدا حواله ها حذف کنید');
+
+        if(errors.length > 0)
+            throw new ValidationException(errors);
 
         this.invoiceRepository.remove(id);
 
@@ -487,7 +499,8 @@ export class SaleService {
         if (relatedOutputs && relatedOutputs.length > 0)
             throw new ValidationException([ 'قبلا برای فاکتور جاری حواله (ها) ی خروجی از انبار صادر شده' ]);
 
-        this.inventoryService.createOutputFromSale(id);
+
+        this.inventoryGeneratorService.createOutputFromSale(id);
     }
 
     removeOutputs(id) {
