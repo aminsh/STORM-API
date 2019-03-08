@@ -55,7 +55,7 @@ export class SetupBranch {
         }));
 
         toResult(
-            knex('inventoryIOTypes').insert(this.enums.JournalGenerationTemplateModel().data.map(e => ( {
+            knex('inventoryIOTypes').insert(this.enums.InventoryIOType().data.map(e => ( {
                 id: Utility.Guid.create(),
                 title: e.display,
                 type: e.key.startsWith('input') ? 'input' : 'output',
