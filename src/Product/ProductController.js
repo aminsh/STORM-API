@@ -33,6 +33,8 @@ class ProductController {
 
         const id = this.productService.create(req.body);
 
+        Utility.delay(500);
+
         return this.productQuery.getById(id);
     }
 

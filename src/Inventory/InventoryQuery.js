@@ -243,19 +243,17 @@ export class InventoryQuery extends BaseQuery {
                     .where('inventoryId', id)
                     .as('base');
             }),
+            aggregatesQuery = query.clone(),
 
-            result = toResult(Utility.kendoQueryResolve(query, parameters, this._viewLine));
+            result = toResult(Utility.kendoQueryResolve(query, parameters, this._viewLine)),
 
-        /*sumTotalPrice = toResult(knex
-            .select(knex.raw('SUM(CAST("unitPrice" * quantity as FLOAT)) as "sumTotalPrice"'))
-            .from('inventoryLines')
-            .modify(modify, branchId, userId, canView, 'inventoryLines')
-            .where('inventoryId', id)
-            .first())
-            .sumTotalPrice,
-        aggregates = {sumTotalPrice};
+            aggregateResult = toResult(
+                aggregatesQuery
+                    .select(knex.raw('SUM("unitPrice" * quantity) as "sumTotalPrice"'))
+                    .first()
+            );
 
-    result.aggregates = aggregates;*/
+        result.aggregates = { sumTotalPrice: { sum: aggregateResult.sumTotalPrice } };
 
         return result;
 

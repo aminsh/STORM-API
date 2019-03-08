@@ -42,6 +42,8 @@ class SaleController {
 
         const id = this.saleService.create(cmd);
 
+        Utility.delay(500);
+
         if (cmd.status !== 'draft')
             this.saleService.confirm(id);
 

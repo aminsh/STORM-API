@@ -416,6 +416,8 @@ export class Woocommerce {
 
         const id = this.saleService.create(invoice);
 
+        Utility.delay(500);
+
         return this.saleQuery.getById(id);
     }
 

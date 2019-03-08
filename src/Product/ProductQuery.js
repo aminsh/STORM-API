@@ -1,6 +1,7 @@
 import { BaseQuery } from "../Infrastructure/BaseQuery";
 import toResult from "asyncawait/await";
 import { inject } from "inversify";
+import { productInventory } from "./product_query_script"
 
 export class ProductQuery extends BaseQuery {
 
@@ -14,7 +15,7 @@ export class ProductQuery extends BaseQuery {
             query = this.knex.select()
                 .from(function () {
                     this.select('products.*',
-                        knex.raw(`(select sum(quantity) from products_inventory where "branchId" = '${branchId}' and  "fiscalPeriodId" = '${fiscalPeriodId}' and "productId" = products.id) as "totalQuantity"`),
+                        knex.raw(`(${productInventory(fiscalPeriodId, branchId, 'products.id')}) as "totalQuantity"`),
                         knex.raw('scales.title as "scaleDisplay"'),
                         knex.raw('"productCategories".title as "categoryDisplay"')
                     )
@@ -48,7 +49,8 @@ export class ProductQuery extends BaseQuery {
     }
 
     getById(id) {
-        const knex = this.knex;
+        const knex = this.knex,
+            self = this;
 
         let result = toResult(knex.select(
             'products.*',
@@ -62,13 +64,23 @@ export class ProductQuery extends BaseQuery {
             .andWhere('products.id', id)
             .first());
 
+
         result.inventory = toResult(
-            this.knex.select('quantity', 'stockId', knex.raw('stocks.title as "stockDisplay"'))
-                .from('products_inventory')
-                .leftJoin('stocks', 'products_inventory.stockId', 'stocks.id')
-                .where('products_inventory.branchId', this.branchId)
-                .where('products_inventory.fiscalPeriodId', this.state.fiscalPeriodId)
-                .where('products_inventory.productId', result.id)
+            knex.select('stockId', 'quantity', knex.raw('stocks.title as "stockDisplay"'))
+                .from(function () {
+                    this.select(
+                        'stockId',
+                        knex.raw(`SUM(CASE WHEN "inventoryType" = 'input' THEN quantity ELSE quantity * -1 END) as quantity`)
+                    )
+                        .from('inventories')
+                        .leftJoin('inventoryLines', 'inventories.id', 'inventoryLines.inventoryId')
+                        .where('inventories.branchId', self.branchId)
+                        .where('fiscalPeriodId', self.state.fiscalPeriodId)
+                        .where('productId', id)
+                        .groupBy('stockId')
+                        .as('base')
+                })
+                .leftJoin('stocks', 'base.stockId', 'stocks.id')
         );
 
         const stocks = toResult(this.knex
@@ -88,7 +100,7 @@ export class ProductQuery extends BaseQuery {
     }
 
     getManyByReferenceId(referenceIds) {
-        if(!(referenceIds && referenceIds.length > 0))
+        if (!( referenceIds && referenceIds.length > 0 ))
             return;
 
         return toResult(
