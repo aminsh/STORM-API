@@ -518,12 +518,12 @@ export class SaleService {
     }
 
     _invoiceLinesChanged(oldLines, newLines) {
-        let removedLines = oldLines.filter(item => !newLines.asEnumerable().any(nl => nl.product.id === item.productId));
+        let removedLines = oldLines.filter(item => !newLines.asEnumerable().any(nl => nl.productId === item.productId));
 
         if (removedLines.length > 0)
             return true;
 
-        let addedLines = newLines.filter(item => !oldLines.asEnumerable().any(nl => nl.productId === item.product.id));
+        let addedLines = newLines.filter(item => !oldLines.asEnumerable().any(nl => nl.productId === item.productId));
 
         if (addedLines.length > 0)
             return true;
@@ -531,7 +531,7 @@ export class SaleService {
         let changedLines = oldLines.asEnumerable()
             .join(newLines,
                 oldLine => oldLine.productId,
-                newLine => newLine.product.id,
+                newLine => newLine.productId,
                 (oldLine, newLine) => ( {
                     productId: oldLine.productId,
                     oldQuantity: oldLine.quantity,
