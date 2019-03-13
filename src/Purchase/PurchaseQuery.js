@@ -31,10 +31,14 @@ export class PurchaseQuery extends BaseQuery {
             invoice = toResult(knex
                 .select(
                     'invoices.*',
-                    knex.raw('"detailAccounts"."title" as "detailAccountDisplay"')
+                    knex.raw('"detailAccounts"."title" as "detailAccountDisplay"'),
+                    knex.raw('journals."temporaryNumber" as journal_number'),
+                    knex.raw('journals."temporaryDate" as journal_date'),
+                    knex.raw('journals.description as journal_description')
                 )
                 .from('invoices')
                 .leftJoin('detailAccounts', 'invoices.detailAccountId', 'detailAccounts.id')
+                .leftJoin('journals', 'journals.id', 'invoices.journalId')
                 .where('invoices.id', id)
                 .modify(modify, branchId, userId, canView, 'invoices')
                 .first()
@@ -108,6 +112,7 @@ export class PurchaseQuery extends BaseQuery {
                     'description',
                     'title',
                     'journalId',
+                    'journal_number',
                     knex.raw(`sum(discount) as discount`),
                     knex.raw(`"sum"("totalPrice") + ${sumChargesQuery} - sum(DISTINCT coalesce(discount,0)) as "sumTotalPrice" `),
                     knex.raw(`("sum"("totalPrice") + ${sumChargesQuery}) - sum(DISTINCT coalesce(discount,0)) -
@@ -118,10 +123,13 @@ export class PurchaseQuery extends BaseQuery {
                     .from(function () {
                         this.select('invoices.*',
                             knex.raw('"detailAccounts"."title" as "detailAccountDisplay"'),
-                            knex.raw(`("invoiceLines"."unitPrice" * "invoiceLines".quantity - "invoiceLines".discount + "invoiceLines".vat) as "totalPrice"`))
+                            knex.raw(`("invoiceLines"."unitPrice" * "invoiceLines".quantity - "invoiceLines".discount + "invoiceLines".vat) as "totalPrice"`),
+                            knex.raw('journals."temporaryNumber" as journal_number')
+                        )
                             .from('invoices')
                             .leftJoin('invoiceLines', 'invoices.id', 'invoiceLines.invoiceId')
                             .leftJoin('detailAccounts', 'invoices.detailAccountId', 'detailAccounts.id')
+                            .leftJoin('journals', 'journals.id', 'invoices.journalId')
                             .modify(modify, branchId, userId, canView, 'invoices')
                             .andWhere('invoiceType', 'purchase')
                             .as('base');
@@ -136,7 +144,8 @@ export class PurchaseQuery extends BaseQuery {
                         'invoiceStatus',
                         'description',
                         'title',
-                        'journalId')
+                        'journalId',
+                        'journal_number')
                     .orderBy('number', 'desc')
 
             });
@@ -382,6 +391,14 @@ export class PurchaseQuery extends BaseQuery {
             description: entity.description,
             title: entity.title,
             journalId: entity.journalId,
+            journal: entity.journalId
+                ? {
+                    id: entity.journalId,
+                    number: entity.journal_number,
+                    date: entity.journal_date,
+                    description: entity.journal_description
+                }
+                : null,
             inventoryIds: entity.inventoryIds,
             detailAccountId: entity.detailAccountId,
             detailAccountDisplay: entity.detailAccountDisplay,

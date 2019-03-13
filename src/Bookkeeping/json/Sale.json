@@ -1,6 +1,8 @@
 {
   "title": "فاکتور فروش",
   "model": "Sale",
+  "hasCost": true,
+  "hasCharge": true,
   "fields": [
     {
       "key": "number",

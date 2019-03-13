@@ -369,6 +369,7 @@ enums.ProductOutputCreationMethod = function () {
 enums.JournalGenerationTemplateModel = function () {
     return new Enum([
         { key: 'Sale', display: 'فاکتور فروش' },
+        { key: 'Purchase', display: 'فاکتور خرید' },
         { key: 'InputPurchase', display: 'رسید خرید' },
         { key: 'Input', display: 'رسید' },
         { key: 'InputTransferBetweenStocks', display: 'رسید ورود انتقال بین انبار ها' },

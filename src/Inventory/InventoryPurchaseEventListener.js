@@ -14,6 +14,9 @@ export class InventoryPurchaseEventListener {
     @inject("SettingsRepository")
     /**@type {SettingsRepository}*/ settingsRepository = undefined;
 
+    @inject("InvoiceRepository")
+    /**@type{InvoiceRepository}*/ invoiceRepository = undefined;
+
     @EventHandler("PurchaseCreated")
     onPurchaseCreated(purchaseId) {
         const settings = this.settingsRepository.get();
@@ -33,5 +36,29 @@ export class InventoryPurchaseEventListener {
     onPurchaseRemoved(purchaseId) {
         const inventories = this.inventoryRepository.findByInvoiceId(purchaseId);
         inventories.forEach(item => this.inventoryRepository.update(item.id, { invoiceId: null }));
+    }
+
+    @EventHandler("PurchaseJournalCreated")
+    onJournalCreated(purchaseId) {
+        const purchase = this.invoiceRepository.findById(purchaseId);
+
+        if (!purchase)
+            return;
+
+        const inputs = this.inventoryRepository.findByInvoiceId(purchaseId);
+
+        inputs.forEach(input => this.inventoryRepository.update(input.id, { journalId: purchase.journalId }))
+    }
+
+    @EventHandler("PurchaseJournalRemoved")
+    onJournalRemoved(purchaseId) {
+        const purchase = this.invoiceRepository.findById(purchaseId);
+
+        if (!purchase)
+            return;
+
+        const inputs = this.inventoryRepository.findByInvoiceId(purchaseId);
+
+        inputs.forEach(input => this.inventoryRepository.update(input.id, { journalId: null }))
     }
 }

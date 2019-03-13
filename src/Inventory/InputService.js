@@ -36,6 +36,7 @@ export class InputService {
             description: cmd.description,
             inventoryType: 'input',
             quantityStatus: 'draft',
+            journalId: cmd.journalId,
             ioType: cmd.ioType,
             fiscalPeriodId: this.state.fiscalPeriodId,
             inventoryLines: ( cmd.inventoryLines || cmd.lines ).asEnumerable()

@@ -82,6 +82,20 @@ class PurchaseController {
         this.purchaseService.remove(req.params.id);
     }
 
+    @Post("/:id/generate-journal")
+    generateJournal(req) {
+        const id = req.params.id;
+
+        this.purchaseService.generateJournal(id);
+    }
+
+    @Delete("/:id/remove-journal")
+    removeJournal(req) {
+        const id = req.params.id;
+
+        this.purchaseService.removeJournal(id);
+    }
+
     @Post("/:id/generate-inputs")
     generateInputs(req) {
         const id = req.params.id;

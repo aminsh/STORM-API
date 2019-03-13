@@ -33,6 +33,15 @@ export class PurchaseService {
     /** @type {EventBus}*/
     @inject("EventBus") eventBus = undefined;
 
+    @inject('JournalGenerationTemplateRepository')
+    /**@type{JournalGenerationTemplateRepository}*/ journalGenerationTemplateRepository = undefined;
+
+    @inject("JournalGenerationTemplateService")
+    /**@type{JournalGenerationTemplateService}*/ journalGenerationTemplateService = undefined;
+
+    @inject("JournalService")
+    /**@type{JournalService}*/ journalService = undefined;
+
     @postConstruct()
     init() {
 
@@ -301,5 +310,52 @@ export class PurchaseService {
             throw new ValidationException([ 'برای فاکتور جاری رسیدی صادر نشده است ' ]);
 
         relatedInputs.forEach(item => this.inputService.remove(item.id));
+    }
+
+    generateJournal(id) {
+        let invoice = this.invoiceRepository.findById(id);
+
+
+        if (!invoice)
+            throw new ValidationException([ 'فاکتور وجود ندارد' ]);
+
+        if (invoice.journalId)
+            throw new ValidationException([ 'برای فاکتور جاری قبلا سند صادر شده ، ابتدا سند را حذف کنید' ]);
+
+        const relatedInputs = this.inventoryRepository.findByInvoiceId(id);
+
+        if(relatedInputs.asEnumerable().any(item => item.journalId))
+            throw new ValidationException([ 'برای رسید های مرتبط سند صادر شده ، امکان صدور سند حسابداری وجود ندارد' ]);
+
+
+        const journalGenerationTemplate = this.journalGenerationTemplateRepository.findByModel('Purchase');
+
+        if (!journalGenerationTemplate)
+            throw new ValidationException([ 'الگوی ساخت سند حسابداری وجود ندارد' ]);
+
+
+        const journalId = this.journalGenerationTemplateService.generate(journalGenerationTemplate.id, id, 'Inventory');
+
+        Utility.delay(1000);
+
+        this.invoiceRepository.update(id, { journalId });
+
+        this.eventBus.send('PurchaseJournalCreated', id);
+    }
+
+    removeJournal(id) {
+        const invoice = this.invoiceRepository.findById(id);
+
+        if (!invoice)
+            throw new NotFoundException();
+
+        if (!invoice.journalId)
+            throw new ValidationException([ 'برای فاکتور جاری سند حسابداری صادر نشده' ]);
+
+        this.journalService.remove(invoice.journalId);
+
+        this.invoiceRepository.update(id, { journalId: null });
+
+        this.eventBus.send('PurchaseJournalRemoved', id);
     }
 }
