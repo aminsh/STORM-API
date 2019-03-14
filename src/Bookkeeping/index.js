@@ -55,6 +55,7 @@ import { InputTransferBetweenStocksMapper } from "./JournalGenerationTemplate/In
 import { OutputMapper } from "./JournalGenerationTemplate/OutputMapper";
 import { OutputTransferBetweenStocksMapper } from "./JournalGenerationTemplate/OutputTransferBetweenStocksMapper";
 import { MapperFactory } from "./JournalGenerationTemplate/MapperFactory";
+import { PurchaseMapper } from "./JournalGenerationTemplate/PurchaseMapper";
 
 export function register(container) {
 
@@ -101,6 +102,7 @@ export function register(container) {
     container.bind("TreasuryEventListener").to(TreasuryEventListener);
 
     container.bind("SaleMapper").to(SaleMapper);
+    container.bind("PurchaseMapper").to(PurchaseMapper);
     container.bind("InputMapper").to(InputMapper);
     container.bind("InputPurchaseMapper").to(InputPurchaseMapper);
     container.bind("InputTransferBetweenStocksMapper").to(InputTransferBetweenStocksMapper);

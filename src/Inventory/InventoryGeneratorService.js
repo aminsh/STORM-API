@@ -29,6 +29,11 @@ export class InventoryGeneratorService {
     @inject("State") state = undefined;
 
     createOutputFromSale(saleId) {
+        let beforeInvoices = this.inventoryRepository.findByInvoiceId(saleId);
+
+        if (beforeInvoices && beforeInvoices.length > 0)
+            return;
+
         const settings = this.settingsRepository.get(),
             ioType = this.inventoryIOTypeRepository.findByKey('outputSale');
 
@@ -66,6 +71,11 @@ export class InventoryGeneratorService {
     }
 
     createInputFromPurchase(purchaseId) {
+        let beforeInvoices = this.inventoryRepository.findByInvoiceId(purchaseId);
+
+        if (beforeInvoices && beforeInvoices.length > 0)
+            return;
+
         const purchase = this.invoiceRepository.findById(purchaseId),
             totalPrice = purchase.invoiceLines.asEnumerable().sum(item => ( item.unitPrice * item.quantity ) - item.discount),
             totalCharges = ( purchase.charges && purchase.charges.length > 0 )
@@ -80,6 +90,7 @@ export class InventoryGeneratorService {
                 (key, items) => ( {
                     date: purchase.date,
                     time: purchase.createdAt,
+                    journalId: purchase.journalId,
                     stockId: key,
                     delivererId: purchase.detailAccountId,
                     invoiceId: purchaseId,

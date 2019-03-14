@@ -75,7 +75,12 @@ export class TreasuryJournalGenerationService {
 
         return persistedTreasury.journalId
             ? this.journalService.update(persistedTreasury.journalId, { description, journalLines })
-            : this.journalService.create({ description, journalLines, issuer: 'Treasury' });
+            : this.journalService.create({
+                date: persistedTreasury.transferDate,
+                description,
+                journalLines,
+                issuer: 'Treasury'
+            });
 
     }
 
@@ -122,7 +127,12 @@ export class TreasuryJournalGenerationService {
 
         return persistedTreasury.journalId
             ? this.journalService.update(persistedTreasury.journalId, { description, journalLines })
-            : this.journalService.create({ description, journalLines, issuer: 'Treasury' });
+            : this.journalService.create({
+                date: persistedTreasury.transferDate,
+                description,
+                journalLines,
+                issuer: 'Treasury'
+            });
     }
 
     generateForReceiveReceipt(treasuryId) {
@@ -169,7 +179,12 @@ export class TreasuryJournalGenerationService {
 
         return persistedTreasury.journalId
             ? this.journalService.update(persistedTreasury.journalId, { description, journalLines })
-            : this.journalService.create({ description, journalLines, issuer: 'Treasury' });
+            : this.journalService.create({
+                date: persistedTreasury.transferDate,
+                description,
+                journalLines,
+                issuer: 'Treasury'
+            });
     }
 
     generateForPaymentReceipt(treasuryId) {
@@ -219,7 +234,12 @@ export class TreasuryJournalGenerationService {
 
         return persistedTreasury.journalId
             ? this.journalService.update(persistedTreasury.journalId, { description, journalLines })
-            : this.journalService.create({ description, journalLines, issuer: 'Treasury' });
+            : this.journalService.create({
+                date: persistedTreasury.transferDate,
+                description,
+                journalLines,
+                issuer: 'Treasury'
+            });
     }
 
     generateForReceiveDemandNote(treasuryId) {
@@ -266,7 +286,12 @@ export class TreasuryJournalGenerationService {
 
         return persistedTreasury.journalId
             ? this.journalService.update(persistedTreasury.journalId, { description, journalLines })
-            : this.journalService.create({ description, journalLines , issuer: 'Treasury'});
+            : this.journalService.create({
+                date: persistedTreasury.transferDate,
+                description,
+                journalLines,
+                issuer: 'Treasury'
+            });
     }
 
     generateForPaymentDemandNote(treasuryId) {
@@ -312,7 +337,12 @@ export class TreasuryJournalGenerationService {
 
         return persistedTreasury.journalId
             ? this.journalService.update(persistedTreasury.journalId, { description, journalLines })
-            : this.journalService.create({ description, journalLines , issuer: 'Treasury'});
+            : this.journalService.create({
+                date: persistedTreasury.transferDate,
+                description,
+                journalLines,
+                issuer: 'Treasury'
+            });
     }
 
     generateForCheque(treasuryId) {
@@ -351,7 +381,12 @@ export class TreasuryJournalGenerationService {
         return persistedJournal
             ? this.journalService.update(persistedTreasuryJournalId[ 0 ],
                 { description: persistedJournal.description, journalLines: persistedJournal.journalLines })
-            : this.journalService.create({ description, journalLines ,issuer: 'Treasury'});
+            : this.journalService.create({
+                date: persistedTreasury.transferDate,
+                description,
+                journalLines,
+                issuer: 'Treasury'
+            });
 
     }
 
@@ -1137,7 +1172,12 @@ export class TreasuryJournalGenerationService {
 
         return persistedTreasury.journalId
             ? this.journalService.update(persistedTreasury.journalId, { description, journalLines })
-            : this.journalService.create({ description, journalLines, issuer: 'Treasury' });
+            : this.journalService.create({
+                date: persistedTreasury.transferDate,
+                description,
+                journalLines,
+                issuer: 'Treasury'
+            });
     }
 
 }
