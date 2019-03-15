@@ -233,6 +233,7 @@ export class ReturnSaleQuery extends BaseQuery {
         return Object.assign({}, {
             branchId: entity.branchId,
             id: entity.id,
+            currencyId: entity.currencyId,
             ofInvoiceId: entity.ofInvoiceId,
             printUrl,
             number: entity.number,
