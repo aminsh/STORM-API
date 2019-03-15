@@ -215,9 +215,20 @@ export class InventoryQuery extends BaseQuery {
                 .first()),
             inventoryLines = inventory
                 ? toResult(
-                    knex.select('inventoryLines.*', knex.raw('products.title as "productDisplay"'))
+                    knex.select('inventoryLines.*',
+                        knex.raw('products.title as "productDisplay"'),
+                        knex.raw('base.number as base_number'),
+                        knex.raw('base.date as base_date'),
+                        knex.raw('base."stockId" as base_stock_id'),
+                        knex.raw('stocks.title as base_stock_title'),
+                        knex.raw('base."ioType" as base_io_type'),
+                        knex.raw('"inventoryIOTypes".title as base_io_type_display')
+                    )
                         .from('inventoryLines')
                         .leftJoin('products', 'inventoryLines.productId', 'products.id')
+                        .leftJoin('inventories as base', 'inventoryLines.baseInventoryId', 'base.id')
+                        .leftJoin('stocks', 'base.stockId', 'stocks.id')
+                        .leftJoin('inventoryIOTypes', 'base.ioType', 'inventoryIOTypes.id')
                         .modify(modify, branchId, userId, canView, 'inventoryLines')
                         .where('inventoryId', inventory.id))
                 : [];
@@ -236,9 +247,20 @@ export class InventoryQuery extends BaseQuery {
             modify = this.modify.bind(this),
 
             query = knex.from(function () {
-                this.select('inventoryLines.*', knex.raw('products.title as "productDisplay"'))
+                this.select('inventoryLines.*',
+                    knex.raw('products.title as "productDisplay"'),
+                    knex.raw('base.number as base_number'),
+                    knex.raw('base.date as base_date'),
+                    knex.raw('base."stockId" as base_stock_id'),
+                    knex.raw('stocks.title as base_stock_title'),
+                    knex.raw('base."ioType" as base_io_type'),
+                    knex.raw('"inventoryIOTypes".title as base_io_type_display')
+                )
                     .from('inventoryLines')
                     .leftJoin('products', 'inventoryLines.productId', 'products.id')
+                    .leftJoin('inventories as base', 'inventoryLines.baseInventoryId', 'base.id')
+                    .leftJoin('stocks', 'base.stockId', 'stocks.id')
+                    .leftJoin('inventoryIOTypes', 'base.ioType', 'inventoryIOTypes.id')
                     .modify(modify, branchId, userId, canView, 'inventoryLines')
                     .where('inventoryId', id)
                     .as('base');
@@ -383,7 +405,19 @@ export class InventoryQuery extends BaseQuery {
             productId: item.productId,
             productDisplay: item.productDisplay,
             quantity: item.quantity,
-            unitPrice: item.unitPrice
+            unitPrice: item.unitPrice,
+            baseInventoryId: item.baseInventoryId,
+            baseInventory: item.baseInventoryId
+                ? {
+                    number: item[ 'base_number' ],
+                    date: item[ 'base_date' ],
+                    stockId: item[ 'base_stock_id' ],
+                    stockDisplay: item[ 'base_stock_title' ],
+                    ioType: item[ 'base_io_type' ],
+                    ioTypeDisplay: item[ 'base_io_type_display' ]
+                }
+                : null
         };
+
     }
 }
