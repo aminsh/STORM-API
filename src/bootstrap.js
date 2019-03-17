@@ -34,6 +34,7 @@ import * as Integration from "./Integration";
 import * as BranchSetup from "./BranchSetup";
 import * as Report from "./Report";
 import * as Permission from "./Permission";
+import * as Currency from "./Currency";
 //import * as InventoryAccounting from "./InventoryAccounting";
 import * as JournalGeneration from "./JournalGeneration";
 import * as Site from "./Site";
@@ -66,9 +67,10 @@ Permission.register(container);
 //InventoryAccounting.register(container);
 JournalGeneration.register(container);
 Site.register(container);
+Currency.register(container);
 
-import {Context} from "./Context";
-import {register} from "./Infrastructure/expressUtlis";
+import { Context } from "./Context";
+import { register } from "./Infrastructure/expressUtlis";
 
 container.bind("State").to(Context);
 
@@ -81,11 +83,11 @@ function setFirstMiddleware(req, res, next) {
 
     req.container = container.createChild();
 
-    req.apiCaller = req.headers['api-caller'] || 'External api';
+    req.apiCaller = req.headers[ 'api-caller' ] || 'External api';
 
     req.requestId = Utility.TokenGenerator.generate128Bit();
 
-    req.container.bind('HttpContext').toConstantValue({request: req});
+    req.container.bind('HttpContext').toConstantValue({ request: req });
 
     next();
 }

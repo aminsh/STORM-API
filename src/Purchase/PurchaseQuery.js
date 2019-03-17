@@ -385,6 +385,7 @@ export class PurchaseQuery extends BaseQuery {
         return Object.assign({}, {
             branchId: entity.branchId,
             id: entity.id,
+            currencyId: entity.currencyId,
             printUrl,
             number: entity.number,
             date: entity.date,

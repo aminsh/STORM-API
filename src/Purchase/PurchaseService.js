@@ -83,6 +83,7 @@ export class PurchaseService {
 
         return {
             id: cmd.id,
+            currencyId: cmd.currencyId,
             date: cmd.date || PersianDate.current(),
             description: cmd.description,
             title: cmd.title,

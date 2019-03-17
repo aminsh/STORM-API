@@ -103,6 +103,7 @@ export class ReturnSaleService {
             id: cmd.id,
             date: cmd.date || PersianDate.current(),
             typeId: type ? type.id : null,
+            currencyId: cmd.currencyId,
             number: this.getNumber(cmd.number, invoice),
             description: cmd.description,
             ofInvoiceId: cmd.ofInvoiceId,
