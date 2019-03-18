@@ -444,7 +444,7 @@ enums.Features = function () {
     return new Enum([
         {
             key: 'sale',
-            value: [ 'sales', 'return-sales', 'products', 'product-categories', 'scales', 'price-list' , 'sale-types'],
+            value: [ 'sales', 'return-sales', 'products', 'product-categories', 'scales', 'price-list', 'sale-types' ],
             display: 'فروش'
         },
         {
@@ -498,13 +498,27 @@ enums.PersonRole = function () {
     ])
 };
 
-    enums.JournalIssuer = function () {
+enums.JournalIssuer = function () {
     return new Enum([
-        {key: 'Sale', display: 'فروش'},
-        {key: 'Purchase', display: 'خرید'},
-        {key: 'Inventory', display: 'انبار'},
-        {key: 'Treasury', display: 'خزانه داری'}
+        { key: 'Sale', display: 'فروش' },
+        { key: 'Purchase', display: 'خرید' },
+        { key: 'Inventory', display: 'انبار' },
+        { key: 'Treasury', display: 'خزانه داری' }
     ])
 };
+
+enums.WoocommerceOrderStatus = function () {
+    return new Enum([
+        { key: 'pending', display: 'pending' },
+        { key: 'processing', display: 'processing' },
+        { key: 'on-hold', display: 'on-hold' },
+        { key: 'completed', display: 'completed' },
+        { key: 'cancelled', display: 'cancelled' },
+        { key: 'refunded', display: 'refunded' },
+        { key: 'failed', display: 'failed' },
+        { key: 'trash', display: 'trash' },
+        { key: 'sent', display: 'sent' }
+    ])
+}
 
 export default enums;
