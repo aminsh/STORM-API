@@ -79,6 +79,10 @@ class WoocommerceController {
             offset: req.query.skip
         };
 
+        if (req.query.filter && Array.isArray(req.query.filter.filters)) {
+            req.query.filter.filters.forEach(f => params[ f.field ] = f.value);
+        }
+
         try {
             const ordersResult = this.WoocommerceRepository.get(`orders?${queryString.stringify(params)}`, true);
             const invoices = this.saleQuery.getByOrderIds(ordersResult.data.map(item => item.id));
