@@ -81,7 +81,7 @@ export class DetailAccountService {
             fax: cmd.fax,
             nationalCode: cmd.nationalCode,
             email: cmd.email,
-            personType: cmd.personType,
+            personType: cmd.personType || 'real',
             economicCode: cmd.economicCode,
             registrationNumber: cmd.registrationNumber,
             contacts: JSON.stringify(cmd.contacts),
@@ -99,6 +99,12 @@ export class DetailAccountService {
     }
 
     update(id, cmd) {
+
+        let detailAccount = this.detailAccountRepository.findById(id);
+
+        if(!detailAccount)
+            throw new NotFoundException();
+
         let errors = [];
 
         if (Utility.String.isNullOrEmpty(cmd.title))
@@ -134,7 +140,7 @@ export class DetailAccountService {
             fax: cmd.fax,
             nationalCode: cmd.nationalCode,
             email: cmd.email,
-            personType: cmd.personType,
+            personType: cmd.personType || detailAccount.personType || 'real',
             economicCode: cmd.economicCode,
             registrationNumber: cmd.registrationNumber,
             contacts: JSON.stringify(cmd.contacts),
