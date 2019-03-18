@@ -1,6 +1,6 @@
 import toResult from "asyncawait/await";
-import {inject, injectable} from "inversify";
-import {BaseQuery} from "../Infrastructure/BaseQuery";
+import { inject, injectable } from "inversify";
+import { BaseQuery } from "../Infrastructure/BaseQuery";
 
 @injectable()
 export class PersonQuery extends BaseQuery {
@@ -14,7 +14,7 @@ export class PersonQuery extends BaseQuery {
             query = knex.select().from(function () {
                 this.select('*', knex.raw(`coalesce("code", '') || ' ' || title as display`))
                     .from('detailAccounts')
-                    .where({branchId, detailAccountType: 'person'})
+                    .where({ branchId, detailAccountType: 'person' })
                     .as('base')
             });
 
@@ -37,6 +37,24 @@ export class PersonQuery extends BaseQuery {
                 .first()
         );
 
+        if (!entity)
+            throw new NotFoundException();
+
+        return this._view(entity);
+    }
+
+    getOne(filter) {
+        filter = filter || {};
+
+        filter.branchId = this.branchId;
+        filter.detailAccountType = 'person';
+
+        let entity = toResult(
+            this.knex.select('*').from('detailAccounts')
+                .where(filter)
+                .first()
+        );
+
         return this._view(entity);
     }
 
@@ -54,10 +72,10 @@ export class PersonQuery extends BaseQuery {
                     .where('branchId', branchId)
                     .where('detailAccountType', 'person');
 
-                if(personRole === 'marketer')
+                if (personRole === 'marketer')
                     q.where('isMarketer', true);
 
-                    q.as('base');
+                q.as('base');
             });
 
         return toResult(Utility.kendoQueryResolve(query, parameters, this._view.bind(this)));
@@ -66,7 +84,7 @@ export class PersonQuery extends BaseQuery {
     _view(entity) {
 
         if(!entity)
-            throw new NotFoundException();
+            return null;
 
         const enums = this.enums;
 

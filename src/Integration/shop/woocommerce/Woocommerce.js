@@ -340,42 +340,62 @@ export class Woocommerce {
         }
     }
 
-    getCustomer(customerId) {
+    getCustomer(customerId, billing) {
 
         const wooCommerceThirdParty = this.registeredThirdPartyRepository.get("woocommerce"),
+            defaultCustomer = { referenceId: '0', title: 'مشتری عمومی' },
             replaceCustomerId = wooCommerceThirdParty.data.replaceCustomerId;
 
-        let customer;
-
         if (replaceCustomerId) {
-            customer = this.personQuery.getById(replaceCustomerId);
+            let person = this.personQuery.getById(replaceCustomerId);
 
-            if (customer)
-                return customer;
+            if (person)
+                return person;
+        }
+
+        if (customerId === 0) {
+            if (billing) {
+                let person = this.personQuery.getOne({ mobile: billing.phone });
+
+                return person
+                    ? person
+                    : {
+                        title: `${billing.first_name} ${billing.last_name}`,
+                        email: billing.email,
+                        mobile: billing.phone,
+                        address: billing.address_1,
+                        province: billing.state,
+                        city: billing.city,
+                        postalCode: billing.postcode,
+                    };
+            }
+            else {
+                return defaultCustomer;
+            }
         }
 
         try {
-            customer = this.woocommerceRepository.get(`customers/${customerId}`);
+            let customer = this.woocommerceRepository.get(`customers/${customerId}`);
+
+            return {
+                referenceId: customer.customerId,
+                title: `${customer.first_name} ${customer.last_name}`,
+                email: customer.email,
+                phone: customer.billing ? customer.billing.phone : null,
+                address: customer.billing ? customer.billing.address_1 : null,
+                province: customer.billing ? customer.billing.state : null,
+                city: customer.billing ? customer.billing.city : null,
+                postalCode: customer.billing ? customer.billing.postcode : null,
+            };
         }
         catch (e) {
-            customer = Woocommerce.defaultCustomer;
+            return defaultCustomer;
         }
-
-        return {
-            referenceId: customer.customerId,
-            title: `${customer.first_name} ${customer.last_name}`,
-            email: customer.email,
-            phone: customer.billing ? customer.billing.phone : null,
-            address: customer.billing ? customer.billing.address_1 : null,
-            province: customer.billing ? customer.billing.state : null,
-            city: customer.billing ? customer.billing.city : null,
-            postalCode: customer.billing ? customer.billing.postcode : null,
-        };
     }
 
     map(order) {
         const customerId = order[ 'customer_id' ];
-        let customer = this.getCustomer(customerId);
+        let customer = this.getCustomer(customerId, order[ 'billing' ]);
 
         return {
             date: order[ 'date_created' ]
@@ -451,8 +471,6 @@ export class Woocommerce {
 
         this.returnSaleService.create(cmd);
     }
-
-    static defaultCustomer = { customerId: '0', first_name: 'مشتری عمومی', last_name: '' };
 
     static needToUpdate(invoice, order) {
         const totalOrder = Woocommerce.toRial(order.currency, order.total),
