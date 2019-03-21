@@ -122,7 +122,7 @@ export class DetailAccountQuery extends BaseQuery {
             canView = this.canView.call(this),
             modify = this.modify.bind(this),
 
-            subsidiaryLedgerAccounts = toResult(knex.from('settings').where('branchId', this.branchId).first())
+            subsidiaryLedgerAccounts = toResult(knex.from('treasurySettings').where('branchId', this.branchId).first())
                 .subsidiaryLedgerAccounts,
             subledger = subsidiaryLedgerAccounts.asEnumerable().toObject(item => item.key, item => item.id),
 
