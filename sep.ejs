@@ -1,0 +1,18 @@
+<html>
+<head>
+    <meta charset='utf-8'>
+    <title>در حال انتقال به درگاه بانکی...</title>
+</head>
+<body>
+<form id='payForm' action='https://sep.shaparak.ir/Payment.aspx' method='POST'>
+    <input type='hidden' name='Amount' value="<%- Amount %>">
+    <input type='hidden' name='MID' value="<%- TermID %>">
+    <input type='hidden' name='ResNum' value="<%- ResNum %>">
+    <input type='hidden' name='RedirectURL' value="<%- RedirectUrl %>">
+</form>
+<script language='javascript'>
+    document.getElementById('payForm').submit();
+</script>
+//////////</body>
+</html>
+";
