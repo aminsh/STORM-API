@@ -200,19 +200,17 @@ class ReportController {
 
     @Get("/inventory-turnover")
     getInventoriesTurnover(req) {
-
-        return this.reportInventoryTurnoverQuery.getInventoriesTurnover(req.query.ids);
+        return this.reportInventoryTurnoverQuery.getInventoriesTurnover(req.query);
     }
 
     @Get("/product-turnover")
     getProductTurnovers(req) {
-
-        return this.reportProductQuery.getProductTurnovers(req.query.ids, req.query.fixedType, req.query.stockId);
+        return this.reportProductQuery.getProductTurnovers(req.query);
     }
 
     @Get("/product-turnover-total")
     getProductTurnoversTotal(req) {
-        return this.reportProductQuery.productInventoryTotal(req.query.ids);
+        return this.reportProductQuery.productInventoryTotal(req.query.ids, req.query);
     }
 
     @Get("/seasonal")

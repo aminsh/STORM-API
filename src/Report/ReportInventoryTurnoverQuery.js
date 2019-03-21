@@ -1,6 +1,6 @@
-import {BaseQuery} from "../Infrastructure/BaseQuery";
+import { BaseQuery } from "../Infrastructure/BaseQuery";
 import toResult from "asyncawait/await";
-import {injectable, inject} from "inversify";
+import { injectable, inject } from "inversify";
 
 @injectable()
 export class ReportInventoryTurnoverQuery extends BaseQuery {
@@ -8,40 +8,72 @@ export class ReportInventoryTurnoverQuery extends BaseQuery {
     @inject("ReportConfig")
     /**@type{ReportConfig}*/ reportConfig = undefined;
 
-    getInventoriesTurnover(ids) {
+    @inject("Enums") enums = undefined;
+
+    getInventoriesTurnover(parameters) {
 
         let knex = this.knex,
             branchId = this.branchId,
             userId = this.state.user.id,
             canView = this.canView.call(this),
             modify = this.modify.bind(this),
-            options = this.reportConfig.options;
+            stockIds = parameters.stockIds && Array.isArray(parameters.stockIds) && parameters.stockIds.length > 0
+                ? parameters.stockIds
+                : null,
+            dateRange = parameters.minDate && parameters.maxDate
+                ? [ parameters.minDate, parameters.maxDate ]
+                : null;
 
-        let query = (
-            knex.select(knex.raw(
-                `CASE WHEN products."referenceId" ISNULL THEN products.title 
-                ELSE products.title||' ${'کد'} ' ||products."referenceId" END AS product,
-             inventories."inventoryType",
-             CASE WHEN inventories."inventoryType" = 'output' THEN '${'حواله'}' 
-                ELSE '${'رسید'}' END AS "inventoryTypeText",
-            "inventoryLines".quantity, "inventoryLines"."unitPrice",
-            "inventoryLines".quantity*"inventoryLines"."unitPrice" as "totalPrice",
-            inventories.date, inventories.number, stocks.title as stock, stocks.id as "stockId"`),
-                knex.raw('"inventoryIOTypes".title as "ioType"')
+        let query = knex.from(function () {
+            let q = this.select(
+                'inventories.number',
+                'inventories.date',
+                'inventories.inventoryType',
+                'inventories.ioType',
+                'inventories.stockId',
+                knex.raw('stocks.title as stock'),
+                knex.raw('"inventoryIOTypes".title as "ioTypeText"'),
+                'inventoryLines.productId',
+                knex.raw('products.title as product'),
+                'inventoryLines.quantity',
+                'inventoryLines.unitPrice',
+                knex.raw('"inventoryLines".quantity * "inventoryLines"."unitPrice" as "totalPrice"')
             )
                 .from('stocks')
-                .innerJoin('inventories', 'inventories.stockId', 'stocks.id')
-                .modify(modify, branchId, userId, canView, 'inventories')
-                .innerJoin('inventoryIOTypes', 'inventoryIOTypes.id', 'inventories.ioType')
-                .innerJoin('inventoryLines', 'inventoryLines.inventoryId', 'inventories.id')
-                .innerJoin('products', 'products.id', 'inventoryLines.productId')
-                .whereBetween('inventories.date', [options.fromMainDate, options.toDate])
-                .as('inventoriesTurnover')
-        );
+                .leftJoin('inventories', 'inventories.stockId', 'stocks.id')
+                .leftJoin('inventoryIOTypes', 'inventoryIOTypes.id', 'inventories.ioType')
+                .leftJoin('inventoryLines', 'inventoryLines.inventoryId', 'inventories.id')
+                .leftJoin('products', 'products.id', 'inventoryLines.productId')
+                .modify(modify, branchId, userId, canView, 'inventories');
 
-        if (ids)
-            query.whereIn('stockId',ids);
+            if (stockIds)
+                q.whereIn('stockId', stockIds);
 
-        return toResult(query);
+            if (dateRange)
+                q.whereBetween('date', dateRange);
+
+            q.as('base');
+
+        });
+
+        let view = item => ( {
+            number: item.number,
+            date: item.date,
+            inventoryType: item.inventoryType,
+            inventoryTypeText: item.inventoryType
+                ? this.enums.InventoryType().getDisplay(item.inventoryType)
+                : null,
+            ioType: item.ioType,
+            ioTypeText: item.ioTypeText,
+            productId: item.productId,
+            product: item.product,
+            stockId: item.stockId,
+            stock: item.stock,
+            quantity: item.quantity,
+            unitPrice: item.unitPrice,
+            totalPrice: item.totalPrice
+        } );
+
+        return toResult(Utility.kendoQueryResolve(query, parameters, view.bind(this)));
     }
 }
