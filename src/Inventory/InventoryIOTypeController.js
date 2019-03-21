@@ -1,5 +1,5 @@
-import {Controller, Delete, Get, Post, Put} from "../Infrastructure/expressUtlis";
-import {inject} from "inversify";
+import { Controller, Delete, Get, Post, Put } from "../Infrastructure/expressUtlis";
+import { inject } from "inversify";
 
 @Controller("/v1/inventory-io-types", "ShouldHaveBranch")
 class InventoryIOTypeController {
@@ -9,6 +9,12 @@ class InventoryIOTypeController {
 
     @inject("InventoryIOTypeQuery")
     /**@type{InventoryIOTypeQuery}*/ inventoryIOTypeQuery = undefined;
+
+    @Get("/")
+    get(req) {
+
+        return this.inventoryIOTypeQuery.getAll(null, req.query);
+    }
 
     @Get("/:type")
     get(req) {

@@ -13,14 +13,17 @@ export class InventoryIOTypeQuery extends BaseQuery {
             knex = this.knex,
 
             query = this.knex.select().from(function () {
-                this.select(
+                let q = this.select(
                     `${tableName}.*`,
                     knex.raw('"journalGenerationTemplates".title as journal_generation_template_title'))
                     .from(tableName)
                     .leftJoin('journalGenerationTemplates', `${tableName}.journalGenerationTemplateId`, 'journalGenerationTemplates.id')
-                    .where(`${tableName}.branchId`, branchId)
-                    .where('type', type)
-                    .as('base');
+                    .where(`${tableName}.branchId`, branchId);
+
+                if(type)
+                    q.where('type', type);
+
+                q.as('base');
             });
 
 
