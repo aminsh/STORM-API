@@ -198,7 +198,7 @@ class ReportController {
         return this.reportInventoryInputsOutputsTurnoverQuery.getInventories(req.query.ids, 'input');
     }
 
-    @Get("/inventory-turnover")
+    /*@Get("/inventory-turnover")
     getInventoriesTurnover(req) {
         return this.reportInventoryTurnoverQuery.getInventoriesTurnover(req.query);
     }
@@ -211,7 +211,7 @@ class ReportController {
     @Get("/product-turnover-total")
     getProductTurnoversTotal(req) {
         return this.reportProductQuery.productInventoryTotal(req.query.ids, req.query);
-    }
+    }*/
 
     @Get("/seasonal")
     seasonal(req) {
